@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0050)file:///C:/Users/hhmj0/Downloads/udak_admin_8.html -->
+<!-- saved from url=(0050)file:///C:/Users/hhmj0/Downloads/udak_admin_9.html -->
 <html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -662,7 +662,8 @@ window.savePlan=async function(){
   const name=document.getElementById('pName').value.trim();
   const price=Number(document.getElementById('pPrice').value);
   if(!name||!price){alert('요금제명과 월정액을 입력해주세요');return;}
-  const data={name,monthlyPrice:price,plangroup:Math.floor(price/1000).toString(),visible:document.getElementById('pVis').checked};
+  const orderVal=id?(planData[id]?.order||0):Object.keys(planData).length;
+  const data={name,monthlyPrice:price,plangroup:Math.floor(price/1000).toString(),visible:document.getElementById('pVis').checked,order:orderVal};
   try{
     if(id){await db.ref(`plans/${id}`).update(data);}
     else{await db.ref('plans').push(data);}
