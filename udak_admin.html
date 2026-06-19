@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>유닥 어드민</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Pretendard",-apple-system,sans-serif;background:#F9FAFB;color:#111;font-size:14px}
+:root{--or:#F97316;--orl:#FFF7ED;--ord:#EA6B10;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g300:#D1D5DB;--g400:#9CA3AF;--g600:#6B7280;--g800:#1F2937;--red:#EF4444;--green:#10B981}
+
+/* ── LOGIN ── */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.login-box{background:#fff;border-radius:16px;padding:40px 32px;width:300px;box-shadow:0 4px 24px rgba(0,0,0,.08);text-align:center}
+.login-logo{font-size:24px;font-weight:900;color:var(--or);margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--g400);margin-bottom:24px}
+.login-inp{width:100%;height:44px;padding:0 14px;border:1.5px solid var(--g200);border-radius:8px;font-size:14px;font-family:inherit;outline:none;margin-bottom:10px}
+.login-inp:focus{border-color:var(--or)}
+.login-btn{width:100%;height:44px;background:var(--or);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+.login-err{color:var(--red);font-size:12px;margin-top:8px;min-height:16px}
+
+/* ── APP ── */
+.app{display:none;min-height:100vh;flex-direction:column}
+.app.on{display:flex}
+.hdr{background:#fff;border-bottom:1px solid var(--g200);padding:0 24px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.hdr-logo{font-size:17px;font-weight:900;color:var(--or)}
+.hdr-right{display:flex;gap:8px;align-items:center}
+.seed-btn{height:32px;padding:0 12px;background:var(--orl);color:var(--or);border:1px solid var(--or);border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.logout-btn{height:32px;padding:0 12px;background:var(--g100);color:var(--g600);border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+
+/* ── TABS ── */
+.tabs{background:#fff;border-bottom:1px solid var(--g200);display:flex;padding:0 24px}
+.tab{padding:14px 18px;font-size:14px;font-weight:600;color:var(--g400);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.tab:hover{color:var(--g800)}
+.tab.on{color:var(--or);border-bottom-color:var(--or)}
+
+/* ── CONTENT ── */
+.content{padding:24px;flex:1}
+.panel{display:none;max-width:1100px;margin:0 auto}
+.panel.on{display:block}
+.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.panel-title{font-size:17px;font-weight:800}
+.btn-add{height:36px;padding:0 16px;background:var(--or);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-add:hover{background:var(--ord)}
+
+/* ── TABLE ── */
+.tbl-wrap{background:#fff;border-radius:12px;border:1px solid var(--g200);overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:600px}
+th{background:var(--g50);padding:10px 14px;text-align:left;font-size:12px;font-weight:700;color:var(--g600);border-bottom:1px solid var(--g200);white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid var(--g100);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#FAFAFA}
+.vis-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700}
+.vis-on{background:#D1FAE5;color:#065F46}
+.vis-off{background:var(--g100);color:var(--g400)}
+.acts{display:flex;gap:6px}
+.btn-e{height:28px;padding:0 10px;background:var(--g100);color:var(--g800);border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-e:hover{background:var(--g200)}
+.btn-d{height:28px;padding:0 10px;background:#FEE2E2;color:var(--red);border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-d:hover{background:#FECACA}
+.empty-row td{text-align:center;color:var(--g400);padding:40px}
+
+/* ── MODAL ── */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s}
+.ov.on{opacity:1;pointer-events:auto}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:700px;max-height:92vh;display:flex;flex-direction:column}
+.modal-lg{max-width:900px}
+.modal-hd{display:flex;justify-content:space-between;align-items:center;padding:18px 24px 14px;border-bottom:1px solid var(--g100);flex-shrink:0}
+.modal-title{font-size:16px;font-weight:800}
+.modal-x{width:28px;height:28px;border:none;background:var(--g100);border-radius:50%;cursor:pointer;font-size:14px;color:var(--g600)}
+.modal-bd{padding:20px 24px;overflow-y:auto;flex:1}
+.modal-ft{padding:14px 24px;border-top:1px solid var(--g100);display:flex;justify-content:flex-end;gap:8px;flex-shrink:0}
+
+/* ── FORM ── */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.flbl{font-size:12px;font-weight:700;color:var(--g800)}
+.flbl em{color:var(--red);font-style:normal}
+.fi,.fsl{width:100%;height:40px;padding:0 12px;border:1.5px solid var(--g200);border-radius:8px;font-size:14px;font-family:inherit;color:var(--g800);background:#fff;outline:none;transition:border-color .15s}
+.fi:focus,.fsl:focus{border-color:var(--or)}
+.fsl{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.fi-sm{width:100px;height:36px;padding:0 8px;border:1.5px solid var(--g200);border-radius:6px;font-size:13px;font-family:inherit;outline:none;text-align:right}
+.fi-sm:focus{border-color:var(--or)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fchk-row{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px}
+.fchk{width:16px;height:16px;accent-color:var(--or);cursor:pointer;flex-shrink:0}
+
+/* ── CARRIER CHECKBOXES ── */
+.carrier-chks{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.c-chk-item{display:flex;align-items:center;gap:6px;padding:8px 14px;border:1.5px solid var(--g200);border-radius:8px;cursor:pointer;transition:all .15s;user-select:none}
+.c-chk-item:hover{border-color:var(--or)}
+.c-chk-item.on{border-color:var(--or);background:var(--orl)}
+.c-chk-item input{width:14px;height:14px;accent-color:var(--or);cursor:pointer}
+.c-logo-sm{height:20px;object-fit:contain;mix-blend-mode:multiply}
+
+/* ── DYNAMIC LIST ── */
+.dyn-list{display:flex;flex-direction:column;gap:7px;margin-bottom:8px}
+.dyn-row{display:flex;gap:7px;align-items:center}
+.dyn-row .fi{flex:1}
+.dyn-del{width:28px;height:28px;border:none;background:#FEE2E2;color:var(--red);border-radius:6px;cursor:pointer;font-size:13px;flex-shrink:0}
+.dyn-add{height:32px;padding:0 12px;background:var(--g100);color:var(--g800);border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.dyn-add:hover{background:var(--g200)}
+
+/* ── BULK APPLY (정책 일괄 입력) ── */
+.bulk-box{background:var(--orl);border:1px solid #FED7AA;border-radius:10px;padding:14px 16px;margin-bottom:16px}
+.bulk-title{font-size:12px;font-weight:700;color:var(--ord);margin-bottom:10px}
+.bulk-grid{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+.bulk-grid .fg{margin-bottom:0;flex:1;min-width:80px}
+.bulk-apply-btn{height:40px;padding:0 14px;background:var(--or);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;flex-shrink:0}
+
+/* ── DEVICE POLICY TABLE ── */
+.dev-pol-wrap{border:1px solid var(--g200);border-radius:10px;overflow:auto;margin-bottom:14px}
+.dev-pol-tbl{width:100%;border-collapse:collapse;min-width:600px}
+.dev-pol-tbl th{background:var(--g50);padding:8px 10px;font-size:11px;font-weight:700;color:var(--g600);border-bottom:1px solid var(--g200);text-align:right}
+.dev-pol-tbl th:first-child{text-align:left}
+.dev-pol-tbl td{padding:8px 10px;border-bottom:1px solid var(--g100);vertical-align:middle}
+.dev-pol-tbl tr:last-child td{border-bottom:none}
+.dev-pol-tbl tr:hover td{background:#FAFAFA}
+.dev-name-cell{font-size:13px;font-weight:600;white-space:nowrap}
+
+/* ── BTNS ── */
+.btn-cancel{height:38px;padding:0 18px;background:var(--g100);color:var(--g800);border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-save{height:38px;padding:0 18px;background:var(--or);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-save:hover{background:var(--ord)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--g800);color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;z-index:999;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── SECTION DIVIDER ── */
+.sec-div{font-size:12px;font-weight:700;color:var(--g600);margin:16px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--g200)}
+
+/* ── COLOR INPUT ── */
+.col-inp{width:36px;height:36px;padding:2px;border:1.5px solid var(--g200);border-radius:6px;cursor:pointer;flex-shrink:0}
+</style>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="login-logo">유닥</div>
+    <div class="login-sub">Admin Panel</div>
+    <input type="password" class="login-inp" id="pwInp" placeholder="비밀번호" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">로그인</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <div class="hdr">
+    <div class="hdr-logo">유닥 어드민</div>
+    <div class="hdr-right">
+      <button class="seed-btn" onclick="seedData()">+ 기본 데이터 추가</button>
+      <button class="logout-btn" onclick="logout()">로그아웃</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab on" data-tab="device" onclick="switchTab('device')">📱 기기 관리</div>
+    <div class="tab" data-tab="plan" onclick="switchTab('plan')">💳 요금제 관리</div>
+    <div class="tab" data-tab="policy" onclick="switchTab('policy')">📋 정책 관리</div>
+    <div class="tab" data-tab="texts" onclick="switchTab('texts')">✏️ 텍스트 관리</div>
+    <div class="tab" data-tab="bonus" onclick="switchTab('bonus')">🎁 추가 혜택 관리</div>
+  </div>
+  <div class="content">
+
+    <!-- 기기 -->
+    <div class="panel on" id="panelDevice">
+      <div class="panel-head">
+        <div class="panel-title">기기 목록</div>
+        <button class="btn-add" onclick="openDevModal()">+ 기기 추가</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="min-width:140px">기기명 / 용량</th>
+              <th style="text-align:right">공시지원금</th>
+              <th style="text-align:right">리베이트</th>
+              <th style="text-align:right">유통망</th>
+              <th style="text-align:right">추가</th>
+              <th style="text-align:right;color:var(--or)">기기 실부담</th>
+            </tr>
+          </thead>
+          <tbody id="devTbody"><tr class="empty-row"><td colspan="6">로딩 중...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 요금제 -->
+    <div class="panel" id="panelPlan">
+      <div class="panel-head">
+        <div class="panel-title">요금제 목록</div>
+        <button class="btn-add" onclick="openPlanModal()">+ 요금제 추가</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>요금제명</th><th>월정액</th><th>요금 그룹</th><th>노출</th><th>관리</th></tr></thead>
+          <tbody id="planTbody"><tr class="empty-row"><td colspan="5">로딩 중...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 정책 -->
+    <div class="panel" id="panelPolicy">
+      <div class="panel-head">
+        <div class="panel-title">정책 목록</div>
+        <button class="btn-add" onclick="openPolModal()">+ 정책 추가</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>통신사</th><th>요금그룹</th><th>기기 수</th><th>공시지원금(기본)</th><th>유닥 혜택(기본)</th><th>노출</th><th>관리</th></tr></thead>
+          <tbody id="polTbody"><tr class="empty-row"><td colspan="7">로딩 중...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- 텍스트 관리 -->
+    <div class="panel" id="panelTexts">
+      <div class="panel-head">
+        <div class="panel-title">텍스트 관리</div>
+        <button class="btn-add" onclick="saveTexts()">💾 저장</button>
+      </div>
+      <div class="tbl-wrap" style="padding:24px">
+        <p style="font-size:12px;color:var(--g400);margin-bottom:20px">※ 저장 즉시 랜딩페이지에 반영됩니다. 카카오 채널 URL도 여기서 설정하세요.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" id="textsForm">
+          <!-- JS로 렌더링 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 추가 혜택 관리 -->
+    <div class="panel" id="panelBonus">
+      <div class="panel-head">
+        <div class="panel-title">🎁 추가 혜택 관리</div>
+        <button class="btn-add" onclick="saveBonusAdmin()">💾 저장</button>
+      </div>
+      <div class="tbl-wrap" style="padding:24px">
+        <p style="font-size:12px;color:var(--g400);margin-bottom:20px">※ 요금제 그룹별 무료 혜택 항목을 관리합니다. 이미지는 HTML과 같은 폴더에 파일을 넣고 파일명만 입력하세요 (예: watch.jpg)</p>
+        <div id="bonusAdminForm"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 기기 모달 -->
+<div class="ov" id="devModal">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-title" id="devModalTitle">기기 추가</span>
+      <button class="modal-x" onclick="closeModal('devModal')">✕</button>
+    </div>
+    <div class="modal-bd">
+      <input type="hidden" id="dId">
+      <div class="form-row">
+        <div class="fg"><label class="flbl">기기명 <em>*</em></label><input type="text" class="fi" id="dName" placeholder="갤럭시 S26"></div>
+        <div class="fg"><label class="flbl">카테고리</label>
+          <select class="fsl" id="dCat"><option>삼성</option><option>애플</option><option>LG</option><option>기타</option></select>
+        </div>
+      </div>
+      <div class="fg"><label class="flbl">이미지 URL (외부 호스팅)</label><input type="text" class="fi" id="dImg" placeholder="https://..."></div>
+
+      <div class="sec-div">용량별 출고가 <em style="color:var(--red)">*</em></div>
+      <div class="dyn-list" id="storageList"></div>
+      <button class="dyn-add" onclick="addStorage()">+ 용량 추가</button>
+
+      <div class="sec-div" style="margin-top:16px">색상 <em style="color:var(--red)">*</em></div>
+      <div class="dyn-list" id="colorList"></div>
+      <button class="dyn-add" onclick="addColor()">+ 색상 추가</button>
+
+      <div class="fchk-row" style="margin-top:16px"><input type="checkbox" class="fchk" id="dVis" checked><label for="dVis">랜딩페이지 노출</label></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeModal('devModal')">취소</button>
+      <button class="btn-save" onclick="saveDev()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 요금제 모달 -->
+<div class="ov" id="planModal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-hd">
+      <span class="modal-title" id="planModalTitle">요금제 추가</span>
+      <button class="modal-x" onclick="closeModal('planModal')">✕</button>
+    </div>
+    <div class="modal-bd">
+      <input type="hidden" id="pId">
+      <div class="fg"><label class="flbl">요금제명 <em>*</em></label><input type="text" class="fi" id="pName" placeholder="5G 프리미어 에센셜"></div>
+      <div class="form-row">
+        <div class="fg"><label class="flbl">월정액 (원) <em>*</em></label><input type="number" class="fi" id="pPrice" placeholder="85000" oninput="document.getElementById('pGrp').value=this.value?Math.floor(Number(this.value)/1000):''"></div>
+        <div class="fg"><label class="flbl">요금 그룹 (자동)</label><input type="text" class="fi" id="pGrp" readonly style="background:var(--g50);color:var(--g400)"></div>
+      </div>
+      <div class="fchk-row"><input type="checkbox" class="fchk" id="pVis" checked><label for="pVis">랜딩페이지 노출</label></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeModal('planModal')">취소</button>
+      <button class="btn-save" onclick="savePlan()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 정책 모달 -->
+<div class="ov" id="polModal">
+  <div class="modal modal-lg">
+    <div class="modal-hd">
+      <span class="modal-title" id="polModalTitle">정책 추가</span>
+      <button class="modal-x" onclick="closeModal('polModal')">✕</button>
+    </div>
+    <div class="modal-bd">
+      <input type="hidden" id="polId">
+      <div class="fg" style="margin-bottom:16px">
+        <label class="flbl">정책 이름 <em style="color:var(--or)">*</em></label>
+        <input type="text" class="fi" id="polName" placeholder="예) 번이 85요금제 갤럭시 정책">
+      </div>
+
+      <!-- 통신사 -->
+      <div class="sec-div">통신사 선택 (다중 선택 가능)</div>
+      <div class="carrier-chks" id="carrierChks">
+        <label class="c-chk-item" id="chkSKT"><input type="checkbox" value="SKT" onchange="updateCarrierItem(this)"> <img class="c-logo-sm" src="skt_logo.png" alt="SKT" style="height:22px;object-fit:contain;filter:invert(1)"> SKT</label>
+        <label class="c-chk-item" id="chkKT"><input type="checkbox" value="KT" onchange="updateCarrierItem(this)"> <img class="c-logo-sm" src="kt_logo.png" alt="KT" style="height:22px;object-fit:contain;filter:invert(1)"> KT</label>
+        <label class="c-chk-item" id="chkLGU"><input type="checkbox" value="LG U+" onchange="updateCarrierItem(this)"> <img class="c-logo-sm" src="u__.png" alt="LG U+" style="height:22px;object-fit:contain"> LG U+</label>
+        <label class="c-chk-item" id="chkMVNO"><input type="checkbox" value="알뜰폰" onchange="updateCarrierItem(this)"> 알뜰폰</label>
+      </div>
+      <p style="font-size:11px;color:var(--g400);margin-bottom:12px">※ LG U+ 선택 시 기기변경 정책으로 저장 / 나머지 선택 시 번호이동 정책으로 저장</p>
+
+      <!-- 요금제 그룹 -->
+      <div class="fg" style="max-width:280px">
+        <label class="flbl">요금제 그룹 <em>*</em></label>
+        <select class="fsl" id="polPlangrp"><option value="">선택해주세요</option></select>
+      </div>
+
+      <!-- 일괄 입력 -->
+      <div class="sec-div">일괄 입력 (공통값 → 전체 기기에 적용)</div>
+      <div class="bulk-box">
+        <div class="bulk-title">공통 지원금 입력 후 "전체 적용" 버튼을 누르세요</div>
+        <div class="bulk-grid">
+          <div class="fg"><label class="flbl">공시지원금</label><input type="number" class="fi" id="bPub" placeholder="0" oninput="Object.keys(devData).forEach(k=>updateRowCalc(k))"></div>
+          <div class="fg"><label class="flbl">리베이트</label><input type="number" class="fi" id="bReb" placeholder="0" oninput="Object.keys(devData).forEach(k=>updateRowCalc(k))"></div>
+          <div class="fg"><label class="flbl">유통망</label><input type="number" class="fi" id="bDist" placeholder="0" oninput="Object.keys(devData).forEach(k=>updateRowCalc(k))"></div>
+          <div class="fg"><label class="flbl">추가</label><input type="number" class="fi" id="bExt" placeholder="0" oninput="Object.keys(devData).forEach(k=>updateRowCalc(k))"></div>
+          <input type="hidden" id="bStr" value="0">
+          <button class="bulk-apply-btn" onclick="applyBulk()">전체 적용 →</button>
+        </div>
+      </div>
+
+      <!-- 기기별 지원금 테이블 -->
+      <div class="sec-div">기기별 지원금 (개별 수정 가능)</div>
+      <div class="dev-pol-wrap">
+        <table class="dev-pol-tbl">
+          <thead>
+            <tr>
+              <th style="display:flex;align-items:center;gap:6px;min-width:120px">
+                <input type="checkbox" id="chkAllDev" style="width:14px;height:14px;accent-color:var(--or);cursor:pointer"
+                  onchange="toggleAllDevs(this.checked)" title="전체 선택/해제">
+                기기명
+              </th>
+              <th style="text-align:right">공시지원금</th>
+              <th style="text-align:right">리베이트</th>
+              <th style="text-align:right">유통망</th>
+              <th style="text-align:right">추가</th>
+              <th style="text-align:right;color:var(--or)">기기 실부담</th>
+            </tr>
+          </thead>
+          <tbody id="devPolBody"></tbody>
+        </table>
+      </div>
+
+      <div class="fchk-row"><input type="checkbox" class="fchk" id="polVis" checked><label for="polVis">정책 활성화</label></div>
+    </div>
+    <div class="modal-ft">
+      <button class="btn-cancel" onclick="closeModal('polModal')">취소</button>
+      <button class="btn-save" onclick="savePol()">저장</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PW = 'udak2024';
+let db = null;
+let devData={}, planData={}, polData={};
+
+window.addEventListener('load', function(){
+  try {
+    const FB={ apiKey:"AIzaSyCajxdRBjIfZ4DusEqdkeb9b965FOEa-jc", authDomain:"udak-c6832.firebaseapp.com", databaseURL:"https://udak-c6832-default-rtdb.firebaseio.com", projectId:"udak-c6832", storageBucket:"udak-c6832.firebasestorage.app", messagingSenderId:"777003177725", appId:"1:777003177725:web:7e5c03c30baeda65835094" };
+    if (!firebase.apps.length) firebase.initializeApp(FB);
+    db = firebase.database();
+    console.log('Firebase 초기화 완료');
+  } catch(e) {
+    console.error('Firebase 초기화 실패:', e);
+    document.getElementById('loginErr').textContent = 'Firebase 연결 실패: ' + e.message;
+  }
+});
+
+/* ── LOGIN ── */
+window.doLogin=function(){
+  if(!db){ document.getElementById('loginErr').textContent='Firebase 연결 중... 잠시 후 다시 시도해주세요'; return; }
+  if(document.getElementById('pwInp').value===PW){
+    document.getElementById('loginWrap').style.display='none';
+    document.getElementById('app').classList.add('on');
+    loadAll();
+  } else document.getElementById('loginErr').textContent='비밀번호 오류';
+};
+window.logout=function(){
+  document.getElementById('app').classList.remove('on');
+  document.getElementById('loginWrap').style.display='flex';
+  document.getElementById('pwInp').value='';
+};
+
+/* ── TABS ── */
+window.switchTab=function(t){
+  document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('on',el.dataset.tab===t));
+  document.querySelectorAll('.panel').forEach(el=>el.classList.remove('on'));
+  const panelId = 'panel'+t.charAt(0).toUpperCase()+t.slice(1);
+document.getElementById(panelId).classList.add('on');
+if(t==='texts') renderTextsForm();
+if(t==='bonus') renderBonusAdmin();
+};
+
+/* ── TOAST ── */
+function toast(msg,err=false){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.style.background=err?'var(--red)':'var(--g800)';
+  el.classList.add('on'); setTimeout(()=>el.classList.remove('on'),2500);
+}
+
+/* ── MODAL ── */
+window.closeModal=id=>document.getElementById(id).classList.remove('on');
+function openModal(id){document.getElementById(id).classList.add('on');}
+
+/* ══ 기기 ══ */
+async function loadDevices(){
+  const s=await db.ref('devices').once('value'); devData=s.exists()?s.val():{};
+  const tbody=document.getElementById('devTbody');
+  const keys=Object.keys(devData);
+  if(!keys.length){tbody.innerHTML='<tr class="empty-row"><td colspan="6">등록된 기기 없음</td></tr>';return;}
+  tbody.innerHTML=keys.map(k=>{
+    const d=devData[k];
+    const prices=(d.storageList||[]).map(s=>`<span style="white-space:nowrap">${s.name}: ${Number(s.price||0).toLocaleString()}원</span>`).join('<br>');
+    return`<tr><td><strong>${d.name}</strong></td><td><span style="font-size:12px;color:var(--g600)">${d.category||''}</span></td>
+    <td style="font-size:12px;line-height:1.8">${prices||'-'}</td>
+    <td style="font-size:12px">${(d.colors||[]).length}가지</td>
+    <td><span class="vis-badge ${d.visible!==false?'vis-on':'vis-off'}">${d.visible!==false?'노출':'숨김'}</span></td>
+    <td><div class="acts"><button class="btn-e" onclick="editDev('${k}')">수정</button><button class="btn-d" onclick="delDev('${k}')">삭제</button></div></td></tr>`;
+  }).join('');
+}
+
+window.openDevModal=function(){
+  document.getElementById('devModalTitle').textContent='기기 추가';
+  document.getElementById('dId').value='';
+  document.getElementById('dName').value='';
+  document.getElementById('dCat').value='삼성';
+  document.getElementById('dImg').value='';
+  document.getElementById('dVis').checked=true;
+  document.getElementById('storageList').innerHTML='';
+  document.getElementById('colorList').innerHTML='';
+  addStorage(); addColor();
+  openModal('devModal');
+};
+window.editDev=function(k){
+  const d=devData[k];
+  document.getElementById('devModalTitle').textContent='기기 수정';
+  document.getElementById('dId').value=k;
+  document.getElementById('dName').value=d.name||'';
+  document.getElementById('dCat').value=d.category||'삼성';
+  document.getElementById('dImg').value=d.img||'';
+  document.getElementById('dVis').checked=d.visible!==false;
+  document.getElementById('storageList').innerHTML='';
+  document.getElementById('colorList').innerHTML='';
+  (d.storageList||[]).forEach(s=>addStorage(s.name,s.price));
+  (d.colors||[]).forEach(c=>{const[h,n]=(c.name||'').split('|');addColor(h,n,c.img||'');});
+  if(!(d.storageList||[]).length) addStorage();
+  if(!(d.colors||[]).length) addColor();
+  openModal('devModal');
+};
+window.addStorage=function(name='',price=''){
+  const row=document.createElement('div'); row.className='dyn-row';
+  row.innerHTML=`<input type="text" class="fi" placeholder="256GB" value="${name}" style="flex:0.5">
+    <input type="number" class="fi" placeholder="출고가(원)" value="${price}" style="flex:1">
+    <button class="dyn-del" onclick="this.parentElement.remove()">✕</button>`;
+  document.getElementById('storageList').appendChild(row);
+};
+window.addColor=function(hex='',name='',img=''){
+  const wrap=document.createElement('div');
+  wrap.className='color-card';
+  wrap.style.cssText='border:1.5px solid var(--g200);border-radius:10px;padding:12px 14px;margin-bottom:8px;background:#fff';
+  const pid='p'+Math.random().toString(36).slice(2,8);
+  wrap.innerHTML=`
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+      <span id="${pid}" style="width:28px;height:28px;border-radius:50%;border:1.5px solid var(--g200);flex-shrink:0;display:block;background:${hex||'#ccc'}"></span>
+      <input type="text" class="fi c-hex" placeholder="#FF6B00" value="${hex}" maxlength="7"
+        style="flex:0.5;font-family:monospace;font-size:13px;height:36px"
+        oninput="var v=this.value;if(!v.startsWith('#'))v='#'+v.replace(/#/g,'');this.value=v.toUpperCase();var p=document.getElementById('${pid}');if(/^#[0-9A-Fa-f]{6}$/.test(v)){p.style.background=v;p.style.borderColor=v;}else{p.style.background='#ccc';p.style.borderColor='var(--g200)';}">
+      <input type="text" class="fi c-name" placeholder="색상명 (예: 바이올렛)" value="${name}" style="flex:1;height:36px">
+      <button style="width:28px;height:28px;border:none;background:#FEE2E2;color:var(--red);border-radius:6px;cursor:pointer;font-size:13px;flex-shrink:0" onclick="this.closest('.color-card').remove()">✕</button>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span style="font-size:11px;font-weight:700;color:var(--g600);white-space:nowrap;flex-shrink:0">이미지 URL</span>
+      <input type="text" class="fi c-img" placeholder="이 색상 제품 이미지 URL" value="${img}" style="flex:1;height:34px;font-size:12px">
+    </div>`;
+  document.getElementById('colorList').appendChild(wrap);
+};
+window.saveDev=async function(){
+  const id=document.getElementById('dId').value;
+  const name=document.getElementById('dName').value.trim();
+  if(!name){alert('기기명을 입력해주세요');return;}
+  const storageList=[...document.querySelectorAll('#storageList .dyn-row')].map(r=>{
+    const ins=[...r.querySelectorAll('input')];
+    return{name:ins[0].value.trim(),price:Number(ins[1].value)||0};
+  }).filter(s=>s.name);
+  const colors=[...document.querySelectorAll('#colorList .color-card')].map(r=>{
+    const hex=r.querySelector('.c-hex').value.trim();
+    const cname=r.querySelector('.c-name').value.trim();
+    const cimg=r.querySelector('.c-img').value.trim();
+    return{name:hex+'|'+cname, img:cimg};
+  }).filter(c=>c.name.split('|')[1]);
+  const data={name,category:document.getElementById('dCat').value,img:document.getElementById('dImg').value.trim(),visible:document.getElementById('dVis').checked,storageList,colors};
+  try{
+    if(id){await db.ref(`devices/${id}`).update(data);}
+    else{await db.ref('devices').push(data);}
+    await loadDevices(); closeModal('devModal'); toast(id?'기기 수정 완료':'기기 추가 완료');
+  }catch(e){toast('저장 실패: '+e.message,true);}
+};
+window.delDev=async function(k){
+  if(!confirm(`"${devData[k]?.name}" 삭제하시겠습니까?`))return;
+  await db.ref(`devices/${k}`).remove(); delete devData[k];
+  await loadDevices(); toast('삭제 완료');
+};
+
+/* ══ 요금제 ══ */
+async function loadPlans(){
+  const s=await db.ref('plans').once('value'); planData=s.exists()?s.val():{};
+  const tbody=document.getElementById('planTbody');
+  const keys=Object.keys(planData);
+  if(!keys.length){tbody.innerHTML='<tr class="empty-row"><td colspan="5">등록된 요금제 없음</td></tr>';return;}
+  tbody.innerHTML=keys.map(k=>{
+    const p=planData[k];
+    return`<tr><td><strong>${p.name}</strong></td><td>${Number(p.monthlyPrice||0).toLocaleString()}원</td>
+    <td><span style="background:var(--g100);padding:2px 8px;border-radius:4px;font-size:12px">${p.plangroup||'?'}</span></td>
+    <td><span class="vis-badge ${p.visible!==false?'vis-on':'vis-off'}">${p.visible!==false?'노출':'숨김'}</span></td>
+    <td><div class="acts"><button class="btn-e" onclick="editPlan('${k}')">수정</button><button class="btn-d" onclick="delPlan('${k}')">삭제</button></div></td></tr>`;
+  }).join('');
+  // 정책 모달 요금그룹 셀렉트 업데이트
+  const sel=document.getElementById('polPlangrp');
+  const cur=sel.value;
+  sel.innerHTML='<option value="">선택해주세요</option>';
+  Object.values(planData).filter(p=>p.visible!==false).sort((a,b)=>a.monthlyPrice-b.monthlyPrice).forEach(p=>{
+    const opt=document.createElement('option');
+    opt.value=p.plangroup||Math.floor(p.monthlyPrice/1000).toString();
+    opt.textContent=`${p.name} (${Number(p.monthlyPrice).toLocaleString()}원)`;
+    sel.appendChild(opt);
+  });
+  if(cur) sel.value=cur;
+}
+window.openPlanModal=function(){
+  document.getElementById('planModalTitle').textContent='요금제 추가';
+  ['pId','pName','pPrice','pGrp'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pVis').checked=true;
+  openModal('planModal');
+};
+window.editPlan=function(k){
+  const p=planData[k];
+  document.getElementById('planModalTitle').textContent='요금제 수정';
+  document.getElementById('pId').value=k;
+  document.getElementById('pName').value=p.name||'';
+  document.getElementById('pPrice').value=p.monthlyPrice||'';
+  document.getElementById('pGrp').value=p.plangroup||Math.floor((p.monthlyPrice||0)/1000);
+  document.getElementById('pVis').checked=p.visible!==false;
+  openModal('planModal');
+};
+window.savePlan=async function(){
+  const id=document.getElementById('pId').value;
+  const name=document.getElementById('pName').value.trim();
+  const price=Number(document.getElementById('pPrice').value);
+  if(!name||!price){alert('요금제명과 월정액을 입력해주세요');return;}
+  const data={name,monthlyPrice:price,plangroup:Math.floor(price/1000).toString(),visible:document.getElementById('pVis').checked};
+  try{
+    if(id){await db.ref(`plans/${id}`).update(data);}
+    else{await db.ref('plans').push(data);}
+    await loadPlans(); closeModal('planModal'); toast(id?'요금제 수정 완료':'요금제 추가 완료');
+  }catch(e){toast('저장 실패: '+e.message,true);}
+};
+window.delPlan=async function(k){
+  if(!confirm(`"${planData[k]?.name}" 삭제하시겠습니까?`))return;
+  await db.ref(`plans/${k}`).remove(); delete planData[k];
+  await loadPlans(); toast('삭제 완료');
+};
+
+/* ══ 정책 ══ */
+async function loadPolicies(){
+  const s=await db.ref('policy2').once('value'); polData=s.exists()?s.val():{};
+  const tbody=document.getElementById('polTbody');
+  const keys=Object.keys(polData);
+  if(!keys.length){tbody.innerHTML='<tr class="empty-row"><td colspan="7">등록된 정책 없음</td></tr>';return;}
+  tbody.innerHTML=keys.map(k=>{
+    const p=polData[k];
+    const extra=(p.rebate||0)+(p.distribution||0)+(p.structure||0)+(p.extraPolicy||0);
+    const devCount=Object.keys(devData).length-(p.excludedDevs||[]).length;const totalDev=Object.keys(devData).length;
+    const planName=Object.values(planData).find(pl=>(pl.plangroup||Math.floor(pl.monthlyPrice/1000).toString())===p.plangroup)?.name||p.plangroup||'-';
+    return`<tr>
+      <td><strong>${p.name||'-'}</strong><br><span style="font-size:11px;color:var(--g400)">${(p.carrier||'all').replace(/,/g,'·')} · ${p.jointype||''}</span></td>
+      <td style="font-size:12px">${planName}</td>
+      <td style="font-size:12px">${devCount>0?`${devCount}/${totalDev}개 기기`:'전체 공통'}</td>
+      <td style="font-weight:700;color:var(--or)">${Number(p.pubSupport||0).toLocaleString()}원</td>
+      <td style="font-weight:700;color:var(--or)">${extra.toLocaleString()}원</td>
+      <td><span class="vis-badge ${p.visible!==false?'vis-on':'vis-off'}">${p.visible!==false?'활성':'비활성'}</span></td>
+      <td><div class="acts"><button class="btn-e" onclick="editPol('${k}')">수정</button><button class="btn-d" onclick="delPol('${k}')">삭제</button></div></td>
+    </tr>`;
+  }).join('');
+}
+
+function getDevBasePrice(k, storage=''){
+  const d=devData[k];
+  if(!d) return 0;
+  if(storage){const s=d.storageList?.find(s=>s.name===storage);if(s?.price) return s.price;}
+  return d.storageList?.[0]?.price||0;
+}
+
+function calcNetPrice(devKey, storage){
+  const basePrice=getDevBasePrice(devKey,storage);
+  if(!basePrice) return null;
+  const rowId='row_'+devKey+'_'+storage.replace(/\s/g,'_');
+  const row=document.getElementById(rowId);
+  if(!row) return null;
+  const getV=(cls)=>{const el=row.querySelector('.'+cls);return el&&el.value!==''?Number(el.value)||0:Number(document.getElementById('b'+cls.slice(3).toUpperCase())?.value)||0;};
+  return Math.max(0,basePrice-getV('dp-pub')-getV('dp-reb')-getV('dp-dist')-getV('dp-ext'));
+}
+
+function updateRowCalc(devKey, storage){
+  const rowId='row_'+devKey+'_'+storage.replace(/\s/g,'_');
+  const el=document.getElementById('calc_'+rowId);
+  if(!el) return;
+  const net=calcNetPrice(devKey,storage);
+  const base=getDevBasePrice(devKey,storage);
+  if(net===null){el.textContent='-';return;}
+  el.textContent=net.toLocaleString()+'원';
+  const rate=base>0?net/base:1;
+  el.style.color=rate<0.3?'var(--or)':rate<0.6?'#EA8B00':'var(--g800)';
+  el.style.fontWeight='700';
+}
+
+function renderDevPolTable(overrides={}, excluded=[]){
+  const keys=Object.keys(devData);
+  if(!keys.length){
+    document.getElementById('devPolBody').innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--g400);padding:20px">기기를 먼저 등록해주세요</td></tr>';
+    return;
+  }
+  let rows='';
+  keys.forEach(k=>{
+    const d=devData[k];
+    const isChecked=!excluded.includes(k);
+    const storages=d.storageList||[{name:'기본',price:0}];
+    const devOv=overrides[k]||{};
+    // 기기 그룹 헤더
+    rows+=`<tr style="background:var(--g50)"><td colspan="6" style="padding:7px 10px;font-weight:700;font-size:13px">
+      <label style="display:flex;align-items:center;gap:7px;cursor:pointer">
+        <input type="checkbox" class="fchk dev-chk-box" data-dev="${k}" ${isChecked?'checked':''}
+          onchange="toggleDevRow('${k}',this.checked)"
+          style="width:15px;height:15px;accent-color:var(--or);flex-shrink:0">
+        📱 ${d.name}
+      </label>
+    </td></tr>`;
+    // 용량별 서브행
+    storages.forEach(s=>{
+      const stName=s.name, stPrice=s.price||0;
+      const rowId='row_'+k+'_'+stName.replace(/\s/g,'_');
+      const stOv=devOv[stName]||(devOv.pubSupport!==undefined?devOv:{})||{};
+      const dis=!isChecked;
+      rows+=`<tr id="${rowId}" style="${dis?'opacity:.4':''}">
+        <td style="padding:6px 10px 6px 28px;font-size:12px;color:var(--g600)">
+          └ <strong style="color:var(--g800)">${stName}</strong>
+          ${stPrice?`<span style="color:var(--g400);font-size:10px;margin-left:4px">${stPrice.toLocaleString()}원</span>`:''}
+        </td>
+        ${[['pub','pubSupport'],['reb','rebate'],['dist','distribution'],['ext','extraPolicy']].map(([f,field])=>{
+          const val=stOv[field]!==undefined?stOv[field]:'';
+          return`<td style="text-align:right;padding:4px 6px">
+            <input type="number" class="fi-sm dp-${f}" data-dev="${k}" data-storage="${stName}" data-field="${field}"
+              value="${val}" placeholder="공통" style="width:88px;text-align:right;height:32px"
+              ${dis?'disabled':''} oninput="updateRowCalc('${k}','${stName}')">
+          </td>`;
+        }).join('')}
+        <td style="text-align:right;padding:4px 10px">
+          <span id="calc_${rowId}" style="font-size:12px">-</span>
+        </td>
+      </tr>`;
+    });
+  });
+  document.getElementById('devPolBody').innerHTML=rows;
+  setTimeout(()=>{
+    keys.forEach(k=>{(devData[k]?.storageList||[{name:'기본'}]).forEach(s=>updateRowCalc(k,s.name));});
+  },50);
+}
+
+window.toggleDevRow=function(devKey, checked){
+  const storages=devData[devKey]?.storageList||[{name:'기본'}];
+  storages.forEach(s=>{
+    const rowId='row_'+devKey+'_'+s.name.replace(/\s/g,'_');
+    const row=document.getElementById(rowId);
+    if(!row) return;
+    row.style.opacity=checked?'1':'0.4';
+    row.querySelectorAll('input[type=number]').forEach(el=>{el.disabled=!checked;});
+  });
+};
+
+window.applyBulk=function(){
+  const vals={pub:document.getElementById('bPub').value,reb:document.getElementById('bReb').value,dist:document.getElementById('bDist').value,ext:document.getElementById('bExt').value};
+  ['pub','reb','dist','ext'].forEach(f=>{
+    document.querySelectorAll(`.dp-${f}:not(:disabled)`).forEach(el=>{el.value=vals[f];});
+  });
+  Object.keys(devData).forEach(k=>{
+    (devData[k]?.storageList||[{name:'기본'}]).forEach(s=>updateRowCalc(k,s.name));
+  });
+};
+
+window.toggleAllDevs=function(checked){
+  document.querySelectorAll('.dev-chk-box').forEach(chk=>{
+    chk.checked=checked;
+    toggleDevRow(chk.dataset.dev, checked);
+  });
+};
+
+window.updateCarrierItem=function(chk){
+  const item=chk.closest('.c-chk-item');
+  item.classList.toggle('on',chk.checked);
+};
+
+window.openPolModal=function(){
+  document.getElementById('polModalTitle').textContent='정책 추가';
+  document.getElementById('polId').value='';
+  document.getElementById('polName').value='';
+  document.querySelectorAll('#carrierChks input').forEach(c=>{c.checked=false;c.closest('.c-chk-item').classList.remove('on');});
+  document.getElementById('polPlangrp').value='';
+  ['bPub','bReb','bDist','bStr','bExt'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('polVis').checked=true;
+  renderDevPolTable();
+  openModal('polModal');
+};
+
+window.editPol=function(k){
+  const p=polData[k];
+  document.getElementById('polModalTitle').textContent='정책 수정';
+  document.getElementById('polId').value=k;
+  // carriers
+  const carriers=(p.carrier||'').split(',').map(s=>s.trim());
+  document.querySelectorAll('#carrierChks input').forEach(c=>{
+    const on=carriers.includes(c.value)||p.carrier==='all';
+    c.checked=on; c.closest('.c-chk-item').classList.toggle('on',on);
+  });
+  document.getElementById('polPlangrp').value=p.plangroup||'';
+  document.getElementById('bPub').value=p.pubSupport||'';
+  document.getElementById('bReb').value=p.rebate||'';
+  document.getElementById('bDist').value=p.distribution||'';
+  document.getElementById('bStr').value=p.structure||'';
+  document.getElementById('bExt').value=p.extraPolicy||'';
+  document.getElementById('polVis').checked=p.visible!==false;
+  renderDevPolTable(p.deviceOverrides||{}, p.excludedDevs||[]);
+  openModal('polModal');
+};
+
+window.savePol=async function(){
+  const id=document.getElementById('polId').value;
+  const selectedCarriers=[...document.querySelectorAll('#carrierChks input:checked')].map(c=>c.value);
+  if(!selectedCarriers.length){alert('통신사를 선택해주세요');return;}
+  const pg=document.getElementById('polPlangrp').value;
+  if(!pg){alert('요금제 그룹을 선택해주세요');return;}
+
+  // base values
+  const base={pubSupport:Number(document.getElementById('bPub').value)||0,rebate:Number(document.getElementById('bReb').value)||0,distribution:Number(document.getElementById('bDist').value)||0,structure:0,extraPolicy:Number(document.getElementById('bExt').value)||0};
+
+  // device overrides - 용량별 수집
+  const overrides={};
+  const excludedDevs=[];
+  document.querySelectorAll('.dev-chk-box').forEach(chk=>{
+    if(!chk.checked && chk.dataset.dev) excludedDevs.push(chk.dataset.dev);
+  });
+  document.querySelectorAll('#devPolBody input[data-storage]').forEach(inp=>{
+    const devKey=inp.dataset.dev, storage=inp.dataset.storage, field=inp.dataset.field;
+    if(!devKey||!storage||!field||inp.disabled||inp.value==='') return;
+    if(!overrides[devKey]) overrides[devKey]={};
+    if(!overrides[devKey][storage]) overrides[devKey][storage]={structure:0};
+    overrides[devKey][storage][field]=Number(inp.value)||0;
+  });
+
+  // jointype 결정
+  const hasOthers=selectedCarriers.some(c=>c!=='LG U+');
+  const hasLGU=selectedCarriers.includes('LG U+');
+  const polsToSave=[];
+
+  if(hasOthers){
+    polsToSave.push({...base,name:document.getElementById('polName').value.trim(),jointype:'번호이동',carrier:selectedCarriers.filter(c=>c!=='LG U+').join(','),plangroup:pg,visible:document.getElementById('polVis').checked,deviceOverrides:overrides,excludedDevs});
+  }
+  if(hasLGU){
+    polsToSave.push({...base,name:document.getElementById('polName').value.trim(),jointype:'기기변경',carrier:'LG U+',plangroup:pg,visible:document.getElementById('polVis').checked,deviceOverrides:overrides,excludedDevs});
+  }
+
+  try{
+    if(id&&polsToSave.length===1){
+      await db.ref(`policy2/${id}`).update(polsToSave[0]);
+    } else {
+      if(id) await db.ref(`policy2/${id}`).remove();
+      for(const pol of polsToSave) await db.ref('policy2').push(pol);
+    }
+    await loadPolicies(); closeModal('polModal');
+    toast(`정책 ${polsToSave.length>1?polsToSave.length+'개 ':''} ${id?'수정':'추가'} 완료`);
+  }catch(e){toast('저장 실패: '+e.message,true);}
+};
+
+window.delPol=async function(k){
+  if(!confirm('이 정책을 삭제하시겠습니까?'))return;
+  await db.ref(`policy2/${k}`).remove(); delete polData[k];
+  await loadPolicies(); toast('삭제 완료');
+};
+
+/* ══ 수동 데이터 추가 (버튼용) ══ */
+window.seedData=async function(){
+  if(!confirm('기본 기기/요금제 데이터를 추가하시겠습니까?\n(기존 데이터에 추가됩니다)'))return;
+  try{
+    for(const d of SEED_DEVICES) await db.ref('devices').push(d);
+    for(const p of SEED_PLANS) await db.ref('plans').push(p);
+    await loadAll(); toast('데이터 추가 완료');
+  }catch(e){toast('실패: '+e.message,true);}
+};
+
+
+
+/* ══ 텍스트 관리 ══ */
+const TEXT_FIELDS = [
+  {key:'sectionTitle', label:'섹션 제목 (조건 선택)', def:'내 조건 먼저 확인해보세요', type:'input'},
+  {key:'stepDeviceLbl', label:'스텝1 레이블 - 기기', def:'원하는 제품', type:'input'},
+  {key:'stepCarrierLbl', label:'스텝2 레이블 - 통신사', def:'현재 사용 통신사', type:'input'},
+  {key:'stepStorageLbl', label:'스텝3 레이블 - 용량/색상', def:'용량 / 색상', type:'input'},
+  {key:'stepPlanLbl', label:'스텝4 레이블 - 요금제', def:'요금제', type:'input'},
+  {key:'discPub', label:'할인방식 버튼 - 공시', def:'공시지원금', type:'input'},
+  {key:'discSel', label:'할인방식 버튼 - 요금할인', def:'요금 할인형', type:'input'},
+  {key:'benefitTitle', label:'혜택 카드 제목', def:'유닥 예상 혜택 요약', type:'input'},
+  {key:'benefitNote', label:'혜택 카드 주의문구', def:'※ 위 금액은 선택하신 조건 기준 예상 금액입니다.\n정확한 혜택은 상담을 통해 안내드립니다.', type:'textarea'},
+  {key:'formTitle', label:'상담 신청폼 제목', def:'상담 신청하기', type:'input'},
+  {key:'ctaKakao', label:'카카오 버튼 텍스트', def:'카카오톡 상담하기', type:'input'},
+  {key:'ctaPhone', label:'전화 버튼 텍스트', def:'전화 상담 신청하기', type:'input'},
+  {key:'privacyNote', label:'개인정보 안내문', def:'🔒 입력하신 정보는 상담 목적으로만 사용되며, 안전하게 보호됩니다.', type:'input'},
+  {key:'kakaoUrl', label:'카카오 채널 URL', def:'#kakao-channel', type:'input', full:true},
+];
+
+let textsData = {};
+
+async function loadTexts(){
+  try{
+    const s = await db.ref('uitexts').once('value');
+    textsData = s.exists() ? s.val() : {};
+  } catch(e){ textsData = {}; }
+  renderTextsForm();
+}
+
+function renderTextsForm(){
+  const form = document.getElementById('textsForm');
+  form.innerHTML = TEXT_FIELDS.map(f => {
+    const val = textsData[f.key] !== undefined ? textsData[f.key] : f.def;
+    const escaped = val.replace(/"/g,'&quot;');
+    const fullStyle = f.full ? 'grid-column:1/-1' : '';
+    if(f.type === 'textarea'){
+      return `<div class="fg" style="${fullStyle}">
+        <label class="flbl">${f.label}</label>
+        <textarea id="txt_${f.key}" rows="3" style="width:100%;padding:10px 12px;border:1.5px solid var(--g200);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;outline:none;transition:border-color .15s" onfocus="this.style.borderColor='var(--or)'" onblur="this.style.borderColor='var(--g200)'">${val}</textarea>
+      </div>`;
+    }
+    return `<div class="fg" style="${fullStyle}">
+      <label class="flbl">${f.label}</label>
+      <input type="text" class="fi" id="txt_${f.key}" value="${escaped}" placeholder="${f.def}">
+    </div>`;
+  }).join('');
+}
+
+window.saveTexts = async function(){
+  const data = {};
+  TEXT_FIELDS.forEach(f => {
+    const el = document.getElementById('txt_'+f.key);
+    if(el) data[f.key] = el.value.trim() || f.def;
+  });
+  try{
+    await db.ref('uitexts').set( data);
+    textsData = data;
+    toast('텍스트 저장 완료 — 랜딩페이지에 즉시 반영됩니다');
+  } catch(e){ toast('저장 실패: '+e.message, true); }
+};
+
+/* ── 자동 초기화 (Firebase 최초 1회) ── */
+const SEED_DEVICES=[
+  {name:'갤럭시 S26',category:'삼성',img:'',visible:true,storageList:[{name:'256GB',price:1254000},{name:'512GB',price:1386000}],colors:[{name:'#4B5563|그라파이트',img:''},{name:'#C084FC|바이올렛',img:''},{name:'#F9A8D4|핑크골드',img:''}]},
+  {name:'갤럭시 S26+',category:'삼성',img:'',visible:true,storageList:[{name:'256GB',price:1452000},{name:'512GB',price:1584000}],colors:[{name:'#1E3A5F|네이비'},{name:'#F5F5F5|화이트실버'}]},
+  {name:'갤럭시 S26 울트라',category:'삼성',img:'',visible:true,storageList:[{name:'256GB',price:1797000},{name:'512GB',price:1929000},{name:'1TB',price:2178000}],colors:[{name:'#1C1C1C|티타늄블랙'},{name:'#C0B090|티타늄화이트'}]},
+  {name:'아이폰 17',category:'애플',img:'',visible:true,storageList:[{name:'128GB',price:990000},{name:'256GB',price:1122000},{name:'512GB',price:1386000}],colors:[{name:'#FFFFFF|화이트'},{name:'#000000|블랙'},{name:'#FFB6C1|핑크'}]},
+  {name:'아이폰 17 Pro',category:'애플',img:'',visible:true,storageList:[{name:'128GB',price:1290000},{name:'256GB',price:1422000},{name:'512GB',price:1686000},{name:'1TB',price:1950000}],colors:[{name:'#8E8E93|내추럴티타늄'},{name:'#1C1C1E|블랙티타늄'},{name:'#D4AF37|데저트티타늄'}]},
+  {name:'아이폰 17 Pro Max',category:'애플',img:'',visible:true,storageList:[{name:'256GB',price:1590000},{name:'512GB',price:1854000},{name:'1TB',price:2118000}],colors:[{name:'#8E8E93|내추럴티타늄'},{name:'#1C1C1E|블랙티타늄'},{name:'#D4AF37|데저트티타늄'}]},
+];
+const SEED_PLANS=[
+  {name:'5G 라이트+',monthlyPrice:55000,plangroup:'55',visible:true},
+  {name:'5G 스탠다드',monthlyPrice:69000,plangroup:'69',visible:true},
+  {name:'5G 프리미어 에센셜',monthlyPrice:85000,plangroup:'85',visible:true},
+  {name:'5G 프리미어 레귤러',monthlyPrice:95000,plangroup:'95',visible:true},
+  {name:'5G 프리미어 플러스',monthlyPrice:105000,plangroup:'105',visible:true},
+];
+
+async function autoInit(){
+  // _meta/initialized 플래그 확인 → 없으면 최초 초기화
+  const metaSnap = await db.ref('_meta/initialized').once('value');
+  if(metaSnap.exists()) return; // 이미 초기화됨
+
+  toast('최초 실행 — 기본 데이터를 자동 설정합니다...');
+  try{
+    for(const d of SEED_DEVICES) await db.ref('devices').push(d);
+    for(const p of SEED_PLANS) await db.ref('plans').push(p);
+    await db.ref('_meta/initialized').set( true);
+    toast('기본 데이터 설정 완료!');
+  }catch(e){ toast('초기화 실패: '+e.message,true); }
+}
+
+
+/* ══ 추가 혜택 관리 ══ */
+const BONUS_DEFAULT = {
+  '95': {
+    planGroupMatch: ['95'],
+    title: '플러스플랜 95 고객님을 위한 무료 혜택!',
+    items: [
+      {id:'watch', name:'갤럭시 워치', desc:'기기값 + 월 요금 무료', amount:11000, img:'watch.jpg'},
+      {id:'internet', name:'인터넷 500M', desc:'3년 약정 기준 / 월 요금 무료', amount:33000, img:'internet.jpg'},
+    ]
+  },
+  '115': {
+    planGroupMatch: ['115'],
+    title: '플러스플랜 115 고객님을 위한 무료 혜택!',
+    items: [
+      {id:'watch', name:'갤럭시 워치', desc:'기기값 + 월 요금 무료', amount:11000, img:'watch.jpg'},
+      {id:'tab', name:'갤럭시 탭', desc:'기기값 + 월 요금 무료', amount:22000, img:'tab.jpg'},
+      {id:'internet', name:'인터넷 500M', desc:'3년 약정 기준 / 월 요금 무료', amount:33000, img:'internet.jpg'},
+      {id:'ott', name:'OTT 혜택', desc:'원하는 스트리밍 1개 선택', amount:0, img:'ott.jpg'},
+    ]
+  }
+};
+
+let bonusAdminData = JSON.parse(JSON.stringify(BONUS_DEFAULT));
+
+async function loadBonusAdmin(){
+  try{
+    const s = await db.ref('bonusPlans').once('value');
+    if(s.exists()) bonusAdminData = s.val();
+  } catch(e){ console.warn('bonus load fail'); }
+}
+
+function renderBonusAdmin(){
+  const form = document.getElementById('bonusAdminForm');
+  if(!form) return;
+  let html = '';
+  Object.entries(bonusAdminData).forEach(([key, bd])=>{
+    html += `<div style="margin-bottom:32px;border:1.5px solid var(--g200);border-radius:12px;padding:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div style="font-size:15px;font-weight:800">요금제 그룹: ${key}</div>
+        <span style="font-size:12px;color:var(--g400)">적용 요금그룹: ${(bd.planGroupMatch||[]).join(', ')}</span>
+      </div>
+      <div class="fg" style="margin-bottom:16px">
+        <label class="flbl">섹션 제목</label>
+        <input type="text" class="fi" id="bt_${key}_title" value="${bd.title||''}" placeholder="고객님을 위한 무료 혜택!">
+      </div>
+      <div style="font-size:12px;font-weight:700;color:var(--g600);margin-bottom:10px">혜택 아이템</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        ${(bd.items||[]).map((item,i)=>`
+          <div style="display:grid;grid-template-columns:0.8fr 1fr 1fr 0.6fr;gap:8px;align-items:end;background:var(--g50);padding:12px;border-radius:8px">
+            <div class="fg" style="margin-bottom:0"><label class="flbl">항목명</label><input type="text" class="fi" style="height:36px" id="bi_${key}_${i}_name" value="${item.name}"></div>
+            <div class="fg" style="margin-bottom:0"><label class="flbl">설명</label><input type="text" class="fi" style="height:36px" id="bi_${key}_${i}_desc" value="${item.desc}"></div>
+            <div class="fg" style="margin-bottom:0"><label class="flbl">이미지 파일명</label><input type="text" class="fi" style="height:36px;font-family:monospace" id="bi_${key}_${i}_img" value="${item.img}" placeholder="watch.jpg"></div>
+            <div class="fg" style="margin-bottom:0"><label class="flbl">절감액(원)</label><input type="number" class="fi" style="height:36px" id="bi_${key}_${i}_amount" value="${item.amount}" placeholder="0=별도안내"></div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  });
+  form.innerHTML = html;
+}
+
+window.saveBonusAdmin = async function(){
+  const updated = JSON.parse(JSON.stringify(bonusAdminData));
+  Object.keys(updated).forEach(key=>{
+    const bd = updated[key];
+    bd.title = document.getElementById(`bt_${key}_title`)?.value || bd.title;
+    (bd.items||[]).forEach((item,i)=>{
+      item.name = document.getElementById(`bi_${key}_${i}_name`)?.value || item.name;
+      item.desc = document.getElementById(`bi_${key}_${i}_desc`)?.value || item.desc;
+      item.img = document.getElementById(`bi_${key}_${i}_img`)?.value || item.img;
+      item.amount = Number(document.getElementById(`bi_${key}_${i}_amount`)?.value)||0;
+    });
+  });
+  try{
+    await db.ref('bonusPlans').set(updated);
+    bonusAdminData = updated;
+    toast('추가 혜택 저장 완료 — 랜딩에 즉시 반영됩니다');
+  } catch(e){ toast('저장 실패: '+e.message, true); }
+};
+
+async function loadAll(){
+  await autoInit();
+  await loadBonusAdmin(); // 최초 1회만 실행
+  await Promise.all([loadDevices(),loadPlans(),loadPolicies(),loadTexts()]);
+}
+</script>
+</body>
+</html>
