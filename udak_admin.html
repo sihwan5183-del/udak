@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0050)file:///C:/Users/hhmj0/Downloads/udak_admin_2.html -->
+<!-- saved from url=(0050)file:///C:/Users/hhmj0/Downloads/udak_admin_4.html -->
 <html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -138,9 +138,7 @@ tr.drag-over{border-top:2px solid var(--or)}
 /* ── COLOR INPUT ── */
 .col-inp{width:36px;height:36px;padding:2px;border:1.5px solid var(--g200);border-radius:6px;cursor:pointer;flex-shrink:0}
 </style>
-<script src="./유닥 어드민_files/firebase-app-compat.js.다운로드"></script>
-<script src="./유닥 어드민_files/firebase-database-compat.js.다운로드"></script>
-</head>
+<script src="./유닥 어드민_files/app.js.다운로드"></script><script src="./유닥 어드민_files/database.js.다운로드"></script></head>
 <body>
 
 <!-- LOGIN -->
@@ -150,7 +148,7 @@ tr.drag-over{border-top:2px solid var(--or)}
     <div class="login-sub">Admin Panel</div>
     <input type="password" class="login-inp" id="pwInp" placeholder="비밀번호" onkeydown="if(event.key===&#39;Enter&#39;)doLogin()">
     <button class="login-btn" onclick="doLogin()">로그인</button>
-    <div class="login-err" id="loginErr"></div>
+    <div class="login-err" id="loginErr">Firebase 연결 실패: firebase is not defined</div>
   </div>
 </div>
 
@@ -391,15 +389,24 @@ const PW = 'udak2024';
 let db = null;
 let devData={}, planData={}, polData={};
 
-window.addEventListener('load', function(){
-  try {
-    const FB={ apiKey:"AIzaSyCajxdRBjIfZ4DusEqdkeb9b965FOEa-jc", authDomain:"udak-c6832.firebaseapp.com", databaseURL:"https://udak-c6832-default-rtdb.firebaseio.com", projectId:"udak-c6832", storageBucket:"udak-c6832.firebasestorage.app", messagingSenderId:"777003177725", appId:"1:777003177725:web:7e5c03c30baeda65835094" };
-    if (!firebase.apps.length) firebase.initializeApp(FB);
-    db = firebase.database();
+function loadScript(src){
+  return new Promise(function(res){
+    var s=document.createElement('script');
+    s.src=src; s.onload=res; s.onerror=res;
+    document.head.appendChild(s);
+  });
+}
+const FB={apiKey:"AIzaSyCajxdRBjIfZ4DusEqdkeb9b965FOEa-jc",authDomain:"udak-c6832.firebaseapp.com",databaseURL:"https://udak-c6832-default-rtdb.firebaseio.com",projectId:"udak-c6832",storageBucket:"udak-c6832.firebasestorage.app",messagingSenderId:"777003177725",appId:"1:777003177725:web:7e5c03c30baeda65835094"};
+window.addEventListener('load', async function(){
+  await loadScript('https://unpkg.com/firebase@9.23.0/compat/app.js');
+  await loadScript('https://unpkg.com/firebase@9.23.0/compat/database.js');
+  try{
+    if(!firebase.apps.length) firebase.initializeApp(FB);
+    db=firebase.database();
     console.log('Firebase 초기화 완료');
-  } catch(e) {
-    console.error('Firebase 초기화 실패:', e);
-    document.getElementById('loginErr').textContent = 'Firebase 연결 실패: ' + e.message;
+  } catch(e){
+    console.error('Firebase 초기화 실패:',e);
+    document.getElementById('loginErr').textContent='Firebase 연결 실패: '+e.message;
   }
 });
 
