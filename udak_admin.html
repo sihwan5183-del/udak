@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0050)file:///C:/Users/hhmj0/Downloads/udak_admin_5.html -->
+<!-- saved from url=(0050)file:///C:/Users/hhmj0/Downloads/udak_admin_7.html -->
 <html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -138,24 +138,22 @@ tr.drag-over{border-top:2px solid var(--or)}
 /* ── COLOR INPUT ── */
 .col-inp{width:36px;height:36px;padding:2px;border:1.5px solid var(--g200);border-radius:6px;cursor:pointer;flex-shrink:0}
 </style>
-<script src="./유닥 어드민_files/app.js.다운로드"></script>
-<script src="./유닥 어드민_files/database.js.다운로드"></script>
 </head>
 <body>
 
 <!-- LOGIN -->
-<div class="login-wrap" id="loginWrap">
+<div class="login-wrap" id="loginWrap" style="display: none;">
   <div class="login-box">
     <div class="login-logo">유닥</div>
     <div class="login-sub">Admin Panel</div>
     <input type="password" class="login-inp" id="pwInp" placeholder="비밀번호" onkeydown="if(event.key===&#39;Enter&#39;)doLogin()">
     <button class="login-btn" onclick="doLogin()">로그인</button>
-    <div class="login-err" id="loginErr">Firebase 연결 실패: firebase is not defined</div>
+    <div class="login-err" id="loginErr">비밀번호 오류</div>
   </div>
 </div>
 
 <!-- APP -->
-<div class="app" id="app">
+<div class="app on" id="app">
   <div class="hdr">
     <div class="hdr-logo">유닥 어드민</div>
     <div class="hdr-right">
@@ -164,8 +162,8 @@ tr.drag-over{border-top:2px solid var(--or)}
     </div>
   </div>
   <div class="tabs">
-    <div class="tab on" data-tab="device" onclick="switchTab(&#39;device&#39;)">📱 기기 관리</div>
-    <div class="tab" data-tab="plan" onclick="switchTab(&#39;plan&#39;)">💳 요금제 관리</div>
+    <div class="tab" data-tab="device" onclick="switchTab(&#39;device&#39;)">📱 기기 관리</div>
+    <div class="tab on" data-tab="plan" onclick="switchTab(&#39;plan&#39;)">💳 요금제 관리</div>
     <div class="tab" data-tab="policy" onclick="switchTab(&#39;policy&#39;)">📋 정책 관리</div>
     <div class="tab" data-tab="texts" onclick="switchTab(&#39;texts&#39;)">✏️ 텍스트 관리</div>
     <div class="tab" data-tab="bonus" onclick="switchTab(&#39;bonus&#39;)">🎁 추가 혜택 관리</div>
@@ -173,7 +171,7 @@ tr.drag-over{border-top:2px solid var(--or)}
   <div class="content">
 
     <!-- 기기 -->
-    <div class="panel on" id="panelDevice">
+    <div class="panel" id="panelDevice">
       <div class="panel-head">
         <div class="panel-title">기기 목록</div>
         <button class="btn-add" onclick="openDevModal()">+ 기기 추가</button>
@@ -191,13 +189,49 @@ tr.drag-over{border-top:2px solid var(--or)}
               <th style="text-align:right;color:var(--or)">기기 실부담</th>
             </tr>
           </thead>
-          <tbody id="devTbody"><tr class="empty-row"><td colspan="6">로딩 중...</td></tr></tbody>
+          <tbody id="devTbody"><tr draggable="true" data-key="-OvS_pXs01avlkupSZQj" data-type="dev">
+    <td><span class="drag-handle" title="드래그로 순서 변경">⠿</span></td>
+    <td><strong>갤럭시 S26</strong></td><td><span style="font-size:12px;color:var(--g600)">삼성</span></td>
+    <td style="font-size:12px;line-height:1.8"><span style="white-space:nowrap">256GB: 1,254,000원</span><br><span style="white-space:nowrap">512GB: 1,507,000원</span></td>
+    <td style="font-size:12px">4가지</td>
+    <td><span class="vis-badge vis-on">노출</span></td>
+    <td><div class="acts"><button class="btn-e" onclick="editDev(&#39;-OvS_pXs01avlkupSZQj&#39;)">수정</button><button class="btn-d" onclick="delDev(&#39;-OvS_pXs01avlkupSZQj&#39;)">삭제</button></div></td></tr><tr draggable="true" data-key="-OvS_p_m4tJL2DgbgPN8" data-type="dev">
+    <td><span class="drag-handle" title="드래그로 순서 변경">⠿</span></td>
+    <td><strong>갤럭시 S26+</strong></td><td><span style="font-size:12px;color:var(--g600)">삼성</span></td>
+    <td style="font-size:12px;line-height:1.8"><span style="white-space:nowrap">256GB: 1,452,000원</span><br><span style="white-space:nowrap">512GB: 1,705,000원</span></td>
+    <td style="font-size:12px">4가지</td>
+    <td><span class="vis-badge vis-on">노출</span></td>
+    <td><div class="acts"><button class="btn-e" onclick="editDev(&#39;-OvS_p_m4tJL2DgbgPN8&#39;)">수정</button><button class="btn-d" onclick="delDev(&#39;-OvS_p_m4tJL2DgbgPN8&#39;)">삭제</button></div></td></tr><tr draggable="true" data-key="-OvS_pccBEmg-_HbH-xl" data-type="dev">
+    <td><span class="drag-handle" title="드래그로 순서 변경">⠿</span></td>
+    <td><strong>갤럭시 S26 울트라</strong></td><td><span style="font-size:12px;color:var(--g600)">삼성</span></td>
+    <td style="font-size:12px;line-height:1.8"><span style="white-space:nowrap">256GB: 1,797,000원</span><br><span style="white-space:nowrap">512GB: 2,050,400원</span><br><span style="white-space:nowrap">1TB: 2,545,400원</span></td>
+    <td style="font-size:12px">4가지</td>
+    <td><span class="vis-badge vis-on">노출</span></td>
+    <td><div class="acts"><button class="btn-e" onclick="editDev(&#39;-OvS_pccBEmg-_HbH-xl&#39;)">수정</button><button class="btn-d" onclick="delDev(&#39;-OvS_pccBEmg-_HbH-xl&#39;)">삭제</button></div></td></tr><tr draggable="true" data-key="-OvS_pfTBKiqole5xQU5" data-type="dev">
+    <td><span class="drag-handle" title="드래그로 순서 변경">⠿</span></td>
+    <td><strong>아이폰 17</strong></td><td><span style="font-size:12px;color:var(--g600)">애플</span></td>
+    <td style="font-size:12px;line-height:1.8"><span style="white-space:nowrap">256GB: 1,287,000원</span><br><span style="white-space:nowrap">512GB: 1,584,000원</span></td>
+    <td style="font-size:12px">5가지</td>
+    <td><span class="vis-badge vis-on">노출</span></td>
+    <td><div class="acts"><button class="btn-e" onclick="editDev(&#39;-OvS_pfTBKiqole5xQU5&#39;)">수정</button><button class="btn-d" onclick="delDev(&#39;-OvS_pfTBKiqole5xQU5&#39;)">삭제</button></div></td></tr><tr draggable="true" data-key="-OvS_piLueYlEPuFug8o" data-type="dev">
+    <td><span class="drag-handle" title="드래그로 순서 변경">⠿</span></td>
+    <td><strong>아이폰 17 Pro</strong></td><td><span style="font-size:12px;color:var(--g600)">애플</span></td>
+    <td style="font-size:12px;line-height:1.8"><span style="white-space:nowrap">256GB: 1,782,000원</span><br><span style="white-space:nowrap">512GB: 2,090,000원</span></td>
+    <td style="font-size:12px">3가지</td>
+    <td><span class="vis-badge vis-on">노출</span></td>
+    <td><div class="acts"><button class="btn-e" onclick="editDev(&#39;-OvS_piLueYlEPuFug8o&#39;)">수정</button><button class="btn-d" onclick="delDev(&#39;-OvS_piLueYlEPuFug8o&#39;)">삭제</button></div></td></tr><tr draggable="true" data-key="-OvS_plJ3JKlYklPmqmk" data-type="dev">
+    <td><span class="drag-handle" title="드래그로 순서 변경">⠿</span></td>
+    <td><strong>아이폰 17 Pro Max</strong></td><td><span style="font-size:12px;color:var(--g600)">애플</span></td>
+    <td style="font-size:12px;line-height:1.8"><span style="white-space:nowrap">256GB: 1,980,000원</span><br><span style="white-space:nowrap">512GB: 2,288,000원</span><br><span style="white-space:nowrap">1TB: 2,585,000원</span></td>
+    <td style="font-size:12px">3가지</td>
+    <td><span class="vis-badge vis-on">노출</span></td>
+    <td><div class="acts"><button class="btn-e" onclick="editDev(&#39;-OvS_plJ3JKlYklPmqmk&#39;)">수정</button><button class="btn-d" onclick="delDev(&#39;-OvS_plJ3JKlYklPmqmk&#39;)">삭제</button></div></td></tr></tbody>
         </table>
       </div>
     </div>
 
     <!-- 요금제 -->
-    <div class="panel" id="panelPlan">
+    <div class="panel on" id="panelPlan">
       <div class="panel-head">
         <div class="panel-title">요금제 목록</div>
         <button class="btn-add" onclick="openPlanModal()">+ 요금제 추가</button>
@@ -205,7 +239,37 @@ tr.drag-over{border-top:2px solid var(--or)}
       <div class="tbl-wrap">
         <table>
           <thead><tr><th style="width:32px"></th><th>요금제명</th><th>월정액</th><th>요금 그룹</th><th>노출</th><th>관리</th></tr></thead>
-          <tbody id="planTbody"><tr class="empty-row"><td colspan="5">로딩 중...</td></tr></tbody>
+          <tbody id="planTbody"><tr draggable="true" data-key="-OvSjNz2NSlk38PDw6RP" data-type="plan" class="">
+    <td><span class="drag-handle" title="드래그로 순서 변경">⠿</span></td>
+    <td><strong>데이터플랜 31GB</strong></td><td>61,000원</td>
+    <td><span style="background:var(--g100);padding:2px 8px;border-radius:4px;font-size:12px">61</span></td>
+    <td><span class="vis-badge vis-on">노출</span></td>
+    <td><div class="acts"><button class="btn-e" onclick="editPlan(&#39;-OvSjNz2NSlk38PDw6RP&#39;)">수정</button><button class="btn-d" onclick="delPlan(&#39;-OvSjNz2NSlk38PDw6RP&#39;)">삭제</button></div></td></tr><tr draggable="true" data-key="-OvS_pzcCGdmVvWiNCwg" data-type="plan" class="">
+    <td><span class="drag-handle" title="드래그로 순서 변경">⠿</span></td>
+    <td><strong>데이터플랜MAX</strong></td><td>85,000원</td>
+    <td><span style="background:var(--g100);padding:2px 8px;border-radius:4px;font-size:12px">85</span></td>
+    <td><span class="vis-badge vis-on">노출</span></td>
+    <td><div class="acts"><button class="btn-e" onclick="editPlan(&#39;-OvS_pzcCGdmVvWiNCwg&#39;)">수정</button><button class="btn-d" onclick="delPlan(&#39;-OvS_pzcCGdmVvWiNCwg&#39;)">삭제</button></div></td></tr><tr draggable="true" data-key="-OvS_poAp86b2vGoQMm5" data-type="plan" class="">
+    <td><span class="drag-handle" title="드래그로 순서 변경">⠿</span></td>
+    <td><strong>플러스플랜 95</strong></td><td>95,000원</td>
+    <td><span style="background:var(--g100);padding:2px 8px;border-radius:4px;font-size:12px">95</span></td>
+    <td><span class="vis-badge vis-on">노출</span></td>
+    <td><div class="acts"><button class="btn-e" onclick="editPlan(&#39;-OvS_poAp86b2vGoQMm5&#39;)">수정</button><button class="btn-d" onclick="delPlan(&#39;-OvS_poAp86b2vGoQMm5&#39;)">삭제</button></div></td></tr><tr draggable="true" data-key="-OvS_pr1LsEM5QnxV41l" data-type="plan" class="">
+    <td><span class="drag-handle" title="드래그로 순서 변경">⠿</span></td>
+    <td><strong>플러스플랜105</strong></td><td>105,000원</td>
+    <td><span style="background:var(--g100);padding:2px 8px;border-radius:4px;font-size:12px">105</span></td>
+    <td><span class="vis-badge vis-off">숨김</span></td>
+    <td><div class="acts"><button class="btn-e" onclick="editPlan(&#39;-OvS_pr1LsEM5QnxV41l&#39;)">수정</button><button class="btn-d" onclick="delPlan(&#39;-OvS_pr1LsEM5QnxV41l&#39;)">삭제</button></div></td></tr><tr draggable="true" data-key="-OvS_ptu7KT8kM4o-jOh" data-type="plan" class="">
+    <td><span class="drag-handle" title="드래그로 순서 변경">⠿</span></td>
+    <td><strong>플러스플랜115</strong></td><td>115,000원</td>
+    <td><span style="background:var(--g100);padding:2px 8px;border-radius:4px;font-size:12px">115</span></td>
+    <td><span class="vis-badge vis-on">노출</span></td>
+    <td><div class="acts"><button class="btn-e" onclick="editPlan(&#39;-OvS_ptu7KT8kM4o-jOh&#39;)">수정</button><button class="btn-d" onclick="delPlan(&#39;-OvS_ptu7KT8kM4o-jOh&#39;)">삭제</button></div></td></tr><tr draggable="true" data-key="-OvS_pwlL0sfILveD0oJ" data-type="plan" class="">
+    <td><span class="drag-handle" title="드래그로 순서 변경">⠿</span></td>
+    <td><strong>플러스플랜130</strong></td><td>130,000원</td>
+    <td><span style="background:var(--g100);padding:2px 8px;border-radius:4px;font-size:12px">130</span></td>
+    <td><span class="vis-badge vis-off">숨김</span></td>
+    <td><div class="acts"><button class="btn-e" onclick="editPlan(&#39;-OvS_pwlL0sfILveD0oJ&#39;)">수정</button><button class="btn-d" onclick="delPlan(&#39;-OvS_pwlL0sfILveD0oJ&#39;)">삭제</button></div></td></tr></tbody>
         </table>
       </div>
     </div>
@@ -219,7 +283,39 @@ tr.drag-over{border-top:2px solid var(--or)}
       <div class="tbl-wrap">
         <table>
           <thead><tr><th>통신사</th><th>요금그룹</th><th>기기 수</th><th>공시지원금(기본)</th><th>유닥 혜택(기본)</th><th>노출</th><th>관리</th></tr></thead>
-          <tbody id="polTbody"><tr class="empty-row"><td colspan="7">로딩 중...</td></tr></tbody>
+          <tbody id="polTbody"><tr>
+      <td><strong>61군 MNP</strong><br><span style="font-size:11px;color:var(--g400)">SKT·KT·알뜰폰 · 번호이동</span></td>
+      <td style="font-size:12px">데이터플랜 31GB</td>
+      <td style="font-size:12px">3/6개 기기</td>
+      <td style="font-weight:700;color:var(--or)">0원</td>
+      <td style="font-weight:700;color:var(--or)">230,000원</td>
+      <td><span class="vis-badge vis-on">활성</span></td>
+      <td><div class="acts"><button class="btn-e" onclick="editPol(&#39;-OvTWvQ4j-OoSPnapXrs&#39;)">수정</button><button class="btn-d" onclick="delPol(&#39;-OvTWvQ4j-OoSPnapXrs&#39;)">삭제</button></div></td>
+    </tr><tr>
+      <td><strong>61군 기변</strong><br><span style="font-size:11px;color:var(--g400)">LG U+ · 기기변경</span></td>
+      <td style="font-size:12px">데이터플랜 31GB</td>
+      <td style="font-size:12px">3/6개 기기</td>
+      <td style="font-weight:700;color:var(--or)">0원</td>
+      <td style="font-weight:700;color:var(--or)">290,000원</td>
+      <td><span class="vis-badge vis-on">활성</span></td>
+      <td><div class="acts"><button class="btn-e" onclick="editPol(&#39;-OvTXANZuPOgJtoa9mXp&#39;)">수정</button><button class="btn-d" onclick="delPol(&#39;-OvTXANZuPOgJtoa9mXp&#39;)">삭제</button></div></td>
+    </tr><tr>
+      <td><strong>85군 MNP</strong><br><span style="font-size:11px;color:var(--g400)">SKT·KT·알뜰폰 · 번호이동</span></td>
+      <td style="font-size:12px">데이터플랜MAX</td>
+      <td style="font-size:12px">3/6개 기기</td>
+      <td style="font-weight:700;color:var(--or)">0원</td>
+      <td style="font-weight:700;color:var(--or)">580,000원</td>
+      <td><span class="vis-badge vis-on">활성</span></td>
+      <td><div class="acts"><button class="btn-e" onclick="editPol(&#39;-OvTXPFwwq38S3uHxKfJ&#39;)">수정</button><button class="btn-d" onclick="delPol(&#39;-OvTXPFwwq38S3uHxKfJ&#39;)">삭제</button></div></td>
+    </tr><tr>
+      <td><strong>95군 기변</strong><br><span style="font-size:11px;color:var(--g400)">LG U+ · 기기변경</span></td>
+      <td style="font-size:12px">플러스플랜 95</td>
+      <td style="font-size:12px">3/6개 기기</td>
+      <td style="font-weight:700;color:var(--or)">0원</td>
+      <td style="font-weight:700;color:var(--or)">390,000원</td>
+      <td><span class="vis-badge vis-on">활성</span></td>
+      <td><div class="acts"><button class="btn-e" onclick="editPol(&#39;-OvTeW7dqnTO9aKJIuzM&#39;)">수정</button><button class="btn-d" onclick="delPol(&#39;-OvTeW7dqnTO9aKJIuzM&#39;)">삭제</button></div></td>
+    </tr></tbody>
         </table>
       </div>
     </div>
@@ -233,9 +329,50 @@ tr.drag-over{border-top:2px solid var(--or)}
       </div>
       <div class="tbl-wrap" style="padding:24px">
         <p style="font-size:12px;color:var(--g400);margin-bottom:20px">※ 저장 즉시 랜딩페이지에 반영됩니다. 카카오 채널 URL도 여기서 설정하세요.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" id="textsForm">
-          <!-- JS로 렌더링 -->
-        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" id="textsForm"><div class="fg" style="">
+      <label class="flbl">섹션 제목 (조건 선택)</label>
+      <input type="text" class="fi" id="txt_sectionTitle" value="내 조건 먼저 확인해보세요" placeholder="내 조건 먼저 확인해보세요">
+    </div><div class="fg" style="">
+      <label class="flbl">스텝1 레이블 - 기기</label>
+      <input type="text" class="fi" id="txt_stepDeviceLbl" value="원하는 제품" placeholder="원하는 제품">
+    </div><div class="fg" style="">
+      <label class="flbl">스텝2 레이블 - 통신사</label>
+      <input type="text" class="fi" id="txt_stepCarrierLbl" value="현재 사용 통신사" placeholder="현재 사용 통신사">
+    </div><div class="fg" style="">
+      <label class="flbl">스텝3 레이블 - 용량/색상</label>
+      <input type="text" class="fi" id="txt_stepStorageLbl" value="용량 / 색상" placeholder="용량 / 색상">
+    </div><div class="fg" style="">
+      <label class="flbl">스텝4 레이블 - 요금제</label>
+      <input type="text" class="fi" id="txt_stepPlanLbl" value="요금제" placeholder="요금제">
+    </div><div class="fg" style="">
+      <label class="flbl">할인방식 버튼 - 공시</label>
+      <input type="text" class="fi" id="txt_discPub" value="공시지원금" placeholder="공시지원금">
+    </div><div class="fg" style="">
+      <label class="flbl">할인방식 버튼 - 요금할인</label>
+      <input type="text" class="fi" id="txt_discSel" value="요금 할인형" placeholder="요금 할인형">
+    </div><div class="fg" style="">
+      <label class="flbl">혜택 카드 제목</label>
+      <input type="text" class="fi" id="txt_benefitTitle" value="유닥 예상 혜택 요약" placeholder="유닥 예상 혜택 요약">
+    </div><div class="fg" style="">
+        <label class="flbl">혜택 카드 주의문구</label>
+        <textarea id="txt_benefitNote" rows="3" style="width:100%;padding:10px 12px;border:1.5px solid var(--g200);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;outline:none;transition:border-color .15s" onfocus="this.style.borderColor=&#39;var(--or)&#39;" onblur="this.style.borderColor=&#39;var(--g200)&#39;">※ 위 금액은 선택하신 조건 기준 예상 금액입니다.
+정확한 혜택은 상담을 통해 안내드립니다.</textarea>
+      </div><div class="fg" style="">
+      <label class="flbl">상담 신청폼 제목</label>
+      <input type="text" class="fi" id="txt_formTitle" value="상담 신청하기" placeholder="상담 신청하기">
+    </div><div class="fg" style="">
+      <label class="flbl">카카오 버튼 텍스트</label>
+      <input type="text" class="fi" id="txt_ctaKakao" value="카카오톡 상담하기" placeholder="카카오톡 상담하기">
+    </div><div class="fg" style="">
+      <label class="flbl">전화 버튼 텍스트</label>
+      <input type="text" class="fi" id="txt_ctaPhone" value="전화 상담 신청하기" placeholder="전화 상담 신청하기">
+    </div><div class="fg" style="">
+      <label class="flbl">개인정보 안내문</label>
+      <input type="text" class="fi" id="txt_privacyNote" value="🔒 입력하신 정보는 상담 목적으로만 사용되며, 안전하게 보호됩니다." placeholder="🔒 입력하신 정보는 상담 목적으로만 사용되며, 안전하게 보호됩니다.">
+    </div><div class="fg" style="grid-column:1/-1">
+      <label class="flbl">카카오 채널 URL</label>
+      <input type="text" class="fi" id="txt_kakaoUrl" value="#kakao-channel" placeholder="#kakao-channel">
+    </div></div>
       </div>
     </div>
 
@@ -295,7 +432,7 @@ tr.drag-over{border-top:2px solid var(--or)}
       <button class="modal-x" onclick="closeModal(&#39;planModal&#39;)">✕</button>
     </div>
     <div class="modal-bd">
-      <input type="hidden" id="pId">
+      <input type="hidden" id="pId" value="">
       <div class="fg"><label class="flbl">요금제명 <em>*</em></label><input type="text" class="fi" id="pName" placeholder="5G 프리미어 에센셜"></div>
       <div class="form-row">
         <div class="fg"><label class="flbl">월정액 (원) <em>*</em></label><input type="number" class="fi" id="pPrice" placeholder="85000" oninput="document.getElementById(&#39;pGrp&#39;).value=this.value?Math.floor(Number(this.value)/1000):&#39;&#39;"></div>
@@ -337,7 +474,7 @@ tr.drag-over{border-top:2px solid var(--or)}
       <!-- 요금제 그룹 -->
       <div class="fg" style="max-width:280px">
         <label class="flbl">요금제 그룹 <em>*</em></label>
-        <select class="fsl" id="polPlangrp"><option value="">선택해주세요</option></select>
+        <select class="fsl" id="polPlangrp"><option value="">선택해주세요</option><option value="61">데이터플랜 31GB (61,000원)</option><option value="85">데이터플랜MAX (85,000원)</option><option value="95">플러스플랜 95 (95,000원)</option><option value="115">플러스플랜115 (115,000원)</option></select>
       </div>
 
       <!-- 일괄 입력 -->
@@ -388,32 +525,41 @@ tr.drag-over{border-top:2px solid var(--or)}
 
 <script>
 const PW = 'udak2024';
-let db = null;
 let devData={}, planData={}, polData={};
 
-function loadScript(src){
-  return new Promise(function(res){
-    var s=document.createElement('script');
-    s.src=src; s.onload=res; s.onerror=res;
-    document.head.appendChild(s);
-  });
-}
-const FB={apiKey:"AIzaSyCajxdRBjIfZ4DusEqdkeb9b965FOEa-jc",authDomain:"udak-c6832.firebaseapp.com",databaseURL:"https://udak-c6832-default-rtdb.firebaseio.com",projectId:"udak-c6832",storageBucket:"udak-c6832.firebasestorage.app",messagingSenderId:"777003177725",appId:"1:777003177725:web:7e5c03c30baeda65835094"};
-window.addEventListener('load', async function(){
-  try{
-    if(typeof firebase==='undefined') throw new Error('firebase is not defined');
-    if(!firebase.apps.length) firebase.initializeApp(FB);
-    db=firebase.database();
-    console.log('Firebase 초기화 완료');
-  } catch(e){
-    console.error('Firebase 초기화 실패:',e);
-    document.getElementById('loginErr').textContent='Firebase 연결 실패: '+e.message;
+// Firebase REST API - CDN 불필요
+const DB_URL='https://udak-c6832-default-rtdb.firebaseio.com';
+const db={
+  ref:function(path){
+    const url=DB_URL+'/'+path+'.json';
+    return{
+      once:function(){
+        return fetch(url).then(function(r){return r.json();}).then(function(data){
+          return{exists:function(){return data!==null&&data!==undefined;},val:function(){return data;}};
+        });
+      },
+      set:function(val){
+        return fetch(url,{method:'PUT',body:JSON.stringify(val),headers:{'Content-Type':'application/json'}}).then(function(r){return r.json();});
+      },
+      update:function(val){
+        return fetch(url,{method:'PATCH',body:JSON.stringify(val),headers:{'Content-Type':'application/json'}}).then(function(r){return r.json();});
+      },
+      remove:function(){
+        return fetch(url,{method:'DELETE'}).then(function(r){return r.json();});
+      },
+      push:function(val){
+        return fetch(url,{method:'POST',body:JSON.stringify(val),headers:{'Content-Type':'application/json'}}).then(function(r){return r.json();});
+      }
+    };
   }
+};
+
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('loginErr').textContent='';
 });
 
 /* ── LOGIN ── */
 window.doLogin=function(){
-  if(!db){ document.getElementById('loginErr').textContent='Firebase 연결 중... 잠시 후 다시 시도해주세요'; return; }
   if(document.getElementById('pwInp').value===PW){
     document.getElementById('loginWrap').style.display='none';
     document.getElementById('app').classList.add('on');
