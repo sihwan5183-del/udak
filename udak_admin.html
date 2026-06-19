@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0050)file:///C:/Users/hhmj0/Downloads/udak_admin_4.html -->
+<!-- saved from url=(0050)file:///C:/Users/hhmj0/Downloads/udak_admin_5.html -->
 <html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -138,7 +138,9 @@ tr.drag-over{border-top:2px solid var(--or)}
 /* ── COLOR INPUT ── */
 .col-inp{width:36px;height:36px;padding:2px;border:1.5px solid var(--g200);border-radius:6px;cursor:pointer;flex-shrink:0}
 </style>
-<script src="./유닥 어드민_files/app.js.다운로드"></script><script src="./유닥 어드민_files/database.js.다운로드"></script></head>
+<script src="./유닥 어드민_files/app.js.다운로드"></script>
+<script src="./유닥 어드민_files/database.js.다운로드"></script>
+</head>
 <body>
 
 <!-- LOGIN -->
@@ -398,9 +400,8 @@ function loadScript(src){
 }
 const FB={apiKey:"AIzaSyCajxdRBjIfZ4DusEqdkeb9b965FOEa-jc",authDomain:"udak-c6832.firebaseapp.com",databaseURL:"https://udak-c6832-default-rtdb.firebaseio.com",projectId:"udak-c6832",storageBucket:"udak-c6832.firebasestorage.app",messagingSenderId:"777003177725",appId:"1:777003177725:web:7e5c03c30baeda65835094"};
 window.addEventListener('load', async function(){
-  await loadScript('https://unpkg.com/firebase@9.23.0/compat/app.js');
-  await loadScript('https://unpkg.com/firebase@9.23.0/compat/database.js');
   try{
+    if(typeof firebase==='undefined') throw new Error('firebase is not defined');
     if(!firebase.apps.length) firebase.initializeApp(FB);
     db=firebase.database();
     console.log('Firebase 초기화 완료');
