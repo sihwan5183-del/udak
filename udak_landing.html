@@ -10,28 +10,88 @@
 body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#111;-webkit-tap-highlight-color:transparent}
 :root{--or:#F97316;--orl:#FFF7ED;--ord:#EA6B10;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g300:#D1D5DB;--g400:#9CA3AF;--g600:#6B7280;--g800:#1F2937;--r:12px;--rs:8px}
 
-/* ── 모바일 순차 이동 헬퍼 ── */
-var _floatingTimer=null;
-function _scrollToBonusSummary(){
-  // 요약 totalBox가 보이면 그쪽으로, 없으면 bonus-right 전체로
-  const totalBox=document.getElementById('bonusTotalBox');
-  const bonusRight=document.querySelector('.bonus-right');
-  const target=(totalBox&&totalBox.style.display!=='none')?totalBox:bonusRight;
-  if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
-  showFloatingCta();
-}
-function showFloatingCta(){
+/* ── 모바일 추가혜택 요약 Bottom Sheet ── */
+function openSummarySheet(key){
   if(window.innerWidth>=768) return;
-  const el=document.getElementById('floatingCta');
-  if(!el) return;
-  el.style.display='block';
-  clearTimeout(_floatingTimer);
-  _floatingTimer=setTimeout(()=>{el.style.display='none';},8000);
+  const bd=bonusData[key];
+  if(!bd) return;
+
+  // 선택된 아이템 수집
+  const selected=(bd.items||[]).filter(i=>{
+    if(i.ottOptions) return i.ottOptions.some(o=>selectedBonuses.has(o.id));
+    return selectedBonuses.has(i.id);
+  });
+  if(!selected.length) return;
+
+  let totalAmt=0;
+  const rows=selected.map(i=>{
+    let name=i.name, amt=i.amount, imgSrc=i.img||'';
+    if(i.ottOptions){
+      const selOtt=i.ottOptions.find(o=>selectedBonuses.has(o.id));
+      name='OTT — '+(selOtt?selOtt.name:'선택됨');
+      imgSrc=selOtt?.img||'';
+    }
+    if(amt>0) totalAmt+=amt;
+    const imgHtml=imgSrc
+      ?`<img src="${imgSrc}" style="width:32px;height:32px;object-fit:contain;border-radius:6px;border:1px solid #E5E7EB;flex-shrink:0;background:#fff">`
+      :`<div style="width:32px;height:32px;border-radius:6px;background:#FFF7ED;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🎁</div>`;
+    return`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F3F4F6">
+      ${imgHtml}
+      <span style="flex:1;font-size:14px;font-weight:600;color:#1F2937">${name}</span>
+      <span style="font-size:13px;font-weight:800;color:#F97316">${amt>0?'-'+amt.toLocaleString()+'원':'별도'}</span>
+    </div>`;
+  }).join('');
+
+  const planFee=sel.plan?.monthlyPrice||0;
+  const hasExtra=selected.some(i=>i.amount===0);
+  const feel=planFee-totalAmt;
+  const noteHtml=window._installmentNoteOff?''
+    :`<div style="font-size:11px;color:#9CA3AF;margin-top:6px">${window._installmentNote||'*기기 할부금 별도'}</div>`;
+
+  document.getElementById('summarySheetBody').innerHTML=`
+    ${rows}
+    <div style="margin-top:14px;background:#FFF7ED;border-radius:12px;padding:14px;border:1.5px solid #FED7AA">
+      <div style="font-size:11px;color:#EA6B10;font-weight:700;margin-bottom:8px;letter-spacing:.3px">✨ 무료 혜택 절약액</div>
+      <div style="font-size:28px;font-weight:900;color:#F97316;line-height:1">
+        <span style="font-size:16px">-</span>${totalAmt.toLocaleString()}<span style="font-size:16px">원${hasExtra?' + α':''}</span>
+      </div>
+      ${planFee&&totalAmt?`
+      <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid #FED7AA">
+          <span style="color:#6B7280">요금제</span><span style="font-weight:700">${planFee.toLocaleString()}원</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid #FED7AA">
+          <span style="color:#6B7280">혜택 할인</span><span style="font-weight:700;color:#F97316">-${totalAmt.toLocaleString()}원${hasExtra?' + α':''}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;padding:5px 0">
+          <span style="font-weight:800;color:#1F2937">체감 요금</span>
+          <span style="font-weight:900;color:#F97316">${feel.toLocaleString()}원/월</span>
+        </div>
+      </div>`:''}
+      ${hasExtra?'<div style="font-size:10px;color:#9CA3AF;margin-top:4px">*OTT 혜택 별도 안내</div>':''}
+      ${noteHtml}
+    </div>
+    <div style="height:4px"></div>
+  `;
+
+  // 오버레이 + 시트 표시
+  const ov=document.getElementById('summarySheetOv');
+  const sh=document.getElementById('summarySheet');
+  ov.style.display='block'; sh.style.display='block';
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      ov.style.opacity='1';
+      sh.style.transform='translateY(0)';
+    });
+  });
+  document.body.style.overflow='hidden';
 }
-function hideFloatingCta(){
-  const el=document.getElementById('floatingCta');
-  if(el) el.style.display='none';
-  clearTimeout(_floatingTimer);
+function closeSummarySheet(){
+  const ov=document.getElementById('summarySheetOv');
+  const sh=document.getElementById('summarySheet');
+  ov.style.opacity='0';
+  sh.style.transform='translateY(100%)';
+  setTimeout(()=>{ ov.style.display='none'; sh.style.display='none'; document.body.style.overflow=''; },350);
 }
 
 /* BANNER */
@@ -511,11 +571,17 @@ function hideFloatingCta(){
   <div class="sh-body" id="shBody"></div>
 </div>
 
-<!-- 모바일 플로팅 상담 CTA -->
-<div id="floatingCta" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:150;padding:12px 16px 20px;background:linear-gradient(to top,rgba(255,255,255,1) 70%,rgba(255,255,255,0));pointer-events:none">
-  <div style="pointer-events:auto;display:flex;gap:8px">
-    <button onclick="document.getElementById('formWrap').scrollIntoView({behavior:'smooth',block:'start'});hideFloatingCta()" style="flex:1;height:50px;background:var(--or);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(249,115,22,.35)">📞 상담 신청하기</button>
-    <button onclick="hideFloatingCta()" style="width:50px;height:50px;background:var(--g100);color:var(--g600);border:none;border-radius:12px;font-size:18px;cursor:pointer;flex-shrink:0">✕</button>
+<!-- 모바일 추가혜택 요약 Bottom Sheet -->
+<div id="summarySheetOv" onclick="closeSummarySheet()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;opacity:0;transition:opacity .3s"></div>
+<div id="summarySheet" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:301;background:#fff;border-radius:20px 20px 0 0;max-height:80vh;overflow-y:auto;transform:translateY(100%);transition:transform .35s cubic-bezier(.32,.72,0,1)">
+  <div style="width:40px;height:4px;background:#E5E7EB;border-radius:2px;margin:12px auto 0"></div>
+  <div style="padding:16px 20px 0;display:flex;justify-content:space-between;align-items:center">
+    <div style="font-size:16px;font-weight:800;color:#1F2937">🎁 추가 혜택 요약</div>
+    <button onclick="closeSummarySheet()" style="width:28px;height:28px;border:none;background:#F3F4F6;border-radius:50%;cursor:pointer;font-size:14px;color:#6B7280">✕</button>
+  </div>
+  <div id="summarySheetBody" style="padding:14px 20px 0"></div>
+  <div style="padding:14px 20px 20px">
+    <button onclick="document.getElementById('formWrap').scrollIntoView({behavior:'smooth',block:'start'});closeSummarySheet()" style="width:100%;height:52px;background:#F97316;color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(249,115,22,.3)">📞 상담 신청하기</button>
   </div>
 </div>
 
@@ -583,12 +649,8 @@ const DTXT={
 };
 function applyTexts(t){
   const tx={...DTXT,...t};
-  // 기기 할부금 문구 전역 저장 (false=숨김, string=표시)
-  if(tx.installmentNoteOff===true||tx.installmentNoteOff==='true'){
-    window._installmentNote=false;
-  } else {
-    window._installmentNote=tx.installmentNote||'*기기 할부금 별도';
-  }
+  window._installmentNote = tx.installmentNote||'*기기 할부금 별도';
+  window._installmentNoteOff = tx.installmentNoteOff===true||tx.installmentNoteOff==='true';
   document.getElementById('txtSectionTitle').textContent=tx.sectionTitle;
   document.getElementById('txtStepDeviceLbl').textContent=tx.stepDeviceLbl;
   document.getElementById('txtStepCarrierLbl').textContent=tx.stepCarrierLbl;
@@ -910,15 +972,12 @@ window.selPlan=function(id){
   closeSheet();calc();renderBonusSection();
   updateStepLocks();
   // 요금제 선택 후 스크롤
-  // 모바일: 혜택카드 상단 (하단에 무료혜택 섹션 살짝 노출 → 다음 행동 유도)
-  // PC: 기존 동작 유지
+  // 모바일: benefit-card 상단 (하단에 무료혜택 섹션 살짝 노출)
+  // PC: 기존 동작
   setTimeout(()=>{
     if(window.innerWidth<768){
       const card=document.querySelector('.benefit-card');
-      if(card){
-        const top=card.getBoundingClientRect().top+window.scrollY-12;
-        window.scrollTo({top,behavior:'smooth'});
-      }
+      if(card){ const top=card.getBoundingClientRect().top+window.scrollY-12; window.scrollTo({top,behavior:'smooth'}); }
     } else {
       const target=document.getElementById('bonusSection').classList.contains('on')
         ? document.getElementById('bonusSection')
@@ -1148,9 +1207,9 @@ window.selectOtt=function(e,ottId,key){
   selectedBonuses.add(ottId);
   renderBonusSectionWithKey(key);
   updateBenefitPreview();
-  // OTT 선택 완료 → 요약 영역으로 이동 (모바일)
+  // OTT 선택 완료 → 요약 시트 오픈 (모바일)
   if(window.innerWidth<768){
-    setTimeout(()=>{ _scrollToBonusSummary(); },200);
+    setTimeout(()=>openSummarySheet(key),200);
   }
 };
 window.toggleItem=function(e,itemId,key){
@@ -1161,27 +1220,26 @@ window.toggleItem=function(e,itemId,key){
   else { selectedBonuses.add(itemId); }
   renderBonusSectionWithKey(key);
   updateBenefitPreview();
-  // 모바일: 아이템 선택(on) 시 → 다음 항목 또는 요약으로 순차 이동
+  // 모바일: 선택(on) 시 순차 이동
   if(!wasSelected && window.innerWidth<768){
-    const bd=bonusData[key];
-    const items=bd.items||[];
+    const items=bonusData[key].items||[];
     const curIdx=items.findIndex(i=>i.id===itemId);
     const nextItem=items[curIdx+1];
     setTimeout(()=>{
       if(nextItem){
-        // 다음 항목이 OTT면 OTT 패널 펼치고 ottSubInner로 스크롤
         if(nextItem.ottOptions){
-          const ottBox=document.getElementById('ottSubInner');
-          if(ottBox){ottBox.classList.add('show'); ottBox.scrollIntoView({behavior:'smooth',block:'start'});}
+          // 다음이 OTT → OTT 패널 펼치고 스크롤
+          const sub=document.getElementById('ottSubInner');
+          if(sub){ sub.classList.add('show'); sub.scrollIntoView({behavior:'smooth',block:'start'}); }
         } else {
-          // 일반 다음 항목: bonusItems 내 해당 인덱스 요소로 스크롤
-          const bonusItems=document.getElementById('bonusItems');
-          const itemEls=bonusItems?.querySelectorAll('[onclick]');
-          if(itemEls&&itemEls[curIdx+1]) itemEls[curIdx+1].scrollIntoView({behavior:'smooth',block:'center'});
+          // 일반 다음 항목으로 스크롤
+          const bonusItemEls=document.getElementById('bonusItems')?.querySelectorAll('[onclick]');
+          if(bonusItemEls&&bonusItemEls[curIdx+1])
+            bonusItemEls[curIdx+1].scrollIntoView({behavior:'smooth',block:'center'});
         }
       } else {
-        // 마지막 항목 → 요약 영역으로 이동 + 플로팅 CTA
-        _scrollToBonusSummary();
+        // 마지막 항목 선택 → 요약 시트 (OTT 없는 플랜: 95 등)
+        openSummarySheet(key);
       }
     },200);
   }
@@ -1263,7 +1321,7 @@ function updateBonusSummary(key){
         <span style="font-weight:900;color:var(--or);font-size:14px">${feel.toLocaleString()}원/월</span>
       </div>
       ${hasExtra?'<div style="font-size:10px;color:var(--g400);margin-top:4px">*OTT 혜택 별도 안내</div>':''}
-      ${window._installmentNote===false?'':window._installmentNote?`<div style="font-size:10px;color:var(--g400);margin-top:2px">${window._installmentNote}</div>`:'<div style="font-size:10px;color:var(--g400);margin-top:2px">*기기 할부금 별도</div>'}
+      ${window._installmentNoteOff?'':('<div style="font-size:10px;color:var(--g400);margin-top:2px">'+(window._installmentNote||'*기기 할부금 별도')+'</div>')}
     `;
   } else {
     feelEl.textContent='별도 안내';
