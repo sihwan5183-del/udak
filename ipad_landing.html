@@ -12,12 +12,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
 /* BANNER */
 .banner-wrap{width:100%;overflow:hidden;background:#000}
 .banner-wrap img{width:100%;height:auto;display:block}
-.bn-pc{display:block}
-.bn-mo{display:none}
-@media(max-width:767px){
-  .bn-pc{display:none}
-  .bn-mo{display:block;height:550px;object-fit:cover;width:100%}
-}
+
 
 
 /* CONTAINER */
@@ -115,8 +110,10 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
 
 <!-- 배너 -->
 <div class="banner-wrap">
-  <img class="bn-pc" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner3_pc.png" alt="">
-  <img class="bn-mo" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/ipad_mo.png" alt="">
+  <picture>
+    <source media="(max-width:767px)" srcset="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/ipad_mo.png">
+    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner3_pc.png" alt="" style="width:100%;height:auto;display:block">
+  </picture>
 </div>
 
 <!-- 메인 컨텐츠 -->
