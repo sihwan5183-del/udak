@@ -120,7 +120,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
   img.src = src;
   img.alt = '';
   img.style.cssText = 'width:100%;height:auto;display:block';
-  document.getElementById('bannerWrap').appendChild(img);
+  document.getElementById('bannerWrap').innerHTML = ''; document.getElementById('bannerWrap').appendChild(img);
 })();
 </script>
 
