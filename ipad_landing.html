@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0052)file:///C:/Users/hhmj0/Downloads/ipad_landing_2.html -->
+<!-- saved from url=(0052)file:///C:/Users/hhmj0/Downloads/ipad_landing_6.html -->
 <html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
@@ -12,12 +12,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
 /* BANNER */
 .banner-wrap{width:100%;overflow:hidden;background:#000}
 .banner-wrap img{width:100%;height:auto;display:block}
-.banner-pc{display:block}
-.banner-mo{display:none}
-@media(max-width:767px){
-  .banner-pc{display:none}
-  .banner-mo{display:block}
-}
+
 
 /* CONTAINER */
 .container{max-width:1100px;margin:0 auto;padding:40px 20px 60px}
@@ -107,10 +102,20 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
 <body>
 
 <!-- 배너 -->
-<div class="banner-wrap">
-  <img class="banner-pc" src="./ipad_landing_files/banner3_pc.png" alt="아이패드 혜택 배너">
-  <img class="banner-mo" src="./ipad_landing_files/banner3_mo.png" alt="아이패드 혜택 배너">
-</div>
+<div class="banner-wrap" id="bannerWrap"><img src="./123_files/banner3_pc.png" alt="아이패드 혜택 배너" style="width: 100%; height: auto; display: block;"></div>
+<script>
+(function(){
+  var isMo = window.innerWidth <= 767;
+  var src = isMo
+    ? 'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner3_mo.png'
+    : 'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner3_pc.png';
+  var img = document.createElement('img');
+  img.src = src;
+  img.alt = '아이패드 혜택 배너';
+  img.style.cssText = 'width:100%;height:auto;display:block';
+  document.getElementById('bannerWrap').appendChild(img);
+})();
+</script>
 
 <!-- 메인 컨텐츠 -->
 <div class="container">
@@ -130,7 +135,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
         </div>
         <div class="benefit-item">
           <div class="benefit-icon">🎁</div>
-          <div class="benefit-text">U+ 고객만을 위한 <strong>특별한 사전예약 혜택</strong></div>
+          <div class="benefit-text">U+를 이용할 고객님에게 드리는 <strong>혜택</strong></div>
         </div>
         <div class="benefit-item">
           <div class="benefit-icon">🎧</div>
@@ -204,7 +209,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
       <!-- 개인정보 동의 -->
       <div class="privacy-row">
         <div class="privacy-check" onclick="togglePrivacy()">
-          <div class="custom-check on" id="privacyCheck"></div>
+          <div class="custom-check" id="privacyCheck"></div>
           <span>개인정보 수집 및 이용에 동의합니다</span>
         </div>
         <span class="privacy-arrow" onclick="openPrivacyModal()" style="cursor:pointer;padding:4px 8px;font-size:16px">›</span>
