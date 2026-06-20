@@ -929,6 +929,8 @@ const TEXT_FIELDS = [
   {key:'ctaPhone', label:'전화 버튼 텍스트', def:'전화 상담 신청하기', type:'input'},
   {key:'privacyNote', label:'개인정보 안내문', def:'🔒 입력하신 정보는 상담 목적으로만 사용되며, 안전하게 보호됩니다.', type:'input'},
   {key:'kakaoUrl', label:'카카오 채널 URL', def:'#kakao-channel', type:'input', full:true},
+  {key:'installmentNoteOff', label:'기기 할부금 문구 숨기기', def:false, type:'toggle', full:false},
+  {key:'installmentNote', label:'기기 할부금 문구 (숨기기 OFF일 때 표시)', def:'*기기 할부금 별도', type:'input', full:true},
 ];
 
 let textsData = {};
@@ -945,8 +947,25 @@ function renderTextsForm(){
   const form = document.getElementById('textsForm');
   form.innerHTML = TEXT_FIELDS.map(f => {
     const val = textsData[f.key] !== undefined ? textsData[f.key] : f.def;
-    const escaped = val.replace(/"/g,'&quot;');
     const fullStyle = f.full ? 'grid-column:1/-1' : '';
+    if(f.type === 'toggle'){
+      const isOn = val===true||val==='true';
+      return `<div class="fg" style="${fullStyle}">
+        <label class="flbl">${f.label}</label>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+          <label style="position:relative;width:44px;height:24px;flex-shrink:0;cursor:pointer">
+            <input type="checkbox" id="txt_${f.key}" ${isOn?'checked':''} style="opacity:0;width:0;height:0;position:absolute"
+              onchange="document.getElementById('toggle_label_${f.key}').textContent=this.checked?'ON (문구 숨김)':'OFF (문구 표시)'">
+            <span id="toggle_track_${f.key}" style="position:absolute;inset:0;border-radius:24px;background:${isOn?'var(--or)':'var(--g300)'};transition:background .2s"
+              onclick="const cb=document.getElementById('txt_${f.key}');cb.checked=!cb.checked;cb.dispatchEvent(new Event('change'));this.style.background=cb.checked?'var(--or)':'var(--g300)';document.getElementById('toggle_knob_${f.key}').style.left=cb.checked?'22px':'2px'">
+            </span>
+            <span id="toggle_knob_${f.key}" style="position:absolute;top:2px;left:${isOn?'22px':'2px'};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:left .2s;pointer-events:none"></span>
+          </label>
+          <span id="toggle_label_${f.key}" style="font-size:13px;color:var(--g600)">${isOn?'ON (문구 숨김)':'OFF (문구 표시)'}</span>
+        </div>
+      </div>`;
+    }
+    const escaped = String(val).replace(/"/g,'&quot;');
     if(f.type === 'textarea'){
       return `<div class="fg" style="${fullStyle}">
         <label class="flbl">${f.label}</label>
@@ -955,7 +974,7 @@ function renderTextsForm(){
     }
     return `<div class="fg" style="${fullStyle}">
       <label class="flbl">${f.label}</label>
-      <input type="text" class="fi" id="txt_${f.key}" value="${escaped}" placeholder="${f.def}">
+      <input type="text" class="fi" id="txt_${f.key}" value="${escaped}" placeholder="${String(f.def)}">
     </div>`;
   }).join('');
 }
@@ -964,7 +983,12 @@ window.saveTexts = async function(){
   const data = {};
   TEXT_FIELDS.forEach(f => {
     const el = document.getElementById('txt_'+f.key);
-    if(el) data[f.key] = el.value.trim() || f.def;
+    if(!el) return;
+    if(f.type==='toggle'){
+      data[f.key] = el.checked; // boolean
+    } else {
+      data[f.key] = el.value.trim() || f.def;
+    }
   });
   try{
     await db.ref('uitexts').set( data);
