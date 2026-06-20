@@ -953,13 +953,10 @@ function renderTextsForm(){
       return `<div class="fg" style="${fullStyle}">
         <label class="flbl">${f.label}</label>
         <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
-          <label style="position:relative;width:44px;height:24px;flex-shrink:0;cursor:pointer">
-            <input type="checkbox" id="txt_${f.key}" ${isOn?'checked':''} style="opacity:0;width:0;height:0;position:absolute"
-              onchange="document.getElementById('toggle_label_${f.key}').textContent=this.checked?'ON (문구 숨김)':'OFF (문구 표시)'">
-            <span id="toggle_track_${f.key}" style="position:absolute;inset:0;border-radius:24px;background:${isOn?'var(--or)':'var(--g300)'};transition:background .2s"
-              onclick="const cb=document.getElementById('txt_${f.key}');cb.checked=!cb.checked;cb.dispatchEvent(new Event('change'));this.style.background=cb.checked?'var(--or)':'var(--g300)';document.getElementById('toggle_knob_${f.key}').style.left=cb.checked?'22px':'2px'">
-            </span>
-            <span id="toggle_knob_${f.key}" style="position:absolute;top:2px;left:${isOn?'22px':'2px'};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:left .2s;pointer-events:none"></span>
+          <label id="toggle_wrap_${f.key}" onclick="toggleSwitch('${f.key}')" style="position:relative;width:44px;height:24px;flex-shrink:0;cursor:pointer;display:block">
+            <input type="checkbox" id="txt_${f.key}" ${isOn?'checked':''} style="opacity:0;width:0;height:0;position:absolute;pointer-events:none">
+            <span id="toggle_track_${f.key}" style="position:absolute;inset:0;border-radius:24px;background:${isOn?'var(--or)':'var(--g300)'};transition:background .2s;display:block"></span>
+            <span id="toggle_knob_${f.key}" style="position:absolute;top:2px;left:${isOn?'22px':'2px'};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:left .2s;pointer-events:none;display:block"></span>
           </label>
           <span id="toggle_label_${f.key}" style="font-size:13px;color:var(--g600)">${isOn?'ON (문구 숨김)':'OFF (문구 표시)'}</span>
         </div>
@@ -978,6 +975,19 @@ function renderTextsForm(){
     </div>`;
   }).join('');
 }
+
+window.toggleSwitch=function(key){
+  const cb=document.getElementById('txt_'+key);
+  if(!cb) return;
+  cb.checked=!cb.checked;
+  const isOn=cb.checked;
+  const track=document.getElementById('toggle_track_'+key);
+  const knob=document.getElementById('toggle_knob_'+key);
+  const lbl=document.getElementById('toggle_label_'+key);
+  if(track) track.style.background=isOn?'var(--or)':'var(--g300)';
+  if(knob) knob.style.left=isOn?'22px':'2px';
+  if(lbl) lbl.textContent=isOn?'ON (문구 숨김)':'OFF (문구 표시)';
+};
 
 window.saveTexts = async function(){
   const data = {};
