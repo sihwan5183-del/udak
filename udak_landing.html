@@ -1249,10 +1249,10 @@ window.submitForm=async function(){
       headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Prefer':'return=minimal'},
       body:JSON.stringify({
         name,birth:birth||null,phone,
-        carrier:sel.carrier||null,jointype:sel.jointype||null,
-        device:sel.device?.name||null,storage:sel.storage?.name||null,
+        current_carrier:sel.carrier||null,jointype:sel.jointype||null,
+        desired_device:sel.device?.name||null,storage:sel.storage?.name||null,
         color:sel.color?sel.color.name.split('|')[1]:null,
-        plan:sel.plan?.name||null,
+        desired_product:sel.plan?.name||null,
         discount:sel.discType==='공시'?'공시지원금':'선택약정',
         additional_benefits:[...selectedBonuses].join(',')||null,
         consult_time:time,
@@ -1461,7 +1461,7 @@ const BANNERS=[
     const inner=b.pc||b.mo
       ?`<img class="bn-pc" src="${b.pc||b.mo}" alt="배너 ${i+1}"><img class="bn-mo" src="${b.mo||b.pc}" alt="배너 ${i+1}">`
       :'';
-    return`<div class="banner-slide">${b.link&&inner?`<a href="${b.link}" target="_self">${inner}</a>`:inner}</div>`;
+    return`<div class="banner-slide">${b.link&&inner?`<a href="${b.link}" target="_blank" rel="noopener">${inner}</a>`:inner}</div>`;
   }).join('');
   dots.innerHTML=BANNERS.map((_,i)=>`<div class="dot${i===0?' on':''}" onclick="goSlide(${i})"></div>`).join('');
   prev.style.display='flex'; next.style.display='flex';
