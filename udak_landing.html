@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0053)file:///C:/Users/hhmj0/Downloads/udak_landing_52.html -->
+<!-- saved from url=(0053)file:///C:/Users/hhmj0/Downloads/udak_landing_53.html -->
 <html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
@@ -191,6 +191,8 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 .succ-title{font-size:19px;font-weight:900;margin-bottom:7px}
 .succ-desc{font-size:13px;color:var(--g600);line-height:1.7}
 .succ-close{margin-top:22px;width:100%;height:46px;background:var(--or);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.succ-banner-btn{margin-top:8px;width:100%;height:46px;background:#fff;color:var(--or);border:1.5px solid var(--or);border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s}
+.succ-banner-btn:hover{background:var(--orl)}
 
 /* 추가 혜택 섹션 */
 .bonus-section{margin-top:16px;display:none;width:100%;visibility:hidden}
@@ -295,34 +297,34 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
     <div class="step-section">
       <p class="sec-title" id="txtSectionTitle">내 조건 먼저 확인해보세요</p>
 
-      <div class="step-card done" id="sc1" onclick="tryOpen(&#39;device&#39;)" style="cursor:pointer">
+      <div class="step-card" id="sc1" onclick="tryOpen(&#39;device&#39;)" style="cursor:pointer">
         <div style="display:flex;align-items:center;gap:12px;padding:14px;pointer-events:none">
           <div class="step-icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg></div>
-          <div class="step-info"><div class="step-lbl" id="txtStepDeviceLbl">원하는 제품</div><div class="step-val" id="vDevice">갤럭시 S26+</div></div>
+          <div class="step-info"><div class="step-lbl" id="txtStepDeviceLbl">원하는 제품</div><div class="step-val ph" id="vDevice">선택해주세요</div></div>
           <div class="step-arr">›</div>
         </div>
       </div>
 
-      <div class="step-card done" id="sc2" onclick="tryOpen(&#39;carrier&#39;)" style="cursor: pointer;">
+      <div class="step-card locked" id="sc2" onclick="tryOpen(&#39;carrier&#39;)" style="cursor:pointer">
         <div style="display:flex;align-items:center;gap:12px;padding:14px;pointer-events:none">
           <div class="step-icon"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><circle cx="12" cy="20" r="1" fill="currentColor" stroke="none"></circle></svg></div>
-          <div class="step-info"><div class="step-lbl" id="txtStepCarrierLbl">현재 사용 통신사</div><div class="step-val" id="vCarrier">SKT</div></div>
+          <div class="step-info"><div class="step-lbl" id="txtStepCarrierLbl">현재 사용 통신사</div><div class="step-val ph" id="vCarrier">선택해주세요</div></div>
           <div class="step-arr">›</div>
         </div>
       </div>
 
-      <div class="step-card done" id="sc3" onclick="tryOpen(&#39;storage&#39;)" style="cursor: pointer;">
+      <div class="step-card locked" id="sc3" onclick="tryOpen(&#39;storage&#39;)" style="cursor:pointer">
         <div style="display:flex;align-items:center;gap:12px;padding:14px;pointer-events:none">
           <div class="step-icon"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg></div>
-          <div class="step-info"><div class="step-lbl" id="txtStepStorageLbl">용량 / 색상</div><div class="step-val" id="vStorage">512GB / 블랙</div></div>
+          <div class="step-info"><div class="step-lbl" id="txtStepStorageLbl">용량 / 색상</div><div class="step-val ph" id="vStorage">선택해주세요</div></div>
           <div class="step-arr">›</div>
         </div>
       </div>
 
-      <div class="step-card done" id="sc4" onclick="tryOpen(&#39;plan&#39;)" style="cursor: pointer;">
+      <div class="step-card locked" id="sc4" onclick="tryOpen(&#39;plan&#39;)" style="cursor:pointer">
         <div style="display:flex;align-items:center;gap:12px;padding:14px;pointer-events:none">
           <div class="step-icon"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg></div>
-          <div class="step-info"><div class="step-lbl" id="txtStepPlanLbl">요금제</div><div class="step-val" id="vPlan">플러스플랜115</div></div>
+          <div class="step-info"><div class="step-lbl" id="txtStepPlanLbl">요금제</div><div class="step-val ph" id="vPlan">선택해주세요</div></div>
           <div class="step-arr">›</div>
         </div>
       </div>
@@ -344,24 +346,24 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
           <span class="auto-badge">자동 계산</span>
         </div>
         <div class="bc-dev">
-          <div class="bc-img-ph" id="bcImgPh" style="display: none;">📱</div>
-          <img class="bc-img" id="bcImg" src="./랜딩_files/1701207373094581-1f522325-5399-4397-9f1f-ed166f4faca1.jpg" alt="" style="display: block;">
-          <div class="bc-dname" id="bcName" style="display: block;">갤럭시 S26+</div>
-          <div class="bc-tags" id="bcTags" style="padding:0 10px 10px"><span class="btag">SKT</span><span class="btag"><span class="cdot" style="background:#1A1A1A"></span>블랙</span><span class="btag">512GB 1,705,000원</span><span class="btag">플러스플랜115</span></div>
+          <div class="bc-img-ph" id="bcImgPh">📱</div>
+          <img class="bc-img" id="bcImg" src="./랜딩_files/udak_landing_50.html" alt="" style="display:none">
+          <div class="bc-dname" id="bcName" style="display:none"></div>
+          <div class="bc-tags" id="bcTags" style="padding:0 10px 10px"></div>
         </div>
         <div class="br-rows">
-          <div class="br-row"><span class="br-lbl">기기값</span><span class="br-val" id="rLaunch">1,705,000원</span></div>
+          <div class="br-row"><span class="br-lbl">기기값</span><span class="br-val" id="rLaunch">-</span></div>
           <div class="br-row"><span class="br-lbl" id="rDiscLbl">공시지원금</span><span class="br-val red" id="rDisc">-</span></div>
           <div class="br-row"><span class="br-lbl">추가 혜택할인</span><span class="br-val red" id="rExtra">-</span></div>
           <div class="br-row" id="rTransRow" style="display:none"><span class="br-lbl">전환 지원금</span><span class="br-val red" id="rTrans">-</span></div>
-          <div class="br-row"><span class="br-lbl">실구매가</span><span class="br-val" id="rReal">1,705,000원</span></div>
-          <div class="br-row"><span class="br-lbl">월 기기 할부금</span><span class="br-val" id="rMonthlyDev">71,042원</span></div>
+          <div class="br-row"><span class="br-lbl">실구매가</span><span class="br-val" id="rReal">-</span></div>
+          <div class="br-row"><span class="br-lbl">월 기기 할부금</span><span class="br-val" id="rMonthlyDev">-</span></div>
           <hr class="br-div">
-          <div class="br-row"><span class="br-lbl">요금제</span><span class="br-val" id="rFee">115,000원</span></div>
+          <div class="br-row"><span class="br-lbl">요금제</span><span class="br-val" id="rFee">-</span></div>
         </div>
         <div class="bc-total">
           <span class="bc-total-lbl">예상 월 부담금 <span style="font-size:11px;font-weight:500;color:var(--g600)">(요금제 + 기기 할부금)</span></span>
-          <span class="bc-total-val" id="rTotal">186,042원</span>
+          <span class="bc-total-val" id="rTotal">-</span>
         </div>
         <p class="bc-note" id="txtBenefitNote">※ 위 금액은 선택하신 조건 기준 예상 금액입니다.<br>정확한 혜택은 상담을 통해 안내드립니다.</p>
       </div>
@@ -369,119 +371,38 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
   </div>
 
   <!-- 추가 혜택 섹션 -->
-  <div class="bonus-section on" id="bonusSection">
+  <div class="bonus-section" id="bonusSection">
     <div class="bonus-left">
       <!-- 타이틀 + 버튼 -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-        <div class="bonus-title" style="margin-bottom:0"><span class="gift">🎁</span><span id="bonusSectionTitle">플러스플랜 115 고객님을 위한 무료 혜택!</span></div>
+        <div class="bonus-title" style="margin-bottom:0"><span class="gift">🎁</span><span id="bonusSectionTitle">고객님을 위한 무료 혜택!</span></div>
         <div style="display:flex;gap:6px">
           <button id="btnBenefitYes" onclick="setBenefitMode(true)" style="height:32px;padding:0 14px;border-radius:20px;border:1.5px solid #F97316;background:#F97316;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">받기</button>
           <button id="btnBenefitNo" onclick="setBenefitMode(false)" style="height:32px;padding:0 14px;border-radius:20px;border:1.5px solid #E5E7EB;background:#fff;color:#6B7280;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">받지않기</button>
         </div>
       </div>
       <!-- 사진 크게 + 혜택목록 -->
-      <div id="bonusHeroWrap" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;min-height:80px;align-items:center"><div style="width:80px;height:80px;border-radius:12px;background:url(&#39;https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png&#39;) center/contain no-repeat #fff;border:1.5px solid #FED7AA;flex-shrink:0"></div><div style="width:80px;height:80px;border-radius:12px;background:url(&#39;https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tab.png&#39;) center/contain no-repeat #fff;border:1.5px solid #FED7AA;flex-shrink:0"></div><div style="width:80px;height:80px;border-radius:12px;background:url(&#39;https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png&#39;) center/contain no-repeat #fff;border:1.5px solid #FED7AA;flex-shrink:0"></div><div style="width:80px;height:80px;border-radius:12px;background:url(&#39;https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/youtube.png&#39;) center/contain no-repeat #fff;border:1.5px solid #FED7AA;flex-shrink:0"></div></div>
-      <div id="bonusItems"><div onclick="toggleItem(event,&#39;watch&#39;,&#39;115&#39;)" style="cursor:pointer;display:block;width:100%;background:#FFF7ED;border-radius:8px;border:2px solid #F97316;transition:all .15s;margin-bottom:6px">
-      <div style="display:flex;align-items:center;gap:8px;padding:9px 10px;pointer-events:none">
-        <div style="width:32px;height:32px;border-radius:6px;flex-shrink:0;background:url(&#39;https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png&#39;) center/contain no-repeat #fff;border:1px solid #E5E7EB"></div>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:12px;font-weight:700;color:#F97316">갤럭시 워치 8 40MM</div>
-          <div style="font-size:10px;font-weight:800;color:#F97316;margin-top:1px">월 11,000원 → 무료</div>
-        </div>
-        <div style="width:20px;height:20px;flex-shrink:0;border-radius:50%;border:2px solid #F97316;background:#F97316;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff">✓</div>
+      <div id="bonusHeroWrap" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;min-height:80px;align-items:center">
+        <div style="font-size:40px;color:#D1D5DB">🎁</div>
       </div>
-    </div><div onclick="toggleItem(event,&#39;tab&#39;,&#39;115&#39;)" style="cursor:pointer;display:block;width:100%;background:#FFF7ED;border-radius:8px;border:2px solid #F97316;transition:all .15s;margin-bottom:6px">
-      <div style="display:flex;align-items:center;gap:8px;padding:9px 10px;pointer-events:none">
-        <div style="width:32px;height:32px;border-radius:6px;flex-shrink:0;background:url(&#39;https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tab.png&#39;) center/contain no-repeat #fff;border:1px solid #E5E7EB"></div>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:12px;font-weight:700;color:#F97316">갤럭시 탭 A11+</div>
-          <div style="font-size:10px;font-weight:800;color:#F97316;margin-top:1px">월 22,000원 → 무료</div>
-        </div>
-        <div style="width:20px;height:20px;flex-shrink:0;border-radius:50%;border:2px solid #F97316;background:#F97316;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff">✓</div>
-      </div>
-    </div><div onclick="toggleItem(event,&#39;internet&#39;,&#39;115&#39;)" style="cursor:pointer;display:block;width:100%;background:#FFF7ED;border-radius:8px;border:2px solid #F97316;transition:all .15s;margin-bottom:6px">
-      <div style="display:flex;align-items:center;gap:8px;padding:9px 10px;pointer-events:none">
-        <div style="width:32px;height:32px;border-radius:6px;flex-shrink:0;background:url(&#39;https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png&#39;) center/contain no-repeat #fff;border:1px solid #E5E7EB"></div>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:12px;font-weight:700;color:#F97316">인터넷 500MB</div>
-          <div style="font-size:10px;font-weight:800;color:#F97316;margin-top:1px">월 33,000원 → 무료</div>
-        </div>
-        <div style="width:20px;height:20px;flex-shrink:0;border-radius:50%;border:2px solid #F97316;background:#F97316;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff">✓</div>
-      </div>
-    </div><div onclick="toggleOtt(event,&#39;115&#39;)" style="cursor:pointer;display:block;width:100%;background:#FFF7ED;border-radius:8px;border:2px solid #F97316;transition:all .15s;margin-bottom:6px">
-      <div style="display:flex;align-items:center;gap:8px;padding:9px 10px;pointer-events:none">
-        <div style="width:32px;height:32px;border-radius:6px;flex-shrink:0;background:#F3F4F6;border:1px solid #E5E7EB;display:flex;align-items:center;justify-content:center;font-size:16px">▶️</div>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:12px;font-weight:700;color:#F97316">OTT 혜택 <span style="font-size:10px"> (유튜브 프리미엄)</span></div>
-          <div style="font-size:10px;font-weight:800;color:#F97316;margin-top:1px">별도 안내</div>
-        </div>
-        <div style="width:20px;height:20px;flex-shrink:0;border-radius:50%;border:2px solid #F97316;background:#F97316;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff">✓</div>
-      </div>
-    </div></div>
-      <div id="ottSubBox" style="margin-top:8px"><div class="ott-sub show" id="ottSubInner">
-      <div class="ott-sub-label">어떤 OTT를 원하세요? (1개 선택)</div>
-      <div class="ott-grid"><div onclick="selectOtt(event,&#39;ott_disney&#39;,&#39;115&#39;)" class="ott-opt" data-ottimg="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/disney.png" style="border-color:#E5E7EB;cursor:pointer">
-          <div class="ott-icon" style="pointer-events:none"><img src="./랜딩_files/disney.png" style="width:48px;height:28px;object-fit:contain"></div>
-          <span style="pointer-events:none;font-size:12px;font-weight:700;color:#1F2937">디즈니+</span>
-        </div><div onclick="selectOtt(event,&#39;ott_tving&#39;,&#39;115&#39;)" class="ott-opt" data-ottimg="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tving.png" style="border-color:#E5E7EB;cursor:pointer">
-          <div class="ott-icon" style="pointer-events:none"><img src="./랜딩_files/tving.png" style="width:48px;height:28px;object-fit:contain"></div>
-          <span style="pointer-events:none;font-size:12px;font-weight:700;color:#1F2937">티빙</span>
-        </div><div onclick="selectOtt(event,&#39;ott_netflix&#39;,&#39;115&#39;)" class="ott-opt" data-ottimg="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/netflix.png" style="border-color:#E5E7EB;cursor:pointer">
-          <div class="ott-icon" style="pointer-events:none"><img src="./랜딩_files/netflix.png" style="width:48px;height:28px;object-fit:contain"></div>
-          <span style="pointer-events:none;font-size:12px;font-weight:700;color:#1F2937">넷플릭스</span>
-        </div><div onclick="selectOtt(event,&#39;ott_youtube&#39;,&#39;115&#39;)" class="ott-opt on" data-ottimg="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/youtube.png" style="border-color:#F97316;cursor:pointer">
-          <div class="ott-icon" style="pointer-events:none"><img src="./랜딩_files/youtube.png" style="width:48px;height:28px;object-fit:contain"></div>
-          <span style="pointer-events:none;font-size:12px;font-weight:700;color:#F97316">유튜브 프리미엄</span>
-        </div>
-      </div>
-    </div></div>
+      <div id="bonusItems"></div>
+      <div id="ottSubBox" style="margin-top:8px"></div>
     </div>
     <div class="bonus-right">
       <div class="bonus-title"><span class="gift">📋</span>추가 혜택 요약</div>
-      <div id="bonusEmptyMsg" style="font-size:15px;font-weight:700;color:var(--or);text-align:center;padding:40px 16px;line-height:1.7;letter-spacing:-.3px">모바일 + 스마트 워치 + 스마트 탭 + 인터넷 요금을 한번에!</div>
+      <div id="bonusEmptyMsg" style="font-size:15px;font-weight:700;color:var(--or);text-align:center;padding:40px 16px;line-height:1.7;letter-spacing:-.3px">원하는 혜택을 왼쪽에서 선택해보세요</div>
       <div class="bonus-summary-rows" id="bonusSummaryRows"></div>
-      <div id="bonusTotalBox" style="display: block; margin-top: 12px;">
+      <div id="bonusTotalBox" style="display:none;margin-top:12px">
         <!-- 혜택 금액 강조 -->
         <div style="background:var(--orl);border-radius:10px;padding:16px 14px;text-align:center;border:1.5px solid #FED7AA">
           <div style="font-size:11px;color:var(--ord);font-weight:700;margin-bottom:6px;letter-spacing:.3px">✨ 무료 혜택 절약액</div>
-          <div id="bonusTotalFeel" style="font-size:32px;font-weight:900;color:var(--or);line-height:1.1"><span style="font-size:16px;color:var(--ord);font-weight:800">-</span>66,000<span style="font-size:16px;color:var(--ord);font-weight:800">원 + α</span></div>
-          <div id="bonusTotalNote" style="font-size:11px;color:var(--g600);margin-top:8px;line-height:1.6;text-align:left">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #FED7AA">
-        <span style="color:var(--g600)">요금제</span>
-        <span style="font-weight:700">115,000원</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #FED7AA">
-        <span style="color:var(--g600)">혜택 할인</span>
-        <span style="font-weight:700;color:var(--or)">-66,000원 + α</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0">
-        <span style="font-weight:800;color:var(--g800)">체감 요금</span>
-        <span style="font-weight:900;color:var(--or);font-size:14px">49,000원/월</span>
-      </div>
-      <div style="font-size:10px;color:var(--g400);margin-top:4px">*OTT 혜택 별도 안내</div>
-      <div style="font-size:10px;color:var(--g400);margin-top:2px">*기기 할부금 별도</div>
-    </div>
+          <div id="bonusTotalFeel" style="font-size:32px;font-weight:900;color:var(--or);line-height:1.1">-</div>
+          <div id="bonusTotalNote" style="font-size:11px;color:var(--g600);margin-top:8px;line-height:1.6;text-align:left"></div>
         </div>
         <!-- 혜택 내역 -->
         <div style="margin-top:10px;padding:10px 12px;background:var(--g50);border-radius:8px;border:1px solid var(--g200)">
           <div style="font-size:11px;color:var(--g600);font-weight:700;margin-bottom:6px">혜택 내역</div>
-          <div id="bonusDetailRows"><div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--g100)">
-        <img src="./랜딩_files/watch.png" style="width:28px;height:28px;object-fit:contain;border-radius:5px;background:#fff;border:1px solid #E5E7EB;flex-shrink:0">
-        <span style="flex:1;font-size:12px;color:var(--g800)">갤럭시 워치 8 40MM</span>
-        <span style="font-size:12px;font-weight:700;color:var(--or)">-11,000원</span>
-      </div><div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--g100)">
-        <img src="./랜딩_files/tab.png" style="width:28px;height:28px;object-fit:contain;border-radius:5px;background:#fff;border:1px solid #E5E7EB;flex-shrink:0">
-        <span style="flex:1;font-size:12px;color:var(--g800)">갤럭시 탭 A11+</span>
-        <span style="font-size:12px;font-weight:700;color:var(--or)">-22,000원</span>
-      </div><div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--g100)">
-        <img src="./랜딩_files/internet.png" style="width:28px;height:28px;object-fit:contain;border-radius:5px;background:#fff;border:1px solid #E5E7EB;flex-shrink:0">
-        <span style="flex:1;font-size:12px;color:var(--g800)">인터넷 500MB</span>
-        <span style="font-size:12px;font-weight:700;color:var(--or)">-33,000원</span>
-      </div><div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--g100)">
-        <img src="./랜딩_files/youtube.png" style="width:28px;height:28px;object-fit:contain;border-radius:5px;background:#fff;border:1px solid #E5E7EB;flex-shrink:0">
-        <span style="flex:1;font-size:12px;color:var(--g800)">OTT — 유튜브 프리미엄</span>
-        <span style="font-size:12px;font-weight:700;color:var(--or)">별도</span>
-      </div></div>
+          <div id="bonusDetailRows"></div>
         </div>
       </div>
     </div>
@@ -492,9 +413,9 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
     <div class="form-card">
       <p class="form-ttl" id="txtFormTitle">상담 신청하기</p>
       <!-- 선택 내용 자동기입 미리보기 -->
-      <div class="benefit-preview on" id="benefitPreview" style="pointer-events:none">
+      <div class="benefit-preview" id="benefitPreview" style="pointer-events:none">
         <div class="bp-title">✅ 선택하신 내용이 자동으로 신청서에 포함됩니다</div>
-        <div class="bp-items" id="bpItems"><span class="bp-tag" style="pointer-events:none;user-select:none">갤럭시 S26+</span><span class="bp-tag" style="pointer-events:none;user-select:none">SKT</span><span class="bp-tag" style="pointer-events:none;user-select:none">512GB</span><span class="bp-tag" style="pointer-events:none;user-select:none">블랙</span><span class="bp-tag" style="pointer-events:none;user-select:none">플러스플랜115</span><span class="bp-tag" style="pointer-events:none;user-select:none">🎁 갤럭시 워치 8 40MM</span><span class="bp-tag" style="pointer-events:none;user-select:none">🎁 갤럭시 탭 A11+</span><span class="bp-tag" style="pointer-events:none;user-select:none">🎁 인터넷 500MB</span><span class="bp-tag" style="pointer-events:none;user-select:none">🎁 유튜브 프리미엄</span></div>
+        <div class="bp-items" id="bpItems"></div>
       </div>
       <div class="form-grid" style="margin-top:12px">
         <div class="fg"><label class="flbl">이름 <em>*</em></label><input type="text" class="fi" id="fName" placeholder="이름을 입력해주세요"></div>
@@ -507,7 +428,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
               <span id="timeDisplayText" style="color:var(--g400)">선택해주세요</span>
               <span class="tp-arrow">▼</span>
             </div>
-            <div class="tp-body" id="timeDrum" style="display: none;">
+            <div class="tp-body" id="timeDrum">
               <div id="timeDrumList"><div class="tp-item" onclick="window.selectTime(&#39;오전 10시&#39;)">오전 10시</div><div class="tp-item" onclick="window.selectTime(&#39;오전 11시&#39;)">오전 11시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 12시&#39;)">오후 12시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 1시&#39;)">오후 1시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 2시&#39;)">오후 2시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 3시&#39;)">오후 3시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 4시&#39;)">오후 4시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 5시&#39;)">오후 5시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 6시&#39;)">오후 6시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 7시&#39;)">오후 7시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 8시&#39;)">오후 8시</div></div>
             </div>
           </div>
@@ -532,40 +453,8 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 <div class="overlay" id="overlay" onclick="closeSheet()"></div>
 <div class="sheet" id="sheet">
   <div class="sh-handle"></div>
-  <div class="sh-head"><span class="sh-title" id="shTitle">요금제 선택</span><button class="sh-x" onclick="closeSheet()">✕</button></div>
-  <div class="sh-body" id="shBody"><div class="plan-item" onclick="selPlan(&#39;-OvViz6KUekmsCN8jZzh&#39;)" style="cursor:pointer;display:block;width:100%">
-      <div style="padding:12px 14px;pointer-events:none">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start">
-          <div class="plan-name">데이터플랜31GB</div>
-          <div class="plan-price" style="flex-shrink:0;margin-left:8px">월 61,000원</div>
-        </div>
-        
-      </div>
-    </div><div class="plan-item" onclick="selPlan(&#39;-OvVj1hXgmOnO_0_gfPO&#39;)" style="cursor:pointer;display:block;width:100%">
-      <div style="padding:12px 14px;pointer-events:none">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start">
-          <div class="plan-name">데이터플랜MAX</div>
-          <div class="plan-price" style="flex-shrink:0;margin-left:8px">월 85,000원</div>
-        </div>
-        <div class="plan-bonus-badge" style="margin-top:6px"><span class="pbb pbb-data">🔥 데이터 무제한</span></div>
-      </div>
-    </div><div class="plan-item" onclick="selPlan(&#39;-OvVj8OP9HlR8SvTorR2&#39;)" style="cursor:pointer;display:block;width:100%">
-      <div style="padding:12px 14px;pointer-events:none">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start">
-          <div class="plan-name">플러스플랜95</div>
-          <div class="plan-price" style="flex-shrink:0;margin-left:8px">월 95,000원</div>
-        </div>
-        <div class="plan-bonus-badge" style="margin-top:6px"><span class="pbb pbb-data">🔥 데이터 무제한</span><span class="pbb">✓ 갤럭시 워치</span><span class="pbb">✓ 인터넷 500M</span></div>
-      </div>
-    </div><div class="plan-item" onclick="selPlan(&#39;-OvVj5WF3-0tuMN7yeed&#39;)" style="cursor:pointer;display:block;width:100%">
-      <div style="padding:12px 14px;pointer-events:none">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start">
-          <div class="plan-name">플러스플랜115</div>
-          <div class="plan-price" style="flex-shrink:0;margin-left:8px">월 115,000원</div>
-        </div>
-        <div class="plan-bonus-badge" style="margin-top:6px"><span class="pbb pbb-data">🔥 데이터 무제한</span><span class="pbb">✓ 갤럭시 워치 8 40MM</span><span class="pbb">✓ 갤럭시 탭 A11+</span><span class="pbb">✓ 인터넷 500MB</span><span class="pbb">✓ OTT 혜택</span></div>
-      </div>
-    </div></div>
+  <div class="sh-head"><span class="sh-title" id="shTitle">선택</span><button class="sh-x" onclick="closeSheet()">✕</button></div>
+  <div class="sh-body" id="shBody"></div>
 </div>
 
 <div class="succ-ov" id="sModal">
@@ -574,6 +463,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
     <div class="succ-title">신청 완료!</div>
     <div class="succ-desc">상담 신청이 완료되었습니다.<br>빠른 시간 내에 연락드리겠습니다.</div>
     <button class="succ-close" onclick="document.getElementById(&#39;sModal&#39;).classList.remove(&#39;on&#39;)">확인</button>
+    <button class="succ-banner-btn" onclick="document.getElementById(&#39;sModal&#39;).classList.remove(&#39;on&#39;);window.scrollTo({top:0,behavior:&#39;smooth&#39;})">🎁 혜택 배너 다시 보기</button>
   </div>
 </div>
 
@@ -1145,7 +1035,7 @@ function _renderBonusItems(key,bd){
         const sel=selectedBonuses.has(o.id);
         const hasImg=!!o.img;
         return`<div onclick="selectOtt(event,'${o.id}','${fixedKey}')" class="ott-opt${sel?' on':''}" data-ottimg="${o.img||''}" style="border-color:${sel?'#F97316':'#E5E7EB'};cursor:pointer">
-          <div class="ott-icon" style="pointer-events:none">${hasImg?`<img src="${o.img}" style="width:48px;height:28px;object-fit:contain">`:`<span style="font-size:24px">${o.emoji||'🎬'}</span>`}</div>
+          <div class="ott-icon" style="pointer-events:none;display:flex;align-items:center;justify-content:center;height:40px">${hasImg?`<img src="${o.img}" style="width:80px;height:40px;object-fit:contain">`:`<span style="font-size:24px">${o.emoji||'🎬'}</span>`}</div>
           <span style="pointer-events:none;font-size:12px;font-weight:700;color:${sel?'#F97316':'#1F2937'}">${o.name}</span>
         </div>`;
       }).join('')}
@@ -1583,4 +1473,23 @@ const BANNERS=[
 </script>
 
 
+<script>
+window.addEventListener('pageshow',function(e){
+  if(!e.persisted) return;
+  sel={device:null,carrier:null,jointype:null,storage:null,color:null,plan:null,discType:'공시',lockedColorImg:''};
+  selectedBonuses=new Set();
+  ['vDevice','vCarrier','vStorage','vPlan'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){el.textContent='선택해주세요';el.className='step-val ph';}
+  });
+  ['sc1','sc2','sc3','sc4'].forEach(function(id,i){
+    var el=document.getElementById(id);
+    if(el){el.className='step-card'+(i>0?' locked':'');}
+  });
+  var totalBox=document.getElementById('bonusTotalBox');
+  if(totalBox) totalBox.style.display='none';
+  var bonusSection=document.getElementById('bonusSection');
+  if(bonusSection) bonusSection.style.display='none';
+});
+</script>
 </body></html>
