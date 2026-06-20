@@ -94,64 +94,17 @@ function closeSummarySheet(){
   setTimeout(()=>{ ov.style.display='none'; sh.style.display='none'; document.body.style.overflow=''; },350);
 }
 
-/* ── 배너 데이터 & 렌더 ── */
-// 이미지/링크 준비되면 여기에 채워주세요
-// pc: PC용 이미지 경로 (files/banner1_pc.jpg)
-// mo: 모바일용 이미지 경로 (files/banner1_mo.jpg)
-// link: 클릭 시 이동할 URL (없으면 빈 문자열)
-const BANNERS=[
-  {pc:'',mo:'',link:''},
-  {pc:'',mo:'',link:''},
-  {pc:'',mo:'',link:''},
-  {pc:'',mo:'',link:''},
-];
-
-(function initBanners(){
-  const activeBanners=BANNERS.filter(b=>b.pc||b.mo);
-  const track=document.getElementById('bTrack');
-  const dots=document.getElementById('bDots');
-  const prev=document.getElementById('bPrev');
-  const next=document.getElementById('bNext');
-
-  if(!activeBanners.length){
-    // 이미지 없으면 배너 영역 전체 숨김
-    document.querySelector('.banner-wrap').style.display='none';
-    return;
-  }
-
-  // 슬라이드 생성
-  track.innerHTML=activeBanners.map((b,i)=>{
-    const inner=`
-      <img class="bn-pc" src="${b.pc||b.mo}" alt="배너 ${i+1}">
-      <img class="bn-mo" src="${b.mo||b.pc}" alt="배너 ${i+1}">`;
-    return`<div class="banner-slide">${
-      b.link
-        ?`<a href="${b.link}" target="_blank" rel="noopener">${inner}</a>`
-        :inner
-    }</div>`;
-  }).join('');
-
-  // 도트 생성
-  dots.innerHTML=activeBanners.map((_,i)=>
-    `<div class="dot${i===0?' on':''}" onclick="goSlide(${i})"></div>`
-  ).join('');
-
-  // 화살표: 2장 이상일 때만
-  if(activeBanners.length>1){ prev.style.display='flex'; next.style.display='flex'; }
-
-  // 총 슬라이드 수 업데이트
-  window._bannerCount=activeBanners.length;
-})();
 
 /* BANNER */
-.banner-wrap{position:relative;overflow:hidden;background:var(--g100)}
-.banner-track{display:flex;transition:transform .4s ease;will-change:transform}
-.banner-slide{min-width:100%;display:block;line-height:0}
+.banner-wrap{position:relative;overflow:hidden;background:#fff;height:360px}
+.banner-track{display:flex;transition:transform .4s ease;will-change:transform;height:100%}
+.banner-slide{min-width:100%;display:block;line-height:0;height:100%}
 .banner-slide a{display:block;width:100%}
-.banner-slide img{width:100%;display:block;object-fit:cover}
+.banner-slide img{width:100%;height:100%;display:block;object-fit:cover}
 .banner-slide img.bn-pc{display:block}
 .banner-slide img.bn-mo{display:none}
 @media(max-width:767px){
+  .banner-wrap{height:500px}
   .banner-slide img.bn-pc{display:none}
   .banner-slide img.bn-mo{display:block}
 }
@@ -1469,5 +1422,34 @@ document.addEventListener('click',function(e){
 });
 </script>
 
+
+
+<script>
+/* ── 배너 데이터 & 렌더 ── */
+// PC: 1440×360px → files/banner1_pc.jpg
+// 모바일: 750×500px → files/banner1_mo.jpg
+// link: 클릭 시 이동할 URL (없으면 빈 문자열)
+const BANNERS=[
+  {pc:'',mo:'',link:''},
+  {pc:'',mo:'',link:''},
+  {pc:'',mo:'',link:''},
+  {pc:'',mo:'',link:''},
+];
+(function initBanners(){
+  const track=document.getElementById('bTrack');
+  const dots=document.getElementById('bDots');
+  const prev=document.getElementById('bPrev');
+  const next=document.getElementById('bNext');
+  track.innerHTML=BANNERS.map((b,i)=>{
+    const inner=b.pc||b.mo
+      ?`<img class="bn-pc" src="${b.pc||b.mo}" alt="배너 ${i+1}"><img class="bn-mo" src="${b.mo||b.pc}" alt="배너 ${i+1}">`
+      :'';
+    return`<div class="banner-slide">${b.link&&inner?`<a href="${b.link}" target="_blank" rel="noopener">${inner}</a>`:inner}</div>`;
+  }).join('');
+  dots.innerHTML=BANNERS.map((_,i)=>`<div class="dot${i===0?' on':''}" onclick="goSlide(${i})"></div>`).join('');
+  prev.style.display='flex'; next.style.display='flex';
+  window._bannerCount=BANNERS.length;
+})();
+</script>
 
 </body></html>
