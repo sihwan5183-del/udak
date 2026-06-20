@@ -451,20 +451,6 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
   <div class="sh-body" id="shBody"></div>
 </div>
 
-<!-- 모바일 추가혜택 요약 Bottom Sheet -->
-<div id="summarySheetOv" onclick="closeSummarySheet()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;opacity:0;transition:opacity .3s"></div>
-<div id="summarySheet" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:301;background:#fff;border-radius:20px 20px 0 0;max-height:72vh;overflow-y:auto;transform:translateY(100%);transition:transform .35s cubic-bezier(.32,.72,0,1)">
-  <div style="width:40px;height:4px;background:#E5E7EB;border-radius:2px;margin:12px auto 0"></div>
-  <div style="padding:16px 20px 0;display:flex;justify-content:space-between;align-items:center">
-    <div style="font-size:16px;font-weight:800;color:#1F2937">🎁 추가 혜택 요약</div>
-    <button onclick="closeSummarySheet()" style="width:28px;height:28px;border:none;background:#F3F4F6;border-radius:50%;cursor:pointer;font-size:14px;color:#6B7280">✕</button>
-  </div>
-  <div id="summarySheetBody" style="padding:14px 20px 0"></div>
-  <div style="padding:14px 20px 20px">
-    <button onclick="document.getElementById('formWrap').scrollIntoView({behavior:'smooth',block:'start'});closeSummarySheet()" style="width:100%;height:52px;background:#F97316;color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(249,115,22,.3)">📞 상담 신청하기</button>
-  </div>
-</div>
-
 <div class="succ-ov" id="sModal">
   <div class="succ-box">
     <div class="succ-ico">✅</div>
@@ -946,6 +932,13 @@ window.setBenefitMode=function(accept){
   if(freshKey) currentBonusKey=freshKey;
   if(currentBonusKey) renderBonusSectionWithKey(currentBonusKey);
   updateBenefitPreview();
+  // 받지않기 → 상담 신청하기로 바로 스크롤 (모바일)
+  if(!accept&&window.innerWidth<768){
+    setTimeout(()=>{
+      const fw=document.getElementById('formWrap');
+      if(fw) fw.scrollIntoView({behavior:'smooth',block:'start'});
+    },300);
+  }
 };
 
 // key를 직접 받아서 렌더하는 내부 함수
@@ -1087,9 +1080,12 @@ window.selectOtt=function(e,ottId,key){
   selectedBonuses.add(ottId);
   renderBonusSectionWithKey(key);
   updateBenefitPreview();
-  // OTT 선택 완료 → 요약 시트 오픈 (모바일)
+  // 모바일: OTT 선택 완료 → 추가혜택 요약으로 스크롤
   if(window.innerWidth<768){
-    setTimeout(()=>openSummarySheet(key),200);
+    setTimeout(()=>{
+      const br=document.querySelector('.bonus-right');
+      if(br) br.scrollIntoView({behavior:'smooth',block:'start'});
+    },200);
   }
 };
 window.toggleItem=function(e,itemId,key){
@@ -1118,8 +1114,9 @@ window.toggleItem=function(e,itemId,key){
             bonusItemEls[curIdx+1].scrollIntoView({behavior:'smooth',block:'center'});
         }
       } else {
-        // 마지막 항목 선택 → 요약 시트 (OTT 없는 플랜: 95 등)
-        openSummarySheet(key);
+        // 마지막 항목 선택 → 추가혜택 요약으로 스크롤
+        const br=document.querySelector('.bonus-right');
+        if(br) br.scrollIntoView({behavior:'smooth',block:'start'});
       }
     },200);
   }
@@ -1345,8 +1342,8 @@ document.addEventListener('click',function(e){
 </script>
 
 
+
 <script>
-/* ── 모바일 추가혜택 요약 Bottom Sheet ── */
 function openSummarySheet(key){
   if(window.innerWidth>=768) return;
   const bd=bonusData[key];
