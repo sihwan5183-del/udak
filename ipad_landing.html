@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0053)file:///C:/Users/hhmj0/Downloads/ipad_landing_11.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
 <title>아이패드 사전예약 상담 신청 | 유닥</title>
 <style>
@@ -11,7 +11,13 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
 
 /* BANNER */
 .banner-wrap{width:100%;overflow:hidden;background:#000}
-.banner-wrap img{width:100%;height:auto;display:block}
+.banner-wrap picture,.banner-wrap img{display:block;width:100%}
+.banner-wrap img{height:auto}
+@media(max-width:767px){
+  .banner-wrap{aspect-ratio:750/550;background:#000}
+  .banner-wrap picture,.banner-wrap img{width:100%;height:100%;display:block}
+  .banner-wrap img{object-fit:contain}
+}
 
 
 
@@ -111,8 +117,8 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
 <!-- 배너 -->
 <div class="banner-wrap">
   <picture>
-    <source media="(max-width:767px)" srcset="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/ipad_mo.png">
-    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner3_pc.png" alt="" style="width:100%;height:auto;display:block">
+    <source media="(max-width:767px)" srcset="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/ipad_mo_v2.png">
+    <img src="./아이패드 사전예약 상담 신청 _ 유닥_files/banner3_pc.png" alt="" style="width:100%;height:auto;display:block">
   </picture>
 </div>
 
@@ -167,7 +173,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
       <div class="fg">
         <label class="flbl">(선택사항) 원하는 핸드폰</label>
         <div class="accordion" id="accPhone">
-          <div class="accordion-header" onclick="toggleAcc('accPhone')">
+          <div class="accordion-header" onclick="toggleAcc(&#39;accPhone&#39;)">
             <span>기종 선택</span>
             <div style="display:flex;align-items:center;gap:6px">
               <span class="selected-val" id="accPhoneVal"></span>
@@ -175,13 +181,13 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
             </div>
           </div>
           <div class="accordion-body" id="accPhoneBody">
-            <div class="acc-none" onclick="selectAcc('accPhone','')">선택 안함</div>
-            <div class="acc-option" onclick="selectAcc('accPhone','갤럭시 S26')">갤럭시 S26</div>
-            <div class="acc-option" onclick="selectAcc('accPhone','갤럭시 S26+')">갤럭시 S26+</div>
-            <div class="acc-option" onclick="selectAcc('accPhone','갤럭시 S26 울트라')">갤럭시 S26 울트라</div>
-            <div class="acc-option" onclick="selectAcc('accPhone','아이폰 17')">아이폰 17</div>
-            <div class="acc-option" onclick="selectAcc('accPhone','아이폰 17 프로')">아이폰 17 프로</div>
-            <div class="acc-option" onclick="selectAcc('accPhone','아이폰 17 프로맥스')">아이폰 17 프로맥스</div>
+            <div class="acc-none" onclick="selectAcc(&#39;accPhone&#39;,&#39;&#39;)">선택 안함</div>
+            <div class="acc-option" onclick="selectAcc(&#39;accPhone&#39;,&#39;갤럭시 S26&#39;)">갤럭시 S26</div>
+            <div class="acc-option" onclick="selectAcc(&#39;accPhone&#39;,&#39;갤럭시 S26+&#39;)">갤럭시 S26+</div>
+            <div class="acc-option" onclick="selectAcc(&#39;accPhone&#39;,&#39;갤럭시 S26 울트라&#39;)">갤럭시 S26 울트라</div>
+            <div class="acc-option" onclick="selectAcc(&#39;accPhone&#39;,&#39;아이폰 17&#39;)">아이폰 17</div>
+            <div class="acc-option" onclick="selectAcc(&#39;accPhone&#39;,&#39;아이폰 17 프로&#39;)">아이폰 17 프로</div>
+            <div class="acc-option" onclick="selectAcc(&#39;accPhone&#39;,&#39;아이폰 17 프로맥스&#39;)">아이폰 17 프로맥스</div>
           </div>
         </div>
       </div>
@@ -190,7 +196,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
       <div class="fg">
         <label class="flbl">(선택사항) 원하는 스마트 워치</label>
         <div class="accordion" id="accWatch">
-          <div class="accordion-header" onclick="toggleAcc('accWatch')">
+          <div class="accordion-header" onclick="toggleAcc(&#39;accWatch&#39;)">
             <span>기종 선택</span>
             <div style="display:flex;align-items:center;gap:6px">
               <span class="selected-val" id="accWatchVal"></span>
@@ -198,9 +204,9 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
             </div>
           </div>
           <div class="accordion-body" id="accWatchBody">
-            <div class="acc-none" onclick="selectAcc('accWatch','')">선택 안함</div>
-            <div class="acc-option" onclick="selectAcc('accWatch','애플워치')">애플워치</div>
-            <div class="acc-option" onclick="selectAcc('accWatch','갤럭시 워치')">갤럭시 워치</div>
+            <div class="acc-none" onclick="selectAcc(&#39;accWatch&#39;,&#39;&#39;)">선택 안함</div>
+            <div class="acc-option" onclick="selectAcc(&#39;accWatch&#39;,&#39;애플워치&#39;)">애플워치</div>
+            <div class="acc-option" onclick="selectAcc(&#39;accWatch&#39;,&#39;갤럭시 워치&#39;)">갤럭시 워치</div>
           </div>
         </div>
       </div>
@@ -250,8 +256,8 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
     <div class="modal-ico">✅</div>
     <div class="modal-title">신청 완료!</div>
     <div class="modal-desc">상담 신청이 완료되었습니다.<br>빠른 시간 내에 연락드리겠습니다.</div>
-    <button class="btn-modal-confirm" onclick="document.getElementById('doneModal').classList.remove('on')">확인</button>
-    <a class="btn-modal-home" href="https://www.uplusdak.com" target="_blank" rel="noopener">
+    <button class="btn-modal-confirm" onclick="document.getElementById(&#39;doneModal&#39;).classList.remove(&#39;on&#39;)">확인</button>
+    <a class="btn-modal-home" href="https://www.uplusdak.com/" target="_blank" rel="noopener">
       🏠 유닥 구경하기
     </a>
   </div>
@@ -390,5 +396,6 @@ async function submitForm() {
   }
 }
 </script>
-</body>
-</html>
+
+
+</body></html>
