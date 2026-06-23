@@ -290,8 +290,9 @@
       phone        : phone,
       channel      : '유닥',
       memo         : '아이패드 랜딩 신청',
-      campaign_name: getChannel(),
-      created_at   : new Date().toISOString(),
+      utm_campaign : getChannel(),
+      utm_source   : new URLSearchParams(window.location.search).get('utm_source') || null,
+      utm_medium   : new URLSearchParams(window.location.search).get('utm_medium') || null,
     };
 
     try {
