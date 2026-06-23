@@ -285,14 +285,27 @@
   const SUPABASE_URL = 'https://ebggtghzqtxfylbhqfoh.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTU2NTM4NzcsImV4cCI6MjAzMTIyOTg3N30.8lOFDqEA1QLHO4InHl3WYNa7yJDOIlnFvFYNcfJIJuY';
 
-  // URL에서 UTM 파라미터 자동 감지
+  // 채널 자동 감지 (URL 꼬리표 OR 레퍼러 자동 판별)
   function getUTMParams() {
     const p = new URLSearchParams(window.location.search);
-    return {
-      utm_source  : p.get('utm_source')   || null,
-      utm_medium  : p.get('utm_medium')   || null,
-      utm_campaign: p.get('utm_campaign') || p.get('source') || null,
-    };
+    const ref = document.referrer || '';
+
+    // URL 꼬리표 우선
+    let source   = p.get('utm_source')   || null;
+    let medium   = p.get('utm_medium')   || null;
+    let campaign = p.get('utm_campaign') || p.get('source') || null;
+
+    // 꼬리표 없으면 레퍼러로 자동 감지
+    if (!campaign) {
+      if (ref.includes('threads.net'))      campaign = '스레드';
+      else if (ref.includes('daangn.com'))  campaign = '당근';
+      else if (ref.includes('blog.naver'))  campaign = '블로그';
+      else if (ref.includes('instagram'))   campaign = '인스타';
+      else if (ref.includes('facebook'))    campaign = '페이스북';
+      else if (ref.includes('kakao'))       campaign = '카카오';
+    }
+
+    return { utm_source: source, utm_medium: medium, utm_campaign: campaign };
   }
 
   function showToast(msg) {
