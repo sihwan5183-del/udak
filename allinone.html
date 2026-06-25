@@ -65,6 +65,7 @@ button{cursor:pointer;font-family:inherit;border:none;outline:none}
 .step-card.active{border-color:var(--navy);box-shadow:0 4px 16px rgba(26,35,126,.1)}
 .step-card.done{border-color:var(--g200);opacity:.85}
 .step-card.locked{opacity:.45;pointer-events:none}
+.step-card.locked .step-body{display:none!important}
 .step-head{display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer}
 .step-num{width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .step-card.done .step-num{background:var(--g300);color:var(--g600)}
@@ -250,7 +251,7 @@ textarea.form-input{resize:vertical;min-height:80px}
             <button class="opt-btn" onclick="selStep2('LGU+')">LG U+</button>
             <button class="opt-btn" onclick="selStep2('SKT')">SKT</button>
             <button class="opt-btn" onclick="selStep2('KT')">KT</button>
-            <button class="opt-btn" onclick="selStep2('기타/모름')">기타/모름</button>
+            <button class="opt-btn" onclick="selStep2('기타')">기타</button>
           </div>
           <!-- LG U+ 선택 시 표시 -->
           <div id="lguWarn" style="display:none">
@@ -588,6 +589,12 @@ function renderPlanCompareCards() {
 function toggleStep(id) {
   const card = document.getElementById(id);
   if(card.classList.contains('locked')) return;
+  // 이미 active면 무시 (선택 중인 스텝)
+  if(card.classList.contains('active')) return;
+  // done 상태면 다시 펼치기 허용
+  if(card.classList.contains('done')) {
+    activateStep(id);
+  }
 }
 
 function activateStep(id) {
