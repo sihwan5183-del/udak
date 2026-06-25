@@ -58,7 +58,8 @@ button{cursor:pointer;font-family:inherit;border:none;outline:none}
 .step-card.active{border-color:var(--navy);box-shadow:0 4px 16px rgba(26,35,126,.1)}
 .step-card.done{border-color:var(--g200)}
 .step-card.locked{opacity:.4;pointer-events:none}
-.step-card.locked .step-body,.step-card:not(.active) .step-body{display:none}
+.step-card.locked .step-body,.step-card:not(.active) .step-body{display:none!important}
+.step-card.active .step-body{display:block!important}
 .step-head{display:flex;align-items:center;gap:12px;padding:15px 18px;cursor:pointer;user-select:none}
 .step-card.done .step-head:hover{background:var(--g50)}
 .step-num{width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
@@ -68,7 +69,7 @@ button{cursor:pointer;font-family:inherit;border:none;outline:none}
 .step-val.ph{color:var(--g400);font-weight:400}
 .step-check{color:var(--navy);font-size:14px;margin-left:4px;display:none}
 .step-card.done .step-check{display:block}
-.step-body{padding:4px 18px 18px}
+.step-body{padding:4px 18px 18px;display:none}
 
 /* 선택 옵션 버튼 */
 .opt-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
@@ -394,12 +395,17 @@ textarea.f-input{resize:vertical;min-height:70px}
       </div>
       <div class="bonus-right">
         <div class="bonus-sum-title">📋 추가 혜택 요약</div>
+        <div style="font-size:12px;font-weight:700;color:var(--navy);text-align:center;padding:8px 0 4px;line-height:1.6" id="bonusSumSubtitle"></div>
         <div class="bonus-sum-rows" id="bonusSumRows">
           <div class="bonus-empty">왼쪽에서 혜택을 선택해보세요</div>
         </div>
         <div class="bonus-total" id="bonusTotal" style="display:none">
           <div class="bonus-total-lbl">✨ 무료 혜택 절약액</div>
           <div class="bonus-total-val" id="bonusTotalVal">-</div>
+          <div style="margin-top:10px;padding:10px 12px;background:rgba(255,255,255,.7);border-radius:8px;border:1px solid var(--navyL)">
+            <div style="font-size:11px;font-weight:700;color:var(--g500);margin-bottom:6px">혜택 내역</div>
+            <div id="bonusDetailRows"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -920,26 +926,55 @@ window.selectOtt=function(e,ottId,key){
   renderBonusItems(key);updateBonusSummary(key);updateBonusHero(key);
 };
 function updateBonusSummary(key){
-  if(!key||!bonusData[key]){document.getElementById("bonusSumRows").innerHTML=`<div class="bonus-empty">선택한 혜택이 없습니다</div>`;return;}
-  const bd=bonusData[key];
   const rows=document.getElementById("bonusSumRows");
+  const sub=document.getElementById("bonusSumSubtitle");
+  const bl=document.getElementById("sBonusList");
+  if(!key||!bonusData[key]||!benefitAccepted){
+    if(rows) rows.innerHTML=`<div class="bonus-empty">왼쪽에서 혜택을 선택해보세요</div>`;
+    document.getElementById("bonusTotal").style.display="none";
+    return;
+  }
+  const bd=bonusData[key];
   const selItems=[];
   (bd.items||[]).forEach(item=>{
-    if(item.ottOptions){const o=item.ottOptions.find(o=>selectedBonuses.has(o.id));if(o)selItems.push({name:item.name+"("+o.name+")",img:o.img||item.img,amount:0,emoji:o.emoji});}
-    else if(selectedBonuses.has(item.id))selItems.push(item);
+    if(item.ottOptions){
+      const o=item.ottOptions.find(o=>selectedBonuses.has(o.id));
+      if(o) selItems.push({...item, selOtt:o, displayName:item.name+" ("+o.name+")", img:o.img||item.img, emoji:o.emoji||"🎬"});
+    } else if(selectedBonuses.has(item.id)){
+      selItems.push({...item, displayName:item.name});
+    }
   });
-  if(!selItems.length||!benefitAccepted){rows.innerHTML=`<div class="bonus-empty">왼쪽에서 혜택을 선택해보세요</div>`;document.getElementById("bonusTotal").style.display="none";return;}
-  rows.innerHTML=selItems.map(i=>`<div class="bonus-sum-row">
-    ${i.img?`<img class="bonus-sum-img" src="${i.img}" onerror="this.style.display='none'">`:`<div class="bonus-sum-img-ph">${i.emoji||"🎁"}</div>`}
-    <div class="bonus-sum-info"><div class="bonus-sum-name">${i.name}</div><div class="bonus-sum-price">${i.amount>0?"월 "+i.amount.toLocaleString()+"원 → 무료":"무료 혜택"}</div></div>
+  if(!selItems.length){
+    if(rows) rows.innerHTML=`<div class="bonus-empty">왼쪽에서 혜택을 선택해보세요</div>`;
+    document.getElementById("bonusTotal").style.display="none";
+    return;
+  }
+  // 요약 줄 렌더
+  if(rows) rows.innerHTML=selItems.map(i=>`<div class="bonus-sum-row">
+    ${i.img?`<img class="bonus-sum-img" src="${i.img}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="bonus-sum-img-ph" style="display:none">${i.emoji||"🎁"}</div>`:`<div class="bonus-sum-img-ph">${i.emoji||"🎁"}</div>`}
+    <div class="bonus-sum-info">
+      <div class="bonus-sum-name">${i.displayName}</div>
+      <div class="bonus-sum-price">${i.amount>0?"월 "+i.amount.toLocaleString()+"원 → <strong>무료</strong>":i.selOtt?"별도 안내":"무료 혜택"}</div>
+    </div>
   </div>`).join("");
+  // 절약액 계산
   const total=selItems.reduce((s,i)=>s+(i.amount||0),0);
+  const hasOtt=selItems.some(i=>i.selOtt);
   const bt=document.getElementById("bonusTotal");
-  if(total>0){bt.style.display="block";document.getElementById("bonusTotalVal").textContent="월 "+total.toLocaleString()+"원 절약";}
-  else bt.style.display="none";
-  // 우측 요약카드 추가혜택
-  const bl=document.getElementById("sBonusList");
-  if(bl)bl.innerHTML=selItems.map(i=>`<li>${i.name}</li>`).join("");
+  bt.style.display="block";
+  document.getElementById("bonusTotalVal").textContent="월 "+total.toLocaleString()+"원"+(hasOtt?" + α":"");
+  // 혜택 내역 상세 (유닥 스타일)
+  const det=document.getElementById("bonusDetailRows");
+  if(det) det.innerHTML=selItems.map(i=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--navyL)">
+    ${i.img?`<img style="width:24px;height:24px;object-fit:contain;border-radius:4px;border:1px solid var(--g200)" src="${i.img}" onerror="this.style.display='none'">`:`<span style="font-size:16px">${i.emoji||"🎁"}</span>`}
+    <span style="flex:1;font-size:11px;font-weight:600;color:var(--g600)">${i.displayName}</span>
+    <span style="font-size:11px;font-weight:700;color:var(--navy)">${i.amount>0?"-"+i.amount.toLocaleString()+"원":"별도"}</span>
+  </div>`).join("");
+  // 좌측 요약 서브타이틀
+  const names=selItems.map(i=>i.displayName.replace(" 기기값 + 요금 면제","").replace(" 기본 제공","")).join(" + ");
+  if(sub) sub.textContent="모바일 + "+names+" 요금을 한번에!";
+  // PC 우측 요약카드 추가혜택
+  if(bl) bl.innerHTML=selItems.map(i=>`<li>${i.displayName}</li>`).join("");
 }
 function updateBonusHero(key){
   if(!key||!bonusData[key])return;
