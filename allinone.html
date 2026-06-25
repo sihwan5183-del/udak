@@ -1396,6 +1396,30 @@ window.addEventListener('pageshow',function(e){
   if(bonusSection) bonusSection.style.display='none';
 });
 
+
+/* ── confirmStorage: 용량/색상 선택 완료 ── */
+window.confirmStorage = function() {
+  if (!sel.storage || !sel.color) {
+    if (typeof window.showStepToast === 'function') showStepToast('용량과 색상을 모두 선택해주세요');
+    return;
+  }
+  // vStorage 텍스트 업데이트
+  var parts = [];
+  if (sel.storage) parts.push(sel.storage.name);
+  if (sel.color) {
+    var cn = (sel.color.name || '').split('|')[1];
+    if (cn) parts.push(cn);
+  }
+  var vs = document.getElementById('vStorage');
+  if (vs) { vs.textContent = parts.join(' / '); vs.className = 'step-val'; }
+  // sc3 locked 해제
+  var sc3 = document.getElementById('sc3');
+  if (sc3) sc3.classList.remove('locked');
+  closeSheet();
+  // 올인원 후처리
+  if (typeof window.aioAfterDevice === 'function') window.aioAfterDevice();
+};
+
 window.doSubmit = async function() {
   var name = document.getElementById("fName").value.trim();
   var birth = document.getElementById("fBirth").value.trim();
