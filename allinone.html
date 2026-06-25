@@ -672,23 +672,27 @@ const DTXT={
   kakaoUrl:'https://pf.kakao.com/_HxfVxcn/chat',
 };
 function applyTexts(t){
+  /* 올인원: id 없으면 skip - JS 에러 방지 */
   const tx={...DTXT,...t};
   window._installmentNote = tx.installmentNote||'*기기 할부금 별도';
   window._installmentNoteOff = tx.installmentNoteOff===true||tx.installmentNoteOff==='true';
-  document.getElementById('txtSectionTitle').textContent=tx.sectionTitle;
-  document.getElementById('txtStepDeviceLbl').textContent=tx.stepDeviceLbl;
-  document.getElementById('txtStepCarrierLbl').textContent=tx.stepCarrierLbl;
-  document.getElementById('txtStepStorageLbl').textContent=tx.stepStorageLbl;
-  document.getElementById('txtStepPlanLbl').textContent=tx.stepPlanLbl;
-  document.getElementById('txtDiscPub').textContent=tx.discPub;
-  document.getElementById('txtDiscSel').textContent=tx.discSel;
-  document.getElementById('txtBenefitTitle').textContent=tx.benefitTitle;
-  document.getElementById('txtBenefitNote').innerHTML=tx.benefitNote.replace(/\n/g,'<br>');
-  document.getElementById('txtFormTitle').textContent=tx.formTitle;
-  document.getElementById('txtCtaKakao').textContent=tx.ctaKakao;
-  document.getElementById('txtCtaPhone').textContent=tx.ctaPhone;
-  document.getElementById('txtPrivacy').textContent=tx.privacyNote;
-  if(tx.kakaoUrl) document.getElementById('kakaoBtn').href=tx.kakaoUrl;
+  function _set(id,val){var e=document.getElementById(id);if(e)e.textContent=val;}
+  function _html(id,val){var e=document.getElementById(id);if(e)e.innerHTML=val;}
+  function _href(id,val){var e=document.getElementById(id);if(e&&val)e.href=val;}
+  _set('txtSectionTitle',tx.sectionTitle);
+  _set('txtStepDeviceLbl',tx.stepDeviceLbl);
+  _set('txtStepCarrierLbl',tx.stepCarrierLbl);
+  _set('txtStepStorageLbl',tx.stepStorageLbl);
+  _set('txtStepPlanLbl',tx.stepPlanLbl);
+  _set('txtDiscPub',tx.discPub);
+  _set('txtDiscSel',tx.discSel);
+  _set('txtBenefitTitle',tx.benefitTitle);
+  _html('txtBenefitNote',tx.benefitNote?(tx.benefitNote.replace(/\n/g,'<br>')):'');
+  _set('txtFormTitle',tx.formTitle);
+  _set('txtCtaKakao',tx.ctaKakao);
+  _set('txtCtaPhone',tx.ctaPhone);
+  _set('txtPrivacy',tx.privacyNote);
+  _href('kakaoBtn',tx.kakaoUrl);
 }
 
 /* MOCK DATA */
