@@ -66,7 +66,8 @@ button{cursor:pointer;font-family:inherit;border:none;outline:none}
 .step-card.done{border-color:var(--g200);opacity:.85}
 .step-card.locked{opacity:.45;pointer-events:none}
 .step-card.locked .step-body{display:none!important}
-.step-head{display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer}
+.step-head{display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;user-select:none}
+.step-card.done .step-head:hover{background:var(--g50)}
 .step-num{width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .step-card.done .step-num{background:var(--g300);color:var(--g600)}
 .step-label{font-size:13px;font-weight:600;color:var(--g600);flex:1}
@@ -189,6 +190,33 @@ textarea.form-input{resize:vertical;min-height:80px}
   .result-section{display:none!important}
   .mini-bar{display:none!important}
 }
+
+/* ── 추가혜택 섹션 ── */
+.bonus-section{background:var(--white);border-radius:var(--radius);padding:20px;margin-top:16px;box-shadow:var(--shadow)}
+.bonus-header{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.bonus-header-icon{font-size:20px}
+.bonus-header-title{font-size:15px;font-weight:800;color:var(--navy)}
+.bonus-grid{display:flex;flex-direction:column;gap:8px}
+.bonus-item{display:flex;align-items:center;gap:12px;padding:14px;border:1.5px solid var(--g200);border-radius:10px;cursor:pointer;transition:all .15s;background:var(--white)}
+.bonus-item:hover{border-color:var(--navy3);background:var(--navyLL)}
+.bonus-item.on{border-color:var(--navy);background:var(--navyLL)}
+.bonus-item-emoji{font-size:24px;width:40px;text-align:center;flex-shrink:0}
+.bonus-item-info{flex:1}
+.bonus-item-name{font-size:13px;font-weight:700;color:var(--g800)}
+.bonus-item.on .bonus-item-name{color:var(--navy)}
+.bonus-item-desc{font-size:11px;color:var(--g500);margin-top:2px}
+.bonus-chk{width:22px;height:22px;border-radius:50%;border:2px solid var(--g300);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;transition:all .15s}
+.bonus-item.on .bonus-chk{background:var(--navy);border-color:var(--navy);color:#fff}
+/* OTT 서브옵션 */
+.ott-subopts{display:none;flex-wrap:wrap;gap:6px;padding:10px 14px 4px 52px}
+.ott-subopts.show{display:flex}
+.ott-sub-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--g300);background:#fff;font-size:12px;font-weight:600;color:var(--g600);cursor:pointer;transition:all .15s}
+.ott-sub-btn.on{border-color:var(--navy);background:var(--navy);color:#fff}
+.bonus-summary{background:var(--navyLL);border-radius:10px;padding:14px 16px;margin-top:12px}
+.bonus-summary-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.bonus-summary-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+.bonus-summary-list li{font-size:12px;color:var(--g600)}
+.bonus-summary-list li::before{content:'✓ ';color:var(--navy);font-weight:700}
 </style>
 </head>
 <body>
@@ -251,7 +279,7 @@ textarea.form-input{resize:vertical;min-height:80px}
             <button class="opt-btn" onclick="selStep2('LGU+')">LG U+</button>
             <button class="opt-btn" onclick="selStep2('SKT')">SKT</button>
             <button class="opt-btn" onclick="selStep2('KT')">KT</button>
-            <button class="opt-btn" onclick="selStep2('기타')">기타</button>
+            <button class="opt-btn" onclick="selStep2('기타')>기타</button>
           </div>
           <!-- LG U+ 선택 시 표시 -->
           <div id="lguWarn" style="display:none">
@@ -339,6 +367,22 @@ textarea.form-input{resize:vertical;min-height:80px}
       </div>
       <div class="result-rows" id="rRows"></div>
       <ul class="result-bonus-list" id="rBonus"></ul>
+    </div>
+
+
+    <!-- ── 추가 혜택 확인 ── -->
+    <div class="bonus-section" id="bonusSection" style="display:none">
+      <div class="bonus-header">
+        <span class="bonus-header-icon">🎁</span>
+        <span class="bonus-header-title">요금제 추가 혜택 확인하기</span>
+      </div>
+      <div class="bonus-grid" id="bonusGrid">
+        <!-- JS로 렌더 -->
+      </div>
+      <div class="bonus-summary" id="bonusSummary" style="display:none">
+        <div class="bonus-summary-title">✅ 선택한 추가 혜택</div>
+        <ul class="bonus-summary-list" id="bonusSummaryList"></ul>
+      </div>
     </div>
 
     <!-- 신청 폼 -->
@@ -588,24 +632,50 @@ function renderPlanCompareCards() {
 /* ── STEP 선택 함수들 ── */
 function toggleStep(id) {
   const card = document.getElementById(id);
+  if(!card) return;
   if(card.classList.contains('locked')) return;
-  // 이미 active면 무시 (선택 중인 스텝)
   if(card.classList.contains('active')) return;
-  // done 상태면 다시 펼치기 허용
+  // done 상태면 다시 펼쳐서 수정 가능
   if(card.classList.contains('done')) {
     activateStep(id);
   }
 }
 
 function activateStep(id) {
-  ['sc1','sc2','sc3','sc4','sc5','sc6'].forEach(s=>{
+  const order = ['sc1','sc2','sc3','sc4','sc5','sc6'];
+  const idx = order.indexOf(id);
+  order.forEach((s,i)=>{
     const el = document.getElementById(s);
-    if(el) el.classList.remove('active');
+    if(!el) return;
+    el.classList.remove('active');
+    // 현재 스텝보다 뒤에 있는 스텝들 초기화
+    if(i > idx) {
+      el.classList.remove('done');
+      el.classList.add('locked');
+      // 값 초기화
+      const vEl = document.getElementById('v'+(i+1));
+      if(vEl){vEl.textContent='선택해주세요';vEl.className='step-val ph';}
+      const sEl = document.getElementById('s'+(i+1));
+      if(sEl){sEl.textContent='–';sEl.className='val ph';}
+    }
   });
+  // 이후 sel 값도 초기화
+  if(idx <= 0) { sel.mobileCarrier=null; }
+  if(idx <= 1) { sel.internetCarrier=null; }
+  if(idx <= 2) { sel.jointype=null; }
+  if(idx <= 3) { sel.plan=null; }
+  if(idx <= 4) { sel.members=null; }
+  if(idx <= 5) { sel.device=null; }
+  // 추가혜택/결과 숨김
+  document.getElementById('bonusSection').style.display='none';
+  document.getElementById('resultSection').classList.remove('show');
+  document.getElementById('miniBar').classList.remove('show');
+  document.getElementById('sFeeBox').style.display='none';
+  updateCalc();
   const target = document.getElementById(id);
   if(target && !target.classList.contains('locked')) {
     target.classList.add('active');
-    setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+    setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'nearest'}),200);
   }
 }
 
@@ -703,7 +773,7 @@ function selStep5(n) {
     markDone('sc5'); unlockStep('sc6'); activateStep('sc6');
   } else {
     markDone('sc5');
-    showResult();
+    showBonusSection();
   }
   updateCalc();
 }
@@ -721,8 +791,119 @@ function selStep6(name) {
   setVal('v6', name); setSummary('sV6', name);
   document.getElementById('sR6').style.display='flex';
   markDone('sc6');
-  showResult();
+  showBonusSection();
   updateCalc();
+}
+
+
+/* ── 추가 혜택 데이터 ── */
+const BONUS_ITEMS_BY_PLAN = {
+  95000: [
+    {id:'internet', emoji:'📡', name:'인터넷 500M 기본 제공', desc:'월 요금 무료 (500M 기준)', hasOtt:false},
+    {id:'watch', emoji:'⌚', name:'스마트워치 기기값 + 요금 면제', desc:'갤럭시 워치 등 2ND 기기 혜택', hasOtt:false},
+  ],
+  115000: [
+    {id:'internet', emoji:'📡', name:'인터넷 500M 기본 제공', desc:'월 요금 무료 (500M 기준)', hasOtt:false},
+    {id:'watch', emoji:'⌚', name:'스마트워치 기기값 + 요금 면제', desc:'갤럭시 워치 등 2ND 기기 혜택', hasOtt:false},
+    {id:'tab', emoji:'📱', name:'스마트탭 기기값 + 요금 면제', desc:'갤럭시 탭 등 태블릿 혜택', hasOtt:false},
+    {id:'ott', emoji:'🎬', name:'OTT 1개 선택', desc:'넷플릭스 / 디즈니+ / 티빙 중 선택', hasOtt:true, ottOptions:['넷플릭스','디즈니+','티빙']},
+  ],
+  130000: [
+    {id:'internet', emoji:'📡', name:'인터넷 500M 기본 제공', desc:'월 요금 무료 (500M 기준)', hasOtt:false},
+    {id:'watch', emoji:'⌚', name:'스마트워치 기기값 + 요금 면제', desc:'갤럭시 워치 등 2ND 기기 혜택', hasOtt:false},
+    {id:'tab', emoji:'📱', name:'스마트탭 기기값 + 요금 면제', desc:'갤럭시 탭 등 태블릿 혜택', hasOtt:false},
+    {id:'ott', emoji:'🎬', name:'OTT 1개 선택', desc:'넷플릭스 / 디즈니+ / 티빙 중 선택', hasOtt:true, ottOptions:['넷플릭스','디즈니+','티빙']},
+    {id:'child', emoji:'👨‍👩‍👧', name:'만 19세 미만 자녀 요금 0원', desc:'첫째 자녀 요금제 완전 면제', hasOtt:false},
+  ],
+};
+let selectedBonuses = new Set(); // 선택된 추가혜택 id
+let selectedOtt = null; // 선택된 OTT
+
+function showBonusSection() {
+  if(!sel.plan) { showResult(); return; }
+  const items = BONUS_ITEMS_BY_PLAN[sel.plan] || [];
+  const section = document.getElementById('bonusSection');
+  section.style.display = 'block';
+  selectedBonuses.clear();
+  selectedOtt = null;
+  renderBonusItems(items);
+  // 모두 기본 선택
+  items.forEach(item => selectedBonuses.add(item.id));
+  updateBonusSummary();
+  setTimeout(()=>section.scrollIntoView({behavior:'smooth',block:'start'}),200);
+}
+
+function renderBonusItems(items) {
+  const grid = document.getElementById('bonusGrid');
+  grid.innerHTML = items.map(item => `
+    <div class="bonus-item on" id="bitem_${item.id}" onclick="toggleBonus('${item.id}')">
+      <div class="bonus-item-emoji">${item.emoji}</div>
+      <div class="bonus-item-info">
+        <div class="bonus-item-name">${item.name}</div>
+        <div class="bonus-item-desc">${item.desc}</div>
+      </div>
+      <div class="bonus-chk" id="bchk_${item.id}">✓</div>
+    </div>
+    ${item.hasOtt ? `<div class="ott-subopts show" id="ott_sub">
+      ${item.ottOptions.map(o=>`<button class="ott-sub-btn${o===selectedOtt?' on':''}" onclick="event.stopPropagation();selectOtt('${o}')">${o}</button>`).join('')}
+    </div>` : ''}
+  `).join('');
+  // 기본 OTT 첫번째 선택
+  const ottItem = items.find(i=>i.hasOtt);
+  if(ottItem && !selectedOtt) {
+    selectedOtt = ottItem.ottOptions[0];
+    const firstBtn = document.querySelector('.ott-sub-btn');
+    if(firstBtn) firstBtn.classList.add('on');
+  }
+}
+
+window.toggleBonus = function(id) {
+  if(selectedBonuses.has(id)) {
+    selectedBonuses.delete(id);
+    document.getElementById('bitem_'+id)?.classList.remove('on');
+    document.getElementById('bchk_'+id).textContent = '';
+    if(id==='ott') {
+      selectedOtt=null;
+      document.getElementById('ott_sub')?.classList.remove('show');
+    }
+  } else {
+    selectedBonuses.add(id);
+    document.getElementById('bitem_'+id)?.classList.add('on');
+    document.getElementById('bchk_'+id).textContent = '✓';
+    if(id==='ott') {
+      document.getElementById('ott_sub')?.classList.add('show');
+    }
+  }
+  updateBonusSummary();
+  showResult(); // 요약도 동시 업데이트
+};
+
+window.selectOtt = function(name) {
+  selectedOtt = name;
+  document.querySelectorAll('.ott-sub-btn').forEach(b=>b.classList.toggle('on', b.textContent===name));
+  updateBonusSummary();
+  showResult();
+};
+
+function updateBonusSummary() {
+  const items = BONUS_ITEMS_BY_PLAN[sel.plan] || [];
+  const selected = items.filter(i=>selectedBonuses.has(i.id));
+  const summary = document.getElementById('bonusSummary');
+  const list = document.getElementById('bonusSummaryList');
+  if(selected.length === 0) { summary.style.display='none'; return; }
+  summary.style.display = 'block';
+  list.innerHTML = selected.map(i=>`<li>${i.emoji} ${i.name}${i.hasOtt&&selectedOtt?' ('+selectedOtt+')':''}</li>`).join('');
+  // 우측 요약 카드 추가혜택도 업데이트
+  const bl = document.getElementById('sBonusList');
+  if(bl) bl.innerHTML = selected.map(i=>`<li>${i.emoji} ${i.name}${i.hasOtt&&selectedOtt?' ('+selectedOtt+')':''}</li>`).join('');
+}
+
+function getBonusSummaryText() {
+  const items = BONUS_ITEMS_BY_PLAN[sel.plan] || [];
+  return items
+    .filter(i=>selectedBonuses.has(i.id))
+    .map(i=>i.name + (i.hasOtt&&selectedOtt?' ('+selectedOtt+')':''))
+    .join(' / ') || '–';
 }
 
 /* ── 혜택 계산 + 업데이트 ── */
@@ -768,11 +949,12 @@ function setSummary(id, val) {
 function showResult() {
   const r = calcFee();
   if(!r) return;
-  const {fee, cash, bonus} = r;
+  const {fee, cash} = r;
   const sec = document.getElementById('resultSection');
   sec.classList.add('show');
   document.getElementById('rFeeMain').textContent = fee?.toLocaleString()||'–';
   document.getElementById('rCash').textContent = cash>0 ? `💰 현금 혜택 최대 ${cash}만원` : '';
+  const bonusTxt = getBonusSummaryText();
   const rows = [
     ['현재 휴대폰 통신사', sel.mobileCarrier],
     ['현재 인터넷 통신사', sel.internetCarrier],
@@ -780,10 +962,11 @@ function showResult() {
     ['선택 요금제', sel.plan?sel.plan.toLocaleString()+'원':'–'],
     ['가족 결합 인원', sel.members?sel.members+'인':'–'],
     sel.device?['선택 기기', sel.device]:null,
+    bonusTxt!=='–'?['추가 혜택', bonusTxt]:null,
   ].filter(Boolean);
   document.getElementById('rRows').innerHTML = rows.map(([k,v])=>`<div class="result-row"><span class="rk">${k}</span><span class="rv">${v||'–'}</span></div>`).join('');
-  document.getElementById('rBonus').innerHTML = `<li style="font-weight:700;color:var(--navy);margin-bottom:4px">추가 혜택</li>`+bonus.map(b=>`<li>${b}</li>`).join('');
-  setTimeout(()=>sec.scrollIntoView({behavior:'smooth',block:'start'}),200);
+  document.getElementById('rBonus').innerHTML = '';
+  if(!sec.classList.contains('show')) setTimeout(()=>sec.scrollIntoView({behavior:'smooth',block:'start'}),200);
 }
 
 /* ── 폼 제출 ── */
