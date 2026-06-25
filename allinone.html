@@ -20,7 +20,7 @@ fbq('init','921171610476690');fbq('track','PageView');
   --radius:12px;--shadow:0 2px 12px rgba(0,0,0,.08);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f5f6fa;color:var(--g800);min-height:100vh}
+body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#ffffff;color:var(--g800);min-height:100vh}
 a{text-decoration:none;color:inherit}
 button{cursor:pointer;font-family:inherit;border:none;outline:none}
 
@@ -720,6 +720,7 @@ function selStep2(internet) {
     });
     return;
   }
+  renderStep3Opts(); // 진행방식 옵션 렌더 (자사/타사 분기)
   markDone('sc2'); unlockStep('sc3'); activateStep('sc3');
   updateCalc();
 }
