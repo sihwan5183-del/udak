@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALL-IN-ONE 어드민</title>
+<style>
+:root{
+  --navy:#1a237e;--navy2:#283593;--navyL:#e8eaf6;
+  --white:#fff;--g50:#f8f9fa;--g100:#f1f3f5;--g200:#e9ecef;--g300:#dee2e6;
+  --g400:#adb5bd;--g500:#868e96;--g600:#495057;--g800:#212529;
+  --red:#e53935;--green:#2e7d32;--accent:#ff6f00;
+  --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--g50);color:var(--g800)}
+button{cursor:pointer;font-family:inherit;border:none;outline:none}
+input,select,textarea{font-family:inherit}
+
+/* ── 로그인 ── */
+#loginWrap{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:9999}
+.login-box{background:#fff;border-radius:16px;padding:40px 32px;width:320px;text-align:center}
+.login-title{font-size:20px;font-weight:800;color:var(--navy);margin-bottom:6px}
+.login-sub{font-size:13px;color:var(--g400);margin-bottom:24px}
+.login-input{width:100%;padding:12px 14px;border:1.5px solid var(--g300);border-radius:8px;font-size:14px;margin-bottom:12px;outline:none}
+.login-input:focus{border-color:var(--navy)}
+.login-btn{width:100%;padding:13px;background:var(--navy);color:#fff;border-radius:8px;font-size:14px;font-weight:700}
+
+/* ── 레이아웃 ── */
+.header{background:var(--navy);color:#fff;padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.header-title{font-size:16px;font-weight:800;letter-spacing:.02em}
+.logout-btn{background:rgba(255,255,255,.15);color:#fff;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600}
+.tabs{background:#fff;border-bottom:1px solid var(--g200);display:flex;overflow-x:auto;padding:0 16px;gap:4px;position:sticky;top:56px;z-index:90}
+.tab{padding:13px 16px;font-size:13px;font-weight:600;color:var(--g400);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
+.tab.on{color:var(--navy);border-bottom-color:var(--navy)}
+.content{max-width:960px;margin:0 auto;padding:28px 20px}
+
+/* ── 섹션 카드 ── */
+.card{background:#fff;border-radius:var(--radius);border:1px solid var(--g200);padding:20px;margin-bottom:20px}
+.card-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card-title .cnt{font-size:12px;color:var(--g400);font-weight:400}
+
+/* ── 테이블 ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:500px}
+th{background:var(--g50);padding:10px 12px;font-size:12px;font-weight:600;color:var(--g500);text-align:left;border-bottom:1px solid var(--g200)}
+td{padding:11px 12px;font-size:13px;border-bottom:1px solid var(--g100);vertical-align:middle}
+tr:hover td{background:var(--g50)}
+.td-actions{display:flex;gap:6px;white-space:nowrap}
+
+/* ── 버튼 ── */
+.btn{padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;transition:all .15s}
+.btn-navy{background:var(--navy);color:#fff}
+.btn-navy:hover{background:var(--navy2)}
+.btn-outline{background:#fff;color:var(--navy);border:1.5px solid var(--navy)}
+.btn-red{background:#fff;color:var(--red);border:1.5px solid var(--red)}
+.btn-red:hover{background:var(--red);color:#fff}
+.btn-green{background:var(--green);color:#fff}
+.btn-sm{padding:5px 10px;font-size:11px}
+.add-btn{padding:10px 18px;background:var(--navy);color:#fff;border-radius:8px;font-size:13px;font-weight:700;margin-bottom:16px}
+
+/* ── 모달 ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center;padding:16px}
+.modal-bg.on{display:flex}
+.modal-box{background:#fff;border-radius:14px;padding:28px 24px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:16px;font-weight:800;color:var(--navy);margin-bottom:20px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--g600);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1.5px solid var(--g300);border-radius:7px;font-size:13px;outline:none;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--navy)}
+.field textarea{min-height:70px;resize:vertical}
+.modal-actions{display:flex;gap:10px;margin-top:20px}
+.modal-actions button{flex:1;padding:11px;border-radius:8px;font-size:13px;font-weight:700}
+
+/* ── 토글 ── */
+.toggle{position:relative;display:inline-block;width:40px;height:22px}
+.toggle input{display:none}
+.toggle-slider{position:absolute;inset:0;background:var(--g300);border-radius:11px;cursor:pointer;transition:background .2s}
+.toggle input:checked+.toggle-slider{background:var(--navy)}
+.toggle-slider::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .2s}
+.toggle input:checked+.toggle-slider::after{transform:translateX(18px)}
+
+/* ── 배너 섹션 ── */
+.banner-item{display:flex;gap:12px;align-items:flex-start;padding:14px;background:var(--g50);border-radius:8px;margin-bottom:10px;border:1px solid var(--g200)}
+.banner-num{width:24px;height:24px;background:var(--navy);color:#fff;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.banner-fields{flex:1;display:flex;flex-direction:column;gap:8px}
+.banner-fields input{width:100%;padding:8px 10px;border:1.5px solid var(--g300);border-radius:6px;font-size:12px;outline:none}
+.banner-fields input:focus{border-color:var(--navy)}
+.banner-preview{width:60px;height:40px;object-fit:cover;border-radius:4px;border:1px solid var(--g200);background:var(--g100)}
+
+/* ── 토스트 ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;display:none;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* ── OTT 리스트 ── */
+.ott-grid{display:flex;flex-wrap:wrap;gap:10px}
+.ott-item{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid var(--g200);border-radius:8px;background:#fff}
+.ott-item.on{border-color:var(--navy);background:var(--navyL)}
+.ott-name{font-size:13px;font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- 로그인 -->
+<div id="loginWrap">
+  <div class="login-box">
+    <div class="login-title">🔐 ALL-IN-ONE 어드민</div>
+    <div class="login-sub">관리자 비밀번호를 입력해주세요</div>
+    <input class="login-input" type="password" id="pwInput" placeholder="비밀번호" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">로그인</button>
+  </div>
+</div>
+
+<div id="adminWrap" style="display:none">
+  <div class="header">
+    <div class="header-title">ALL-IN-ONE 어드민</div>
+    <button class="logout-btn" onclick="logout()">로그아웃</button>
+  </div>
+  <div class="tabs">
+    <div class="tab on" data-tab="plans" onclick="switchTab('plans')">💳 요금제</div>
+    <div class="tab" data-tab="devices" onclick="switchTab('devices')">📱 기기 (모바일)</div>
+    <div class="tab" data-tab="devices2nd" onclick="switchTab('devices2nd')">⌚ 2ND 기기</div>
+    <div class="tab" data-tab="policies" onclick="switchTab('policies')">📋 정책</div>
+    <div class="tab" data-tab="ott" onclick="switchTab('ott')">🎬 OTT</div>
+    <div class="tab" data-tab="banners" onclick="switchTab('banners')">🖼 배너</div>
+    <div class="tab" data-tab="modalbanner" onclick="switchTab('modalbanner')">🎁 완료 모달</div>
+  </div>
+  <div class="content" id="mainContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- 기기 모달 -->
+<div class="modal-bg" id="devModal">
+  <div class="modal-box">
+    <div class="modal-title" id="devModalTitle">기기 추가</div>
+    <input type="hidden" id="devModalKey">
+    <div class="field"><label>기기명 *</label><input id="devName" placeholder="갤럭시 S26"></div>
+    <div class="field"><label>이미지 URL</label><input id="devImg" placeholder="https://..."></div>
+    <div class="field"><label>표시 여부</label>
+      <select id="devVisible"><option value="true">표시</option><option value="false">숨김</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('devModal')">취소</button>
+      <button class="btn btn-navy" onclick="saveDev()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 정책 모달 -->
+<div class="modal-bg" id="polModal">
+  <div class="modal-box">
+    <div class="modal-title" id="polModalTitle">정책 추가</div>
+    <input type="hidden" id="polModalKey">
+    <div class="field"><label>정책명 * (수정 가능)</label><input id="polName" placeholder="통신사 이동 지원금 (타사→LGU+)"></div>
+    <div class="field"><label>적용 통신사</label>
+      <select id="polCarrier">
+        <option value="all">전체</option>
+        <option value="tasa">타사 전환 고객</option>
+        <option value="jasa">자사 (LGU+) 고객</option>
+      </select>
+    </div>
+    <div class="field"><label>1인 금액 (원)</label><input id="polAmt1" type="number" placeholder="300000"></div>
+    <div class="field"><label>2인 금액 (원)</label><input id="polAmt2" type="number" placeholder="600000"></div>
+    <div class="field"><label>4인 금액 (원)</label><input id="polAmt4" type="number" placeholder="1200000"></div>
+    <div class="field"><label>설명 (선택)</label><textarea id="polDesc" placeholder="세부 조건 설명"></textarea></div>
+    <div class="field"><label>표시 여부</label>
+      <select id="polVisible"><option value="true">표시</option><option value="false">숨김</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('polModal')">취소</button>
+      <button class="btn btn-navy" onclick="savePol()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 2ND 기기 모달 -->
+<div class="modal-bg" id="dev2Modal">
+  <div class="modal-box">
+    <div class="modal-title" id="dev2ModalTitle">2ND 기기 추가</div>
+    <input type="hidden" id="dev2ModalKey">
+    <div class="field"><label>기기명 *</label><input id="dev2Name" placeholder="갤럭시 워치 7"></div>
+    <div class="field"><label>종류</label>
+      <select id="dev2Type">
+        <option value="watch">워치</option>
+        <option value="tab">탭</option>
+        <option value="etc">기타</option>
+      </select>
+    </div>
+    <div class="field"><label>이미지 URL</label><input id="dev2Img" placeholder="https://..."></div>
+    <div class="field"><label>월 기기값 할부 (원)</label><input id="dev2Device" type="number" placeholder="15000"></div>
+    <div class="field"><label>월 요금 (원)</label><input id="dev2Plan" type="number" placeholder="11000"></div>
+    <div class="field"><label>적용 요금제 (최소)</label>
+      <select id="dev2MinPlan">
+        <option value="95000">95,000원 이상</option>
+        <option value="115000">115,000원 이상</option>
+        <option value="130000">130,000원 이상</option>
+      </select>
+    </div>
+    <div class="field"><label>표시 여부</label>
+      <select id="dev2Visible"><option value="true">표시</option><option value="false">숨김</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('dev2Modal')">취소</button>
+      <button class="btn btn-navy" onclick="saveDev2()">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PW = 'udak2024';
+const DB_URL = 'https://udak-c6832-default-rtdb.firebaseio.com';
+const BASE = DB_URL + '/allinone';
+
+const db = {
+  ref: function(path) {
+    const url = BASE + '/' + path + '.json';
+    return {
+      once: () => fetch(url).then(r=>r.json()).then(d=>({exists:()=>d!==null&&d!==undefined,val:()=>d})),
+      set: v => fetch(url,{method:'PUT',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}}).then(r=>r.json()),
+      update: v => fetch(url,{method:'PATCH',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}}).then(r=>r.json()),
+      remove: () => fetch(url,{method:'DELETE'}).then(r=>r.json()),
+      push: v => fetch(url,{method:'POST',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}}).then(r=>r.json()),
+    };
+  }
+};
+
+/* ── 로그인 ── */
+window.doLogin = function() {
+  const pw = document.getElementById('pwInput').value;
+  if(pw === PW) {
+    document.getElementById('loginWrap').style.display='none';
+    document.getElementById('adminWrap').style.display='block';
+    initAdmin();
+  } else {
+    alert('비밀번호가 올바르지 않습니다.');
+  }
+};
+window.logout = function() {
+  document.getElementById('loginWrap').style.display='flex';
+  document.getElementById('adminWrap').style.display='none';
+  document.getElementById('pwInput').value='';
+};
+
+function initAdmin() { renderTab('plans'); }
+
+/* ── 탭 ── */
+window.switchTab = function(t) {
+  document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('on', el.dataset.tab===t));
+  renderTab(t);
+};
+
+function renderTab(t) {
+  if(t==='plans') renderPlans();
+  else if(t==='devices') renderDevices();
+  else if(t==='devices2nd') renderDevices2nd();
+  else if(t==='policies') renderPolicies();
+  else if(t==='ott') renderOtt();
+  else if(t==='banners') renderBanners();
+  else if(t==='modalbanner') renderModalBanners();
+}
+
+/* ── 토스트 ── */
+function toast(msg, err=false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.background = err ? '#e53935' : '#1a237e';
+  el.style.display = 'block';
+  setTimeout(()=>el.style.display='none', 2500);
+}
+
+/* ── 모달 ── */
+function openModal(id){document.getElementById(id).classList.add('on');}
+function closeModal(id){document.getElementById(id).classList.remove('on');}
+
+/* ═══════════════════════════════
+   💳 요금제 관리
+═══════════════════════════════ */
+let planData = {};
+async function renderPlans() {
+  const s = await db.ref('plans').once();
+  planData = s.exists() ? s.val() : {};
+  const mc = document.getElementById('mainContent');
+  const rows = Object.entries(planData).sort((a,b)=>(a[1].price||0)-(b[1].price||0));
+  mc.innerHTML = `
+    <div class="card">
+      <div class="card-title">💳 요금제 관리 <span class="cnt">(어드민에서 단가/표시 수정 가능)</span></div>
+      <button class="add-btn" onclick="openPlanModal()">+ 요금제 추가</button>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>요금제명</th><th>단가(원)</th><th>표시</th><th>관리</th></tr></thead>
+          <tbody id="planTbody">${rows.length===0?'<tr><td colspan="4" style="text-align:center;color:var(--g400);padding:24px">등록된 요금제 없음</td></tr>':''}${rows.map(([k,p])=>`
+            <tr>
+              <td><strong>${p.name||p.price?.toLocaleString()+'원'}</strong></td>
+              <td>${p.price?.toLocaleString()}원</td>
+              <td>
+                <label class="toggle"><input type="checkbox" ${p.visible!==false?'checked':''} onchange="togglePlanVisible('${k}',this.checked)"><span class="toggle-slider"></span></label>
+              </td>
+              <td class="td-actions">
+                <button class="btn btn-outline btn-sm" onclick="editPlan('${k}')">수정</button>
+                <button class="btn btn-red btn-sm" onclick="delPlan('${k}')">삭제</button>
+              </td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+window.openPlanModal = function(key='') {
+  document.getElementById('mainContent').insertAdjacentHTML('beforeend',`
+    <div class="modal-bg on" id="planModal">
+      <div class="modal-box">
+        <div class="modal-title">${key?'요금제 수정':'요금제 추가'}</div>
+        <input type="hidden" id="planModalKey" value="${key}">
+        <div class="field"><label>요금제명 *</label><input id="planName" value="${key&&planData[key]?.name||''}" placeholder="5G 프리미어 레귤러"></div>
+        <div class="field"><label>단가 (원) *</label><input id="planPrice" type="number" value="${key&&planData[key]?.price||''}" placeholder="95000"></div>
+        <div class="field"><label>표시 여부</label>
+          <select id="planVisible"><option value="true" ${(!key||planData[key]?.visible!==false)?'selected':''}>표시</option><option value="false" ${key&&planData[key]?.visible===false?'selected':''}>숨김</option></select>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-outline" onclick="document.getElementById('planModal').remove()">취소</button>
+          <button class="btn btn-navy" onclick="savePlan()">저장</button>
+        </div>
+      </div>
+    </div>`);
+};
+
+window.editPlan = k => openPlanModal(k);
+
+window.savePlan = async function() {
+  const key = document.getElementById('planModalKey').value;
+  const name = document.getElementById('planName').value.trim();
+  const price = parseInt(document.getElementById('planPrice').value);
+  const visible = document.getElementById('planVisible').value === 'true';
+  if(!name||!price){alert('요금제명과 단가는 필수입니다.');return;}
+  const data = {name, price, visible};
+  if(key) await db.ref(`plans/${key}`).update(data);
+  else await db.ref('plans').push(data);
+  document.getElementById('planModal')?.remove();
+  toast('저장되었습니다.');
+  renderPlans();
+};
+
+window.togglePlanVisible = async function(k, checked) {
+  await db.ref(`plans/${k}`).update({visible: checked});
+  toast(checked?'표시로 변경됨':'숨김으로 변경됨');
+};
+
+window.delPlan = async function(k) {
+  if(!confirm('삭제하시겠습니까?')) return;
+  await db.ref(`plans/${k}`).remove();
+  toast('삭제되었습니다.');
+  renderPlans();
+};
+
+/* ═══════════════════════════════
+   📱 기기 관리 (모바일)
+═══════════════════════════════ */
+let devData = {};
+async function renderDevices() {
+  const s = await db.ref('devices').once();
+  devData = s.exists() ? s.val() : {};
+  const rows = Object.entries(devData);
+  document.getElementById('mainContent').innerHTML = `
+    <div class="card">
+      <div class="card-title">📱 모바일 기기 관리 <span class="cnt">(랜딩 STEP 6에 표시)</span></div>
+      <button class="add-btn" onclick="openDevModal()">+ 기기 추가</button>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>기기명</th><th>이미지</th><th>표시</th><th>관리</th></tr></thead>
+          <tbody>${rows.length===0?'<tr><td colspan="4" style="text-align:center;color:var(--g400);padding:24px">등록된 기기 없음</td></tr>':''}${rows.map(([k,d])=>`
+            <tr>
+              <td><strong>${d.name}</strong></td>
+              <td>${d.img?`<img src="${d.img}" style="height:36px;object-fit:contain;border-radius:4px" onerror="this.style.display='none'">`:'–'}</td>
+              <td><label class="toggle"><input type="checkbox" ${d.visible!==false?'checked':''} onchange="toggleDevVisible('${k}',this.checked)"><span class="toggle-slider"></span></label></td>
+              <td class="td-actions">
+                <button class="btn btn-outline btn-sm" onclick="editDev('${k}')">수정</button>
+                <button class="btn btn-red btn-sm" onclick="delDev('${k}')">삭제</button>
+              </td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+window.openDevModal = function(key='') {
+  const d = key ? devData[key] : {};
+  document.getElementById('devModalTitle').textContent = key ? '기기 수정' : '기기 추가';
+  document.getElementById('devModalKey').value = key;
+  document.getElementById('devName').value = d.name||'';
+  document.getElementById('devImg').value = d.img||'';
+  document.getElementById('devVisible').value = d.visible===false?'false':'true';
+  openModal('devModal');
+};
+window.editDev = k => openDevModal(k);
+window.saveDev = async function() {
+  const key = document.getElementById('devModalKey').value;
+  const name = document.getElementById('devName').value.trim();
+  if(!name){alert('기기명은 필수입니다.');return;}
+  const data = {name, img:document.getElementById('devImg').value.trim()||null, visible:document.getElementById('devVisible').value==='true'};
+  if(key) await db.ref(`devices/${key}`).update(data);
+  else await db.ref('devices').push(data);
+  closeModal('devModal'); toast('저장되었습니다.'); renderDevices();
+};
+window.toggleDevVisible = async function(k,v){await db.ref(`devices/${k}`).update({visible:v});toast(v?'표시':'숨김');};
+window.delDev = async function(k){if(!confirm('삭제?'))return;await db.ref(`devices/${k}`).remove();toast('삭제');renderDevices();};
+
+/* ═══════════════════════════════
+   ⌚ 2ND 기기 (워치/탭)
+═══════════════════════════════ */
+let dev2Data = {};
+async function renderDevices2nd() {
+  const s = await db.ref('devices2nd').once();
+  dev2Data = s.exists() ? s.val() : {};
+  const rows = Object.entries(dev2Data);
+  const typeLabel = {watch:'워치',tab:'탭',etc:'기타'};
+  document.getElementById('mainContent').innerHTML = `
+    <div class="card">
+      <div class="card-title">⌚ 2ND 기기 관리 (워치/탭) <span class="cnt">(요금제 면제 혜택 항목)</span></div>
+      <button class="add-btn" onclick="openDev2Modal()">+ 2ND 기기 추가</button>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>기기명</th><th>종류</th><th>월 기기값</th><th>월 요금</th><th>적용 요금제</th><th>표시</th><th>관리</th></tr></thead>
+          <tbody>${rows.length===0?'<tr><td colspan="7" style="text-align:center;color:var(--g400);padding:24px">등록된 2ND 기기 없음</td></tr>':''}${rows.map(([k,d])=>`
+            <tr>
+              <td><strong>${d.name}</strong></td>
+              <td>${typeLabel[d.type]||d.type||'–'}</td>
+              <td>${d.deviceAmt?d.deviceAmt.toLocaleString()+'원':'–'}</td>
+              <td>${d.planAmt?d.planAmt.toLocaleString()+'원':'–'}</td>
+              <td>${d.minPlan?d.minPlan.toLocaleString()+'원 이상':'전체'}</td>
+              <td><label class="toggle"><input type="checkbox" ${d.visible!==false?'checked':''} onchange="toggleDev2Visible('${k}',this.checked)"><span class="toggle-slider"></span></label></td>
+              <td class="td-actions">
+                <button class="btn btn-outline btn-sm" onclick="editDev2('${k}')">수정</button>
+                <button class="btn btn-red btn-sm" onclick="delDev2('${k}')">삭제</button>
+              </td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+window.openDev2Modal = function(key='') {
+  const d = key ? dev2Data[key] : {};
+  document.getElementById('dev2ModalTitle').textContent = key ? '2ND 기기 수정' : '2ND 기기 추가';
+  document.getElementById('dev2ModalKey').value = key;
+  document.getElementById('dev2Name').value = d.name||'';
+  document.getElementById('dev2Type').value = d.type||'watch';
+  document.getElementById('dev2Img').value = d.img||'';
+  document.getElementById('dev2Device').value = d.deviceAmt||'';
+  document.getElementById('dev2Plan').value = d.planAmt||'';
+  document.getElementById('dev2MinPlan').value = d.minPlan||'95000';
+  document.getElementById('dev2Visible').value = d.visible===false?'false':'true';
+  openModal('dev2Modal');
+};
+window.editDev2 = k => openDev2Modal(k);
+window.saveDev2 = async function() {
+  const key = document.getElementById('dev2ModalKey').value;
+  const name = document.getElementById('dev2Name').value.trim();
+  if(!name){alert('기기명 필수');return;}
+  const data = {
+    name, type:document.getElementById('dev2Type').value,
+    img:document.getElementById('dev2Img').value.trim()||null,
+    deviceAmt:parseInt(document.getElementById('dev2Device').value)||0,
+    planAmt:parseInt(document.getElementById('dev2Plan').value)||0,
+    minPlan:parseInt(document.getElementById('dev2MinPlan').value),
+    visible:document.getElementById('dev2Visible').value==='true',
+  };
+  if(key) await db.ref(`devices2nd/${key}`).update(data);
+  else await db.ref('devices2nd').push(data);
+  closeModal('dev2Modal'); toast('저장'); renderDevices2nd();
+};
+window.toggleDev2Visible = async function(k,v){await db.ref(`devices2nd/${k}`).update({visible:v});toast(v?'표시':'숨김');};
+window.delDev2 = async function(k){if(!confirm('삭제?'))return;await db.ref(`devices2nd/${k}`).remove();toast('삭제');renderDevices2nd();};
+
+/* ═══════════════════════════════
+   📋 정책 관리
+═══════════════════════════════ */
+let polData = {};
+async function renderPolicies() {
+  const s = await db.ref('policies').once();
+  polData = s.exists() ? s.val() : {};
+  const rows = Object.entries(polData);
+  const carrierLabel = {all:'전체',tasa:'타사 전환',jasa:'자사(LGU+)'};
+  document.getElementById('mainContent').innerHTML = `
+    <div class="card">
+      <div class="card-title">📋 정책 관리 <span class="cnt">(정책명 수정 가능, 금액 수정 가능)</span></div>
+      <button class="add-btn" onclick="openPolModal()">+ 정책 추가</button>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>정책명</th><th>적용 대상</th><th>1인</th><th>2인</th><th>4인</th><th>표시</th><th>관리</th></tr></thead>
+          <tbody>${rows.length===0?'<tr><td colspan="7" style="text-align:center;color:var(--g400);padding:24px">등록된 정책 없음</td></tr>':''}${rows.map(([k,p])=>`
+            <tr>
+              <td><strong>${p.name}</strong>${p.desc?`<br><small style="color:var(--g400)">${p.desc}</small>`:''}</td>
+              <td>${carrierLabel[p.carrier]||p.carrier||'전체'}</td>
+              <td>${p.amt1?p.amt1.toLocaleString()+'원':'–'}</td>
+              <td>${p.amt2?p.amt2.toLocaleString()+'원':'–'}</td>
+              <td>${p.amt4?p.amt4.toLocaleString()+'원':'–'}</td>
+              <td><label class="toggle"><input type="checkbox" ${p.visible!==false?'checked':''} onchange="togglePolVisible('${k}',this.checked)"><span class="toggle-slider"></span></label></td>
+              <td class="td-actions">
+                <button class="btn btn-outline btn-sm" onclick="editPol('${k}')">수정</button>
+                <button class="btn btn-red btn-sm" onclick="delPol('${k}')">삭제</button>
+              </td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+window.openPolModal = function(key='') {
+  const p = key ? polData[key] : {};
+  document.getElementById('polModalTitle').textContent = key ? '정책 수정' : '정책 추가';
+  document.getElementById('polModalKey').value = key;
+  document.getElementById('polName').value = p.name||'';
+  document.getElementById('polCarrier').value = p.carrier||'all';
+  document.getElementById('polAmt1').value = p.amt1||'';
+  document.getElementById('polAmt2').value = p.amt2||'';
+  document.getElementById('polAmt4').value = p.amt4||'';
+  document.getElementById('polDesc').value = p.desc||'';
+  document.getElementById('polVisible').value = p.visible===false?'false':'true';
+  openModal('polModal');
+};
+window.editPol = k => openPolModal(k);
+window.savePol = async function() {
+  const key = document.getElementById('polModalKey').value;
+  const name = document.getElementById('polName').value.trim();
+  if(!name){alert('정책명 필수');return;}
+  const data = {
+    name, carrier:document.getElementById('polCarrier').value,
+    amt1:parseInt(document.getElementById('polAmt1').value)||0,
+    amt2:parseInt(document.getElementById('polAmt2').value)||0,
+    amt4:parseInt(document.getElementById('polAmt4').value)||0,
+    desc:document.getElementById('polDesc').value.trim()||null,
+    visible:document.getElementById('polVisible').value==='true',
+  };
+  if(key) await db.ref(`policies/${key}`).update(data);
+  else await db.ref('policies').push(data);
+  closeModal('polModal'); toast('저장'); renderPolicies();
+};
+window.togglePolVisible = async function(k,v){await db.ref(`policies/${k}`).update({visible:v});toast(v?'표시':'숨김');};
+window.delPol = async function(k){if(!confirm('삭제?'))return;await db.ref(`policies/${k}`).remove();toast('삭제');renderPolicies();};
+
+/* ═══════════════════════════════
+   🎬 OTT 관리
+═══════════════════════════════ */
+const OTT_DEFAULT = [
+  {id:'netflix', name:'넷플릭스', visible:true},
+  {id:'disney', name:'디즈니+', visible:true},
+  {id:'tving', name:'티빙', visible:true},
+];
+let ottData = {};
+async function renderOtt() {
+  const s = await db.ref('ott').once();
+  ottData = s.exists() ? s.val() : {};
+  if(!Object.keys(ottData).length) {
+    OTT_DEFAULT.forEach(o=>{ ottData[o.id]=o; });
+    await db.ref('ott').set(ottData);
+  }
+  document.getElementById('mainContent').innerHTML = `
+    <div class="card">
+      <div class="card-title">🎬 OTT 혜택 관리 <span class="cnt">(115,000원 이상 요금제 적용)</span></div>
+      <div class="ott-grid" id="ottGrid"></div>
+      <button class="add-btn" style="margin-top:16px" onclick="addOtt()">+ OTT 추가</button>
+    </div>`;
+  const grid = document.getElementById('ottGrid');
+  Object.entries(ottData).forEach(([k,o])=>{
+    const div = document.createElement('div');
+    div.className = 'ott-item' + (o.visible!==false?' on':'');
+    div.innerHTML = `
+      <label class="toggle"><input type="checkbox" ${o.visible!==false?'checked':''} onchange="toggleOtt('${k}',this.checked)"><span class="toggle-slider"></span></label>
+      <span class="ott-name">${o.name}</span>
+      <button class="btn btn-red btn-sm" onclick="delOtt('${k}')">삭제</button>`;
+    grid.appendChild(div);
+  });
+}
+window.addOtt = async function() {
+  const name = prompt('OTT 이름 입력:');
+  if(!name) return;
+  await db.ref('ott').push({name, visible:true});
+  toast('추가됨'); renderOtt();
+};
+window.toggleOtt = async function(k,v){await db.ref(`ott/${k}`).update({visible:v});toast(v?'표시':'숨김');renderOtt();};
+window.delOtt = async function(k){if(!confirm('삭제?'))return;await db.ref(`ott/${k}`).remove();toast('삭제');renderOtt();};
+
+/* ═══════════════════════════════
+   🖼 배너 관리
+═══════════════════════════════ */
+const BANNER_SLOTS = 4;
+let bannerData = {};
+async function renderBanners() {
+  const s = await db.ref('banners').once();
+  bannerData = s.exists() && Array.isArray(s.val()) ? s.val() : Array(BANNER_SLOTS).fill(null).map(()=>({pc:'',mo:'',link:''}));
+  document.getElementById('mainContent').innerHTML = `
+    <div class="card">
+      <div class="card-title">🖼 배너 관리 <span class="cnt">(GitHub files/ 폴더에 이미지 업로드 후 URL 입력)</span></div>
+      <p style="font-size:12px;color:var(--g400);margin-bottom:16px">이미지 URL: <code>https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/allinone_pc1.png</code></p>
+      <div id="bannerList"></div>
+      <button class="btn btn-navy" style="margin-top:8px" onclick="saveBanners()">💾 배너 저장</button>
+    </div>`;
+  const list = document.getElementById('bannerList');
+  bannerData.forEach((b,i)=>{
+    const item = document.createElement('div');
+    item.className = 'banner-item';
+    item.innerHTML = `
+      <div class="banner-num">${i+1}</div>
+      <div class="banner-fields">
+        <input id="bPc${i}" value="${b?.pc||''}" placeholder="PC 이미지 URL (1440×400px)">
+        <input id="bMo${i}" value="${b?.mo||''}" placeholder="모바일 이미지 URL (750×400px)">
+        <input id="bLk${i}" value="${b?.link||''}" placeholder="클릭 링크 URL (없으면 빈칸)">
+      </div>
+      ${b?.pc?`<img class="banner-preview" src="${b.pc}" onerror="this.style.display='none'">`:''}`;
+    list.appendChild(item);
+  });
+}
+window.saveBanners = async function() {
+  const data = Array(BANNER_SLOTS).fill(null).map((_,i)=>({
+    pc: document.getElementById(`bPc${i}`)?.value.trim()||'',
+    mo: document.getElementById(`bMo${i}`)?.value.trim()||'',
+    link: document.getElementById(`bLk${i}`)?.value.trim()||'',
+  }));
+  await db.ref('banners').set(data);
+  toast('배너 저장 완료!'); renderBanners();
+};
+
+/* ═══════════════════════════════
+   🎁 완료 모달 배너
+═══════════════════════════════ */
+const MODAL_SLOTS = 3;
+let modalBannerData = [];
+async function renderModalBanners() {
+  const s = await db.ref('modalBanners').once();
+  modalBannerData = s.exists() && Array.isArray(s.val()) ? s.val() : Array(MODAL_SLOTS).fill(null).map(()=>({img:'',link:''}));
+  document.getElementById('mainContent').innerHTML = `
+    <div class="card">
+      <div class="card-title">🎁 상담 완료 모달 배너 <span class="cnt">(신청 완료 후 표시되는 배너)</span></div>
+      <div id="modalBannerList"></div>
+      <button class="btn btn-navy" style="margin-top:8px" onclick="saveModalBanners()">💾 저장</button>
+    </div>`;
+  const list = document.getElementById('modalBannerList');
+  modalBannerData.forEach((b,i)=>{
+    const item = document.createElement('div');
+    item.className = 'banner-item';
+    item.innerHTML = `
+      <div class="banner-num">${i+1}</div>
+      <div class="banner-fields">
+        <input id="mbImg${i}" value="${b?.img||''}" placeholder="배너 이미지 URL">
+        <input id="mbLk${i}" value="${b?.link||''}" placeholder="클릭 링크 URL">
+      </div>
+      ${b?.img?`<img class="banner-preview" src="${b.img}" onerror="this.style.display='none'">`:''}`;
+    list.appendChild(item);
+  });
+}
+window.saveModalBanners = async function() {
+  const data = Array(MODAL_SLOTS).fill(null).map((_,i)=>({
+    img: document.getElementById(`mbImg${i}`)?.value.trim()||'',
+    link: document.getElementById(`mbLk${i}`)?.value.trim()||'',
+  }));
+  await db.ref('modalBanners').set(data);
+  toast('저장 완료!'); renderModalBanners();
+};
+</script>
+</body>
+</html>
