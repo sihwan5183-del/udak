@@ -7,9 +7,8 @@
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");
 fbq("init","921171610476690");fbq("track","PageView");
-<\/script>
+</script>
 <style>
-
 
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#111;-webkit-tap-highlight-color:transparent}
@@ -282,14 +281,11 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 .tp-item.tp-sel{color:var(--or);font-weight:800;font-size:16px}
 
 
-
-/* ── 올인원 전용 추가 CSS ── */
+/* ── 올인원 추가 CSS ── */
 body{background:#fff}
 .aio-nav{background:#fff;border-bottom:1px solid #e9ecef;position:sticky;top:0;z-index:100;padding:0 24px;height:60px;display:flex;align-items:center;gap:12px}
 .aio-logo{height:36px;object-fit:contain}
 .aio-brand{font-size:13px;font-weight:600;color:#868e96;letter-spacing:.04em}
-
-/* 올인원 아코디언 스텝 */
 .aio-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
 .aio-step{background:#fff;border-radius:12px;border:1.5px solid #e9ecef;overflow:hidden;transition:border-color .2s,box-shadow .2s}
 .aio-step.active{border-color:#1a237e;box-shadow:0 4px 16px rgba(26,35,126,.1)}
@@ -310,12 +306,8 @@ body{background:#fff}
 .aio-opt{padding:10px 18px;border-radius:8px;border:1.5px solid #dee2e6;background:#fff;font-size:13px;font-weight:600;color:#495057;cursor:pointer;transition:all .15s;white-space:nowrap}
 .aio-opt:hover{border-color:#3949ab;color:#3949ab}
 .aio-opt.sel{border-color:#1a237e;background:#1a237e;color:#fff}
-
-/* LGU 경고 */
 .lgu-warn{background:#f0f1fa;border:1.5px solid #e8eaf6;border-radius:10px;padding:20px;text-align:center;margin-top:12px;display:none}
 .lgu-warn.show{display:block}
-
-/* 요금제 리스트 */
 .aio-plan-list{display:flex;flex-direction:column;gap:6px;margin-top:4px}
 .aio-plan-item{border:1.5px solid #e9ecef;border-radius:10px;padding:13px 16px;cursor:pointer;transition:all .15s;background:#fff}
 .aio-plan-item:hover{border-color:#3949ab}
@@ -330,8 +322,6 @@ body{background:#fff}
 .aio-plan-item.sel .aio-plan-detail{display:block}
 .aio-plan-detail li{list-style:none;padding-left:14px;position:relative}
 .aio-plan-detail li::before{content:"✓";position:absolute;left:0;color:#1a237e;font-weight:700}
-
-/* 요금제 비교 카드 */
 .aio-compare{margin-top:24px}
 .aio-compare-title{font-size:14px;font-weight:700;color:#495057;margin-bottom:12px}
 .aio-compare-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
@@ -343,9 +333,6 @@ body{background:#fff}
 .aio-cc-feats{font-size:11.5px;color:#495057;line-height:1.85}
 .aio-cc-feats li{list-style:none;padding-left:14px;position:relative}
 .aio-cc-feats li::before{content:"✓";position:absolute;left:0;color:#1a237e;font-weight:700}
-
-/* 우측 요약카드 오버라이드 */
-.aio-summary-rows{}
 .aio-fee-box{background:#f0f1fa;border-radius:10px;padding:14px;margin:12px 0;text-align:center;display:none;border:1.5px solid #e8eaf6}
 .aio-fee-lbl{font-size:11px;color:#1a237e;font-weight:700;margin-bottom:4px}
 .aio-fee-val{font-size:28px;font-weight:900;color:#1a237e;line-height:1}
@@ -356,13 +343,11 @@ body{background:#fff}
 </style>
 </head>
 <body>
-
 <nav class="aio-nav">
   <img class="aio-logo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAK8CAYAAAANumxDAAABP2lDQ1BpY2MAAHicfZC/SwJxGMY/11WWWA05NBQcJU0FUUtTgYZOEfgj1Kbz/FGgdt33QprLoaloiEZrCaLZxhz6A4KgIQqirdWghpKLrw5aUM/yfnh4Xt6XB5TnvFEQ3RoUirYVDvm1eCKpuV5Q8dLPIGO6IczlSDAKIPSSMGwrzw+936PIeTe9rhfTO6/Xq8kFpbo7UY4FP1Yu+F/udEYYwBfgM0zLBkUDxku2KXkJ8BrrehqUODBlxRNJUPakn2vxieRUiy8lW9FwAJQaoOU6ONXBhfy2vCslv/dkirEI0AeMIggTwv9HpreZCRBgBmRfv3sQ2bnZ1pZnEXqeHOdtElyH0DhynM9Tx2mcgfoIta32/mYF5uugHrS91DFc7cPIQ9vzVWCoDNUbU7f0pqUCXdkNqJ/DQAKGb8G99g3j4l+xfPB+eQAAAAlwSFlzAAAOxAAADsQBlSsOGwAAALRlWElmSUkqAAgAAAAGABIBAwABAAAAAQAAABoBBQABAAAAVgAAABsBBQABAAAAXgAAACgBAwABAAAAAgAAABMCAwABAAAAAQAAAGmHBAABAAAAZgAAAAAAAAAAdwEA6AMAAAB3AQDoAwAABgAAkAcABAAAADAyMTABkQcABAAAAAECAwAAoAcABAAAADAxMDABoAMAAQAAAP//AAACoAQAAQAAALwCAAADoAQAAQAAALwCAAAAAAAAhhz9qwAAIABJREFUeJzs3Qd4VFXawHEnCU0EK4q94LdYcEVce2+oWEAFRSwUUbDrWkBXULF31LWiYMGyrquoWLA3FBVEQUIJhCSk995n3u95LyZmkil3Zu7Mnbnz/z3PeXbXhWTmZmL+OXPuOZsIAAAA4GCb2P0AAAAAgGgieAEAAOBoBC8AAAAcjeAFAACAoxG8AAAAcDSCFwAAAI5G8AIAAMDRCF4AAAA4GsELAAAARyN4AQAA4GgELwAAAByN4AUAAICjEbwAAABwNIIXAAAAjkbwAgAAwNEIXgAAADgawQsAAABHI3gBAADgaAQvAAAAHI3gBQAAgKMRvAAAAHA0ghcAAACORvACAADA0QheAAAAOBrBCwAAAEcjeAEAAOBoBC8AAAAcjeAFAACAoxG8AAAAcDSCFwAAAI5G8AIAAMDRCF4AAAA4GsELAAAARyN4AQAA4GgELwAAAByN4AUAAICjEbwAAABwNIIXAAAAjkbwAgAAwNEIXgAAADgawQsAAABHI3gBAADgaAQvAAAAHI3gBQAAgKMRvAAAAHA0ghcAAACORvACAADA0QheAAAAOBrBCwAAAEcjeAEAAOBoBC8AAAAcjeAFAACAoxG8AAAAcDSCFwAAAI5G8AIAAMDRCF4AAAA4GsELAAAARyN4AQAA4GgELwAAAByN4AUAAICjEbwAAABwNIIXAAAAjkbwAgAAwNEIXgAAADgawQsAAABHI3gBAADgaAQvAAAAHI3gBQAAgKMRvAAAAHA0ghcAAACORvACAADA0QheAAAAOBrBCwAAAEcjeAEAAOBoBC8AAAAcjeAFAACAoxG8AAAAcDSCFwAAAI5G8AIAAMDRCF4AAAA4GsELAAAARyN4AQAA4GgELwAAAByN4AUAAICjEbwAAABwNIIXAAAAjkbwAgAAwNEIXgAAADgawQsAAABHI3gBAADgaAQvAAAAHI3gBQAAgKMRvAAAAHA0ghcAAACORvACAADA0QheAAAAOBrBCwAAAEcjeAEAAOBoBC8AAAAcjeAFAACAoxG8AAAAcDSCFwAAAI5G8AIAAMDRCF4AAAA4GsELAAAARyN4AQAA4GgELwAAAByN4AUAAICjEbwAAABwNIIXAAAAjkbwAgAAwNEIXgAAADgawQsAAABHI3gBAADgaAQvAAAAHI3gBQAAgKMRvAAAAHA0ghcAAACORvACAADA0QheAAAAOBrBCwAAAEcjeAEAAOBoBC8AAAAcjeAFAACAoxG8AAAAcDSCFwAAAI5G8AIAAMDRCF4AAAA4GsELAAAARyN4AQAA4GgELwAAAByN4AUAAICjEbwAAABwNIIXAAAAjkbwAgAAwNEIXgAAADgawQsAAABHI3gBAADgaAQvAAAAHI3gBQAAgKMRvAAAAHA0ghcAAACORvACAADA0QheAAAAOBrBCwAAAEcjeAEAAOBoBC8AAAAcjeAFAACAoxG8AAAAcDSCFwAAAI5G8AIAAMDRCF4AAAA4GsELAAAARyN4AQAA4GgELwAAAByN4AUAAICjEbwAAABwNIIXAAAAjkbwAgAAwNEIXgAAADgawQsAAABHI3gBAADgaAQvAAAAHI3gBQAAgKMRvAAAAHA0ghcAAACORvACAADA0Qhe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8AIAkCa8AACkCS8AAGnCCwBAmvACAJAmvAAApAkvAABpwgsAQJrwAgCQJrwAAKQJLwAAacILAECa8AIAkCa8AACkCS8AAGnCCwBAmvACAJAmvAAApAkvAABpwgsAQJrwAgCQJrwAAKQJLwAAacILAECa8AIAkCa8AACkCS8AAGnCCwBAmvACAJAmvAAApAkvAABpwgsAQJrwAgCQJrwAAKQJLwAAacILAECa8AIAkCa8AACkCS8AAGnCCwBAmvACAJAmvAAApAkvAABpwgsAQJrwAgCQJrwAAKQJLwAAacILAECa8AIAkCa8AACkCS8AAGnCCwBAmvACAJAmvAAApAkvAABpwgsAQJrwAgCQJrwAAKQJLwAAacILAECa8AIAkCa8AACkCS8AAGnCCwBAmvACAJAmvAAApAkvAABpwgsAQJrwAgCQJrwAAKQJLwAAacILAECa8AIAkCa8AACkCS8AAGnCCwBAmvACAJAmvAAApAkvAABpwgsAQJrwAgCQJrwAAKQJLwAAacILAECa8AIAkCa8AACkCS8AAGnCCwBAmvACAJAmvAAApAkvAABpwgsAQJrwAgCQJrwAAKQJLwAAacILAECa8AIAkCa8AACkCS8AAGnCCwBAmvACAJAmvAAApAkvAABpwgsAQJrwAgCQJrwAAKQJLwAAacILAECa8AIAkCa8AACkCS8AAGnCCwBAmvACAJAmvAAApAkvAABpwgsAQJrwAgCQJrwAAKQJLwAAacILAECa8AIAkCa8AACkCS8AAGnCCwBAmvACAJAmvAAApAkvAABpwgsAQJrwAgCQJrwAAKQJLwAAacILAECa8AIAkCa8AACkCS8AAGnCCwBAmvACAJAmvAAApAkvAABpwgsAQJrwAgCQJrwAAKQJLwAAacILAECa8AIAkCa8AACkCS8AAGnCCwBAmvACAJAmvAAApAkvAABpwgsAQJrwAgCQJrwAAKQJLwAAKzsA9akN/glz0gAAAABJRU5ErkJggg==" alt="U+ Direct">
   <span class="aio-brand">ALL-IN-ONE · 인터넷 신규 설치 결합 혜택</span>
 </nav>
 
-<!-- 배너 -->
 <div class="banner-wrap" id="bannerWrap">
   <div class="banner-track" id="bTrack"></div>
   <button class="bn-arr bn-prev" id="bPrev" onclick="bnSlide(-1)" style="display:none">&#8249;</button>
@@ -378,14 +363,11 @@ body{background:#fff}
       <div style="font-size:13px;color:#868e96">LG U+ 인터넷 신규 설치 기준 · 조건 선택 후 예상 혜택 확인</div>
     </div>
 
-    <!-- 올인원 전용 STEP 1~5 -->
     <div class="aio-steps">
       <div class="aio-step active" id="asc1">
         <div class="aio-step-head" onclick="aioToggle('asc1')">
-          <div class="aio-step-num">1</div>
-          <div class="aio-step-lbl">현재 휴대폰 통신사</div>
-          <div class="aio-step-val ph" id="av1">선택해주세요</div>
-          <span class="aio-step-chk">✓</span>
+          <div class="aio-step-num">1</div><div class="aio-step-lbl">현재 휴대폰 통신사</div>
+          <div class="aio-step-val ph" id="av1">선택해주세요</div><span class="aio-step-chk">✓</span>
         </div>
         <div class="aio-step-body">
           <div class="aio-opt-grid">
@@ -398,10 +380,8 @@ body{background:#fff}
       </div>
       <div class="aio-step locked" id="asc2">
         <div class="aio-step-head" onclick="aioToggle('asc2')">
-          <div class="aio-step-num">2</div>
-          <div class="aio-step-lbl">현재 인터넷 통신사</div>
-          <div class="aio-step-val ph" id="av2">선택해주세요</div>
-          <span class="aio-step-chk">✓</span>
+          <div class="aio-step-num">2</div><div class="aio-step-lbl">현재 인터넷 통신사</div>
+          <div class="aio-step-val ph" id="av2">선택해주세요</div><span class="aio-step-chk">✓</span>
         </div>
         <div class="aio-step-body">
           <div class="aio-opt-grid">
@@ -420,32 +400,22 @@ body{background:#fff}
       </div>
       <div class="aio-step locked" id="asc3">
         <div class="aio-step-head" onclick="aioToggle('asc3')">
-          <div class="aio-step-num">3</div>
-          <div class="aio-step-lbl">진행 방식</div>
-          <div class="aio-step-val ph" id="av3">선택해주세요</div>
-          <span class="aio-step-chk">✓</span>
+          <div class="aio-step-num">3</div><div class="aio-step-lbl">진행 방식</div>
+          <div class="aio-step-val ph" id="av3">선택해주세요</div><span class="aio-step-chk">✓</span>
         </div>
-        <div class="aio-step-body">
-          <div class="aio-opt-grid" id="aopts3"></div>
-        </div>
+        <div class="aio-step-body"><div class="aio-opt-grid" id="aopts3"></div></div>
       </div>
       <div class="aio-step locked" id="asc4">
         <div class="aio-step-head" onclick="aioToggle('asc4')">
-          <div class="aio-step-num">4</div>
-          <div class="aio-step-lbl">요금제 선택</div>
-          <div class="aio-step-val ph" id="av4">선택해주세요</div>
-          <span class="aio-step-chk">✓</span>
+          <div class="aio-step-num">4</div><div class="aio-step-lbl">요금제 선택</div>
+          <div class="aio-step-val ph" id="av4">선택해주세요</div><span class="aio-step-chk">✓</span>
         </div>
-        <div class="aio-step-body">
-          <div class="aio-plan-list" id="aioPlanList"></div>
-        </div>
+        <div class="aio-step-body"><div class="aio-plan-list" id="aioPlanList"></div></div>
       </div>
       <div class="aio-step locked" id="asc5">
         <div class="aio-step-head" onclick="aioToggle('asc5')">
-          <div class="aio-step-num">5</div>
-          <div class="aio-step-lbl">가족 결합 인원</div>
-          <div class="aio-step-val ph" id="av5">선택해주세요</div>
-          <span class="aio-step-chk">✓</span>
+          <div class="aio-step-num">5</div><div class="aio-step-lbl">가족 결합 인원</div>
+          <div class="aio-step-val ph" id="av5">선택해주세요</div><span class="aio-step-chk">✓</span>
         </div>
         <div class="aio-step-body">
           <div class="aio-opt-grid">
@@ -457,7 +427,6 @@ body{background:#fff}
       </div>
     </div>
 
-    <!-- 핸드폰 바꾸기 선택 시 → 기기선택 스텝카드 (유닥 방식) -->
     <div id="udakDevSteps" style="display:none">
       <div class="step-cards">
         <div class="step-card" id="sc1" onclick="openSheet('device')">
@@ -473,14 +442,11 @@ body{background:#fff}
       </div>
     </div>
 
-    <!-- 요금제 비교 -->
     <div class="aio-compare">
       <div class="aio-compare-title">요금제별 주요 혜택 비교</div>
       <div class="aio-compare-grid" id="aioCompareGrid"></div>
     </div>
-
-    <!-- 추가 혜택 (유닥 HTML 그대로) -->
-    <!-- 추가 혜택 섹션 -->
+<!-- 추가 혜택 섹션 -->
   <div class="bonus-section" id="bonusSection">
     <div class="bonus-left">
       <!-- 타이틀 + 버튼 -->
@@ -519,8 +485,6 @@ body{background:#fff}
   </div>
 
   
-
-    <!-- 신청 폼 -->
     <div class="form-wrap" id="formWrap">
       <div class="form-card">
         <p class="form-ttl">📞 상담 신청하기</p>
@@ -550,13 +514,9 @@ body{background:#fff}
     </div>
   </div>
 
-  <!-- 우측 요약카드 -->
   <div class="right-col">
     <div class="benefit-card">
-      <div class="bc-head">
-        <span class="bc-ttl">ALL-IN-ONE 예상 혜택</span>
-      </div>
-      <!-- 기기 이미지 (핸드폰 선택 시) -->
+      <div class="bc-head"><span class="bc-ttl">ALL-IN-ONE 예상 혜택</span></div>
       <div id="aioDevArea" style="display:none">
         <div class="bc-dev">
           <div class="bc-img-ph" id="bcImgPh">📱</div>
@@ -565,7 +525,6 @@ body{background:#fff}
           <div class="bc-tags" id="bcTags" style="padding:0 10px 10px"></div>
         </div>
       </div>
-      <!-- 올인원 조건 요약 -->
       <div class="br-rows">
         <div class="br-row"><span class="br-lbl">휴대폰 통신사</span><span class="br-val" id="srV1" style="color:#adb5bd">–</span></div>
         <div class="br-row"><span class="br-lbl">인터넷 통신사</span><span class="br-val" id="srV2" style="color:#adb5bd">–</span></div>
@@ -573,7 +532,6 @@ body{background:#fff}
         <div class="br-row"><span class="br-lbl">선택 요금제</span><span class="br-val" id="srV4" style="color:#adb5bd">–</span></div>
         <div class="br-row"><span class="br-lbl">가족 결합 인원</span><span class="br-val" id="srV5" style="color:#adb5bd">–</span></div>
       </div>
-      <!-- 예상 요금 -->
       <div class="aio-fee-box" id="aioFeeBox">
         <div class="aio-fee-lbl">예상 월 요금</div>
         <div><span class="aio-fee-val" id="aioFeeVal">–</span><span style="font-size:13px;font-weight:600;color:#1a237e">원</span></div>
@@ -584,7 +542,6 @@ body{background:#fff}
     </div>
   </div>
 </div>
-
 <div class="overlay" id="overlay" onclick="closeSheet()"></div>
 <div class="sheet" id="sheet">
   <div class="sh-handle"></div>
@@ -593,8 +550,6 @@ body{background:#fff}
 </div>
 
 
-
-<!-- 성공 모달 -->
 <div class="succ-ov" id="sModal">
   <div class="succ-box" style="text-align:center">
     <div style="font-size:48px;margin-bottom:12px">🎉</div>
@@ -609,10 +564,41 @@ body{background:#fff}
 /* ── Supabase + Firebase ── */
 const SB_URL="https://ebggtghzqtxfylbhqfoh.supabase.co";
 const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q";
-const DB_URL_BASE='https://udak-c6832-default-rtdb.firebaseio.com';
-const db={ref:function(p){const url=DB_URL_BASE+'/'+p+'.json';return{once:()=>fetch(url).then(r=>r.json()).then(d=>{return{exists:()=>d!==null&&d!==undefined,val:()=>d};})  ,set:v=>fetch(url,{method:'PUT',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}}).then(r=>r.json()),update:v=>fetch(url,{method:'PATCH',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}}).then(r=>r.json()),remove:()=>fetch(url,{method:'DELETE'}).then(r=>r.json()),push:v=>fetch(url,{method:'POST',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}}).then(r=>r.json())};} };
+const DB_URL_UDAK='https://udak-c6832-default-rtdb.firebaseio.com';
+const db={ref:function(p){const url=DB_URL_UDAK+'/'+p+'.json';return{once:()=>fetch(url).then(r=>r.json()).then(d=>({exists:()=>d!==null&&d!==undefined,val:()=>d})),set:v=>fetch(url,{method:'PUT',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}}).then(r=>r.json()),update:v=>fetch(url,{method:'PATCH',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}}).then(r=>r.json()),remove:()=>fetch(url,{method:'DELETE'}).then(r=>r.json()),push:v=>fetch(url,{method:'POST',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}}).then(r=>r.json())};}};
+const _utm=(()=>{const p=new URLSearchParams(window.location.search);return{source:p.get('utm_source'),campaign:p.get('utm_campaign'),medium:p.get('utm_medium')};})();
 
-/* ── 유닥 devices/plans 기본 데이터 ── */
+const SB_URL="https://ebggtghzqtxfylbhqfoh.supabase.co";
+// UTM 파라미터 파싱 (페이지 로드 시 1회)
+const _utm=(function(){
+  const p=new URLSearchParams(window.location.search);
+  return{
+    source:p.get('utm_source')||null,
+    campaign:p.get('utm_campaign')||null,
+    medium:p.get('utm_medium')||null,
+  };
+})();
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q";
+// Firebase REST API
+const DB_URL='https://udak-c6832-default-rtdb.firebaseio.com';
+const db={
+  ref:function(path){
+    return{
+      once:function(){
+        return fetch(DB_URL+'/'+path+'.json')
+          .then(function(r){return r.json();})
+          .then(function(data){return{exists:function(){return data!==null;},val:function(){return data;}};});
+      },
+      set:function(val){
+        return fetch(DB_URL+'/'+path+'.json',{method:'PUT',body:JSON.stringify(val),headers:{'Content-Type':'application/json'}}).then(function(r){return r.json();});
+      },
+      update:function(val){
+        return fetch(DB_URL+'/'+path+'.json',{method:'PATCH',body:JSON.stringify(val),headers:{'Content-Type':'application/json'}}).then(function(r){return r.json();});
+      }
+    };
+  }
+};
+
 let devices=[
   {id:'s26',name:'갤럭시 S26',img:'https://images.samsung.com/kdp/goods/2025/01/17/b90d58db-6a82-4fa9-a6d1-6b9d9ef1af6a.png',visible:true,storageList:[{name:'256GB',price:1254000},{name:'512GB',price:1386000}],colors:[{name:'#4B5563|그라파이트',img:''},{name:'#C084FC|바이올렛',img:''},{name:'#F9A8D4|핑크골드',img:''}]},
   {id:'s26p',name:'갤럭시 S26+',img:'https://images.samsung.com/kdp/goods/2025/01/17/b90d58db-6a82-4fa9-a6d1-6b9d9ef1af6a.png',visible:true,storageList:[{name:'256GB',price:1452000},{name:'512GB',price:1584000}],colors:[{name:'#1E3A5F|네이비'},{name:'#F5F5F5|화이트실버'}]},
@@ -629,12 +615,220 @@ let plans=[
   {id:'p105',name:'5G 프리미어 플러스',monthlyPrice:105000,plangroup:'105',visible:true},
 ];
 let policies=[];
-
-
-/* ── 유닥 sel 객체 (기기선택용) ── */
 let sel={device:null,carrier:null,jointype:null,storage:null,color:null,plan:null,discType:'공시',lockedColorImg:''};
 
-/* ── 유닥 Sheet/기기선택 함수 ── */
+const DTXT={
+  installmentNote:'*기기 할부금 별도',
+  installmentNoteOff:false,
+  sectionTitle:'내 조건 먼저 확인해보세요',
+  stepDeviceLbl:'원하는 제품',stepCarrierLbl:'현재 사용 통신사',stepStorageLbl:'용량 / 색상',stepPlanLbl:'요금제',
+  discPub:'공시지원금',discSel:'선택약정',
+  benefitTitle:'유닥 예상 혜택 요약',
+  benefitNote:'※ 위 금액은 선택하신 조건 기준 예상 금액입니다.\n정확한 혜택은 상담을 통해 안내드립니다.',
+  formTitle:'상담 신청하기',ctaKakao:'카카오톡 상담하기',ctaPhone:'전화 상담 신청하기',
+  privacyNote:'🔒 입력하신 정보는 상담 목적으로만 사용되며, 안전하게 보호됩니다.',
+  kakaoUrl:'https://pf.kakao.com/_HxfVxcn/chat',
+};
+function applyTexts(t){
+  const tx={...DTXT,...t};
+  window._installmentNote = tx.installmentNote||'*기기 할부금 별도';
+  window._installmentNoteOff = tx.installmentNoteOff===true||tx.installmentNoteOff==='true';
+  document.getElementById('txtSectionTitle').textContent=tx.sectionTitle;
+  document.getElementById('txtStepDeviceLbl').textContent=tx.stepDeviceLbl;
+  document.getElementById('txtStepCarrierLbl').textContent=tx.stepCarrierLbl;
+  document.getElementById('txtStepStorageLbl').textContent=tx.stepStorageLbl;
+  document.getElementById('txtStepPlanLbl').textContent=tx.stepPlanLbl;
+  document.getElementById('txtDiscPub').textContent=tx.discPub;
+  document.getElementById('txtDiscSel').textContent=tx.discSel;
+  document.getElementById('txtBenefitTitle').textContent=tx.benefitTitle;
+  document.getElementById('txtBenefitNote').innerHTML=tx.benefitNote.replace(/\n/g,'<br>');
+  document.getElementById('txtFormTitle').textContent=tx.formTitle;
+  document.getElementById('txtCtaKakao').textContent=tx.ctaKakao;
+  document.getElementById('txtCtaPhone').textContent=tx.ctaPhone;
+  document.getElementById('txtPrivacy').textContent=tx.privacyNote;
+  if(tx.kakaoUrl) document.getElementById('kakaoBtn').href=tx.kakaoUrl;
+}
+
+/* MOCK DATA */
+const MDEV=[
+  {id:'s26',name:'갤럭시 S26',img:'',visible:true,storageList:[{name:'256GB',price:1254000},{name:'512GB',price:1386000}],colors:[{name:'#4B5563|그라파이트',img:''},{name:'#C084FC|바이올렛',img:''},{name:'#F9A8D4|핑크골드',img:''}]},
+  {id:'s26p',name:'갤럭시 S26+',img:'',visible:true,storageList:[{name:'256GB',price:1452000},{name:'512GB',price:1584000}],colors:[{name:'#1E3A5F|네이비'},{name:'#F5F5F5|화이트실버'}]},
+  {id:'s26u',name:'갤럭시 S26 울트라',img:'',visible:true,storageList:[{name:'256GB',price:1797000},{name:'512GB',price:1929000},{name:'1TB',price:2178000}],colors:[{name:'#1C1C1C|티타늄블랙'},{name:'#C0B090|티타늄화이트'}]},
+  {id:'ip17',name:'아이폰 17',img:'',visible:true,storageList:[{name:'128GB',price:990000},{name:'256GB',price:1122000},{name:'512GB',price:1386000}],colors:[{name:'#FFFFFF|화이트'},{name:'#000000|블랙'},{name:'#FFB6C1|핑크'}]},
+  {id:'ip17p',name:'아이폰 17 Pro',img:'',visible:true,storageList:[{name:'128GB',price:1290000},{name:'256GB',price:1422000},{name:'512GB',price:1686000},{name:'1TB',price:1950000}],colors:[{name:'#8E8E93|내추럴티타늄'},{name:'#1C1C1E|블랙티타늄'},{name:'#D4AF37|데저트티타늄'}]},
+  {id:'ip17pm',name:'아이폰 17 Pro Max',img:'',visible:true,storageList:[{name:'256GB',price:1590000},{name:'512GB',price:1854000},{name:'1TB',price:2118000}],colors:[{name:'#8E8E93|내추럴티타늄'},{name:'#1C1C1E|블랙티타늄'},{name:'#D4AF37|데저트티타늄'}]},
+];
+const MPLAN=[];
+const MPOL=[];
+
+async function load(){
+  try{
+    const [ds,ps,pols,txs]=await Promise.all([
+      db.ref('devices').once('value'),db.ref('plans').once('value'),db.ref('policy2').once('value'),db.ref('uitexts').once('value')
+    ]);
+    devices=ds.exists()?Object.entries(ds.val()).map(([id,v])=>({id,...v})).filter(d=>d.visible!==false).sort((a,b)=>(a.order||999)-(b.order||999)):MDEV;
+    await loadBonusData();
+    plans=ps.exists()?Object.entries(ps.val()).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false).sort((a,b)=>{
+  const oa=a.order!==undefined?a.order:a.monthlyPrice/1000;
+  const ob=b.order!==undefined?b.order:b.monthlyPrice/1000;
+  return oa-ob;
+}):MPLAN;
+    policies=pols.exists()?Object.entries(pols.val()).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false):MPOL;
+    applyTexts(txs.exists()?txs.val():{});
+  }catch(e){devices=MDEV;plans=MPLAN;policies=MPOL;applyTexts({});}
+}
+
+function matchPolicy(){
+  if(!sel.plan||!sel.carrier||!sel.jointype) return null;
+  const pg=Math.floor(sel.plan.monthlyPrice/1000).toString();
+  const jt=sel.jointype,ca=sel.carrier;
+  const fns=[
+    p=>p.jointype===jt&&p.carrier!=='all'&&p.carrier?.includes(ca)&&p.plangroup===pg,
+    p=>p.jointype===jt&&p.carrier==='all'&&p.plangroup===pg,
+    p=>p.jointype==='all'&&p.carrier!=='all'&&p.carrier?.includes(ca)&&p.plangroup===pg,
+    p=>p.jointype==='all'&&p.carrier==='all'&&p.plangroup===pg,
+    p=>p.jointype===jt&&p.carrier!=='all'&&p.carrier?.includes(ca)&&p.plangroup==='all',
+    p=>p.jointype===jt&&p.carrier==='all'&&p.plangroup==='all',
+    p=>p.jointype==='all'&&p.carrier!=='all'&&p.carrier?.includes(ca)&&p.plangroup==='all',
+    p=>p.jointype==='all'&&p.carrier==='all'&&p.plangroup==='all',
+  ];
+  for(const fn of fns){
+    const f=policies.find(fn);
+    if(f){
+      if(sel.device&&(f.excludedDevs||[]).includes(sel.device.id)) continue;
+      if(sel.device&&f.deviceOverrides?.[sel.device.id]){
+        const devOv=f.deviceOverrides[sel.device.id];
+        if(sel.storage&&devOv[sel.storage.name]) return{...f,...devOv[sel.storage.name]};
+        if(devOv.pubSupport!==undefined) return{...f,...devOv};
+      }
+      return f;
+    }
+  }
+  return null;
+}
+
+function calc(){
+  if(!sel.device||!sel.carrier||!sel.plan) return;
+  const pol=matchPolicy();
+  const lp=sel.storage?.price||sel.device.storageList?.[0]?.price||0;
+  const mf=sel.plan.monthlyPrice;
+  let mainDisc=0,extra=0,monthlyDev=0,total=0;
+  if(sel.discType==='공시'){
+    mainDisc=pol?.pubSupport||0;
+    extra=(pol?.rebate||0)+(pol?.distribution||0)+(pol?.structure||0)+(pol?.extraPolicy||0);
+    // 기기할부금 = (출고가 - 공시지원금 - 유닥할인) / 24
+    monthlyDev=Math.round(Math.max(0,lp-mainDisc-extra)/24);
+    total=mf+monthlyDev;
+    document.getElementById('rDiscLbl').textContent='공시지원금';
+  } else {
+    mainDisc=Math.round(mf*0.25);
+    extra=pol?((pol.rebate||0)+(pol.distribution||0)+(pol.structure||0)+(pol.extraPolicy||0)):0;
+    // 기기할부금 = (출고가 - 유닥할인) / 24
+    monthlyDev=Math.round(Math.max(0,lp-extra)/24);
+    total=(mf-mainDisc)+monthlyDev;
+    document.getElementById('rDiscLbl').textContent='요금 할인(25%)';
+  }
+  const realPrice=Math.max(0,lp-mainDisc-extra);
+  document.getElementById('rLaunch').textContent=lp.toLocaleString()+'원';
+  document.getElementById('rDisc').textContent=mainDisc>0?'-'+mainDisc.toLocaleString()+'원':'-';
+  document.getElementById('rExtra').textContent=extra>0?'-'+extra.toLocaleString()+'원':'-';
+  document.getElementById('rReal').textContent=realPrice.toLocaleString()+'원';
+  document.getElementById('rMonthlyDev').textContent=monthlyDev.toLocaleString()+'원';
+  document.getElementById('rFee').textContent=mf.toLocaleString()+'원';
+  document.getElementById('rTotal').textContent=total.toLocaleString()+'원';
+  window._estimatedFee=total;
+  const tr=sel.jointype==='번호이동'&&pol?.structure>0;
+  document.getElementById('rTransRow').style.display=tr?'flex':'none';
+  if(tr) document.getElementById('rTrans').textContent='-'+pol.structure.toLocaleString()+'원';
+  const bcNameEl=document.getElementById('bcName');
+  bcNameEl.textContent=sel.device.name; bcNameEl.style.display='block';
+  let tags='';
+  if(sel.carrier) tags+=`<span class="btag">${sel.carrier}</span>`;
+  if(sel.color){const[h,cn]=sel.color.name.split('|');tags+=`<span class="btag"><span class="cdot" style="background:${h}"></span>${cn}</span>`;}
+  if(sel.storage) tags+=`<span class="btag">${sel.storage.name} ${lp.toLocaleString()}원</span>`;
+  if(sel.plan) tags+=`<span class="btag">${sel.plan.name}</span>`;
+  document.getElementById('bcTags').innerHTML=tags;
+  updateBenefitImg();
+  updateBenefitPreview();
+}
+
+/* ── 신청서 자동기입 미리보기 ── */
+function updateBenefitPreview(){
+  const preview=document.getElementById('benefitPreview');
+  const items=document.getElementById('bpItems');
+  const tags=[];
+  if(sel.device) tags.push(sel.device.name);
+  if(sel.carrier) tags.push(sel.carrier);
+  if(sel.storage) tags.push(sel.storage.name);
+  if(sel.color) tags.push(sel.color.name.split('|')[1]);
+  if(sel.plan) tags.push(sel.plan.name);
+  if(selectedBonuses.size>0 && currentBonusKey && bonusData[currentBonusKey]){
+    const bd=bonusData[currentBonusKey];
+    (bd.items||[]).forEach(i=>{
+      if(i.ottOptions){
+        const selOtt=i.ottOptions.find(o=>selectedBonuses.has(o.id));
+        if(selOtt) tags.push('🎁 '+selOtt.name);
+      } else if(selectedBonuses.has(i.id)){
+        tags.push('🎁 '+i.name);
+      }
+    });
+  }
+  if(tags.length>0){
+    preview.classList.add('on');
+    items.innerHTML=tags.map(t=>`<span class="bp-tag" style="pointer-events:none;user-select:none">${t}</span>`).join('');
+  } else {
+    preview.classList.remove('on');
+  }
+}
+
+/* ── 다음 단계 자동 이동 ── */
+function autoNextStep(currentType){
+  const nextMap={device:'carrier',carrier:'storage',storage:'plan'};
+  const next=nextMap[currentType];
+  if(!next) return;
+  setTimeout(()=>{
+    // 스크롤을 스텝카드로
+    const scMap={carrier:'sc2',storage:'sc3',plan:'sc4'};
+    const el=document.getElementById(scMap[next]);
+    if(el){
+      el.scrollIntoView({behavior:'smooth',block:'center'});
+      // 잠깐 하이라이트
+      el.style.borderColor='var(--or)';
+      setTimeout(()=>{if(!sel[next]) el.style.borderColor='';},600);
+    }
+    // 다음 시트 자동으로 열기
+    setTimeout(()=>openSheet(next),400);
+  },300);
+}
+
+/* TOAST */
+function showStepToast(msg){
+  const el=document.getElementById('stepToast');
+  el.textContent=msg; el.style.opacity='1'; el.style.transform='translateX(-50%) translateY(0)';
+  setTimeout(()=>{el.style.opacity='0'; el.style.transform='translateX(-50%) translateY(10px)';},1800);
+}
+
+window.tryOpen=function(type){
+  if(type==='carrier'&&!sel.device){ showStepToast('먼저 원하는 제품을 선택해주세요'); return; }
+  if(type==='storage'&&!sel.carrier){ showStepToast('먼저 현재 사용 통신사를 선택해주세요'); return; }
+  if(type==='plan'&&(!sel.storage||!sel.color)){ showStepToast('먼저 용량과 색상을 선택해주세요'); return; }
+  openSheet(type);
+};
+
+function updateStepLocks(){
+  const sc2=document.getElementById('sc2');
+  const sc3=document.getElementById('sc3');
+  const sc4=document.getElementById('sc4');
+  if(sel.device) sc2.classList.remove('locked'); else sc2.classList.add('locked');
+  if(sel.carrier) sc3.classList.remove('locked'); else sc3.classList.add('locked');
+  if(sel.storage&&sel.color) sc4.classList.remove('locked'); else sc4.classList.add('locked');
+  // done 표시
+  document.getElementById('sc1').classList.toggle('done',!!sel.device);
+  sc2.classList.toggle('done',!!sel.carrier);
+  sc3.classList.toggle('done',!!(sel.storage&&sel.color));
+  sc4.classList.toggle('done',!!sel.plan);
+}
+
 window.openSheet=function(type){
   document.getElementById('overlay').classList.add('on');
   document.getElementById('sheet').classList.add('on');
@@ -704,9 +898,6 @@ function buildPlan(){
 }
 
 /* HANDLERS */
-
-
-/* ── 유닥 selDevice/selStorage/selColor/confirmStorage ── */
 window.selDevice=function(id){
   sel.device=devices.find(d=>d.id===id);sel.storage=null;sel.color=null;sel.lockedColorImg='';
   const v=document.getElementById('vDevice');v.textContent=sel.device.name;v.className='step-val';
@@ -786,411 +977,6 @@ window.setDisc=function(t){
 };
 
 /* 추가 혜택 */
-let bonusData={};
-const DEFAULT_BONUS={
-  '95':{planGroupMatch:['95'],title:'플러스플랜 95 고객님을 위한 무료 혜택!',items:[
-    {id:'watch',name:'갤럭시 워치',desc:'기기값 + 월 요금 무료',amount:11000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png'},
-    {id:'internet',name:'인터넷 500M',desc:'3년 약정 기준 / 월 요금 무료',amount:33000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png'},
-  ]},
-  '115':{planGroupMatch:['115'],title:'플러스플랜 115 고객님을 위한 무료 혜택!',items:[
-    {id:'watch',name:'갤럭시 워치',desc:'기기값 + 월 요금 무료',amount:11000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png'},
-    {id:'tab',name:'갤럭시 탭',desc:'기기값 + 월 요금 무료',amount:22000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tab.png'},
-    {id:'internet',name:'인터넷 500M',desc:'3년 약정 기준 / 월 요금 무료',amount:33000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png'},
-    {id:'ott',name:'OTT 혜택',desc:'원하는 스트리밍 1개 선택',amount:0,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/ott.png',ottOptions:[
-      {id:'ott_disney',name:'디즈니+',emoji:'🏰',color:'#1B3D8F',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/disney.png'},
-      {id:'ott_tving',name:'티빙',emoji:'📺',color:'#FF153C',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tving.png'},
-      {id:'ott_netflix',name:'넷플릭스',emoji:'🎬',color:'#E50914',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/netflix.png'},
-      {id:'ott_youtube',name:'유튜브 프리미엄',emoji:'▶️',color:'#FF0000',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/youtube.png'},
-    ]},
-  ]}
-};
-
-async function loadBonusData(){
-  try{
-    const s=await db.ref('bonusPlans').once('value');
-    if(s.exists()){
-      const fb=s.val();
-      // Firebase key가 '95','115'와 다를 수 있으므로 planGroupMatch로 정규화
-      const normalized={};
-      Object.entries(fb).forEach(([k,v])=>{
-        const matches=(v.planGroupMatch||[]).map(String);
-        // matches에 있는 pg를 key로도 등록
-        matches.forEach(pg=>{normalized[pg]={...v};});
-        normalized[k]={...v};
-      });
-      bonusData=normalized;
-    } else {
-      bonusData=DEFAULT_BONUS;
-    }
-    console.log('[bonusData keys]',Object.keys(bonusData));
-  }
-  catch(e){bonusData=DEFAULT_BONUS;console.log('[bonusData] fallback to default');}
-}
-
-let selectedBonuses=new Set();
-
-// 현재 렌더된 bonus key를 전역 고정
-let currentBonusKey=null;
-
-function getBonusPlanKey(plan){
-  if(!plan) return null;
-  const pg=Math.floor(plan.monthlyPrice/1000).toString(); // ex: "95", "115"
-  for(const key of Object.keys(bonusData)){
-    const bd=bonusData[key];
-    const matches=(bd.planGroupMatch||[]).map(String); // 문자열로 통일
-    if(matches.includes(pg)) return key; // 정확히 pg만 매칭
-  }
-  return null;
-}
-
-// 혜택 수락 여부 (true=받기, false=받지않기)
-let benefitAccepted=true;
-
-window.setBenefitMode=function(accept){
-  benefitAccepted=accept;
-  const yBtn=document.getElementById('btnBenefitYes');
-  const nBtn=document.getElementById('btnBenefitNo');
-  if(yBtn){yBtn.style.background=accept?'#F97316':'#fff';yBtn.style.color=accept?'#fff':'#6B7280';yBtn.style.borderColor=accept?'#F97316':'#E5E7EB';}
-  if(nBtn){nBtn.style.background=!accept?'#F97316':'#fff';nBtn.style.color=!accept?'#fff':'#6B7280';nBtn.style.borderColor=!accept?'#F97316':'#E5E7EB';}
-  if(!accept) selectedBonuses=new Set();
-  // sel.plan 기준으로 key 재확인 - currentBonusKey와 동기화
-  const freshKey=getBonusPlanKey(sel.plan);
-  if(freshKey) currentBonusKey=freshKey;
-  if(currentBonusKey) renderBonusSectionWithKey(currentBonusKey);
-  updateBenefitPreview();
-  // 받지않기 → 상담 신청하기로 바로 스크롤 (모바일)
-  if(!accept&&window.innerWidth<768){
-    setTimeout(()=>{
-      const fw=document.getElementById('formWrap');
-      if(fw) fw.scrollIntoView({behavior:'smooth',block:'start'});
-    },300);
-  }
-};
-
-// key를 직접 받아서 렌더하는 내부 함수
-function renderBonusSectionWithKey(key){
-  const section=document.getElementById('bonusSection');
-  const bd=bonusData[key];
-  if(!bd){section.classList.remove('on');return;}
-  // currentBonusKey는 selPlan에서만 설정 - 여기서 변경 안 함
-  section.classList.add('on');
-  document.getElementById('bonusSectionTitle').textContent=bd.title||'고객님을 위한 무료 혜택!';
-  _renderBonusItems(key,bd);
-  updateBonusSummary(key);
-  updateBonusHero(key);
-}
-
-function renderBonusSection(){
-  const section=document.getElementById('bonusSection');
-  const key=getBonusPlanKey(sel.plan);
-  if(!key){section.classList.remove('on');currentBonusKey=null;return;}
-  currentBonusKey=key;
-
-  renderBonusSectionWithKey(key);
-}
-
-function _renderBonusItems(key,bd){
-  const itemsEl=document.getElementById('bonusItems');
-  const ottBox=document.getElementById('ottSubBox');
-
-  if(!benefitAccepted){
-    // 받지않기 상태: 빈 화면
-    itemsEl.innerHTML='<div style="text-align:center;padding:24px 0;color:#9CA3AF;font-size:13px">혜택을 받지 않기로 선택하셨습니다</div>';
-    if(ottBox) ottBox.innerHTML='';
-    updateBonusSummary(key);
-    return;
-  }
-
-  // 받기 상태: 2열 레이아웃 (왼쪽=사진크게, 오른쪽=혜택목록)
-  // 대표 이미지: 선택된 혜택 중 첫번째 이미지
-  const selItems=bd.items.filter(i=>!i.ottOptions&&selectedBonuses.has(i.id));
-  const heroImg=selItems.find(i=>i.img)?.img||bd.items.find(i=>i.img&&!i.ottOptions)?.img||'';
-
-  itemsEl.innerHTML=bd.items.map((item)=>{
-    const isOtt=!!item.ottOptions;
-    const selOtt=isOtt?item.ottOptions.find(o=>selectedBonuses.has(o.id)):null;
-    const on=isOtt?(!!selOtt):selectedBonuses.has(item.id);
-    const selOttName=selOtt?' ('+selOtt.name+')':'';
-    const bg=on?'#FFF7ED':'#F9FAFB';
-    const border=on?'#F97316':'transparent';
-    const nameColor=on?'#F97316':'#1F2937';
-    const chkBg=on?'#F97316':'transparent';
-    const chkBorder=on?'#F97316':'#D1D5DB';
-    const imgBg=item.img?`url('${item.img}') center/contain no-repeat #fff`:'#F3F4F6';
-    const iconEl=isOtt
-      ?`<div style="width:32px;height:32px;border-radius:6px;flex-shrink:0;background:#F3F4F6;border:1px solid #E5E7EB;display:flex;align-items:center;justify-content:center;font-size:16px">${selOtt?selOtt.emoji:'🎬'}</div>`
-      :`<div style="width:32px;height:32px;border-radius:6px;flex-shrink:0;background:${imgBg};border:1px solid #E5E7EB"></div>`;
-    const clickFn=isOtt?`toggleOtt(event,'${key}')`:`toggleItem(event,'${item.id}','${key}')`;
-    return`<div onclick="${clickFn}" style="cursor:pointer;display:block;width:100%;background:${bg};border-radius:8px;border:2px solid ${border};transition:all .15s;margin-bottom:6px">
-      <div style="display:flex;align-items:center;gap:8px;padding:9px 10px;pointer-events:none">
-        ${iconEl}
-        <div style="flex:1;min-width:0">
-          <div style="font-size:12px;font-weight:700;color:${nameColor}">${item.name}${on&&selOttName?` <span style="font-size:10px">${selOttName}</span>`:''}</div>
-          <div style="font-size:10px;font-weight:800;color:#F97316;margin-top:1px">${item.amount>0?'월 '+item.amount.toLocaleString()+'원 → 무료':'별도 안내'}</div>
-        </div>
-        <div style="width:20px;height:20px;flex-shrink:0;border-radius:50%;border:2px solid ${chkBorder};background:${chkBg};display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff">${on?'✓':''}</div>
-      </div>
-    </div>`;
-  }).join('');
-
-  // OTT 패널 - click-overlay 없이 직접 onclick
-  const ottItem=bd.items.find(i=>i.ottOptions);
-  const fixedKey=key;
-  if(ottItem&&ottBox){
-    const ottOn=ottItem.ottOptions.some(o=>selectedBonuses.has(o.id));
-    const wasOpen=document.getElementById('ottSubInner')?.classList.contains('show')||false;
-    ottBox.innerHTML=`<div class="ott-sub${(ottOn||wasOpen)?' show':''}" id="ottSubInner">
-      <div class="ott-sub-label">어떤 OTT를 원하세요? (1개 선택)</div>
-      <div class="ott-grid">${ottItem.ottOptions.map(o=>{
-        const sel=selectedBonuses.has(o.id);
-        const hasImg=!!o.img;
-        return`<div onclick="selectOtt(event,'${o.id}','${fixedKey}')" class="ott-opt${sel?' on':''}" data-ottimg="${o.img||''}" style="border-color:${sel?'#F97316':'#E5E7EB'};cursor:pointer">
-          <div class="ott-icon" style="pointer-events:none;display:flex;align-items:center;justify-content:center;height:40px">${hasImg?`<img src="${o.img}" style="width:80px;height:40px;object-fit:contain">`:`<span style="font-size:24px">${o.emoji||'🎬'}</span>`}</div>
-          <span style="pointer-events:none;font-size:12px;font-weight:700;color:${sel?'#F97316':'#1F2937'}">${o.name}</span>
-        </div>`;
-      }).join('')}
-      </div>
-    </div>`;
-    // 이미지 로드 실패 시 JS로 이모지 폴백
-    ottBox.querySelectorAll('.ott-icon img').forEach(img=>{
-      img.onerror=function(){
-        this.parentNode.innerHTML='<span style="font-size:24px">'+
-          (this.closest('.ott-opt').dataset.ottimg?'🎬':'🎬')+'</span>';
-      };
-    });
-  } else if(ottBox){
-    ottBox.innerHTML='';
-  }
-
-// _renderBonusItems 끝 (updateBonusSummary/Hero는 renderBonusSectionWithKey에서 호출)
-}
-
-function updateBonusHero(key){
-  const bd=bonusData[key];
-  if(!bd) return;
-  const wrap=document.getElementById('bonusHeroWrap');
-  if(!wrap) return;
-
-  // 선택된 모든 혜택 이미지 수집 (OTT 포함)
-  const imgs=[];
-  (bd.items||[]).forEach(item=>{
-    if(item.ottOptions){
-      const selOtt=item.ottOptions.find(o=>selectedBonuses.has(o.id));
-      if(selOtt) imgs.push({emoji:selOtt.emoji||'🎬',img:selOtt.img||'',name:selOtt.name});
-    } else if(selectedBonuses.has(item.id)){
-      imgs.push({img:item.img||'',emoji:'',name:item.name});
-    }
-  });
-
-  if(imgs.length===0){
-    wrap.innerHTML='<div style="font-size:40px;color:#D1D5DB">🎁</div>';
-    return;
-  }
-
-  // 선택된 이미지들 가로 나열
-  const size=imgs.length===1?140:imgs.length===2?100:80;
-  wrap.innerHTML=imgs.map(i=>
-    i.img
-      ?`<div style="width:${size}px;height:${size}px;border-radius:12px;background:url('${i.img}') center/contain no-repeat #fff;border:1.5px solid #FED7AA;flex-shrink:0"></div>`
-      :`<div style="width:${size}px;height:${size}px;border-radius:12px;background:#FFF7ED;border:1.5px solid #FED7AA;display:flex;align-items:center;justify-content:center;font-size:${size*0.4}px;flex-shrink:0">${i.emoji}</div>`
-  ).join('');
-}
-
-window.selectOtt=function(e,ottId,key){
-  e.stopPropagation();
-  if(!key||!bonusData[key]) return;
-  const bd=bonusData[key];
-  const ottItem=bd.items.find(i=>i.ottOptions);
-  if(!ottItem) return;
-  ottItem.ottOptions.forEach(o=>selectedBonuses.delete(o.id));
-  selectedBonuses.add(ottId);
-  renderBonusSectionWithKey(key);
-  updateBenefitPreview();
-  // 모바일: OTT 선택 완료 → 추가혜택 요약으로 스크롤
-  if(window.innerWidth<768){
-    setTimeout(()=>{
-      const br=document.querySelector('.bonus-right');
-      if(br) br.scrollIntoView({behavior:'smooth',block:'start'});
-    },200);
-  }
-};
-window.toggleItem=function(e,itemId,key){
-  e.stopPropagation();
-  if(!key||!bonusData[key]) return;
-  const wasSelected=selectedBonuses.has(itemId);
-  if(wasSelected){ selectedBonuses.delete(itemId); }
-  else { selectedBonuses.add(itemId); }
-  renderBonusSectionWithKey(key);
-  updateBenefitPreview();
-  // 모바일: 선택(on) 시 순차 이동
-  if(!wasSelected && window.innerWidth<768){
-    const items=bonusData[key].items||[];
-    const curIdx=items.findIndex(i=>i.id===itemId);
-    const nextItem=items[curIdx+1];
-    setTimeout(()=>{
-      if(nextItem){
-        if(nextItem.ottOptions){
-          // 다음이 OTT → OTT 패널 펼치고 스크롤
-          const sub=document.getElementById('ottSubInner');
-          if(sub){ sub.classList.add('show'); sub.scrollIntoView({behavior:'smooth',block:'start'}); }
-        } else {
-          // 일반 다음 항목으로 스크롤
-          const bonusItemEls=document.getElementById('bonusItems')?.querySelectorAll('[onclick]');
-          if(bonusItemEls&&bonusItemEls[curIdx+1])
-            bonusItemEls[curIdx+1].scrollIntoView({behavior:'smooth',block:'center'});
-        }
-      } else {
-        // 마지막 항목 선택 → 추가혜택 요약으로 스크롤
-        const br=document.querySelector('.bonus-right');
-        if(br) br.scrollIntoView({behavior:'smooth',block:'start'});
-      }
-    },200);
-  }
-};
-window.toggleOtt=function(e,key){
-  e.stopPropagation();
-  if(!key||!bonusData[key]) return;
-  const bd=bonusData[key];
-  const ottItem=bd.items.find(i=>i.ottOptions);
-  if(!ottItem) return;
-  ottItem.ottOptions.forEach(o=>selectedBonuses.delete(o.id));
-  renderBonusSectionWithKey(key);
-  updateBenefitPreview();
-  setTimeout(()=>{
-    const sub=document.getElementById('ottSubInner');
-    if(sub) sub.classList.add('show');
-  },10);
-};
-
-function updateBonusSummary(key){
-  const bd=bonusData[key];
-  if(!bd) return;
-  // 요약란 빈 상태 문구 업데이트
-  const emptyMsg=document.getElementById('bonusEmptyMsg');
-  if(emptyMsg){
-    const pg=(bd.planGroupMatch||[])[0]||key;
-    if(pg==='115') emptyMsg.textContent='모바일 + 스마트 워치 + 스마트 탭 + 인터넷 요금을 한번에!';
-    else if(pg==='95') emptyMsg.textContent='모바일 + 스마트 워치 + 인터넷 요금을 한번에!';
-    else emptyMsg.textContent='원하는 혜택을 왼쪽에서 선택해보세요';
-  }
-  // OTT처럼 서브아이템이 있는 경우도 selected 처리
-  const selected=(bd.items||[]).filter(i=>{
-    if(selectedBonuses.has(i.id)) return true;
-    if(i.ottOptions&&i.ottOptions.some(o=>selectedBonuses.has(o.id))) return true;
-    return false;
-  });
-  const rows=document.getElementById('bonusSummaryRows');
-  const totalBox=document.getElementById('bonusTotalBox');
-  if(!selected.length){
-    rows.innerHTML='';
-    totalBox.style.display='none'; return;
-  }
-
-  let total=0;
-  // OTT 서브선택도 포함해서 rows 구성
-  const bd2=bonusData[key];
-  const allDisplayItems=[];
-  selected.forEach(i=>{
-    if(i.ottOptions){
-      const selOtt=i.ottOptions.find(o=>selectedBonuses.has(o.id));
-      allDisplayItems.push({...i,name:'OTT — '+(selOtt?selOtt.name:'선택 중'),img:selOtt?selOtt.img:i.img,emoji:selOtt?selOtt.emoji:''});
-    } else {
-      allDisplayItems.push(i);
-    }
-  });
-  allDisplayItems.forEach(i=>{ if(i.amount>0) total+=i.amount; });
-  totalBox.style.display='block';
-  const planFee=sel.plan?.monthlyPrice||0;
-  const hasExtra=allDisplayItems.some(i=>i.amount===0);
-  // 체감가 강조
-  const feelEl=document.getElementById('bonusTotalFeel');
-  const noteEl=document.getElementById('bonusTotalNote');
-  if(planFee&&total){
-    const feel=planFee-total;
-    // 혜택 절약액 강조
-    feelEl.innerHTML=`<span style="font-size:16px;color:var(--ord);font-weight:800">-</span>${total.toLocaleString()}<span style="font-size:16px;color:var(--ord);font-weight:800">원${hasExtra?' + α':''}</span>`;
-    // 체감 요금 안내
-    noteEl.innerHTML=`
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #FED7AA">
-        <span style="color:var(--g600)">요금제</span>
-        <span style="font-weight:700">${planFee.toLocaleString()}원</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #FED7AA">
-        <span style="color:var(--g600)">혜택 할인</span>
-        <span style="font-weight:700;color:var(--or)">-${total.toLocaleString()}원${hasExtra?' + α':''}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0">
-        <span style="font-weight:800;color:var(--g800)">체감 요금</span>
-        <span style="font-weight:900;color:var(--or);font-size:14px">${feel.toLocaleString()}원/월</span>
-      </div>
-      ${hasExtra?'<div style="font-size:10px;color:var(--g400);margin-top:4px">*OTT 혜택 별도 안내</div>':''}
-      ${window._installmentNoteOff?'':('<div style="font-size:10px;color:var(--g400);margin-top:2px">'+(window._installmentNote||'*기기 할부금 별도')+'</div>')}
-    `;
-  } else {
-    feelEl.textContent='별도 안내';
-    noteEl.textContent='';
-  }
-  // 내역 리스트
-  const detailEl=document.getElementById('bonusDetailRows');
-  if(detailEl){
-    detailEl.innerHTML=allDisplayItems.map(i=>{
-      const imgHtml=i.img
-        ?`<img src="${i.img}" style="width:28px;height:28px;object-fit:contain;border-radius:5px;background:#fff;border:1px solid #E5E7EB;flex-shrink:0">`
-        :i.emoji?`<span style="font-size:18px;flex-shrink:0">${i.emoji}</span>`
-        :`<span style="font-size:18px;flex-shrink:0">🎁</span>`;
-      return`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--g100)">
-        ${imgHtml}
-        <span style="flex:1;font-size:12px;color:var(--g800)">${i.name}</span>
-        <span style="font-size:12px;font-weight:700;color:var(--or)">${i.amount>0?'-'+i.amount.toLocaleString()+'원':'별도'}</span>
-      </div>`;
-    }).join('');
-  }
-}
-
-/* SUBMIT */
-window.submitForm=async function(){
-  const name=document.getElementById('fName').value.trim();
-  const birth=document.getElementById('fBirth').value.trim();
-  const phone=document.getElementById('fPhone').value.trim();
-  const time=document.getElementById('fTime').value;
-  if(!name||!phone||!time){alert('이름, 연락처, 상담 희망 시간은 필수입니다.');return;}
-  const btn=document.getElementById('subBtn');
-  btn.disabled=true;btn.innerHTML='📞 신청 중...';
-  try{
-    const res=await fetch(`${SB_URL}/rest/v1/leads`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Prefer':'return=minimal'},
-      body:JSON.stringify({
-        name,birth:birth||null,phone,
-        current_carrier:sel.carrier||null,jointype:sel.jointype||null,
-        desired_device:sel.device?.name||null,storage:sel.storage?.name||null,
-        color:sel.color?sel.color.name.split('|')[1]:null,
-        desired_product:sel.plan?.name||null,
-        discount:sel.discType==='공시'?'공시지원금':'선택약정',
-        additional_benefits:[...selectedBonuses].join(',')||null,
-        consult_time:time,
-        channel:_utm.source==='meta'?'메타광고':'유닥',
-        utm_campaign:_utm.campaign||null,
-        estimated_fee:window._estimatedFee||null,
-        created_at:new Date().toISOString()
-      })
-    });
-    if(!res.ok) throw new Error(await res.text());
-    document.getElementById('sModal').classList.add('on');
-    ['fName','fBirth','fPhone'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('fTime').value='';
-  document.getElementById('timeDisplayText').textContent='선택해주세요';
-  document.getElementById('timeDisplayText').style.color='var(--g400)';
-  document.querySelectorAll('.tp-item').forEach(el=>el.classList.remove('tp-sel','tp-near'));
-  document.getElementById('timePicker')?.classList.remove('on');
-  const rd=document.getElementById('timeDrum'); if(rd) rd.style.display='none';
-  }catch(e){console.error(e);alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');}
-  finally{btn.disabled=false;btn.innerHTML='📞 <span id="txtCtaPhone">전화 상담 신청하기</span>';}
-};
-
-/* BANNER */
-
-/* ── 유닥 추가혜택(보너스) 전체 ── */
 let bonusData={};
 const DEFAULT_BONUS={
   '95':{planGroupMatch:['95'],title:'플러스플랜 95 고객님을 위한 무료 혜택!',items:[
@@ -1674,11 +1460,8 @@ document.addEventListener('click',function(e){
     if(d) d.style.display='none';
   }
 });
-</script>
 
 
-
-<script>
 function openSummarySheet(key){
   if(window.innerWidth>=768) return;
   const bd=bonusData[key];
@@ -1788,10 +1571,8 @@ const BANNERS=[
   si=0; moveBanner();
   setInterval(()=>{if((window._bannerCount||0)>1) slide(1);},4500);
 })();
-</script>
 
 
-<script>
 window.addEventListener('pageshow',function(e){
   if(!e.persisted) return;
   sel={device:null,carrier:null,jointype:null,storage:null,color:null,plan:null,discType:'공시',lockedColorImg:''};
@@ -1810,16 +1591,8 @@ window.addEventListener('pageshow',function(e){
   if(bonusSection) bonusSection.style.display='none';
 });
 
-
-/* ═══════════════════════════════════════
-   올인원 전용 JS (유닥 계산 완전 분리)
-═══════════════════════════════════════ */
-const _utm=(()=>{const p=new URLSearchParams(window.location.search);return{source:p.get('utm_source'),campaign:p.get('utm_campaign'),medium:p.get('utm_medium')};  })();
-
-/* 올인원 상태 (유닥 sel과 분리) */
+/* ═══════════════ 올인원 전용 JS ═══════════════ */
 const aio={mobileCarrier:null,internetCarrier:null,jointype:null,plan:null,members:null};
-
-/* 올인원 요금/현금 테이블 */
 const AIO_FEE={95000:{1:71250,2:61250,4:51250},115000:{1:86250,2:76250,4:66250},130000:{1:97500,2:87500,4:77500}};
 const AIO_CASH={1:30,2:60,4:120};
 const AIO_PLAN_FEATS={
@@ -1827,7 +1600,6 @@ const AIO_PLAN_FEATS={
   115000:['데이터 무제한','인터넷 500M 무료','스마트워치+스마트탭 면제','OTT 1개 선택'],
   130000:['데이터 무제한','인터넷 500M 무료','스마트워치+스마트탭 면제','OTT 1개 선택','만 19세 미만 자녀 요금 0원'],
 };
-
 let aioPlanList=[
   {id:'p95',name:'5G 프리미어 레귤러',price:95000,plangroup:'95'},
   {id:'p115',name:'5G 프리미어 플러스',price:115000,plangroup:'115'},
@@ -1835,36 +1607,32 @@ let aioPlanList=[
 ];
 let aioBanners=[], aioModalBanners=[];
 
-/* 초기화 */
 document.addEventListener('DOMContentLoaded', async function(){
-  await aioLoadFirebase();
+  await aioLoad();
   aioRenderPlans();
   aioRenderCompare();
   bnInit();
   aioModalInit();
 });
 
-async function aioLoadFirebase(){
+async function aioLoad(){
   try{
-    const [bSnap,mbSnap,pSnap,dSnap,boSnap]=await Promise.all([
-      db.ref('allinone/banners').once(),
-      db.ref('allinone/modalBanners').once(),
-      db.ref('allinone/plans').once(),
-      db.ref('allinone/devices').once(),
+    const [bS,mbS,pS,dS,boS]=await Promise.all([
+      db.ref('allinone/banners').once(),db.ref('allinone/modalBanners').once(),
+      db.ref('allinone/plans').once(),db.ref('allinone/devices').once(),
       db.ref('allinone/bonusPlans').once(),
     ]);
-    if(bSnap.exists()&&bSnap.val()){const v=bSnap.val();aioBanners=(Array.isArray(v)?v:Object.values(v)).filter(x=>x&&(x.pc||x.mo));}
-    if(mbSnap.exists()&&mbSnap.val()){const v=mbSnap.val();aioModalBanners=(Array.isArray(v)?v:Object.values(v)).filter(x=>x&&x.img);}
-    if(pSnap.exists()&&pSnap.val()){const v=Object.values(pSnap.val()).filter(x=>x.visible!==false).sort((a,b)=>a.price-b.price);if(v.length){aioPlanList=v;aioRenderPlans();}}
-    if(dSnap.exists()&&dSnap.val()){devices=Object.values(dSnap.val()).filter(x=>x.visible!==false);}
-    if(boSnap.exists()&&boSnap.val()){bonusData=boSnap.val();}
-  }catch(e){console.warn('aioLoad error',e);}
+    if(bS.exists()&&bS.val()){const v=bS.val();aioBanners=(Array.isArray(v)?v:Object.values(v)).filter(x=>x&&(x.pc||x.mo));}
+    if(mbS.exists()&&mbS.val()){const v=mbS.val();aioModalBanners=(Array.isArray(v)?v:Object.values(v)).filter(x=>x&&x.img);}
+    if(pS.exists()&&pS.val()){const v=Object.values(pS.val()).filter(x=>x.visible!==false).sort((a,b)=>a.price-b.price);if(v.length){aioPlanList=v;aioRenderPlans();}}
+    if(dS.exists()&&dS.val()){devices=Object.values(dS.val()).filter(x=>x.visible!==false);}
+    if(boS.exists()&&boS.val()){bonusData=boS.val();}
+  }catch(e){console.warn('aioLoad',e);}
 }
 
-/* 배너 */
 let _bsi=0;
 function bnInit(){
-  var track=document.getElementById('bTrack'),dots=document.getElementById('bDots'),prev=document.getElementById('bPrev'),next=document.getElementById('bNext');
+  const track=document.getElementById('bTrack'),dots=document.getElementById('bDots'),prev=document.getElementById('bPrev'),next=document.getElementById('bNext');
   if(!aioBanners.length){document.getElementById('bannerWrap').style.display='none';return;}
   track.innerHTML=aioBanners.map((b,i)=>{
     const inner='<img class="bn-pc" src="'+(b.pc||b.mo||'')+'" alt="배너'+(i+1)+'"><img class="bn-mo" src="'+(b.mo||b.pc||'')+'" alt="배너'+(i+1)+'">';
@@ -1885,17 +1653,15 @@ function aioModalInit(){
   w.innerHTML=aioModalBanners.map(b=>'<img src="'+b.img+'" style="width:100%;border-radius:8px;cursor:pointer"'+(b.link?' onclick="window.open(''+b.link+'','_blank')"':'')+'>').join('');
 }
 
-/* 요금제 렌더 */
 function aioRenderPlans(){
   const list=document.getElementById('aioPlanList');if(!list)return;
   list.innerHTML=aioPlanList.map(p=>{
     const feats=AIO_PLAN_FEATS[p.price]||[];
     const badge=p.price===95000?'기본':p.price===115000?'인기 🔥':'프리미엄 👑';
-    return '<div class="aio-plan-item" id="api_'+p.id+'" onclick="aioSelPlan(''+p.id+'','+p.price+',''+p.name+'',''+p.plangroup+'')">'
-      +'<div class="aio-plan-top"><div class="aio-plan-name">'+p.name+'</div><div class="aio-plan-price">'+p.price.toLocaleString()+'원</div></div>'
-      +'<div class="aio-plan-badges"><span class="aio-plan-badge">'+badge+'</span></div>'
-      +'<ul class="aio-plan-detail">'+feats.map(f=>'<li>'+f+'</li>').join('')+'</ul>'
-      +'</div>';
+    return '<div class="aio-plan-item" id="api_'+p.id+'" onclick="aioSelPlan(''+p.id+'','+p.price+',''+p.name+'',''+p.plangroup+'')">'+
+      '<div class="aio-plan-top"><div class="aio-plan-name">'+p.name+'</div><div class="aio-plan-price">'+p.price.toLocaleString()+'원</div></div>'+
+      '<div class="aio-plan-badges"><span class="aio-plan-badge">'+badge+'</span></div>'+
+      '<ul class="aio-plan-detail">'+feats.map(f=>'<li>'+f+'</li>').join('')+'</ul></div>';
   }).join('');
 }
 
@@ -1909,26 +1675,11 @@ function aioRenderCompare(){
   g.innerHTML=plans.map(p=>'<div class="aio-cc'+(aio.plan===p.price?' sel':'')+'"><div class="aio-cc-price">'+p.price.toLocaleString()+'원</div><div class="aio-cc-badge">'+p.badge+'</div><ul class="aio-cc-feats">'+p.feats.map(f=>'<li>'+f+'</li>').join('')+'</ul></div>').join('');
 }
 
-/* ── 올인원 아코디언 STEP ── */
 const AIO_STEPS=['asc1','asc2','asc3','asc4','asc5'];
-
-function aioToggle(id){
-  const card=document.getElementById(id);
-  if(!card||card.classList.contains('locked'))return;
-  if(card.classList.contains('active'))return;
-  if(card.classList.contains('done'))aioActivate(id);
-}
+function aioToggle(id){const c=document.getElementById(id);if(!c||c.classList.contains('locked'))return;if(c.classList.contains('active'))return;if(c.classList.contains('done'))aioActivate(id);}
 function aioActivate(id){
   const idx=AIO_STEPS.indexOf(id);
-  AIO_STEPS.forEach((s,i)=>{
-    const el=document.getElementById(s);if(!el)return;
-    el.classList.remove('active');
-    if(i>idx){
-      el.classList.remove('done');el.classList.add('locked');
-      const ve=document.getElementById('av'+(i+1));if(ve){ve.textContent='선택해주세요';ve.className='aio-step-val ph';}
-      aioSetSum(i+1,null);
-    }
-  });
+  AIO_STEPS.forEach((s,i)=>{const el=document.getElementById(s);if(!el)return;el.classList.remove('active');if(i>idx){el.classList.remove('done');el.classList.add('locked');const ve=document.getElementById('av'+(i+1));if(ve){ve.textContent='선택해주세요';ve.className='aio-step-val ph';}aioSetSum(i+1,null);}});
   if(idx<=0)aio.mobileCarrier=null;
   if(idx<=1){aio.internetCarrier=null;document.getElementById('lguWarn').classList.remove('show');}
   if(idx<=2)aio.jointype=null;
@@ -1937,51 +1688,42 @@ function aioActivate(id){
   document.getElementById('bonusSection').classList.remove('on');
   document.getElementById('aioFeeBox').style.display='none';
   const target=document.getElementById(id);
-  if(target&&!target.classList.contains('locked')){
-    target.classList.add('active');
-    setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'nearest'}),200);
-  }
+  if(target&&!target.classList.contains('locked')){target.classList.add('active');setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'nearest'}),200);}
 }
 function aioMarkDone(id){const c=document.getElementById(id);c.classList.remove('active');c.classList.add('done');}
 function aioUnlock(id){const el=document.getElementById(id);if(el)el.classList.remove('locked');}
-function aioSetVal(n,txt){const e=document.getElementById('av'+n);if(e){e.textContent=txt;e.className='aio-step-val';}}
-function aioSetSum(n,txt){const e=document.getElementById('srV'+n);if(e){e.textContent=txt||'–';e.style.color=txt?'':'#adb5bd';}}
+function aioSetVal(n,t){const e=document.getElementById('av'+n);if(e){e.textContent=t;e.className='aio-step-val';}}
+function aioSetSum(n,t){const e=document.getElementById('srV'+n);if(e){e.textContent=t||'–';e.style.color=t?'':'#adb5bd';}}
 function aioNext(id){const el=document.getElementById(id);if(!el)return;el.classList.add('active');setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),200);}
 
-/* STEP 통합 선택 */
 window.aioS=function(step,val){
   if(step===1){
     aio.mobileCarrier=val;
     document.querySelectorAll('#asc1 .aio-opt').forEach(b=>b.classList.toggle('sel',b.textContent===val));
     aioSetVal(1,val);aioSetSum(1,val);
-    aioRenderStep3();
-    aioMarkDone('asc1');aioUnlock('asc2');aioNext('asc2');
-  } else if(step===2){
+    aioRenderStep3();aioMarkDone('asc1');aioUnlock('asc2');aioNext('asc2');
+  }else if(step===2){
     aio.internetCarrier=val;
     document.querySelectorAll('#asc2 .aio-opt').forEach(b=>b.classList.toggle('sel',b.textContent===val));
     aioSetVal(2,val);aioSetSum(2,val);
     if(val==='LGU+'){
       document.getElementById('lguWarn').classList.add('show');
       ['asc3','asc4','asc5'].forEach(id=>{const e=document.getElementById(id);if(e){e.classList.add('locked');e.classList.remove('active','done');}});
-    } else {
+    }else{
       document.getElementById('lguWarn').classList.remove('show');
-      aioRenderStep3();
-      aioMarkDone('asc2');aioUnlock('asc3');aioNext('asc3');
+      aioRenderStep3();aioMarkDone('asc2');aioUnlock('asc3');aioNext('asc3');
     }
-  } else if(step===5){
+  }else if(step===5){
     aio.members=val;
     document.querySelectorAll('#asc5 .aio-opt').forEach(b=>b.classList.toggle('sel',b.textContent===val+'인'));
     aioSetVal(5,val+'인');aioSetSum(5,val+'인');
-    aioMarkDone('asc5');
-    aioCalc();
-    // 핸드폰 바꾸기 아닌 경우 바로 추가혜택
+    aioMarkDone('asc5');aioCalc();
     if(!aio.jointype||!aio.jointype.includes('핸드폰')){
       renderBonusSection();
       setTimeout(()=>document.getElementById('bonusSection').scrollIntoView({behavior:'smooth',block:'start'}),300);
     }
   }
 };
-
 function aioRenderStep3(){
   const isLgu=aio.mobileCarrier==='LGU+';
   const opts=isLgu?['요금제만 바꾸기','핸드폰도 바꾸기']:['유심만 바꾸기','핸드폰도 바꾸기'];
@@ -1991,48 +1733,32 @@ window.aioSel3=function(jt){
   aio.jointype=jt;
   document.querySelectorAll('#asc3 .aio-opt').forEach(b=>b.classList.toggle('sel',b.textContent===jt));
   aioSetVal(3,jt);aioSetSum(3,jt);
-  const needDev=jt.includes('핸드폰');
-  document.getElementById('udakDevSteps').style.display=needDev?'block':'none';
+  document.getElementById('udakDevSteps').style.display=jt.includes('핸드폰')?'block':'none';
   aioMarkDone('asc3');aioUnlock('asc4');aioNext('asc4');
 };
 window.aioSelPlan=function(id,price,name,pg){
   aio.plan=price;
-  // 유닥 sel.plan 연동 (추가혜택 bonusPlanKey 매칭용)
   sel.plan={id:id,name:name,monthlyPrice:price,plangroup:pg};
   document.querySelectorAll('.aio-plan-item').forEach(el=>el.classList.remove('sel'));
   const pi=document.getElementById('api_'+id);if(pi)pi.classList.add('sel');
   aioSetVal(4,price.toLocaleString()+'원');aioSetSum(4,price.toLocaleString()+'원');
-  aioRenderCompare();
-  aioMarkDone('asc4');aioUnlock('asc5');aioNext('asc5');
-  aioCalc();
+  aioRenderCompare();aioMarkDone('asc4');aioUnlock('asc5');aioNext('asc5');aioCalc();
 };
 
-/* 기기 선택 완료 후 올인원 혜택 연동 */
 const _origConfirm=window.confirmStorage;
 window.confirmStorage=function(){
   if(_origConfirm)_origConfirm();
-  // 우측 카드 기기 이미지 반영
   if(sel.device){
     document.getElementById('aioDevArea').style.display='block';
     const img=document.getElementById('bcImg'),ph=document.getElementById('bcImgPh');
     if(sel.device.img&&img){img.src=sel.device.img;img.style.display='block';if(ph)ph.style.display='none';}
     const nm=document.getElementById('bcName');if(nm){nm.textContent=sel.device.name;nm.style.display='block';}
     const tags=document.getElementById('bcTags');
-    if(tags){
-      const t=[];
-      if(sel.storage)t.push(sel.storage.name);
-      if(sel.color){const cn=(sel.color.name||'').split('|')[1];if(cn)t.push(cn);}
-      tags.innerHTML=t.map(x=>'<span class="bc-tag">'+x+'</span>').join('');
-    }
+    if(tags){const t=[];if(sel.storage)t.push(sel.storage.name);if(sel.color){const cn=(sel.color.name||'').split('|')[1];if(cn)t.push(cn);}tags.innerHTML=t.map(x=>'<span class="bc-tag">'+x+'</span>').join('');}
   }
-  // 인원까지 골랐으면 추가혜택 표시
-  if(aio.members){
-    renderBonusSection();
-    setTimeout(()=>document.getElementById('bonusSection').scrollIntoView({behavior:'smooth',block:'start'}),300);
-  }
+  if(aio.members){renderBonusSection();setTimeout(()=>document.getElementById('bonusSection').scrollIntoView({behavior:'smooth',block:'start'}),300);}
 };
 
-/* 올인원 혜택 계산 (유닥 calc와 완전 분리) */
 function aioCalc(){
   if(!aio.plan||!aio.members)return;
   const fee=(AIO_FEE[aio.plan]||{})[aio.members];
@@ -2047,15 +1773,12 @@ function aioCalc(){
   window._aioFeeMemo='월 '+fee.toLocaleString()+'원'+(cash>0?' + 현금 '+cash+'만원':'');
 }
 
-/* 추가혜택 선택 후 우측카드 반영 */
 const _origUBS=window.updateBonusSummary;
 window.updateBonusSummary=function(key){
   if(_origUBS)_origUBS(key);
-  // 우측 올인원 카드 추가혜택 업데이트
   const bl=document.getElementById('aioBonusList');
   if(!bl||!key||!bonusData[key])return;
-  const bd=bonusData[key];
-  const items=[];
+  const bd=bonusData[key],items=[];
   (bd.items||[]).forEach(item=>{
     if(item.ottOptions){const o=item.ottOptions.find(o=>selectedBonuses.has(o.id));if(o)items.push(item.name+' ('+o.name+')');}
     else if(selectedBonuses.has(item.id))items.push(item.name);
@@ -2063,7 +1786,6 @@ window.updateBonusSummary=function(key){
   bl.innerHTML=items.map(t=>'<li>'+t+'</li>').join('');
 };
 
-/* 폼 제출 */
 window.aioSubmit=async function(){
   const name=document.getElementById('fName').value.trim();
   const birth=document.getElementById('fBirth').value.trim();
@@ -2074,45 +1796,10 @@ window.aioSubmit=async function(){
   const btn=document.getElementById('subBtn');btn.disabled=true;btn.textContent='신청 중...';
   const isTasa=aio.mobileCarrier&&aio.mobileCarrier!=='LGU+';
   const devStr=sel.device?sel.device.name+(sel.storage?' '+sel.storage.name:'')+(sel.color?' '+(sel.color.name.split('|')[1]||''):''):'–';
-  const bonusStr=(()=>{
-    if(!currentBonusKey||!bonusData[currentBonusKey])return'–';
-    const bd=bonusData[currentBonusKey],parts=[];
-    (bd.items||[]).forEach(item=>{
-      if(item.ottOptions){const o=item.ottOptions.find(o=>selectedBonuses.has(o.id));if(o)parts.push(item.name+'('+o.name+')');}
-      else if(selectedBonuses.has(item.id))parts.push(item.name);
-    });
-    return parts.join(' / ')||'–';
-  })();
-  const memoText=[
-    '[올인원 선택값]',
-    '현재 휴대폰 통신사: '+(aio.mobileCarrier||'–'),
-    '현재 인터넷 통신사: '+(aio.internetCarrier||'–'),
-    '인터넷 신규 설치 대상 여부: '+(aio.internetCarrier==='LGU+'?'대상 아님':'가능'),
-    '진행 방식: '+(aio.jointype||'–'),
-    '선택 요금제: '+(aio.plan?aio.plan.toLocaleString()+'원':'–'),
-    '가족 결합 인원: '+(aio.members?aio.members+'인':'–'),
-    '예상 월 요금: '+(window._aioFee?window._aioFee.toLocaleString()+'원':'–'),
-    '예상 현금 혜택: '+(isTasa&&window._aioCash?window._aioCash+'만원':'해당없음'),
-    '선택 기종: '+devStr,
-    '추가 혜택: '+bonusStr,
-    '상담 가능 시간: '+time,
-    '고객 메모: '+(memo||'없음'),
-  ].join('
-');
+  const bonusStr=(()=>{if(!currentBonusKey||!bonusData[currentBonusKey])return'–';const bd=bonusData[currentBonusKey],parts=[];(bd.items||[]).forEach(item=>{if(item.ottOptions){const o=item.ottOptions.find(o=>selectedBonuses.has(o.id));if(o)parts.push(item.name+'('+o.name+')');}else if(selectedBonuses.has(item.id))parts.push(item.name);});return parts.join(' / ')||'–';})();
+  const memoText=['[올인원 선택값]','현재 휴대폰 통신사: '+(aio.mobileCarrier||'–'),'현재 인터넷 통신사: '+(aio.internetCarrier||'–'),'인터넷 신규 설치 대상 여부: '+(aio.internetCarrier==='LGU+'?'대상 아님':'가능'),'진행 방식: '+(aio.jointype||'–'),'선택 요금제: '+(aio.plan?aio.plan.toLocaleString()+'원':'–'),'가족 결합 인원: '+(aio.members?aio.members+'인':'–'),'예상 월 요금: '+(window._aioFee?window._aioFee.toLocaleString()+'원':'–'),'예상 현금 혜택: '+(isTasa&&window._aioCash?window._aioCash+'만원':'해당없음'),'선택 기종: '+devStr,'추가 혜택: '+bonusStr,'상담 가능 시간: '+time,'고객 메모: '+(memo||'없음')].join('\n');
   try{
-    const res=await fetch(SB_URL+'/rest/v1/leads',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},
-      body:JSON.stringify({
-        name,birth:birth||null,phone,channel:'올인원',
-        carrier:aio.mobileCarrier||null,plan:aio.plan?String(aio.plan):null,
-        bundling:aio.members?aio.members+'인':null,jointype:aio.jointype||null,
-        estimated_fee:window._aioFee||null,estimated_fee_memo:window._aioFeeMemo||null,
-        consult_time:time,memo:memoText,
-        utm_campaign:_utm.campaign||null,utm_source:_utm.source||null,utm_medium:_utm.medium||null,
-        created_at:new Date().toISOString()
-      })
-    });
+    const res=await fetch(SB_URL+'/rest/v1/leads',{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify({name,birth:birth||null,phone,channel:'올인원',carrier:aio.mobileCarrier||null,plan:aio.plan?String(aio.plan):null,bundling:aio.members?aio.members+'인':null,jointype:aio.jointype||null,estimated_fee:window._aioFee||null,estimated_fee_memo:window._aioFeeMemo||null,consult_time:time,memo:memoText,utm_campaign:_utm.campaign||null,utm_source:_utm.source||null,utm_medium:_utm.medium||null,created_at:new Date().toISOString()})});
     if(!res.ok)throw new Error(await res.text());
     fbq('track','Lead',{content_name:'올인원상담신청'});
     document.getElementById('sModal').classList.add('on');
@@ -2121,6 +1808,6 @@ window.aioSubmit=async function(){
   }catch(e){console.error(e);alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');}
   finally{btn.disabled=false;btn.textContent='📞 조건 저장 후 상담 신청';}
 };
-<\/script>
+</script>
 </body>
 </html>
