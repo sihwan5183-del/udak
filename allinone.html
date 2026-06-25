@@ -926,56 +926,68 @@ window.selectOtt=function(e,ottId,key){
   renderBonusItems(key);updateBonusSummary(key);updateBonusHero(key);
 };
 function updateBonusSummary(key){
-  const rows=document.getElementById("bonusSumRows");
-  const sub=document.getElementById("bonusSumSubtitle");
-  const bl=document.getElementById("sBonusList");
+  var rows=document.getElementById("bonusSumRows");
+  var sub=document.getElementById("bonusSumSubtitle");
+  var bl=document.getElementById("sBonusList");
+  var bt=document.getElementById("bonusTotal");
+  var det=document.getElementById("bonusDetailRows");
   if(!key||!bonusData[key]||!benefitAccepted){
-    if(rows) rows.innerHTML=`<div class="bonus-empty">왼쪽에서 혜택을 선택해보세요</div>`;
-    document.getElementById("bonusTotal").style.display="none";
+    if(rows) rows.innerHTML='<div class="bonus-empty">왼쪽에서 혜택을 선택해보세요</div>';
+    if(bt) bt.style.display="none";
     return;
   }
-  const bd=bonusData[key];
-  const selItems=[];
-  (bd.items||[]).forEach(item=>{
+  var bd=bonusData[key];
+  var selItems=[];
+  (bd.items||[]).forEach(function(item){
     if(item.ottOptions){
-      const o=item.ottOptions.find(o=>selectedBonuses.has(o.id));
-      if(o) selItems.push({...item, selOtt:o, displayName:item.name+" ("+o.name+")", img:o.img||item.img, emoji:o.emoji||"🎬"});
+      var o=item.ottOptions.find(function(o){return selectedBonuses.has(o.id);});
+      if(o) selItems.push({id:item.id,name:item.name,displayName:item.name+" ("+o.name+")",img:o.img||item.img||"",emoji:o.emoji||"🎬",amount:0,selOtt:o});
     } else if(selectedBonuses.has(item.id)){
-      selItems.push({...item, displayName:item.name});
+      selItems.push({id:item.id,name:item.name,displayName:item.name,img:item.img||"",emoji:"🎁",amount:item.amount||0,selOtt:null});
     }
   });
   if(!selItems.length){
-    if(rows) rows.innerHTML=`<div class="bonus-empty">왼쪽에서 혜택을 선택해보세요</div>`;
-    document.getElementById("bonusTotal").style.display="none";
+    if(rows) rows.innerHTML='<div class="bonus-empty">왼쪽에서 혜택을 선택해보세요</div>';
+    if(bt) bt.style.display="none";
     return;
   }
-  // 요약 줄 렌더
-  if(rows) rows.innerHTML=selItems.map(i=>`<div class="bonus-sum-row">
-    ${i.img?`<img class="bonus-sum-img" src="${i.img}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="bonus-sum-img-ph" style="display:none">${i.emoji||"🎁"}</div>`:`<div class="bonus-sum-img-ph">${i.emoji||"🎁"}</div>`}
-    <div class="bonus-sum-info">
-      <div class="bonus-sum-name">${i.displayName}</div>
-      <div class="bonus-sum-price">${i.amount>0?"월 "+i.amount.toLocaleString()+"원 → <strong>무료</strong>":i.selOtt?"별도 안내":"무료 혜택"}</div>
-    </div>
-  </div>`).join("");
-  // 절약액 계산
-  const total=selItems.reduce((s,i)=>s+(i.amount||0),0);
-  const hasOtt=selItems.some(i=>i.selOtt);
-  const bt=document.getElementById("bonusTotal");
-  bt.style.display="block";
-  document.getElementById("bonusTotalVal").textContent="월 "+total.toLocaleString()+"원"+(hasOtt?" + α":"");
-  // 혜택 내역 상세 (유닥 스타일)
-  const det=document.getElementById("bonusDetailRows");
-  if(det) det.innerHTML=selItems.map(i=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--navyL)">
-    ${i.img?`<img style="width:24px;height:24px;object-fit:contain;border-radius:4px;border:1px solid var(--g200)" src="${i.img}" onerror="this.style.display='none'">`:`<span style="font-size:16px">${i.emoji||"🎁"}</span>`}
-    <span style="flex:1;font-size:11px;font-weight:600;color:var(--g600)">${i.displayName}</span>
-    <span style="font-size:11px;font-weight:700;color:var(--navy)">${i.amount>0?"-"+i.amount.toLocaleString()+"원":"별도"}</span>
-  </div>`).join("");
-  // 좌측 요약 서브타이틀
-  const names=selItems.map(i=>i.displayName.replace(" 기기값 + 요금 면제","").replace(" 기본 제공","")).join(" + ");
+  // 요약 행 렌더 (중첩 템플릿 없이)
+  var rowsHtml="";
+  selItems.forEach(function(i){
+    var imgEl=i.img
+      ? '<img class="bonus-sum-img" src="'+i.img+'" onerror="this.style.display=\'none\'">'
+      : '<div class="bonus-sum-img-ph">'+i.emoji+'</div>';
+    var priceEl=i.amount>0
+      ? '월 '+i.amount.toLocaleString()+'원 → <strong>무료</strong>'
+      : (i.selOtt ? '별도 안내' : '무료 혜택');
+    rowsHtml+='<div class="bonus-sum-row">'+imgEl+'<div class="bonus-sum-info"><div class="bonus-sum-name">'+i.displayName+'</div><div class="bonus-sum-price">'+priceEl+'</div></div></div>';
+  });
+  if(rows) rows.innerHTML=rowsHtml;
+  // 절약액
+  var total=selItems.reduce(function(s,i){return s+(i.amount||0);},0);
+  var hasOtt=selItems.some(function(i){return !!i.selOtt;});
+  if(bt){
+    bt.style.display="block";
+    var tv=document.getElementById("bonusTotalVal");
+    if(tv) tv.textContent="월 "+total.toLocaleString()+"원"+(hasOtt?" + α":"");
+  }
+  // 혜택 내역
+  var detHtml="";
+  selItems.forEach(function(i){
+    var imgEl=i.img
+      ? '<img style="width:24px;height:24px;object-fit:contain;border-radius:4px;border:1px solid var(--g200)" src="'+i.img+'" onerror="this.style.display=\'none\'">'
+      : '<span style="font-size:16px">'+i.emoji+'</span>';
+    var amtEl=i.amount>0 ? '-'+i.amount.toLocaleString()+'원' : '별도';
+    detHtml+='<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--navyL)">'+imgEl+'<span style="flex:1;font-size:11px;font-weight:600;color:var(--g600)">'+i.displayName+'</span><span style="font-size:11px;font-weight:700;color:var(--navy)">'+amtEl+'</span></div>';
+  });
+  if(det) det.innerHTML=detHtml;
+  // 서브타이틀
+  var names=selItems.map(function(i){return i.name.replace(" 기기값 + 요금 면제","").replace(" 기본 제공","");}).join(" + ");
   if(sub) sub.textContent="모바일 + "+names+" 요금을 한번에!";
-  // PC 우측 요약카드 추가혜택
-  if(bl) bl.innerHTML=selItems.map(i=>`<li>${i.displayName}</li>`).join("");
+  // PC 요약카드 추가혜택
+  if(bl) bl.innerHTML=selItems.map(function(i){return '<li>'+i.displayName+'</li>';}).join("");
 }
+
 function updateBonusHero(key){
   if(!key||!bonusData[key])return;
   const bd=bonusData[key];const wrap=document.getElementById("bonusHero");if(!wrap)return;
