@@ -7,9 +7,8 @@
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");
 fbq("init","921171610476690");fbq("track","PageView");
-</script>
+<\/script>
 <style>
-/* ── 유닥 CSS 전체 ── */
 
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -285,87 +284,75 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 
 
 /* ── 올인원 전용 추가 CSS ── */
-:root{
-  --navy:#1a237e;--navy2:#283593;--navy3:#3949ab;
-  --navyL:#e8eaf6;--navyLL:#f0f1fa;
-}
 body{background:#fff}
-
-/* 네비 */
 .aio-nav{background:#fff;border-bottom:1px solid #e9ecef;position:sticky;top:0;z-index:100;padding:0 24px;height:60px;display:flex;align-items:center;gap:12px}
 .aio-logo{height:36px;object-fit:contain}
 .aio-brand{font-size:13px;font-weight:600;color:#868e96;letter-spacing:.04em}
 
-/* 올인원 스텝 아코디언 */
+/* 올인원 아코디언 스텝 */
 .aio-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
 .aio-step{background:#fff;border-radius:12px;border:1.5px solid #e9ecef;overflow:hidden;transition:border-color .2s,box-shadow .2s}
-.aio-step.active{border-color:var(--navy);box-shadow:0 4px 16px rgba(26,35,126,.1)}
-.aio-step.done{border-color:#e9ecef;opacity:.9}
+.aio-step.active{border-color:#1a237e;box-shadow:0 4px 16px rgba(26,35,126,.1)}
+.aio-step.done{border-color:#e9ecef}
 .aio-step.locked{opacity:.4;pointer-events:none}
 .aio-step-head{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none}
 .aio-step.done .aio-step-head:hover{background:#f8f9fa}
-.aio-step-num{width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.aio-step-num{width:26px;height:26px;border-radius:50%;background:#1a237e;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .aio-step.done .aio-step-num{background:#dee2e6;color:#495057}
 .aio-step-lbl{font-size:13px;font-weight:600;color:#495057;flex:1}
-.aio-step-val{font-size:13px;font-weight:700;color:var(--navy)}
+.aio-step-val{font-size:13px;font-weight:700;color:#1a237e}
 .aio-step-val.ph{color:#adb5bd;font-weight:400}
-.aio-step-chk{color:var(--navy);font-size:14px;display:none;margin-left:4px}
+.aio-step-chk{color:#1a237e;font-size:14px;display:none;margin-left:4px}
 .aio-step.done .aio-step-chk{display:block}
 .aio-step-body{padding:4px 18px 18px;display:none}
 .aio-step.active .aio-step-body{display:block}
 .aio-opt-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
 .aio-opt{padding:10px 18px;border-radius:8px;border:1.5px solid #dee2e6;background:#fff;font-size:13px;font-weight:600;color:#495057;cursor:pointer;transition:all .15s;white-space:nowrap}
-.aio-opt:hover{border-color:var(--navy3);color:var(--navy3)}
-.aio-opt.sel{border-color:var(--navy);background:var(--navy);color:#fff}
+.aio-opt:hover{border-color:#3949ab;color:#3949ab}
+.aio-opt.sel{border-color:#1a237e;background:#1a237e;color:#fff}
 
-/* LGU+ 인터넷 경고 */
-.lgu-warn{background:var(--navyLL);border:1.5px solid var(--navyL);border-radius:10px;padding:20px;text-align:center;margin-top:12px;display:none}
+/* LGU 경고 */
+.lgu-warn{background:#f0f1fa;border:1.5px solid #e8eaf6;border-radius:10px;padding:20px;text-align:center;margin-top:12px;display:none}
 .lgu-warn.show{display:block}
-.lgu-warn-title{font-size:15px;font-weight:800;color:var(--navy);margin-bottom:6px}
-.lgu-warn-desc{font-size:13px;color:#868e96;line-height:1.7;margin-bottom:14px}
-.lgu-warn-btn{display:inline-block;padding:10px 22px;background:var(--navy);color:#fff;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none}
 
 /* 요금제 리스트 */
 .aio-plan-list{display:flex;flex-direction:column;gap:6px;margin-top:4px}
 .aio-plan-item{border:1.5px solid #e9ecef;border-radius:10px;padding:13px 16px;cursor:pointer;transition:all .15s;background:#fff}
-.aio-plan-item:hover{border-color:var(--navy3)}
-.aio-plan-item.sel{border-color:var(--navy);background:var(--navyLL)}
+.aio-plan-item:hover{border-color:#3949ab}
+.aio-plan-item.sel{border-color:#1a237e;background:#f0f1fa}
 .aio-plan-top{display:flex;justify-content:space-between;align-items:center}
 .aio-plan-name{font-size:13px;font-weight:700;color:#212529}
-.aio-plan-item.sel .aio-plan-name{color:var(--navy)}
-.aio-plan-price{font-size:15px;font-weight:800;color:var(--navy)}
-.aio-plan-badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-.aio-plan-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;background:var(--navyL);color:var(--navy)}
+.aio-plan-item.sel .aio-plan-name{color:#1a237e}
+.aio-plan-price{font-size:15px;font-weight:800;color:#1a237e}
+.aio-plan-badges{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}
+.aio-plan-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;background:#e8eaf6;color:#1a237e}
 .aio-plan-detail{display:none;margin-top:10px;padding-top:10px;border-top:1px solid #e9ecef;font-size:12px;color:#495057;line-height:1.9}
 .aio-plan-item.sel .aio-plan-detail{display:block}
 .aio-plan-detail li{list-style:none;padding-left:14px;position:relative}
-.aio-plan-detail li::before{content:"✓";position:absolute;left:0;color:var(--navy);font-weight:700}
+.aio-plan-detail li::before{content:"✓";position:absolute;left:0;color:#1a237e;font-weight:700}
 
 /* 요금제 비교 카드 */
 .aio-compare{margin-top:24px}
 .aio-compare-title{font-size:14px;font-weight:700;color:#495057;margin-bottom:12px}
 .aio-compare-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 @media(max-width:600px){.aio-compare-grid{grid-template-columns:1fr}}
-.aio-compare-card{background:#fff;border:1.5px solid #e9ecef;border-radius:12px;padding:14px}
-.aio-compare-card.sel{border-color:var(--navy);box-shadow:0 4px 16px rgba(26,35,126,.1)}
-.aio-cc-price{font-size:16px;font-weight:800;color:var(--navy);margin-bottom:4px}
-.aio-cc-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--navyL);color:var(--navy);margin-bottom:8px}
+.aio-cc{background:#fff;border:1.5px solid #e9ecef;border-radius:12px;padding:14px}
+.aio-cc.sel{border-color:#1a237e;box-shadow:0 4px 16px rgba(26,35,126,.1)}
+.aio-cc-price{font-size:16px;font-weight:800;color:#1a237e;margin-bottom:4px}
+.aio-cc-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:#e8eaf6;color:#1a237e;margin-bottom:8px}
 .aio-cc-feats{font-size:11.5px;color:#495057;line-height:1.85}
 .aio-cc-feats li{list-style:none;padding-left:14px;position:relative}
-.aio-cc-feats li::before{content:"✓";position:absolute;left:0;color:var(--navy);font-weight:700}
+.aio-cc-feats li::before{content:"✓";position:absolute;left:0;color:#1a237e;font-weight:700}
 
-/* 올인원 우측 요약카드 오버라이드 */
-.aio-fee-box{background:var(--navyLL);border-radius:10px;padding:14px;margin:12px 0;text-align:center;display:none}
-.aio-fee-lbl{font-size:11px;color:var(--navy);font-weight:700;margin-bottom:4px}
-.aio-fee-val{font-size:28px;font-weight:900;color:var(--navy);line-height:1}
-.aio-fee-unit{font-size:13px;font-weight:600;color:var(--navy)}
+/* 우측 요약카드 오버라이드 */
+.aio-summary-rows{}
+.aio-fee-box{background:#f0f1fa;border-radius:10px;padding:14px;margin:12px 0;text-align:center;display:none;border:1.5px solid #e8eaf6}
+.aio-fee-lbl{font-size:11px;color:#1a237e;font-weight:700;margin-bottom:4px}
+.aio-fee-val{font-size:28px;font-weight:900;color:#1a237e;line-height:1}
 .aio-cash{text-align:center;font-size:12px;font-weight:800;color:#ff6f00;margin-top:6px}
-
-@media(max-width:900px){
-  .benefit-card{display:none}
-  .mini-bar{display:none}
-  .mini-bar.show{display:flex}
-}
+.aio-bonus-list{list-style:none;font-size:12px;color:#495057;line-height:1.9;padding:0 2px;margin-top:6px}
+.aio-bonus-list li{padding-left:14px;position:relative}
+.aio-bonus-list li::before{content:"•";position:absolute;left:0;color:#1a237e;font-weight:700}
 </style>
 </head>
 <body>
@@ -378,24 +365,21 @@ body{background:#fff}
 <!-- 배너 -->
 <div class="banner-wrap" id="bannerWrap">
   <div class="banner-track" id="bTrack"></div>
-  <button class="bn-arr bn-prev" id="bPrev" onclick="slide(-1)" style="display:none">&#8249;</button>
-  <button class="bn-arr bn-next" id="bNext" onclick="slide(1)" style="display:none">&#8250;</button>
+  <button class="bn-arr bn-prev" id="bPrev" onclick="bnSlide(-1)" style="display:none">&#8249;</button>
+  <button class="bn-arr bn-next" id="bNext" onclick="bnSlide(1)" style="display:none">&#8250;</button>
   <div class="bn-dots" id="bDots"></div>
 </div>
 
-<!-- 메인 -->
 <div class="main-wrap">
   <div class="left-col">
     <div style="margin-bottom:22px">
-      <div style="display:inline-block;background:var(--navyL);color:var(--navy);font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.06em;margin-bottom:10px">ALL-IN-ONE</div>
-      <div style="font-size:26px;font-weight:800;line-height:1.35;color:var(--navy);margin-bottom:8px">인터넷 바꾸는 김에,<br>가족 통신비까지 한 번에</div>
-      <div style="font-size:13px;color:#868e96">LG U+ 인터넷 신규 설치 기준 · 모바일/인터넷 조건 선택 후 예상 혜택 확인</div>
+      <div style="display:inline-block;background:#e8eaf6;color:#1a237e;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.06em;margin-bottom:10px">ALL-IN-ONE</div>
+      <div style="font-size:26px;font-weight:800;line-height:1.35;color:#1a237e;margin-bottom:8px">인터넷 바꾸는 김에,<br>가족 통신비까지 한 번에</div>
+      <div style="font-size:13px;color:#868e96">LG U+ 인터넷 신규 설치 기준 · 조건 선택 후 예상 혜택 확인</div>
     </div>
 
     <!-- 올인원 전용 STEP 1~5 -->
     <div class="aio-steps">
-
-      <!-- STEP 1: 현재 휴대폰 통신사 -->
       <div class="aio-step active" id="asc1">
         <div class="aio-step-head" onclick="aioToggle('asc1')">
           <div class="aio-step-num">1</div>
@@ -405,15 +389,13 @@ body{background:#fff}
         </div>
         <div class="aio-step-body">
           <div class="aio-opt-grid">
-            <button class="aio-opt" onclick="aioSel1('LGU+')">LG U+</button>
-            <button class="aio-opt" onclick="aioSel1('SKT')">SKT</button>
-            <button class="aio-opt" onclick="aioSel1('KT')">KT</button>
-            <button class="aio-opt" onclick="aioSel1('알뜰폰')">알뜰폰</button>
+            <button class="aio-opt" onclick="aioS(1,'LGU+')">LG U+</button>
+            <button class="aio-opt" onclick="aioS(1,'SKT')">SKT</button>
+            <button class="aio-opt" onclick="aioS(1,'KT')">KT</button>
+            <button class="aio-opt" onclick="aioS(1,'알뜰폰')">알뜰폰</button>
           </div>
         </div>
       </div>
-
-      <!-- STEP 2: 현재 인터넷 통신사 -->
       <div class="aio-step locked" id="asc2">
         <div class="aio-step-head" onclick="aioToggle('asc2')">
           <div class="aio-step-num">2</div>
@@ -423,21 +405,19 @@ body{background:#fff}
         </div>
         <div class="aio-step-body">
           <div class="aio-opt-grid">
-            <button class="aio-opt" onclick="aioSel2('LGU+')">LG U+</button>
-            <button class="aio-opt" onclick="aioSel2('SKT')">SKT</button>
-            <button class="aio-opt" onclick="aioSel2('KT')">KT</button>
-            <button class="aio-opt" onclick="aioSel2('기타')">기타</button>
+            <button class="aio-opt" onclick="aioS(2,'LGU+')">LG U+</button>
+            <button class="aio-opt" onclick="aioS(2,'SKT')">SKT</button>
+            <button class="aio-opt" onclick="aioS(2,'KT')">KT</button>
+            <button class="aio-opt" onclick="aioS(2,'기타')">기타</button>
           </div>
           <div class="lgu-warn" id="lguWarn">
-            <div style="font-size:36px;margin-bottom:10px">📡</div>
-            <div class="lgu-warn-title">LG U+ 인터넷을 사용하고 계신가요?</div>
-            <div class="lgu-warn-desc">올인원 혜택은 <strong>LG U+ 인터넷 신규 설치</strong> 고객을 위한 혜택입니다.<br>이미 LG U+ 인터넷을 사용 중이시라면 유닥에서 혜택을 확인하세요!</div>
-            <a class="lgu-warn-btn" href="https://landing.uplusdak.com" target="_blank">🔍 유닥에서 혜택 확인하기</a>
+            <div style="font-size:32px;margin-bottom:8px">📡</div>
+            <div style="font-size:15px;font-weight:800;color:#1a237e;margin-bottom:6px">LG U+ 인터넷을 사용하고 계신가요?</div>
+            <div style="font-size:13px;color:#868e96;line-height:1.7;margin-bottom:14px">올인원 혜택은 <strong>LG U+ 인터넷 신규 설치</strong> 고객을 위한 혜택입니다.<br>이미 LG U+라면 유닥에서 혜택을 확인하세요!</div>
+            <a href="https://landing.uplusdak.com" target="_blank" style="display:inline-block;padding:10px 22px;background:#1a237e;color:#fff;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none">🔍 유닥에서 혜택 확인하기</a>
           </div>
         </div>
       </div>
-
-      <!-- STEP 3: 진행 방식 -->
       <div class="aio-step locked" id="asc3">
         <div class="aio-step-head" onclick="aioToggle('asc3')">
           <div class="aio-step-num">3</div>
@@ -449,8 +429,6 @@ body{background:#fff}
           <div class="aio-opt-grid" id="aopts3"></div>
         </div>
       </div>
-
-      <!-- STEP 4: 요금제 -->
       <div class="aio-step locked" id="asc4">
         <div class="aio-step-head" onclick="aioToggle('asc4')">
           <div class="aio-step-num">4</div>
@@ -462,8 +440,6 @@ body{background:#fff}
           <div class="aio-plan-list" id="aioPlanList"></div>
         </div>
       </div>
-
-      <!-- STEP 5: 가족 결합 인원 -->
       <div class="aio-step locked" id="asc5">
         <div class="aio-step-head" onclick="aioToggle('asc5')">
           <div class="aio-step-num">5</div>
@@ -473,18 +449,17 @@ body{background:#fff}
         </div>
         <div class="aio-step-body">
           <div class="aio-opt-grid">
-            <button class="aio-opt" onclick="aioSel5(1)">1인</button>
-            <button class="aio-opt" onclick="aioSel5(2)">2인</button>
-            <button class="aio-opt" onclick="aioSel5(4)">4인</button>
+            <button class="aio-opt" onclick="aioS(5,1)">1인</button>
+            <button class="aio-opt" onclick="aioS(5,2)">2인</button>
+            <button class="aio-opt" onclick="aioS(5,4)">4인</button>
           </div>
         </div>
       </div>
+    </div>
 
-    </div><!-- /aio-steps -->
-
-    <!-- 핸드폰 바꾸기 선택 시 → 유닥 방식 스텝카드 (sc1~sc4) -->
-    <div id="udakSteps" style="display:none">
-      <div class="step-cards" id="scWrap">
+    <!-- 핸드폰 바꾸기 선택 시 → 기기선택 스텝카드 (유닥 방식) -->
+    <div id="udakDevSteps" style="display:none">
+      <div class="step-cards">
         <div class="step-card" id="sc1" onclick="openSheet('device')">
           <div class="step-icon">📱</div>
           <div class="step-info"><div class="step-lbl">원하는 휴대폰</div><div class="step-val ph" id="vDevice">선택해주세요</div></div>
@@ -498,13 +473,13 @@ body{background:#fff}
       </div>
     </div>
 
-    <!-- 요금제 비교 카드 -->
-    <div class="aio-compare" id="aioCompare">
+    <!-- 요금제 비교 -->
+    <div class="aio-compare">
       <div class="aio-compare-title">요금제별 주요 혜택 비교</div>
       <div class="aio-compare-grid" id="aioCompareGrid"></div>
     </div>
 
-    <!-- 추가 혜택 (유닥 방식 그대로) -->
+    <!-- 추가 혜택 (유닥 HTML 그대로) -->
     <!-- 추가 혜택 섹션 -->
   <div class="bonus-section" id="bonusSection">
     <div class="bonus-left">
@@ -560,53 +535,56 @@ body{background:#fff}
           <div class="fg"><label class="flbl">상담 가능 시간 <em>*</em></label>
             <select class="fi" id="fTime">
               <option value="">선택해주세요</option>
-              <option>오전 9~11시</option><option>오후 12~2시</option><option>오후 2~4시</option>
-              <option>오후 4~6시</option><option>오후 6시 이후</option><option>언제든지 가능</option>
+              <option>오전 9~11시</option><option>오후 12~2시</option>
+              <option>오후 2~4시</option><option>오후 4~6시</option>
+              <option>오후 6시 이후</option><option>언제든지 가능</option>
             </select>
           </div>
-          <div class="fg" style="grid-column:1/-1"><label class="flbl">메모 (선택)</label><textarea class="fi" id="fMemo" placeholder="추가로 남기실 내용을 자유롭게 작성해주세요" style="min-height:70px;resize:vertical"></textarea></div>
+          <div class="fg" style="grid-column:1/-1"><label class="flbl">메모 (선택)</label>
+            <textarea class="fi" id="fMemo" placeholder="추가로 남기실 내용을 자유롭게 작성해주세요" style="min-height:70px;resize:vertical"></textarea>
+          </div>
         </div>
         <div style="font-size:11px;color:#adb5bd;margin-top:12px;line-height:1.6">🔒 입력하신 정보는 상담 목적으로만 사용되며, 상담 완료 후 안전하게 폐기됩니다.</div>
         <button class="btn-phone" id="subBtn" onclick="aioSubmit()">📞 조건 저장 후 상담 신청</button>
       </div>
     </div>
-  </div><!-- /left-col -->
+  </div>
 
-  <!-- 우측 요약카드 (유닥 구조 활용) -->
+  <!-- 우측 요약카드 -->
   <div class="right-col">
     <div class="benefit-card">
       <div class="bc-head">
         <span class="bc-ttl">ALL-IN-ONE 예상 혜택</span>
       </div>
-      <!-- 기기 선택 시 이미지 영역 -->
-      <div class="bc-dev" id="aioDevArea" style="display:none">
-        <div class="bc-img-ph" id="bcImgPh">📱</div>
-        <img class="bc-img" id="bcImg" alt="" style="display:none">
-        <div class="bc-dname" id="bcName" style="display:none"></div>
-        <div class="bc-tags" id="bcTags" style="padding:0 10px 10px"></div>
+      <!-- 기기 이미지 (핸드폰 선택 시) -->
+      <div id="aioDevArea" style="display:none">
+        <div class="bc-dev">
+          <div class="bc-img-ph" id="bcImgPh">📱</div>
+          <img class="bc-img" id="bcImg" alt="" style="display:none">
+          <div class="bc-dname" id="bcName" style="display:none"></div>
+          <div class="bc-tags" id="bcTags" style="padding:0 10px 10px"></div>
+        </div>
       </div>
       <!-- 올인원 조건 요약 -->
-      <div class="br-rows" id="aioSummaryRows">
-        <div class="br-row"><span class="br-lbl">현재 휴대폰 통신사</span><span class="br-val" id="srV1">–</span></div>
-        <div class="br-row"><span class="br-lbl">현재 인터넷 통신사</span><span class="br-val" id="srV2">–</span></div>
-        <div class="br-row"><span class="br-lbl">진행 방식</span><span class="br-val" id="srV3">–</span></div>
-        <div class="br-row"><span class="br-lbl">선택 요금제</span><span class="br-val" id="srV4">–</span></div>
-        <div class="br-row"><span class="br-lbl">가족 결합 인원</span><span class="br-val" id="srV5">–</span></div>
+      <div class="br-rows">
+        <div class="br-row"><span class="br-lbl">휴대폰 통신사</span><span class="br-val" id="srV1" style="color:#adb5bd">–</span></div>
+        <div class="br-row"><span class="br-lbl">인터넷 통신사</span><span class="br-val" id="srV2" style="color:#adb5bd">–</span></div>
+        <div class="br-row"><span class="br-lbl">진행 방식</span><span class="br-val" id="srV3" style="color:#adb5bd">–</span></div>
+        <div class="br-row"><span class="br-lbl">선택 요금제</span><span class="br-val" id="srV4" style="color:#adb5bd">–</span></div>
+        <div class="br-row"><span class="br-lbl">가족 결합 인원</span><span class="br-val" id="srV5" style="color:#adb5bd">–</span></div>
       </div>
       <!-- 예상 요금 -->
       <div class="aio-fee-box" id="aioFeeBox">
         <div class="aio-fee-lbl">예상 월 요금</div>
-        <div><span class="aio-fee-val" id="aioFeeVal">–</span><span class="aio-fee-unit">원</span></div>
+        <div><span class="aio-fee-val" id="aioFeeVal">–</span><span style="font-size:13px;font-weight:600;color:#1a237e">원</span></div>
         <div class="aio-cash" id="aioCash"></div>
       </div>
-      <!-- 추가혜택 목록 -->
-      <ul style="list-style:none;font-size:12px;color:#495057;line-height:1.9;padding:0 2px" id="aioBonusList"></ul>
-      <button class="btn-phone" onclick="document.getElementById('fName').scrollIntoView({behavior:'smooth',block:'center'})">선택한 조건 그대로 상담 신청 →</button>
+      <ul class="aio-bonus-list" id="aioBonusList"></ul>
+      <button class="btn-phone" onclick="document.getElementById('fName').scrollIntoView({behavior:'smooth',block:'center'})">선택한 조건으로 상담 신청 →</button>
     </div>
   </div>
 </div>
 
-<!-- 유닥 Sheet + Overlay -->
 <div class="overlay" id="overlay" onclick="closeSheet()"></div>
 <div class="sheet" id="sheet">
   <div class="sh-handle"></div>
@@ -620,49 +598,21 @@ body{background:#fff}
 <div class="succ-ov" id="sModal">
   <div class="succ-box" style="text-align:center">
     <div style="font-size:48px;margin-bottom:12px">🎉</div>
-    <div style="font-size:20px;font-weight:800;color:var(--navy);margin-bottom:8px">상담 신청 완료!</div>
-    <div style="font-size:14px;color:#868e96;line-height:1.7;margin-bottom:20px">입력하신 정보로 빠르게 연락드리겠습니다.<br>아래 혜택도 확인해보세요!</div>
+    <div style="font-size:20px;font-weight:800;color:#1a237e;margin-bottom:8px">상담 신청 완료!</div>
+    <div style="font-size:14px;color:#868e96;line-height:1.7;margin-bottom:20px">빠르게 연락드리겠습니다.<br>아래 혜택도 확인해보세요!</div>
     <div id="modalBanners" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px"></div>
     <button class="succ-close" onclick="document.getElementById('sModal').classList.remove('on')">확인</button>
   </div>
 </div>
 
 <script>
-/* ══════════════════════════════════════════
-   유닥 JS 전체 (기기선택/용량색상/추가혜택 포함)
-══════════════════════════════════════════ */
-
+/* ── Supabase + Firebase ── */
 const SB_URL="https://ebggtghzqtxfylbhqfoh.supabase.co";
-// UTM 파라미터 파싱 (페이지 로드 시 1회)
-const _utm=(function(){
-  const p=new URLSearchParams(window.location.search);
-  return{
-    source:p.get('utm_source')||null,
-    campaign:p.get('utm_campaign')||null,
-    medium:p.get('utm_medium')||null,
-  };
-})();
 const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q";
-// Firebase REST API
-const DB_URL='https://udak-c6832-default-rtdb.firebaseio.com';
-const db={
-  ref:function(path){
-    return{
-      once:function(){
-        return fetch(DB_URL+'/'+path+'.json')
-          .then(function(r){return r.json();})
-          .then(function(data){return{exists:function(){return data!==null;},val:function(){return data;}};});
-      },
-      set:function(val){
-        return fetch(DB_URL+'/'+path+'.json',{method:'PUT',body:JSON.stringify(val),headers:{'Content-Type':'application/json'}}).then(function(r){return r.json();});
-      },
-      update:function(val){
-        return fetch(DB_URL+'/'+path+'.json',{method:'PATCH',body:JSON.stringify(val),headers:{'Content-Type':'application/json'}}).then(function(r){return r.json();});
-      }
-    };
-  }
-};
+const DB_URL_BASE='https://udak-c6832-default-rtdb.firebaseio.com';
+const db={ref:function(p){const url=DB_URL_BASE+'/'+p+'.json';return{once:()=>fetch(url).then(r=>r.json()).then(d=>{return{exists:()=>d!==null&&d!==undefined,val:()=>d};})  ,set:v=>fetch(url,{method:'PUT',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}}).then(r=>r.json()),update:v=>fetch(url,{method:'PATCH',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}}).then(r=>r.json()),remove:()=>fetch(url,{method:'DELETE'}).then(r=>r.json()),push:v=>fetch(url,{method:'POST',body:JSON.stringify(v),headers:{'Content-Type':'application/json'}}).then(r=>r.json())};} };
 
+/* ── 유닥 devices/plans 기본 데이터 ── */
 let devices=[
   {id:'s26',name:'갤럭시 S26',img:'https://images.samsung.com/kdp/goods/2025/01/17/b90d58db-6a82-4fa9-a6d1-6b9d9ef1af6a.png',visible:true,storageList:[{name:'256GB',price:1254000},{name:'512GB',price:1386000}],colors:[{name:'#4B5563|그라파이트',img:''},{name:'#C084FC|바이올렛',img:''},{name:'#F9A8D4|핑크골드',img:''}]},
   {id:'s26p',name:'갤럭시 S26+',img:'https://images.samsung.com/kdp/goods/2025/01/17/b90d58db-6a82-4fa9-a6d1-6b9d9ef1af6a.png',visible:true,storageList:[{name:'256GB',price:1452000},{name:'512GB',price:1584000}],colors:[{name:'#1E3A5F|네이비'},{name:'#F5F5F5|화이트실버'}]},
@@ -679,220 +629,12 @@ let plans=[
   {id:'p105',name:'5G 프리미어 플러스',monthlyPrice:105000,plangroup:'105',visible:true},
 ];
 let policies=[];
+
+
+/* ── 유닥 sel 객체 (기기선택용) ── */
 let sel={device:null,carrier:null,jointype:null,storage:null,color:null,plan:null,discType:'공시',lockedColorImg:''};
 
-const DTXT={
-  installmentNote:'*기기 할부금 별도',
-  installmentNoteOff:false,
-  sectionTitle:'내 조건 먼저 확인해보세요',
-  stepDeviceLbl:'원하는 제품',stepCarrierLbl:'현재 사용 통신사',stepStorageLbl:'용량 / 색상',stepPlanLbl:'요금제',
-  discPub:'공시지원금',discSel:'선택약정',
-  benefitTitle:'유닥 예상 혜택 요약',
-  benefitNote:'※ 위 금액은 선택하신 조건 기준 예상 금액입니다.\n정확한 혜택은 상담을 통해 안내드립니다.',
-  formTitle:'상담 신청하기',ctaKakao:'카카오톡 상담하기',ctaPhone:'전화 상담 신청하기',
-  privacyNote:'🔒 입력하신 정보는 상담 목적으로만 사용되며, 안전하게 보호됩니다.',
-  kakaoUrl:'https://pf.kakao.com/_HxfVxcn/chat',
-};
-function applyTexts(t){
-  const tx={...DTXT,...t};
-  window._installmentNote = tx.installmentNote||'*기기 할부금 별도';
-  window._installmentNoteOff = tx.installmentNoteOff===true||tx.installmentNoteOff==='true';
-  document.getElementById('txtSectionTitle').textContent=tx.sectionTitle;
-  document.getElementById('txtStepDeviceLbl').textContent=tx.stepDeviceLbl;
-  document.getElementById('txtStepCarrierLbl').textContent=tx.stepCarrierLbl;
-  document.getElementById('txtStepStorageLbl').textContent=tx.stepStorageLbl;
-  document.getElementById('txtStepPlanLbl').textContent=tx.stepPlanLbl;
-  document.getElementById('txtDiscPub').textContent=tx.discPub;
-  document.getElementById('txtDiscSel').textContent=tx.discSel;
-  document.getElementById('txtBenefitTitle').textContent=tx.benefitTitle;
-  document.getElementById('txtBenefitNote').innerHTML=tx.benefitNote.replace(/\n/g,'<br>');
-  document.getElementById('txtFormTitle').textContent=tx.formTitle;
-  document.getElementById('txtCtaKakao').textContent=tx.ctaKakao;
-  document.getElementById('txtCtaPhone').textContent=tx.ctaPhone;
-  document.getElementById('txtPrivacy').textContent=tx.privacyNote;
-  if(tx.kakaoUrl) document.getElementById('kakaoBtn').href=tx.kakaoUrl;
-}
-
-/* MOCK DATA */
-const MDEV=[
-  {id:'s26',name:'갤럭시 S26',img:'',visible:true,storageList:[{name:'256GB',price:1254000},{name:'512GB',price:1386000}],colors:[{name:'#4B5563|그라파이트',img:''},{name:'#C084FC|바이올렛',img:''},{name:'#F9A8D4|핑크골드',img:''}]},
-  {id:'s26p',name:'갤럭시 S26+',img:'',visible:true,storageList:[{name:'256GB',price:1452000},{name:'512GB',price:1584000}],colors:[{name:'#1E3A5F|네이비'},{name:'#F5F5F5|화이트실버'}]},
-  {id:'s26u',name:'갤럭시 S26 울트라',img:'',visible:true,storageList:[{name:'256GB',price:1797000},{name:'512GB',price:1929000},{name:'1TB',price:2178000}],colors:[{name:'#1C1C1C|티타늄블랙'},{name:'#C0B090|티타늄화이트'}]},
-  {id:'ip17',name:'아이폰 17',img:'',visible:true,storageList:[{name:'128GB',price:990000},{name:'256GB',price:1122000},{name:'512GB',price:1386000}],colors:[{name:'#FFFFFF|화이트'},{name:'#000000|블랙'},{name:'#FFB6C1|핑크'}]},
-  {id:'ip17p',name:'아이폰 17 Pro',img:'',visible:true,storageList:[{name:'128GB',price:1290000},{name:'256GB',price:1422000},{name:'512GB',price:1686000},{name:'1TB',price:1950000}],colors:[{name:'#8E8E93|내추럴티타늄'},{name:'#1C1C1E|블랙티타늄'},{name:'#D4AF37|데저트티타늄'}]},
-  {id:'ip17pm',name:'아이폰 17 Pro Max',img:'',visible:true,storageList:[{name:'256GB',price:1590000},{name:'512GB',price:1854000},{name:'1TB',price:2118000}],colors:[{name:'#8E8E93|내추럴티타늄'},{name:'#1C1C1E|블랙티타늄'},{name:'#D4AF37|데저트티타늄'}]},
-];
-const MPLAN=[];
-const MPOL=[];
-
-async function load(){
-  try{
-    const [ds,ps,pols,txs]=await Promise.all([
-      db.ref('devices').once('value'),db.ref('plans').once('value'),db.ref('policy2').once('value'),db.ref('uitexts').once('value')
-    ]);
-    devices=ds.exists()?Object.entries(ds.val()).map(([id,v])=>({id,...v})).filter(d=>d.visible!==false).sort((a,b)=>(a.order||999)-(b.order||999)):MDEV;
-    await loadBonusData();
-    plans=ps.exists()?Object.entries(ps.val()).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false).sort((a,b)=>{
-  const oa=a.order!==undefined?a.order:a.monthlyPrice/1000;
-  const ob=b.order!==undefined?b.order:b.monthlyPrice/1000;
-  return oa-ob;
-}):MPLAN;
-    policies=pols.exists()?Object.entries(pols.val()).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false):MPOL;
-    applyTexts(txs.exists()?txs.val():{});
-  }catch(e){devices=MDEV;plans=MPLAN;policies=MPOL;applyTexts({});}
-}
-
-function matchPolicy(){
-  if(!sel.plan||!sel.carrier||!sel.jointype) return null;
-  const pg=Math.floor(sel.plan.monthlyPrice/1000).toString();
-  const jt=sel.jointype,ca=sel.carrier;
-  const fns=[
-    p=>p.jointype===jt&&p.carrier!=='all'&&p.carrier?.includes(ca)&&p.plangroup===pg,
-    p=>p.jointype===jt&&p.carrier==='all'&&p.plangroup===pg,
-    p=>p.jointype==='all'&&p.carrier!=='all'&&p.carrier?.includes(ca)&&p.plangroup===pg,
-    p=>p.jointype==='all'&&p.carrier==='all'&&p.plangroup===pg,
-    p=>p.jointype===jt&&p.carrier!=='all'&&p.carrier?.includes(ca)&&p.plangroup==='all',
-    p=>p.jointype===jt&&p.carrier==='all'&&p.plangroup==='all',
-    p=>p.jointype==='all'&&p.carrier!=='all'&&p.carrier?.includes(ca)&&p.plangroup==='all',
-    p=>p.jointype==='all'&&p.carrier==='all'&&p.plangroup==='all',
-  ];
-  for(const fn of fns){
-    const f=policies.find(fn);
-    if(f){
-      if(sel.device&&(f.excludedDevs||[]).includes(sel.device.id)) continue;
-      if(sel.device&&f.deviceOverrides?.[sel.device.id]){
-        const devOv=f.deviceOverrides[sel.device.id];
-        if(sel.storage&&devOv[sel.storage.name]) return{...f,...devOv[sel.storage.name]};
-        if(devOv.pubSupport!==undefined) return{...f,...devOv};
-      }
-      return f;
-    }
-  }
-  return null;
-}
-
-function calc(){
-  if(!sel.device||!sel.carrier||!sel.plan) return;
-  const pol=matchPolicy();
-  const lp=sel.storage?.price||sel.device.storageList?.[0]?.price||0;
-  const mf=sel.plan.monthlyPrice;
-  let mainDisc=0,extra=0,monthlyDev=0,total=0;
-  if(sel.discType==='공시'){
-    mainDisc=pol?.pubSupport||0;
-    extra=(pol?.rebate||0)+(pol?.distribution||0)+(pol?.structure||0)+(pol?.extraPolicy||0);
-    // 기기할부금 = (출고가 - 공시지원금 - 유닥할인) / 24
-    monthlyDev=Math.round(Math.max(0,lp-mainDisc-extra)/24);
-    total=mf+monthlyDev;
-    document.getElementById('rDiscLbl').textContent='공시지원금';
-  } else {
-    mainDisc=Math.round(mf*0.25);
-    extra=pol?((pol.rebate||0)+(pol.distribution||0)+(pol.structure||0)+(pol.extraPolicy||0)):0;
-    // 기기할부금 = (출고가 - 유닥할인) / 24
-    monthlyDev=Math.round(Math.max(0,lp-extra)/24);
-    total=(mf-mainDisc)+monthlyDev;
-    document.getElementById('rDiscLbl').textContent='요금 할인(25%)';
-  }
-  const realPrice=Math.max(0,lp-mainDisc-extra);
-  document.getElementById('rLaunch').textContent=lp.toLocaleString()+'원';
-  document.getElementById('rDisc').textContent=mainDisc>0?'-'+mainDisc.toLocaleString()+'원':'-';
-  document.getElementById('rExtra').textContent=extra>0?'-'+extra.toLocaleString()+'원':'-';
-  document.getElementById('rReal').textContent=realPrice.toLocaleString()+'원';
-  document.getElementById('rMonthlyDev').textContent=monthlyDev.toLocaleString()+'원';
-  document.getElementById('rFee').textContent=mf.toLocaleString()+'원';
-  document.getElementById('rTotal').textContent=total.toLocaleString()+'원';
-  window._estimatedFee=total;
-  const tr=sel.jointype==='번호이동'&&pol?.structure>0;
-  document.getElementById('rTransRow').style.display=tr?'flex':'none';
-  if(tr) document.getElementById('rTrans').textContent='-'+pol.structure.toLocaleString()+'원';
-  const bcNameEl=document.getElementById('bcName');
-  bcNameEl.textContent=sel.device.name; bcNameEl.style.display='block';
-  let tags='';
-  if(sel.carrier) tags+=`<span class="btag">${sel.carrier}</span>`;
-  if(sel.color){const[h,cn]=sel.color.name.split('|');tags+=`<span class="btag"><span class="cdot" style="background:${h}"></span>${cn}</span>`;}
-  if(sel.storage) tags+=`<span class="btag">${sel.storage.name} ${lp.toLocaleString()}원</span>`;
-  if(sel.plan) tags+=`<span class="btag">${sel.plan.name}</span>`;
-  document.getElementById('bcTags').innerHTML=tags;
-  updateBenefitImg();
-  updateBenefitPreview();
-}
-
-/* ── 신청서 자동기입 미리보기 ── */
-function updateBenefitPreview(){
-  const preview=document.getElementById('benefitPreview');
-  const items=document.getElementById('bpItems');
-  const tags=[];
-  if(sel.device) tags.push(sel.device.name);
-  if(sel.carrier) tags.push(sel.carrier);
-  if(sel.storage) tags.push(sel.storage.name);
-  if(sel.color) tags.push(sel.color.name.split('|')[1]);
-  if(sel.plan) tags.push(sel.plan.name);
-  if(selectedBonuses.size>0 && currentBonusKey && bonusData[currentBonusKey]){
-    const bd=bonusData[currentBonusKey];
-    (bd.items||[]).forEach(i=>{
-      if(i.ottOptions){
-        const selOtt=i.ottOptions.find(o=>selectedBonuses.has(o.id));
-        if(selOtt) tags.push('🎁 '+selOtt.name);
-      } else if(selectedBonuses.has(i.id)){
-        tags.push('🎁 '+i.name);
-      }
-    });
-  }
-  if(tags.length>0){
-    preview.classList.add('on');
-    items.innerHTML=tags.map(t=>`<span class="bp-tag" style="pointer-events:none;user-select:none">${t}</span>`).join('');
-  } else {
-    preview.classList.remove('on');
-  }
-}
-
-/* ── 다음 단계 자동 이동 ── */
-function autoNextStep(currentType){
-  const nextMap={device:'carrier',carrier:'storage',storage:'plan'};
-  const next=nextMap[currentType];
-  if(!next) return;
-  setTimeout(()=>{
-    // 스크롤을 스텝카드로
-    const scMap={carrier:'sc2',storage:'sc3',plan:'sc4'};
-    const el=document.getElementById(scMap[next]);
-    if(el){
-      el.scrollIntoView({behavior:'smooth',block:'center'});
-      // 잠깐 하이라이트
-      el.style.borderColor='var(--or)';
-      setTimeout(()=>{if(!sel[next]) el.style.borderColor='';},600);
-    }
-    // 다음 시트 자동으로 열기
-    setTimeout(()=>openSheet(next),400);
-  },300);
-}
-
-/* TOAST */
-function showStepToast(msg){
-  const el=document.getElementById('stepToast');
-  el.textContent=msg; el.style.opacity='1'; el.style.transform='translateX(-50%) translateY(0)';
-  setTimeout(()=>{el.style.opacity='0'; el.style.transform='translateX(-50%) translateY(10px)';},1800);
-}
-
-window.tryOpen=function(type){
-  if(type==='carrier'&&!sel.device){ showStepToast('먼저 원하는 제품을 선택해주세요'); return; }
-  if(type==='storage'&&!sel.carrier){ showStepToast('먼저 현재 사용 통신사를 선택해주세요'); return; }
-  if(type==='plan'&&(!sel.storage||!sel.color)){ showStepToast('먼저 용량과 색상을 선택해주세요'); return; }
-  openSheet(type);
-};
-
-function updateStepLocks(){
-  const sc2=document.getElementById('sc2');
-  const sc3=document.getElementById('sc3');
-  const sc4=document.getElementById('sc4');
-  if(sel.device) sc2.classList.remove('locked'); else sc2.classList.add('locked');
-  if(sel.carrier) sc3.classList.remove('locked'); else sc3.classList.add('locked');
-  if(sel.storage&&sel.color) sc4.classList.remove('locked'); else sc4.classList.add('locked');
-  // done 표시
-  document.getElementById('sc1').classList.toggle('done',!!sel.device);
-  sc2.classList.toggle('done',!!sel.carrier);
-  sc3.classList.toggle('done',!!(sel.storage&&sel.color));
-  sc4.classList.toggle('done',!!sel.plan);
-}
-
+/* ── 유닥 Sheet/기기선택 함수 ── */
 window.openSheet=function(type){
   document.getElementById('overlay').classList.add('on');
   document.getElementById('sheet').classList.add('on');
@@ -962,6 +704,9 @@ function buildPlan(){
 }
 
 /* HANDLERS */
+
+
+/* ── 유닥 selDevice/selStorage/selColor/confirmStorage ── */
 window.selDevice=function(id){
   sel.device=devices.find(d=>d.id===id);sel.storage=null;sel.color=null;sel.lockedColorImg='';
   const v=document.getElementById('vDevice');v.textContent=sel.device.name;v.className='step-val';
@@ -1041,6 +786,411 @@ window.setDisc=function(t){
 };
 
 /* 추가 혜택 */
+let bonusData={};
+const DEFAULT_BONUS={
+  '95':{planGroupMatch:['95'],title:'플러스플랜 95 고객님을 위한 무료 혜택!',items:[
+    {id:'watch',name:'갤럭시 워치',desc:'기기값 + 월 요금 무료',amount:11000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png'},
+    {id:'internet',name:'인터넷 500M',desc:'3년 약정 기준 / 월 요금 무료',amount:33000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png'},
+  ]},
+  '115':{planGroupMatch:['115'],title:'플러스플랜 115 고객님을 위한 무료 혜택!',items:[
+    {id:'watch',name:'갤럭시 워치',desc:'기기값 + 월 요금 무료',amount:11000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png'},
+    {id:'tab',name:'갤럭시 탭',desc:'기기값 + 월 요금 무료',amount:22000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tab.png'},
+    {id:'internet',name:'인터넷 500M',desc:'3년 약정 기준 / 월 요금 무료',amount:33000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png'},
+    {id:'ott',name:'OTT 혜택',desc:'원하는 스트리밍 1개 선택',amount:0,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/ott.png',ottOptions:[
+      {id:'ott_disney',name:'디즈니+',emoji:'🏰',color:'#1B3D8F',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/disney.png'},
+      {id:'ott_tving',name:'티빙',emoji:'📺',color:'#FF153C',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tving.png'},
+      {id:'ott_netflix',name:'넷플릭스',emoji:'🎬',color:'#E50914',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/netflix.png'},
+      {id:'ott_youtube',name:'유튜브 프리미엄',emoji:'▶️',color:'#FF0000',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/youtube.png'},
+    ]},
+  ]}
+};
+
+async function loadBonusData(){
+  try{
+    const s=await db.ref('bonusPlans').once('value');
+    if(s.exists()){
+      const fb=s.val();
+      // Firebase key가 '95','115'와 다를 수 있으므로 planGroupMatch로 정규화
+      const normalized={};
+      Object.entries(fb).forEach(([k,v])=>{
+        const matches=(v.planGroupMatch||[]).map(String);
+        // matches에 있는 pg를 key로도 등록
+        matches.forEach(pg=>{normalized[pg]={...v};});
+        normalized[k]={...v};
+      });
+      bonusData=normalized;
+    } else {
+      bonusData=DEFAULT_BONUS;
+    }
+    console.log('[bonusData keys]',Object.keys(bonusData));
+  }
+  catch(e){bonusData=DEFAULT_BONUS;console.log('[bonusData] fallback to default');}
+}
+
+let selectedBonuses=new Set();
+
+// 현재 렌더된 bonus key를 전역 고정
+let currentBonusKey=null;
+
+function getBonusPlanKey(plan){
+  if(!plan) return null;
+  const pg=Math.floor(plan.monthlyPrice/1000).toString(); // ex: "95", "115"
+  for(const key of Object.keys(bonusData)){
+    const bd=bonusData[key];
+    const matches=(bd.planGroupMatch||[]).map(String); // 문자열로 통일
+    if(matches.includes(pg)) return key; // 정확히 pg만 매칭
+  }
+  return null;
+}
+
+// 혜택 수락 여부 (true=받기, false=받지않기)
+let benefitAccepted=true;
+
+window.setBenefitMode=function(accept){
+  benefitAccepted=accept;
+  const yBtn=document.getElementById('btnBenefitYes');
+  const nBtn=document.getElementById('btnBenefitNo');
+  if(yBtn){yBtn.style.background=accept?'#F97316':'#fff';yBtn.style.color=accept?'#fff':'#6B7280';yBtn.style.borderColor=accept?'#F97316':'#E5E7EB';}
+  if(nBtn){nBtn.style.background=!accept?'#F97316':'#fff';nBtn.style.color=!accept?'#fff':'#6B7280';nBtn.style.borderColor=!accept?'#F97316':'#E5E7EB';}
+  if(!accept) selectedBonuses=new Set();
+  // sel.plan 기준으로 key 재확인 - currentBonusKey와 동기화
+  const freshKey=getBonusPlanKey(sel.plan);
+  if(freshKey) currentBonusKey=freshKey;
+  if(currentBonusKey) renderBonusSectionWithKey(currentBonusKey);
+  updateBenefitPreview();
+  // 받지않기 → 상담 신청하기로 바로 스크롤 (모바일)
+  if(!accept&&window.innerWidth<768){
+    setTimeout(()=>{
+      const fw=document.getElementById('formWrap');
+      if(fw) fw.scrollIntoView({behavior:'smooth',block:'start'});
+    },300);
+  }
+};
+
+// key를 직접 받아서 렌더하는 내부 함수
+function renderBonusSectionWithKey(key){
+  const section=document.getElementById('bonusSection');
+  const bd=bonusData[key];
+  if(!bd){section.classList.remove('on');return;}
+  // currentBonusKey는 selPlan에서만 설정 - 여기서 변경 안 함
+  section.classList.add('on');
+  document.getElementById('bonusSectionTitle').textContent=bd.title||'고객님을 위한 무료 혜택!';
+  _renderBonusItems(key,bd);
+  updateBonusSummary(key);
+  updateBonusHero(key);
+}
+
+function renderBonusSection(){
+  const section=document.getElementById('bonusSection');
+  const key=getBonusPlanKey(sel.plan);
+  if(!key){section.classList.remove('on');currentBonusKey=null;return;}
+  currentBonusKey=key;
+
+  renderBonusSectionWithKey(key);
+}
+
+function _renderBonusItems(key,bd){
+  const itemsEl=document.getElementById('bonusItems');
+  const ottBox=document.getElementById('ottSubBox');
+
+  if(!benefitAccepted){
+    // 받지않기 상태: 빈 화면
+    itemsEl.innerHTML='<div style="text-align:center;padding:24px 0;color:#9CA3AF;font-size:13px">혜택을 받지 않기로 선택하셨습니다</div>';
+    if(ottBox) ottBox.innerHTML='';
+    updateBonusSummary(key);
+    return;
+  }
+
+  // 받기 상태: 2열 레이아웃 (왼쪽=사진크게, 오른쪽=혜택목록)
+  // 대표 이미지: 선택된 혜택 중 첫번째 이미지
+  const selItems=bd.items.filter(i=>!i.ottOptions&&selectedBonuses.has(i.id));
+  const heroImg=selItems.find(i=>i.img)?.img||bd.items.find(i=>i.img&&!i.ottOptions)?.img||'';
+
+  itemsEl.innerHTML=bd.items.map((item)=>{
+    const isOtt=!!item.ottOptions;
+    const selOtt=isOtt?item.ottOptions.find(o=>selectedBonuses.has(o.id)):null;
+    const on=isOtt?(!!selOtt):selectedBonuses.has(item.id);
+    const selOttName=selOtt?' ('+selOtt.name+')':'';
+    const bg=on?'#FFF7ED':'#F9FAFB';
+    const border=on?'#F97316':'transparent';
+    const nameColor=on?'#F97316':'#1F2937';
+    const chkBg=on?'#F97316':'transparent';
+    const chkBorder=on?'#F97316':'#D1D5DB';
+    const imgBg=item.img?`url('${item.img}') center/contain no-repeat #fff`:'#F3F4F6';
+    const iconEl=isOtt
+      ?`<div style="width:32px;height:32px;border-radius:6px;flex-shrink:0;background:#F3F4F6;border:1px solid #E5E7EB;display:flex;align-items:center;justify-content:center;font-size:16px">${selOtt?selOtt.emoji:'🎬'}</div>`
+      :`<div style="width:32px;height:32px;border-radius:6px;flex-shrink:0;background:${imgBg};border:1px solid #E5E7EB"></div>`;
+    const clickFn=isOtt?`toggleOtt(event,'${key}')`:`toggleItem(event,'${item.id}','${key}')`;
+    return`<div onclick="${clickFn}" style="cursor:pointer;display:block;width:100%;background:${bg};border-radius:8px;border:2px solid ${border};transition:all .15s;margin-bottom:6px">
+      <div style="display:flex;align-items:center;gap:8px;padding:9px 10px;pointer-events:none">
+        ${iconEl}
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:700;color:${nameColor}">${item.name}${on&&selOttName?` <span style="font-size:10px">${selOttName}</span>`:''}</div>
+          <div style="font-size:10px;font-weight:800;color:#F97316;margin-top:1px">${item.amount>0?'월 '+item.amount.toLocaleString()+'원 → 무료':'별도 안내'}</div>
+        </div>
+        <div style="width:20px;height:20px;flex-shrink:0;border-radius:50%;border:2px solid ${chkBorder};background:${chkBg};display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff">${on?'✓':''}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // OTT 패널 - click-overlay 없이 직접 onclick
+  const ottItem=bd.items.find(i=>i.ottOptions);
+  const fixedKey=key;
+  if(ottItem&&ottBox){
+    const ottOn=ottItem.ottOptions.some(o=>selectedBonuses.has(o.id));
+    const wasOpen=document.getElementById('ottSubInner')?.classList.contains('show')||false;
+    ottBox.innerHTML=`<div class="ott-sub${(ottOn||wasOpen)?' show':''}" id="ottSubInner">
+      <div class="ott-sub-label">어떤 OTT를 원하세요? (1개 선택)</div>
+      <div class="ott-grid">${ottItem.ottOptions.map(o=>{
+        const sel=selectedBonuses.has(o.id);
+        const hasImg=!!o.img;
+        return`<div onclick="selectOtt(event,'${o.id}','${fixedKey}')" class="ott-opt${sel?' on':''}" data-ottimg="${o.img||''}" style="border-color:${sel?'#F97316':'#E5E7EB'};cursor:pointer">
+          <div class="ott-icon" style="pointer-events:none;display:flex;align-items:center;justify-content:center;height:40px">${hasImg?`<img src="${o.img}" style="width:80px;height:40px;object-fit:contain">`:`<span style="font-size:24px">${o.emoji||'🎬'}</span>`}</div>
+          <span style="pointer-events:none;font-size:12px;font-weight:700;color:${sel?'#F97316':'#1F2937'}">${o.name}</span>
+        </div>`;
+      }).join('')}
+      </div>
+    </div>`;
+    // 이미지 로드 실패 시 JS로 이모지 폴백
+    ottBox.querySelectorAll('.ott-icon img').forEach(img=>{
+      img.onerror=function(){
+        this.parentNode.innerHTML='<span style="font-size:24px">'+
+          (this.closest('.ott-opt').dataset.ottimg?'🎬':'🎬')+'</span>';
+      };
+    });
+  } else if(ottBox){
+    ottBox.innerHTML='';
+  }
+
+// _renderBonusItems 끝 (updateBonusSummary/Hero는 renderBonusSectionWithKey에서 호출)
+}
+
+function updateBonusHero(key){
+  const bd=bonusData[key];
+  if(!bd) return;
+  const wrap=document.getElementById('bonusHeroWrap');
+  if(!wrap) return;
+
+  // 선택된 모든 혜택 이미지 수집 (OTT 포함)
+  const imgs=[];
+  (bd.items||[]).forEach(item=>{
+    if(item.ottOptions){
+      const selOtt=item.ottOptions.find(o=>selectedBonuses.has(o.id));
+      if(selOtt) imgs.push({emoji:selOtt.emoji||'🎬',img:selOtt.img||'',name:selOtt.name});
+    } else if(selectedBonuses.has(item.id)){
+      imgs.push({img:item.img||'',emoji:'',name:item.name});
+    }
+  });
+
+  if(imgs.length===0){
+    wrap.innerHTML='<div style="font-size:40px;color:#D1D5DB">🎁</div>';
+    return;
+  }
+
+  // 선택된 이미지들 가로 나열
+  const size=imgs.length===1?140:imgs.length===2?100:80;
+  wrap.innerHTML=imgs.map(i=>
+    i.img
+      ?`<div style="width:${size}px;height:${size}px;border-radius:12px;background:url('${i.img}') center/contain no-repeat #fff;border:1.5px solid #FED7AA;flex-shrink:0"></div>`
+      :`<div style="width:${size}px;height:${size}px;border-radius:12px;background:#FFF7ED;border:1.5px solid #FED7AA;display:flex;align-items:center;justify-content:center;font-size:${size*0.4}px;flex-shrink:0">${i.emoji}</div>`
+  ).join('');
+}
+
+window.selectOtt=function(e,ottId,key){
+  e.stopPropagation();
+  if(!key||!bonusData[key]) return;
+  const bd=bonusData[key];
+  const ottItem=bd.items.find(i=>i.ottOptions);
+  if(!ottItem) return;
+  ottItem.ottOptions.forEach(o=>selectedBonuses.delete(o.id));
+  selectedBonuses.add(ottId);
+  renderBonusSectionWithKey(key);
+  updateBenefitPreview();
+  // 모바일: OTT 선택 완료 → 추가혜택 요약으로 스크롤
+  if(window.innerWidth<768){
+    setTimeout(()=>{
+      const br=document.querySelector('.bonus-right');
+      if(br) br.scrollIntoView({behavior:'smooth',block:'start'});
+    },200);
+  }
+};
+window.toggleItem=function(e,itemId,key){
+  e.stopPropagation();
+  if(!key||!bonusData[key]) return;
+  const wasSelected=selectedBonuses.has(itemId);
+  if(wasSelected){ selectedBonuses.delete(itemId); }
+  else { selectedBonuses.add(itemId); }
+  renderBonusSectionWithKey(key);
+  updateBenefitPreview();
+  // 모바일: 선택(on) 시 순차 이동
+  if(!wasSelected && window.innerWidth<768){
+    const items=bonusData[key].items||[];
+    const curIdx=items.findIndex(i=>i.id===itemId);
+    const nextItem=items[curIdx+1];
+    setTimeout(()=>{
+      if(nextItem){
+        if(nextItem.ottOptions){
+          // 다음이 OTT → OTT 패널 펼치고 스크롤
+          const sub=document.getElementById('ottSubInner');
+          if(sub){ sub.classList.add('show'); sub.scrollIntoView({behavior:'smooth',block:'start'}); }
+        } else {
+          // 일반 다음 항목으로 스크롤
+          const bonusItemEls=document.getElementById('bonusItems')?.querySelectorAll('[onclick]');
+          if(bonusItemEls&&bonusItemEls[curIdx+1])
+            bonusItemEls[curIdx+1].scrollIntoView({behavior:'smooth',block:'center'});
+        }
+      } else {
+        // 마지막 항목 선택 → 추가혜택 요약으로 스크롤
+        const br=document.querySelector('.bonus-right');
+        if(br) br.scrollIntoView({behavior:'smooth',block:'start'});
+      }
+    },200);
+  }
+};
+window.toggleOtt=function(e,key){
+  e.stopPropagation();
+  if(!key||!bonusData[key]) return;
+  const bd=bonusData[key];
+  const ottItem=bd.items.find(i=>i.ottOptions);
+  if(!ottItem) return;
+  ottItem.ottOptions.forEach(o=>selectedBonuses.delete(o.id));
+  renderBonusSectionWithKey(key);
+  updateBenefitPreview();
+  setTimeout(()=>{
+    const sub=document.getElementById('ottSubInner');
+    if(sub) sub.classList.add('show');
+  },10);
+};
+
+function updateBonusSummary(key){
+  const bd=bonusData[key];
+  if(!bd) return;
+  // 요약란 빈 상태 문구 업데이트
+  const emptyMsg=document.getElementById('bonusEmptyMsg');
+  if(emptyMsg){
+    const pg=(bd.planGroupMatch||[])[0]||key;
+    if(pg==='115') emptyMsg.textContent='모바일 + 스마트 워치 + 스마트 탭 + 인터넷 요금을 한번에!';
+    else if(pg==='95') emptyMsg.textContent='모바일 + 스마트 워치 + 인터넷 요금을 한번에!';
+    else emptyMsg.textContent='원하는 혜택을 왼쪽에서 선택해보세요';
+  }
+  // OTT처럼 서브아이템이 있는 경우도 selected 처리
+  const selected=(bd.items||[]).filter(i=>{
+    if(selectedBonuses.has(i.id)) return true;
+    if(i.ottOptions&&i.ottOptions.some(o=>selectedBonuses.has(o.id))) return true;
+    return false;
+  });
+  const rows=document.getElementById('bonusSummaryRows');
+  const totalBox=document.getElementById('bonusTotalBox');
+  if(!selected.length){
+    rows.innerHTML='';
+    totalBox.style.display='none'; return;
+  }
+
+  let total=0;
+  // OTT 서브선택도 포함해서 rows 구성
+  const bd2=bonusData[key];
+  const allDisplayItems=[];
+  selected.forEach(i=>{
+    if(i.ottOptions){
+      const selOtt=i.ottOptions.find(o=>selectedBonuses.has(o.id));
+      allDisplayItems.push({...i,name:'OTT — '+(selOtt?selOtt.name:'선택 중'),img:selOtt?selOtt.img:i.img,emoji:selOtt?selOtt.emoji:''});
+    } else {
+      allDisplayItems.push(i);
+    }
+  });
+  allDisplayItems.forEach(i=>{ if(i.amount>0) total+=i.amount; });
+  totalBox.style.display='block';
+  const planFee=sel.plan?.monthlyPrice||0;
+  const hasExtra=allDisplayItems.some(i=>i.amount===0);
+  // 체감가 강조
+  const feelEl=document.getElementById('bonusTotalFeel');
+  const noteEl=document.getElementById('bonusTotalNote');
+  if(planFee&&total){
+    const feel=planFee-total;
+    // 혜택 절약액 강조
+    feelEl.innerHTML=`<span style="font-size:16px;color:var(--ord);font-weight:800">-</span>${total.toLocaleString()}<span style="font-size:16px;color:var(--ord);font-weight:800">원${hasExtra?' + α':''}</span>`;
+    // 체감 요금 안내
+    noteEl.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #FED7AA">
+        <span style="color:var(--g600)">요금제</span>
+        <span style="font-weight:700">${planFee.toLocaleString()}원</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #FED7AA">
+        <span style="color:var(--g600)">혜택 할인</span>
+        <span style="font-weight:700;color:var(--or)">-${total.toLocaleString()}원${hasExtra?' + α':''}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0">
+        <span style="font-weight:800;color:var(--g800)">체감 요금</span>
+        <span style="font-weight:900;color:var(--or);font-size:14px">${feel.toLocaleString()}원/월</span>
+      </div>
+      ${hasExtra?'<div style="font-size:10px;color:var(--g400);margin-top:4px">*OTT 혜택 별도 안내</div>':''}
+      ${window._installmentNoteOff?'':('<div style="font-size:10px;color:var(--g400);margin-top:2px">'+(window._installmentNote||'*기기 할부금 별도')+'</div>')}
+    `;
+  } else {
+    feelEl.textContent='별도 안내';
+    noteEl.textContent='';
+  }
+  // 내역 리스트
+  const detailEl=document.getElementById('bonusDetailRows');
+  if(detailEl){
+    detailEl.innerHTML=allDisplayItems.map(i=>{
+      const imgHtml=i.img
+        ?`<img src="${i.img}" style="width:28px;height:28px;object-fit:contain;border-radius:5px;background:#fff;border:1px solid #E5E7EB;flex-shrink:0">`
+        :i.emoji?`<span style="font-size:18px;flex-shrink:0">${i.emoji}</span>`
+        :`<span style="font-size:18px;flex-shrink:0">🎁</span>`;
+      return`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--g100)">
+        ${imgHtml}
+        <span style="flex:1;font-size:12px;color:var(--g800)">${i.name}</span>
+        <span style="font-size:12px;font-weight:700;color:var(--or)">${i.amount>0?'-'+i.amount.toLocaleString()+'원':'별도'}</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+/* SUBMIT */
+window.submitForm=async function(){
+  const name=document.getElementById('fName').value.trim();
+  const birth=document.getElementById('fBirth').value.trim();
+  const phone=document.getElementById('fPhone').value.trim();
+  const time=document.getElementById('fTime').value;
+  if(!name||!phone||!time){alert('이름, 연락처, 상담 희망 시간은 필수입니다.');return;}
+  const btn=document.getElementById('subBtn');
+  btn.disabled=true;btn.innerHTML='📞 신청 중...';
+  try{
+    const res=await fetch(`${SB_URL}/rest/v1/leads`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Prefer':'return=minimal'},
+      body:JSON.stringify({
+        name,birth:birth||null,phone,
+        current_carrier:sel.carrier||null,jointype:sel.jointype||null,
+        desired_device:sel.device?.name||null,storage:sel.storage?.name||null,
+        color:sel.color?sel.color.name.split('|')[1]:null,
+        desired_product:sel.plan?.name||null,
+        discount:sel.discType==='공시'?'공시지원금':'선택약정',
+        additional_benefits:[...selectedBonuses].join(',')||null,
+        consult_time:time,
+        channel:_utm.source==='meta'?'메타광고':'유닥',
+        utm_campaign:_utm.campaign||null,
+        estimated_fee:window._estimatedFee||null,
+        created_at:new Date().toISOString()
+      })
+    });
+    if(!res.ok) throw new Error(await res.text());
+    document.getElementById('sModal').classList.add('on');
+    ['fName','fBirth','fPhone'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('fTime').value='';
+  document.getElementById('timeDisplayText').textContent='선택해주세요';
+  document.getElementById('timeDisplayText').style.color='var(--g400)';
+  document.querySelectorAll('.tp-item').forEach(el=>el.classList.remove('tp-sel','tp-near'));
+  document.getElementById('timePicker')?.classList.remove('on');
+  const rd=document.getElementById('timeDrum'); if(rd) rd.style.display='none';
+  }catch(e){console.error(e);alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');}
+  finally{btn.disabled=false;btn.innerHTML='📞 <span id="txtCtaPhone">전화 상담 신청하기</span>';}
+};
+
+/* BANNER */
+
+/* ── 유닥 추가혜택(보너스) 전체 ── */
 let bonusData={};
 const DEFAULT_BONUS={
   '95':{planGroupMatch:['95'],title:'플러스플랜 95 고객님을 위한 무료 혜택!',items:[
@@ -1661,390 +1811,316 @@ window.addEventListener('pageshow',function(e){
 });
 
 
-/* ══════════════════════════════════════════
-   올인원 전용 JS
-══════════════════════════════════════════ */
-const SB_URL="https://ebggtghzqtxfylbhqfoh.supabase.co";
-const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q";
+/* ═══════════════════════════════════════
+   올인원 전용 JS (유닥 계산 완전 분리)
+═══════════════════════════════════════ */
+const _utm=(()=>{const p=new URLSearchParams(window.location.search);return{source:p.get('utm_source'),campaign:p.get('utm_campaign'),medium:p.get('utm_medium')};  })();
 
-const _utm=(()=>{const p=new URLSearchParams(window.location.search);return{source:p.get("utm_source"),campaign:p.get("utm_campaign"),medium:p.get("utm_medium")};  })();
+/* 올인원 상태 (유닥 sel과 분리) */
+const aio={mobileCarrier:null,internetCarrier:null,jointype:null,plan:null,members:null};
 
-/* 올인원 전용 상태 */
-const aioSel={mobileCarrier:null,internetCarrier:null,jointype:null,plan:null,members:null};
-let aioBanners=[], aioModalBanners=[];
-
-/* 요금 테이블 */
+/* 올인원 요금/현금 테이블 */
 const AIO_FEE={95000:{1:71250,2:61250,4:51250},115000:{1:86250,2:76250,4:66250},130000:{1:97500,2:87500,4:77500}};
 const AIO_CASH={1:30,2:60,4:120};
-
-/* 요금제 데이터 */
 const AIO_PLAN_FEATS={
-  95000:["데이터 무제한 (속도 제한 없음)","인터넷 500M 무료","스마트워치 기기값 + 요금 면제"],
-  115000:["데이터 무제한","인터넷 500M 무료","스마트워치 + 스마트탭 면제","OTT 1개 선택"],
-  130000:["데이터 무제한","인터넷 500M 무료","스마트워치 + 스마트탭 면제","OTT 1개 선택","만 19세 미만 자녀 요금 0원"],
+  95000:['데이터 무제한','인터넷 500M 무료','스마트워치 기기값+요금 면제'],
+  115000:['데이터 무제한','인터넷 500M 무료','스마트워치+스마트탭 면제','OTT 1개 선택'],
+  130000:['데이터 무제한','인터넷 500M 무료','스마트워치+스마트탭 면제','OTT 1개 선택','만 19세 미만 자녀 요금 0원'],
 };
 
+let aioPlanList=[
+  {id:'p95',name:'5G 프리미어 레귤러',price:95000,plangroup:'95'},
+  {id:'p115',name:'5G 프리미어 플러스',price:115000,plangroup:'115'},
+  {id:'p130',name:'5G 프리미어 슈퍼',price:130000,plangroup:'130'},
+];
+let aioBanners=[], aioModalBanners=[];
+
 /* 초기화 */
-document.addEventListener("DOMContentLoaded", async function(){
-  // Firebase에서 올인원 전용 데이터 로드 (allinone/ 경로)
-  await aioLoadData();
+document.addEventListener('DOMContentLoaded', async function(){
+  await aioLoadFirebase();
   aioRenderPlans();
   aioRenderCompare();
-  aioBannerInit();
-  aioModalBannerInit();
+  bnInit();
+  aioModalInit();
 });
 
-async function aioLoadData(){
+async function aioLoadFirebase(){
   try{
-    // 배너
-    const bSnap = await db.ref("allinone/banners").once();
-    if(bSnap.exists() && bSnap.val()){
-      const bv=bSnap.val();
-      aioBanners=(Array.isArray(bv)?bv:Object.values(bv)).filter(function(x){return x&&(x.pc||x.mo);});
-    }
-    // 모달 배너
-    const mbSnap = await db.ref("allinone/modalBanners").once();
-    if(mbSnap.exists() && mbSnap.val()){
-      const mv=mbSnap.val();
-      aioModalBanners=(Array.isArray(mv)?mv:Object.values(mv)).filter(function(x){return x&&x.img;});
-    }
-    // 기기 — 유닥 공용 devices (Firebase /devices) 사용
-    const dSnap = await db.ref("allinone/devices").once();
-    if(dSnap.exists() && dSnap.val()){
-      devices=Object.values(dSnap.val()).filter(function(x){return x.visible!==false;});
-    }
-    // 요금제 — allinone/plans
-    const pSnap = await db.ref("allinone/plans").once();
-    if(pSnap.exists() && pSnap.val()){
-      const pv=pSnap.val();
-      const loaded=Object.values(pv).filter(function(x){return x.visible!==false;}).sort(function(a,b){return a.price-b.price;});
-      if(loaded.length) window._aioPlanList=loaded;
-    }
-    // bonusPlans — allinone/bonusPlans 사용
-    const boSnap = await db.ref("allinone/bonusPlans").once();
-    if(boSnap.exists() && boSnap.val()){
-      bonusData=boSnap.val();
-    }
-  }catch(e){console.warn("aioLoad error",e);}
+    const [bSnap,mbSnap,pSnap,dSnap,boSnap]=await Promise.all([
+      db.ref('allinone/banners').once(),
+      db.ref('allinone/modalBanners').once(),
+      db.ref('allinone/plans').once(),
+      db.ref('allinone/devices').once(),
+      db.ref('allinone/bonusPlans').once(),
+    ]);
+    if(bSnap.exists()&&bSnap.val()){const v=bSnap.val();aioBanners=(Array.isArray(v)?v:Object.values(v)).filter(x=>x&&(x.pc||x.mo));}
+    if(mbSnap.exists()&&mbSnap.val()){const v=mbSnap.val();aioModalBanners=(Array.isArray(v)?v:Object.values(v)).filter(x=>x&&x.img);}
+    if(pSnap.exists()&&pSnap.val()){const v=Object.values(pSnap.val()).filter(x=>x.visible!==false).sort((a,b)=>a.price-b.price);if(v.length){aioPlanList=v;aioRenderPlans();}}
+    if(dSnap.exists()&&dSnap.val()){devices=Object.values(dSnap.val()).filter(x=>x.visible!==false);}
+    if(boSnap.exists()&&boSnap.val()){bonusData=boSnap.val();}
+  }catch(e){console.warn('aioLoad error',e);}
 }
 
 /* 배너 */
 let _bsi=0;
-function aioBannerInit(){
-  var track=document.getElementById("bTrack"),dots=document.getElementById("bDots"),prev=document.getElementById("bPrev"),next=document.getElementById("bNext");
-  if(!aioBanners.length){document.getElementById("bannerWrap").style.display="none";return;}
-  track.innerHTML=aioBanners.map(function(b,i){
-    var inner="<img class=\"bn-pc\" src=\""+( b.pc||b.mo||"")+"\" alt=\"배너"+(i+1)+"\"><img class=\"bn-mo\" src=\""+( b.mo||b.pc||"")+"\" alt=\"배너"+(i+1)+"\">";
-    return "<div class=\"banner-slide\">"+(b.link?"<a href=\""+b.link+"\" target=\"_blank\" rel=\"noopener\">"+inner+"</a>":inner)+"</div>";
-  }).join("");
-  dots.innerHTML=aioBanners.map(function(_,i){return "<div class=\"dot"+(i===0?" on":"")+"\" onclick=\"aioSlide("+i+")"></div>";}).join("");
-  if(aioBanners.length>1){prev.style.display="flex";next.style.display="flex";}
-  window._bc=aioBanners.length;
-  _bsi=0;aioMoveBanner();
-  setInterval(function(){if((window._bc||0)>1)aioSlideDir(1);},4500);
+function bnInit(){
+  var track=document.getElementById('bTrack'),dots=document.getElementById('bDots'),prev=document.getElementById('bPrev'),next=document.getElementById('bNext');
+  if(!aioBanners.length){document.getElementById('bannerWrap').style.display='none';return;}
+  track.innerHTML=aioBanners.map((b,i)=>{
+    const inner='<img class="bn-pc" src="'+(b.pc||b.mo||'')+'" alt="배너'+(i+1)+'"><img class="bn-mo" src="'+(b.mo||b.pc||'')+'" alt="배너'+(i+1)+'">';
+    return '<div class="banner-slide">'+(b.link?'<a href="'+b.link+'" target="_blank" rel="noopener">'+inner+'</a>':inner)+'</div>';
+  }).join('');
+  dots.innerHTML=aioBanners.map((_,i)=>'<div class="dot'+(i===0?' on':'')+'" onclick="bnGo('+i+')"></div>').join('');
+  if(aioBanners.length>1){prev.style.display='flex';next.style.display='flex';}
+  window._bc=aioBanners.length;_bsi=0;bnMove();
+  setInterval(()=>{if((window._bc||0)>1)bnSlide(1);},4500);
 }
-window.slide=function(d){aioSlideDir(d);};
-function aioSlideDir(d){_bsi=(_bsi+d+(window._bc||1))%(window._bc||1);aioMoveBanner();}
-function aioSlide(i){_bsi=i;aioMoveBanner();}
-function aioMoveBanner(){var t=document.getElementById("bTrack");if(t)t.style.transform="translateX(-"+(_bsi*100)+"%)";document.querySelectorAll(".dot").forEach(function(d,i){d.className="dot"+(i===_bsi?" on":"");});}
+window.bnSlide=function(d){_bsi=(_bsi+d+(window._bc||1))%(window._bc||1);bnMove();};
+window.bnGo=function(i){_bsi=i;bnMove();};
+function bnMove(){const t=document.getElementById('bTrack');if(t)t.style.transform='translateX(-'+(_bsi*100)+'%)';document.querySelectorAll('.dot').forEach((d,i)=>d.className='dot'+(i===_bsi?' on':''));}
 
-function aioModalBannerInit(){
-  var w=document.getElementById("modalBanners");if(!w)return;
-  if(!aioModalBanners.length){w.style.display="none";return;}
-  w.innerHTML=aioModalBanners.map(function(b){
-    return "<img src=\""+b.img+"\" style=\"width:100%;border-radius:8px;cursor:pointer\" onclick=\""+(b.link?"window.open('"+b.link+"','_blank')":"")+"\">";
-  }).join("");
+function aioModalInit(){
+  const w=document.getElementById('modalBanners');if(!w)return;
+  if(!aioModalBanners.length){w.style.display='none';return;}
+  w.innerHTML=aioModalBanners.map(b=>'<img src="'+b.img+'" style="width:100%;border-radius:8px;cursor:pointer"'+(b.link?' onclick="window.open(''+b.link+'','_blank')"':'')+'>').join('');
 }
 
 /* 요금제 렌더 */
 function aioRenderPlans(){
-  var list=document.getElementById("aioPlanList");if(!list)return;
-  var plans=window._aioPlanList||[
-    {id:"p95",name:"5G 프리미어 레귤러",price:95000},
-    {id:"p115",name:"5G 프리미어 플러스",price:115000},
-    {id:"p130",name:"5G 프리미어 슈퍼",price:130000},
-  ];
-  list.innerHTML=plans.map(function(p){
-    var feats=AIO_PLAN_FEATS[p.price]||[];
-    var badge=p.price===95000?"기본":p.price===115000?"인기 🔥":"프리미엄 👑";
-    return "<div class=\"aio-plan-item\" id=\"api_"+p.id+"\" onclick=\"aioSelPlan('"+p.id+"',"+p.price+",'"+p.name+"')\">"
-      +"<div class=\"aio-plan-top\"><div class=\"aio-plan-name\">"+p.name+"</div><div class=\"aio-plan-price\">"+p.price.toLocaleString()+"원</div></div>"
-      +"<div class=\"aio-plan-badges\"><span class=\"aio-plan-badge\">"+badge+"</span></div>"
-      +"<ul class=\"aio-plan-detail\">"+feats.map(function(f){return "<li>"+f+"</li>";}).join("")+"</ul>"
-      +"</div>";
-  }).join("");
+  const list=document.getElementById('aioPlanList');if(!list)return;
+  list.innerHTML=aioPlanList.map(p=>{
+    const feats=AIO_PLAN_FEATS[p.price]||[];
+    const badge=p.price===95000?'기본':p.price===115000?'인기 🔥':'프리미엄 👑';
+    return '<div class="aio-plan-item" id="api_'+p.id+'" onclick="aioSelPlan(''+p.id+'','+p.price+',''+p.name+'',''+p.plangroup+'')">'
+      +'<div class="aio-plan-top"><div class="aio-plan-name">'+p.name+'</div><div class="aio-plan-price">'+p.price.toLocaleString()+'원</div></div>'
+      +'<div class="aio-plan-badges"><span class="aio-plan-badge">'+badge+'</span></div>'
+      +'<ul class="aio-plan-detail">'+feats.map(f=>'<li>'+f+'</li>').join('')+'</ul>'
+      +'</div>';
+  }).join('');
 }
 
 function aioRenderCompare(){
-  var g=document.getElementById("aioCompareGrid");if(!g)return;
-  var plans=[
-    {price:95000,badge:"기본",feats:["데이터 무제한","인터넷 500M 무료","스마트워치 면제"]},
-    {price:115000,badge:"인기 🔥",feats:["데이터 무제한","인터넷 500M 무료","워치+탭 면제","OTT 1개"]},
-    {price:130000,badge:"프리미엄 👑",feats:["데이터 무제한","인터넷 500M 무료","워치+탭 면제","OTT 1개","자녀 요금 0원"]},
+  const g=document.getElementById('aioCompareGrid');if(!g)return;
+  const plans=[
+    {price:95000,badge:'기본',feats:['데이터 무제한','인터넷 500M 무료','스마트워치 면제']},
+    {price:115000,badge:'인기 🔥',feats:['데이터 무제한','인터넷 500M 무료','워치+탭 면제','OTT 1개']},
+    {price:130000,badge:'프리미엄 👑',feats:['데이터 무제한','인터넷 500M 무료','워치+탭 면제','OTT 1개','자녀 요금 0원']},
   ];
-  g.innerHTML=plans.map(function(p){
-    return "<div class=\"aio-compare-card"+(aioSel.plan===p.price?" sel":"")+"\"><div class=\"aio-cc-price\">"+p.price.toLocaleString()+"원</div><div class=\"aio-cc-badge\">"+p.badge+"</div><ul class=\"aio-cc-feats\">"+p.feats.map(function(f){return "<li>"+f+"</li>";}).join("")+"</ul></div>";
-  }).join("");
+  g.innerHTML=plans.map(p=>'<div class="aio-cc'+(aio.plan===p.price?' sel':'')+'"><div class="aio-cc-price">'+p.price.toLocaleString()+'원</div><div class="aio-cc-badge">'+p.badge+'</div><ul class="aio-cc-feats">'+p.feats.map(f=>'<li>'+f+'</li>').join('')+'</ul></div>').join('');
 }
 
-/* 올인원 STEP 아코디언 */
-var AIO_STEPS=["asc1","asc2","asc3","asc4","asc5"];
+/* ── 올인원 아코디언 STEP ── */
+const AIO_STEPS=['asc1','asc2','asc3','asc4','asc5'];
 
 function aioToggle(id){
-  var card=document.getElementById(id);
-  if(!card||card.classList.contains("locked"))return;
-  if(card.classList.contains("active"))return;
-  if(card.classList.contains("done"))aioActivate(id);
+  const card=document.getElementById(id);
+  if(!card||card.classList.contains('locked'))return;
+  if(card.classList.contains('active'))return;
+  if(card.classList.contains('done'))aioActivate(id);
 }
-
 function aioActivate(id){
-  var idx=AIO_STEPS.indexOf(id);
-  AIO_STEPS.forEach(function(s,i){
-    var el=document.getElementById(s);if(!el)return;
-    el.classList.remove("active");
+  const idx=AIO_STEPS.indexOf(id);
+  AIO_STEPS.forEach((s,i)=>{
+    const el=document.getElementById(s);if(!el)return;
+    el.classList.remove('active');
     if(i>idx){
-      el.classList.remove("done");el.classList.add("locked");
-      var ve=document.getElementById("av"+(i+1));
-      if(ve){ve.textContent="선택해주세요";ve.className="aio-step-val ph";}
-      var se=document.getElementById("srV"+(i+1));
-      if(se){se.textContent="–";se.className="br-val";}
+      el.classList.remove('done');el.classList.add('locked');
+      const ve=document.getElementById('av'+(i+1));if(ve){ve.textContent='선택해주세요';ve.className='aio-step-val ph';}
+      aioSetSum(i+1,null);
     }
   });
-  if(idx<=0)aioSel.mobileCarrier=null;
-  if(idx<=1){aioSel.internetCarrier=null;document.getElementById("lguWarn").classList.remove("show");}
-  if(idx<=2)aioSel.jointype=null;
-  if(idx<=3){aioSel.plan=null;sel.plan=null;aioRenderCompare();}
-  if(idx<=4)aioSel.members=null;
-  document.getElementById("bonusSection").classList.remove("on");
-  document.getElementById("aioFeeBox").style.display="none";
-  aioUpdateSummary();
-  var target=document.getElementById(id);
-  if(target&&!target.classList.contains("locked")){
-    target.classList.add("active");
-    setTimeout(function(){target.scrollIntoView({behavior:"smooth",block:"nearest"});},200);
+  if(idx<=0)aio.mobileCarrier=null;
+  if(idx<=1){aio.internetCarrier=null;document.getElementById('lguWarn').classList.remove('show');}
+  if(idx<=2)aio.jointype=null;
+  if(idx<=3){aio.plan=null;aioRenderCompare();}
+  if(idx<=4)aio.members=null;
+  document.getElementById('bonusSection').classList.remove('on');
+  document.getElementById('aioFeeBox').style.display='none';
+  const target=document.getElementById(id);
+  if(target&&!target.classList.contains('locked')){
+    target.classList.add('active');
+    setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'nearest'}),200);
   }
 }
+function aioMarkDone(id){const c=document.getElementById(id);c.classList.remove('active');c.classList.add('done');}
+function aioUnlock(id){const el=document.getElementById(id);if(el)el.classList.remove('locked');}
+function aioSetVal(n,txt){const e=document.getElementById('av'+n);if(e){e.textContent=txt;e.className='aio-step-val';}}
+function aioSetSum(n,txt){const e=document.getElementById('srV'+n);if(e){e.textContent=txt||'–';e.style.color=txt?'':'#adb5bd';}}
+function aioNext(id){const el=document.getElementById(id);if(!el)return;el.classList.add('active');setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),200);}
 
-function aioMarkDone(id){var c=document.getElementById(id);c.classList.remove("active");c.classList.add("done");}
-function aioUnlock(id){var el=document.getElementById(id);if(el)el.classList.remove("locked");}
-function aioSetVal(n,txt){var e=document.getElementById("av"+n);e.textContent=txt;e.className="aio-step-val";}
-function aioSetSum(n,txt){var e=document.getElementById("srV"+n);if(e){e.textContent=txt||"–";}}
-
-function aioNext(id){
-  var el=document.getElementById(id);if(!el)return;
-  el.classList.add("active");
-  setTimeout(function(){el.scrollIntoView({behavior:"smooth",block:"nearest"});},200);
-}
-
-/* STEP 1 */
-window.aioSel1=function(v){
-  aioSel.mobileCarrier=v;
-  document.querySelectorAll("#asc1 .aio-opt").forEach(function(b){b.classList.toggle("sel",b.textContent===v);});
-  aioSetVal(1,v);aioSetSum(1,v);
-  aioRenderStep3();
-  aioMarkDone("asc1");aioUnlock("asc2");aioNext("asc2");
-};
-
-/* STEP 2 */
-window.aioSel2=function(v){
-  aioSel.internetCarrier=v;
-  document.querySelectorAll("#asc2 .aio-opt").forEach(function(b){b.classList.toggle("sel",b.textContent===v);});
-  aioSetVal(2,v);aioSetSum(2,v);
-  if(v==="LGU+"){
-    document.getElementById("lguWarn").classList.add("show");
-    ["asc3","asc4","asc5"].forEach(function(id){var e=document.getElementById(id);if(e){e.classList.add("locked");e.classList.remove("active","done");}});
-  }else{
-    document.getElementById("lguWarn").classList.remove("show");
+/* STEP 통합 선택 */
+window.aioS=function(step,val){
+  if(step===1){
+    aio.mobileCarrier=val;
+    document.querySelectorAll('#asc1 .aio-opt').forEach(b=>b.classList.toggle('sel',b.textContent===val));
+    aioSetVal(1,val);aioSetSum(1,val);
     aioRenderStep3();
-    aioMarkDone("asc2");aioUnlock("asc3");aioNext("asc3");
-  }
-};
-
-/* STEP 3 렌더 + 선택 */
-function aioRenderStep3(){
-  var isLgu=aioSel.mobileCarrier==="LGU+";
-  var opts=isLgu?["요금제만 바꾸기","핸드폰도 바꾸기"]:["유심만 바꾸기","핸드폰도 바꾸기"];
-  document.getElementById("aopts3").innerHTML=opts.map(function(o){
-    return "<button class=\"aio-opt\" onclick=\"aioSel3('"+o+"')\">"+o+"</button>";
-  }).join("");
-}
-window.aioSel3=function(v){
-  aioSel.jointype=v;
-  document.querySelectorAll("#asc3 .aio-opt").forEach(function(b){b.classList.toggle("sel",b.textContent===v);});
-  aioSetVal(3,v);aioSetSum(3,v);
-  // 핸드폰 바꾸기 → 유닥 기기선택 스텝 표시
-  var needDev=v.includes("핸드폰");
-  document.getElementById("udakSteps").style.display=needDev?"block":"none";
-  aioMarkDone("asc3");aioUnlock("asc4");aioNext("asc4");
-};
-
-/* STEP 4 요금제 */
-window.aioSelPlan=function(id,price,name){
-  aioSel.plan=price;
-  // 유닥 sel.plan도 연동 (추가혜택 bonusPlanKey용)
-  sel.plan={id:id,name:name,monthlyPrice:price,plangroup:String(Math.floor(price/1000))};
-  document.querySelectorAll(".aio-plan-item").forEach(function(el){el.classList.remove("sel");});
-  var pi=document.getElementById("api_"+id);if(pi)pi.classList.add("sel");
-  aioSetVal(4,price.toLocaleString()+"원");aioSetSum(4,price.toLocaleString()+"원");
-  aioRenderCompare();
-  aioMarkDone("asc4");aioUnlock("asc5");aioNext("asc5");
-  aioCalc();
-};
-
-/* STEP 5 인원 */
-window.aioSel5=function(n){
-  aioSel.members=n;
-  document.querySelectorAll("#asc5 .aio-opt").forEach(function(b){b.classList.toggle("sel",b.textContent===n+"인");});
-  aioSetVal(5,n+"인");aioSetSum(5,n+"인");
-  aioMarkDone("asc5");
-  // 핸드폰 바꾸기 → 기기선택 먼저, 아니면 바로 추가혜택
-  var needDev=aioSel.jointype&&aioSel.jointype.includes("핸드폰");
-  if(!needDev){
-    renderBonusSection(); // 유닥 함수 호출
-    setTimeout(function(){document.getElementById("bonusSection").scrollIntoView({behavior:"smooth",block:"start"});},300);
-  }
-  aioCalc();
-};
-
-/* 기기 선택 완료 → 추가혜택 표시 */
-var _origConfirmStorage=window.confirmStorage;
-window.confirmStorage=function(){
-  if(_origConfirmStorage)_origConfirmStorage();
-  // 기기 이미지 요약카드 반영
-  if(sel.device){
-    var devArea=document.getElementById("aioDevArea");
-    if(devArea)devArea.style.display="block";
-    var bcImg=document.getElementById("bcImg");
-    var bcPh=document.getElementById("bcImgPh");
-    if(sel.device.img&&bcImg){bcImg.src=sel.device.img;bcImg.style.display="block";if(bcPh)bcPh.style.display="none";}
-    var bcName=document.getElementById("bcName");
-    if(bcName){bcName.textContent=sel.device.name;bcName.style.display="block";}
-    // 태그 (용량/색상)
-    var bcTags=document.getElementById("bcTags");
-    if(bcTags){
-      var tags=[];
-      if(sel.storage)tags.push(sel.storage.name);
-      if(sel.color){var cn=(sel.color.name||"").split("|")[1];if(cn)tags.push(cn);}
-      bcTags.innerHTML=tags.map(function(t){return "<span class=\"bc-tag\">"+t+"</span>";}).join("");
+    aioMarkDone('asc1');aioUnlock('asc2');aioNext('asc2');
+  } else if(step===2){
+    aio.internetCarrier=val;
+    document.querySelectorAll('#asc2 .aio-opt').forEach(b=>b.classList.toggle('sel',b.textContent===val));
+    aioSetVal(2,val);aioSetSum(2,val);
+    if(val==='LGU+'){
+      document.getElementById('lguWarn').classList.add('show');
+      ['asc3','asc4','asc5'].forEach(id=>{const e=document.getElementById(id);if(e){e.classList.add('locked');e.classList.remove('active','done');}});
+    } else {
+      document.getElementById('lguWarn').classList.remove('show');
+      aioRenderStep3();
+      aioMarkDone('asc2');aioUnlock('asc3');aioNext('asc3');
+    }
+  } else if(step===5){
+    aio.members=val;
+    document.querySelectorAll('#asc5 .aio-opt').forEach(b=>b.classList.toggle('sel',b.textContent===val+'인'));
+    aioSetVal(5,val+'인');aioSetSum(5,val+'인');
+    aioMarkDone('asc5');
+    aioCalc();
+    // 핸드폰 바꾸기 아닌 경우 바로 추가혜택
+    if(!aio.jointype||!aio.jointype.includes('핸드폰')){
+      renderBonusSection();
+      setTimeout(()=>document.getElementById('bonusSection').scrollIntoView({behavior:'smooth',block:'start'}),300);
     }
   }
-  if(aioSel.members){
+};
+
+function aioRenderStep3(){
+  const isLgu=aio.mobileCarrier==='LGU+';
+  const opts=isLgu?['요금제만 바꾸기','핸드폰도 바꾸기']:['유심만 바꾸기','핸드폰도 바꾸기'];
+  document.getElementById('aopts3').innerHTML=opts.map(o=>'<button class="aio-opt" onclick="aioSel3(''+o+'')">'+o+'</button>').join('');
+}
+window.aioSel3=function(jt){
+  aio.jointype=jt;
+  document.querySelectorAll('#asc3 .aio-opt').forEach(b=>b.classList.toggle('sel',b.textContent===jt));
+  aioSetVal(3,jt);aioSetSum(3,jt);
+  const needDev=jt.includes('핸드폰');
+  document.getElementById('udakDevSteps').style.display=needDev?'block':'none';
+  aioMarkDone('asc3');aioUnlock('asc4');aioNext('asc4');
+};
+window.aioSelPlan=function(id,price,name,pg){
+  aio.plan=price;
+  // 유닥 sel.plan 연동 (추가혜택 bonusPlanKey 매칭용)
+  sel.plan={id:id,name:name,monthlyPrice:price,plangroup:pg};
+  document.querySelectorAll('.aio-plan-item').forEach(el=>el.classList.remove('sel'));
+  const pi=document.getElementById('api_'+id);if(pi)pi.classList.add('sel');
+  aioSetVal(4,price.toLocaleString()+'원');aioSetSum(4,price.toLocaleString()+'원');
+  aioRenderCompare();
+  aioMarkDone('asc4');aioUnlock('asc5');aioNext('asc5');
+  aioCalc();
+};
+
+/* 기기 선택 완료 후 올인원 혜택 연동 */
+const _origConfirm=window.confirmStorage;
+window.confirmStorage=function(){
+  if(_origConfirm)_origConfirm();
+  // 우측 카드 기기 이미지 반영
+  if(sel.device){
+    document.getElementById('aioDevArea').style.display='block';
+    const img=document.getElementById('bcImg'),ph=document.getElementById('bcImgPh');
+    if(sel.device.img&&img){img.src=sel.device.img;img.style.display='block';if(ph)ph.style.display='none';}
+    const nm=document.getElementById('bcName');if(nm){nm.textContent=sel.device.name;nm.style.display='block';}
+    const tags=document.getElementById('bcTags');
+    if(tags){
+      const t=[];
+      if(sel.storage)t.push(sel.storage.name);
+      if(sel.color){const cn=(sel.color.name||'').split('|')[1];if(cn)t.push(cn);}
+      tags.innerHTML=t.map(x=>'<span class="bc-tag">'+x+'</span>').join('');
+    }
+  }
+  // 인원까지 골랐으면 추가혜택 표시
+  if(aio.members){
     renderBonusSection();
-    setTimeout(function(){document.getElementById("bonusSection").scrollIntoView({behavior:"smooth",block:"start"});},300);
+    setTimeout(()=>document.getElementById('bonusSection').scrollIntoView({behavior:'smooth',block:'start'}),300);
   }
 };
 
-/* 혜택 계산 */
+/* 올인원 혜택 계산 (유닥 calc와 완전 분리) */
 function aioCalc(){
-  if(!aioSel.plan||!aioSel.members)return;
-  var fee=(AIO_FEE[aioSel.plan]||{})[aioSel.members];
-  var isTasa=aioSel.mobileCarrier&&aioSel.mobileCarrier!=="LGU+";
-  var cash=isTasa?AIO_CASH[aioSel.members]:0;
+  if(!aio.plan||!aio.members)return;
+  const fee=(AIO_FEE[aio.plan]||{})[aio.members];
+  const isTasa=aio.mobileCarrier&&aio.mobileCarrier!=='LGU+';
+  const cash=isTasa?AIO_CASH[aio.members]:0;
   if(!fee)return;
-  var fb=document.getElementById("aioFeeBox");
-  if(fb)fb.style.display="block";
-  var fv=document.getElementById("aioFeeVal");
-  if(fv)fv.textContent=fee.toLocaleString();
-  var cv=document.getElementById("aioCash");
-  if(cv)cv.textContent=cash>0?"현금 혜택 최대 "+cash+"만원":(aioSel.mobileCarrier==="LGU+"?"자사 고객 (현금혜택 없음)":"");
-  window._aioFee=fee;
-  window._aioCash=cash;
-  window._aioFeeMemo="월 "+fee.toLocaleString()+"원"+(cash>0?" + 현금 "+cash+"만원":"");
-  aioUpdateSummary();
+  document.getElementById('aioFeeBox').style.display='block';
+  document.getElementById('aioFeeVal').textContent=fee.toLocaleString();
+  const cv=document.getElementById('aioCash');
+  if(cv)cv.textContent=cash>0?'현금 혜택 최대 '+cash+'만원':(aio.mobileCarrier==='LGU+'?'자사 고객 (현금혜택 없음)':'');
+  window._aioFee=fee;window._aioCash=cash;
+  window._aioFeeMemo='월 '+fee.toLocaleString()+'원'+(cash>0?' + 현금 '+cash+'만원':'');
 }
 
-function aioUpdateSummary(){
-  aioSetSum(1,aioSel.mobileCarrier);
-  aioSetSum(2,aioSel.internetCarrier);
-  aioSetSum(3,aioSel.jointype);
-  aioSetSum(4,aioSel.plan?aioSel.plan.toLocaleString()+"원":null);
-  aioSetSum(5,aioSel.members?aioSel.members+"인":null);
-}
-
-/* 추가혜택 선택 후 우측 카드 업데이트 */
-var _origUpdateBonusSummary=null;
-// updateBonusSummary는 유닥 JS에 있으므로 wrapping
-(function(){
-  var origFn=window.updateBonusSummary||function(){};
-  window.updateBonusSummary=function(key){
-    origFn(key);
-    // 올인원 전용 추가혜택 목록 우측 카드에 반영
-    var bl=document.getElementById("aioBonusList");
-    if(!bl||!key||!bonusData[key])return;
-    var bd=bonusData[key];
-    var items=[];
-    (bd.items||[]).forEach(function(item){
-      if(item.ottOptions){
-        var o=item.ottOptions.find(function(o){return selectedBonuses.has(o.id);});
-        if(o)items.push(item.name+" ("+o.name+")");
-      }else if(selectedBonuses.has(item.id)){
-        items.push(item.name);
-      }
-    });
-    bl.innerHTML=items.map(function(t){return "<li style=\"padding-left:14px;position:relative\"><span style=\"position:absolute;left:0;color:var(--navy);font-weight:700\">•</span>"+t+"</li>";}).join("");
-  };
-})();
+/* 추가혜택 선택 후 우측카드 반영 */
+const _origUBS=window.updateBonusSummary;
+window.updateBonusSummary=function(key){
+  if(_origUBS)_origUBS(key);
+  // 우측 올인원 카드 추가혜택 업데이트
+  const bl=document.getElementById('aioBonusList');
+  if(!bl||!key||!bonusData[key])return;
+  const bd=bonusData[key];
+  const items=[];
+  (bd.items||[]).forEach(item=>{
+    if(item.ottOptions){const o=item.ottOptions.find(o=>selectedBonuses.has(o.id));if(o)items.push(item.name+' ('+o.name+')');}
+    else if(selectedBonuses.has(item.id))items.push(item.name);
+  });
+  bl.innerHTML=items.map(t=>'<li>'+t+'</li>').join('');
+};
 
 /* 폼 제출 */
 window.aioSubmit=async function(){
-  var name=document.getElementById("fName").value.trim();
-  var birth=document.getElementById("fBirth").value.trim();
-  var phone=document.getElementById("fPhone").value.trim();
-  var time=document.getElementById("fTime").value;
-  var memo=document.getElementById("fMemo")?document.getElementById("fMemo").value.trim():"";
-  if(!name||!phone||!time){alert("이름, 연락처, 상담 가능 시간은 필수입니다.");return;}
-  var btn=document.getElementById("subBtn");btn.disabled=true;btn.textContent="신청 중...";
-  var isTasa=aioSel.mobileCarrier&&aioSel.mobileCarrier!=="LGU+";
-  var devStr=sel.device?sel.device.name+(sel.storage?" "+sel.storage.name:"")+(sel.color?" "+(sel.color.name.split("|")[1]||""):""):"–";
-  var bonusStr=(function(){
-    if(!currentBonusKey||!bonusData[currentBonusKey])return"–";
-    var bd=bonusData[currentBonusKey],parts=[];
-    (bd.items||[]).forEach(function(item){
-      if(item.ottOptions){var o=item.ottOptions.find(function(o){return selectedBonuses.has(o.id);});if(o)parts.push(item.name+"("+o.name+")");}
+  const name=document.getElementById('fName').value.trim();
+  const birth=document.getElementById('fBirth').value.trim();
+  const phone=document.getElementById('fPhone').value.trim();
+  const time=document.getElementById('fTime').value;
+  const memo=(document.getElementById('fMemo')||{}).value||'';
+  if(!name||!phone||!time){alert('이름, 연락처, 상담 가능 시간은 필수입니다.');return;}
+  const btn=document.getElementById('subBtn');btn.disabled=true;btn.textContent='신청 중...';
+  const isTasa=aio.mobileCarrier&&aio.mobileCarrier!=='LGU+';
+  const devStr=sel.device?sel.device.name+(sel.storage?' '+sel.storage.name:'')+(sel.color?' '+(sel.color.name.split('|')[1]||''):''):'–';
+  const bonusStr=(()=>{
+    if(!currentBonusKey||!bonusData[currentBonusKey])return'–';
+    const bd=bonusData[currentBonusKey],parts=[];
+    (bd.items||[]).forEach(item=>{
+      if(item.ottOptions){const o=item.ottOptions.find(o=>selectedBonuses.has(o.id));if(o)parts.push(item.name+'('+o.name+')');}
       else if(selectedBonuses.has(item.id))parts.push(item.name);
     });
-    return parts.join(" / ")||"–";
+    return parts.join(' / ')||'–';
   })();
-  var memoText=[
-    "[올인원 선택값]",
-    "현재 휴대폰 통신사: "+(aioSel.mobileCarrier||"–"),
-    "현재 인터넷 통신사: "+(aioSel.internetCarrier||"–"),
-    "인터넷 신규 설치 대상 여부: "+(aioSel.internetCarrier==="LGU+"?"대상 아님":"가능"),
-    "진행 방식: "+(aioSel.jointype||"–"),
-    "선택 요금제: "+(aioSel.plan?aioSel.plan.toLocaleString()+"원":"–"),
-    "가족 결합 인원: "+(aioSel.members?aioSel.members+"인":"–"),
-    "예상 월 요금: "+(window._aioFee?window._aioFee.toLocaleString()+"원":"–"),
-    "예상 현금 혜택: "+(isTasa&&window._aioCash?window._aioCash+"만원":"해당없음"),
-    "선택 기종: "+devStr,
-    "추가 혜택: "+bonusStr,
-    "상담 가능 시간: "+time,
-    "고객 메모: "+(memo||"없음"),
-  ].join("\n");
+  const memoText=[
+    '[올인원 선택값]',
+    '현재 휴대폰 통신사: '+(aio.mobileCarrier||'–'),
+    '현재 인터넷 통신사: '+(aio.internetCarrier||'–'),
+    '인터넷 신규 설치 대상 여부: '+(aio.internetCarrier==='LGU+'?'대상 아님':'가능'),
+    '진행 방식: '+(aio.jointype||'–'),
+    '선택 요금제: '+(aio.plan?aio.plan.toLocaleString()+'원':'–'),
+    '가족 결합 인원: '+(aio.members?aio.members+'인':'–'),
+    '예상 월 요금: '+(window._aioFee?window._aioFee.toLocaleString()+'원':'–'),
+    '예상 현금 혜택: '+(isTasa&&window._aioCash?window._aioCash+'만원':'해당없음'),
+    '선택 기종: '+devStr,
+    '추가 혜택: '+bonusStr,
+    '상담 가능 시간: '+time,
+    '고객 메모: '+(memo||'없음'),
+  ].join('
+');
   try{
-    var res=await fetch(SB_URL+"/rest/v1/leads",{
-      method:"POST",
-      headers:{"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Prefer":"return=minimal"},
+    const res=await fetch(SB_URL+'/rest/v1/leads',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},
       body:JSON.stringify({
-        name:name,birth:birth||null,phone:phone,
-        channel:"올인원",carrier:aioSel.mobileCarrier||null,
-        plan:aioSel.plan?String(aioSel.plan):null,
-        bundling:aioSel.members?aioSel.members+"인":null,
-        jointype:aioSel.jointype||null,
-        estimated_fee:window._aioFee||null,
-        estimated_fee_memo:window._aioFeeMemo||null,
+        name,birth:birth||null,phone,channel:'올인원',
+        carrier:aio.mobileCarrier||null,plan:aio.plan?String(aio.plan):null,
+        bundling:aio.members?aio.members+'인':null,jointype:aio.jointype||null,
+        estimated_fee:window._aioFee||null,estimated_fee_memo:window._aioFeeMemo||null,
         consult_time:time,memo:memoText,
         utm_campaign:_utm.campaign||null,utm_source:_utm.source||null,utm_medium:_utm.medium||null,
         created_at:new Date().toISOString()
       })
     });
     if(!res.ok)throw new Error(await res.text());
-    fbq("track","Lead",{content_name:"올인원상담신청"});
-    document.getElementById("sModal").classList.add("on");
-    ["fName","fBirth","fPhone"].forEach(function(id){document.getElementById(id).value="";});
-    document.getElementById("fTime").value="";
-  }catch(e){console.error(e);alert("오류가 발생했습니다. 잠시 후 다시 시도해주세요.");}
-  finally{btn.disabled=false;btn.textContent="📞 조건 저장 후 상담 신청";}
+    fbq('track','Lead',{content_name:'올인원상담신청'});
+    document.getElementById('sModal').classList.add('on');
+    ['fName','fBirth','fPhone'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('fTime').value='';
+  }catch(e){console.error(e);alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');}
+  finally{btn.disabled=false;btn.textContent='📞 조건 저장 후 상담 신청';}
 };
-</script>
+<\/script>
 </body>
 </html>
