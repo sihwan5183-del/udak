@@ -94,13 +94,24 @@ a{text-decoration:none;color:inherit}
 .sum-v.ph{color:var(--g300);font-weight:400}
 
 /* 요금 강조 박스 */
-.fee-box{margin:14px 0;background:var(--navyLL);border-radius:10px;padding:16px;text-align:center;display:none}
+.fee-box{margin:14px 0;background:var(--navyLL);border-radius:10px;padding:16px;display:none}
 .fee-box.show{display:block}
-.fee-lbl{font-size:11px;color:var(--navy);font-weight:700;margin-bottom:6px}
-.fee-orig{font-size:13px;color:var(--g400);text-decoration:line-through;margin-bottom:2px}
-.fee-val{font-size:32px;font-weight:900;color:var(--navy);line-height:1}
-.fee-save{font-size:12px;font-weight:700;color:#16a34a;margin-top:4px}
-.cash-badge{display:inline-block;background:#fff3cd;color:#92400e;font-size:12px;font-weight:800;padding:6px 14px;border-radius:20px;margin-top:8px}
+.fee-lbl{font-size:11px;color:var(--navy);font-weight:700;margin-bottom:10px;text-align:center}
+.fee-steps{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;background:#fff;border-radius:8px;padding:10px 12px}
+.fee-step{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--g500);padding:3px 0}
+.fee-step.orig{color:var(--g400);text-decoration:line-through}
+.fee-step .fs-label{flex:1}
+.fee-step .fs-val{font-weight:600;color:var(--g600)}
+.fee-step.disc .fs-val{color:#dc2626;font-weight:700}
+.fee-step.total{border-top:1px solid var(--g200);margin-top:4px;padding-top:6px;font-weight:700;color:var(--navy)}
+.fee-step.total .fs-val{color:var(--navy);font-size:13px;font-weight:800}
+.fee-result-lbl{font-size:10px;color:var(--navy);font-weight:700;text-align:center;margin-bottom:4px}
+.fee-val{font-size:28px;font-weight:900;color:var(--navy);line-height:1;text-align:center}
+.cash-badge{display:inline-block;background:#fff3cd;color:#92400e;font-size:11px;font-weight:800;padding:5px 12px;border-radius:20px;margin-top:8px;text-align:center;width:100%}
+/* 추가혜택 요약 금액 */
+.bonus-sum-item{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:var(--g600);padding:3px 0;line-height:1.4}
+.bonus-sum-item::before{content:"✓";color:var(--navy);font-weight:700;flex-shrink:0;margin-top:1px}
+.bonus-sum-amt{font-size:10px;color:var(--g400);margin-left:auto;white-space:nowrap}
 
 /* 추가혜택 요약 */
 .bonus-sum{margin-top:10px;padding-top:10px;border-top:1px solid var(--g200);display:none}
@@ -216,8 +227,9 @@ a{text-decoration:none;color:inherit}
 .plan-feat{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--g700)}
 .plan-feat-icon{font-size:18px;flex-shrink:0}
 .plan-feat-txt{flex:1}
-.plan-feat-txt s{color:var(--g300)}
-.plan-feat-txt strong{color:var(--navy);font-weight:700}
+.plan-feat-txt s{color:var(--g400);font-size:12px}
+.plan-feat-txt strong{color:var(--navy);font-weight:800;font-size:14px}
+.plan-feat-txt .zero{color:#16a34a;font-weight:800;font-size:14px}
 .plan-note{font-size:11px;color:var(--g400);text-align:center;margin-top:12px}
 .plan-sel-btn{width:100%;padding:13px;background:var(--navy);color:#fff;border-radius:10px;font-size:14px;font-weight:800;margin-top:14px;-webkit-tap-highlight-color:rgba(0,0,0,.06)}
 .plan-sel-btn:hover{background:var(--navy2)}
@@ -420,12 +432,12 @@ a{text-decoration:none;color:inherit}
     <div class="sum-row"><span class="sum-k">결합 인원</span><span class="sum-v ph" id="rs_mem">–</span></div>
     <div class="sum-row" id="rs_install_row" style="display:none"><span class="sum-k">월 기기 할부금</span><span class="sum-v" id="rs_install">–</span></div>
 
-    <!-- 요금 박스 -->
+    <!-- 요금 계산 근거 -->
     <div class="fee-box" id="feeBox">
-      <div class="fee-lbl">예상 월 요금</div>
-      <div class="fee-orig" id="feeOrig"></div>
+      <div class="fee-lbl">예상 월 요금 계산</div>
+      <div class="fee-steps" id="feeSteps"></div>
+      <div class="fee-result-lbl">최종 예상 월 요금</div>
       <div class="fee-val" id="feeVal">–</div>
-      <div class="fee-save" id="feeSave"></div>
       <div class="cash-badge" id="cashBadge" style="display:none"></div>
     </div>
 
@@ -898,35 +910,50 @@ function selPlan(price) {
 /* ════ 요금 계산 ════ */
 function calcFee() {
   if (!S.plan || !S.mem) return;
-  var fee = (FEE[S.disc]||{})[S.plan];
-  if (!fee) return;
-  fee = fee[S.mem];
-  if (!fee) return;
   var orig = S.plan;
-  var saved = orig - fee;
   var isTasa = S.mcar && S.mcar !== "LGU+";
   var cash = isTasa ? CASH[S.mem] : 0;
+  var memDisc = (S.mem - 1) * 10000; // 인원별 할인
+  var discRate = S.disc === "sel" ? 0.25 : 0;
+  var afterDisc = S.disc === "sel" ? Math.round(orig * 0.75) : orig;
+  var finalFee = afterDisc - memDisc;
 
-  // 요금박스
+  // 단계별 계산 steps
+  var steps = [];
+  steps.push({label: "기본 요금제", val: orig.toLocaleString()+"원", cls:""});
+  if (S.disc === "sel") {
+    steps.push({label: "선택약정 25% 할인", val: "-"+Math.round(orig*0.25).toLocaleString()+"원", cls:"disc"});
+    steps.push({label: "선택약정 적용 후", val: afterDisc.toLocaleString()+"원", cls:"total"});
+  }
+  if (S.mem > 1) {
+    steps.push({label: "가족 "+S.mem+"인 결합 할인", val: "-"+memDisc.toLocaleString()+"원", cls:"disc"});
+  }
+  steps.push({label: "최종 예상 월 요금", val: finalFee.toLocaleString()+"원", cls:"total"});
+  if (isTasa && cash > 0) {
+    steps.push({label: "타사 이동 현금 혜택", val: "+"+cash+"만원 별도 지급", cls:"disc"});
+  }
+
+  var stepsHtml = steps.map(function(s){
+    return '<div class="fee-step '+s.cls+'"><span class="fs-label">'+s.label+'</span><span class="fs-val">'+s.val+'</span></div>';
+  }).join("");
+
   var fb = document.getElementById("feeBox");
   if (fb) fb.classList.add("show");
-  var fo = document.getElementById("feeOrig");
-  if (fo) fo.textContent = orig.toLocaleString() + "원";
+  var fsEl = document.getElementById("feeSteps");
+  if (fsEl) fsEl.innerHTML = stepsHtml;
   var fv = document.getElementById("feeVal");
-  if (fv) fv.textContent = fee.toLocaleString() + "원";
-  var fs = document.getElementById("feeSave");
-  if (fs) fs.textContent = "-" + saved.toLocaleString() + "원 절약";
+  if (fv) fv.textContent = finalFee.toLocaleString() + "원";
   var cb = document.getElementById("cashBadge");
   if (cb) {
-    if (cash > 0) { cb.style.display="inline-block"; cb.textContent="💰 현금 혜택 +" + cash + "만원"; }
-    else cb.style.display = "none";
+    if (cash > 0) {
+      cb.style.display = "block";
+      cb.textContent = "💰 타사 이동 현금 혜택 +" + cash + "만원 별도 지급";
+    } else cb.style.display = "none";
   }
-  // 모바일 하단
   var mf = document.getElementById("mob_fee");
-  if (mf) mf.textContent = fee.toLocaleString() + "원" + (cash>0?" (+현금 "+cash+"만원)":"");
-  // 저장
-  window._fee = fee; window._cash = cash;
-  window._feeMemo = "월 " + fee.toLocaleString() + "원" + (cash>0?" + 현금 "+cash+"만원":"");
+  if (mf) mf.textContent = finalFee.toLocaleString() + "원" + (cash>0?" (+현금 "+cash+"만원)":"");
+  window._fee = finalFee; window._cash = cash;
+  window._feeMemo = "월 "+finalFee.toLocaleString()+"원"+(cash>0?" + 현금 "+cash+"만원":"");
 }
 
 function calcInstall() {
@@ -999,8 +1026,19 @@ function updateBonusSummary() {
   var keys = Object.keys(S.bonus);
   if (!keys.length) { box.classList.remove("show"); return; }
   box.classList.add("show");
+  // 혜택 금액 매핑
+  var amtMap = {
+    "갤럭시 워치8 40mm": "기기 489,500원 + 월 11,000원",
+    "갤럭시탭 A11+": "기기 448,800원 + 월 22,000원",
+    "인터넷 요금 500MB 기준": "월 33,000원",
+    "OTT 1개 선택": "",
+    "자녀 요금 추가 할인": "월 -33,000원"
+  };
   items.innerHTML = keys.map(function(k) {
-    return '<div class="bonus-sum-item">' + k + (S.bonus[k]!==true?" ("+S.bonus[k]+")":"") + '</div>';
+    var amt = amtMap[k] || "";
+    var ottVal = S.bonus[k] !== true ? " ("+S.bonus[k]+")" : "";
+    return '<div class="bonus-sum-item"><span>' + k + ottVal + '</span>' +
+      (amt ? '<span class="bonus-sum-amt">'+amt+'</span>' : '') + '</div>';
   }).join("");
 }
 
