@@ -568,9 +568,9 @@ a{text-decoration:none;color:inherit}
   <div class="mo-head"><span class="mo-title">요금제 선택</span><button class="mo-close" onclick="closeMo()">×</button></div>
   <div class="mo-body">
     <div class="plan-tabs">
-      <button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95">플러스스플랜 95</button>
-      <button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115">플러스스플랜 115</button>
-      <button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130">플러스스플랜 130</button>
+      <button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스스플랜 95</button>
+      <button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스스플랜 115</button>
+      <button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스스플랜 130</button>
     </div>
     <div class="plan-detail" id="planDetail"></div>
   </div>
@@ -690,6 +690,23 @@ document.addEventListener("DOMContentLoaded", function() {
   loadData();
 });
 
+function updatePlanTabs(planArr) {
+  // 요금제 탭 버튼 텍스트 업데이트
+  var tabIds = ['pt_95000', 'pt_115000', 'pt_130000'];
+  var prices = [95000, 115000, 130000];
+  planArr.forEach(function(p, i) {
+    var price = p.price;
+    var tabEl = document.getElementById('pt_' + price);
+    if (tabEl) {
+      tabEl.innerHTML = p.name + '<br><span style="font-size:11px;font-weight:500;opacity:.8">' + price.toLocaleString() + '원</span>';
+    }
+    // PLAN_FEATS 이름도 업데이트
+    if (PLAN_FEATS[price]) {
+      PLAN_FEATS[price].name = p.name;
+    }
+  });
+}
+
 function applySettings() {
   // 공시지원금 OFF
   if (window._showPublic === false) {
@@ -707,9 +724,10 @@ function loadData() {
     db.ref("allinone/devices").once(),
     db.ref("allinone/bonusPlans").once(),
     db.ref("allinone/memberDiscount").once(),
-    db.ref("allinone/planFeats").once()
+    db.ref("allinone/planFeats").once(),
+    db.ref("plans").once()
   ]).then(function(res) {
-    var dS = res[0], bS = res[1], mS = res[2], pfS = res[3];
+    var dS = res[0], bS = res[1], mS = res[2], pfS = res[3], plS = res[4];
     if (dS.exists() && dS.val()) {
       var v = dS.val();
       devices = (Array.isArray(v) ? v : Object.values(v)).filter(function(x){return x && x.visible !== false;});
@@ -758,6 +776,17 @@ function loadData() {
         "OTT 1개 선택": "",
         "자녀 요금 할인": "자녀 요금제에서 월 "+cd+"원 추가 할인"
       };
+    }
+    // plans 데이터로 요금제 탭 업데이트
+    if (plS && plS.exists() && plS.val()) {
+      var plans = plS.val();
+      var planArr = Object.values(plans)
+        .filter(function(p){ return p.visible !== false && p.price; })
+        .sort(function(a,b){ return a.price - b.price; });
+      if (planArr.length > 0) {
+        window._planArr = planArr;
+        updatePlanTabs(planArr);
+      }
     }
     renderPlanDetail(currentPlanTab);
   }).catch(function(e){ console.warn("load error", e); renderPlanDetail(currentPlanTab); });
@@ -959,6 +988,7 @@ function selPlanTab(price) {
   currentPlanTab = price;
   document.querySelectorAll(".plan-tab").forEach(function(b){b.classList.remove("on");});
   var el = document.getElementById("pt_"+price);
+  if(!el) el = document.getElementById("pt_"+(price/1000|0));
   if(el) el.classList.add("on");
   renderPlanDetail(price);
 }
