@@ -160,16 +160,11 @@ a{text-decoration:none;color:inherit}
 .form-cta:disabled{background:var(--g300)}
 
 /* ══ 모달 공통 ══ */
-.mo-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;opacity:0;pointer-events:none;transition:opacity .25s}
+.mo-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:400;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:center;justify-content:center;padding:20px}
 .mo-overlay.on{opacity:1;pointer-events:auto}
-.mo-sheet{position:fixed;left:0;right:0;bottom:0;background:#fff;border-radius:20px 20px 0 0;z-index:401;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);max-height:88vh;display:flex;flex-direction:column}
-.mo-sheet.on{transform:translateY(0)}
-@media(min-width:768px){
-  .mo-sheet{top:50%;left:50%;right:auto;bottom:auto;transform:translate(-50%,-40%) scale(.96);border-radius:16px;width:480px;max-height:80vh;opacity:0;transition:transform .25s,opacity .25s}
-  .mo-sheet.on{transform:translate(-50%,-50%) scale(1);opacity:1}
-}
-.mo-handle{width:40px;height:4px;background:var(--g200);border-radius:2px;margin:12px auto 0;flex-shrink:0}
-@media(min-width:768px){.mo-handle{display:none}}
+.mo-sheet{position:relative;background:#fff;border-radius:20px;z-index:401;width:100%;max-width:480px;max-height:88vh;display:flex;flex-direction:column;transform:scale(.94) translateY(16px);opacity:0;transition:transform .25s cubic-bezier(.32,.72,0,1),opacity .25s;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.mo-sheet.on{transform:scale(1) translateY(0);opacity:1}
+.mo-handle{display:none}
 .mo-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;flex-shrink:0;border-bottom:1px solid var(--g200)}
 .mo-title{font-size:17px;font-weight:800;color:var(--g800)}
 .mo-close{width:32px;height:32px;border-radius:50%;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--g500);-webkit-tap-highlight-color:rgba(0,0,0,.06)}
@@ -233,6 +228,8 @@ a{text-decoration:none;color:inherit}
 .mob-fee{font-size:11px;color:var(--g500)}
 .mob-fee strong{font-size:18px;font-weight:900;color:var(--navy);display:block}
 .mob-cta{flex:1;max-width:180px;padding:12px;background:var(--navy);color:#fff;border-radius:10px;font-size:13px;font-weight:800;text-align:center;-webkit-tap-highlight-color:rgba(0,0,0,.06)}
+/* 모바일에서도 우측 요약시트 표시 (스크롤 후) */
+@media(max-width:900px){.sum-sheet{display:block;position:static;margin-top:16px;border-radius:var(--radius)}}
 
 /* ══ 성공 모달 ══ */
 .succ-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center;padding:20px}
@@ -241,7 +238,7 @@ a{text-decoration:none;color:inherit}
 .succ-close{width:100%;padding:12px;background:var(--navy);color:#fff;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:16px;-webkit-tap-highlight-color:rgba(0,0,0,.06)}
 
 @media(max-width:900px){.sum-sheet{display:none}}
-@media(max-width:900px){body{padding-bottom:80px}}
+@media(max-width:900px){body{padding-bottom:100px}}
 </style>
 </head>
 <body>
@@ -403,7 +400,7 @@ a{text-decoration:none;color:inherit}
         </div>
       </div>
       <div class="form-note">🔒 입력하신 정보는 상담 목적으로만 사용되며 안전하게 보호됩니다.</div>
-      <button class="form-cta" id="formBtn" onclick="doSubmit()">📞 전화 상담 신청하기</button>
+      <button class="form-cta" id="formBtn" onclick="doSubmit()">상담 신청하기</button>
     </div>
   </div>
 
@@ -439,13 +436,13 @@ a{text-decoration:none;color:inherit}
     </div>
 
     <button class="cta-btn" onclick="document.getElementById('fName').scrollIntoView({behavior:'smooth',block:'center'})">
-      선택한 조건으로 상담 신청 →
+      상담 신청하기
     </button>
   </div>
 </div>
 
 <!-- ══ 모달 오버레이 ══ -->
-<div class="mo-overlay" id="moOverlay" onclick="closeMo()"></div>
+<div class="mo-overlay" id="moOverlay" onclick="if(event.target===this)closeMo()"></div>
 
 <!-- 통신사 모달 -->
 <div class="mo-sheet" id="mo_mcar">
@@ -545,7 +542,7 @@ a{text-decoration:none;color:inherit}
     예상 월 요금
     <strong id="mob_fee">선택 후 계산</strong>
   </div>
-  <button class="mob-cta" onclick="document.getElementById('formWrap').scrollIntoView({behavior:'smooth'})">상담 신청하기 →</button>
+  <button class="mob-cta" onclick="document.getElementById('formWrap').scrollIntoView({behavior:'smooth'})">상담 신청하기</button>
 </div>
 
 <!-- 성공 모달 -->
@@ -1073,7 +1070,7 @@ function doSubmit() {
   }).catch(function(e){
     console.error(e); alert("오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
   }).finally(function(){
-    if(btn){btn.disabled=false;btn.textContent="📞 전화 상담 신청하기";}
+    if(btn){btn.disabled=false;btn.textContent="상담 신청하기";}
   });
 }
 
