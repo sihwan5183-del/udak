@@ -855,13 +855,13 @@ function loadData() {
       var tm = (pf.tab_monthly||22000).toLocaleString();
       var im = (pf.internet_monthly||33000).toLocaleString();
       var cd = (pf.child_discount||33000).toLocaleString();
-      PLAN_FEATS[95000].feats[1] = {icon:"⌚", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
+      PLAN_FEATS[95000].feats[1] = {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
       PLAN_FEATS[95000].feats[2] = {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
-      PLAN_FEATS[115000].feats[1] = {icon:"⌚", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
-      PLAN_FEATS[115000].feats[2] = {icon:"📱", name:tn, device:"기기값 "+td+"원", monthly:"월 요금 "+tm+"원"};
+      PLAN_FEATS[115000].feats[1] = {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
+      PLAN_FEATS[115000].feats[2] = {icon:"<img src=\"./files/tab.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:tn, device:"기기값 "+td+"원", monthly:"월 요금 "+tm+"원"};
       PLAN_FEATS[115000].feats[3] = {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
-      PLAN_FEATS[130000].feats[1] = {icon:"⌚", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
-      PLAN_FEATS[130000].feats[2] = {icon:"📱", name:tn, device:"기기값 "+td+"원", monthly:"월 요금 "+tm+"원"};
+      PLAN_FEATS[130000].feats[1] = {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
+      PLAN_FEATS[130000].feats[2] = {icon:"<img src=\"./files/tab.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:tn, device:"기기값 "+td+"원", monthly:"월 요금 "+tm+"원"};
       PLAN_FEATS[130000].feats[3] = {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
       PLAN_FEATS[130000].feats[5] = {icon:"👧", name:"자녀 요금 할인", device:"", monthly:"월 -"+cd+"원 (만 19세 미만)"};
       // bonus 금액 맵도 업데이트
@@ -1270,6 +1270,13 @@ function toggleBonus(id, name, isOtt) {
     if (ottRow) ottRow.classList.toggle("show", on);
   }
   updateBonusSummary();
+  // 모바일: 항목 선택 후 상담폼으로 스크롤
+  if (on && window.innerWidth <= 900) {
+    setTimeout(function(){
+      var formEl = document.getElementById("formWrap");
+      if (formEl) formEl.scrollIntoView({behavior:"smooth", block:"start"});
+    }, 400);
+  }
 }
 
 function selOtt(e, name, parentId) {
@@ -1467,6 +1474,7 @@ function doSubmit() {
 </script>
 </body>
 </html>
+
 
 
 
