@@ -659,8 +659,8 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 <script>
 /* ════ 올인원 JS ════ */
 
-var SB_URL="https://ebggtghzqtxfylbhqfoh.supabase.co";
-var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q";
+/* SB_URL: 유닥 JS에서 선언됨 */
+/* SB_KEY: 유닥 JS에서 선언됨 */
 var _utm=(function(){var p=new URLSearchParams(window.location.search);return{source:p.get("utm_source"),campaign:p.get("utm_campaign"),medium:p.get("utm_medium")};})();
 var AIO={mCar:null,iCar:null,jt:null,mem:null};
 var AIO_FEE={95000:{1:71250,2:61250,4:51250},115000:{1:86250,2:76250,4:66250},130000:{1:97500,2:87500,4:77500}};
@@ -753,7 +753,7 @@ window.confirmStorage=function(){
   var sc3=document.getElementById("sc3");if(sc3)sc3.classList.remove("locked");
   closeSheet();if(typeof window.aioAfterDevice==="function")window.aioAfterDevice();
 };
-var DB="https://udak-c6832-default-rtdb.firebaseio.com";
+/* DB: 유닥 JS에서 선언됨 */
 var db={ref:function(p){var u=DB+"/"+p+".json";return{once:function(){return fetch(u).then(function(r){return r.json();}).then(function(d){return{exists:function(){return d!==null&&d!==undefined;},val:function(){return d;}};});},set:function(v){return fetch(u,{method:"PUT",body:JSON.stringify(v),headers:{"Content-Type":"application/json"}}).then(function(r){return r.json();});},push:function(v){return fetch(u,{method:"POST",body:JSON.stringify(v),headers:{"Content-Type":"application/json"}}).then(function(r){return r.json();});}};} };
 function aioLoadBanners(){
   db.ref("allinone/banners").once().then(function(snap){
@@ -783,7 +783,6 @@ window.submitForm=function(){
   fetch(SB_URL+"/rest/v1/leads",{method:"POST",headers:{"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Prefer":"return=minimal"},body:JSON.stringify({name:name.trim(),phone:phone.trim(),channel:"올인원",carrier:AIO.mCar||null,plan:sel&&sel.plan?String(sel.plan.monthlyPrice):null,bundling:AIO.mem?AIO.mem+"인":null,jointype:AIO.jt||null,estimated_fee:window._aioFee||null,estimated_fee_memo:window._aioFeeMemo||null,consult_time:time,memo:memo,utm_campaign:_utm.campaign||null,utm_source:_utm.source||null,utm_medium:_utm.medium||null,created_at:new Date().toISOString()})}).then(function(res){if(!res.ok)throw new Error(res.status);fbq("track","Lead",{content_name:"올인원상담신청"});document.getElementById("succOv").classList.add("on");["fName","fPhone","fMemo"].forEach(function(id){var e=document.getElementById(id);if(e)e.value="";});var ft=document.getElementById("fTime");if(ft)ft.value="";}).catch(function(e){console.error(e);alert("오류가 발생했습니다.");}).finally(function(){if(btn){btn.disabled=false;btn.textContent="상담 신청하기";}});
 };
 document.addEventListener("DOMContentLoaded",function(){aioLoadBanners();hookSelPlan();});
-
 
 /* ════ 유닥 JS (기기선택/추가혜택 완전 재사용) ════ */
 window.tryOpen=function(t){if(typeof openSheet==="function")openSheet(t);};
