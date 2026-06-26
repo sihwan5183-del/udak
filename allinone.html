@@ -1109,17 +1109,17 @@ function updateBonusSummary() {
   var amtMap = window._bonusAmtMap || {
     "갤럭시 워치8 40mm": "기기 489,500원 면제 + 월 11,000원 면제",
     "갤럭시탭 A11+": "기기 448,800원 면제 + 월 22,000원 면제",
-    "인터넷 요금 500MB 기준": "월 33,000원 면제",
+    "인터넷 500MB": "월 33,000원 면제",
     "OTT 1개 선택": "",
-    "자녀 요금 추가 할인": "자녀 요금제에서 월 33,000원 추가 할인"
+    "자녀 요금 할인": "자녀 요금제에서 월 -33,000원 추가 할인"
   };
   // 월 절약액 합계
   var monthlyMap = {
     "갤럭시 워치8 40mm": 11000,
     "갤럭시탭 A11+": 22000,
-    "인터넷 요금 500MB 기준": 33000,
+    "인터넷 500MB": 33000,
     "OTT 1개 선택": 0,
-    "자녀 요금 추가 할인": 33000
+    "자녀 요금 할인": 33000
   };
   var monthly = 0;
   keys.forEach(function(k){ monthly += (monthlyMap[k]||0); });
@@ -1129,8 +1129,8 @@ function updateBonusSummary() {
   var deviceItemMap = {
     "갤럭시 워치8 40mm": {device: pf.watch_device||489500, monthly: pf.watch_monthly||11000},
     "갤럭시탭 A11+": {device: pf.tab_device||448800, monthly: pf.tab_monthly||22000},
-    "인터넷 요금 500MB 기준": {device:0, monthly: pf.internet_monthly||33000},
-    "자녀 요금 추가 할인": {device:0, monthly: pf.child_discount||33000}
+    "인터넷 500MB": {device:0, monthly: pf.internet_monthly||33000},
+    "자녀 요금 할인": {device:0, monthly: pf.child_discount||33000}
   };
 
   // 총액 박스 - 항목별 행 생성
