@@ -784,6 +784,7 @@ function applySettings() {
 }
 
 function loadData() {
+  console.log("[AIO] loadData 시작");
   Promise.all([
     db.ref("allinone/devices").once(),
     db.ref("allinone/bonusPlans").once(),
@@ -792,6 +793,10 @@ function loadData() {
     db.ref("plans").once()
   ]).then(function(res) {
     var dS = res[0], bS = res[1], mS = res[2], pfS = res[3], plS = res[4];
+    console.log("[AIO] Firebase 로드 완료");
+    console.log("[AIO] plans:", plS.exists() ? plS.val() : "없음");
+    console.log("[AIO] planFeats:", pfS.exists() ? pfS.val() : "없음");
+    console.log("[AIO] memberDiscount:", mS.exists() ? mS.val() : "없음");
     if (dS.exists() && dS.val()) {
       var v = dS.val();
       devices = (Array.isArray(v) ? v : Object.values(v)).filter(function(x){return x && x.visible !== false;});
@@ -848,8 +853,11 @@ function loadData() {
         .filter(function(p){ return p.visible !== false && p.price; })
         .sort(function(a,b){ return a.price - b.price; });
       if (planArr.length > 0) {
+        console.log("[AIO] planArr:", planArr);
         window._planArr = planArr;
         updatePlanTabs(planArr);
+      } else {
+        console.warn("[AIO] planArr 비어있음");
       }
     }
     renderPlanDetail(currentPlanTab);
