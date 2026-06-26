@@ -684,6 +684,18 @@ document.addEventListener("DOMContentLoaded", function() {
   loadData();
 });
 
+function applySettings() {
+  // 공시지원금 OFF
+  if (window._showPublic === false) {
+    S.disc = 'sel';
+    var dbPub = document.getElementById('dbPub');
+    var dbSel = document.getElementById('dbSel');
+    if(dbPub) dbPub.style.display = 'none';
+    if(dbSel) dbSel.classList.add('on');
+    setSum('disc', '선택약정 25%');
+  }
+}
+
 function loadData() {
   Promise.all([
     db.ref("allinone/devices").once(),
