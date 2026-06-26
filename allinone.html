@@ -38,7 +38,7 @@ a{text-decoration:none;color:inherit}
 @media(max-width:767px){.step-bar{display:block}}
 
 /* ══ 메인 레이아웃 ══ */
-.aio-wrap{max-width:960px;margin:0 auto;padding:28px 20px;display:grid;grid-template-columns:1fr 280px;gap:20px;align-items:start}
+.aio-wrap{max-width:1000px;margin:0 auto;padding:24px 20px;display:grid;grid-template-columns:600px 1fr;gap:20px;align-items:start}
 @media(max-width:900px){.aio-wrap{grid-template-columns:1fr;padding:16px}}
 
 /* ══ 히어로 ══ */
@@ -50,6 +50,7 @@ a{text-decoration:none;color:inherit}
 
 /* ══ 스텝 카드 ══ */
 .step-cards{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.step-section-inner{max-width:600px}
 .step-card{background:#fff;border-radius:10px;border:1.5px solid var(--g200);cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,.06);transition:border-color .2s,box-shadow .2s;overflow:hidden}
 .step-card:hover{border-color:var(--navy3)}
 .step-card.selected{border-color:var(--navy);background:var(--navyLL)}
