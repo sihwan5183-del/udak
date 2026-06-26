@@ -265,8 +265,8 @@ a{text-decoration:none;color:inherit}
 .succ-box{background:#fff;border-radius:16px;padding:32px 24px;max-width:360px;width:100%;text-align:center}
 .succ-close{width:100%;padding:12px;background:var(--navy);color:#fff;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:16px;-webkit-tap-highlight-color:rgba(0,0,0,.06)}
 
-@media(max-width:900px){.sum-sheet{display:none}}
-@media(max-width:900px){body{padding-bottom:100px}}
+@media(max-width:900px){.sum-sheet{display:block;position:static;margin-top:16px;margin-bottom:16px}}
+@media(max-width:900px){body{padding-bottom:120px}}
 </style>
 </head>
 <body>
@@ -501,11 +501,11 @@ a{text-decoration:none;color:inherit}
   <div class="mo-handle"></div>
   <div class="mo-head"><span class="mo-title">현재 휴대폰 통신사</span><button class="mo-close" onclick="closeMo()">×</button></div>
   <div class="mo-body">
-    <div class="mo-opts" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+    <div class="mo-opts" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">
       <button class="mo-opt carrier-btn" onclick="sel('mcar','LGU+')"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/u__.png" class="carrier-logo"><span>LG U+</span></button>
       <button class="mo-opt carrier-btn" onclick="sel('mcar','SKT')"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/skt.png" class="carrier-logo"><span>SKT</span></button>
       <button class="mo-opt carrier-btn" onclick="sel('mcar','KT')"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/kt.png" class="carrier-logo"><span>KT</span></button>
-      <button class="mo-opt carrier-btn" onclick="sel('mcar','알뜰폰')"><span style="font-size:24px">📱</span><span>알뜰폰</span></button>
+      <button class="mo-opt carrier-btn" onclick="sel('mcar','알뜰폰')" style="justify-content:center;font-size:15px;font-weight:700;padding:20px 8px">알뜰폰</button>
     </div>
     <div style="font-size:12px;color:var(--g400);margin-top:8px;line-height:1.6">* 현재 사용 중인 휴대폰 통신사를 선택해주세요.<br>타사 고객 시 현금 혜택이 추가로 제공됩니다.</div>
   </div>
@@ -516,7 +516,7 @@ a{text-decoration:none;color:inherit}
   <div class="mo-handle"></div>
   <div class="mo-head"><span class="mo-title">현재 인터넷 통신사</span><button class="mo-close" onclick="closeMo()">×</button></div>
   <div class="mo-body">
-    <div class="mo-opts" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+    <div class="mo-opts" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">
       <button class="mo-opt carrier-btn" onclick="sel('inet','LGU+')"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/u__.png" class="carrier-logo"><span>LG U+</span></button>
       <button class="mo-opt carrier-btn" onclick="sel('inet','SKT')"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/skt.png" class="carrier-logo"><span>SKT</span></button>
       <button class="mo-opt carrier-btn" onclick="sel('inet','KT')"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/kt.png" class="carrier-logo"><span>KT</span></button>
@@ -575,16 +575,19 @@ a{text-decoration:none;color:inherit}
 </div>
 
 <!-- 요금제 모달 -->
-<div class="mo-sheet" id="mo_plan">
+<div class="mo-sheet" id="mo_plan" style="display:none;flex-direction:column">
   <div class="mo-handle"></div>
   <div class="mo-head"><span class="mo-title">요금제 선택</span><button class="mo-close" onclick="closeMo()">×</button></div>
-  <div class="mo-body">
-    <div class="plan-tabs">
-      <button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스스플랜 95<br><span style="font-size:11px;font-weight:500;opacity:.8">95,000원</span></button>
-      <button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스스플랜 115<br><span style="font-size:11px;font-weight:500;opacity:.8">115,000원</span></button>
-      <button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스스플랜 130<br><span style="font-size:11px;font-weight:500;opacity:.8">130,000원</span></button>
-    </div>
+  <div class="plan-tabs" style="padding:0 20px 12px;flex-shrink:0">
+    <button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜 95<br><span style="font-size:11px;font-weight:500;opacity:.8">95,000원</span></button>
+    <button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜 115<br><span style="font-size:11px;font-weight:500;opacity:.8">115,000원</span></button>
+    <button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜 130<br><span style="font-size:11px;font-weight:500;opacity:.8">130,000원</span></button>
+  </div>
+  <div class="mo-body" style="flex:1;overflow-y:auto">
     <div class="plan-detail" id="planDetail"></div>
+  </div>
+  <div style="padding:12px 20px 20px;flex-shrink:0;border-top:1px solid var(--g100)">
+    <button class="plan-sel-btn" id="planSelBtn" onclick="selPlan(currentPlanTab)">이 요금제 선택하기</button>
   </div>
 </div>
 
@@ -1086,8 +1089,7 @@ function renderPlanDetail(price) {
         '</div></div>';
     }).join("") +
     '</div>' +
-    '<div class="plan-note">※ 세부 혜택은 조건에 따라 달라질 수 있습니다.</div>' +
-    '<button class="plan-sel-btn" onclick="selPlan('+price+')">이 요금제 선택하기</button>';
+    '<div class="plan-note">※ 세부 혜택은 조건에 따라 달라질 수 있습니다.</div>';
 }
 function selPlan(price) {
   S.plan = price;
