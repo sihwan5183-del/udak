@@ -110,7 +110,7 @@ async function renderAioDevices() {
       </td>
     </tr>`;
   });
-  document.getElementById('content').innerHTML = `
+  document.getElementById('mainContent').innerHTML = `
     <div class="card">
       <div class="card-title">📱 올인원 기기 관리 <span class="cnt">(allinone/devices)</span></div>
       <button class="add-btn" onclick="openAioDevModal()">+ 기기 추가</button>
@@ -235,7 +235,7 @@ window.saveAioDev = async function(){
 async function renderAioDiscount() {
   const s = await db.ref('allinone/memberDiscount').once();
   const d = s.exists() ? s.val() : {m1:0, m2:10000, m4:20000};
-  document.getElementById('content').innerHTML = `
+  document.getElementById('mainContent').innerHTML = `
     <div class="card">
       <div class="card-title">💰 가족 결합 할인 설정 <span class="cnt">(번호이동 시 본인 요금 할인)</span></div>
       <div style="max-width:400px;margin-top:16px">
@@ -268,6 +268,95 @@ window.saveAioDiscount = async function(){
   await db.ref('allinone/memberDiscount').set({m1,m2,m4});
   toast('가족할인 설정이 저장되었습니다.');
 };
+
+/* ════ 추가혜택 설정 ════ */
+async function renderAioBenefits() {
+  const s = await db.ref('allinone/planFeats').once();
+  const d = s.exists() ? s.val() : {};
+  // 기본값
+  const def = {
+    watch_name: '갤럭시 워치8 40mm',
+    watch_device: 489500,
+    watch_monthly: 11000,
+    tab_name: '갤럭시탭 A11+',
+    tab_device: 448800,
+    tab_monthly: 22000,
+    internet_monthly: 33000,
+    child_discount: 33000
+  };
+  const v = Object.assign({}, def, d);
+  document.getElementById('mainContent').innerHTML = `
+    <div class="card">
+      <div class="card-title">🎁 추가혜택 설정 <span class="cnt">(랜딩 요금제 혜택에 표시)</span></div>
+      <div style="max-width:520px;margin-top:16px">
+
+        <div style="font-size:13px;font-weight:800;color:#1a237e;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e8eaf6">⌚ 스마트워치</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px">
+          <div>
+            <label style="font-size:11px;font-weight:700;color:#374151;display:block;margin-bottom:4px">기기명</label>
+            <input id="bf_wn" value="${v.watch_name}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:700;color:#374151;display:block;margin-bottom:4px">기기값 (원)</label>
+            <input id="bf_wd" type="number" value="${v.watch_device}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:700;color:#374151;display:block;margin-bottom:4px">월 요금 (원)</label>
+            <input id="bf_wm" type="number" value="${v.watch_monthly}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px">
+          </div>
+        </div>
+
+        <div style="font-size:13px;font-weight:800;color:#1a237e;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e8eaf6">📱 스마트탭</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px">
+          <div>
+            <label style="font-size:11px;font-weight:700;color:#374151;display:block;margin-bottom:4px">기기명</label>
+            <input id="bf_tn" value="${v.tab_name}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:700;color:#374151;display:block;margin-bottom:4px">기기값 (원)</label>
+            <input id="bf_td" type="number" value="${v.tab_device}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:700;color:#374151;display:block;margin-bottom:4px">월 요금 (원)</label>
+            <input id="bf_tm" type="number" value="${v.tab_monthly}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px">
+          </div>
+        </div>
+
+        <div style="font-size:13px;font-weight:800;color:#1a237e;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e8eaf6">🏠 인터넷 요금</div>
+        <div style="margin-bottom:20px">
+          <label style="font-size:11px;font-weight:700;color:#374151;display:block;margin-bottom:4px">월 면제 금액 (원)</label>
+          <input id="bf_im" type="number" value="${v.internet_monthly}" style="width:200px;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px">
+        </div>
+
+        <div style="font-size:13px;font-weight:800;color:#1a237e;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e8eaf6">👧 자녀 요금 할인 (130 요금제)</div>
+        <div style="margin-bottom:24px">
+          <label style="font-size:11px;font-weight:700;color:#374151;display:block;margin-bottom:4px">월 할인 금액 (원)</label>
+          <input id="bf_cd" type="number" value="${v.child_discount}" style="width:200px;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px">
+        </div>
+
+        <button onclick="saveAioBenefits()" style="width:100%;padding:13px;background:#1a237e;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">💾 저장</button>
+        <div style="margin-top:10px;padding:10px;background:#f0f1fa;border-radius:8px;font-size:11px;color:#4b5563;line-height:1.6">
+          저장 시 랜딩페이지 요금제 혜택 표시에 즉시 반영됩니다.
+        </div>
+      </div>
+    </div>`;
+}
+window.saveAioBenefits = async function(){
+  const data = {
+    watch_name: document.getElementById('bf_wn').value.trim(),
+    watch_device: parseInt(document.getElementById('bf_wd').value)||0,
+    watch_monthly: parseInt(document.getElementById('bf_wm').value)||0,
+    tab_name: document.getElementById('bf_tn').value.trim(),
+    tab_device: parseInt(document.getElementById('bf_td').value)||0,
+    tab_monthly: parseInt(document.getElementById('bf_tm').value)||0,
+    internet_monthly: parseInt(document.getElementById('bf_im').value)||0,
+    child_discount: parseInt(document.getElementById('bf_cd').value)||0
+  };
+  await db.ref('allinone/planFeats').set(data);
+  toast('추가혜택 설정이 저장되었습니다.');
+};
+
+
 
 /* ── 토스트 ── */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;display:none;animation:fadeUp .3s ease}
@@ -302,6 +391,7 @@ window.saveAioDiscount = async function(){
     <div class="tab" data-tab="devices" onclick="switchTab('devices')">📱 기기 (모바일)</div>
 <div class="tab" data-tab="aio_devices" onclick="switchTab('aio_devices')">📱 올인원 기기</div>
 <div class="tab" data-tab="aio_discount" onclick="switchTab('aio_discount')">💰 가족할인 설정</div>
+<div class="tab" data-tab="aio_benefits" onclick="switchTab('aio_benefits')">🎁 추가혜택 설정</div>
     <div class="tab" data-tab="devices2nd" onclick="switchTab('devices2nd')">⌚ 2ND 기기</div>
     <div class="tab" data-tab="policies" onclick="switchTab('policies')">📋 정책</div>
     <div class="tab" data-tab="ott" onclick="switchTab('ott')">🎬 OTT</div>
@@ -438,6 +528,7 @@ function renderTab(t) {
   else if(t==='devices') renderDevices();
   else if(t==='aio_devices') renderAioDevices();
   else if(t==='aio_discount') renderAioDiscount();
+  else if(t==='aio_benefits') renderAioBenefits();
   else if(t==='devices2nd') renderDevices2nd();
   else if(t==='policies') renderPolicies();
   else if(t==='ott') renderOtt();
