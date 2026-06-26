@@ -538,11 +538,11 @@ a{text-decoration:none;color:inherit}
     <div id="jtOptsWrap" style="display:grid;gap:12px">
       <button onclick="sel('jt','usim')" style="padding:20px 12px;border:1.5px solid var(--g200);border-radius:12px;font-size:13px;font-weight:700;color:var(--g600);background:#fff;text-align:center;cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,.06)" id="jt_usim">
         <div style="font-size:28px;margin-bottom:8px">📱</div>
-        유심만 변경<br><small style="font-size:11px;font-weight:500;color:var(--g400)">번호이동 · 기기 유지</small>
+        <span id="jt_usim_title">유심만 변경</span><br><small id="jt_usim_desc" style="font-size:11px;font-weight:500;color:var(--g400)">번호이동 · 기기 유지</small>
       </button>
       <button onclick="sel('jt','phone')" style="padding:20px 12px;border:1.5px solid var(--g200);border-radius:12px;font-size:13px;font-weight:700;color:var(--g600);background:#fff;text-align:center;cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,.06)" id="jt_phone">
         <div style="font-size:28px;margin-bottom:8px">🔄</div>
-        핸드폰도 변경<br><small style="font-size:11px;font-weight:500;color:var(--g400)">기기 교체 포함</small>
+        <span id="jt_phone_title">핸드폰도 변경</span><br><small id="jt_phone_desc" style="font-size:11px;font-weight:500;color:var(--g400)">기기 교체 포함</small>
       </button>
     </div>
   </div>
@@ -857,6 +857,15 @@ function loadData() {
         "OTT 1개 선택": "",
         "자녀 요금 할인": "자녀 요금제에서 월 "+cd+"원 추가 할인"
       };
+      // jt 모달 버튼 텍스트 Firebase 값으로 반영
+      var usimTitle = document.getElementById('jt_usim_title');
+      var usimDesc  = document.getElementById('jt_usim_desc');
+      var phoneTitle = document.getElementById('jt_phone_title');
+      var phoneDesc  = document.getElementById('jt_phone_desc');
+      if (usimTitle && pf.jt_usim_title)  usimTitle.textContent  = pf.jt_usim_title;
+      if (usimDesc  && pf.jt_usim_desc)   usimDesc.textContent   = pf.jt_usim_desc;
+      if (phoneTitle && pf.jt_phone_title) phoneTitle.textContent = pf.jt_phone_title;
+      if (phoneDesc  && pf.jt_phone_desc)  phoneDesc.textContent  = pf.jt_phone_desc;
     }
     // plans 데이터로 요금제 탭 업데이트
     if (plS && plS.exists() && plS.val()) {
@@ -886,6 +895,7 @@ function openMo(type) {
   if (type === "dev") renderDevList();
   if (type === "stor") renderStorList();
   if (type === "plan") renderPlanDetail(currentPlanTab);
+  if (type === "jt") applySettings(); // 모달 열릴 때마다 show_phone 적용
 }
 function closeMo() {
   document.getElementById("moOverlay").classList.remove("on");
@@ -1429,3 +1439,4 @@ function doSubmit() {
 </script>
 </body>
 </html>
+
