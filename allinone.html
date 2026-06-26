@@ -667,8 +667,8 @@ var PLAN_FEATS = {
     icon: "📶",
     feats: [
       {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
-      {icon:"⌚", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
-      {icon:"🏠", name:"인터넷 500MB", device:"", monthly:"월 요금 33,000원"}
+      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
+      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 33,000원"}
     ]
   },
   115000: {
@@ -676,9 +676,9 @@ var PLAN_FEATS = {
     icon: "📶",
     feats: [
       {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
-      {icon:"⌚", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
-      {icon:"📱", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
-      {icon:"🏠", name:"인터넷 500MB", device:"", monthly:"월 요금 33,000원"},
+      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
+      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tab.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
+      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 33,000원"},
       {icon:"📺", name:"OTT 1개 선택", device:"", monthly:"넷플릭스 · 디즈니+ · 티빙"}
     ]
   },
@@ -687,9 +687,9 @@ var PLAN_FEATS = {
     icon: "📶",
     feats: [
       {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
-      {icon:"⌚", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
-      {icon:"📱", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
-      {icon:"🏠", name:"인터넷 500MB", device:"", monthly:"월 요금 33,000원"},
+      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
+      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tab.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
+      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 33,000원"},
       {icon:"📺", name:"OTT 1개 선택", device:"", monthly:"넷플릭스 · 디즈니+ · 티빙"},
       {icon:"👧", name:"자녀 요금 할인", device:"", monthly:"월 -33,000원 (만 19세 미만)"}
     ]
@@ -832,13 +832,13 @@ function loadData() {
       var im = (pf.internet_monthly||33000).toLocaleString();
       var cd = (pf.child_discount||33000).toLocaleString();
       PLAN_FEATS[95000].feats[1] = {icon:"⌚", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
-      PLAN_FEATS[95000].feats[2] = {icon:"🏠", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
+      PLAN_FEATS[95000].feats[2] = {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
       PLAN_FEATS[115000].feats[1] = {icon:"⌚", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
       PLAN_FEATS[115000].feats[2] = {icon:"📱", name:tn, device:"기기값 "+td+"원", monthly:"월 요금 "+tm+"원"};
-      PLAN_FEATS[115000].feats[3] = {icon:"🏠", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
+      PLAN_FEATS[115000].feats[3] = {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
       PLAN_FEATS[130000].feats[1] = {icon:"⌚", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
       PLAN_FEATS[130000].feats[2] = {icon:"📱", name:tn, device:"기기값 "+td+"원", monthly:"월 요금 "+tm+"원"};
-      PLAN_FEATS[130000].feats[3] = {icon:"🏠", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
+      PLAN_FEATS[130000].feats[3] = {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
       PLAN_FEATS[130000].feats[5] = {icon:"👧", name:"자녀 요금 할인", device:"", monthly:"월 -"+cd+"원 (만 19세 미만)"};
       // bonus 금액 맵도 업데이트
       window._bonusAmtMap = {
