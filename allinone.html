@@ -666,9 +666,10 @@ function loadData() {
   Promise.all([
     db.ref("allinone/devices").once(),
     db.ref("allinone/bonusPlans").once(),
-    db.ref("allinone/memberDiscount").once()
+    db.ref("allinone/memberDiscount").once(),
+    db.ref("allinone/planFeats").once()
   ]).then(function(res) {
-    var dS = res[0], bS = res[1], mS = res[2];
+    var dS = res[0], bS = res[1], mS = res[2], pfS = res[3];
     if (dS.exists() && dS.val()) {
       var v = dS.val();
       devices = (Array.isArray(v) ? v : Object.values(v)).filter(function(x){return x && x.visible !== false;});
@@ -677,13 +678,41 @@ function loadData() {
     if (mS.exists() && mS.val()) {
       var md = mS.val();
       window._memDiscMap = {1: md.m1||0, 2: md.m2||10000, 4: md.m4||20000};
-      // 버튼 서브텍스트 업데이트
       var mb2 = document.getElementById("mb2");
       var mb4 = document.getElementById("mb4");
       if(mb2 && md.m2) mb2.textContent = "-"+(md.m2/10000)+"만원";
       if(mb4 && md.m4) mb4.textContent = "-"+(md.m4/10000)+"만원";
     } else {
       window._memDiscMap = {1:0, 2:10000, 4:20000};
+    }
+    // planFeats로 PLAN_FEATS 동적 업데이트
+    if (pfS && pfS.exists() && pfS.val()) {
+      var pf = pfS.val();
+      var wn = pf.watch_name||'갤럭시 워치8 40mm';
+      var wd = (pf.watch_device||489500).toLocaleString();
+      var wm = (pf.watch_monthly||11000).toLocaleString();
+      var tn = pf.tab_name||'갤럭시탭 A11+';
+      var td = (pf.tab_device||448800).toLocaleString();
+      var tm = (pf.tab_monthly||22000).toLocaleString();
+      var im = (pf.internet_monthly||33000).toLocaleString();
+      var cd = (pf.child_discount||33000).toLocaleString();
+      PLAN_FEATS[95000].feats[1] = {icon:"⌚", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
+      PLAN_FEATS[95000].feats[2] = {icon:"🏠", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
+      PLAN_FEATS[115000].feats[1] = {icon:"⌚", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
+      PLAN_FEATS[115000].feats[2] = {icon:"📱", name:tn, device:"기기값 "+td+"원", monthly:"월 요금 "+tm+"원"};
+      PLAN_FEATS[115000].feats[3] = {icon:"🏠", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
+      PLAN_FEATS[130000].feats[1] = {icon:"⌚", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
+      PLAN_FEATS[130000].feats[2] = {icon:"📱", name:tn, device:"기기값 "+td+"원", monthly:"월 요금 "+tm+"원"};
+      PLAN_FEATS[130000].feats[3] = {icon:"🏠", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
+      PLAN_FEATS[130000].feats[5] = {icon:"👧", name:"자녀 요금 할인", device:"", monthly:"월 -"+cd+"원 (만 19세 미만)"};
+      // bonus 금액 맵도 업데이트
+      window._bonusAmtMap = {
+        "갤럭시 워치8 40mm": "기기 "+wd+"원 면제 + 월 "+wm+"원 면제",
+        "갤럭시탭 A11+": "기기 "+td+"원 면제 + 월 "+tm+"원 면제",
+        "인터넷 요금 500MB 기준": "월 "+im+"원 면제",
+        "OTT 1개 선택": "",
+        "자녀 요금 추가 할인": "자녀 요금제에서 월 "+cd+"원 추가 할인"
+      };
     }
     renderPlanDetail(currentPlanTab);
   }).catch(function(e){ console.warn("load error", e); renderPlanDetail(currentPlanTab); });
@@ -1052,7 +1081,7 @@ function updateBonusSummary() {
   if (!keys.length) { box.classList.remove("show"); return; }
   box.classList.add("show");
   // 혜택 금액 매핑
-  var amtMap = {
+  var amtMap = window._bonusAmtMap || {
     "갤럭시 워치8 40mm": "기기 489,500원 면제 + 월 11,000원 면제",
     "갤럭시탭 A11+": "기기 448,800원 면제 + 월 22,000원 면제",
     "인터넷 요금 500MB 기준": "월 33,000원 면제",
