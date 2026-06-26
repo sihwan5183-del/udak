@@ -737,12 +737,23 @@ var _bannerIdx = 0;
 var _bannerCount = 0;
 
 function loadBanners() {
+  // GitHub 기본 배너 (Firebase 미설정 시 fallback)
+  var DEFAULT_BANNERS = [
+    {pc:"./files/banner1_pc.png", mo:"./files/banner1_mo.png"},
+    {pc:"./files/banner2_pc.png", mo:"./files/banner2_mo.png"},
+    {pc:"./files/banner3_pc.png", mo:"./files/banner3_mo.png"},
+    {pc:"./files/banner4_pc.png", mo:"./files/banner4_mo.png"}
+  ];
   db.ref("banners").once().then(function(snap) {
-    if (!snap.exists() || !snap.val()) return;
-    var bans = snap.val();
-    if (!Array.isArray(bans)) bans = Object.values(bans);
-    bans = bans.filter(function(b){ return b && (b.pc || b.mo); });
-    if (!bans.length) return;
+    var bans;
+    if (!snap.exists() || !snap.val()) {
+      bans = DEFAULT_BANNERS;
+    } else {
+      bans = snap.val();
+      if (!Array.isArray(bans)) bans = Object.values(bans);
+      bans = bans.filter(function(b){ return b && (b.pc || b.mo); });
+      if (!bans.length) bans = DEFAULT_BANNERS;
+    }
     _bannerCount = bans.length;
     var wrap = document.getElementById('bannerWrap');
     var track = document.getElementById('bTrack');
@@ -1284,9 +1295,9 @@ function toggleBonus(id, name, isOtt) {
         // 다음 항목으로 스크롤
         nextEl.scrollIntoView({behavior:"smooth", block:"center"});
       } else {
-        // 마지막 항목이면 상담폼으로
-        var formEl = document.getElementById("formWrap");
-        if (formEl) formEl.scrollIntoView({behavior:"smooth", block:"start"});
+        // 마지막 항목이면 요약시트로 (요약시트가 상담폼 위에 있음)
+        var sumEl = document.querySelector(".sum-sheet");
+        if (sumEl) sumEl.scrollIntoView({behavior:"smooth", block:"start"});
       }
     }, 350);
   }
@@ -1487,6 +1498,7 @@ function doSubmit() {
 </script>
 </body>
 </html>
+
 
 
 
