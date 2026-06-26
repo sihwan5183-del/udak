@@ -119,6 +119,7 @@ tr:hover td{background:var(--g50)}
   <div class="tabs">
     <div class="tab on" data-tab="plans" onclick="switchTab('plans')">💳 요금제</div>
     <div class="tab" data-tab="devices" onclick="switchTab('devices')">📱 기기 (모바일)</div>
+<div class="tab" data-tab="aio_devices" onclick="switchTab('aio_devices')">📱 올인원 기기</div>
     <div class="tab" data-tab="devices2nd" onclick="switchTab('devices2nd')">⌚ 2ND 기기</div>
     <div class="tab" data-tab="policies" onclick="switchTab('policies')">📋 정책</div>
     <div class="tab" data-tab="ott" onclick="switchTab('ott')">🎬 OTT</div>
@@ -253,6 +254,7 @@ window.switchTab = function(t) {
 function renderTab(t) {
   if(t==='plans') renderPlans();
   else if(t==='devices') renderDevices();
+  else if(t==='aio_devices') renderAioDevices();
   else if(t==='devices2nd') renderDevices2nd();
   else if(t==='policies') renderPolicies();
   else if(t==='ott') renderOtt();
