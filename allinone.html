@@ -1351,10 +1351,10 @@ function updateBonusSummary() {
   }
 
   items.innerHTML = keys.map(function(k) {
-    var amt = amtMap[k] || "";
     var ottVal = S.bonus[k] !== true ? " ("+S.bonus[k]+")" : "";
-    return '<div class="bonus-sum-item"><span>' + k + ottVal + '</span>' +
-      (amt ? '<span class="bonus-sum-amt">'+amt+'</span>' : '') + '</div>';
+    return '<div class="bonus-sum-item"><span style="display:flex;align-items:center;gap:6px">' +
+      '<span style="color:var(--navy);font-weight:700">✓</span>' +
+      k + ottVal + '</span></div>';
   }).join("");
 }
 
@@ -1452,5 +1452,6 @@ function doSubmit() {
 </script>
 </body>
 </html>
+
 
 
