@@ -790,7 +790,7 @@ function loadData() {
     db.ref("allinone/bonusPlans").once(),
     db.ref("allinone/memberDiscount").once(),
     db.ref("allinone/planFeats").once(),
-    db.ref("plans").once()
+    db.ref("allinone/plans").once()
   ]).then(function(res) {
     var dS = res[0], bS = res[1], mS = res[2], pfS = res[3], plS = res[4];
     console.log("[AIO] Firebase 로드 완료");
