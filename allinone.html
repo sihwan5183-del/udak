@@ -788,7 +788,9 @@ function applySettings() {
   // 핸드폰도 변경 옵션 OFF → jt 모달에서 해당 버튼 숨김
   var jtPhone = document.getElementById('jt_phone');
   if (jtPhone) {
-    jtPhone.style.display = (window._showPhone === false) ? 'none' : '';
+    var hidePhone = (window._showPhone === false);
+    jtPhone.style.display = hidePhone ? 'none' : '';
+    console.log("[AIO] applySettings - _showPhone:", window._showPhone, "→ display:", hidePhone ? 'none' : 'block');
   }
   // 공시지원금 OFF → 선택약정만 표시
   if (window._showPublic === false) {
@@ -835,12 +837,15 @@ function loadData() {
       window._memDiscMap = {1:0, 2:10000, 4:20000};
     }
     // planFeats로 PLAN_FEATS 동적 업데이트
+    // planFeats 기본값 먼저 세팅 (없을 때도 동작하도록)
+    window._showPhone = true;
+    window._showPublic = true;
     if (pfS && pfS.exists() && pfS.val()) {
       var pf = pfS.val();
       window._planFeats = pf; // 추가혜택 총액 계산용
-      // 핸드폰변경 옵션 제어
-      window._showPhone = pf.show_phone !== false;
-      window._showPublic = pf.show_public !== false;
+      // show_phone: false면 false, 아니면 true (명시적 비교)
+      window._showPhone = (pf.show_phone === true || pf.show_phone === undefined || pf.show_phone === null) ? true : false;
+      window._showPublic = (pf.show_public === true || pf.show_public === undefined || pf.show_public === null) ? true : false;
       console.log("[AIO] planFeats 로드 - show_phone:", pf.show_phone, "→ _showPhone:", window._showPhone);
       console.log("[AIO] planFeats 로드 - show_public:", pf.show_public, "→ _showPublic:", window._showPublic);
       applySettings();
@@ -1464,6 +1469,7 @@ function doSubmit() {
 </script>
 </body>
 </html>
+
 
 
 
