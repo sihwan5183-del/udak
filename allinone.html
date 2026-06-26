@@ -8,7 +8,7 @@
 <style>
 /* ══ 올인원 CSS 리셋 ══ */
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f8fafc;color:#0f172a;-webkit-font-smoothing:antialiased}
+body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#ffffff;color:#0f172a;-webkit-font-smoothing:antialiased}
 button{cursor:pointer;font-family:inherit;border:none;background:none;outline:none}
 a{text-decoration:none;color:inherit}
 :root{
@@ -281,8 +281,8 @@ a{text-decoration:none;color:inherit}
   <!-- 왼쪽 -->
   <div>
     <div class="hero">
-      <div class="hero-badge">ALL-IN-ONE</div>
-      <div class="hero-title">인터넷 바꾸는 김에,<br>가족 통신비까지 한 번에</div>
+      <div class="hero-badge"><span style="color:#e4005f;font-weight:800">U+</span> 올인원</div>
+      <div class="hero-title">가정 핸드폰 + 인터넷 요금을<br>한 번에!</div>
       <div class="hero-sub">LG U+ 인터넷 신규 설치 기준 · 조건 선택 후 예상 혜택 확인</div>
     </div>
 
@@ -986,14 +986,14 @@ function renderBonusSec() {
   // 추가혜택 아이템 렌더 (데이터 무제한 제외, 요금제 포함 혜택)
   var bonusFeats = data.feats.filter(function(f){return f.name !== "데이터 무제한";});
 
-  // 요금제별 총 혜택가치 계산
-  var planTotalMap = {
-    95000: Math.round((489500+11000*24+33000*24)/10000),
-    115000: Math.round((489500+11000*24+448800+22000*24+33000*24)/10000),
-    130000: Math.round((489500+11000*24+448800+22000*24+33000*24+33000*24)/10000)
+  // 요금제별 월 혜택 합계 (월 기준)
+  var planMonthlyMap = {
+    95000: 11000+33000,        // 워치요금+인터넷
+    115000: 11000+22000+33000, // 워치+탭+인터넷
+    130000: 11000+22000+33000+33000 // 워치+탭+인터넷+자녀할인
   };
   var secTotal = document.getElementById("bonusSecTotal");
-  if(secTotal) secTotal.textContent = "총 "+planTotalMap[plan]+"만원 상당 혜택";
+  if(secTotal) secTotal.textContent = "월 "+((planMonthlyMap[plan]||0)/10000)+"만원 요금 절약";
   items.innerHTML = bonusFeats.map(function(f, i) {
     var id = "bi_" + i;
     var isOtt = f.name.includes("OTT");
@@ -1044,24 +1044,24 @@ function updateBonusSummary() {
   box.classList.add("show");
   // 혜택 금액 매핑
   var amtMap = {
-    "갤럭시 워치8 40mm": "기기 489,500원 + 월 11,000원",
-    "갤럭시탭 A11+": "기기 448,800원 + 월 22,000원",
-    "인터넷 요금 500MB 기준": "월 33,000원",
+    "갤럭시 워치8 40mm": "기기 489,500원 면제 + 월 11,000원 면제",
+    "갤럭시탭 A11+": "기기 448,800원 면제 + 월 22,000원 면제",
+    "인터넷 요금 500MB 기준": "월 33,000원 면제",
     "OTT 1개 선택": "",
-    "자녀 요금 추가 할인": "월 -33,000원"
+    "자녀 요금 추가 할인": "자녀 요금제에서 월 33,000원 추가 할인"
   };
-  // 총 절약액 계산
-  var totalMap = {
-    "갤럭시 워치8 40mm": 489500 + 11000*24,
-    "갤럭시탭 A11+": 448800 + 22000*24,
-    "인터넷 요금 500MB 기준": 33000*24,
+  // 월 절약액 합계
+  var monthlyMap = {
+    "갤럭시 워치8 40mm": 11000,
+    "갤럭시탭 A11+": 22000,
+    "인터넷 요금 500MB 기준": 33000,
     "OTT 1개 선택": 0,
-    "자녀 요금 추가 할인": 33000*24
+    "자녀 요금 추가 할인": 33000
   };
-  var total = 0;
-  keys.forEach(function(k){ total += (totalMap[k]||0); });
+  var monthly = 0;
+  keys.forEach(function(k){ monthly += (monthlyMap[k]||0); });
   var totalEl = document.getElementById("bonusTotalAmt");
-  if(totalEl && total > 0) totalEl.textContent = "총 "+Math.round(total/10000)+"만원 상당";
+  if(totalEl && monthly > 0) totalEl.textContent = "월 "+(monthly/10000)+"만원 절약";
 
   items.innerHTML = keys.map(function(k) {
     var amt = amtMap[k] || "";
