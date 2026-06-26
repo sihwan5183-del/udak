@@ -936,6 +936,35 @@ async function renderAioBenefits() {
         </div>
 
         <div style="font-size:13px;font-weight:800;color:#1a237e;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e8eaf6;margin-top:8px">⚙️ 진행 방식 설정</div>
+
+        <div style="margin-bottom:14px">
+          <div style="font-size:12px;font-weight:700;color:#374151;margin-bottom:8px">📱 유심만 변경 버튼 텍스트</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label style="font-size:11px;font-weight:600;color:#6b7280;display:block;margin-bottom:4px">버튼 제목</label>
+              <input id="bf_jt_usim_title" value="${v.jt_usim_title||'유심만 변경'}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px">
+            </div>
+            <div>
+              <label style="font-size:11px;font-weight:600;color:#6b7280;display:block;margin-bottom:4px">버튼 설명</label>
+              <input id="bf_jt_usim_desc" value="${v.jt_usim_desc||'번호이동 · 기기 유지'}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px">
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px">
+          <div style="font-size:12px;font-weight:700;color:#374151;margin-bottom:8px">🔄 핸드폰도 변경 버튼 텍스트</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label style="font-size:11px;font-weight:600;color:#6b7280;display:block;margin-bottom:4px">버튼 제목</label>
+              <input id="bf_jt_phone_title" value="${v.jt_phone_title||'핸드폰도 변경'}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px">
+            </div>
+            <div>
+              <label style="font-size:11px;font-weight:600;color:#6b7280;display:block;margin-bottom:4px">버튼 설명</label>
+              <input id="bf_jt_phone_desc" value="${v.jt_phone_desc||'기기 교체 포함'}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px">
+            </div>
+          </div>
+        </div>
+
         <div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;padding:12px;background:#f9fafb;border-radius:8px">
           <div>
             <div style="font-size:13px;font-weight:700;color:#374151">핸드폰도 변경 옵션 노출</div>
@@ -974,7 +1003,11 @@ window.saveAioBenefits = async function(){
     internet_monthly: parseInt(document.getElementById('bf_im').value)||0,
     child_discount: parseInt(document.getElementById('bf_cd').value)||0,
     show_phone: document.getElementById('bf_showPhone').checked,
-    show_public: document.getElementById('bf_showPublic').checked
+    show_public: document.getElementById('bf_showPublic').checked,
+    jt_usim_title: document.getElementById('bf_jt_usim_title').value.trim() || '유심만 변경',
+    jt_usim_desc: document.getElementById('bf_jt_usim_desc').value.trim() || '번호이동 · 기기 유지',
+    jt_phone_title: document.getElementById('bf_jt_phone_title').value.trim() || '핸드폰도 변경',
+    jt_phone_desc: document.getElementById('bf_jt_phone_desc').value.trim() || '기기 교체 포함'
   };
   await db.ref('allinone/planFeats').set(data);
   toast('설정이 저장되었습니다.');
@@ -982,3 +1015,4 @@ window.saveAioBenefits = async function(){
 </script>
 </body>
 </html>
+
