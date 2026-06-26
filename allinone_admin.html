@@ -89,7 +89,120 @@ tr:hover td{background:var(--g50)}
 .banner-preview{width:60px;height:40px;object-fit:cover;border-radius:4px;border:1px solid var(--g200);background:var(--g100)}
 
 
-/* ════ 올인원 기기 관리 ════ */
+</style>
+</head>
+<body>
+
+<!-- 로그인 -->
+<div id="loginWrap">
+  <div class="login-box">
+    <div class="login-title">🔐 ALL-IN-ONE 어드민</div>
+    <div class="login-sub">관리자 비밀번호를 입력해주세요</div>
+    <input class="login-input" type="password" id="pwInput" placeholder="비밀번호" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">로그인</button>
+  </div>
+</div>
+
+<div id="adminWrap" style="display:none">
+  <div class="header">
+    <div class="header-title">ALL-IN-ONE 어드민</div>
+    <button class="logout-btn" onclick="logout()">로그아웃</button>
+  </div>
+  <div class="tabs">
+    <div class="tab on" data-tab="plans" onclick="switchTab('plans')">💳 요금제</div>
+    <div class="tab" data-tab="devices" onclick="switchTab('devices')">📱 기기 (모바일)</div>
+<div class="tab" data-tab="aio_devices" onclick="switchTab('aio_devices')">📱 올인원 기기</div>
+<div class="tab" data-tab="aio_discount" onclick="switchTab('aio_discount')">💰 가족할인 설정</div>
+<div class="tab" data-tab="aio_benefits" onclick="switchTab('aio_benefits')">🎁 추가혜택 설정</div>
+    <div class="tab" data-tab="devices2nd" onclick="switchTab('devices2nd')">⌚ 2ND 기기</div>
+    <div class="tab" data-tab="policies" onclick="switchTab('policies')">📋 정책</div>
+    <div class="tab" data-tab="ott" onclick="switchTab('ott')">🎬 OTT</div>
+    <div class="tab" data-tab="banners" onclick="switchTab('banners')">🖼 배너</div>
+    <div class="tab" data-tab="modalbanner" onclick="switchTab('modalbanner')">🎁 완료 모달</div>
+  </div>
+  <div class="content" id="mainContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- 기기 모달 -->
+<div class="modal-bg" id="devModal">
+  <div class="modal-box">
+    <div class="modal-title" id="devModalTitle">기기 추가</div>
+    <input type="hidden" id="devModalKey">
+    <div class="field"><label>기기명 *</label><input id="devName" placeholder="갤럭시 S26"></div>
+    <div class="field"><label>이미지 URL</label><input id="devImg" placeholder="https://..."></div>
+    <div class="field"><label>표시 여부</label>
+      <select id="devVisible"><option value="true">표시</option><option value="false">숨김</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('devModal')">취소</button>
+      <button class="btn btn-navy" onclick="saveDev()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 정책 모달 -->
+<div class="modal-bg" id="polModal">
+  <div class="modal-box">
+    <div class="modal-title" id="polModalTitle">정책 추가</div>
+    <input type="hidden" id="polModalKey">
+    <div class="field"><label>정책명 * (수정 가능)</label><input id="polName" placeholder="통신사 이동 지원금 (타사→LGU+)"></div>
+    <div class="field"><label>적용 통신사</label>
+      <select id="polCarrier">
+        <option value="all">전체</option>
+        <option value="tasa">타사 전환 고객</option>
+        <option value="jasa">자사 (LGU+) 고객</option>
+      </select>
+    </div>
+    <div class="field"><label>1인 금액 (원)</label><input id="polAmt1" type="number" placeholder="300000"></div>
+    <div class="field"><label>2인 금액 (원)</label><input id="polAmt2" type="number" placeholder="600000"></div>
+    <div class="field"><label>4인 금액 (원)</label><input id="polAmt4" type="number" placeholder="1200000"></div>
+    <div class="field"><label>설명 (선택)</label><textarea id="polDesc" placeholder="세부 조건 설명"></textarea></div>
+    <div class="field"><label>표시 여부</label>
+      <select id="polVisible"><option value="true">표시</option><option value="false">숨김</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('polModal')">취소</button>
+      <button class="btn btn-navy" onclick="savePol()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 2ND 기기 모달 -->
+<div class="modal-bg" id="dev2Modal">
+  <div class="modal-box">
+    <div class="modal-title" id="dev2ModalTitle">2ND 기기 추가</div>
+    <input type="hidden" id="dev2ModalKey">
+    <div class="field"><label>기기명 *</label><input id="dev2Name" placeholder="갤럭시 워치 7"></div>
+    <div class="field"><label>종류</label>
+      <select id="dev2Type">
+        <option value="watch">워치</option>
+        <option value="tab">탭</option>
+        <option value="etc">기타</option>
+      </select>
+    </div>
+    <div class="field"><label>이미지 URL</label><input id="dev2Img" placeholder="https://..."></div>
+    <div class="field"><label>월 기기값 할부 (원)</label><input id="dev2Device" type="number" placeholder="15000"></div>
+    <div class="field"><label>월 요금 (원)</label><input id="dev2Plan" type="number" placeholder="11000"></div>
+    <div class="field"><label>적용 요금제 (최소)</label>
+      <select id="dev2MinPlan">
+        <option value="95000">95,000원 이상</option>
+        <option value="115000">115,000원 이상</option>
+        <option value="130000">130,000원 이상</option>
+      </select>
+    </div>
+    <div class="field"><label>표시 여부</label>
+      <select id="dev2Visible"><option value="true">표시</option><option value="false">숨김</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('dev2Modal')">취소</button>
+      <button class="btn btn-navy" onclick="saveDev2()">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>/* ════ 올인원 기기 관리 ════ */
 async function renderAioDevices() {
   const s = await db.ref('allinone/devices').once();
   const devs = s.exists() ? s.val() : {};
@@ -367,120 +480,8 @@ window.saveAioBenefits = async function(){
 .ott-item{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid var(--g200);border-radius:8px;background:#fff}
 .ott-item.on{border-color:var(--navy);background:var(--navyL)}
 .ott-name{font-size:13px;font-weight:600}
-</style>
-</head>
-<body>
 
-<!-- 로그인 -->
-<div id="loginWrap">
-  <div class="login-box">
-    <div class="login-title">🔐 ALL-IN-ONE 어드민</div>
-    <div class="login-sub">관리자 비밀번호를 입력해주세요</div>
-    <input class="login-input" type="password" id="pwInput" placeholder="비밀번호" onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="login-btn" onclick="doLogin()">로그인</button>
-  </div>
-</div>
 
-<div id="adminWrap" style="display:none">
-  <div class="header">
-    <div class="header-title">ALL-IN-ONE 어드민</div>
-    <button class="logout-btn" onclick="logout()">로그아웃</button>
-  </div>
-  <div class="tabs">
-    <div class="tab on" data-tab="plans" onclick="switchTab('plans')">💳 요금제</div>
-    <div class="tab" data-tab="devices" onclick="switchTab('devices')">📱 기기 (모바일)</div>
-<div class="tab" data-tab="aio_devices" onclick="switchTab('aio_devices')">📱 올인원 기기</div>
-<div class="tab" data-tab="aio_discount" onclick="switchTab('aio_discount')">💰 가족할인 설정</div>
-<div class="tab" data-tab="aio_benefits" onclick="switchTab('aio_benefits')">🎁 추가혜택 설정</div>
-    <div class="tab" data-tab="devices2nd" onclick="switchTab('devices2nd')">⌚ 2ND 기기</div>
-    <div class="tab" data-tab="policies" onclick="switchTab('policies')">📋 정책</div>
-    <div class="tab" data-tab="ott" onclick="switchTab('ott')">🎬 OTT</div>
-    <div class="tab" data-tab="banners" onclick="switchTab('banners')">🖼 배너</div>
-    <div class="tab" data-tab="modalbanner" onclick="switchTab('modalbanner')">🎁 완료 모달</div>
-  </div>
-  <div class="content" id="mainContent"></div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<!-- 기기 모달 -->
-<div class="modal-bg" id="devModal">
-  <div class="modal-box">
-    <div class="modal-title" id="devModalTitle">기기 추가</div>
-    <input type="hidden" id="devModalKey">
-    <div class="field"><label>기기명 *</label><input id="devName" placeholder="갤럭시 S26"></div>
-    <div class="field"><label>이미지 URL</label><input id="devImg" placeholder="https://..."></div>
-    <div class="field"><label>표시 여부</label>
-      <select id="devVisible"><option value="true">표시</option><option value="false">숨김</option></select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('devModal')">취소</button>
-      <button class="btn btn-navy" onclick="saveDev()">저장</button>
-    </div>
-  </div>
-</div>
-
-<!-- 정책 모달 -->
-<div class="modal-bg" id="polModal">
-  <div class="modal-box">
-    <div class="modal-title" id="polModalTitle">정책 추가</div>
-    <input type="hidden" id="polModalKey">
-    <div class="field"><label>정책명 * (수정 가능)</label><input id="polName" placeholder="통신사 이동 지원금 (타사→LGU+)"></div>
-    <div class="field"><label>적용 통신사</label>
-      <select id="polCarrier">
-        <option value="all">전체</option>
-        <option value="tasa">타사 전환 고객</option>
-        <option value="jasa">자사 (LGU+) 고객</option>
-      </select>
-    </div>
-    <div class="field"><label>1인 금액 (원)</label><input id="polAmt1" type="number" placeholder="300000"></div>
-    <div class="field"><label>2인 금액 (원)</label><input id="polAmt2" type="number" placeholder="600000"></div>
-    <div class="field"><label>4인 금액 (원)</label><input id="polAmt4" type="number" placeholder="1200000"></div>
-    <div class="field"><label>설명 (선택)</label><textarea id="polDesc" placeholder="세부 조건 설명"></textarea></div>
-    <div class="field"><label>표시 여부</label>
-      <select id="polVisible"><option value="true">표시</option><option value="false">숨김</option></select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('polModal')">취소</button>
-      <button class="btn btn-navy" onclick="savePol()">저장</button>
-    </div>
-  </div>
-</div>
-
-<!-- 2ND 기기 모달 -->
-<div class="modal-bg" id="dev2Modal">
-  <div class="modal-box">
-    <div class="modal-title" id="dev2ModalTitle">2ND 기기 추가</div>
-    <input type="hidden" id="dev2ModalKey">
-    <div class="field"><label>기기명 *</label><input id="dev2Name" placeholder="갤럭시 워치 7"></div>
-    <div class="field"><label>종류</label>
-      <select id="dev2Type">
-        <option value="watch">워치</option>
-        <option value="tab">탭</option>
-        <option value="etc">기타</option>
-      </select>
-    </div>
-    <div class="field"><label>이미지 URL</label><input id="dev2Img" placeholder="https://..."></div>
-    <div class="field"><label>월 기기값 할부 (원)</label><input id="dev2Device" type="number" placeholder="15000"></div>
-    <div class="field"><label>월 요금 (원)</label><input id="dev2Plan" type="number" placeholder="11000"></div>
-    <div class="field"><label>적용 요금제 (최소)</label>
-      <select id="dev2MinPlan">
-        <option value="95000">95,000원 이상</option>
-        <option value="115000">115,000원 이상</option>
-        <option value="130000">130,000원 이상</option>
-      </select>
-    </div>
-    <div class="field"><label>표시 여부</label>
-      <select id="dev2Visible"><option value="true">표시</option><option value="false">숨김</option></select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal('dev2Modal')">취소</button>
-      <button class="btn btn-navy" onclick="saveDev2()">저장</button>
-    </div>
-  </div>
-</div>
-
-<script>
 const PW = 'udak2024';
 const DB_URL = 'https://udak-c6832-default-rtdb.firebaseio.com';
 const BASE = DB_URL + '/allinone';
