@@ -878,6 +878,8 @@ function loadData() {
       if (usimDesc  && pf.jt_usim_desc)   usimDesc.textContent   = pf.jt_usim_desc;
       if (phoneTitle && pf.jt_phone_title) phoneTitle.textContent = pf.jt_phone_title;
       if (phoneDesc  && pf.jt_phone_desc)  phoneDesc.textContent  = pf.jt_phone_desc;
+      // 텍스트 세팅 완료 후 show_phone/show_public 최종 적용
+      applySettings();
     }
     // plans 데이터로 요금제 탭 업데이트
     if (plS && plS.exists() && plS.val()) {
@@ -950,8 +952,10 @@ function sel(type, val) {
     // 진행방식 버튼 강조
     document.getElementById("jt_usim").style.borderColor = val === "usim" ? "var(--navy)" : "var(--g200)";
     document.getElementById("jt_usim").style.background = val === "usim" ? "var(--navyLL)" : "#fff";
-    document.getElementById("jt_phone").style.borderColor = val === "phone" ? "var(--navy)" : "var(--g200)";
-    document.getElementById("jt_phone").style.background = val === "phone" ? "var(--navyLL)" : "#fff";
+    if (window._showPhone !== false) {
+      document.getElementById("jt_phone").style.borderColor = val === "phone" ? "var(--navy)" : "var(--g200)";
+      document.getElementById("jt_phone").style.background = val === "phone" ? "var(--navyLL)" : "#fff";
+    }
 
     if (val === "usim") {
       // 유심만 → 선택약정만
@@ -1460,6 +1464,7 @@ function doSubmit() {
 </script>
 </body>
 </html>
+
 
 
 
