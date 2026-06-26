@@ -288,7 +288,7 @@ a{text-decoration:none;color:inherit}
   <div>
     <div class="hero">
       <div class="hero-badge"><span style="color:#e4005f;font-weight:800">U+</span> 올인원</div>
-      <div class="hero-title">가정 핸드폰 + 인터넷 요금을<br>한 번에!</div>
+      <div class="hero-title">우리 가족!<br>핸드폰+인터넷 요금을 한 번에!</div>
       <div class="hero-sub">LG U+ 인터넷 신규 설치 기준 · 조건 선택 후 예상 혜택 확인</div>
     </div>
 
@@ -448,10 +448,12 @@ a{text-decoration:none;color:inherit}
       <div id="bonusSumItems"></div>
       <!-- 혜택 총액 강조 -->
       <div id="bonusTotalBox" style="display:none;margin-top:12px;background:var(--navyLL);border-radius:10px;padding:14px;text-align:center">
-        <div id="bonusDeviceTotal" style="font-size:12px;color:var(--g600);margin-bottom:4px"></div>
-        <div id="bonusMonthlyTotal" style="font-size:12px;color:var(--g600);margin-bottom:8px"></div>
-        <div style="font-size:11px;color:var(--navy);font-weight:600;margin-bottom:2px">월 요금 절약 효과</div>
-        <div id="bonusTotalAmt" style="font-size:22px;font-weight:900;color:var(--navy);line-height:1"></div>
+        <div id="bonusDeviceTotal" style="margin-bottom:4px"></div>
+        <div id="bonusMonthlyTotal" style="margin-bottom:10px"></div>
+        <div style="border-top:1.5px solid var(--navyL);padding-top:10px;margin-top:4px">
+          <div style="font-size:11px;color:var(--navy);font-weight:700;margin-bottom:4px">💰 월 요금 절약 효과</div>
+          <div id="bonusTotalAmt" style="font-size:24px;font-weight:900;color:var(--navy);line-height:1"></div>
+        </div>
       </div>
     </div>
 
@@ -1108,24 +1110,47 @@ function updateBonusSummary() {
   };
   var monthly = 0;
   keys.forEach(function(k){ monthly += (monthlyMap[k]||0); });
-  // 기기값 합계
-  var deviceTotalMap = {
-    "갤럭시 워치8 40mm": 489500,
-    "갤럭시탭 A11+": 448800
+  // 기기별 면제 금액 (항목별 개별)
+  var deviceItemMap = {
+    "갤럭시 워치8 40mm": {device:489500, monthly:11000},
+    "갤럭시탭 A11+": {device:448800, monthly:22000},
+    "인터넷 요금 500MB 기준": {device:0, monthly:33000},
+    "자녀 요금 추가 할인": {device:0, monthly:33000}
   };
-  var deviceTotal = 0;
-  keys.forEach(function(k){ deviceTotal += (deviceTotalMap[k]||0); });
 
-  // 총액 박스
+  // 총액 박스 - 항목별 행 생성
   var totalBox = document.getElementById("bonusTotalBox");
   var devTotalEl = document.getElementById("bonusDeviceTotal");
   var monTotalEl = document.getElementById("bonusMonthlyTotal");
   var totalAmt = document.getElementById("bonusTotalAmt");
 
-  if(monthly > 0 || deviceTotal > 0) {
+  if(monthly > 0) {
     if(totalBox) totalBox.style.display = "block";
-    if(devTotalEl) devTotalEl.textContent = deviceTotal > 0 ? "기기값 면제 " + deviceTotal.toLocaleString() + "원" : "";
-    if(monTotalEl) monTotalEl.textContent = monthly > 0 ? "월 요금 면제 " + monthly.toLocaleString() + "원" : "";
+
+    // 항목별 기기값 행
+    var deviceRows = "";
+    keys.forEach(function(k){
+      var info = deviceItemMap[k];
+      if(info && info.device > 0) {
+        deviceRows += '<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--g600);padding:3px 0;border-bottom:1px solid var(--g100)">' +
+          '<span>' + k + ' 기기값 면제</span>' +
+          '<span style="font-weight:700;color:var(--navy)">' + info.device.toLocaleString() + '원</span></div>';
+      }
+    });
+
+    // 항목별 월 요금 행
+    var monthlyRows = "";
+    keys.forEach(function(k){
+      var info = deviceItemMap[k];
+      if(info && info.monthly > 0) {
+        monthlyRows += '<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--g600);padding:3px 0;border-bottom:1px solid var(--g100)">' +
+          '<span>' + k + ' 월 요금 면제</span>' +
+          '<span style="font-weight:700;color:#16a34a">-' + info.monthly.toLocaleString() + '원</span></div>';
+      }
+    });
+
+    if(devTotalEl) devTotalEl.innerHTML = deviceRows;
+    if(monTotalEl) monTotalEl.innerHTML = monthlyRows;
     if(totalAmt) totalAmt.textContent = "월 " + monthly.toLocaleString() + "원 절약";
   } else {
     if(totalBox) totalBox.style.display = "none";
