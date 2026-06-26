@@ -137,9 +137,9 @@ a{text-decoration:none;color:inherit}
 .bi-info{flex:1}
 .bi-name{font-size:13px;font-weight:700;color:var(--g800)}
 .bonus-item.on .bi-name{color:var(--navy)}
-.bi-price{font-size:11px;color:var(--g400);margin-top:2px}
-.bi-price s{color:var(--g300)}
-.bi-price strong{color:var(--navy);font-weight:700}
+.bi-price{font-size:11px;color:var(--g500);margin-top:3px;display:flex;flex-direction:column;gap:2px}
+.bi-price .bp-device{color:var(--navy);font-weight:600}
+.bi-price .bp-monthly{color:var(--g500)}
 .bi-chk{width:22px;height:22px;border-radius:50%;border:2px solid var(--g300);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;flex-shrink:0;transition:all .15s}
 .bonus-item.on .bi-chk{background:var(--navy);border-color:var(--navy);color:#fff}
 
@@ -231,6 +231,11 @@ a{text-decoration:none;color:inherit}
 .plan-feat-txt strong{color:var(--navy);font-weight:800;font-size:14px}
 .plan-feat-txt .zero{color:#16a34a;font-weight:800;font-size:14px}
 .plan-note{font-size:11px;color:var(--g400);text-align:center;margin-top:12px}
+.plan-feat-name{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:4px}
+.plan-feat-details{display:flex;flex-direction:column;gap:3px;margin-top:3px}
+.plan-feat-row{font-size:12px;color:var(--g500);display:flex;align-items:center;gap:6px}
+.plan-feat-row-only{color:var(--g400)}
+.plan-feat-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--navyL);color:var(--navy);flex-shrink:0;white-space:nowrap}
 .plan-sel-btn{width:100%;padding:13px;background:var(--navy);color:#fff;border-radius:10px;font-size:14px;font-weight:800;margin-top:14px;-webkit-tap-highlight-color:rgba(0,0,0,.06)}
 .plan-sel-btn:hover{background:var(--navy2)}
 
@@ -615,35 +620,35 @@ var CASH = {1:30, 2:60, 4:120}; // 만원 단위
 /* ════ 요금제 혜택 데이터 ════ */
 var PLAN_FEATS = {
   95000: {
-    name: "플러스스플랜 95",
+    name: "플러스플랜 95",
     icon: "📶",
     feats: [
-      {icon:"♾️", name:"데이터 무제한", desc:""},
-      {icon:"⌚", name:"갤럭시 워치8 40mm", desc:"기기값 <s>489,500원</s> → <strong>0원</strong> · 요금 <s>11,000원</s> → <strong>0원</strong>"},
-      {icon:"🏠", name:"인터넷 요금 500MB 기준", desc:"<s>33,000원</s> → <strong>0원</strong>"}
+      {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
+      {icon:"⌚", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
+      {icon:"🏠", name:"인터넷 500MB", device:"", monthly:"월 요금 33,000원"}
     ]
   },
   115000: {
-    name: "플러스스플랜 115",
+    name: "플러스플랜 115",
     icon: "📶",
     feats: [
-      {icon:"♾️", name:"데이터 무제한", desc:""},
-      {icon:"⌚", name:"갤럭시 워치8 40mm", desc:"기기값 <s>489,500원</s> → <strong>0원</strong> · 요금 <s>11,000원</s> → <strong>0원</strong>"},
-      {icon:"📱", name:"갤럭시탭 A11+", desc:"기기값 <s>448,800원</s> → <strong>0원</strong> · 요금 <s>22,000원</s> → <strong>0원</strong>"},
-      {icon:"🏠", name:"인터넷 요금 500MB 기준", desc:"<s>33,000원</s> → <strong>0원</strong>"},
-      {icon:"📺", name:"OTT 1개 선택", desc:"넷플릭스 · 디즈니+ · 티빙"}
+      {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
+      {icon:"⌚", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
+      {icon:"📱", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
+      {icon:"🏠", name:"인터넷 500MB", device:"", monthly:"월 요금 33,000원"},
+      {icon:"📺", name:"OTT 1개 선택", device:"", monthly:"넷플릭스 · 디즈니+ · 티빙"}
     ]
   },
   130000: {
-    name: "플러스스플랜 130",
+    name: "플러스플랜 130",
     icon: "📶",
     feats: [
-      {icon:"♾️", name:"데이터 무제한", desc:""},
-      {icon:"⌚", name:"갤럭시 워치8 40mm", desc:"기기값 <s>489,500원</s> → <strong>0원</strong> · 요금 <s>11,000원</s> → <strong>0원</strong>"},
-      {icon:"📱", name:"갤럭시탭 A11+", desc:"기기값 <s>448,800원</s> → <strong>0원</strong> · 요금 <s>22,000원</s> → <strong>0원</strong>"},
-      {icon:"🏠", name:"인터넷 요금 500MB 기준", desc:"<s>33,000원</s> → <strong>0원</strong>"},
-      {icon:"📺", name:"OTT 1개 선택", desc:"넷플릭스 · 디즈니+ · 티빙"},
-      {icon:"👧", name:"자녀 요금 추가 할인", desc:"만 19세 미만 자녀 요금제에서 <strong>-33,000원</strong>"}
+      {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
+      {icon:"⌚", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
+      {icon:"📱", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
+      {icon:"🏠", name:"인터넷 500MB", device:"", monthly:"월 요금 33,000원"},
+      {icon:"📺", name:"OTT 1개 선택", device:"", monthly:"넷플릭스 · 디즈니+ · 티빙"},
+      {icon:"👧", name:"자녀 요금 할인", device:"", monthly:"월 -33,000원 (만 19세 미만)"}
     ]
   }
 };
@@ -893,9 +898,13 @@ function renderPlanDetail(price) {
     '<div class="plan-name">' + data.name + '</div>' +
     '<div class="plan-feats">' +
     data.feats.map(function(f){
+      var rows = '';
+      if(f.device) rows += '<div class="plan-feat-row"><span class="plan-feat-badge">기기값 면제</span>' + f.device + '</div>';
+      if(f.monthly && !f.device) rows += '<div class="plan-feat-row plan-feat-row-only">' + f.monthly + '</div>';
+      else if(f.monthly) rows += '<div class="plan-feat-row"><span class="plan-feat-badge">요금 면제</span>' + f.monthly + '</div>';
       return '<div class="plan-feat"><span class="plan-feat-icon">' + f.icon + '</span>' +
-        '<div class="plan-feat-txt"><strong>' + f.name + '</strong>' +
-        (f.desc ? '<br><span style="font-size:11px;color:var(--g500)">'+f.desc+'</span>' : '') +
+        '<div class="plan-feat-txt"><div class="plan-feat-name">' + f.name + '</div>' +
+        (rows ? '<div class="plan-feat-details">' + rows + '</div>' : '') +
         '</div></div>';
     }).join("") +
     '</div>' +
