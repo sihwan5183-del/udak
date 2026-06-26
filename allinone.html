@@ -1429,10 +1429,16 @@ function doSubmit() {
     headers: {"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Prefer":"return=minimal"},
     body: JSON.stringify({
       name:name.trim(), phone:phone.trim(), channel:"올인원",
-      carrier:S.mcar||null, plan:S.plan?String(S.plan):null,
-      bundling:S.mem?S.mem+"인":null, jointype:S.jt||null,
+      carrier:S.mcar||null,
+      internet_carrier:S.inet||null,
+      current_carrier:S.mcar||null,
+      plan:S.plan?String(S.plan):null,
+      bundling:S.mem?S.mem+"인":null,
+      jointype:S.jt||null,
+      discount:S.disc||null,
       estimated_fee:window._fee||null, estimated_fee_memo:window._feeMemo||null,
       consult_time:time, memo:memo,
+      birth:(document.getElementById("fBirth")||{}).value||null,
       utm_campaign:_utm.campaign||null,utm_source:_utm.source||null,utm_medium:_utm.medium||null,
       created_at:new Date().toISOString()
     })
@@ -1452,6 +1458,7 @@ function doSubmit() {
 </script>
 </body>
 </html>
+
 
 
 
