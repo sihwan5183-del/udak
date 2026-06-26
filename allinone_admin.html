@@ -865,7 +865,9 @@ async function renderAioBenefits() {
     tab_device: 448800,
     tab_monthly: 22000,
     internet_monthly: 33000,
-    child_discount: 33000
+    child_discount: 33000,
+    show_phone: true,
+    show_public: true
   };
   const v = Object.assign({}, def, d);
   document.getElementById('mainContent').innerHTML = `
@@ -917,9 +919,30 @@ async function renderAioBenefits() {
           <input id="bf_cd" type="number" value="${v.child_discount}" style="width:200px;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px">
         </div>
 
+        <div style="font-size:13px;font-weight:800;color:#1a237e;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e8eaf6;margin-top:8px">⚙️ 진행 방식 설정</div>
+        <div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;padding:12px;background:#f9fafb;border-radius:8px">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:#374151">핸드폰도 변경 옵션 노출</div>
+            <div style="font-size:11px;color:#9ca3af;margin-top:2px">OFF 시 유심만 변경으로만 진행</div>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="bf_showPhone" ${v.show_phone!==false?'checked':''} style="width:18px;height:18px">
+            <span style="font-size:13px;font-weight:600;color:#374151">ON</span>
+          </label>
+        </div>
+        <div style="margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;padding:12px;background:#f9fafb;border-radius:8px">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:#374151">공시지원금 옵션 노출</div>
+            <div style="font-size:11px;color:#9ca3af;margin-top:2px">OFF 시 선택약정으로 자동 선택</div>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="bf_showPublic" ${v.show_public!==false?'checked':''} style="width:18px;height:18px">
+            <span style="font-size:13px;font-weight:600;color:#374151">ON</span>
+          </label>
+        </div>
         <button onclick="saveAioBenefits()" style="width:100%;padding:13px;background:#1a237e;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">💾 저장</button>
         <div style="margin-top:10px;padding:10px;background:#f0f1fa;border-radius:8px;font-size:11px;color:#4b5563;line-height:1.6">
-          저장 시 랜딩페이지 요금제 혜택 표시에 즉시 반영됩니다.
+          저장 시 랜딩페이지에 즉시 반영됩니다.
         </div>
       </div>
     </div>`;
@@ -933,10 +956,12 @@ window.saveAioBenefits = async function(){
     tab_device: parseInt(document.getElementById('bf_td').value)||0,
     tab_monthly: parseInt(document.getElementById('bf_tm').value)||0,
     internet_monthly: parseInt(document.getElementById('bf_im').value)||0,
-    child_discount: parseInt(document.getElementById('bf_cd').value)||0
+    child_discount: parseInt(document.getElementById('bf_cd').value)||0,
+    show_phone: document.getElementById('bf_showPhone').checked,
+    show_public: document.getElementById('bf_showPublic').checked
   };
   await db.ref('allinone/planFeats').set(data);
-  toast('추가혜택 설정이 저장되었습니다.');
+  toast('설정이 저장되었습니다.');
 };
 </script>
 </body>
