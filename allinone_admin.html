@@ -249,7 +249,23 @@ window.logout = function() {
   document.getElementById('pwInput').value='';
 };
 
-function initAdmin() { renderTab('plans'); }
+function initAdmin() { renderTab('plans'); initAioPlans(); }
+/* ══ 올인원 플랜 초기화 ══ */
+async function initAioPlans() {
+  const s = await db.ref('allinone/plans').once();
+  if (s.exists() && s.val() && Object.keys(s.val()).length > 0) return; // 이미 있으면 skip
+  const defaults = [
+    {name:'플러스플랜 95', price:95000, visible:true},
+    {name:'플러스플랜 115', price:115000, visible:true},
+    {name:'플러스플랜 130', price:130000, visible:true}
+  ];
+  for (const p of defaults) {
+    await db.ref('allinone/plans').push(p);
+  }
+  toast('기본 요금제 3개 초기화 완료!');
+  renderPlans();
+}
+
 
 /* ── 탭 ── */
 window.switchTab = function(t) {
@@ -288,7 +304,7 @@ function closeModal(id){document.getElementById(id).classList.remove('on');}
 ═══════════════════════════════ */
 let planData = {};
 async function renderPlans() {
-  const s = await db.ref('plans').once();
+  const s = await db.ref('allinone/plans').once();
   planData = s.exists() ? s.val() : {};
   const mc = document.getElementById('mainContent');
   const rows = Object.entries(planData).sort((a,b)=>(a[1].price||0)-(b[1].price||0));
@@ -346,7 +362,7 @@ window.savePlan = async function() {
   if(!name||!price){alert('요금제명과 단가는 필수입니다.');return;}
   const data = {name, price, visible};
   if(key) await db.ref(`plans/${key}`).update(data);
-  else await db.ref('plans').push(data);
+  else await db.ref('allinone/plans').push(data);
   document.getElementById('planModal')?.remove();
   toast('저장되었습니다.');
   renderPlans();
