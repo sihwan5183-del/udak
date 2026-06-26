@@ -448,9 +448,18 @@ a{text-decoration:none;color:inherit}
       <div id="bonusSumItems"></div>
       <!-- 혜택 총액 강조 -->
       <div id="bonusTotalBox" style="display:none;margin-top:12px;background:var(--navyLL);border-radius:10px;padding:14px;text-align:center">
-        <div id="bonusDeviceTotal" style="margin-bottom:4px"></div>
-        <div id="bonusMonthlyTotal" style="margin-bottom:10px"></div>
-        <div style="border-top:1.5px solid var(--navyL);padding-top:10px;margin-top:4px">
+        <!-- 2컬럼: 좌=기기값, 우=월요금 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px">
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px">📦 기기값 면제</div>
+            <div id="bonusDeviceTotal"></div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:#16a34a;margin-bottom:6px">📅 월 요금 면제</div>
+            <div id="bonusMonthlyTotal"></div>
+          </div>
+        </div>
+        <div style="border-top:1.5px solid var(--navyL);padding-top:10px">
           <div style="font-size:11px;color:var(--navy);font-weight:700;margin-bottom:4px">💰 월 요금 절약 효과</div>
           <div id="bonusTotalAmt" style="font-size:24px;font-weight:900;color:var(--navy);line-height:1"></div>
         </div>
