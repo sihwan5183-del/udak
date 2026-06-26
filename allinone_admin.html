@@ -991,6 +991,19 @@ async function renderAioBenefits() {
         </div>
       </div>
     </div>`;
+  // innerHTML 주입 후 checkbox 상태 명시적으로 세팅 (innerHTML은 속성만 넣고 DOM 상태는 별도 세팅 필요)
+  const spEl = document.getElementById('bf_showPhone');
+  const spuEl = document.getElementById('bf_showPublic');
+  if (spEl) spEl.checked = (v.show_phone !== false);
+  if (spuEl) spuEl.checked = (v.show_public !== false);
+  const jut = document.getElementById('bf_jt_usim_title');
+  const jud = document.getElementById('bf_jt_usim_desc');
+  const jpt = document.getElementById('bf_jt_phone_title');
+  const jpd = document.getElementById('bf_jt_phone_desc');
+  if (jut) jut.value = v.jt_usim_title || '유심만 변경';
+  if (jud) jud.value = v.jt_usim_desc || '번호이동 · 기기 유지';
+  if (jpt) jpt.value = v.jt_phone_title || '핸드폰도 변경';
+  if (jpd) jpd.value = v.jt_phone_desc || '기기 교체 포함';
 }
 window.saveAioBenefits = async function(){
   const data = {
@@ -1009,8 +1022,15 @@ window.saveAioBenefits = async function(){
     jt_phone_title: document.getElementById('bf_jt_phone_title').value.trim() || '핸드폰도 변경',
     jt_phone_desc: document.getElementById('bf_jt_phone_desc').value.trim() || '기기 교체 포함'
   };
-  await db.ref('allinone/planFeats').set(data);
-  toast('설정이 저장되었습니다.');
+  try {
+    const result = await db.ref('allinone/planFeats').set(data);
+    console.log('[AIO Admin] planFeats 저장 결과:', JSON.stringify(result));
+    console.log('[AIO Admin] 저장 데이터 show_phone:', data.show_phone, 'show_public:', data.show_public);
+    toast('✅ 저장 완료! (랜딩 새로고침 시 반영)');
+  } catch(e) {
+    console.error('[AIO Admin] 저장 실패:', e);
+    alert('저장 실패: ' + e.message);
+  }
 };
 </script>
 </body>
