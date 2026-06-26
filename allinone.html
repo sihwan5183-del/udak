@@ -336,9 +336,9 @@ a{text-decoration:none;color:inherit}
     <!-- 할인방식 선택 -->
     <div class="disc-card" id="discCard">
       <div class="disc-ttl">💳 할인 방식 선택</div>
-      <div class="disc-btns">
-        <button class="disc-btn on" id="dbPub" onclick="selDisc('pub')">공시지원금</button>
-        <button class="disc-btn" id="dbSel" onclick="selDisc('sel')">선택약정 25%</button>
+      <div class="disc-btns" id="discBtns">
+        <button class="disc-btn" id="dbPub" onclick="selDisc('pub')">공시지원금</button>
+        <button class="disc-btn on" id="dbSel" onclick="selDisc('sel')">선택약정 25%</button>
       </div>
     </div>
 
@@ -720,23 +720,36 @@ function sel(type, val) {
     document.getElementById("jt_phone").style.background = val === "phone" ? "var(--navyLL)" : "#fff";
 
     if (val === "usim") {
-      // 기기 카드 숨김
+      // 유심만 → 선택약정만
       document.getElementById("sc_dev").style.display = "none";
       document.getElementById("sc_stor").style.display = "none";
       document.getElementById("rs_dev_row").style.display = "none";
       document.getElementById("rs_stor_row").style.display = "none";
-      // 할인방식 + 요금제
+      // 할인방식 선택약정만 표시
+      S.disc = "sel";
       document.getElementById("discCard").classList.add("show");
+      var dbPub = document.getElementById("dbPub");
+      var dbSel = document.getElementById("dbSel");
+      if(dbPub){ dbPub.style.display="none"; }
+      if(dbSel){ dbSel.classList.add("on"); }
+      setSum("disc", "선택약정 25%");
       unlock("sc_plan");
       document.getElementById("sn_plan").textContent = "4";
       setTimeout(function(){ closeMo(); setTimeout(function(){openMo("plan");}, 300); }, 300);
     } else {
-      // 기기 카드 표시
+      // 핸드폰 변경 → 공시/선약 둘 다
       document.getElementById("sc_dev").style.display = "block";
       document.getElementById("sc_stor").style.display = "block";
       document.getElementById("rs_dev_row").style.display = "flex";
       document.getElementById("rs_stor_row").style.display = "flex";
+      // 할인방식 둘 다 표시, 기본 공시
+      S.disc = "pub";
       document.getElementById("discCard").classList.add("show");
+      var dbPub = document.getElementById("dbPub");
+      var dbSel = document.getElementById("dbSel");
+      if(dbPub){ dbPub.style.display=""; dbPub.classList.add("on"); }
+      if(dbSel){ dbSel.classList.remove("on"); }
+      setSum("disc", "공시지원금");
       unlock("sc_dev");
       document.getElementById("sn_plan").textContent = "6";
       document.getElementById("sn_stor").textContent = "5";
@@ -846,7 +859,8 @@ function confirmStor() {
 function selPlanTab(price) {
   currentPlanTab = price;
   document.querySelectorAll(".plan-tab").forEach(function(b){b.classList.remove("on");});
-  document.getElementById("pt_"+price).classList.add("on");
+  var el = document.getElementById("pt_"+price);
+  if(el) el.classList.add("on");
   renderPlanDetail(price);
 }
 function renderPlanDetail(price) {
