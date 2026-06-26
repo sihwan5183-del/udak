@@ -51,9 +51,9 @@ a{text-decoration:none;color:inherit}
 /* ══ 스텝 카드 ══ */
 .step-cards{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
 .step-section-inner{max-width:600px}
-.step-card{background:#fff;border-radius:10px;border:1.5px solid var(--g200);cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,.06);transition:border-color .2s,box-shadow .2s;overflow:hidden}
+.step-card{background:#fff;border-radius:10px;border:2px solid var(--g200);cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,.06);transition:border-color .2s,box-shadow .2s;overflow:hidden}
 .step-card:hover{border-color:var(--navy3)}
-.step-card.selected{border-color:var(--navy);background:var(--navyLL)}
+.step-card.selected{border-color:var(--navy);background:var(--navyLL);border-width:2px}
 .step-card.locked{opacity:.4;pointer-events:none}
 .step-card-inner{display:flex;align-items:center;gap:10px;padding:11px 14px}
 .step-num{width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -67,7 +67,7 @@ a{text-decoration:none;color:inherit}
 .step-card.selected .step-arr{color:var(--navy)}
 
 /* 할인방식 카드 */
-.disc-card{background:#fff;border-radius:var(--radius);border:1.5px solid var(--g200);padding:16px 18px;margin-bottom:10px;display:none}
+.disc-card{background:#fff;border-radius:var(--radius);border:2px solid var(--g200);padding:16px 18px;margin-bottom:10px;display:none}
 .disc-card.show{display:block}
 .disc-ttl{font-size:12px;font-weight:700;color:var(--g500);margin-bottom:10px}
 .disc-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -75,7 +75,7 @@ a{text-decoration:none;color:inherit}
 .disc-btn.on{border-color:var(--navy);background:var(--navy);color:#fff}
 
 /* 결합인원 카드 */
-.mem-card{background:#fff;border-radius:var(--radius);border:1.5px solid var(--g200);padding:16px 18px;margin-bottom:10px;display:none}
+.mem-card{background:#fff;border-radius:var(--radius);border:2px solid var(--g200);padding:16px 18px;margin-bottom:10px;display:none}
 .mem-card.show{display:block}
 .mem-ttl{font-size:12px;font-weight:700;color:var(--g500);margin-bottom:10px}
 .mem-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
@@ -85,7 +85,7 @@ a{text-decoration:none;color:inherit}
 .mem-btn-sub{font-size:10px;font-weight:500;margin-top:2px;display:block}
 
 /* ══ 요약 시트 (우측 PC) ══ */
-.sum-sheet{background:#fff;border-radius:var(--radius);border:1.5px solid var(--g200);padding:20px;position:sticky;top:72px;box-shadow:0 4px 20px rgba(0,0,0,.06);margin-top:160px}
+.sum-sheet{background:#fff;border-radius:var(--radius);border:2px solid var(--g300);padding:20px;position:sticky;top:72px;box-shadow:0 4px 20px rgba(0,0,0,.1);margin-top:150px}
 .sum-title{font-size:13px;font-weight:700;color:var(--g500);padding-bottom:12px;border-bottom:1px solid var(--g200);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
 .sum-auto{font-size:10px;font-weight:600;color:var(--navy3);background:var(--navyL);padding:3px 8px;border-radius:20px}
 .sum-row{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;font-size:12px;border-bottom:1px solid var(--g100)}
@@ -126,7 +126,7 @@ a{text-decoration:none;color:inherit}
 .cta-btn:active{background:var(--navy2)}
 
 /* ══ 추가혜택 섹션 ══ */
-.bonus-section{background:#fff;border-radius:var(--radius);border:1.5px solid var(--g200);padding:20px;margin-bottom:10px;display:none}
+.bonus-section{background:#fff;border-radius:var(--radius);border:2px solid var(--g200);padding:20px;margin-bottom:10px;display:none}
 .bonus-section.show{display:block}
 .bonus-sec-ttl{font-size:15px;font-weight:800;color:var(--g800);margin-bottom:4px}
 .bonus-sec-sub{font-size:12px;color:var(--g400);margin-bottom:16px}
@@ -155,7 +155,7 @@ a{text-decoration:none;color:inherit}
 .ott-opt.on span{color:var(--navy)}
 
 /* ══ 폼 ══ */
-.form-wrap{background:#fff;border-radius:var(--radius);border:1.5px solid var(--g200);padding:22px;margin-bottom:10px}
+.form-wrap{background:#fff;border-radius:var(--radius);border:2px solid var(--g200);padding:22px;margin-bottom:10px}
 .form-ttl{font-size:15px;font-weight:800;color:var(--g800);margin-bottom:16px}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:600px){.form-grid{grid-template-columns:1fr}}
