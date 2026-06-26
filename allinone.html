@@ -38,7 +38,7 @@ a{text-decoration:none;color:inherit}
 @media(max-width:767px){.step-bar{display:block}}
 
 /* ══ 메인 레이아웃 ══ */
-.aio-wrap{max-width:1180px;margin:0 auto;padding:28px 20px;display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start}
+.aio-wrap{max-width:1100px;margin:0 auto;padding:28px 20px;display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start}
 @media(max-width:900px){.aio-wrap{grid-template-columns:1fr;padding:20px 16px}}
 
 /* ══ 히어로 ══ */
@@ -54,7 +54,7 @@ a{text-decoration:none;color:inherit}
 .step-card:hover{border-color:var(--navy3)}
 .step-card.selected{border-color:var(--navy);background:var(--navyLL)}
 .step-card.locked{opacity:.4;pointer-events:none}
-.step-card-inner{display:flex;align-items:center;gap:14px;padding:14px 18px}
+.step-card-inner{display:flex;align-items:center;gap:12px;padding:12px 16px}
 .step-num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .step-card.locked .step-num{background:var(--g300)}
 .step-card.selected .step-num{background:var(--navy)}
@@ -373,15 +373,9 @@ a{text-decoration:none;color:inherit}
       <div class="mem-ttl">👨‍👩‍👧‍👦 가족 결합 인원</div>
       <div style="font-size:11px;color:var(--g400);margin-bottom:10px;line-height:1.5">LG U+ 고객 또는 가족분들이 함께 통신사 이동 시<br>인원수에 따라 추가 할인 혜택이 적용됩니다.</div>
       <div class="mem-btns">
-        <button class="mem-btn" onclick="selMem(1)">
-          1인<span class="mem-btn-sub">본인만</span>
-        </button>
-        <button class="mem-btn" onclick="selMem(2)">
-          2인<span class="mem-btn-sub">-10,000원</span>
-        </button>
-        <button class="mem-btn" onclick="selMem(4)">
-          4인<span class="mem-btn-sub">-20,000원</span>
-        </button>
+        <button class="mem-btn" onclick="selMem(1)">1인<span class="mem-btn-sub">기본</span></button>
+        <button class="mem-btn" onclick="selMem(2)">2인<span class="mem-btn-sub">-10,000원</span></button>
+        <button class="mem-btn" onclick="selMem(4)">4인<span class="mem-btn-sub">-20,000원</span></button>
       </div>
     </div>
 
@@ -915,24 +909,25 @@ function calcFee() {
   var orig = S.plan;
   var isTasa = S.mcar && S.mcar !== "LGU+";
   var cash = isTasa ? CASH[S.mem] : 0;
-  var memDisc = (S.mem - 1) * 10000; // 인원별 할인
-  var discRate = S.disc === "sel" ? 0.25 : 0;
+  // 가족할인: 1인=0원, 2인=-1만원, 4인=-2만원
+  var memDisc = (S.mem === 1 ? 0 : S.mem === 2 ? 10000 : 20000);
+  // 선택약정: 원래요금 25% 할인 후 가족할인
+  // 공시지원금: 원래요금 그대로 가족할인만
   var afterDisc = S.disc === "sel" ? Math.round(orig * 0.75) : orig;
   var finalFee = afterDisc - memDisc;
 
-  // 단계별 계산 steps
   var steps = [];
-  steps.push({label: "기본 요금제", val: orig.toLocaleString()+"원", cls:""});
+  steps.push({label:"기본 요금제", val:orig.toLocaleString()+"원", cls:""});
   if (S.disc === "sel") {
-    steps.push({label: "선택약정 25% 할인", val: "-"+Math.round(orig*0.25).toLocaleString()+"원", cls:"disc"});
-    steps.push({label: "선택약정 적용 후", val: afterDisc.toLocaleString()+"원", cls:"total"});
+    steps.push({label:"선택약정 25% 할인", val:"-"+Math.round(orig*0.25).toLocaleString()+"원", cls:"disc"});
+    steps.push({label:"선택약정 적용 후", val:afterDisc.toLocaleString()+"원", cls:"total"});
   }
-  if (S.mem > 1) {
-    steps.push({label: "가족 "+S.mem+"인 결합 할인", val: "-"+memDisc.toLocaleString()+"원", cls:"disc"});
+  if (memDisc > 0) {
+    steps.push({label:"가족 "+S.mem+"인 결합 할인", val:"-"+memDisc.toLocaleString()+"원", cls:"disc"});
   }
-  steps.push({label: "최종 예상 월 요금", val: finalFee.toLocaleString()+"원", cls:"total"});
+  steps.push({label:"최종 예상 월 요금", val:finalFee.toLocaleString()+"원", cls:"total"});
   if (isTasa && cash > 0) {
-    steps.push({label: "타사 이동 현금 혜택", val: "+"+cash+"만원 별도 지급", cls:"disc"});
+    steps.push({label:"타사 이동 현금 혜택", val:"+"+cash+"만원 별도 지급", cls:"disc"});
   }
 
   var stepsHtml = steps.map(function(s){
@@ -944,18 +939,16 @@ function calcFee() {
   var fsEl = document.getElementById("feeSteps");
   if (fsEl) fsEl.innerHTML = stepsHtml;
   var fv = document.getElementById("feeVal");
-  if (fv) fv.textContent = finalFee.toLocaleString() + "원";
+  if (fv) fv.textContent = finalFee.toLocaleString()+"원";
   var cb = document.getElementById("cashBadge");
   if (cb) {
-    if (cash > 0) {
-      cb.style.display = "block";
-      cb.textContent = "💰 타사 이동 현금 혜택 +" + cash + "만원 별도 지급";
-    } else cb.style.display = "none";
+    if (cash > 0) { cb.style.display="block"; cb.textContent="💰 타사 이동 현금 혜택 +"+cash+"만원 별도 지급"; }
+    else cb.style.display="none";
   }
   var mf = document.getElementById("mob_fee");
-  if (mf) mf.textContent = finalFee.toLocaleString() + "원" + (cash>0?" (+현금 "+cash+"만원)":"");
-  window._fee = finalFee; window._cash = cash;
-  window._feeMemo = "월 "+finalFee.toLocaleString()+"원"+(cash>0?" + 현금 "+cash+"만원":"");
+  if (mf) mf.textContent = finalFee.toLocaleString()+"원"+(cash>0?" (+현금 "+cash+"만원)":"");
+  window._fee=finalFee; window._cash=cash;
+  window._feeMemo="월 "+finalFee.toLocaleString()+"원"+(cash>0?" + 현금 "+cash+"만원":"");
 }
 
 function calcInstall() {
