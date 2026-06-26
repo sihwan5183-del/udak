@@ -710,6 +710,7 @@ function loadData() {
     // planFeats로 PLAN_FEATS 동적 업데이트
     if (pfS && pfS.exists() && pfS.val()) {
       var pf = pfS.val();
+      window._planFeats = pf; // 추가혜택 총액 계산용
       var wn = pf.watch_name||'갤럭시 워치8 40mm';
       var wd = (pf.watch_device||489500).toLocaleString();
       var wm = (pf.watch_monthly||11000).toLocaleString();
@@ -1123,11 +1124,13 @@ function updateBonusSummary() {
   var monthly = 0;
   keys.forEach(function(k){ monthly += (monthlyMap[k]||0); });
   // 기기별 면제 금액 (항목별 개별)
+  // Firebase planFeats 값 반영
+  var pf = window._planFeats || {};
   var deviceItemMap = {
-    "갤럭시 워치8 40mm": {device:489500, monthly:11000},
-    "갤럭시탭 A11+": {device:448800, monthly:22000},
-    "인터넷 요금 500MB 기준": {device:0, monthly:33000},
-    "자녀 요금 추가 할인": {device:0, monthly:33000}
+    "갤럭시 워치8 40mm": {device: pf.watch_device||489500, monthly: pf.watch_monthly||11000},
+    "갤럭시탭 A11+": {device: pf.tab_device||448800, monthly: pf.tab_monthly||22000},
+    "인터넷 요금 500MB 기준": {device:0, monthly: pf.internet_monthly||33000},
+    "자녀 요금 추가 할인": {device:0, monthly: pf.child_discount||33000}
   };
 
   // 총액 박스 - 항목별 행 생성
@@ -1150,19 +1153,21 @@ function updateBonusSummary() {
           '</div>';
       }
     });
-    if(!deviceRows) deviceRows = '<div style="font-size:12px;color:var(--g300);padding:4px 0">해당없음</div>';
+    // 기기값 없으면 왼쪽 비움
 
     var monthlyRows = "";
     keys.forEach(function(k){
       var info = deviceItemMap[k];
       if(info && info.monthly > 0) {
+        var isChildDisc = k.includes("자녀");
         monthlyRows += '<div style="font-size:12px;padding:4px 0;border-bottom:1px solid var(--g100)">' +
           '<div style="color:var(--g500);font-size:11px">' + k + '</div>' +
-          '<div style="font-weight:800;color:#16a34a;font-size:14px">월 ' + info.monthly.toLocaleString() + '원</div>' +
-          '</div>';
+          '<div style="font-weight:800;color:#16a34a;font-size:14px">' +
+          (isChildDisc ? '월 -' : '월 ') + info.monthly.toLocaleString() + '원 면제' +
+          '</div></div>';
       }
     });
-    if(!monthlyRows) monthlyRows = '<div style="font-size:12px;color:var(--g300);padding:4px 0">해당없음</div>';
+    if(!monthlyRows) monthlyRows = '';
 
     if(devTotalEl) devTotalEl.innerHTML = deviceRows;
     if(monTotalEl) monTotalEl.innerHTML = monthlyRows;
