@@ -575,7 +575,7 @@ a{text-decoration:none;color:inherit}
 </div>
 
 <!-- 요금제 모달 -->
-<div class="mo-sheet" id="mo_plan" style="display:none;flex-direction:column">
+<div class="mo-sheet" id="mo_plan">
   <div class="mo-handle"></div>
   <div class="mo-head"><span class="mo-title">요금제 선택</span><button class="mo-close" onclick="closeMo()">×</button></div>
   <div class="plan-tabs" style="padding:0 20px 12px;flex-shrink:0">
@@ -775,7 +775,12 @@ function goBanner(i) {
 }
 
 function applySettings() {
-  // 공시지원금 OFF
+  // 핸드폰도 변경 옵션 OFF → jt 모달에서 해당 버튼 숨김
+  var jtPhone = document.getElementById('jt_phone');
+  if (jtPhone) {
+    jtPhone.style.display = (window._showPhone === false) ? 'none' : '';
+  }
+  // 공시지원금 OFF → 선택약정만 표시
   if (window._showPublic === false) {
     S.disc = 'sel';
     var dbPub = document.getElementById('dbPub');
@@ -783,6 +788,10 @@ function applySettings() {
     if(dbPub) dbPub.style.display = 'none';
     if(dbSel) dbSel.classList.add('on');
     setSum('disc', '선택약정 25%');
+  } else {
+    var dbPub2 = document.getElementById('dbPub');
+    var dbSel2 = document.getElementById('dbSel');
+    if(dbPub2) dbPub2.style.display = '';
   }
 }
 
@@ -1093,8 +1102,15 @@ function renderPlanDetail(price) {
 }
 function selPlan(price) {
   S.plan = price;
-  var names = {95000:"플러스스플랜 95",115000:"플러스스플랜 115",130000:"플러스스플랜 130"};
-  setVal("plan", names[price]); setSum("plan", names[price]);
+  // Firebase planArr에서 이름 가져오기, 없으면 PLAN_FEATS 참조
+  var planName = '';
+  if (window._planArr) {
+    var found = window._planArr.find(function(p){ return p.price === price; });
+    if (found) planName = found.name;
+  }
+  if (!planName && PLAN_FEATS[price]) planName = PLAN_FEATS[price].name;
+  if (!planName) planName = '플러스플랜 ' + (price/1000);
+  setVal("plan", planName); setSum("plan", planName);
   calcFee();
   // 결합인원 카드 표시
   document.getElementById("memCard").classList.add("show");
@@ -1355,7 +1371,14 @@ function doSubmit() {
 
   var devStr = S.dev ? S.dev.name + (S.stor?" "+S.stor.name:"") + (S.col?" "+(S.col.name.split("|")[1]||""):"") : "–";
   var bonusStr = Object.keys(S.bonus).map(function(k){return k+(S.bonus[k]!==true?"("+S.bonus[k]+")":"");}).join(" / ")||"–";
-  var planNames = {95000:"플러스스플랜95",115000:"플러스스플랜115",130000:"플러스스플랜130"};
+  // Firebase _planArr에서 현재 선택된 요금제 이름 가져오기
+  var planName4memo = "";
+  if (window._planArr && S.plan) {
+    var fp = window._planArr.find(function(p){ return p.price === S.plan; });
+    if (fp) planName4memo = fp.name;
+  }
+  if (!planName4memo && PLAN_FEATS[S.plan]) planName4memo = PLAN_FEATS[S.plan].name;
+  if (!planName4memo && S.plan) planName4memo = "플러스플랜 " + (S.plan/1000);
 
   var memo = [
     "[올인원]",
@@ -1364,7 +1387,7 @@ function doSubmit() {
     "진행방식:" + (S.jt==="usim"?"유심만 변경":"핸드폰도 변경"),
     "선택기기:" + devStr,
     "할인방식:" + (S.disc==="pub"?"공시지원금":"선택약정"),
-    "요금제:" + (S.plan?planNames[S.plan]:"–"),
+    "요금제:" + (S.plan?planName4memo:"–"),
     "결합인원:" + (S.mem?S.mem+"인":"–"),
     "예상월요금:" + (window._fee?window._fee.toLocaleString()+"원":"–"),
     "현금혜택:" + (window._cash&&window._cash>0?window._cash+"만원":"해당없음"),
