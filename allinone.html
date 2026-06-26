@@ -141,6 +141,12 @@ a{text-decoration:none;color:inherit}
 .bi-price{font-size:11px;color:var(--g500);margin-top:3px;display:flex;flex-direction:column;gap:2px}
 .bi-price .bp-device{color:var(--navy);font-weight:600}
 .bi-price .bp-monthly{color:var(--g500)}
+/* 상세 혜택 패널 */
+.bi-detail{display:none;padding:10px 14px 12px 56px;background:var(--navyLL);border-top:1px solid var(--navyL)}
+.bi-detail.show{display:block}
+.bi-detail-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px}
+.bi-detail-lbl{color:var(--g500);font-weight:500}
+.bi-detail-val{color:var(--navy);font-weight:800;font-size:13px}
 .bi-chk{width:22px;height:22px;border-radius:50%;border:2px solid var(--g300);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;flex-shrink:0;transition:all .15s}
 .bonus-item.on .bi-chk{background:var(--navy);border-color:var(--navy);color:#fff}
 
@@ -1098,6 +1104,10 @@ function toggleBonus(id, name, isOtt) {
   var on = el.classList.toggle("on");
   if (on) S.bonus[name] = true;
   else { delete S.bonus[name]; }
+  // 상세 패널 토글
+  var detail = document.getElementById("bd_" + id);
+  if (detail) detail.classList.toggle("show", on);
+  // OTT 선택 패널
   if (isOtt) {
     var ottRow = document.getElementById("ott_" + id);
     if (ottRow) ottRow.classList.toggle("show", on);
