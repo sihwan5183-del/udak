@@ -977,6 +977,10 @@ function selDisc(type) {
   document.getElementById("dbSel").classList.toggle("on", type === "sel");
   setSum("disc", type === "pub" ? "공시지원금" : "선택약정 25%");
   calcFee();
+  // 할인방식 선택 완료 → 기기 선택 필요없는 경우 plan으로 이동
+  // (핸드폰 변경 경로는 기기/용량 선택 후 plan으로 자동이동하므로 여기선 sc_plan만 unlock)
+  unlock("sc_plan");
+  setTimeout(function(){ openMo("plan"); }, 200);
 }
 
 /* 결합인원 */
@@ -1063,6 +1067,7 @@ function confirmStor() {
   // 설치비 반영
   document.getElementById("rs_install_row").style.display = "flex";
   calcInstall();
+  unlock("sc_plan");
   closeMo();
   setTimeout(function(){openMo("plan");}, 300);
 }
