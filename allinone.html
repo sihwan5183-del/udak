@@ -446,7 +446,7 @@ a{text-decoration:none;color:inherit}
     <div class="sum-row"><span class="sum-k">진행 방식</span><span class="sum-v ph" id="rs_jt">–</span></div>
     <div class="sum-row" id="rs_dev_row" style="display:none"><span class="sum-k">선택 기기</span><span class="sum-v ph" id="rs_dev">–</span></div>
     <div class="sum-row" id="rs_stor_row" style="display:none"><span class="sum-k">용량 / 색상</span><span class="sum-v ph" id="rs_stor">–</span></div>
-    <div class="sum-row"><span class="sum-k">할인 방식</span><span class="sum-v" id="rs_disc">공시지원금</span></div>
+    <div class="sum-row"><span class="sum-k">할인 방식</span><span class="sum-v ph" id="rs_disc">–</span></div>
     <div class="sum-row"><span class="sum-k">요금제</span><span class="sum-v ph" id="rs_plan">–</span></div>
     <div class="sum-row"><span class="sum-k">결합 인원</span><span class="sum-v ph" id="rs_mem">–</span></div>
     <div class="sum-row" id="rs_install_row" style="display:none"><span class="sum-k">월 기기 할부금</span><span class="sum-v" id="rs_install">–</span></div>
@@ -618,7 +618,7 @@ var db = {
     var u = DB + "/" + p + ".json";
     return {
       once: function() {
-        return fetch(u).then(function(r){return r.json();}).then(function(d){
+        return fetch(u + '?t=' + Date.now()).then(function(r){return r.json();}).then(function(d){
           return {exists:function(){return d!==null&&d!==undefined;}, val:function(){return d;}};
         });
       },
@@ -841,6 +841,8 @@ function loadData() {
       // 핸드폰변경 옵션 제어
       window._showPhone = pf.show_phone !== false;
       window._showPublic = pf.show_public !== false;
+      console.log("[AIO] planFeats 로드 - show_phone:", pf.show_phone, "→ _showPhone:", window._showPhone);
+      console.log("[AIO] planFeats 로드 - show_public:", pf.show_public, "→ _showPublic:", window._showPublic);
       applySettings();
       var wn = pf.watch_name||'갤럭시 워치8 40mm';
       var wd = (pf.watch_device||489500).toLocaleString();
@@ -1458,6 +1460,7 @@ function doSubmit() {
 </script>
 </body>
 </html>
+
 
 
 
