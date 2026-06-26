@@ -1115,7 +1115,7 @@ function calcFee() {
   }
   steps.push({label:"최종 예상 월 요금", val:finalFee.toLocaleString()+"원", cls:"total"});
   if (isTasa && cash > 0) {
-    steps.push({label:"타사 이동 현금 혜택", val:"+"+cash+"만원 별도 지급", cls:"disc"});
+    steps.push({label:"U+ 이동 현금 혜택", val:"+"+cash+"만원 별도 지급", cls:"disc"});
   }
 
   var stepsHtml = steps.map(function(s){
@@ -1130,7 +1130,7 @@ function calcFee() {
   if (fv) fv.textContent = finalFee.toLocaleString()+"원";
   var cb = document.getElementById("cashBadge");
   if (cb) {
-    if (cash > 0) { cb.style.display="block"; cb.textContent="💰 타사 이동 현금 혜택 +"+cash+"만원 별도 지급"; }
+    if (cash > 0) { cb.style.display="block"; cb.textContent="💰 U+ 이동 현금 혜택 +"+cash+"만원 별도 지급"; }
     else cb.style.display="none";
   }
   var mf = document.getElementById("mob_fee");
