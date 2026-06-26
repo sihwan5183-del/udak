@@ -160,10 +160,10 @@ a{text-decoration:none;color:inherit}
 .form-cta:disabled{background:var(--g300)}
 
 /* ══ 모달 공통 ══ */
-.mo-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:400;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;align-items:center;justify-content:center;padding:20px}
-.mo-overlay.on{opacity:1;pointer-events:auto}
-.mo-sheet{position:relative;background:#fff;border-radius:20px;z-index:401;width:100%;max-width:480px;max-height:88vh;display:flex;flex-direction:column;transform:scale(.94) translateY(16px);opacity:0;transition:transform .25s cubic-bezier(.32,.72,0,1),opacity .25s;box-shadow:0 20px 60px rgba(0,0,0,.2)}
-.mo-sheet.on{transform:scale(1) translateY(0);opacity:1}
+.mo-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:400;display:none;align-items:center;justify-content:center;padding:20px}
+.mo-overlay.on{display:flex}
+.mo-sheet{position:relative;background:#fff;border-radius:20px;width:100%;max-width:480px;max-height:88vh;display:flex;flex-direction:column;transform:scale(.94) translateY(16px);opacity:0;transition:transform .25s cubic-bezier(.32,.72,0,1),opacity .25s;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.mo-overlay.on .mo-sheet.on{transform:scale(1) translateY(0);opacity:1}
 .mo-handle{display:none}
 .mo-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;flex-shrink:0;border-bottom:1px solid var(--g200)}
 .mo-title{font-size:17px;font-weight:800;color:var(--g800)}
