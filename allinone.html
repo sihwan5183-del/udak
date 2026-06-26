@@ -371,6 +371,7 @@ a{text-decoration:none;color:inherit}
     <!-- 결합 인원 -->
     <div class="mem-card" id="memCard">
       <div class="mem-ttl">👨‍👩‍👧‍👦 가족 결합 인원</div>
+      <div style="font-size:11px;color:var(--g400);margin-bottom:10px;line-height:1.5">LG U+ 고객 또는 가족분들이 함께 통신사 이동 시<br>인원수에 따라 추가 할인 혜택이 적용됩니다.</div>
       <div class="mem-btns">
         <button class="mem-btn" onclick="selMem(1)">
           1인<span class="mem-btn-sub">본인만</span>
@@ -387,7 +388,7 @@ a{text-decoration:none;color:inherit}
     <!-- 추가혜택 섹션 -->
     <div class="bonus-section" id="bonusSec">
       <div class="bonus-sec-ttl">🎁 추가 혜택 선택</div>
-      <div class="bonus-sec-sub">선택하신 요금제에 포함된 무료 혜택입니다</div>
+      <div class="bonus-sec-sub">선택하신 요금제에 포함된 무료 혜택입니다 · <span id="bonusSecTotal" style="font-weight:700;color:var(--navy)"></span></div>
       <div class="bonus-items" id="bonusItems"></div>
     </div>
 
@@ -443,7 +444,7 @@ a{text-decoration:none;color:inherit}
 
     <!-- 추가혜택 요약 -->
     <div class="bonus-sum" id="bonusSumBox">
-      <div style="font-size:11px;font-weight:700;color:var(--g500);margin-bottom:6px">선택된 추가 혜택</div>
+      <div style="font-size:11px;font-weight:700;color:var(--g500);margin-bottom:6px;display:flex;justify-content:space-between">선택된 추가 혜택<span id="bonusTotalAmt" style="color:var(--navy);font-weight:800"></span></div>
       <div id="bonusSumItems"></div>
     </div>
 
@@ -704,10 +705,11 @@ function sel(type, val) {
     mo.querySelectorAll(".mo-opt").forEach(function(b){b.classList.toggle("on", b.textContent.trim() === val);});
   }
 
-  // 값 표시
-  var labels = {LGU:"LG U+", SKT:"SKT", KT:"KT", "알뜰폰":"알뜰폰", usim:"유심만 변경", phone:"핸드폰도 변경"};
-  setVal(type, val);
-  setSum(type, val);
+  // 값 표시 (jt는 한글로)
+  var displayVal = val;
+  if(type==="jt") displayVal = val==="usim" ? "유심만 변경" : "핸드폰도 변경";
+  setVal(type, displayVal);
+  setSum(type, displayVal);
   updateStepBar();
 
   // 다음 단계 처리
@@ -978,6 +980,14 @@ function renderBonusSec() {
   // 추가혜택 아이템 렌더 (데이터 무제한 제외, 요금제 포함 혜택)
   var bonusFeats = data.feats.filter(function(f){return f.name !== "데이터 무제한";});
 
+  // 요금제별 총 혜택가치 계산
+  var planTotalMap = {
+    95000: Math.round((489500+11000*24+33000*24)/10000),
+    115000: Math.round((489500+11000*24+448800+22000*24+33000*24)/10000),
+    130000: Math.round((489500+11000*24+448800+22000*24+33000*24+33000*24)/10000)
+  };
+  var secTotal = document.getElementById("bonusSecTotal");
+  if(secTotal) secTotal.textContent = "총 "+planTotalMap[plan]+"만원 상당 혜택";
   items.innerHTML = bonusFeats.map(function(f, i) {
     var id = "bi_" + i;
     var isOtt = f.name.includes("OTT");
@@ -1034,6 +1044,19 @@ function updateBonusSummary() {
     "OTT 1개 선택": "",
     "자녀 요금 추가 할인": "월 -33,000원"
   };
+  // 총 절약액 계산
+  var totalMap = {
+    "갤럭시 워치8 40mm": 489500 + 11000*24,
+    "갤럭시탭 A11+": 448800 + 22000*24,
+    "인터넷 요금 500MB 기준": 33000*24,
+    "OTT 1개 선택": 0,
+    "자녀 요금 추가 할인": 33000*24
+  };
+  var total = 0;
+  keys.forEach(function(k){ total += (totalMap[k]||0); });
+  var totalEl = document.getElementById("bonusTotalAmt");
+  if(totalEl && total > 0) totalEl.textContent = "총 "+Math.round(total/10000)+"만원 상당";
+
   items.innerHTML = keys.map(function(k) {
     var amt = amtMap[k] || "";
     var ottVal = S.bonus[k] !== true ? " ("+S.bonus[k]+")" : "";
