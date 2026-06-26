@@ -39,7 +39,7 @@ a{text-decoration:none;color:inherit}
 
 /* ══ 메인 레이아웃 ══ */
 .aio-wrap{max-width:880px;margin:0 auto;padding:24px 20px;display:grid;grid-template-columns:480px 1fr;gap:20px;align-items:start}
-@media(max-width:900px){.aio-wrap{grid-template-columns:1fr;padding:16px}}
+@media(max-width:900px){.aio-wrap{grid-template-columns:1fr;padding:16px;display:block}}
 
 /* ══ 히어로 ══ */
 .hero{margin-bottom:16px}
@@ -133,8 +133,8 @@ a{text-decoration:none;color:inherit}
 .bonus-items{display:flex;flex-direction:column;gap:8px}
 .bonus-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--g200);border-radius:10px;cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,.06);transition:all .15s;background:#fff}
 .bonus-item:hover{border-color:var(--navy3)}
-.bonus-item.on{border-color:var(--navy);background:var(--navyLL)}
-.bi-icon{font-size:22px;flex-shrink:0;width:36px;text-align:center}
+.bonus-item.on{border-color:var(--navy);background:#f0f4ff}
+.bi-icon{font-size:22px;flex-shrink:0;width:44px;height:44px;text-align:center;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:8px}
 .bi-info{flex:1}
 .bi-name{font-size:13px;font-weight:700;color:var(--g800)}
 .bonus-item.on .bi-name{color:var(--navy)}
@@ -142,7 +142,7 @@ a{text-decoration:none;color:inherit}
 .bi-price .bp-device{color:var(--navy);font-weight:600}
 .bi-price .bp-monthly{color:var(--g500)}
 /* 상세 혜택 패널 */
-.bi-detail{display:none;padding:10px 14px 12px 56px;background:var(--navyLL);border-top:1px solid var(--navyL)}
+.bi-detail{display:none;padding:10px 14px 12px 56px;background:#fff;border-top:1px solid var(--g100)}
 .bi-detail.show{display:block}
 .bi-detail-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px}
 .bi-detail-lbl{color:var(--g500);font-weight:500}
@@ -231,12 +231,12 @@ a{text-decoration:none;color:inherit}
 .plan-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
 .plan-tab{padding:10px 6px;border:1.5px solid var(--g200);border-radius:8px;font-size:13px;font-weight:700;color:var(--g500);background:#fff;text-align:center;cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,.06);transition:all .15s;line-height:1.4}
 .plan-tab.on{border-color:var(--navy);background:var(--navy);color:#fff}
-.plan-detail{border:1.5px solid var(--navyL);border-radius:10px;padding:16px;background:var(--navyLL)}
-.plan-icon{font-size:32px;text-align:center;margin-bottom:8px}
+.plan-detail{border:1.5px solid var(--navyL);border-radius:10px;padding:16px;background:#fff}
+.plan-icon{font-size:52px;text-align:center;margin-bottom:10px}
 .plan-name{font-size:18px;font-weight:800;color:var(--navy);text-align:center;margin-bottom:12px}
 .plan-feats{display:flex;flex-direction:column;gap:8px}
-.plan-feat{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--g700)}
-.plan-feat-icon{font-size:18px;flex-shrink:0}
+.plan-feat{display:flex;align-items:center;gap:14px;font-size:13px;color:var(--g700);padding:4px 0}
+.plan-feat-icon{font-size:36px;flex-shrink:0;width:44px;text-align:center}
 .plan-feat-txt{flex:1}
 .plan-feat-txt s{color:var(--g400);font-size:12px}
 .plan-feat-txt strong{color:var(--navy);font-weight:800;font-size:14px}
@@ -257,7 +257,6 @@ a{text-decoration:none;color:inherit}
 .mob-fee strong{font-size:18px;font-weight:900;color:var(--navy);display:block}
 .mob-cta{flex:1;max-width:180px;padding:12px;background:var(--navy);color:#fff;border-radius:10px;font-size:13px;font-weight:800;text-align:center;-webkit-tap-highlight-color:rgba(0,0,0,.06)}
 /* 모바일에서도 우측 요약시트 표시 (스크롤 후) */
-@media(max-width:900px){.sum-sheet{display:block;position:static;margin-top:16px;border-radius:var(--radius)}}
 
 /* ══ 성공 모달 ══ */
 .succ-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center;padding:20px}
@@ -265,7 +264,8 @@ a{text-decoration:none;color:inherit}
 .succ-box{background:#fff;border-radius:16px;padding:32px 24px;max-width:360px;width:100%;text-align:center}
 .succ-close{width:100%;padding:12px;background:var(--navy);color:#fff;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:16px;-webkit-tap-highlight-color:rgba(0,0,0,.06)}
 
-@media(max-width:900px){.sum-sheet{display:block;position:static;margin-top:16px;margin-bottom:16px}}
+@media(max-width:900px){.sum-sheet{display:none;position:static;margin-top:0;margin-bottom:16px;border-radius:var(--radius)}}
+@media(max-width:900px){.sum-sheet.mob-show{display:block}}
 @media(max-width:900px){body{padding-bottom:120px}}
 </style>
 </head>
@@ -667,8 +667,8 @@ var PLAN_FEATS = {
     icon: "📶",
     feats: [
       {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
-      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
-      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 33,000원"}
+      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
+      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 33,000원"}
     ]
   },
   115000: {
@@ -676,9 +676,9 @@ var PLAN_FEATS = {
     icon: "📶",
     feats: [
       {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
-      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
-      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tab.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
-      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 33,000원"},
+      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
+      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tab.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
+      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 33,000원"},
       {icon:"📺", name:"OTT 1개 선택", device:"", monthly:"넷플릭스 · 디즈니+ · 티빙"}
     ]
   },
@@ -687,9 +687,9 @@ var PLAN_FEATS = {
     icon: "📶",
     feats: [
       {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
-      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
-      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tab.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
-      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 33,000원"},
+      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
+      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tab.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
+      {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 33,000원"},
       {icon:"📺", name:"OTT 1개 선택", device:"", monthly:"넷플릭스 · 디즈니+ · 티빙"},
       {icon:"👧", name:"자녀 요금 할인", device:"", monthly:"월 -33,000원 (만 19세 미만)"}
     ]
@@ -704,6 +704,16 @@ var currentPlanTab = 95000;
 document.addEventListener("DOMContentLoaded", function() {
   loadData();
   loadBanners();
+
+  // 모바일에서 요약시트를 상담폼(formWrap) 바로 위로 이동
+  if (window.innerWidth <= 900) {
+    var sumSheet = document.querySelector(".sum-sheet");
+    var formWrap = document.getElementById("formWrap");
+    if (sumSheet && formWrap && formWrap.parentNode) {
+      formWrap.parentNode.insertBefore(sumSheet, formWrap);
+      sumSheet.classList.add("mob-show");
+    }
+  }
 });
 
 function updatePlanTabs(planArr) {
@@ -841,13 +851,13 @@ function loadData() {
       var im = (pf.internet_monthly||33000).toLocaleString();
       var cd = (pf.child_discount||33000).toLocaleString();
       PLAN_FEATS[95000].feats[1] = {icon:"⌚", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
-      PLAN_FEATS[95000].feats[2] = {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
+      PLAN_FEATS[95000].feats[2] = {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
       PLAN_FEATS[115000].feats[1] = {icon:"⌚", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
       PLAN_FEATS[115000].feats[2] = {icon:"📱", name:tn, device:"기기값 "+td+"원", monthly:"월 요금 "+tm+"원"};
-      PLAN_FEATS[115000].feats[3] = {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
+      PLAN_FEATS[115000].feats[3] = {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
       PLAN_FEATS[130000].feats[1] = {icon:"⌚", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
       PLAN_FEATS[130000].feats[2] = {icon:"📱", name:tn, device:"기기값 "+td+"원", monthly:"월 요금 "+tm+"원"};
-      PLAN_FEATS[130000].feats[3] = {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:22px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
+      PLAN_FEATS[130000].feats[3] = {icon:"<img src=\"https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 요금 "+im+"원"};
       PLAN_FEATS[130000].feats[5] = {icon:"👧", name:"자녀 요금 할인", device:"", monthly:"월 -"+cd+"원 (만 19세 미만)"};
       // bonus 금액 맵도 업데이트
       window._bonusAmtMap = {
@@ -1003,7 +1013,10 @@ function selMem(n) {
   // 추가혜택 표시
   renderBonusSec();
   setTimeout(function(){
-    document.getElementById("bonusSec").scrollIntoView({behavior:"smooth",block:"start"});
+    var target = window.innerWidth <= 900
+      ? document.querySelector(".sum-sheet")
+      : document.getElementById("bonusSec");
+    if (target) target.scrollIntoView({behavior:"smooth",block:"start"});
   }, 300);
 }
 
@@ -1439,4 +1452,5 @@ function doSubmit() {
 </script>
 </body>
 </html>
+
 
