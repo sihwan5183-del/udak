@@ -1525,15 +1525,12 @@ function selOtt(e, name, parentId) {
   parent.querySelectorAll(".ott-opt").forEach(function(b){b.classList.toggle("on", b.querySelector("span").textContent === name);});
   S.bonus["OTT"] = name;
   updateBonusSummary();
-  // OTT 선택 후 → 모바일: 요약시트, PC: 폼
+  // OTT 선택 후 → 요약시트로 스크롤 (모바일/PC 공통)
   setTimeout(function(){
-    var isMobile = window.innerWidth <= 768;
-    if (isMobile) {
-      var sumEl = document.querySelector(".sum-sheet");
-      if (sumEl) sumEl.scrollIntoView({behavior:"smooth", block:"start"});
-    } else {
-      var formEl = document.getElementById("formWrap");
-      if (formEl) formEl.scrollIntoView({behavior:"smooth", block:"start"});
+    var sumEl = document.querySelector(".sum-sheet");
+    if (sumEl) {
+      sumEl.classList.add("mob-show"); // 모바일에서 보이게
+      sumEl.scrollIntoView({behavior:"smooth", block:"start"});
     }
   }, 350);
 }
