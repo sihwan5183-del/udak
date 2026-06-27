@@ -1062,7 +1062,17 @@ function renderDevList() {
     return '<div class="dev-item" onclick="selDev(\'' + d.id + '\')">' +
       '<img class="dev-img" src="' + (d.img||"") + '" alt="' + d.name + '" onerror="this.style.display=\'none\'">' +
       '<div class="dev-info"><div class="dev-name">' + d.name + '</div>' +
-      '<div class="dev-price">' + (d.storageList&&d.storageList[0] ? d.storageList[0].price.toLocaleString()+"원~" : "") + '</div></div>' +
+      (function(){
+        if (!d.storageList||!d.storageList.length) return '<div class="dev-price"></div>';
+        var s = d.storageList.find(function(x){return x.name&&x.name.includes('256');}) || d.storageList[0];
+        if (s.msrp) {
+          var fin = s.msrp - (s.subsidy||0) - (s.udak||0);
+          var pct = Math.round((1-fin/s.msrp)*100);
+          return '<div class="dev-price" style="margin-top:3px"><del style="color:#9ca3af;font-size:10px">' + s.msrp.toLocaleString() + '원</del> <span style="color:#dc2626;font-weight:700;font-size:11px">' + pct + '%</span><br><span style="color:#1a237e;font-weight:800;font-size:13px">' + fin.toLocaleString() + '원~</span></div>';
+        }
+        return '<div class="dev-price">' + (s.price||0).toLocaleString() + '원~</div>';
+      })() +
+      '</div>' +
       '<div class="dev-chk">✓</div></div>';
   }).join("");
 }
