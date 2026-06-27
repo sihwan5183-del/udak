@@ -456,10 +456,17 @@ a{text-decoration:none;color:inherit}
             <div class="fg"><label class="flbl">신청자와의 관계</label>
               <select class="fi fsel" id="gRelation" onchange="checkGuardianFilled()">
                 <option value="">선택해주세요</option>
-                <option>부</option><option>모</option><option>조부</option><option>조모</option><option>기타</option>
+                <option>부모</option><option>친권자</option><option>후견인</option>
               </select>
             </div>
           </div>
+          <!-- 필수 체크박스 -->
+          <label style="display:flex;align-items:flex-start;gap:10px;margin-top:14px;cursor:pointer;padding:12px;background:#fef9f0;border-radius:8px;border:1.5px solid #f59e0b">
+            <input type="checkbox" id="gAgree" onchange="checkGuardianFilled()" style="width:18px;height:18px;margin-top:1px;flex-shrink:0;accent-color:#dc2626">
+            <span style="font-size:12px;color:#374151;line-height:1.7">
+              <strong style="color:#dc2626">[필수]</strong> 미성년자는 단독으로 통신 가입 및 기기 구매 진행이 어렵고, 법정대리인 동의 또는 확인이 필요함을 확인했습니다.
+            </span>
+          </label>
         </div>
       </div>
 
@@ -1322,6 +1329,18 @@ function selPlan(price) {
   // 추가혜택 바로 표시 + 자동 전체 선택
   renderBonusSec();
   setTimeout(function(){ autoSelectAllBonus(); }, 200);
+  // 모바일: OTT 항목 있으면 OTT로 스크롤, 없으면 폼으로
+  setTimeout(function(){
+    var isMobile = window.innerWidth <= 768;
+    if (!isMobile) return;
+    var ottEl = document.querySelector(".ott-row.show");
+    if (ottEl) {
+      ottEl.scrollIntoView({behavior:"smooth", block:"center"});
+    } else {
+      var formEl = document.getElementById("formWrap");
+      if (formEl) formEl.scrollIntoView({behavior:"smooth", block:"start"});
+    }
+  }, 500);
 }
 
 /* ════ 요금 계산 ════ */
@@ -1491,10 +1510,10 @@ function selOtt(e, name, parentId) {
   parent.querySelectorAll(".ott-opt").forEach(function(b){b.classList.toggle("on", b.querySelector("span").textContent === name);});
   S.bonus["OTT"] = name;
   updateBonusSummary();
-  // OTT 선택 후 → 요약시트로 스크롤
+  // OTT 선택 후 → 폼(상담 신청하기)으로 스크롤
   setTimeout(function(){
-    var sumEl = document.querySelector(".sum-sheet");
-    if (sumEl) sumEl.scrollIntoView({behavior:"smooth", block:"start"});
+    var formEl = document.getElementById("formWrap");
+    if (formEl) formEl.scrollIntoView({behavior:"smooth", block:"start"});
   }, 350);
 }
 
@@ -1640,6 +1659,8 @@ function checkMinor() {
   var isMinor = age !== null && age < 19;
   document.getElementById('minorWrap').style.display = isMinor ? 'block' : 'none';
   window._isMinor = isMinor;
+  var btn = document.getElementById('formBtn');
+  if (btn && !isMinor) { btn.disabled = false; btn.textContent = '상담 신청하기'; }
   checkGuardianFilled();
 }
 // ── 법정대리인 필드 채워졌는지 확인 → 버튼 활성/비활성
@@ -1650,7 +1671,11 @@ function checkGuardianFilled() {
   var gn = (document.getElementById('gName')||{}).value||'';
   var gb = (document.getElementById('gBirth')||{}).value||'';
   var gp = (document.getElementById('gPhone')||{}).value||'';
-  btn.disabled = !(gn.trim() && gb.trim().length===10 && gp.trim());
+  var agree = document.getElementById('gAgree');
+  var agreed = agree ? agree.checked : false;
+  var filled = gn.trim() && gb.trim().length===10 && gp.trim() && agreed;
+  btn.disabled = !filled;
+  btn.textContent = filled ? '법정대리인 확인 후 상담 신청' : '상담 신청하기';
 }
 
 function doSubmit() {
@@ -1728,8 +1753,10 @@ function doSubmit() {
     ["fName","fBirth","fPhone","fMemo","gName","gBirth","gPhone"].forEach(function(id){var e=document.getElementById(id);if(e)e.value="";});
     var ft=document.getElementById("fTime");if(ft)ft.value="";
     var gr=document.getElementById("gRelation");if(gr)gr.value="";
+    var ga=document.getElementById("gAgree");if(ga)ga.checked=false;
     window._isMinor=false;
     document.getElementById("minorWrap").style.display="none";
+    if(btn){btn.textContent="상담 신청하기";}
   }).catch(function(e){
     console.error(e); alert("오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
   }).finally(function(){
