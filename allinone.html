@@ -1744,7 +1744,7 @@ function isBusinessHour() {
   if (day === 0) return false; // 일요일 영업 안 함
   var h = now.getHours(), m = now.getMinutes();
   var mins = h * 60 + m;
-  return mins >= 9*60+30 && mins < 20*60;
+  return mins >= 10*60 && mins < 20*60;
 }
 
 // ── 완료 모달 렌더링
