@@ -420,7 +420,7 @@ a{text-decoration:none;color:inherit}
       <div style="font-size:12px;color:var(--g400);margin-bottom:14px">선택하신 조건이 모두 저장되어 상담 시 정확한 혜택 안내가 가능합니다.</div>
       <div class="form-grid">
         <div class="fg"><label class="flbl">이름 <em>*</em></label><input class="fi" id="fName" type="text" placeholder="이름을 입력해주세요"></div>
-        <div class="fg"><label class="flbl">생년월일</label><input class="fi" id="fBirth" type="text" placeholder="YYYY.MM.DD" maxlength="10"></div>
+        <div class="fg"><label class="flbl">생년월일 <em>*</em></label><input class="fi" id="fBirth" type="text" placeholder="YYYY.MM.DD" maxlength="10" oninput="onBirthInput(this)" onblur="checkMinor()"></div>
         <div class="fg"><label class="flbl">연락처 <em>*</em></label><input class="fi" id="fPhone" type="tel" placeholder="010-0000-0000"></div>
         <div class="fg"><label class="flbl">상담 가능 시간 <em>*</em></label>
           <select class="fi fsel" id="fTime">
@@ -434,6 +434,35 @@ a{text-decoration:none;color:inherit}
           <textarea class="fi" id="fMemo" style="height:70px;resize:vertical;padding:12px 14px" placeholder="추가로 남기실 내용을 자유롭게 작성해주세요"></textarea>
         </div>
       </div>
+
+      <!-- 미성년자 경고 + 법정대리인 폼 -->
+      <div id="minorWrap" style="display:none;margin-top:16px;border-radius:12px;border:2px solid #ef4444;overflow:hidden">
+        <div style="background:#fef2f2;padding:14px 16px;border-bottom:1px solid #fecaca">
+          <div style="font-size:13px;font-weight:800;color:#dc2626;margin-bottom:6px">⚠️ 미성년자 고객님으로 확인됩니다.</div>
+          <div style="font-size:12px;color:#374151;line-height:1.8">
+            입력하신 생년월일 기준 미성년자 고객님으로 확인됩니다.<br>
+            미성년자는 단독으로 통신 가입, 기기 구매, 요금제 변경 등의 진행이 어렵습니다.<br>
+            다만 <strong>법정대리인의 동의 또는 확인이 있는 경우</strong> 상담 및 개통 진행이 가능합니다.<br>
+            원활한 상담을 위해 아래 법정대리인 정보를 입력해주세요.<br>
+            <span style="color:#6b7280">※ 개통 단계에서는 신청자 및 법정대리인의 신분 확인 절차가 진행되며, 입력 정보가 실제 정보와 다를 경우 가입 또는 구매 진행이 제한될 수 있습니다.</span>
+          </div>
+        </div>
+        <div style="background:#fff;padding:16px">
+          <div style="font-size:12px;font-weight:800;color:#1a237e;margin-bottom:12px">👤 법정대리인 정보 입력</div>
+          <div class="form-grid">
+            <div class="fg"><label class="flbl">법정대리인 이름 <em>*</em></label><input class="fi" id="gName" type="text" placeholder="이름을 입력해주세요" oninput="checkGuardianFilled()"></div>
+            <div class="fg"><label class="flbl">법정대리인 생년월일 <em>*</em></label><input class="fi" id="gBirth" type="text" placeholder="YYYY.MM.DD" maxlength="10" oninput="onBirthInput(this);checkGuardianFilled()"></div>
+            <div class="fg"><label class="flbl">법정대리인 연락처 <em>*</em></label><input class="fi" id="gPhone" type="tel" placeholder="010-0000-0000" oninput="checkGuardianFilled()"></div>
+            <div class="fg"><label class="flbl">신청자와의 관계</label>
+              <select class="fi fsel" id="gRelation" onchange="checkGuardianFilled()">
+                <option value="">선택해주세요</option>
+                <option>부</option><option>모</option><option>조부</option><option>조모</option><option>기타</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="form-note">🔒 입력하신 정보는 상담 목적으로만 사용되며 안전하게 보호됩니다.</div>
       <button class="form-cta" id="formBtn" onclick="doSubmit()">상담 신청하기</button>
     </div>
@@ -1586,17 +1615,61 @@ function updateStepBar() {
 }
 
 /* ════ 폼 제출 ════ */
+// ── 생년월일 자동 점 삽입
+function onBirthInput(el) {
+  var v = el.value.replace(/\D/g,'');
+  if (v.length > 4) v = v.slice(0,4) + '.' + v.slice(4);
+  if (v.length > 7) v = v.slice(0,7) + '.' + v.slice(7);
+  el.value = v.slice(0,10);
+}
+// ── 만 나이 계산
+function calcAge(birthStr) {
+  var p = birthStr.replace(/\D/g,'');
+  if (p.length !== 8) return null;
+  var y=parseInt(p.slice(0,4)), m=parseInt(p.slice(4,6)), d=parseInt(p.slice(6,8));
+  if (!y||!m||!d) return null;
+  var now = new Date(), ny=now.getFullYear(), nm=now.getMonth()+1, nd=now.getDate();
+  var age = ny - y;
+  if (nm < m || (nm===m && nd < d)) age--;
+  return age;
+}
+// ── 미성년자 여부 확인 및 UI 제어
+function checkMinor() {
+  var birth = (document.getElementById('fBirth')||{}).value||'';
+  var age = calcAge(birth);
+  var isMinor = age !== null && age < 19;
+  document.getElementById('minorWrap').style.display = isMinor ? 'block' : 'none';
+  window._isMinor = isMinor;
+  checkGuardianFilled();
+}
+// ── 법정대리인 필드 채워졌는지 확인 → 버튼 활성/비활성
+function checkGuardianFilled() {
+  var btn = document.getElementById('formBtn');
+  if (!btn) return;
+  if (!window._isMinor) { btn.disabled = false; return; }
+  var gn = (document.getElementById('gName')||{}).value||'';
+  var gb = (document.getElementById('gBirth')||{}).value||'';
+  var gp = (document.getElementById('gPhone')||{}).value||'';
+  btn.disabled = !(gn.trim() && gb.trim().length===10 && gp.trim());
+}
+
 function doSubmit() {
   var name = (document.getElementById("fName")||{}).value||"";
   var phone = (document.getElementById("fPhone")||{}).value||"";
   var time = (document.getElementById("fTime")||{}).value||"";
-  if (!name.trim()||!phone.trim()||!time) { alert("이름, 연락처, 상담 가능 시간은 필수입니다."); return; }
+  var birth = (document.getElementById("fBirth")||{}).value||"";
+  if (!name.trim()||!phone.trim()||!time||!birth.trim()) { alert("이름, 생년월일, 연락처, 상담 가능 시간은 필수입니다."); return; }
+  // 미성년자인데 법정대리인 미입력
+  if (window._isMinor) {
+    var gn=(document.getElementById("gName")||{}).value||"";
+    var gp=(document.getElementById("gPhone")||{}).value||"";
+    if (!gn.trim()||!gp.trim()) { alert("미성년자 고객님은 법정대리인 정보를 입력해주세요."); return; }
+  }
   var btn = document.getElementById("formBtn");
   if (btn) { btn.disabled=true; btn.textContent="신청 중..."; }
 
   var devStr = S.dev ? S.dev.name + (S.stor?" "+S.stor.name:"") + (S.col?" "+(S.col.name.split("|")[1]||""):"") : "–";
   var bonusStr = Object.keys(S.bonus).map(function(k){return k+(S.bonus[k]!==true?"("+S.bonus[k]+")":"");}).join(" / ")||"–";
-  // Firebase _planArr에서 현재 선택된 요금제 이름 가져오기
   var planName4memo = "";
   if (window._planArr && S.plan) {
     var fp = window._planArr.find(function(p){ return p.price === S.plan; });
@@ -1604,6 +1677,12 @@ function doSubmit() {
   }
   if (!planName4memo && PLAN_FEATS[S.plan]) planName4memo = PLAN_FEATS[S.plan].name;
   if (!planName4memo && S.plan) planName4memo = "플러스플랜 " + (S.plan/1000);
+
+  // 법정대리인 정보
+  var gName  = (document.getElementById("gName")||{}).value||null;
+  var gBirth = (document.getElementById("gBirth")||{}).value||null;
+  var gPhone = (document.getElementById("gPhone")||{}).value||null;
+  var gRel   = (document.getElementById("gRelation")||{}).value||null;
 
   var memo = [
     "[올인원]",
@@ -1619,7 +1698,8 @@ function doSubmit() {
     "추가혜택:" + bonusStr,
     "상담시간:" + time,
     "메모:" + ((document.getElementById("fMemo")||{}).value||"없음"),
-  ].join("\n");
+    window._isMinor ? "【미성년자】법정대리인:"+gName+"("+gRel+") "+gPhone+" 생년월일:"+gBirth : ""
+  ].filter(Boolean).join("\n");
 
   fetch(SB_URL + "/rest/v1/leads", {
     method: "POST",
@@ -1635,7 +1715,9 @@ function doSubmit() {
       discount:S.disc||null,
       estimated_fee:window._fee||null, estimated_fee_memo:window._feeMemo||null,
       consult_time:time, memo:memo,
-      birth:(document.getElementById("fBirth")||{}).value||null,
+      birth:birth||null,
+      is_minor:window._isMinor||false,
+      guardian_name:gName, guardian_birth:gBirth, guardian_phone:gPhone, guardian_relation:gRel,
       utm_campaign:_utm.campaign||null,utm_source:_utm.source||null,utm_medium:_utm.medium||null,
       created_at:new Date().toISOString()
     })
@@ -1643,8 +1725,11 @@ function doSubmit() {
     if(!res.ok) throw new Error(res.status);
     fbq("track","Lead",{content_name:"올인원상담신청"});
     document.getElementById("succOv").classList.add("on");
-    ["fName","fBirth","fPhone","fMemo"].forEach(function(id){var e=document.getElementById(id);if(e)e.value="";});
+    ["fName","fBirth","fPhone","fMemo","gName","gBirth","gPhone"].forEach(function(id){var e=document.getElementById(id);if(e)e.value="";});
     var ft=document.getElementById("fTime");if(ft)ft.value="";
+    var gr=document.getElementById("gRelation");if(gr)gr.value="";
+    window._isMinor=false;
+    document.getElementById("minorWrap").style.display="none";
   }).catch(function(e){
     console.error(e); alert("오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
   }).finally(function(){
