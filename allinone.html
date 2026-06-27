@@ -843,7 +843,12 @@ function loadData() {
     console.log("[AIO] memberDiscount:", mS.exists() ? mS.val() : "없음");
     if (dS.exists() && dS.val()) {
       var v = dS.val();
-      devices = (Array.isArray(v) ? v : Object.values(v)).filter(function(x){return x && x.visible !== false;});
+      if (Array.isArray(v)) {
+        devices = v.filter(function(x){return x && x.visible !== false;});
+      } else {
+        devices = Object.entries(v).map(function(e){ return Object.assign({}, e[1], {id: e[0]}); })
+          .filter(function(x){return x && x.visible !== false;});
+      }
     }
     if (bS.exists() && bS.val()) bonusData = bS.val();
     if (mS.exists() && mS.val()) {
@@ -1059,7 +1064,7 @@ function renderDevList() {
     return;
   }
   list.innerHTML = devices.map(function(d) {
-    return '<div class="dev-item" onclick="selDev(\'' + d.id + '\')">' +
+    return '<div class="dev-item" data-dev-id="' + d.id + '" onclick="selDev(\'' + d.id + '\')">' +
       '<img class="dev-img" src="' + (d.img||"") + '" alt="' + d.name + '" onerror="this.style.display=\'none\'">' +
       '<div class="dev-info"><div class="dev-name">' + d.name + '</div>' +
       (function(){
@@ -1081,7 +1086,7 @@ function selDev(id) {
   S.dev = devices.find(function(d){return d.id===id;});
   S.stor = null; S.col = null;
   document.querySelectorAll(".dev-item").forEach(function(el){
-    el.classList.toggle("on", el.onclick && el.onclick.toString().includes("'"+id+"'"));
+    el.classList.toggle("on", el.getAttribute("data-dev-id") === id);
   });
   if (S.dev) {
     setVal("dev", S.dev.name);
@@ -1578,6 +1583,7 @@ function doSubmit() {
 </script>
 </body>
 </html>
+
 
 
 
