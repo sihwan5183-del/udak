@@ -670,7 +670,15 @@ a{text-decoration:none;color:inherit}
   <button class="mob-cta" onclick="document.getElementById('formWrap').scrollIntoView({behavior:'smooth'})">상담 신청하기</button>
 </div>
 
-<!-- 성공 모달 -->
+<!-- 다른 혜택 보기 서브 모달 -->
+<div id="benefitOv" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:20px;padding:24px;max-width:420px;width:100%;max-height:85vh;overflow-y:auto;position:relative">
+    <button onclick="document.getElementById('benefitOv').style.display='none'" style="position:absolute;top:14px;right:16px;font-size:20px;color:#9ca3af;background:none;border:none;cursor:pointer">×</button>
+    <div style="font-size:16px;font-weight:800;color:#1a237e;margin-bottom:6px">🎯 유닥의 다른 혜택</div>
+    <div style="font-size:12px;color:#6b7280;margin-bottom:18px">기다리시는 동안 다른 혜택도 확인해보세요!</div>
+    <div id="benefitCardWrap" style="display:flex;flex-direction:column;gap:12px"></div>
+  </div>
+</div>
 <div class="succ-ov" id="succOv">
   <div class="succ-box" id="succBox">
     <!-- JS로 동적 렌더링 -->
@@ -1740,8 +1748,34 @@ function isBusinessHour() {
 }
 
 // ── 완료 모달 렌더링
+function openBenefitModal() {
+  document.getElementById('succOv').classList.remove('on');
+  var cards = window._benefitCards || [];
+  var active = cards.filter(function(c){ return c.active !== false && (c.title||c.link); });
+  var wrap = document.getElementById('benefitCardWrap');
+  if (!active.length) {
+    // 카드 없으면 uplusdak.com으로
+    window.open((window._planFeats&&window._planFeats.succ_link)||'https://uplusdak.com','_blank');
+    return;
+  }
+  wrap.innerHTML = active.map(function(c){
+    return '<div style="border:1.5px solid #e5e7eb;border-radius:12px;overflow:hidden">' +
+      (c.img ? '<img src="'+c.img+'" style="width:100%;height:140px;object-fit:cover" onerror="this.style.display=\'none\'">' : '') +
+      '<div style="padding:14px">' +
+      '<div style="font-size:14px;font-weight:800;color:#111827;margin-bottom:4px">'+c.title+'</div>' +
+      (c.desc ? '<div style="font-size:12px;color:#6b7280;margin-bottom:12px;line-height:1.6">'+c.desc+'</div>' : '') +
+      (c.link ? '<a href="'+c.link+'" target="_blank" style="display:block;text-align:center;padding:11px;background:#1a237e;color:#fff;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none">'+(c.btn||'혜택 보기')+'</a>' : '') +
+      '</div></div>';
+  }).join('');
+  document.getElementById('benefitOv').style.display = 'flex';
+}
+
+// Firebase에서 혜택 카드 로드
+db.ref('benefitCards').once().then(function(s){
+  if (s.exists() && Array.isArray(s.val())) window._benefitCards = s.val();
+}).catch(function(){});
+
 function showSuccModal(type, benefitLink) {
-  var link = benefitLink || (window._planFeats && window._planFeats.succ_link) || 'https://uplusdak.com';
   var closeOv = "document.getElementById('succOv').classList.remove('on')";
   var configs = {
     normal: {
@@ -1777,7 +1811,7 @@ function showSuccModal(type, benefitLink) {
   var itemsHtml = c.items.map(function(t){ return '<div class="succ-check-item"><span class="succ-chk">✓</span><span>'+t+'</span></div>'; }).join('');
   var subHtml = c.sub.replace(/\n/g,'<br>');
   var btnsHtml = c.twoBtn
-    ? '<div class="succ-btns"><button class="succ-btn-secondary" onclick="'+closeOv+';window.open(\''+link+'\',\'_blank\')">다른 혜택 보기</button><button class="succ-btn-primary" onclick="'+closeOv+'">확인</button></div>'
+    ? '<div class="succ-btns"><button class="succ-btn-secondary" onclick="openBenefitModal()">다른 혜택 보기</button><button class="succ-btn-primary" onclick="'+closeOv+'">확인</button></div>'
     : '<div style="margin-top:4px;border-top:1px solid #f0f0f0;padding-top:16px"><button class="succ-btn-full" onclick="'+closeOv+'">확인</button></div>';
   document.getElementById('succBox').innerHTML =
     '<button class="succ-x" onclick="'+closeOv+'">×</button>'+
