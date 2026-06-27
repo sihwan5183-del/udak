@@ -1070,10 +1070,14 @@ function renderDevList() {
       (function(){
         if (!d.storageList||!d.storageList.length) return '<div class="dev-price"></div>';
         var s = d.storageList.find(function(x){return x.name&&x.name.includes('256');}) || d.storageList[0];
-        if (s.msrp) {
-          var fin = s.msrp - (s.subsidy||0) - (s.udak||0);
-          var pct = Math.round((1-fin/s.msrp)*100);
-          return '<div class="dev-price" style="margin-top:3px"><del style="color:#9ca3af;font-size:10px">' + s.msrp.toLocaleString() + '원</del> <span style="color:#dc2626;font-weight:700;font-size:11px">' + pct + '%</span><br><span style="color:#1a237e;font-weight:800;font-size:13px">' + fin.toLocaleString() + '원~</span></div>';
+        var isLguCard = S.mcar === "LGU+";
+        var msrpC = (isLguCard && s.msrp_lgu) ? s.msrp_lgu : (s.msrp||0);
+        var subC  = (isLguCard && s.msrp_lgu) ? (s.subsidy_lgu||0) : (s.subsidy||0);
+        var udakC = (isLguCard && s.msrp_lgu) ? (s.udak_lgu||0) : (s.udak||0);
+        if (msrpC) {
+          var fin = msrpC - subC - udakC;
+          var pct = Math.round((1-fin/msrpC)*100);
+          return '<div class="dev-price" style="margin-top:3px"><del style="color:#9ca3af;font-size:10px">' + msrpC.toLocaleString() + '원</del> <span style="color:#dc2626;font-weight:700;font-size:11px">' + pct + '%</span><br><span style="color:#1a237e;font-weight:800;font-size:13px">' + fin.toLocaleString() + '원~</span></div>';
         }
         return '<div class="dev-price">' + (s.price||0).toLocaleString() + '원~</div>';
       })() +
@@ -1098,18 +1102,27 @@ function selDev(id) {
 /* 용량/색상 */
 function renderStorList() {
   if (!S.dev) return;
+  var isLgu = S.mcar === "LGU+"; // 자사(LGU+) vs 타사
   var storEl = document.getElementById("storBtns");
   var colEl = document.getElementById("colBtns");
   if (storEl && S.dev.storageList) {
     storEl.innerHTML = S.dev.storageList.map(function(s) {
-      var msrp = s.msrp || 0;
-      var subsidy = s.subsidy || 0;
-      var udak = s.udak || 0;
-      var finalPrice = msrp ? (msrp - subsidy - udak) : (s.price || 0);
+      // 통신사에 따라 가격 세트 선택
+      var msrp, subsidy, udak, finalPrice;
+      if (isLgu && s.msrp_lgu) {
+        msrp = s.msrp_lgu; subsidy = s.subsidy_lgu||0; udak = s.udak_lgu||0;
+      } else {
+        msrp = s.msrp||0; subsidy = s.subsidy||0; udak = s.udak||0;
+      }
+      finalPrice = msrp ? (msrp - subsidy - udak) : (s.price||0);
       var discPct = msrp ? Math.round((1 - finalPrice/msrp)*100) : 0;
+      var badge = isLgu
+        ? '<span style="font-size:9px;background:#1a237e;color:#fff;padding:1px 4px;border-radius:3px;margin-bottom:2px;display:block">자사</span>'
+        : '<span style="font-size:9px;background:#dc2626;color:#fff;padding:1px 4px;border-radius:3px;margin-bottom:2px;display:block">타사전환</span>';
       var priceHtml = msrp
-        ? '<small style="text-decoration:line-through;color:#9ca3af;font-size:10px">' + msrp.toLocaleString() + '원</small>' +
-          '<span style="color:#dc2626;font-size:11px;font-weight:700">' + discPct + '%</span>' +
+        ? badge +
+          '<small style="text-decoration:line-through;color:#9ca3af;font-size:10px">' + msrp.toLocaleString() + '원</small> ' +
+          '<span style="color:#dc2626;font-size:11px;font-weight:700">' + discPct + '%</span><br>' +
           '<span style="color:#1a237e;font-size:12px;font-weight:800">' + finalPrice.toLocaleString() + '원~</span>'
         : '<small>' + (s.price||0).toLocaleString() + '원</small>';
       return '<button class="stor-btn' + (S.stor&&S.stor.name===s.name?" on":"") + '" onclick="selStor(\'' + s.name + '\',' + finalPrice + ',' + msrp + ',' + subsidy + ',' + udak + ')">' +
@@ -1583,6 +1596,7 @@ function doSubmit() {
 </script>
 </body>
 </html>
+
 
 
 
