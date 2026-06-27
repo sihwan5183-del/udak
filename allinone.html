@@ -245,6 +245,7 @@ a{text-decoration:none;color:inherit}
 .plan-feat-details{display:flex;flex-direction:column;gap:5px;margin-top:4px}
 .plan-feat-row{font-size:13px;color:var(--g600);display:flex;align-items:center;gap:8px}
 .plan-feat-row-only{color:var(--g500)}
+.plan-feat-badge-fee{background:#e8f5e9!important;color:#2e7d32!important}
 .plan-feat-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--navyL);color:var(--navy);flex-shrink:0;white-space:nowrap}
 .plan-sel-btn{width:100%;padding:13px;background:var(--navy);color:#fff;border-radius:10px;font-size:14px;font-weight:800;margin-top:14px;-webkit-tap-highlight-color:rgba(0,0,0,.06)}
 .plan-sel-btn:hover{background:var(--navy2)}
@@ -727,7 +728,7 @@ var PLAN_FEATS = {
     feats: [
       {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
       {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
-      {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 33,000원"}
+      {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"인터넷 500MB", monthly:"월 33,000원"}
     ]
   },
   115000: {
@@ -737,7 +738,7 @@ var PLAN_FEATS = {
       {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
       {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
       {icon:"<img src=\"./files/tab.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
-      {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 33,000원"},
+      {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"인터넷 500MB", monthly:"월 33,000원"},
       {icon:"📺", name:"OTT 1개 선택", device:"", monthly:"넷플릭스 · 디즈니+ · 티빙"}
     ]
   },
@@ -748,7 +749,7 @@ var PLAN_FEATS = {
       {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
       {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
       {icon:"<img src=\"./files/tab.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
-      {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 33,000원"},
+      {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"인터넷 500MB", monthly:"월 33,000원"},
       {icon:"📺", name:"OTT 1개 선택", device:"", monthly:"넷플릭스 · 디즈니+ · 티빙"},
       {icon:"👧", name:"자녀 요금 할인", device:"", monthly:"월 -33,000원 (만 19세 미만)"}
     ]
@@ -945,13 +946,13 @@ function loadData() {
       var im = (pf.internet_monthly||33000).toLocaleString();
       var cd = (pf.child_discount||33000).toLocaleString();
       PLAN_FEATS[95000].feats[1] = {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
-      PLAN_FEATS[95000].feats[2] = {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 "+im+"원"};
+      PLAN_FEATS[95000].feats[2] = {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"인터넷 500MB", monthly:"월 "+im+"원"};
       PLAN_FEATS[115000].feats[1] = {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
       PLAN_FEATS[115000].feats[2] = {icon:"<img src=\"./files/tab.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:tn, device:"기기값 "+td+"원", monthly:"월 요금 "+tm+"원"};
-      PLAN_FEATS[115000].feats[3] = {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 "+im+"원"};
+      PLAN_FEATS[115000].feats[3] = {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"인터넷 500MB", monthly:"월 "+im+"원"};
       PLAN_FEATS[130000].feats[1] = {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
       PLAN_FEATS[130000].feats[2] = {icon:"<img src=\"./files/tab.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:tn, device:"기기값 "+td+"원", monthly:"월 요금 "+tm+"원"};
-      PLAN_FEATS[130000].feats[3] = {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"", monthly:"월 "+im+"원"};
+      PLAN_FEATS[130000].feats[3] = {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"인터넷 500MB", monthly:"월 "+im+"원"};
       PLAN_FEATS[130000].feats[4] = {icon:"👧", name:"자녀 요금 할인", device:"", monthly:"월 -"+cd+"원 (만 19세 미만)"};
       PLAN_FEATS[130000].feats[5] = {icon:"📺", name:"OTT 1개 선택", device:"", monthly:"넷플릭스 · 디즈니+ · 티빙"};
       // bonus 금액 맵도 업데이트
@@ -1273,9 +1274,10 @@ function renderPlanDetail(price) {
     '<div class="plan-feats">' +
     data.feats.map(function(f){
       var rows = '';
-      if(f.device) rows += '<div class="plan-feat-row"><span class="plan-feat-badge">기기값 면제</span>' + f.device + '</div>';
-      if(f.monthly && !f.device) rows += '<div class="plan-feat-row plan-feat-row-only">' + f.monthly + '</div>';
-      else if(f.monthly) rows += '<div class="plan-feat-row"><span class="plan-feat-badge">요금 면제</span>' + f.monthly + '</div>';
+      var isInternet = f.name && f.name.indexOf('인터넷') !== -1;
+      if(f.device && !isInternet) rows += '<div class="plan-feat-row"><span class="plan-feat-badge">기기값 면제</span>' + f.device + '</div>';
+      if(f.monthly && (!f.device || isInternet)) rows += '<div class="plan-feat-row"><span class="plan-feat-badge plan-feat-badge-fee">요금 면제</span>' + f.monthly + '</div>';
+      else if(f.monthly) rows += '<div class="plan-feat-row"><span class="plan-feat-badge plan-feat-badge-fee">요금 면제</span>' + f.monthly + '</div>';
       return '<div class="plan-feat"><span class="plan-feat-icon">' + f.icon + '</span>' +
         '<div class="plan-feat-txt"><div class="plan-feat-name">' + f.name + '</div>' +
         (rows ? '<div class="plan-feat-details">' + rows + '</div>' : '') +
