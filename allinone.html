@@ -1073,6 +1073,11 @@ function closeMo() {
 /* ════ 선택 핸들러 ════ */
 function sel(type, val) {
   S[type] = val;
+  // Meta 픽셀 퍼널 이벤트
+  if (type === 'mcar') mpx('SelectMobileCarrier', {carrier: val});
+  if (type === 'inet') mpx('SelectInternetCarrier', {carrier: val});
+  if (type === 'jt')   mpx('SelectJoinType', {join_type: val === 'usim' ? '유심변경' : '핸드폰변경'});
+  if (type === 'mem')  mpx('SelectBundle', {members: val});
 
   // 모달 옵션 강조
   var mo = document.getElementById("mo_" + type);
@@ -1099,9 +1104,8 @@ function sel(type, val) {
       // 탭 4개로 변경
       var tw = document.getElementById('planTabsWrap');
       if (tw) {
-        tw.style.gridTemplateColumns = 'repeat(4,1fr)';
+        tw.style.gridTemplateColumns = 'repeat(3,1fr)';
         tw.innerHTML =
-          '<button class="plan-tab" onclick="selPlanTab(85000)" id="pt_85000">플러스플랜85</button>' +
           '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>' +
           '<button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115</button>' +
           '<button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>';
@@ -1182,6 +1186,7 @@ function sel(type, val) {
 /* 할인방식 */
 function selDisc(type) {
   S.disc = type;
+  mpx('SelectDiscount', {discount_type: type === 'pub' ? '공시지원금' : '선택약정'});
   document.getElementById("dbPub").classList.toggle("on", type === "pub");
   document.getElementById("dbSel").classList.toggle("on", type === "sel");
   setSum("disc", type === "pub" ? "공시지원금" : "선택약정");
@@ -1392,6 +1397,7 @@ function toggleSkipMem(skip) {
 
 function selPlan(price) {
   S.plan = price;
+  mpx('SelectPlan', {plan_price: price, plan_name: (PLAN_FEATS[price]||{}).name||''});
   // Firebase planArr에서 이름 가져오기, 없으면 PLAN_FEATS 참조
   var planName = '';
   if (window._planArr) {
@@ -1612,6 +1618,7 @@ function selOtt(e, name, parentId) {
   if (!parent) return;
   parent.querySelectorAll(".ott-opt").forEach(function(b){b.classList.toggle("on", b.querySelector("span").textContent === name);});
   S.bonus["OTT"] = name;
+  mpx('SelectOTT', {ott_name: name});
   updateBonusSummary();
   // OTT 선택 후 → 요약시트로 스크롤 (모바일/PC 공통)
   setTimeout(function(){
@@ -1764,6 +1771,25 @@ function onPhoneInput(el) {
   if (digits.length > 7) formatted = digits.slice(0,3) + '-' + digits.slice(3,7) + '-' + digits.slice(7);
   else if (digits.length > 3) formatted = digits.slice(0,3) + '-' + digits.slice(3);
   el.value = formatted;
+}
+// ── 폼 영역 진입 시 픽셀 InitiateCheckout
+(function(){
+  var fired = false;
+  var obs = new IntersectionObserver(function(entries){
+    if (!fired && entries[0].isIntersecting) {
+      fired = true;
+      if (typeof fbq !== 'undefined') fbq('track', 'InitiateCheckout', {content_name:'올인원상담폼진입'});
+    }
+  }, {threshold: 0.3});
+  window.addEventListener('load', function(){
+    var el = document.getElementById('formWrap');
+    if (el) obs.observe(el);
+  });
+})();
+// ── Meta 픽셀 이벤트 헬퍼
+function mpx(event, params) {
+  if (typeof fbq === 'undefined') return;
+  fbq('trackCustom', event, params || {});
 }
 // ── 생년월일 자동 점 삽입
 function onBirthInput(el) {
