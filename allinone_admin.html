@@ -1153,6 +1153,18 @@ async function renderAioBenefits() {
             <span style="font-size:13px;font-weight:600;color:#374151">ON</span>
           </label>
         </div>
+        <div style="margin-bottom:20px">
+          <div style="font-size:13px;font-weight:800;color:#1a237e;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e8eaf6">🎉 상담 완료 팝업 문구</div>
+          <div style="margin-bottom:10px">
+            <label style="font-size:11px;font-weight:700;color:#374151;display:block;margin-bottom:4px">제목</label>
+            <input id="bf_succ_title" value="${v.succ_title||'상담 신청 완료!'}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:700;color:#374151;display:block;margin-bottom:4px">본문 (줄바꿈은 \\n 입력)</label>
+            <textarea id="bf_succ_desc" rows="2" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px;resize:vertical">${v.succ_desc||'빠르게 연락드리겠습니다!\\n정확한 혜택은 상담을 통해 안내드립니다.'}</textarea>
+          </div>
+        </div>
+
         <button onclick="saveAioBenefits()" style="width:100%;padding:13px;background:#1a237e;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">💾 저장</button>
         <div style="margin-top:10px;padding:10px;background:#f0f1fa;border-radius:8px;font-size:11px;color:#4b5563;line-height:1.6">
           저장 시 랜딩페이지에 즉시 반영됩니다.
@@ -1172,6 +1184,10 @@ async function renderAioBenefits() {
   if (jud) jud.value = v.jt_usim_desc || '번호이동 · 기기 유지';
   if (jpt) jpt.value = v.jt_phone_title || '핸드폰도 변경';
   if (jpd) jpd.value = v.jt_phone_desc || '기기 교체 포함';
+  const st = document.getElementById('bf_succ_title');
+  const sd = document.getElementById('bf_succ_desc');
+  if (st) st.value = v.succ_title || '상담 신청 완료!';
+  if (sd) sd.value = v.succ_desc || '빠르게 연락드리겠습니다!\\n정확한 혜택은 상담을 통해 안내드립니다.';
 }
 window.saveAioBenefits = async function(){
   const data = {
@@ -1188,7 +1204,9 @@ window.saveAioBenefits = async function(){
     jt_usim_title: document.getElementById('bf_jt_usim_title').value.trim() || '유심만 변경',
     jt_usim_desc: document.getElementById('bf_jt_usim_desc').value.trim() || '번호이동 · 기기 유지',
     jt_phone_title: document.getElementById('bf_jt_phone_title').value.trim() || '핸드폰도 변경',
-    jt_phone_desc: document.getElementById('bf_jt_phone_desc').value.trim() || '기기 교체 포함'
+    jt_phone_desc: document.getElementById('bf_jt_phone_desc').value.trim() || '기기 교체 포함',
+    succ_title: document.getElementById('bf_succ_title').value.trim() || '상담 신청 완료!',
+    succ_desc: document.getElementById('bf_succ_desc').value.trim() || '빠르게 연락드리겠습니다!\\n정확한 혜택은 상담을 통해 안내드립니다.'
   };
   try {
     const result = await db.ref('planFeats').set(data);
