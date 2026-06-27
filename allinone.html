@@ -862,8 +862,14 @@ function loadData() {
       var mb4 = document.getElementById("mb4");
       if(mb2 && md.m2) mb2.textContent = "-"+(md.m2/10000)+"만원";
       if(mb4 && md.m4) mb4.textContent = "-"+(md.m4/10000)+"만원";
+      // 가족결합 노출 토글
+      var showMem = md.show !== false;
+      var memCard = document.getElementById("memCard");
+      if (memCard) memCard.style.display = showMem ? "" : "none";
+      window._showMem = showMem;
     } else {
       window._memDiscMap = {1:0, 2:10000, 4:20000};
+      window._showMem = true;
     }
     // planFeats로 PLAN_FEATS 동적 업데이트
     // planFeats 기본값 먼저 세팅 (없을 때도 동작하도록)
@@ -1253,11 +1259,26 @@ function selPlan(price) {
   setVal("plan", planName); setSum("plan", planName);
   calcFee();
   // 결합인원 카드 표시
-  document.getElementById("memCard").classList.add("show");
+  var mc = document.getElementById("memCard");
+  if (mc) mc.classList.add("show");
   closeMo();
-  setTimeout(function(){
-    document.getElementById("memCard").scrollIntoView({behavior:"smooth",block:"center"});
-  }, 300);
+  // 가족결합 숨김이면 1인 자동 처리 후 바로 추가혜택으로
+  if (window._showMem === false) {
+    S.mem = 1;
+    setVal("mem", "1인");
+    setSum("mem", "1인");
+    calcFee();
+    renderBonusSec();
+    setTimeout(function(){ autoSelectAllBonus(); }, 200);
+    setTimeout(function(){
+      var bonusEl = document.getElementById("bonusSec");
+      if (bonusEl) bonusEl.scrollIntoView({behavior:"smooth",block:"start"});
+    }, 300);
+  } else {
+    setTimeout(function(){
+      if (mc) mc.scrollIntoView({behavior:"smooth",block:"center"});
+    }, 300);
+  }
   // 추가혜택 바로 표시 + 자동 전체 선택
   renderBonusSec();
   setTimeout(function(){ autoSelectAllBonus(); }, 200);
