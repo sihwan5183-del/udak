@@ -695,7 +695,7 @@ async function renderAioDevices() {
   let rows = '';
   Object.entries(devs).forEach(([k,d])=>{
     if(!d||!d.name) return;
-    const storTxt = d.storageList ? d.storageList.map(s=>`<span style="display:inline-block;background:#f3f4f6;padding:2px 5px;border-radius:4px;font-size:11px;margin:1px">${s.name} ${(s.price||0).toLocaleString()}원</span>`).join(' ') : '–';
+    const storTxt = d.storageList ? d.storageList.map(s=>{const final=s.msrp?(s.msrp-(s.subsidy||0)-(s.udak||0)).toLocaleString()+'원':((s.price||0).toLocaleString()+'원');const disc=s.msrp?` <span style="color:#dc2626;font-size:10px">(${Math.round((1-(s.msrp-(s.subsidy||0)-(s.udak||0))/s.msrp)*100)}%↓)</span>`:'';return`<span style="display:inline-block;background:#f3f4f6;padding:2px 5px;border-radius:4px;font-size:11px;margin:1px">${s.name} <del style="color:#9ca3af">${s.msrp?(s.msrp).toLocaleString()+'원':''}</del> <strong>${final}</strong>${disc}</span>`}).join(' ') : '–';
     const colTxt = d.colorList ? d.colorList.map(c=>{const p=(c.name||'').split('|');return`<span style="display:inline-flex;align-items:center;gap:3px;font-size:11px"><span style="width:10px;height:10px;border-radius:50%;background:${p[0]||'#ccc'};border:1px solid #ddd;display:inline-block"></span>${p[1]||p[0]}</span>`;}).join(' ') : '–';
     rows += `<tr>
       <td><strong>${d.name}</strong></td>
@@ -733,10 +733,28 @@ window.editAioDev = async function(k){
 
 function buildStorRows(storList) {
   return (storList||[]).map(s=>`
-    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
-      <input placeholder="용량 (예: 256GB)" value="${s.name||''}" style="flex:1;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:13px" class="aio-stor-name">
-      <input placeholder="가격 (원)" type="number" value="${s.price||''}" style="flex:1;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:13px" class="aio-stor-price">
-      <button onclick="this.parentElement.remove()" style="padding:6px 10px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;font-size:12px;flex-shrink:0">✕</button>
+    <div style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px;margin-bottom:10px">
+      <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+        <input placeholder="용량 (예: 256GB)" value="${s.name||''}" style="flex:2;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:13px;background:#fff" class="aio-stor-name">
+        <button onclick="this.closest('div[style]').remove()" style="padding:6px 10px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;font-size:12px;flex-shrink:0">✕</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <div>
+          <div style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px">출고가 (원)</div>
+          <input placeholder="1254000" type="number" value="${s.msrp||''}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px;background:#fff;box-sizing:border-box" class="aio-stor-msrp">
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:#dc2626;margin-bottom:4px">공시지원금 (원)</div>
+          <input placeholder="500000" type="number" value="${s.subsidy||''}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px;background:#fff;box-sizing:border-box" class="aio-stor-subsidy">
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:#1a237e;margin-bottom:4px">유닥 추가혜택 (원)</div>
+          <input placeholder="580000" type="number" value="${s.udak||''}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px;background:#fff;box-sizing:border-box" class="aio-stor-udak">
+        </div>
+      </div>
+      <div style="margin-top:8px;padding:8px 10px;background:#eff6ff;border-radius:6px;font-size:11px;color:#1a237e;font-weight:600" id="storCalc_${s.name||''}" >
+        ${s.msrp&&s.subsidy ? '실구매가: '+(s.msrp-s.subsidy-(s.udak||0)).toLocaleString()+'원 (출고가의 '+(Math.round((1-(s.msrp-s.subsidy-(s.udak||0))/s.msrp)*100))+'% 할인)' : '출고가와 지원금 입력 시 실구매가 자동계산'}
+      </div>
     </div>`).join('');
 }
 function buildColRows(colList) {
@@ -812,10 +830,14 @@ window.saveAioDev = async function(){
   const visible = document.getElementById('aioDVis').checked;
   if(!name){alert('기기명은 필수입니다.');return;}
   const storageList = [];
-  document.querySelectorAll('#storRows .aio-stor-name').forEach(function(el,i){
+  document.querySelectorAll('#storRows .aio-stor-name').forEach(function(el){
     const n = el.value.trim();
-    const p = parseInt(el.parentElement.querySelector('.aio-stor-price').value)||0;
-    if(n) storageList.push({name:n, price:p});
+    const container = el.closest('div[style]') || el.parentElement;
+    const p  = parseInt(container.querySelector('.aio-stor-price')?.value)||0;
+    const ms = parseInt(container.querySelector('.aio-stor-msrp')?.value)||0;
+    const sb = parseInt(container.querySelector('.aio-stor-subsidy')?.value)||0;
+    const ud = parseInt(container.querySelector('.aio-stor-udak')?.value)||0;
+    if(n) storageList.push({name:n, price:p, msrp:ms, subsidy:sb, udak:ud});
   });
   const colorList = [];
   document.querySelectorAll('#colRows .aio-col-hex').forEach(function(el){
@@ -1035,4 +1057,5 @@ window.saveAioBenefits = async function(){
 </script>
 </body>
 </html>
+
 
