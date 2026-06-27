@@ -781,8 +781,9 @@ function buildColRows(colList) {
     const parts=(c.name||'').split('|');
     const hexVal = parts[0]||'#ffffff';
     const nameVal = parts[1]||'';
-    return `<div class="col-block" style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px;margin-bottom:8px">
+    return `<div class="col-block" draggable="true" style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px;margin-bottom:8px;cursor:default">
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+        <div class="drag-handle" title="드래그로 순서 변경" style="cursor:grab;color:#9ca3af;font-size:18px;flex-shrink:0;padding:0 2px;user-select:none">⠿</div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0">
           <input type="color" value="${hexVal}" style="width:44px;height:44px;padding:2px;border:1.5px solid #e5e7eb;border-radius:8px;cursor:pointer;display:block" class="aio-col-picker" oninput="this.closest('.col-block').querySelector('.aio-col-hex').value=this.value;this.closest('.col-block').querySelector('.col-preview').style.background=this.value">
           <input type="text" value="${hexVal}" maxlength="7" placeholder="#ffffff" style="width:70px;padding:4px 6px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:11px;text-align:center;font-family:monospace" class="aio-col-hex" oninput="if(this.value.match(/^#[0-9a-fA-F]{6}$/)){this.closest('.col-block').querySelector('.aio-col-picker').value=this.value;this.closest('.col-block').querySelector('.col-preview').style.background=this.value}">
@@ -848,6 +849,32 @@ function showAioDevModal(d) {
     </div>`;
   el.onclick = function(e){ if(e.target===el) closeAioDevModal(); };
   document.body.appendChild(el);
+  // 드래그 앤 드롭 순서 변경
+  (function(){
+    const colRows = document.getElementById('colRows');
+    let dragEl = null;
+    colRows.addEventListener('dragstart', function(e){
+      dragEl = e.target.closest('.col-block');
+      if(dragEl) { setTimeout(function(){ dragEl.style.opacity='0.4'; }, 0); }
+    });
+    colRows.addEventListener('dragend', function(e){
+      if(dragEl) dragEl.style.opacity='';
+      dragEl = null;
+      document.querySelectorAll('.col-block').forEach(function(b){ b.style.borderColor='#e5e7eb'; });
+    });
+    colRows.addEventListener('dragover', function(e){
+      e.preventDefault();
+      const target = e.target.closest('.col-block');
+      if(target && target !== dragEl) {
+        document.querySelectorAll('.col-block').forEach(function(b){ b.style.borderColor='#e5e7eb'; });
+        target.style.borderColor='#1a237e';
+        const rect = target.getBoundingClientRect();
+        const mid = rect.top + rect.height/2;
+        if(e.clientY < mid) colRows.insertBefore(dragEl, target);
+        else colRows.insertBefore(dragEl, target.nextSibling);
+      }
+    });
+  })();
   // 버튼 이벤트
   document.getElementById('addStorBtn').onclick = function(){
     document.getElementById('storRows').insertAdjacentHTML('beforeend', buildStorRows([{}]));
@@ -1109,6 +1136,7 @@ window.saveAioBenefits = async function(){
 </script>
 </body>
 </html>
+
 
 
 
