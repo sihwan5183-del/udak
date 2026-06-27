@@ -539,7 +539,7 @@ a{text-decoration:none;color:inherit}
   <div class="mo-handle"></div>
   <div class="mo-head"><span class="mo-title">진행 방식 선택</span><button class="mo-close" onclick="closeMo()">×</button></div>
   <div class="mo-body">
-    <div id="jtOptsWrap" style="display:grid;gap:12px">
+    <div id="jtOptsWrap" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <button onclick="sel('jt','usim')" style="padding:20px 12px;border:1.5px solid var(--g200);border-radius:12px;font-size:13px;font-weight:700;color:var(--g600);background:#fff;text-align:center;cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,.06)" id="jt_usim">
         <div style="font-size:28px;margin-bottom:8px"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="2" width="24" height="28" rx="3" fill="#1a237e"/><rect x="8" y="6" width="16" height="12" rx="2" fill="#e8eaf6"/><rect x="10" y="8" width="4" height="4" rx="1" fill="#1a237e"/><rect x="16" y="8" width="6" height="2" rx="1" fill="#9fa8da"/><rect x="16" y="12" width="6" height="2" rx="1" fill="#9fa8da"/><rect x="8" y="22" width="16" height="2" rx="1" fill="#3949ab"/><rect x="8" y="26" width="10" height="2" rx="1" fill="#3949ab"/></svg></div>
         <span id="jt_usim_title">유심만 변경</span><br><small id="jt_usim_desc" style="font-size:11px;font-weight:500;color:var(--g400)">번호이동 · 기기 유지</small>
@@ -1558,6 +1558,7 @@ function doSubmit() {
 </script>
 </body>
 </html>
+
 
 
 
