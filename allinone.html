@@ -448,6 +448,10 @@ a{text-decoration:none;color:inherit}
     <div class="sum-row"><span class="sum-k">현재 통신사</span><span class="sum-v ph" id="rs_mcar">–</span></div>
     <div class="sum-row"><span class="sum-k">현재 인터넷</span><span class="sum-v ph" id="rs_inet">–</span></div>
     <div class="sum-row"><span class="sum-k">진행 방식</span><span class="sum-v ph" id="rs_jt">–</span></div>
+    <div id="rs_dev_img_row" style="display:none;text-align:center;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--g100)">
+      <img id="rs_dev_img" src="" alt="" style="height:80px;width:auto;object-fit:contain;border-radius:8px;max-width:100%">
+      <div id="rs_dev_name_badge" style="font-size:12px;font-weight:700;color:var(--navy);margin-top:4px"></div>
+    </div>
     <div class="sum-row" id="rs_dev_row" style="display:none"><span class="sum-k">선택 기기</span><span class="sum-v ph" id="rs_dev">–</span></div>
     <div class="sum-row" id="rs_stor_row" style="display:none"><span class="sum-k">용량 / 색상</span><span class="sum-v ph" id="rs_stor">–</span></div>
     <div class="sum-row"><span class="sum-k">할인 방식</span><span class="sum-v ph" id="rs_disc">–</span></div>
@@ -1095,6 +1099,16 @@ function selDev(id) {
   if (S.dev) {
     setVal("dev", S.dev.name);
     setSum("dev", S.dev.name);
+    // 요약시트 기기 이미지 업데이트
+    var imgEl = document.getElementById("rs_dev_img");
+    var imgRow = document.getElementById("rs_dev_img_row");
+    var nameBadge = document.getElementById("rs_dev_name_badge");
+    if (imgEl && S.dev.img) {
+      imgEl.src = S.dev.img;
+      imgEl.alt = S.dev.name;
+      if (nameBadge) nameBadge.textContent = S.dev.name;
+      if (imgRow) imgRow.style.display = "block";
+    }
   }
   setTimeout(function(){closeMo(); setTimeout(function(){openMo("stor");}, 300);}, 200);
 }
@@ -1117,8 +1131,8 @@ function renderStorList() {
       finalPrice = msrp ? (msrp - subsidy - udak) : (s.price||0);
       var discPct = msrp ? Math.round((1 - finalPrice/msrp)*100) : 0;
       var badge = isLgu
-        ? '<span style="font-size:9px;background:#1a237e;color:#fff;padding:1px 4px;border-radius:3px;margin-bottom:2px;display:block">자사</span>'
-        : '<span style="font-size:9px;background:#dc2626;color:#fff;padding:1px 4px;border-radius:3px;margin-bottom:2px;display:block">타사전환</span>';
+        ? '<span style="font-size:9px;background:#1a237e;color:#fff;padding:1px 4px;border-radius:3px;margin-bottom:2px;display:block">기기변경</span>'
+        : '<span style="font-size:9px;background:#e05c5c;color:#fff;padding:1px 4px;border-radius:3px;margin-bottom:2px;display:block">번호이동</span>';
       var priceHtml = msrp
         ? badge +
           '<small style="text-decoration:line-through;color:#9ca3af;font-size:10px">' + msrp.toLocaleString() + '원</small> ' +
@@ -1142,13 +1156,19 @@ function renderColList() {
   colEl.innerHTML = S.dev.colorList.map(function(c) {
     var parts = c.name.split("|");
     var hex = parts[0]; var label = parts[1]||c.name;
-    return '<button class="col-btn' + (S.col&&S.col.name===c.name?" on":"") + '" onclick="selCol(\'' + c.name.replace(/'/g,"\\'") + '\')">' +
+    var cImg = c.img ? c.img.replace(/'/g, "\'") : "";
+    return '<button class="col-btn' + (S.col&&S.col.name===c.name?" on":"") + '" onclick="selCol(\'' + c.name.replace(/'/g,"\\'") + '\',\'' + cImg + '\')">' +
       '<span class="col-sw" style="background:' + hex + '"></span>' + label + '</button>';
   }).join("");
 }
-function selCol(name) {
-  S.col = {name:name};
+function selCol(name, img) {
+  S.col = {name:name, img:img||null};
   document.querySelectorAll(".col-btn").forEach(function(b){b.classList.toggle("on", b.textContent.includes(name.split("|")[1]||name));});
+  // 요약시트 이미지 색상별로 교체
+  var sumImg = document.getElementById("rs_dev_img");
+  if (sumImg) {
+    sumImg.src = img || (S.dev&&S.dev.img) || "";
+  }
 }
 function confirmStor() {
   if (!S.stor || !S.col) { alert("용량과 색상을 모두 선택해주세요."); return; }
@@ -1596,6 +1616,7 @@ function doSubmit() {
 </script>
 </body>
 </html>
+
 
 
 
