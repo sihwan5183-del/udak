@@ -697,8 +697,16 @@ async function renderAioDevices() {
     if(!d||!d.name) return;
     const storTxt = d.storageList ? d.storageList.map(s=>{const final=s.msrp?(s.msrp-(s.subsidy||0)-(s.udak||0)).toLocaleString()+'원':((s.price||0).toLocaleString()+'원');const disc=s.msrp?` <span style="color:#dc2626;font-size:10px">(${Math.round((1-(s.msrp-(s.subsidy||0)-(s.udak||0))/s.msrp)*100)}%↓)</span>`:'';return`<span style="display:inline-block;background:#f3f4f6;padding:2px 5px;border-radius:4px;font-size:11px;margin:1px">${s.name} <del style="color:#9ca3af">${s.msrp?(s.msrp).toLocaleString()+'원':''}</del> <strong>${final}</strong>${disc}</span>`}).join(' ') : '–';
     const colTxt = d.colorList ? d.colorList.map(c=>{const p=(c.name||'').split('|');return`<span style="display:inline-flex;align-items:center;gap:3px;font-size:11px"><span style="width:10px;height:10px;border-radius:50%;background:${p[0]||'#ccc'};border:1px solid #ddd;display:inline-block"></span>${p[1]||p[0]}</span>`;}).join(' ') : '–';
+    // 최저 실구매가 계산 (256GB 또는 첫 번째 용량 기준)
+    let minPrice = null;
+    if (d.storageList && d.storageList.length > 0) {
+      const s256 = d.storageList.find(s=>s.name&&s.name.includes('256')) || d.storageList[0];
+      if (s256 && s256.msrp) {
+        minPrice = s256.msrp - (s256.subsidy||0) - (s256.udak||0);
+      }
+    }
     rows += `<tr>
-      <td><strong>${d.name}</strong></td>
+      <td><strong>${d.name}</strong>${minPrice?`<br><span style="font-size:11px;color:#dc2626;font-weight:700">${minPrice.toLocaleString()}원~</span>`:''}</td>
       <td>${d.img?`<img src="${d.img}" style="height:40px;object-fit:contain;border-radius:4px">`:'–'}</td>
       <td>${storTxt}</td>
       <td>${colTxt}</td>
@@ -760,11 +768,25 @@ function buildStorRows(storList) {
 function buildColRows(colList) {
   return (colList||[]).map(c=>{
     const parts=(c.name||'').split('|');
-    return `<div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
-      <input type="color" value="${parts[0]||'#ffffff'}" style="width:42px;height:38px;padding:2px;border:1.5px solid #e5e7eb;border-radius:6px;cursor:pointer;flex-shrink:0" class="aio-col-hex">
-      <input placeholder="색상명 (예: 티타늄블랙)" value="${parts[1]||''}" style="flex:1;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:13px" class="aio-col-name">
-      <input placeholder="색상별 이미지 URL (선택)" value="${c.img||''}" style="flex:2;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px" class="aio-col-img">
-      <button onclick="this.parentElement.remove()" style="padding:6px 10px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;font-size:12px;flex-shrink:0">✕</button>
+    const hexVal = parts[0]||'#ffffff';
+    const nameVal = parts[1]||'';
+    return `<div style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px;margin-bottom:8px">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+        <div style="position:relative;flex-shrink:0">
+          <input type="color" value="${hexVal}" style="width:44px;height:44px;padding:2px;border:1.5px solid #e5e7eb;border-radius:8px;cursor:pointer;display:block" class="aio-col-picker" oninput="this.nextElementSibling.value=this.value;this.closest('div[style]').querySelector('.col-preview').style.background=this.value">
+          <input type="text" value="${hexVal}" maxlength="7" placeholder="#ffffff" style="width:80px;padding:5px 6px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:11px;margin-top:4px;text-align:center;font-family:monospace" class="aio-col-hex" oninput="if(this.value.match(/^#[0-9a-fA-F]{6}$/)){this.previousElementSibling.value=this.value;this.closest('div[style]').querySelector('.col-preview').style.background=this.value}">
+        </div>
+        <div style="width:44px;height:44px;border-radius:8px;border:1.5px solid #e5e7eb;flex-shrink:0;background:${hexVal}" class="col-preview"></div>
+        <div style="flex:1">
+          <div style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px">고객에게 보일 색상명 *</div>
+          <input placeholder="예: 코발트 바이올렛" value="${nameVal}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:13px;box-sizing:border-box" class="aio-col-name">
+        </div>
+        <button onclick="this.closest('div[style*=border-radius:10px]').remove()" style="padding:6px 10px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;font-size:12px;flex-shrink:0;align-self:flex-start">✕</button>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px">색상별 이미지 URL (선택)</div>
+        <input placeholder="https://... (색상 선택 시 이미지 변경)" value="${c.img||''}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px;box-sizing:border-box" class="aio-col-img">
+      </div>
     </div>`;
   }).join('');
 }
@@ -842,8 +864,9 @@ window.saveAioDev = async function(){
   const colorList = [];
   document.querySelectorAll('#colRows .aio-col-hex').forEach(function(el){
     const hex = el.value;
-    const label = el.parentElement.querySelector('.aio-col-name').value.trim();
-    const cImg = el.parentElement.querySelector('.aio-col-img').value.trim();
+    const container = el.closest('div[style*="border-radius:10px"]') || el.parentElement;
+    const label = container.querySelector('.aio-col-name').value.trim();
+    const cImg = container.querySelector('.aio-col-img').value.trim();
     if(label) colorList.push({name: hex+'|'+label, img: cImg});
   });
   const data = {name, img, storageList, colorList, visible};
@@ -1057,5 +1080,6 @@ window.saveAioBenefits = async function(){
 </script>
 </body>
 </html>
+
 
 
