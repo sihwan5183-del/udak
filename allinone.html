@@ -229,6 +229,7 @@ a{text-decoration:none;color:inherit}
 .plan-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
 .plan-tab{padding:10px 6px;border:1.5px solid var(--g200);border-radius:8px;font-size:13px;font-weight:700;color:var(--g500);background:#fff;text-align:center;cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,.06);transition:all .15s;line-height:1.4}
 .plan-tab.on{border-color:var(--navy);background:var(--navy);color:#fff}
+.plan-tab.on span{background:rgba(255,255,255,0.2);color:#fff}
 .plan-detail{border:1.5px solid var(--navyL);border-radius:10px;padding:16px;background:#fff}
 .plan-icon{font-size:52px;text-align:center;margin-bottom:10px}
 .plan-name{font-size:18px;font-weight:800;color:var(--navy);text-align:center;margin-bottom:12px}
@@ -638,8 +639,8 @@ a{text-decoration:none;color:inherit}
   <div class="mo-head"><span class="mo-title">요금제 선택</span><button class="mo-close" onclick="closeMo()">×</button></div>
   <div class="plan-tabs" style="padding:0 20px 12px;flex-shrink:0">
     <button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>
-    <button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115</button>
-    <button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>
+    <button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115<br><span style="font-size:9px;font-weight:600;background:#e8f5e9;color:#2e7d32;border-radius:4px;padding:1px 4px;margin-top:2px;display:inline-block">워치 면제</span></button>
+    <button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130<br><span style="font-size:9px;font-weight:600;background:#e8f5e9;color:#2e7d32;border-radius:4px;padding:1px 4px;margin-top:2px;display:inline-block">워치+탭 면제</span></button>
   </div>
   <div class="mo-body" style="flex:1;overflow-y:auto">
     <div class="plan-detail" id="planDetail"></div>
@@ -774,17 +775,18 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 });
 
+var _planTabBadge = {
+  95000: '',
+  115000: '<br><span style="font-size:9px;font-weight:600;background:#e8f5e9;color:#2e7d32;border-radius:4px;padding:1px 4px;margin-top:2px;display:inline-block">워치 면제</span>',
+  130000: '<br><span style="font-size:9px;font-weight:600;background:#e8f5e9;color:#2e7d32;border-radius:4px;padding:1px 4px;margin-top:2px;display:inline-block">워치+탭 면제</span>'
+};
 function updatePlanTabs(planArr) {
-  // 요금제 탭 버튼 텍스트 업데이트
-  var tabIds = ['pt_95000', 'pt_115000', 'pt_130000'];
-  var prices = [95000, 115000, 130000];
-  planArr.forEach(function(p, i) {
+  planArr.forEach(function(p) {
     var price = p.price;
     var tabEl = document.getElementById('pt_' + price);
     if (tabEl) {
-      tabEl.textContent = p.name;
+      tabEl.innerHTML = p.name + (_planTabBadge[price]||'');
     }
-    // PLAN_FEATS 이름도 업데이트
     if (PLAN_FEATS[price]) {
       PLAN_FEATS[price].name = p.name;
     }
@@ -1523,10 +1525,16 @@ function selOtt(e, name, parentId) {
   parent.querySelectorAll(".ott-opt").forEach(function(b){b.classList.toggle("on", b.querySelector("span").textContent === name);});
   S.bonus["OTT"] = name;
   updateBonusSummary();
-  // OTT 선택 후 → 폼(상담 신청하기)으로 스크롤
+  // OTT 선택 후 → 모바일: 요약시트, PC: 폼
   setTimeout(function(){
-    var formEl = document.getElementById("formWrap");
-    if (formEl) formEl.scrollIntoView({behavior:"smooth", block:"start"});
+    var isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      var sumEl = document.querySelector(".sum-sheet");
+      if (sumEl) sumEl.scrollIntoView({behavior:"smooth", block:"start"});
+    } else {
+      var formEl = document.getElementById("formWrap");
+      if (formEl) formEl.scrollIntoView({behavior:"smooth", block:"start"});
+    }
   }, 350);
 }
 
