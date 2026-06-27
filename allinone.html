@@ -261,18 +261,17 @@ a{text-decoration:none;color:inherit}
 /* ══ 성공 모달 ══ */
 .succ-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center;padding:20px}
 .succ-ov.on{display:flex}
-.succ-box{background:#fff;border-radius:20px;padding:32px 24px 24px;max-width:400px;width:100%;text-align:center;position:relative;max-height:90vh;overflow-y:auto}
+.succ-box{background:#fff;border-radius:20px;padding:32px 24px 24px;max-width:420px;width:100%;text-align:center;position:relative;max-height:90vh;overflow-y:auto}
 .succ-x{position:absolute;top:14px;right:16px;font-size:20px;color:#9ca3af;background:none;border:none;cursor:pointer;line-height:1}
 .succ-icon{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;position:relative}
 .succ-icon::before{content:'';position:absolute;inset:-6px;border-radius:50%;opacity:.15}
 .succ-check-list{text-align:left;margin-bottom:20px;display:flex;flex-direction:column;gap:10px}
-.succ-check-item{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#374151;line-height:1.6}
-.succ-check-item::before{content:'✓';width:20px;height:20px;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:1px}
+.succ-check-item{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#374151;line-height:1.65;word-break:keep-all}
+.succ-check-item .succ-chk{width:22px;height:22px;min-width:22px;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:1px}
 .succ-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;border-top:1px solid #f0f0f0;padding-top:16px}
 .succ-btn-primary{padding:13px;background:var(--navy);color:#fff;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none}
 .succ-btn-secondary{padding:13px;background:#fff;color:var(--navy);border:2px solid var(--navy);border-radius:10px;font-size:14px;font-weight:700;cursor:pointer}
 .succ-btn-full{padding:13px;background:var(--navy);color:#fff;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;width:100%}
-/* 하위호환 */
 .succ-close{display:none}.succ-close2{display:none}
 
 @media(max-width:900px){.sum-sheet{display:none;position:static;margin-top:0;margin-bottom:16px;border-radius:var(--radius)}}
@@ -651,8 +650,8 @@ a{text-decoration:none;color:inherit}
   <div class="mo-head"><span class="mo-title">요금제 선택</span><button class="mo-close" onclick="closeMo()">×</button></div>
   <div class="plan-tabs" style="padding:0 20px 12px;flex-shrink:0">
     <button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>
-    <button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115<br><span style="font-size:9px;font-weight:600;background:#e8f5e9;color:#2e7d32;border-radius:4px;padding:1px 4px;margin-top:2px;display:inline-block">워치 면제</span></button>
-    <button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130<br><span style="font-size:9px;font-weight:600;background:#e8f5e9;color:#2e7d32;border-radius:4px;padding:1px 4px;margin-top:2px;display:inline-block">워치+탭 면제</span></button>
+    <button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115</button>
+    <button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>
   </div>
   <div class="mo-body" style="flex:1;overflow-y:auto">
     <div class="plan-detail" id="planDetail"></div>
@@ -784,11 +783,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 });
 
-var _planTabBadge = {
-  95000: '',
-  115000: '<br><span style="font-size:9px;font-weight:600;background:#e8f5e9;color:#2e7d32;border-radius:4px;padding:1px 4px;margin-top:2px;display:inline-block">워치 면제</span>',
-  130000: '<br><span style="font-size:9px;font-weight:600;background:#e8f5e9;color:#2e7d32;border-radius:4px;padding:1px 4px;margin-top:2px;display:inline-block">워치+탭 면제</span>'
-};
+var _planTabBadge = { 95000:'', 115000:'', 130000:'' };
 function updatePlanTabs(planArr) {
   planArr.forEach(function(p) {
     var price = p.price;
@@ -1664,7 +1659,8 @@ function updateStepBar() {
 /* ════ 폼 제출 ════ */
 // ── 이름: 한글만 허용
 function onNameInput(el) {
-  el.value = el.value.replace(/[^가-힣]/g, '');
+  // 완성형 한글 + 조합 중인 자모(ㄱ~ㅣ) 허용
+  el.value = el.value.replace(/[^가-힣ㄱ-ㅎㅏ-ㅣ]/g, '');
 }
 // ── 연락처: 010 고정 + 010-XXXX-XXXX 형식
 function onPhoneInput(el) {
@@ -1783,7 +1779,7 @@ function showSuccModal(type, benefitLink) {
     }
   };
   var c = configs[type] || configs.normal;
-  var itemsHtml = c.items.map(function(t){ return '<div class="succ-check-item">'+t+'</div>'; }).join('');
+  var itemsHtml = c.items.map(function(t){ return '<div class="succ-check-item"><span class="succ-chk">✓</span><span>'+t+'</span></div>'; }).join('');
   var subHtml = c.sub.replace(/\n/g,'<br>');
   var btnsHtml = c.twoBtn
     ? '<div class="succ-btns"><button class="succ-btn-secondary" onclick="'+closeOv+';window.open(\''+link+'\',\'_blank\')">다른 혜택 보기</button><button class="succ-btn-primary" onclick="'+closeOv+'">확인</button></div>'
