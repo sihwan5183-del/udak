@@ -752,7 +752,7 @@ window.editAioDev = async function(k){
 
 function buildStorRows(storList) {
   return (storList||[]).map(s=>`
-    <div style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px;margin-bottom:10px">
+    <div class="stor-row" style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:12px;margin-bottom:10px">
       <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
         <input placeholder="용량 (예: 256GB)" value="${s.name||''}" style="flex:2;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:13px;background:#fff" class="aio-stor-name">
         <button onclick="this.closest('div[style]').remove()" style="padding:6px 10px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;font-size:12px;flex-shrink:0">✕</button>
@@ -793,7 +793,7 @@ function buildColRows(colList) {
           <div style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px">고객에게 보일 색상명 *</div>
           <input placeholder="예: 코발트 바이올렛" value="${nameVal}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:13px;box-sizing:border-box" class="aio-col-name">
         </div>
-        <button onclick="this.closest('div[style*=border-radius:10px]').remove()" style="padding:6px 10px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;font-size:12px;flex-shrink:0;align-self:flex-start">✕</button>
+        <button onclick="this.closest('.stor-row').remove()" style="padding:6px 10px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;font-size:12px;flex-shrink:0;align-self:flex-start">✕</button>
       </div>
       <div>
         <div style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px">색상별 이미지 URL (선택)</div>
@@ -885,7 +885,7 @@ function showAioDevModal(d) {
 }
 window.closeAioDevModal = function(){ const el=document.getElementById('aioDevModal');if(el)el.remove(); };
 function calcStorPrice(el) {
-  const row = el.closest('div[style*="background:#f9fafb"]') || el.closest('div');
+  const row = el.closest('.stor-row') || el.closest('div');
   const box = row.querySelector('.stor-calc-box');
   if (!box) return;
   const msrp = parseInt(row.querySelector('.aio-stor-msrp')?.value) || 0;
@@ -910,7 +910,7 @@ window.saveAioDev = async function(){
   const storageList = [];
   document.querySelectorAll('#storRows .aio-stor-name').forEach(function(el){
     const n = el.value.trim();
-    const container = el.closest('div[style]') || el.parentElement;
+    const container = el.closest('.stor-row') || el.parentElement;
     const p  = parseInt(container.querySelector('.aio-stor-price')?.value)||0;
     const ms = parseInt(container.querySelector('.aio-stor-msrp')?.value)||0;
     const sb = parseInt(container.querySelector('.aio-stor-subsidy')?.value)||0;
