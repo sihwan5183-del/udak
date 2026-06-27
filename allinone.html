@@ -449,7 +449,7 @@ a{text-decoration:none;color:inherit}
     <div class="sum-row"><span class="sum-k">현재 인터넷</span><span class="sum-v ph" id="rs_inet">–</span></div>
     <div class="sum-row"><span class="sum-k">진행 방식</span><span class="sum-v ph" id="rs_jt">–</span></div>
     <div id="rs_dev_img_row" style="display:none;text-align:center;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--g100)">
-      <img id="rs_dev_img" src="" alt="" style="height:80px;width:auto;object-fit:contain;border-radius:8px;max-width:100%">
+      <img id="rs_dev_img" src="" alt="" style="height:160px;width:auto;object-fit:contain;border-radius:10px;max-width:100%">
       <div id="rs_dev_name_badge" style="font-size:12px;font-weight:700;color:var(--navy);margin-top:4px"></div>
     </div>
     <div class="sum-row" id="rs_dev_row" style="display:none"><span class="sum-k">선택 기기</span><span class="sum-v ph" id="rs_dev">–</span></div>
@@ -457,6 +457,7 @@ a{text-decoration:none;color:inherit}
     <div class="sum-row"><span class="sum-k">할인 방식</span><span class="sum-v ph" id="rs_disc">–</span></div>
     <div class="sum-row"><span class="sum-k">요금제</span><span class="sum-v ph" id="rs_plan">–</span></div>
     <div class="sum-row"><span class="sum-k">결합 인원</span><span class="sum-v ph" id="rs_mem">–</span></div>
+    <div class="sum-row" id="rs_won_row" style="display:none"><span class="sum-k">실구매 원금</span><span class="sum-v" id="rs_won" style="color:var(--navy);font-weight:700">–</span></div>
     <div class="sum-row" id="rs_install_row" style="display:none"><span class="sum-k">월 기기 할부금</span><span class="sum-v" id="rs_install">–</span></div>
 
     <!-- 요금 계산 근거 -->
@@ -1335,9 +1336,15 @@ function calcFee() {
 
 function calcInstall() {
   if (!S.stor) return;
-  var monthly = Math.round(S.stor.price / 24);
+  var won = S.stor.price; // 원금 (출고가 - 공시 - 유닥)
+  var monthly = Math.round((won * 1.0626) / 24);
   var el = document.getElementById("rs_install");
   if (el) el.textContent = "월 " + monthly.toLocaleString() + "원 (24개월)";
+  // 요약시트에 원금도 표시
+  var wonEl = document.getElementById("rs_won");
+  if (wonEl) wonEl.textContent = won.toLocaleString() + "원";
+  var wonRow = document.getElementById("rs_won_row");
+  if (wonRow) wonRow.style.display = "flex";
 }
 
 /* ════ 추가혜택 ════ */
