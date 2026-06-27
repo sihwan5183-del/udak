@@ -760,19 +760,19 @@ function buildStorRows(storList) {
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
         <div>
           <div style="font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px">출고가 (원)</div>
-          <input placeholder="1254000" type="number" value="${s.msrp||''}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px;background:#fff;box-sizing:border-box" class="aio-stor-msrp">
+          <input placeholder="1254000" type="number" value="${s.msrp||''}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px;background:#fff;box-sizing:border-box" class="aio-stor-msrp" oninput="calcStorPrice(this)">
         </div>
         <div>
           <div style="font-size:11px;font-weight:600;color:#dc2626;margin-bottom:4px">공시지원금 (원)</div>
-          <input placeholder="500000" type="number" value="${s.subsidy||''}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px;background:#fff;box-sizing:border-box" class="aio-stor-subsidy">
+          <input placeholder="500000" type="number" value="${s.subsidy||''}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px;background:#fff;box-sizing:border-box" class="aio-stor-subsidy" oninput="calcStorPrice(this)">
         </div>
         <div>
           <div style="font-size:11px;font-weight:600;color:#1a237e;margin-bottom:4px">유닥 추가혜택 (원)</div>
-          <input placeholder="580000" type="number" value="${s.udak||''}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px;background:#fff;box-sizing:border-box" class="aio-stor-udak">
+          <input placeholder="580000" type="number" value="${s.udak||''}" style="width:100%;padding:8px 10px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:12px;background:#fff;box-sizing:border-box" class="aio-stor-udak" oninput="calcStorPrice(this)">
         </div>
       </div>
-      <div style="margin-top:8px;padding:8px 10px;background:#eff6ff;border-radius:6px;font-size:11px;color:#1a237e;font-weight:600" id="storCalc_${s.name||''}" >
-        ${s.msrp&&s.subsidy ? '실구매가: '+(s.msrp-s.subsidy-(s.udak||0)).toLocaleString()+'원 (출고가의 '+(Math.round((1-(s.msrp-s.subsidy-(s.udak||0))/s.msrp)*100))+'% 할인)' : '출고가와 지원금 입력 시 실구매가 자동계산'}
+      <div style="margin-top:8px;padding:10px 12px;background:#eff6ff;border-radius:6px;font-size:12px;color:#1a237e;font-weight:600" class="stor-calc-box">
+        ${s.msrp&&s.subsidy ? '<span style="color:#374151;font-weight:500">출고가</span> <del style="color:#9ca3af">'+(s.msrp).toLocaleString()+'원</del> - <span style="color:#dc2626">공시 '+(s.subsidy).toLocaleString()+'원</span>' + (s.udak?'- <span style="color:#1a237e">유닥 '+(s.udak).toLocaleString()+'원</span>':'')+' = <span style="font-size:14px;color:#1a237e">'+(s.msrp-s.subsidy-(s.udak||0)).toLocaleString()+'원</span> <span style="background:#dc2626;color:#fff;padding:2px 6px;border-radius:4px;font-size:10px">'+(Math.round((1-(s.msrp-s.subsidy-(s.udak||0))/s.msrp)*100))+'% 할인</span>' : '출고가와 공시지원금 입력 시 실구매가 자동계산'}
       </div>
     </div>`).join('');
 }
@@ -857,6 +857,24 @@ function showAioDevModal(d) {
   };
 }
 window.closeAioDevModal = function(){ const el=document.getElementById('aioDevModal');if(el)el.remove(); };
+function calcStorPrice(el) {
+  const row = el.closest('div[style*="background:#f9fafb"]') || el.closest('div');
+  const box = row.querySelector('.stor-calc-box');
+  if (!box) return;
+  const msrp = parseInt(row.querySelector('.aio-stor-msrp')?.value) || 0;
+  const sub  = parseInt(row.querySelector('.aio-stor-subsidy')?.value) || 0;
+  const udak = parseInt(row.querySelector('.aio-stor-udak')?.value) || 0;
+  if (msrp && sub) {
+    const fin = msrp - sub - udak;
+    const pct = Math.round((1 - fin/msrp)*100);
+    box.innerHTML = '<span style="color:#374151;font-weight:500">출고가</span> <del style="color:#9ca3af">' + msrp.toLocaleString() + '원</del> - <span style="color:#dc2626">공시 ' + sub.toLocaleString() + '원</span>' +
+      (udak ? ' - <span style="color:#1a237e">유닥 ' + udak.toLocaleString() + '원</span>' : '') +
+      ' = <span style="font-size:14px;color:#1a237e;font-weight:800">' + fin.toLocaleString() + '원</span> <span style="background:#dc2626;color:#fff;padding:2px 6px;border-radius:4px;font-size:10px">' + pct + '% 할인</span>';
+  } else {
+    box.textContent = '출고가와 공시지원금 입력 시 실구매가 자동계산';
+  }
+}
+
 window.saveAioDev = async function(){
   const name = document.getElementById('aioDN').value.trim();
   const img = document.getElementById('aioDI').value.trim();
