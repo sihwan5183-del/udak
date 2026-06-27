@@ -236,6 +236,7 @@ const db = {
 window.doLogin = function() {
   const pw = document.getElementById('pwInput').value;
   if(pw === PW) {
+    localStorage.setItem('aio_admin_auth', '1');
     document.getElementById('loginWrap').style.display='none';
     document.getElementById('adminWrap').style.display='block';
     initAdmin();
@@ -244,10 +245,20 @@ window.doLogin = function() {
   }
 };
 window.logout = function() {
+  localStorage.removeItem('aio_admin_auth');
   document.getElementById('loginWrap').style.display='flex';
   document.getElementById('adminWrap').style.display='none';
   document.getElementById('pwInput').value='';
 };
+// 새로고침 시 로그인 상태 복원
+(function(){
+  if(localStorage.getItem('aio_admin_auth')==='1'){
+    document.getElementById('loginWrap').style.display='none';
+    document.getElementById('adminWrap').style.display='block';
+    // initAdmin은 DOMContentLoaded 이후 호출
+    document.addEventListener('DOMContentLoaded', function(){ initAdmin(); });
+  }
+})();
 
 function initAdmin() { renderTab('plans'); initAioPlans(); }
 /* ══ 올인원 플랜 초기화 ══ */
@@ -770,11 +781,11 @@ function buildColRows(colList) {
     const parts=(c.name||'').split('|');
     const hexVal = parts[0]||'#ffffff';
     const nameVal = parts[1]||'';
-    return `<div style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px;margin-bottom:8px">
+    return `<div class="col-block" style="background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:10px;margin-bottom:8px">
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
-        <div style="position:relative;flex-shrink:0">
-          <input type="color" value="${hexVal}" style="width:44px;height:44px;padding:2px;border:1.5px solid #e5e7eb;border-radius:8px;cursor:pointer;display:block" class="aio-col-picker" oninput="this.nextElementSibling.value=this.value;this.closest('div[style]').querySelector('.col-preview').style.background=this.value">
-          <input type="text" value="${hexVal}" maxlength="7" placeholder="#ffffff" style="width:80px;padding:5px 6px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:11px;margin-top:4px;text-align:center;font-family:monospace" class="aio-col-hex" oninput="if(this.value.match(/^#[0-9a-fA-F]{6}$/)){this.previousElementSibling.value=this.value;this.closest('div[style]').querySelector('.col-preview').style.background=this.value}">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0">
+          <input type="color" value="${hexVal}" style="width:44px;height:44px;padding:2px;border:1.5px solid #e5e7eb;border-radius:8px;cursor:pointer;display:block" class="aio-col-picker" oninput="this.closest('.col-block').querySelector('.aio-col-hex').value=this.value;this.closest('.col-block').querySelector('.col-preview').style.background=this.value">
+          <input type="text" value="${hexVal}" maxlength="7" placeholder="#ffffff" style="width:70px;padding:4px 6px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:11px;text-align:center;font-family:monospace" class="aio-col-hex" oninput="if(this.value.match(/^#[0-9a-fA-F]{6}$/)){this.closest('.col-block').querySelector('.aio-col-picker').value=this.value;this.closest('.col-block').querySelector('.col-preview').style.background=this.value}">
         </div>
         <div style="width:44px;height:44px;border-radius:8px;border:1.5px solid #e5e7eb;flex-shrink:0;background:${hexVal}" class="col-preview"></div>
         <div style="flex:1">
@@ -864,7 +875,7 @@ window.saveAioDev = async function(){
   const colorList = [];
   document.querySelectorAll('#colRows .aio-col-hex').forEach(function(el){
     const hex = el.value;
-    const container = el.closest('div[style*="border-radius:10px"]') || el.parentElement;
+    const container = el.closest('.col-block') || el.parentElement;
     const label = container.querySelector('.aio-col-name').value.trim();
     const cImg = container.querySelector('.aio-col-img').value.trim();
     if(label) colorList.push({name: hex+'|'+label, img: cImg});
