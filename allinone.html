@@ -1289,7 +1289,8 @@ function calcFee() {
   if (!S.plan || !S.mem) return;
   var orig = S.plan;
   var isTasa = S.mcar && S.mcar !== "LGU+";
-  var cash = isTasa ? CASH[S.mem] : 0;
+  var isUsim = S.jt === "usim"; // 유심만 변경일 때만 현금혜택
+  var cash = (isTasa && isUsim) ? CASH[S.mem] : 0;
   // 가족할인: 어드민에서 설정한 값 사용 (기본: 1인=0, 2인=1만, 4인=2만)
   var discMap = window._memDiscMap || {1:0, 2:10000, 4:20000};
   var memDisc = discMap[S.mem] || 0;
