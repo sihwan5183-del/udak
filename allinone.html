@@ -1865,14 +1865,9 @@ function doSubmit() {
   }).then(function(res){
     if(!res.ok) throw new Error(res.status);
     fbq("track","Lead",{content_name:"올인원상담신청"});
-    // 중복 체크 (같은 전화번호 기존 접수 여부)
-    fetch(SB_URL + "/rest/v1/leads?phone=eq." + encodeURIComponent(phone.trim()) + "&channel=eq.올인원&select=id&limit=2", {
-      headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY}
-    }).then(function(r){return r.json();}).then(function(rows){
-      var isDup = rows && rows.length >= 2; // 방금 저장한 것 포함해서 2개 이상이면 중복
-      var modalType = isDup ? 'duplicate' : (window._isMinor ? 'minor' : (isBusinessHour() ? 'normal' : 'afterhour'));
-      showSuccModal(modalType);
-    }).catch(function(){ showSuccModal(window._isMinor ? 'minor' : (isBusinessHour() ? 'normal' : 'afterhour')); });
+    // 제출 시점 값 캡처 (폼 초기화 전에 저장)
+    var wasMinor = window._isMinor || false;
+    var biz = isBusinessHour();
     // 폼 초기화
     ["fName","fBirth","fPhone","fMemo","gName","gBirth","gPhone"].forEach(function(id){var e=document.getElementById(id);if(e)e.value="";});
     var ft=document.getElementById("fTime");if(ft)ft.value="";
@@ -1881,6 +1876,16 @@ function doSubmit() {
     window._isMinor=false;
     document.getElementById("minorWrap").style.display="none";
     if(btn){btn.textContent="상담 신청하기";}
+    // 중복 체크 후 모달 표시
+    fetch(SB_URL + "/rest/v1/leads?phone=eq." + encodeURIComponent(phone.trim()) + "&channel=eq.올인원&select=id&limit=2", {
+      headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY}
+    }).then(function(r){return r.json();}).then(function(rows){
+      var isDup = rows && rows.length >= 2;
+      var modalType = isDup ? 'duplicate' : (wasMinor ? 'minor' : (biz ? 'normal' : 'afterhour'));
+      showSuccModal(modalType);
+    }).catch(function(){
+      showSuccModal(wasMinor ? 'minor' : (biz ? 'normal' : 'afterhour'));
+    });
   }).catch(function(e){
     console.error(e); alert("오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
   }).finally(function(){
