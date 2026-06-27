@@ -1343,21 +1343,9 @@ function selPlan(price) {
       if (mc) mc.scrollIntoView({behavior:"smooth",block:"center"});
     }, 300);
   }
-  // 추가혜택 바로 표시 + 자동 전체 선택
+  // 추가혜택 바로 표시 + 자동 전체 선택 (autoSelectAllBonus 내부에서 OTT 스크롤 처리)
   renderBonusSec();
   setTimeout(function(){ autoSelectAllBonus(); }, 200);
-  // 모바일: OTT 항목 있으면 OTT로 스크롤, 없으면 폼으로
-  setTimeout(function(){
-    var isMobile = window.innerWidth <= 768;
-    if (!isMobile) return;
-    var ottEl = document.querySelector(".ott-row.show");
-    if (ottEl) {
-      ottEl.scrollIntoView({behavior:"smooth", block:"center"});
-    } else {
-      var formEl = document.getElementById("formWrap");
-      if (formEl) formEl.scrollIntoView({behavior:"smooth", block:"start"});
-    }
-  }, 500);
 }
 
 /* ════ 요금 계산 ════ */
@@ -1425,13 +1413,23 @@ function calcInstall() {
 
 /* ════ 추가혜택 ════ */
 function autoSelectAllBonus() {
-  // 모든 혜택 자동 선택
+  window._autoSelecting = true;
   var items = document.querySelectorAll(".bonus-item");
   items.forEach(function(el) {
     if (!el.classList.contains("on")) {
       el.click();
     }
   });
+  // 자동선택 완료 후 플래그 해제 + OTT로 스크롤
+  setTimeout(function(){
+    window._autoSelecting = false;
+    if (window.innerWidth <= 900) {
+      var ottEl = document.querySelector(".ott-row.show");
+      if (ottEl) {
+        ottEl.scrollIntoView({behavior:"smooth", block:"center"});
+      }
+    }
+  }, 100);
 }
 
 function renderBonusSec() {
@@ -1496,8 +1494,8 @@ function toggleBonus(id, name, isOtt) {
     if (ottRow) ottRow.classList.toggle("show", on);
   }
   updateBonusSummary();
-  // 모바일: 선택 시 다음 항목으로 스크롤
-  if (on && window.innerWidth <= 900) {
+  // 모바일: 선택 시 다음 항목으로 스크롤 (자동선택 중이면 스킵)
+  if (on && window.innerWidth <= 900 && !window._autoSelecting) {
     setTimeout(function(){
       // 현재 선택된 아이템의 다음 bonus-item 찾기
       var allItems = document.querySelectorAll(".bonus-item");
