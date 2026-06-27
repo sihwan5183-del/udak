@@ -419,9 +419,9 @@ a{text-decoration:none;color:inherit}
       <div class="form-ttl">📞 상담 신청하기</div>
       <div style="font-size:12px;color:var(--g400);margin-bottom:14px">선택하신 조건이 모두 저장되어 상담 시 정확한 혜택 안내가 가능합니다.</div>
       <div class="form-grid">
-        <div class="fg"><label class="flbl">이름 <em>*</em></label><input class="fi" id="fName" type="text" placeholder="이름을 입력해주세요"></div>
+        <div class="fg"><label class="flbl">이름 <em>*</em></label><input class="fi" id="fName" type="text" placeholder="이름을 입력해주세요" oninput="onNameInput(this)"></div>
         <div class="fg"><label class="flbl">생년월일 <em>*</em></label><input class="fi" id="fBirth" type="text" placeholder="YYYY.MM.DD" maxlength="10" oninput="onBirthInput(this)" onblur="checkMinor()"></div>
-        <div class="fg"><label class="flbl">연락처 <em>*</em></label><input class="fi" id="fPhone" type="tel" placeholder="010-0000-0000"></div>
+        <div class="fg"><label class="flbl">연락처 <em>*</em></label><input class="fi" id="fPhone" type="tel" placeholder="010-0000-0000" oninput="onPhoneInput(this)" maxlength="13"></div>
         <div class="fg"><label class="flbl">상담 가능 시간 <em>*</em></label>
           <select class="fi fsel" id="fTime">
             <option value="">선택해주세요</option>
@@ -437,22 +437,35 @@ a{text-decoration:none;color:inherit}
 
       <!-- 미성년자 경고 + 법정대리인 폼 -->
       <div id="minorWrap" style="display:none;margin-top:16px;border-radius:12px;border:2px solid #ef4444;overflow:hidden">
+        <div style="background:#dc2626;padding:12px 16px">
+          <div style="font-size:14px;font-weight:800;color:#fff">⚠️ 미성년자 고객님으로 확인됩니다.</div>
+        </div>
         <div style="background:#fef2f2;padding:14px 16px;border-bottom:1px solid #fecaca">
-          <div style="font-size:13px;font-weight:800;color:#dc2626;margin-bottom:6px">⚠️ 미성년자 고객님으로 확인됩니다.</div>
-          <div style="font-size:12px;color:#374151;line-height:1.8">
-            입력하신 생년월일 기준 미성년자 고객님으로 확인됩니다.<br>
-            미성년자는 단독으로 통신 가입, 기기 구매, 요금제 변경 등의 진행이 어렵습니다.<br>
-            다만 <strong>법정대리인의 동의 또는 확인이 있는 경우</strong> 상담 및 개통 진행이 가능합니다.<br>
-            원활한 상담을 위해 아래 법정대리인 정보를 입력해주세요.<br>
-            <span style="color:#6b7280">※ 개통 단계에서는 신청자 및 법정대리인의 신분 확인 절차가 진행되며, 입력 정보가 실제 정보와 다를 경우 가입 또는 구매 진행이 제한될 수 있습니다.</span>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;gap:8px;align-items:flex-start">
+              <span style="color:#dc2626;font-size:14px;flex-shrink:0">①</span>
+              <span style="font-size:12px;color:#374151;line-height:1.6">입력하신 생년월일 기준 <strong>미성년자</strong>로 확인됩니다.</span>
+            </div>
+            <div style="display:flex;gap:8px;align-items:flex-start">
+              <span style="color:#dc2626;font-size:14px;flex-shrink:0">②</span>
+              <span style="font-size:12px;color:#374151;line-height:1.6">미성년자는 <strong>단독으로 통신 가입 · 기기 구매 · 요금제 변경</strong>이 불가합니다.</span>
+            </div>
+            <div style="display:flex;gap:8px;align-items:flex-start">
+              <span style="color:#059669;font-size:14px;flex-shrink:0">③</span>
+              <span style="font-size:12px;color:#374151;line-height:1.6"><strong>법정대리인 동의 · 확인</strong>이 있는 경우 상담 및 개통 진행이 가능합니다.</span>
+            </div>
+            <div style="display:flex;gap:8px;align-items:flex-start">
+              <span style="color:#6b7280;font-size:13px;flex-shrink:0">※</span>
+              <span style="font-size:11px;color:#6b7280;line-height:1.6">개통 단계에서 신청자 및 법정대리인의 신분 확인 절차가 진행되며, 입력 정보가 실제와 다를 경우 진행이 제한될 수 있습니다.</span>
+            </div>
           </div>
         </div>
         <div style="background:#fff;padding:16px">
           <div style="font-size:12px;font-weight:800;color:#1a237e;margin-bottom:12px">👤 법정대리인 정보 입력</div>
           <div class="form-grid">
-            <div class="fg"><label class="flbl">법정대리인 이름 <em>*</em></label><input class="fi" id="gName" type="text" placeholder="이름을 입력해주세요" oninput="checkGuardianFilled()"></div>
+            <div class="fg"><label class="flbl">법정대리인 이름 <em>*</em></label><input class="fi" id="gName" type="text" placeholder="이름을 입력해주세요" oninput="onNameInput(this);checkGuardianFilled()"></div>
             <div class="fg"><label class="flbl">법정대리인 생년월일 <em>*</em></label><input class="fi" id="gBirth" type="text" placeholder="YYYY.MM.DD" maxlength="10" oninput="onBirthInput(this);checkGuardianFilled()"></div>
-            <div class="fg"><label class="flbl">법정대리인 연락처 <em>*</em></label><input class="fi" id="gPhone" type="tel" placeholder="010-0000-0000" oninput="checkGuardianFilled()"></div>
+            <div class="fg"><label class="flbl">법정대리인 연락처 <em>*</em></label><input class="fi" id="gPhone" type="tel" placeholder="010-0000-0000" maxlength="13" oninput="onPhoneInput(this);checkGuardianFilled()"></div>
             <div class="fg"><label class="flbl">신청자와의 관계</label>
               <select class="fi fsel" id="gRelation" onchange="checkGuardianFilled()">
                 <option value="">선택해주세요</option>
@@ -1634,6 +1647,23 @@ function updateStepBar() {
 }
 
 /* ════ 폼 제출 ════ */
+// ── 이름: 한글만 허용
+function onNameInput(el) {
+  el.value = el.value.replace(/[^가-힣]/g, '');
+}
+// ── 연락처: 010 고정 + 010-XXXX-XXXX 형식
+function onPhoneInput(el) {
+  var digits = el.value.replace(/\D/g, '');
+  // 010 강제
+  if (digits.length > 0 && !digits.startsWith('010')) {
+    digits = '010' + digits.replace(/^0*1*0*/,'').slice(0, 8);
+  }
+  digits = digits.slice(0, 11);
+  var formatted = digits;
+  if (digits.length > 7) formatted = digits.slice(0,3) + '-' + digits.slice(3,7) + '-' + digits.slice(7);
+  else if (digits.length > 3) formatted = digits.slice(0,3) + '-' + digits.slice(3);
+  el.value = formatted;
+}
 // ── 생년월일 자동 점 삽입
 function onBirthInput(el) {
   var v = el.value.replace(/\D/g,'');
@@ -1641,12 +1671,27 @@ function onBirthInput(el) {
   if (v.length > 7) v = v.slice(0,7) + '.' + v.slice(7);
   el.value = v.slice(0,10);
 }
+// ── 생년월일 유효성: 1900~현재, 월 1~12, 일 1~말일
+function isValidBirth(birthStr) {
+  var p = birthStr.replace(/\D/g,'');
+  if (p.length !== 8) return false;
+  var y=parseInt(p.slice(0,4)), m=parseInt(p.slice(4,6)), d=parseInt(p.slice(6,8));
+  var now = new Date();
+  if (y < 1900 || y > now.getFullYear()) return false;
+  if (m < 1 || m > 12) return false;
+  var maxDay = new Date(y, m, 0).getDate();
+  if (d < 1 || d > maxDay) return false;
+  return true;
+}
+// ── 연락처 유효성: 010-XXXX-XXXX (총 13자)
+function isValidPhone(val) {
+  return /^010-\d{4}-\d{4}$/.test(val.trim());
+}
 // ── 만 나이 계산
 function calcAge(birthStr) {
+  if (!isValidBirth(birthStr)) return null;
   var p = birthStr.replace(/\D/g,'');
-  if (p.length !== 8) return null;
   var y=parseInt(p.slice(0,4)), m=parseInt(p.slice(4,6)), d=parseInt(p.slice(6,8));
-  if (!y||!m||!d) return null;
   var now = new Date(), ny=now.getFullYear(), nm=now.getMonth()+1, nd=now.getDate();
   var age = ny - y;
   if (nm < m || (nm===m && nd < d)) age--;
@@ -1683,13 +1728,10 @@ function doSubmit() {
   var phone = (document.getElementById("fPhone")||{}).value||"";
   var time = (document.getElementById("fTime")||{}).value||"";
   var birth = (document.getElementById("fBirth")||{}).value||"";
-  if (!name.trim()||!phone.trim()||!time||!birth.trim()) { alert("이름, 생년월일, 연락처, 상담 가능 시간은 필수입니다."); return; }
-  // 미성년자인데 법정대리인 미입력
-  if (window._isMinor) {
-    var gn=(document.getElementById("gName")||{}).value||"";
-    var gp=(document.getElementById("gPhone")||{}).value||"";
-    if (!gn.trim()||!gp.trim()) { alert("미성년자 고객님은 법정대리인 정보를 입력해주세요."); return; }
-  }
+  if (!name.trim()) { alert("이름을 입력해주세요."); return; }
+  if (!isValidBirth(birth)) { alert("생년월일을 올바르게 입력해주세요.\n예) 1990.05.15"); return; }
+  if (!isValidPhone(phone)) { alert("연락처를 올바르게 입력해주세요.\n예) 010-1234-5678"); return; }
+  if (!time) { alert("상담 가능 시간을 선택해주세요."); return; }
   var btn = document.getElementById("formBtn");
   if (btn) { btn.disabled=true; btn.textContent="신청 중..."; }
 
