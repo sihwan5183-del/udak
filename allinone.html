@@ -433,7 +433,7 @@ a{text-decoration:none;color:inherit}
       <div class="form-grid">
         <div class="fg"><label class="flbl">이름 <em>*</em></label><input class="fi" id="fName" type="text" placeholder="이름을 입력해주세요" oninput="onNameInput(this)"></div>
         <div class="fg"><label class="flbl">생년월일 <em>*</em></label><input class="fi" id="fBirth" type="text" placeholder="YYYY.MM.DD" maxlength="10" oninput="onBirthInput(this)" onblur="checkMinor()"></div>
-        <div class="fg"><label class="flbl">연락처 <em>*</em></label><input class="fi" id="fPhone" type="tel" placeholder="010-0000-0000" oninput="onPhoneInput(this)" maxlength="13"></div>
+        <div class="fg"><label class="flbl">연락처 <em>*</em></label><input class="fi" id="fPhone" type="tel" placeholder="010-0000-0000" oninput="onPhoneInput(this);checkPhoneHint()" maxlength="13"><div id="phoneHint" style="font-size:11px;color:#dc2626;margin-top:4px;display:none">휴대폰 번호를 끝까지 입력해주세요.</div></div>
         <div class="fg"><label class="flbl">상담 가능 시간 <em>*</em></label>
           <select class="fi fsel" id="fTime">
             <option value="">선택해주세요</option>
@@ -591,11 +591,9 @@ a{text-decoration:none;color:inherit}
       <button class="mo-opt carrier-btn" onclick="sel('inet','KT')"><img src="./files/kt.png" class="carrier-logo"><span>KT</span></button>
       <button class="mo-opt carrier-btn" onclick="sel('inet','LGU+')"><img src="./files/u__.png" class="carrier-logo"><span>LG U+</span></button>
     </div>
-    <div id="lgu_warn" style="display:none;margin-top:16px;padding:16px;background:#fff3cd;border-radius:10px;text-align:center">
-      <div style="font-size:28px;margin-bottom:8px">📡</div>
-      <div style="font-size:14px;font-weight:800;color:#92400e;margin-bottom:6px">이미 LG U+ 인터넷을 사용 중이신가요?</div>
-      <div style="font-size:12px;color:#78350f;line-height:1.7;margin-bottom:12px">올인원 혜택은 <strong>LG U+ 인터넷 신규 설치</strong> 고객 대상입니다.</div>
-      <a href="https://landing.uplusdak.com" target="_blank" style="display:inline-block;padding:9px 20px;background:var(--navy);color:#fff;border-radius:8px;font-size:12px;font-weight:700">유닥에서 혜택 확인하기</a>
+    <div id="lgu_warn" style="display:none;margin-top:14px;padding:14px 16px;background:#e8f4fd;border-radius:10px;border:1.5px solid #90caf9">
+      <div style="font-size:13px;font-weight:800;color:#1565c0;margin-bottom:4px">ℹ️ LG U+ 인터넷 기존 사용 고객</div>
+      <div style="font-size:12px;color:#1e40af;line-height:1.7">인터넷 500MB 요금 면제 혜택을 제외한 나머지 혜택(워치·탭·OTT 등)은 동일하게 제공됩니다.<br>아래에서 요금제를 선택해주세요.</div>
     </div>
   </div>
 </div>
@@ -648,7 +646,7 @@ a{text-decoration:none;color:inherit}
 <div class="mo-sheet" id="mo_plan">
   <div class="mo-handle"></div>
   <div class="mo-head"><span class="mo-title">요금제 선택</span><button class="mo-close" onclick="closeMo()">×</button></div>
-  <div class="plan-tabs" style="padding:0 20px 12px;flex-shrink:0">
+  <div class="plan-tabs" id="planTabsWrap" style="padding:0 20px 12px;flex-shrink:0;grid-template-columns:repeat(3,1fr)">
     <button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>
     <button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115</button>
     <button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>
@@ -737,6 +735,14 @@ var CASH = {1:30, 2:60, 4:120}; // 만원 단위
 
 /* ════ 요금제 혜택 데이터 ════ */
 var PLAN_FEATS = {
+  85000: {
+    name: "플러스플랜 85",
+    icon: "<img src=\"./files/u__.png\" style=\"height:52px;width:auto;vertical-align:middle\">",
+    feats: [
+      {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
+      {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"}
+    ]
+  },
   95000: {
     name: "플러스플랜 95",
     icon: "<img src=\"./files/u__.png\" style=\"height:52px;width:auto;vertical-align:middle\">",
@@ -765,6 +771,46 @@ var PLAN_FEATS = {
       {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
       {icon:"<img src=\"./files/tab.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
       {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"인터넷 500MB", monthly:"월 33,000원"},
+      {icon:"📺", name:"OTT 1개 선택", device:"", monthly:"넷플릭스 · 디즈니+ · 티빙"},
+      {icon:"👧", name:"자녀 요금 할인", device:"", monthly:"월 -33,000원 (만 19세 미만)"}
+    ]
+  }
+};
+// LGU+ 자가 사용 요금제 (인터넷 면제 제외)
+var PLAN_FEATS_LGUP = {
+  85000: {
+    name: "플러스플랜 85",
+    icon: "<img src=\"./files/u__.png\" style=\"height:52px;width:auto;vertical-align:middle\">",
+    feats: [
+      {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
+      {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"}
+    ]
+  },
+  95000: {
+    name: "플러스플랜 95",
+    icon: "<img src=\"./files/u__.png\" style=\"height:52px;width:auto;vertical-align:middle\">",
+    feats: [
+      {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
+      {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"}
+    ]
+  },
+  115000: {
+    name: "플러스플랜 115",
+    icon: "<img src=\"./files/u__.png\" style=\"height:52px;width:auto;vertical-align:middle\">",
+    feats: [
+      {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
+      {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
+      {icon:"<img src=\"./files/tab.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
+      {icon:"📺", name:"OTT 1개 선택", device:"", monthly:"넷플릭스 · 디즈니+ · 티빙"}
+    ]
+  },
+  130000: {
+    name: "플러스플랜 130",
+    icon: "<img src=\"./files/u__.png\" style=\"height:52px;width:auto;vertical-align:middle\">",
+    feats: [
+      {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
+      {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
+      {icon:"<img src=\"./files/tab.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
       {icon:"📺", name:"OTT 1개 선택", device:"", monthly:"넷플릭스 · 디즈니+ · 티빙"},
       {icon:"👧", name:"자녀 요금 할인", device:"", monthly:"월 -33,000원 (만 19세 미만)"}
     ]
@@ -1048,8 +1094,33 @@ function sel(type, val) {
   }
   else if (type === "inet") {
     if (val === "LGU+") {
+      // LGU+ 인터넷 자가 사용 모드: 요금제 탭 85/95/115/130 4개, 인터넷 면제 제외
+      window._inetLGUP = true;
+      // 탭 4개로 변경
+      var tw = document.getElementById('planTabsWrap');
+      if (tw) {
+        tw.style.gridTemplateColumns = 'repeat(4,1fr)';
+        tw.innerHTML =
+          '<button class="plan-tab" onclick="selPlanTab(85000)" id="pt_85000">플러스플랜85</button>' +
+          '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>' +
+          '<button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115</button>' +
+          '<button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>';
+      }
+      // LGU+ 전용 안내 배너
       document.getElementById("lgu_warn").style.display = "block";
+      unlock("sc_jt");
+      setTimeout(function(){ closeMo(); setTimeout(function(){openMo("jt");}, 300); }, 200);
     } else {
+      window._inetLGUP = false;
+      // 탭 3개로 복원
+      var tw = document.getElementById('planTabsWrap');
+      if (tw) {
+        tw.style.gridTemplateColumns = 'repeat(3,1fr)';
+        tw.innerHTML =
+          '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>' +
+          '<button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115</button>' +
+          '<button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>';
+      }
       document.getElementById("lgu_warn").style.display = "none";
       unlock("sc_jt");
       setTimeout(function(){ closeMo(); setTimeout(function(){openMo("jt");}, 300); }, 200);
@@ -1272,7 +1343,8 @@ function selPlanTab(price) {
 function renderPlanDetail(price) {
   var pd = document.getElementById("planDetail");
   if (!pd) return;
-  var data = PLAN_FEATS[price];
+  var featsMap = (window._inetLGUP ? PLAN_FEATS_LGUP : PLAN_FEATS);
+  var data = featsMap[price];
   if (!data) return;
   var priceMap = {95000:'월 95,000원', 115000:'월 115,000원', 130000:'월 130,000원'};
   pd.innerHTML =
@@ -1461,10 +1533,18 @@ function renderBonusSec() {
   });
 
   // 요금제별 월 혜택 합계 (월 기준)
-  var planMonthlyMap = {
-    95000: 11000+33000,        // 워치요금+인터넷
-    115000: 11000+22000+33000, // 워치+탭+인터넷
-    130000: 11000+22000+33000+33000 // 워치+탭+인터넷+자녀할인
+  var im = (window._planFeats && window._planFeats.internet_monthly) || 33000;
+  var isLguP = window._inetLGUP;
+  var planMonthlyMap = isLguP ? {
+    85000: 11000,
+    95000: 11000,
+    115000: 11000+22000,
+    130000: 11000+22000+33000
+  } : {
+    85000: 11000,
+    95000: 11000+im,
+    115000: 11000+22000+im,
+    130000: 11000+22000+im+33000
   };
   var secTotal = document.getElementById("bonusSecTotal");
   if(secTotal) secTotal.textContent = "월 "+((planMonthlyMap[plan]||0)/10000)+"만원 요금 절약";
@@ -1660,6 +1740,13 @@ function updateStepBar() {
 }
 
 /* ════ 폼 제출 ════ */
+function checkPhoneHint() {
+  var v = (document.getElementById('fPhone')||{}).value||'';
+  var hint = document.getElementById('phoneHint');
+  if (!hint) return;
+  // 010- 이상 입력됐지만 완성 안 된 경우
+  hint.style.display = (v.length > 3 && !isValidPhone(v)) ? 'block' : 'none';
+}
 // ── 이름: 한글만 허용
 function onNameInput(el) {
   // 완성형 한글 + 조합 중인 자모(ㄱ~ㅣ) 허용
