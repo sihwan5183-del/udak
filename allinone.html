@@ -1087,16 +1087,26 @@ function renderStorList() {
   var colEl = document.getElementById("colBtns");
   if (storEl && S.dev.storageList) {
     storEl.innerHTML = S.dev.storageList.map(function(s) {
-      return '<button class="stor-btn' + (S.stor&&S.stor.name===s.name?" on":"") + '" onclick="selStor(\'' + s.name + '\',' + s.price + ')">' +
-        s.name + '<small>' + s.price.toLocaleString() + '원</small></button>';
+      var msrp = s.msrp || 0;
+      var subsidy = s.subsidy || 0;
+      var udak = s.udak || 0;
+      var finalPrice = msrp ? (msrp - subsidy - udak) : (s.price || 0);
+      var discPct = msrp ? Math.round((1 - finalPrice/msrp)*100) : 0;
+      var priceHtml = msrp
+        ? '<small style="text-decoration:line-through;color:#9ca3af;font-size:10px">' + msrp.toLocaleString() + '원</small>' +
+          '<span style="color:#dc2626;font-size:11px;font-weight:700">' + discPct + '%</span>' +
+          '<span style="color:#1a237e;font-size:12px;font-weight:800">' + finalPrice.toLocaleString() + '원~</span>'
+        : '<small>' + (s.price||0).toLocaleString() + '원</small>';
+      return '<button class="stor-btn' + (S.stor&&S.stor.name===s.name?" on":"") + '" onclick="selStor(\'' + s.name + '\',' + finalPrice + ',' + msrp + ',' + subsidy + ',' + udak + ')">' +
+        '<span style="font-size:12px;font-weight:700">' + s.name + '</span>' + priceHtml + '</button>';
     }).join("");
   }
   if (colEl) renderColList();
 }
 
-function selStor(name, price) {
-  S.stor = {name:name, price:price};
-  document.querySelectorAll(".stor-btn").forEach(function(b){b.classList.toggle("on", b.textContent.includes(name));});
+function selStor(name, price, msrp, subsidy, udak) {
+  S.stor = {name:name, price:price, msrp:msrp||0, subsidy:subsidy||0, udak:udak||0};
+  document.querySelectorAll(".stor-btn").forEach(function(b){b.classList.toggle("on", b.querySelector("span")&&b.querySelector("span").textContent===name);});
 }
 function renderColList() {
   var colEl = document.getElementById("colBtns");
@@ -1558,6 +1568,7 @@ function doSubmit() {
 </script>
 </body>
 </html>
+
 
 
 
