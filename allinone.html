@@ -436,7 +436,7 @@ a{text-decoration:none;color:inherit}
               <div style="position:relative;height:220px;overflow:hidden">
                 <div style="position:absolute;top:0;left:0;right:0;height:65px;background:linear-gradient(to bottom,#fff 60%,rgba(255,255,255,0));z-index:4;pointer-events:none"></div>
                 <div style="position:absolute;bottom:0;left:0;right:0;height:65px;background:linear-gradient(to top,#fff 60%,rgba(255,255,255,0));z-index:4;pointer-events:none"></div>
-                <div style="position:absolute;top:50%;left:8px;right:8px;height:44px;transform:translateY(-50%);background:#fff0f3;border-radius:8px;border:1.5px solid #fda4af;z-index:1;pointer-events:none"></div>
+                <div style="position:absolute;top:50%;left:8px;right:8px;height:44px;transform:translateY(-50%);background:#e8eaf6;border-radius:8px;border:1.5px solid #9fa8da;z-index:1;pointer-events:none"></div>
                 <div id="timePickerScroll" style="height:100%;overflow-y:scroll;scrollbar-width:none;-ms-overflow-style:none;position:relative;z-index:3" onscroll="onTimeScroll()">
                   <div style="height:88px"></div>
                   <div id="timePickerList"></div>
@@ -2153,7 +2153,7 @@ function selectTimeItem(idx) {
   document.getElementById('fTime').value = val;
   var txt = document.getElementById('timePickerText');
   txt.textContent = val;
-  txt.style.color = 'var(--navy)';
+  txt.style.color = '#1a237e';
   txt.style.fontWeight = '800';
   _timePickerOpen = false;
   document.getElementById('timePickerDropdown').style.display = 'none';
@@ -2181,7 +2181,7 @@ function onTimeScroll() {
     document.getElementById('fTime').value = val;
     var txt = document.getElementById('timePickerText');
     txt.textContent = val;
-    txt.style.color = 'var(--navy)';
+    txt.style.color = '#1a237e';
     txt.style.fontWeight = '800';
     updateTimeHighlight(finalIdx);
   }, 150);
@@ -2191,7 +2191,7 @@ function updateTimeHighlight(activeIdx) {
   document.querySelectorAll('.tp-item').forEach(function(el, i) {
     var d = Math.abs(i - activeIdx);
     if (d === 0) {
-      el.style.color = '#e11d48';
+      el.style.color = '#1a237e';
       el.style.fontSize = '19px';
       el.style.fontWeight = '900';
       el.style.opacity = '1';
