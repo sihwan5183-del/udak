@@ -447,7 +447,11 @@ a{text-decoration:none;color:inherit}
                 <div style="position:absolute;bottom:0;left:0;right:0;height:88px;background:linear-gradient(to top,#fff 0%,rgba(255,255,255,0) 100%);z-index:3;pointer-events:none"></div>
                 <div id="tpHighlight" style="position:absolute;top:50%;left:12px;right:12px;height:44px;transform:translateY(-50%);background:#eef2ff;border-radius:8px;border:1.5px solid #c7d2fe;z-index:2;pointer-events:none"></div>
                 <div id="timePickerScroll" style="position:absolute;inset:0;overflow-y:scroll;scrollbar-width:none;-ms-overflow-style:none" onscroll="onTimeScroll()">
-                  <div id="timePickerItems" style="padding:88px 0"></div>
+                  <div id="timePickerItems">
+                  <div class="tp-pad" style="height:88px"></div>
+                  <div id="timePickerList"></div>
+                  <div class="tp-pad" style="height:88px"></div>
+                </div>
                 </div>
               </div>
             </div>
@@ -2128,9 +2132,9 @@ var TP_H = 44; // 항목 높이
 var TP_PAD = 88; // 상하 패딩 (= 컨테이너 높이/2 - 항목높이/2 = 110 - 22)
 
 function initTimePicker() {
-  var items = document.getElementById('timePickerItems');
-  if (!items || items.children.length > 0) return;
-  items.innerHTML = _timeOptions.map(function(t, i) {
+  var list = document.getElementById('timePickerList');
+  if (!list || list.children.length > 0) return;
+  list.innerHTML = _timeOptions.map(function(t, i) {
     return '<div class="tp-item" style="height:'+TP_H+'px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:#d1d5db;cursor:pointer;transition:color .15s,font-size .15s,font-weight .15s" onclick="selectTimeItem('+i+')">' + t + '</div>';
   }).join('');
 }
@@ -2378,7 +2382,7 @@ function doSubmit() {
       plan:S.plan?String(S.plan):null,
       bundling:S.mem?S.mem+"인":null,
       jointype:S.jt==="usim"?"유심만 변경":S.jt==="phone"?"핸드폰도 변경":S.jt==="plan"?(window._inetLGUP?"요금제변경":"올인원요금제변경"):S.jt||null,
-      internet_new: window._inetNew !== undefined ? window._inetNew : null,
+      internet_new: (window._inetNew === true || window._inetNew === false) ? window._inetNew : null,
       discount:S.disc==="pub"?"공시지원금":S.disc==="sel"?"선택약정":S.disc||null,
       estimated_fee:window._fee||null, estimated_fee_memo:window._feeMemo||null,
       consult_time:time, memo:memo,
