@@ -1558,8 +1558,21 @@ function renderBonusSec() {
     if (window._inetLGUP && f.name.indexOf('인터넷') !== -1) return false;
     return true;
   });
-  // OTT를 항상 마지막으로
-  bonusFeats.sort(function(a,b){
+  // 데이터플랜MAX(85000) 선택 시 업셀 배너 표시
+  if (plan === 85000) {
+    items.innerHTML = '<div style="background:#f0f4ff;border:1.5px solid #c7d4f8;border-radius:12px;padding:16px;text-align:center">' +
+      '<div style="font-size:13px;font-weight:800;color:#1a237e;margin-bottom:8px">📊 잠깐! 요금제를 비교해보세요.</div>' +
+      '<div style="font-size:12px;color:#374151;line-height:1.8;margin-bottom:14px">' +
+      '플러스플랜95 <span style="color:#dc2626;font-weight:700">(월 +10,000원)</span><br>' +
+      '→ 워치 기기값 <strong>489,500원</strong> + 월 요금 <strong>11,000원 면제</strong><br>' +
+      '<span style="color:#1a237e;font-weight:800">한 달만 써도 이득이에요!</span>' +
+      '</div>' +
+      '<button onclick="openMo(\'plan\');setTimeout(function(){selPlanTab(95000);},300)" ' +
+      'style="width:100%;padding:12px;background:#1a237e;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">' +
+      '👆 플러스플랜95로 변경하기</button>' +
+      '</div>';
+    return;
+  }
     var aOtt = a.name.includes("OTT") ? 1 : 0;
     var bOtt = b.name.includes("OTT") ? 1 : 0;
     return aOtt - bOtt;
