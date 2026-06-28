@@ -1131,12 +1131,12 @@ function sel(type, val) {
       }
       setTimeout(function(){ selPlanTab(85000); }, 50);
       warn.innerHTML =
-        '<div style="font-size:13px;font-weight:800;color:#1565c0;margin-bottom:6px">ℹ️ LG U+ 인터넷 기존 사용 고객</div>' +
-        '<div style="font-size:12px;color:#1e40af;line-height:1.8;margin-bottom:14px">' +
-        '인터넷 500MB <strong>요금 면제 혜택은 제외</strong>되지만,<br>' +
-        '워치 · 탭 · OTT 등 나머지 혜택은 동일하게 제공됩니다.' +
+        '<div style="font-size:13px;font-weight:800;color:#1565c0;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #bcd4f8">LG U+ 인터넷 기존 사용 고객님께</div>' +
+        '<div style="font-size:12px;color:#1e3a6e;line-height:2;margin-bottom:14px">' +
+        '<span style="display:block;margin-bottom:6px">이 요금제는 <strong style="color:#1a237e">LG U+ 인터넷 신규 가입 고객</strong>을 대상으로<br>인터넷 요금 면제 혜택이 포함되어 있습니다.</span>' +
+        '<span style="display:block;padding:10px 12px;background:#fff;border-radius:8px;border-left:3px solid #1a237e">현재 LG U+ 인터넷을 사용 중이신 고객님은<br><strong>인터넷 요금 면제를 제외한</strong> 워치 · 태블릿 · OTT 등<br>나머지 혜택은 <strong style="color:#1a237e">동일하게</strong> 받으실 수 있습니다.</span>' +
         '</div>' +
-        '<button onclick="lguWarnConfirm()" style="width:100%;padding:12px;background:#1a237e;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">확인 · 다음 단계로 →</button>';
+        '<button onclick="lguWarnConfirm()" style="width:100%;padding:13px;background:#1a237e;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.3px">네, 계속 진행할게요</button>';
     } else {
       window._inetLGUP = false;
       // 탭 3개로 복원
@@ -1419,7 +1419,6 @@ function toggleSkipMem(skip) {
 function selPlan(price) {
   S.plan = price;
   mpx('SelectPlan', {plan_price: price, plan_name: (PLAN_FEATS[price]||{}).name||''});
-  // Firebase planArr에서 이름 가져오기, 없으면 PLAN_FEATS 참조
   var planName = '';
   if (window._planArr) {
     var found = window._planArr.find(function(p){ return p.price === price; });
@@ -1428,12 +1427,20 @@ function selPlan(price) {
   if (!planName && PLAN_FEATS[price]) planName = PLAN_FEATS[price].name;
   if (!planName) planName = '플러스플랜 ' + (price/1000);
   setVal("plan", planName); setSum("plan", planName);
+
+  // 데이터플랜MAX(85000) → 할인방식 숨김, 요금 계산 스킵
+  var discSec = document.getElementById('sc_disc');
+  if (price === 85000) {
+    if (discSec) discSec.style.display = 'none';
+    S.disc = null;
+  } else {
+    if (discSec) discSec.style.display = '';
+  }
+
   calcFee();
-  // 결합인원 카드 표시
   var mc = document.getElementById("memCard");
   if (mc) mc.classList.add("show");
   closeMo();
-  // 가족결합 숨김이면 1인 자동 처리 후 바로 추가혜택으로
   if (window._showMem === false) {
     S.mem = 1;
     setVal("mem", "1인");
@@ -1450,7 +1457,6 @@ function selPlan(price) {
       if (mc) mc.scrollIntoView({behavior:"smooth",block:"center"});
     }, 300);
   }
-  // 추가혜택 바로 표시 + 자동 전체 선택 (autoSelectAllBonus 내부에서 OTT 스크롤 처리)
   renderBonusSec();
   setTimeout(function(){ autoSelectAllBonus(); }, 200);
 }
