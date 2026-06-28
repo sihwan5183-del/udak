@@ -108,7 +108,7 @@ a{text-decoration:none;color:inherit}
 .fee-step.total .fs-val{color:var(--navy);font-size:13px;font-weight:800}
 .fee-result-lbl{font-size:10px;color:var(--navy);font-weight:700;text-align:center;margin-bottom:4px}
 .fee-val{font-size:28px;font-weight:900;color:var(--navy);line-height:1;text-align:center}
-.cash-badge{display:inline-block;background:#fff3cd;color:#92400e;font-size:11px;font-weight:800;padding:5px 12px;border-radius:20px;margin-top:8px;text-align:center;width:100%}
+.cash-badge{display:inline-block;background:#fff3cd;color:#92400e;font-size:13px;font-weight:800;padding:10px 16px;border-radius:20px;margin-top:8px;text-align:center;width:100%;line-height:1.6}
 /* 추가혜택 요약 금액 */
 .bonus-sum-item{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:var(--g600);padding:3px 0;line-height:1.4}
 .bonus-sum-amt{font-size:10px;color:var(--g400);margin-left:auto;white-space:nowrap}
@@ -1588,7 +1588,7 @@ function calcFee() {
   }
   steps.push({label:"최종 예상 월 요금", val:finalFee.toLocaleString()+"원", cls:"total"});
   if (isTasa && cash > 0) {
-    steps.push({label:"U+ 이동 현금 혜택", val:"+"+cash+"만원 별도 지급", cls:"disc"});
+    steps.push({label:"U+ 이동 현금 혜택", val:"<strong style='font-size:1.5em;color:#c2410c;font-weight:900'>+"+cash+"만원</strong> 별도 지급", cls:"disc"});
   }
 
   var stepsHtml = steps.map(function(s){
@@ -1603,7 +1603,10 @@ function calcFee() {
   if (fv) fv.textContent = finalFee.toLocaleString()+"원";
   var cb = document.getElementById("cashBadge");
   if (cb) {
-    if (cash > 0) { cb.style.display="block"; cb.textContent="💰 U+ 이동 현금 혜택 +"+cash+"만원 별도 지급"; }
+  if (cash > 0) { 
+    cb.style.display="block"; 
+    cb.innerHTML="💰 U+ 이동 현금 혜택 <strong style='font-size:2.2em;color:#c2410c;letter-spacing:-0.5px'>+"+cash+"만원</strong> 별도 지급"; 
+  }
     else cb.style.display="none";
   }
   var mf = document.getElementById("mob_fee");
