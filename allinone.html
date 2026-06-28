@@ -1099,9 +1099,7 @@ function sel(type, val) {
   }
   else if (type === "inet") {
     if (val === "LGU+") {
-      // LGU+ 인터넷 자가 사용 모드: 요금제 탭 85/95/115/130 4개, 인터넷 면제 제외
       window._inetLGUP = true;
-      // 탭 4개로 변경
       var tw = document.getElementById('planTabsWrap');
       if (tw) {
         tw.style.gridTemplateColumns = 'repeat(3,1fr)';
@@ -1110,10 +1108,16 @@ function sel(type, val) {
           '<button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115</button>' +
           '<button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>';
       }
-      // LGU+ 전용 안내 배너
-      document.getElementById("lgu_warn").style.display = "block";
-      unlock("sc_jt");
-      setTimeout(function(){ closeMo(); setTimeout(function(){openMo("jt");}, 300); }, 200);
+      // 안내 + 확인 버튼 (확인 눌러야 다음 단계)
+      var warn = document.getElementById('lgu_warn');
+      warn.style.display = 'block';
+      warn.innerHTML =
+        '<div style="font-size:13px;font-weight:800;color:#1565c0;margin-bottom:6px">ℹ️ LG U+ 인터넷 기존 사용 고객</div>' +
+        '<div style="font-size:12px;color:#1e40af;line-height:1.8;margin-bottom:14px">' +
+        '인터넷 500MB <strong>요금 면제 혜택은 제외</strong>되지만,<br>' +
+        '워치 · 탭 · OTT 등 나머지 혜택은 동일하게 제공됩니다.' +
+        '</div>' +
+        '<button onclick="lguWarnConfirm()" style="width:100%;padding:12px;background:#1a237e;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">확인 · 다음 단계로 →</button>';
     } else {
       window._inetLGUP = false;
       // 탭 3개로 복원
@@ -1850,6 +1854,12 @@ function checkGuardianFilled() {
   btn.textContent = filled ? '법정대리인 확인 후 상담 신청' : '상담 신청하기';
 }
 
+function lguWarnConfirm() {
+  document.getElementById('lgu_warn').style.display = 'none';
+  unlock("sc_jt");
+  closeMo();
+  setTimeout(function(){ openMo("jt"); }, 300);
+}
 // ── 영업시간 체크 (월~토 09:30~20:00, KST)
 function isBusinessHour() {
   var now = new Date(new Date().toLocaleString("en-US", {timeZone:"Asia/Seoul"}));
