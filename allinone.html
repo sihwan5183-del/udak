@@ -2227,11 +2227,18 @@ function doSubmit() {
   var gPhone = (document.getElementById("gPhone")||{}).value||null;
   var gRel   = (document.getElementById("gRelation")||{}).value||null;
 
+  var inetNewStr = '';
+  if (S.inet && S.inet !== 'LGU+') {
+    if (window._inetNew === true) inetNewStr = 'LGU+인터넷 신규가입 O';
+    else if (window._inetNew === false) inetNewStr = 'LGU+인터넷 신규가입 X (핸드폰만)';
+  }
+
   var memo = [
     "[올인원]",
     "휴대폰통신사:" + (S.mcar||"–"),
     "인터넷통신사:" + (S.inet||"–"),
-    "진행방식:" + (S.jt==="usim"?"유심만 변경":"핸드폰도 변경"),
+    inetNewStr ? "인터넷신규가입:" + inetNewStr : "",
+    "진행방식:" + (S.jt==="usim"?"유심만 변경":S.jt==="plan"?"올인원요금제변경":"핸드폰도 변경"),
     "선택기기:" + devStr,
     "할인방식:" + (S.disc==="pub"?"공시지원금":"선택약정"),
     "요금제:" + (S.plan?planName4memo:"–"),
@@ -2257,7 +2264,8 @@ function doSubmit() {
       additional_benefits:bonusStr!=="–"?bonusStr:null,
       plan:S.plan?String(S.plan):null,
       bundling:S.mem?S.mem+"인":null,
-      jointype:S.jt==="usim"?"유심만 변경":S.jt==="phone"?"핸드폰도 변경":S.jt||null,
+      jointype:S.jt==="usim"?"유심만 변경":S.jt==="phone"?"핸드폰도 변경":S.jt==="plan"?(window._inetLGUP?"요금제변경":"올인원요금제변경"):S.jt||null,
+      internet_new: window._inetNew !== undefined ? window._inetNew : null,
       discount:S.disc==="pub"?"공시지원금":S.disc==="sel"?"선택약정":S.disc||null,
       estimated_fee:window._fee||null, estimated_fee_memo:window._feeMemo||null,
       consult_time:time, memo:memo,
