@@ -1143,14 +1143,16 @@ function sel(type, val) {
         // 케이스 3: 타사폰 + LGU+인터넷 → 핸드폰변경 / 유심변경, plan 숨김
         if (usimBtn) usimBtn.style.display = '';
         if (planBtn) planBtn.style.display = 'none';
-        // 탭 3개 (85제외)
+        // 탭 4개 (85포함)
         if (tw) {
-          tw.style.gridTemplateColumns = 'repeat(3,1fr)';
+          tw.style.gridTemplateColumns = 'repeat(4,1fr)';
           tw.innerHTML =
-            '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>' +
+            '<button class="plan-tab on" onclick="selPlanTab(85000)" id="pt_85000">'+((window._planArr&&window._planArr.find(function(p){return p.price===85000;}))||{name:'데이터플랜MAX'}).name+'</button>' +
+            '<button class="plan-tab" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>' +
             '<button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115</button>' +
             '<button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>';
         }
+        setTimeout(function(){ selPlanTab(85000); }, 50);
       }
       // LGU+ 인터넷 안내 박스 + 확인 버튼
       var warn = document.getElementById('lgu_warn');
