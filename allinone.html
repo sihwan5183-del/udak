@@ -1182,12 +1182,16 @@ function sel(type, val) {
       var warn = document.getElementById('lgu_warn');
       warn.style.display = 'block';
       warn.innerHTML =
-        '<div style="font-size:13px;font-weight:800;color:#1565c0;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #bcd4f8">LG U+ 인터넷 기존 사용 고객님께</div>' +
+        '<div style="font-size:13px;font-weight:800;color:#1565c0;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #bcd4f8">LG U+ 인터넷을 이미 사용 중이신 고객님께</div>' +
         '<div style="font-size:12px;color:#1e3a6e;line-height:2;margin-bottom:14px">' +
-        '<span style="display:block;margin-bottom:6px">이 요금제는 <strong style="color:#1a237e">LG U+ 인터넷 신규 가입 고객</strong>을 대상으로<br>인터넷 요금 면제 혜택이 포함되어 있습니다.</span>' +
-        '<span style="display:block;padding:10px 12px;background:#fff;border-radius:8px;border-left:3px solid #1a237e">현재 LG U+ 인터넷을 사용 중이신 고객님은<br><strong>인터넷 요금 면제를 제외한</strong> 워치 · 태블릿 · OTT 등<br>나머지 혜택은 <strong style="color:#1a237e">동일하게</strong> 받으실 수 있습니다.</span>' +
+        '<span style="display:block;margin-bottom:8px">이 요금제의 인터넷 요금 면제 혜택은 <strong style="color:#1a237e">LG U+ 인터넷 신규 설치 고객</strong>을 대상으로 합니다.</span>' +
+        '<span style="display:block;padding:10px 12px;background:#fff;border-radius:8px;border-left:3px solid #1a237e;line-height:1.9">단, 현재 사용 중이시더라도<br><strong>본가 · 자취방 등 다른 장소에 추가 설치</strong>하시면<br>동일한 혜택을 받으실 수 있습니다!</span>' +
         '</div>' +
-        '<button onclick="lguWarnConfirm()" style="width:100%;padding:13px;background:#1a237e;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.3px">네, 계속 진행할게요</button>';
+        '<div style="font-size:12px;font-weight:700;color:#1a237e;margin-bottom:10px">신규 설치 예정이신가요?</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' +
+        '<button onclick="lguInetNewConfirm(true)" style="padding:12px 8px;background:#1a237e;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">✅ 네, 신규 설치 예정이에요</button>' +
+        '<button onclick="lguInetNewConfirm(false)" style="padding:12px 8px;background:#fff;color:#374151;border:1.5px solid #e5e7eb;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">아니요, 괜찮아요</button>' +
+        '</div>';
     } else {
       // 케이스 2: LGU+폰 + 타사인터넷 → 핸드폰변경 / 올인원요금제(95부터), 유심 숨김
       // 또는 타사폰 + 타사인터넷 → 일반 (핸드폰변경 / 유심변경)
@@ -1988,6 +1992,63 @@ function checkGuardianFilled() {
   btn.textContent = filled ? '법정대리인 확인 후 상담 신청' : '상담 신청하기';
 }
 
+function lguInetNewConfirm(isNew) {
+  document.getElementById('lgu_warn').style.display = 'none';
+  var tw = document.getElementById('planTabsWrap');
+  var usimBtn = document.getElementById('jt_usim');
+  var planBtn = document.getElementById('jt_plan');
+  var isMcarLGU = S.mcar === 'LGU+';
+
+  if (isNew) {
+    // 신규 설치 예정 → 인터넷 면제 O, 95/115/130
+    window._inetLGUP = false;
+    window._inetNew = true;
+    if (tw) {
+      tw.style.gridTemplateColumns = 'repeat(3,1fr)';
+      tw.innerHTML =
+        '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>' +
+        '<button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115</button>' +
+        '<button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>';
+    }
+    // LGU+폰이면 핸드폰만, 타사폰이면 핸드폰/유심
+    if (isMcarLGU) {
+      if (usimBtn) usimBtn.style.display = 'none';
+      if (planBtn) planBtn.style.display = 'none';
+    } else {
+      if (usimBtn) usimBtn.style.display = '';
+      if (planBtn) planBtn.style.display = 'none';
+    }
+  } else {
+    // 신규 설치 아님 → 인터넷 면제 X, 85/95/115/130
+    window._inetLGUP = true;
+    window._inetNew = false;
+    if (tw) {
+      tw.style.gridTemplateColumns = 'repeat(4,1fr)';
+      tw.innerHTML =
+        '<button class="plan-tab on" onclick="selPlanTab(85000)" id="pt_85000">'+((window._planArr&&window._planArr.find(function(p){return p.price===85000;}))||{name:'데이터플랜MAX'}).name+'</button>' +
+        '<button class="plan-tab" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>' +
+        '<button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115</button>' +
+        '<button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>';
+      setTimeout(function(){ selPlanTab(85000); }, 50);
+    }
+    // LGU+폰이면 핸드폰/요금제변경, 타사폰이면 핸드폰/유심
+    if (isMcarLGU) {
+      if (usimBtn) usimBtn.style.display = 'none';
+      if (planBtn) {
+        planBtn.style.display = 'block';
+        planBtn.querySelector('div') && (planBtn.querySelector('div').innerHTML = '<img src="./files/u__.png" alt="" style="height:36px;width:auto;display:block;margin:0 auto" onerror="this.style.display=\'none\'">');
+        planBtn.querySelector('span').textContent = '📋 요금제 변경하기';
+        planBtn.querySelector('small').textContent = '핸드폰은 그대로, 요금제만 변경하기';
+      }
+    } else {
+      if (usimBtn) usimBtn.style.display = '';
+      if (planBtn) planBtn.style.display = 'none';
+    }
+  }
+  unlock("sc_jt");
+  closeMo();
+  setTimeout(function(){ openMo("jt"); }, 300);
+}
 function lguWarnConfirm() {
   document.getElementById('lgu_warn').style.display = 'none';
   // 진행방식 버튼 상태 재적용
