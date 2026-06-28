@@ -1573,6 +1573,8 @@ function renderBonusSec() {
       '</div>';
     return;
   }
+  // OTT를 항상 마지막으로
+  bonusFeats.sort(function(a,b){
     var aOtt = a.name.includes("OTT") ? 1 : 0;
     var bOtt = b.name.includes("OTT") ? 1 : 0;
     return aOtt - bOtt;
