@@ -277,6 +277,16 @@ a{text-decoration:none;color:inherit}
 @media(max-width:900px){.sum-sheet{display:none;position:static;margin-top:0;margin-bottom:16px;border-radius:var(--radius)}}
 @media(max-width:900px){.sum-sheet.mob-show{display:block}}
 @media(max-width:900px){body{padding-bottom:120px}}
+
+/* ══ 배너 슬라이더 고급 효과 ══ */
+#bTrack{position:relative;overflow:hidden}
+.b-slide{position:absolute;inset:0;opacity:0;transition:opacity .9s ease;pointer-events:none;z-index:0}
+.b-slide.active{opacity:1;pointer-events:auto;z-index:1;position:relative}
+.b-slide img{width:100%;height:auto;display:block;animation:kenburns 7s ease-in-out forwards}
+@keyframes kenburns{0%{transform:scale(1)}100%{transform:scale(1.07) translate(-1.5%,-1%)}}
+.b-grad{position:absolute;bottom:0;left:0;right:0;height:45%;background:linear-gradient(to top,rgba(0,0,0,.6) 0%,transparent 100%);pointer-events:none;z-index:2}
+.b-dot-bar{height:3px;border-radius:2px;background:rgba(255,255,255,.4);cursor:pointer;transition:all .4s ease;width:20px}
+.b-dot-bar.on{background:#fff;width:36px}
 </style>
 </head>
 <body>
@@ -289,10 +299,10 @@ a{text-decoration:none;color:inherit}
 
 <!-- 배너 -->
 <div id="bannerWrap" style="display:none;position:relative;overflow:hidden;width:100%">
-  <div id="bTrack" style="position:relative;width:100%"></div>
+  <div id="bTrack" style="width:100%;min-height:100px"></div><div class="b-grad"></div>
   <button id="bPrev" onclick="slideBanner(-1)" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.3);color:#fff;border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;display:none">‹</button>
   <button id="bNext" onclick="slideBanner(1)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.3);color:#fff;border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;display:none">›</button>
-  <div id="bDots" style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:6px"></div>
+  <div id="bDots" style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:3"></div>
 </div>
 
 <!-- 모바일 진행바 -->
@@ -881,10 +891,10 @@ function loadBanners() {
       var src = isMo ? (b.mo || b.pc) : (b.pc || b.mo);
       var img = '<img src="' + src + '" alt="배너' + (i+1) + '" style="width:100%;height:auto;display:block">';
       var inner = b.link ? '<a href="' + b.link + '" target="_blank">' + img + '</a>' : img;
-      return '<div class="b-slide" style="display:' + (i===0?'block':'none') + ';width:100%">' + inner + '</div>';
+      return '<div class="b-slide' + (i===0?' active':'') + '" style="width:100%">' + inner + '</div>';
     }).join('');
     if (dots) dots.innerHTML = bans.map(function(_, i) {
-      return '<div onclick="goBanner(' + i + ')" style="width:8px;height:8px;border-radius:50%;background:' + (i===0?'#fff':'rgba(255,255,255,.5)') + ';cursor:pointer"></div>';
+      return '<div class="b-dot-bar' + (i===0?' on':'') + '" onclick="goBanner(' + i + ')"></div>';
     }).join('');
     var prev = document.getElementById('bPrev');
     var next = document.getElementById('bNext');
@@ -904,13 +914,21 @@ function goBanner(i) {
   _bannerIdx = i;
   var track = document.getElementById('bTrack');
   if(track) {
-    track.querySelectorAll('.b-slide').forEach(function(el, j){
-      el.style.display = j===i ? 'block' : 'none';
+    var slides = track.querySelectorAll('.b-slide');
+    slides.forEach(function(el, j){
+      if(j===i){
+        el.classList.add('active');
+        // 켄번 재시작
+        var img = el.querySelector('img');
+        if(img){ img.style.animation='none'; img.offsetHeight; img.style.animation=''; }
+      } else {
+        el.classList.remove('active');
+      }
     });
   }
   var dots = document.getElementById('bDots');
-  if(dots) dots.querySelectorAll('div').forEach(function(d, j){
-    d.style.background = j===i ? '#fff' : 'rgba(255,255,255,.5)';
+  if(dots) dots.querySelectorAll('.b-dot-bar').forEach(function(d, j){
+    d.classList.toggle('on', j===i);
   });
 }
 
