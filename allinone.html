@@ -436,14 +436,16 @@ a{text-decoration:none;color:inherit}
         <div class="fg"><label class="flbl">연락처 <em>*</em></label><input class="fi" id="fPhone" type="tel" placeholder="010-0000-0000" oninput="onPhoneInput(this);checkPhoneHint()" maxlength="13"><div id="phoneHint" style="font-size:11px;color:#dc2626;margin-top:4px;display:none">휴대폰 번호를 끝까지 입력해주세요.</div></div>
         <div class="fg"><label class="flbl">상담 가능 시간 <em>*</em></label>
           <div id="timePickerWrap" style="position:relative">
-            <div id="timePickerDisplay" onclick="toggleTimePicker()" style="width:100%;padding:12px 14px;border:1.5px solid var(--g200);border-radius:10px;font-size:14px;color:var(--g600);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none">
+            <div id="timePickerDisplay" onclick="toggleTimePicker()" style="width:100%;padding:12px 14px;border:1.5px solid var(--g200);border-radius:10px;font-size:14px;color:var(--g600);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;transition:border-color .2s">
               <span id="timePickerText" style="color:var(--g400)">선택해주세요</span>
-              <span id="timePickerArrow" style="font-size:12px;color:var(--g400);transition:transform .2s">▼</span>
+              <span id="timePickerArrow" style="font-size:11px;color:var(--g400);transition:transform .3s">▲</span>
             </div>
-            <div id="timePickerDropdown" style="display:none;position:absolute;left:0;right:0;background:#fff;border:1.5px solid var(--g200);border-radius:10px;z-index:100;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.12);margin-top:4px">
-              <div style="position:relative;height:180px;overflow:hidden">
-                <div style="position:absolute;top:50%;left:0;right:0;height:40px;transform:translateY(-50%);background:var(--navyLL);border-radius:6px;margin:0 8px;pointer-events:none;z-index:1"></div>
-                <div id="timePickerScroll" style="height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none;-ms-overflow-style:none;padding:70px 0" onscroll="onTimeScroll()"></div>
+            <div id="timePickerDropdown" style="display:none;position:absolute;left:0;right:0;background:#fff;border:2px solid var(--navy);border-radius:12px;z-index:200;overflow:hidden;box-shadow:0 8px 32px rgba(26,35,126,.15);margin-top:6px">
+              <div style="position:relative;height:200px;overflow:hidden">
+                <div style="position:absolute;top:0;left:0;right:0;height:68px;background:linear-gradient(to bottom,#fff 60%,transparent);z-index:2;pointer-events:none"></div>
+                <div style="position:absolute;bottom:0;left:0;right:0;height:68px;background:linear-gradient(to top,#fff 60%,transparent);z-index:2;pointer-events:none"></div>
+                <div style="position:absolute;top:50%;left:12px;right:12px;height:42px;transform:translateY(-50%);background:var(--navyLL);border-radius:8px;z-index:1;pointer-events:none;border:1.5px solid var(--navy3)"></div>
+                <div id="timePickerScroll" style="height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none;-ms-overflow-style:none;padding:79px 0" onscroll="onTimeScroll()"></div>
               </div>
             </div>
           </div>
@@ -1147,7 +1149,8 @@ function sel(type, val) {
         if (usimBtn) usimBtn.style.display = 'none';
         if (planBtn) {
           planBtn.style.display = 'block';
-          planBtn.querySelector('span').textContent = '요금제 변경하기';
+          planBtn.querySelector('div') && (planBtn.querySelector('div').innerHTML = '<img src="./files/u__.png" alt="" style="height:36px;width:auto;display:block;margin:0 auto" onerror="this.style.display=\'none\'">');
+          planBtn.querySelector('span').textContent = '📋 요금제 변경하기';
           planBtn.querySelector('small').textContent = '핸드폰은 그대로, 요금제만 변경하기';
         }
         // 탭 4개 (85포함)
@@ -2040,35 +2043,48 @@ function selInetNew(isNew) {
 var _timeOptions = ['오전 9시','오전 10시','오전 11시','오후 12시','오후 1시','오후 2시','오후 3시','오후 4시','오후 5시','오후 6시','오후 7시','언제든지 가능'];
 var _timePickerOpen = false;
 var _timeScrollTimer = null;
+var _timeActiveIdx = -1;
 
 function initTimePicker() {
   var scroll = document.getElementById('timePickerScroll');
   if (!scroll) return;
   scroll.innerHTML = _timeOptions.map(function(t, i) {
-    return '<div class="tp-item" data-idx="'+i+'" style="height:40px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--g400);scroll-snap-align:center;cursor:pointer;transition:all .2s" onclick="selectTimeItem('+i+')">' + t + '</div>';
+    return '<div class="tp-item" data-idx="'+i+'" style="height:42px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--g300);scroll-snap-align:center;cursor:pointer;transition:all .25s;letter-spacing:-0.3px" onclick="selectTimeItem('+i+')">' + t + '</div>';
   }).join('');
 }
 
 function toggleTimePicker() {
   _timePickerOpen = !_timePickerOpen;
   var dd = document.getElementById('timePickerDropdown');
+  var disp = document.getElementById('timePickerDisplay');
   var arrow = document.getElementById('timePickerArrow');
   dd.style.display = _timePickerOpen ? 'block' : 'none';
-  arrow.style.transform = _timePickerOpen ? 'rotate(180deg)' : '';
+  arrow.style.transform = _timePickerOpen ? '' : 'rotate(180deg)';
+  disp.style.borderColor = _timePickerOpen ? 'var(--navy)' : 'var(--g200)';
   if (_timePickerOpen) {
     if (!document.querySelector('.tp-item')) initTimePicker();
-    updateTimeHighlight();
+    var startIdx = _timeActiveIdx >= 0 ? _timeActiveIdx : 4;
+    var scroll = document.getElementById('timePickerScroll');
+    if (scroll) scroll.scrollTop = startIdx * 42;
+    updateTimeHighlight(startIdx);
   }
 }
 
 function selectTimeItem(idx) {
+  _timeActiveIdx = idx;
   var val = _timeOptions[idx];
   document.getElementById('fTime').value = val;
-  document.getElementById('timePickerText').textContent = val;
-  document.getElementById('timePickerText').style.color = 'var(--g800)';
+  var txt = document.getElementById('timePickerText');
+  txt.textContent = val;
+  txt.style.color = 'var(--navy)';
+  txt.style.fontWeight = '700';
   _timePickerOpen = false;
-  document.getElementById('timePickerDropdown').style.display = 'none';
-  document.getElementById('timePickerArrow').style.transform = '';
+  var dd = document.getElementById('timePickerDropdown');
+  var disp = document.getElementById('timePickerDisplay');
+  var arrow = document.getElementById('timePickerArrow');
+  dd.style.display = 'none';
+  disp.style.borderColor = 'var(--navy)';
+  arrow.style.transform = 'rotate(180deg)';
   updateTimeHighlight(idx);
 }
 
@@ -2077,33 +2093,51 @@ function onTimeScroll() {
   _timeScrollTimer = setTimeout(function(){
     var scroll = document.getElementById('timePickerScroll');
     if (!scroll) return;
-    var idx = Math.round(scroll.scrollTop / 40);
+    var idx = Math.round(scroll.scrollTop / 42);
     idx = Math.max(0, Math.min(idx, _timeOptions.length - 1));
-    scroll.scrollTo({top: idx * 40, behavior: 'smooth'});
+    scroll.scrollTo({top: idx * 42, behavior: 'smooth'});
     updateTimeHighlight(idx);
-    // 자동 선택
+    _timeActiveIdx = idx;
     var val = _timeOptions[idx];
     document.getElementById('fTime').value = val;
-    document.getElementById('timePickerText').textContent = val;
-    document.getElementById('timePickerText').style.color = 'var(--g800)';
-  }, 150);
+    var txt = document.getElementById('timePickerText');
+    txt.textContent = val;
+    txt.style.color = 'var(--navy)';
+    txt.style.fontWeight = '700';
+  }, 120);
 }
 
 function updateTimeHighlight(activeIdx) {
   var items = document.querySelectorAll('.tp-item');
   items.forEach(function(el, i) {
-    el.style.color = i === activeIdx ? 'var(--navy)' : 'var(--g400)';
-    el.style.fontSize = i === activeIdx ? '16px' : '14px';
-    el.style.fontWeight = i === activeIdx ? '800' : '600';
+    var diff = Math.abs(i - activeIdx);
+    if (i === activeIdx) {
+      el.style.color = 'var(--navy)';
+      el.style.fontSize = '17px';
+      el.style.fontWeight = '900';
+      el.style.opacity = '1';
+    } else if (diff === 1) {
+      el.style.color = 'var(--g500)';
+      el.style.fontSize = '14px';
+      el.style.fontWeight = '600';
+      el.style.opacity = '0.7';
+    } else {
+      el.style.color = 'var(--g300)';
+      el.style.fontSize = '13px';
+      el.style.fontWeight = '500';
+      el.style.opacity = '0.4';
+    }
   });
 }
 
 // 외부 클릭 시 피커 닫기
 document.addEventListener('click', function(e) {
-  if (_timePickerOpen && !document.getElementById('timePickerWrap').contains(e.target)) {
+  var wrap = document.getElementById('timePickerWrap');
+  if (_timePickerOpen && wrap && !wrap.contains(e.target)) {
     _timePickerOpen = false;
     document.getElementById('timePickerDropdown').style.display = 'none';
-    document.getElementById('timePickerArrow').style.transform = '';
+    document.getElementById('timePickerDisplay').style.borderColor = _timeActiveIdx >= 0 ? 'var(--navy)' : 'var(--g200)';
+    document.getElementById('timePickerArrow').style.transform = 'rotate(180deg)';
   }
 });
 
