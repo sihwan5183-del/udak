@@ -1306,9 +1306,7 @@ function renderStorList() {
       }
       finalPrice = msrp ? (msrp - subsidy - udak) : (s.price||0);
       var discPct = msrp ? Math.round((1 - finalPrice/msrp)*100) : 0;
-      var badge = isLgu
-        ? '<span style="font-size:9px;background:#1a237e;color:#fff;padding:1px 4px;border-radius:3px;margin-bottom:2px;display:block">기기변경</span>'
-        : '<span style="font-size:9px;background:#e05c5c;color:#fff;padding:1px 4px;border-radius:3px;margin-bottom:2px;display:block">번호이동</span>';
+      var badge = '';
       var priceHtml = msrp
         ? badge +
           '<small style="text-decoration:line-through;color:#9ca3af;font-size:10px">' + msrp.toLocaleString() + '원</small> ' +
