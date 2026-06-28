@@ -1074,7 +1074,19 @@ function closeMo() {
 function sel(type, val) {
   S[type] = val;
   // Meta 픽셀 퍼널 이벤트
-  if (type === 'mcar') mpx('SelectMobileCarrier', {carrier: val});
+  if (type === 'mcar') {
+    mpx('SelectMobileCarrier', {carrier: val});
+    // 휴대폰 LGU+ → 유심 버튼 숨김 (자사 고객은 핸드폰 변경만)
+    var usimBtn = document.getElementById('jt_usim');
+    var phoneBtn = document.getElementById('jt_phone');
+    if (val === 'LGU+') {
+      if (usimBtn) usimBtn.style.display = 'none';
+      if (phoneBtn) phoneBtn.style.gridColumn = '1 / -1'; // 1개만 전체 너비
+    } else {
+      if (usimBtn) usimBtn.style.display = '';
+      if (phoneBtn) phoneBtn.style.gridColumn = '';
+    }
+  }
   if (type === 'inet') mpx('SelectInternetCarrier', {carrier: val});
   if (type === 'jt')   mpx('SelectJoinType', {join_type: val === 'usim' ? '유심변경' : '핸드폰변경'});
   if (type === 'mem')  mpx('SelectBundle', {members: val});
@@ -1533,8 +1545,12 @@ function renderBonusSec() {
   var data = PLAN_FEATS[plan];
   if (!data) return;
 
-  // 추가혜택 아이템 렌더 (데이터 무제한 제외, 요금제 포함 혜택)
-  var bonusFeats = data.feats.filter(function(f){return f.name !== "데이터 무제한";});
+  // 추가혜택 아이템 렌더 (데이터 무제한 제외, 인터넷LGU+면 인터넷 항목도 제외)
+  var bonusFeats = data.feats.filter(function(f){
+    if (f.name === "데이터 무제한") return false;
+    if (window._inetLGUP && f.name.indexOf('인터넷') !== -1) return false;
+    return true;
+  });
   // OTT를 항상 마지막으로
   bonusFeats.sort(function(a,b){
     var aOtt = a.name.includes("OTT") ? 1 : 0;
