@@ -1084,19 +1084,8 @@ function sel(type, val) {
   // Meta 픽셀 퍼널 이벤트
   if (type === 'mcar') {
     mpx('SelectMobileCarrier', {carrier: val});
-    // 휴대폰 LGU+ → 유심 버튼 숨김, 요금제만 변경 버튼 표시
-    var usimBtn = document.getElementById('jt_usim');
-    var phoneBtn = document.getElementById('jt_phone');
-    var planBtn = document.getElementById('jt_plan');
-    if (val === 'LGU+') {
-      if (usimBtn) usimBtn.style.display = 'none';
-      if (phoneBtn) phoneBtn.style.gridColumn = '';
-      if (planBtn) planBtn.style.display = 'block';
-    } else {
-      if (usimBtn) usimBtn.style.display = '';
-      if (phoneBtn) phoneBtn.style.gridColumn = '';
-      if (planBtn) planBtn.style.display = 'none';
-    }
+    // 진행방식 버튼 업데이트는 inet 선택 후에 결정
+    // 미리 상태만 저장해두고 inet에서 조합
   }
   if (type === 'inet') mpx('SelectInternetCarrier', {carrier: val});
   if (type === 'jt')   mpx('SelectJoinType', {join_type: val === 'usim' ? '유심변경' : '핸드폰변경'});
@@ -1121,30 +1110,51 @@ function sel(type, val) {
     setTimeout(function(){ closeMo(); setTimeout(function(){openMo("inet");}, 300); }, 200);
   }
   else if (type === "inet") {
+    var isMcarLGU = S.mcar === 'LGU+';
+    var usimBtn = document.getElementById('jt_usim');
+    var phoneBtn = document.getElementById('jt_phone');
+    var planBtn = document.getElementById('jt_plan');
+
     if (val === "LGU+") {
+      // 인터넷 LGU+
       window._inetLGUP = true;
       var tw = document.getElementById('planTabsWrap');
-      if (tw) {
-        tw.style.gridTemplateColumns = 'repeat(3,1fr)';
-        tw.innerHTML =
-          '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>' +
-          '<button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115</button>' +
-          '<button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>';
+
+      if (isMcarLGU) {
+        // 케이스 1: LGU+폰 + LGU+인터넷 → 핸드폰변경 / 요금제변경(85포함)
+        // 진행방식: 핸드폰변경 + 요금제변경(plan), 유심 숨김
+        if (usimBtn) usimBtn.style.display = 'none';
+        if (planBtn) {
+          planBtn.style.display = 'block';
+          planBtn.querySelector('span').textContent = '요금제 변경하기';
+          planBtn.querySelector('small').textContent = '핸드폰은 그대로, 요금제만 변경하기';
+        }
+        // 탭 4개 (85포함)
+        if (tw) {
+          tw.style.gridTemplateColumns = 'repeat(4,1fr)';
+          tw.innerHTML =
+            '<button class="plan-tab on" onclick="selPlanTab(85000)" id="pt_85000">'+((window._planArr&&window._planArr.find(function(p){return p.price===85000;}))||{name:'데이터플랜MAX'}).name+'</button>' +
+            '<button class="plan-tab" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>' +
+            '<button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115</button>' +
+            '<button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>';
+        }
+        setTimeout(function(){ selPlanTab(85000); }, 50);
+      } else {
+        // 케이스 3: 타사폰 + LGU+인터넷 → 핸드폰변경 / 유심변경, plan 숨김
+        if (usimBtn) usimBtn.style.display = '';
+        if (planBtn) planBtn.style.display = 'none';
+        // 탭 3개 (85제외)
+        if (tw) {
+          tw.style.gridTemplateColumns = 'repeat(3,1fr)';
+          tw.innerHTML =
+            '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>' +
+            '<button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115</button>' +
+            '<button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>';
+        }
       }
-      // 안내 + 확인 버튼 (확인 눌러야 다음 단계)
+      // LGU+ 인터넷 안내 박스 + 확인 버튼
       var warn = document.getElementById('lgu_warn');
       warn.style.display = 'block';
-      // 탭 4개로 변경 (85 추가)
-      var tw = document.getElementById('planTabsWrap');
-      if (tw) {
-        tw.style.gridTemplateColumns = 'repeat(4,1fr)';
-        tw.innerHTML =
-          '<button class="plan-tab on" onclick="selPlanTab(85000)" id="pt_85000">'+((window._planArr&&window._planArr.find(function(p){return p.price===85000;}))||{name:'데이터플랜MAX'}).name+'</button>' +
-          '<button class="plan-tab" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>' +
-          '<button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115</button>' +
-          '<button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>';
-      }
-      setTimeout(function(){ selPlanTab(85000); }, 50);
       warn.innerHTML =
         '<div style="font-size:13px;font-weight:800;color:#1565c0;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #bcd4f8">LG U+ 인터넷 기존 사용 고객님께</div>' +
         '<div style="font-size:12px;color:#1e3a6e;line-height:2;margin-bottom:14px">' +
@@ -1153,9 +1163,11 @@ function sel(type, val) {
         '</div>' +
         '<button onclick="lguWarnConfirm()" style="width:100%;padding:13px;background:#1a237e;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.3px">네, 계속 진행할게요</button>';
     } else {
+      // 케이스 2: LGU+폰 + 타사인터넷 → 핸드폰변경 / 올인원요금제(95부터), 유심 숨김
+      // 또는 타사폰 + 타사인터넷 → 일반 (핸드폰변경 / 유심변경)
       window._inetLGUP = false;
-      // 탭 3개로 복원
       var tw = document.getElementById('planTabsWrap');
+      // 탭 3개 (85제외)
       if (tw) {
         tw.style.gridTemplateColumns = 'repeat(3,1fr)';
         tw.innerHTML =
@@ -1164,6 +1176,20 @@ function sel(type, val) {
           '<button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>';
       }
       document.getElementById("lgu_warn").style.display = "none";
+
+      if (isMcarLGU) {
+        // 케이스 2: LGU+폰 + 타사인터넷 → 핸드폰변경 / 올인원요금제변경, 유심 숨김
+        if (usimBtn) usimBtn.style.display = 'none';
+        if (planBtn) {
+          planBtn.style.display = 'block';
+          planBtn.querySelector('span').textContent = '올인원 요금제로 변경하기';
+          planBtn.querySelector('small').textContent = '핸드폰은 그대로, 선택약정으로 요금제만 변경';
+        }
+      } else {
+        // 타사폰 + 타사인터넷 → 일반 (핸드폰변경 / 유심변경)
+        if (usimBtn) usimBtn.style.display = '';
+        if (planBtn) planBtn.style.display = 'none';
+      }
       unlock("sc_jt");
       setTimeout(function(){ closeMo(); setTimeout(function(){openMo("jt");}, 300); }, 200);
     }
