@@ -839,15 +839,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
 var _planTabBadge = { 95000:'', 115000:'', 130000:'' };
 function updatePlanTabs(planArr) {
+  window._planArr = planArr;
   planArr.forEach(function(p) {
     var price = p.price;
     var tabEl = document.getElementById('pt_' + price);
-    if (tabEl) {
-      tabEl.innerHTML = p.name + (_planTabBadge[price]||'');
-    }
-    if (PLAN_FEATS[price]) {
-      PLAN_FEATS[price].name = p.name;
-    }
+    if (tabEl) tabEl.innerHTML = p.name;
+    if (PLAN_FEATS[price]) PLAN_FEATS[price].name = p.name;
+    if (PLAN_FEATS_LGUP && PLAN_FEATS_LGUP[price]) PLAN_FEATS_LGUP[price].name = p.name;
   });
 }
 
@@ -1123,6 +1121,16 @@ function sel(type, val) {
       // 안내 + 확인 버튼 (확인 눌러야 다음 단계)
       var warn = document.getElementById('lgu_warn');
       warn.style.display = 'block';
+      // 탭 4개로 변경 (85 추가)
+      var tw = document.getElementById('planTabsWrap');
+      if (tw) {
+        tw.style.gridTemplateColumns = 'repeat(4,1fr)';
+        tw.innerHTML =
+          '<button class="plan-tab on" onclick="selPlanTab(85000)" id="pt_85000">'+((window._planArr&&window._planArr.find(function(p){return p.price===85000;}))||{name:'데이터플랜MAX'}).name+'</button>' +
+          '<button class="plan-tab" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>' +
+          '<button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115</button>' +
+          '<button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>';
+      }
       warn.innerHTML =
         '<div style="font-size:13px;font-weight:800;color:#1565c0;margin-bottom:6px">ℹ️ LG U+ 인터넷 기존 사용 고객</div>' +
         '<div style="font-size:12px;color:#1e40af;line-height:1.8;margin-bottom:14px">' +
