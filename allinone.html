@@ -1131,6 +1131,7 @@ function sel(type, val) {
           '<button class="plan-tab" onclick="selPlanTab(115000)" id="pt_115000">플러스플랜115</button>' +
           '<button class="plan-tab" onclick="selPlanTab(130000)" id="pt_130000">플러스플랜130</button>';
       }
+      setTimeout(function(){ selPlanTab(85000); }, 50);
       warn.innerHTML =
         '<div style="font-size:13px;font-weight:800;color:#1565c0;margin-bottom:6px">ℹ️ LG U+ 인터넷 기존 사용 고객</div>' +
         '<div style="font-size:12px;color:#1e40af;line-height:1.8;margin-bottom:14px">' +
@@ -1375,7 +1376,7 @@ function renderPlanDetail(price) {
   var featsMap = (window._inetLGUP ? PLAN_FEATS_LGUP : PLAN_FEATS);
   var data = featsMap[price];
   if (!data) return;
-  var priceMap = {95000:'월 95,000원', 115000:'월 115,000원', 130000:'월 130,000원'};
+  var priceMap = {85000:'월 85,000원', 95000:'월 95,000원', 115000:'월 115,000원', 130000:'월 130,000원'};
   pd.innerHTML =
     '<div class="plan-icon">' + data.icon + '</div>' +
     '<div class="plan-name">' + data.name + '</div>' +
