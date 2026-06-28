@@ -1107,7 +1107,10 @@ function sel(type, val) {
     // 미리 상태만 저장해두고 inet에서 조합
   }
   if (type === 'inet') mpx('SelectInternetCarrier', {carrier: val});
-  if (type === 'jt')   mpx('SelectJoinType', {join_type: val === 'usim' ? '유심변경' : '핸드폰변경'});
+  if (type === 'jt') {
+    var jtLabel = val === 'usim' ? '유심변경' : val === 'phone' ? '핸드폰변경' : val === 'plan' ? (window._inetLGUP ? '요금제변경' : '올인원요금제변경') : val;
+    mpx('SelectJoinType', {join_type: jtLabel});
+  }
   if (type === 'mem')  mpx('SelectBundle', {members: val});
 
   // 모달 옵션 강조
@@ -1913,13 +1916,13 @@ function onPhoneInput(el) {
   else if (digits.length > 3) formatted = digits.slice(0,3) + '-' + digits.slice(3);
   el.value = formatted;
 }
-// ── 폼 영역 진입 시 픽셀 InitiateCheckout
+// ── 폼 영역 노출 시 ViewFormSection (스크롤로 폼 보일 때)
 (function(){
   var fired = false;
   var obs = new IntersectionObserver(function(entries){
     if (!fired && entries[0].isIntersecting) {
       fired = true;
-      if (typeof fbq !== 'undefined') fbq('track', 'InitiateCheckout', {content_name:'올인원상담폼진입'});
+      if (typeof fbq !== 'undefined') fbq('trackCustom', 'ViewFormSection', {content_name:'올인원상담폼노출'});
     }
   }, {threshold: 0.3});
   window.addEventListener('load', function(){
@@ -2324,6 +2327,8 @@ function doSubmit() {
   if (!isValidBirth(birth)) { alert("생년월일을 올바르게 입력해주세요.\n예) 1990.05.15"); return; }
   if (!isValidPhone(phone)) { alert("연락처를 올바르게 입력해주세요.\n예) 010-1234-5678"); return; }
   if (!time) { alert("상담 가능 시간을 선택해주세요."); return; }
+  // InitiateCheckout: 폼 검증 통과 + 버튼 클릭 시 1회 발화
+  if (typeof fbq !== 'undefined') fbq('track', 'InitiateCheckout', {content_name:'올인원상담신청버튼클릭'});
   var btn = document.getElementById("formBtn");
   if (btn) { btn.disabled=true; btn.textContent="신청 중..."; }
 
