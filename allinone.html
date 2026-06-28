@@ -1990,6 +1990,19 @@ function checkGuardianFilled() {
 
 function lguWarnConfirm() {
   document.getElementById('lgu_warn').style.display = 'none';
+  // 진행방식 버튼 상태 재적용
+  var usimBtn = document.getElementById('jt_usim');
+  var planBtn = document.getElementById('jt_plan');
+  var isMcarLGU = S.mcar === 'LGU+';
+  if (isMcarLGU) {
+    // LGU+폰 → 유심 숨김, plan 표시
+    if (usimBtn) usimBtn.style.display = 'none';
+    if (planBtn) planBtn.style.display = 'block';
+  } else {
+    // 타사폰 → 유심 표시, plan 숨김
+    if (usimBtn) usimBtn.style.display = '';
+    if (planBtn) planBtn.style.display = 'none';
+  }
   unlock("sc_jt");
   closeMo();
   setTimeout(function(){ openMo("jt"); }, 300);
