@@ -1085,7 +1085,7 @@ function loadVisiblePlans() {
         applyVisiblePlans(row.value);
       }
       if (row.key === 'landing.show_inet_new_question') {
-        window._showInetNewQ = row.value !== false;
+        window._showInetNewQ = row.value === true;
         console.log('[AIO] show_inet_new_question:', window._showInetNewQ);
       }
     });
@@ -1255,10 +1255,8 @@ function sel(type, val) {
         // 타사폰 + 타사인터넷 → 신규가입 여부 질문 표시 (어드민 ON일 때만)
         if (usimBtn) usimBtn.style.display = '';
         if (planBtn) planBtn.style.display = 'none';
-        if (window._showInetNewQ === false) {
-          // 어드민 OFF → 신규가입 자동 선택 후 바로 진행
-          setTimeout(function(){ selInetNew(true); }, 200);
-        } else {
+        if (window._showInetNewQ === true) {
+          // 어드민 ON → 질문 표시
           var inetNewWrap = document.getElementById('inet_new_wrap');
           if (inetNewWrap) {
             inetNewWrap.style.display = 'block';
@@ -1267,7 +1265,9 @@ function sel(type, val) {
             if (yesBtn) yesBtn.style.cssText = 'padding:12px 8px;border:1.5px solid #e5e7eb;border-radius:10px;background:#fff;font-size:12px;font-weight:700;color:#374151;cursor:pointer';
             if (noBtn) noBtn.style.cssText = 'padding:12px 8px;border:1.5px solid #e5e7eb;border-radius:10px;background:#fff;font-size:12px;font-weight:700;color:#374151;cursor:pointer';
           }
-          // 다음 단계로 자동 이동하지 않음 (질문 버튼 선택 후 이동)
+        } else {
+          // 어드민 OFF (기본) → 신규가입 자동 선택 후 바로 진행
+          setTimeout(function(){ selInetNew(true); }, 200);
         }
       }
     }
