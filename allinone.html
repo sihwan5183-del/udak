@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ALL-IN-ONE | 인터넷 신규 설치 결합 혜택</title>
 <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","921171610476690");fbq("track","PageView");</script>
+<!-- ── Google Analytics 4 ── -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QVQ17EKYXH"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-QVQ17EKYXH', {
+  page_title: '올인원 랜딩',
+  page_location: window.location.href
+});
+</script>
 <style>
 /* ══ 올인원 CSS 리셋 ══ */
 *{box-sizing:border-box;margin:0;padding:0}
@@ -1930,10 +1941,12 @@ function onPhoneInput(el) {
     if (el) obs.observe(el);
   });
 })();
-// ── Meta 픽셀 이벤트 헬퍼
+// ── Meta 픽셀 + GA4 이벤트 헬퍼
 function mpx(event, params) {
-  if (typeof fbq === 'undefined') return;
-  fbq('trackCustom', event, params || {});
+  // Meta 픽셀
+  if (typeof fbq !== 'undefined') fbq('trackCustom', event, params || {});
+  // GA4
+  if (typeof gtag !== 'undefined') gtag('event', event, params || {});
 }
 // ── 생년월일 자동 점 삽입
 function onBirthInput(el) {
@@ -2329,6 +2342,7 @@ function doSubmit() {
   if (!time) { alert("상담 가능 시간을 선택해주세요."); return; }
   // InitiateCheckout: 폼 검증 통과 + 버튼 클릭 시 1회 발화
   if (typeof fbq !== 'undefined') fbq('track', 'InitiateCheckout', {content_name:'올인원상담신청버튼클릭'});
+  if (typeof gtag !== 'undefined') gtag('event', 'begin_checkout', {content_name:'올인원상담신청버튼클릭'});
   var btn = document.getElementById("formBtn");
   if (btn) { btn.disabled=true; btn.textContent="신청 중..."; }
 
@@ -2399,6 +2413,7 @@ function doSubmit() {
   }).then(function(res){
     if(!res.ok) throw new Error(res.status);
     fbq("track","Lead",{content_name:"올인원상담신청"});
+    if (typeof gtag !== 'undefined') gtag('event', 'generate_lead', {content_name:'올인원상담신청'});
     // 제출 시점 값 캡처 (폼 초기화 전에 저장)
     var wasMinor = window._isMinor || false;
     var biz = isBusinessHour();
