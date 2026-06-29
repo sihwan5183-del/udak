@@ -550,6 +550,7 @@ a{text-decoration:none;color:inherit}
       <div class="fee-result-lbl">최종 예상 월 요금</div>
       <div class="fee-val" id="feeVal">–</div>
       <div class="cash-badge" id="cashBadge" style="display:none"></div>
+      <div id="familyBadge" style="display:none;margin-top:8px;padding:10px 14px;background:#e8f5e9;border-radius:12px;border:1.5px dashed #43a047;text-align:center;font-size:12px;font-weight:700;color:#1b5e20;line-height:1.7">👨‍👩‍👧 가족도 같이 U+로 이동하면<br>가족 <span style="color:#e65100;font-size:14px">1인당 +30만원</span> 추가 지급!</div>
     </div>
 
     <!-- 추가혜택 요약 -->
@@ -558,22 +559,9 @@ a{text-decoration:none;color:inherit}
       <div id="bonusSumItems"></div>
       <!-- 혜택 총액 강조 -->
       <div id="bonusTotalBox" style="display:none;margin-top:12px;background:var(--navyLL);border-radius:10px;padding:14px;text-align:center">
-        <table style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:13px">
-          <thead>
-            <tr>
-              <th style="text-align:center;font-size:11px;font-weight:700;color:var(--navy);padding-bottom:6px;border-bottom:1.5px solid var(--navyL);width:50%">📦 기기값 면제</th>
-              <th style="text-align:center;font-size:11px;font-weight:700;color:#16a34a;padding-bottom:6px;border-bottom:1.5px solid var(--navyL);width:50%">📅 월 요금 면제</th>
-            </tr>
-          </thead>
-          <tbody id="bonusTotalTableBody">
-            <tr>
-              <td id="bonusDeviceTotal" style="padding-top:8px;vertical-align:top;padding-right:8px;text-align:center"></td>
-              <td id="bonusMonthlyTotal" style="padding-top:8px;vertical-align:top;text-align:center"></td>
-            </tr>
-          </tbody>
-        </table>
-        <div style="border-top:1.5px solid var(--navyL);padding-top:10px;text-align:center">
-          <div style="font-size:11px;color:var(--navy);font-weight:700;margin-bottom:4px">💰 월 요금 절약 효과</div>
+        <div id="bonusTotalRows"></div>
+        <div style="border-top:1.5px solid var(--navyL);padding-top:10px;text-align:center;margin-top:8px">
+          <div style="font-size:11px;color:var(--navy);font-weight:700;margin-bottom:4px">🔥 월 요금 절약 효과</div>
           <div id="bonusTotalAmt" style="font-size:24px;font-weight:900;color:var(--navy);line-height:1"></div>
         </div>
       </div>
@@ -1530,8 +1518,8 @@ function renderPlanDetail(price) {
       if (isInternet) {
         // 인터넷 면제 강조 표시
         var inetAmt = (window._planFeats && window._planFeats.internet_monthly) || 33000;
-        rows += '<div class="plan-feat-row" style="background:#fff3e0;border-radius:8px;padding:6px 10px;margin-top:4px">' +
-          '<span style="font-size:13px;font-weight:800;color:#e65100">인터넷 요금 -' + inetAmt.toLocaleString() + '원 면제!</span>' +
+        rows += '<div class="plan-feat-row" style="margin-top:4px">' +
+          '<span style="display:inline-block;background:#fff3e0;border-radius:8px;padding:5px 12px;font-size:13px;font-weight:800;color:#e65100">인터넷 요금 -' + inetAmt.toLocaleString() + '원 면제!</span>' +
           '</div>';
       } else {
         if(f.device && !isInternet) rows += '<div class="plan-feat-row"><span class="plan-feat-badge">기기값 면제</span>' + f.device + '</div>';
@@ -1659,8 +1647,11 @@ function calcFee() {
   if (cash > 0) { 
     cb.style.display="block"; 
     cb.innerHTML="💰 U+ 이동 현금 혜택 <strong style='font-size:2.2em;color:#c2410c;letter-spacing:-0.5px'>+"+cash+"만원</strong> 별도 지급"; 
+    // 가족 혜택 배지 표시
+    var fb2 = document.getElementById("familyBadge");
+    if (fb2) fb2.style.display = "block";
   }
-    else cb.style.display="none";
+    else { cb.style.display="none"; var fb2 = document.getElementById("familyBadge"); if(fb2) fb2.style.display="none"; }
   }
   var mf = document.getElementById("mob_fee");
   if (mf) mf.textContent = finalFee.toLocaleString()+"원"+(cash>0?" (+현금 "+cash+"만원)":"");
@@ -1870,42 +1861,37 @@ function updateBonusSummary() {
 
   // 총액 박스 - 항목별 행 생성
   var totalBox = document.getElementById("bonusTotalBox");
-  var devTotalEl = document.getElementById("bonusDeviceTotal");
-  var monTotalEl = document.getElementById("bonusMonthlyTotal");
   var totalAmt = document.getElementById("bonusTotalAmt");
 
   if(monthly > 0) {
     if(totalBox) totalBox.style.display = "block";
 
-    // 항목별 기기값 행
-    var deviceRows = "";
+    var pf = window._planFeats || {};
+    var inetMonthly = pf.internet_monthly || 33000;
+    var inetTotal = inetMonthly * 36;
+
+    // 항목별 혜택 행
+    var rows = "";
     keys.forEach(function(k){
       var info = deviceItemMap[k];
-      if(info && info.device > 0) {
-        deviceRows += '<div style="font-size:12px;padding:4px 0;border-bottom:1px solid var(--g100)">' +
-          '<div style="color:var(--g500);font-size:11px">' + k + '</div>' +
-          '<div style="font-weight:800;color:var(--navy);font-size:14px">' + info.device.toLocaleString() + '원</div>' +
+      if (!info) return;
+      var isInet = k.indexOf('인터넷') !== -1;
+      if (isInet && info.monthly > 0) {
+        rows += '<div style="padding:8px 0;border-bottom:1px solid var(--navyL)">' +
+          '<div style="font-size:11px;color:var(--navy);font-weight:700;margin-bottom:4px">📅 ' + k + '</div>' +
+          '<div style="font-size:12px;color:#374151">월 -' + info.monthly.toLocaleString() + '원 면제</div>' +
+          '<div style="font-size:13px;font-weight:900;color:#e65100;margin-top:3px">× 36개월 = <span style="font-size:15px">' + inetTotal.toLocaleString() + '원</span> 절약!</div>' +
+          '</div>';
+      } else if (!isInet && info.monthly > 0) {
+        rows += '<div style="padding:8px 0;border-bottom:1px solid var(--navyL)">' +
+          '<div style="font-size:11px;color:var(--navy);font-weight:700;margin-bottom:2px">📅 ' + k + '</div>' +
+          '<div style="font-size:13px;font-weight:800;color:#16a34a">월 ' + info.monthly.toLocaleString() + '원 면제</div>' +
           '</div>';
       }
     });
-    // 기기값 없으면 왼쪽 비움
 
-    var monthlyRows = "";
-    keys.forEach(function(k){
-      var info = deviceItemMap[k];
-      if(info && info.monthly > 0) {
-        var isChildDisc = k.includes("자녀");
-        monthlyRows += '<div style="font-size:12px;padding:4px 0;border-bottom:1px solid var(--g100)">' +
-          '<div style="color:var(--g500);font-size:11px">' + k + '</div>' +
-          '<div style="font-weight:800;color:#16a34a;font-size:14px">' +
-          (isChildDisc ? '월 -' : '월 ') + info.monthly.toLocaleString() + '원 면제' +
-          '</div></div>';
-      }
-    });
-    if(!monthlyRows) monthlyRows = '';
-
-    if(devTotalEl) devTotalEl.innerHTML = deviceRows;
-    if(monTotalEl) monTotalEl.innerHTML = monthlyRows;
+    var totalRowsEl = document.getElementById("bonusTotalRows");
+    if(totalRowsEl) totalRowsEl.innerHTML = rows;
     if(totalAmt) totalAmt.textContent = "월 " + monthly.toLocaleString() + "원 절약";
   } else {
     if(totalBox) totalBox.style.display = "none";
