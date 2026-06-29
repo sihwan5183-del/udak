@@ -1008,6 +1008,8 @@ function loadData() {
       // show_phone: false면 false, 아니면 true (명시적 비교)
       window._showPhone = (pf.show_phone === true || pf.show_phone === undefined || pf.show_phone === null) ? true : false;
       window._showPublic = (pf.show_public === true || pf.show_public === undefined || pf.show_public === null) ? true : false;
+      // show_inet_new_question: 명시적으로 true일 때만 질문 표시 (기본 OFF)
+      window._showInetNewQ = (pf.show_inet_new_question === true) ? true : false;
       console.log("[AIO] planFeats 로드 - show_phone:", pf.show_phone, "→ _showPhone:", window._showPhone);
       console.log("[AIO] planFeats 로드 - show_public:", pf.show_public, "→ _showPublic:", window._showPublic);
       applySettings();

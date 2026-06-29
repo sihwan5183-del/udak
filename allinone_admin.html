@@ -1241,6 +1241,16 @@ async function renderAioBenefits() {
             <span style="font-size:13px;font-weight:600;color:#374151">ON</span>
           </label>
         </div>
+        <div style="margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;padding:12px;background:#fff8e1;border-radius:8px;border:1px solid #ffd54f">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:#e65100">인터넷 신규가입 질문 표시</div>
+            <div style="font-size:11px;color:#9ca3af;margin-top:2px">OFF 시 질문 없이 자동 신규가입 처리 (권장)</div>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="bf_showInetQ" ${v.show_inet_new_question===true?'checked':''} style="width:18px;height:18px">
+            <span style="font-size:13px;font-weight:600;color:#374151">ON</span>
+          </label>
+        </div>
         <button onclick="saveAioBenefits()" style="width:100%;padding:13px;background:#1a237e;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">💾 저장</button>
         <div style="margin-top:10px;padding:10px;background:#f0f1fa;border-radius:8px;font-size:11px;color:#4b5563;line-height:1.6">
           저장 시 랜딩페이지에 즉시 반영됩니다.
@@ -1252,6 +1262,8 @@ async function renderAioBenefits() {
   const spuEl = document.getElementById('bf_showPublic');
   if (spEl) spEl.checked = (v.show_phone !== false);
   if (spuEl) spuEl.checked = (v.show_public !== false);
+  const siqEl = document.getElementById('bf_showInetQ');
+  if (siqEl) siqEl.checked = (v.show_inet_new_question === true);
   const jut = document.getElementById('bf_jt_usim_title');
   const jud = document.getElementById('bf_jt_usim_desc');
   const jpt = document.getElementById('bf_jt_phone_title');
@@ -1273,6 +1285,7 @@ window.saveAioBenefits = async function(){
     child_discount: parseInt(document.getElementById('bf_cd').value)||0,
     show_phone: document.getElementById('bf_showPhone').checked,
     show_public: document.getElementById('bf_showPublic').checked,
+    show_inet_new_question: document.getElementById('bf_showInetQ').checked,
     jt_usim_title: document.getElementById('bf_jt_usim_title').value.trim() || '유심만 변경',
     jt_usim_desc: document.getElementById('bf_jt_usim_desc').value.trim() || '번호이동 · 기기 유지',
     jt_phone_title: document.getElementById('bf_jt_phone_title').value.trim() || '핸드폰도 변경',
