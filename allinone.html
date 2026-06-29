@@ -912,7 +912,7 @@ function loadBanners() {
     if (_bannerCount > 1) {
       if(prev) prev.style.display = 'flex';
       if(next) next.style.display = 'flex';
-      setInterval(function(){ slideBanner(1); }, 4000);
+      // setInterval(function(){ slideBanner(1); }, 4000); // 임시 중단
     }
   }).catch(function(){});
 }
