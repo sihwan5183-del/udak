@@ -596,10 +596,9 @@ a{text-decoration:none;color:inherit}
   <div class="mo-handle"></div>
   <div class="mo-head"><span class="mo-title">현재 인터넷 통신사</span><button class="mo-close" onclick="closeMo()">×</button></div>
   <div class="mo-body">
-    <div class="mo-opts" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+    <div class="mo-opts" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">
       <button class="mo-opt carrier-btn" onclick="sel('inet','SKT')"><img src="./files/skt.png" class="carrier-logo"><span>SKT</span></button>
       <button class="mo-opt carrier-btn" onclick="sel('inet','KT')"><img src="./files/kt.png" class="carrier-logo"><span>KT</span></button>
-      <button class="mo-opt carrier-btn" onclick="sel('inet','LGU+')"><img src="./files/u__.png" class="carrier-logo"><span>LG U+</span></button>
     </div>
     <!-- 타사 인터넷 선택 시 신규가입 여부 질문 -->
     <div id="inet_new_wrap" style="display:none;margin-top:14px;padding:16px;background:#f8faff;border-radius:12px;border:1.5px solid #c7d4f8">
@@ -1077,15 +1076,21 @@ var _SB_URL = 'https://txzkjunbkakuzyyhqlvw.supabase.co';
 var _SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4emtqdW5ia2FrdXp5eWhxbHZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0OTc3MTYsImV4cCI6MjA5MjA3MzcxNn0.C4Q51_vzN3hWKptzV1ZBdR3fZevINOaj0VI70iUEmoo';
 
 function loadVisiblePlans() {
-  fetch(_SB_URL + '/rest/v1/app_settings?key=eq.landing.visible_plans&select=value', {
+  fetch(_SB_URL + '/rest/v1/app_settings?key=in.("landing.visible_plans","landing.show_inet_new_question")&select=key,value', {
     headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + _SB_KEY }
   }).then(function(r){ return r.json(); }).then(function(data) {
-    if (!data || !data[0] || !data[0].value) return;
-    var plans = data[0].value; // e.g. [95000] or [95000, 115000, 130000]
-    if (!Array.isArray(plans) || plans.length === 0) return;
-    console.log('[AIO] visible_plans:', plans);
-    applyVisiblePlans(plans);
-  }).catch(function(e){ console.warn('[AIO] visible_plans 로드 실패:', e); });
+    if (!Array.isArray(data)) return;
+    data.forEach(function(row) {
+      if (row.key === 'landing.visible_plans' && Array.isArray(row.value) && row.value.length > 0) {
+        console.log('[AIO] visible_plans:', row.value);
+        applyVisiblePlans(row.value);
+      }
+      if (row.key === 'landing.show_inet_new_question') {
+        window._showInetNewQ = row.value !== false;
+        console.log('[AIO] show_inet_new_question:', window._showInetNewQ);
+      }
+    });
+  }).catch(function(e){ console.warn('[AIO] landing settings 로드 실패:', e); });
 }
 
 function applyVisiblePlans(plans) {
@@ -1248,18 +1253,23 @@ function sel(type, val) {
         unlock("sc_jt");
         setTimeout(function(){ closeMo(); setTimeout(function(){ sel('jt', 'usim'); }, 300); }, 200);
       } else {
-        // 타사폰 + 타사인터넷 → 신규가입 여부 질문 표시
+        // 타사폰 + 타사인터넷 → 신규가입 여부 질문 표시 (어드민 ON일 때만)
         if (usimBtn) usimBtn.style.display = '';
         if (planBtn) planBtn.style.display = 'none';
-        var inetNewWrap = document.getElementById('inet_new_wrap');
-        if (inetNewWrap) {
-          inetNewWrap.style.display = 'block';
-          var yesBtn = document.getElementById('inet_new_yes');
-          var noBtn = document.getElementById('inet_new_no');
-          if (yesBtn) yesBtn.style.cssText = 'padding:12px 8px;border:1.5px solid #e5e7eb;border-radius:10px;background:#fff;font-size:12px;font-weight:700;color:#374151;cursor:pointer';
-          if (noBtn) noBtn.style.cssText = 'padding:12px 8px;border:1.5px solid #e5e7eb;border-radius:10px;background:#fff;font-size:12px;font-weight:700;color:#374151;cursor:pointer';
+        if (window._showInetNewQ === false) {
+          // 어드민 OFF → 신규가입 자동 선택 후 바로 진행
+          setTimeout(function(){ selInetNew(true); }, 200);
+        } else {
+          var inetNewWrap = document.getElementById('inet_new_wrap');
+          if (inetNewWrap) {
+            inetNewWrap.style.display = 'block';
+            var yesBtn = document.getElementById('inet_new_yes');
+            var noBtn = document.getElementById('inet_new_no');
+            if (yesBtn) yesBtn.style.cssText = 'padding:12px 8px;border:1.5px solid #e5e7eb;border-radius:10px;background:#fff;font-size:12px;font-weight:700;color:#374151;cursor:pointer';
+            if (noBtn) noBtn.style.cssText = 'padding:12px 8px;border:1.5px solid #e5e7eb;border-radius:10px;background:#fff;font-size:12px;font-weight:700;color:#374151;cursor:pointer';
+          }
+          // 다음 단계로 자동 이동하지 않음 (질문 버튼 선택 후 이동)
         }
-        // 다음 단계로 자동 이동하지 않음 (질문 버튼 선택 후 이동)
       }
     }
   }
