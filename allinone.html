@@ -1665,7 +1665,7 @@ function calcFee() {
   }
   steps.push({label:"최종 예상 월 요금", val:finalFee.toLocaleString()+"원", cls:"total"});
   if (isTasa && cash > 0) {
-    steps.push({label:"U+ 통신사 옮기면", val:"<strong style='font-size:1.5em;color:#c2410c;font-weight:900'>+"+cash+"만원 추가 혜택!</strong>", cls:"disc"});
+    steps.push({label:"U+ 통신사 옮기면", val:"<strong style='font-size:1.5em;color:#c2410c;font-weight:900'>현금 +"+cash+"만원 추가 혜택!</strong>", cls:"disc"});
   }
 
   var stepsHtml = steps.map(function(s){
@@ -1680,14 +1680,8 @@ function calcFee() {
   if (fv) fv.textContent = finalFee.toLocaleString()+"원";
   var cb = document.getElementById("cashBadge");
   if (cb) {
-  if (cash > 0) { 
-    cb.style.display="block"; 
-    cb.innerHTML="🎁 U+ 통신사 옮기면 <strong style='font-size:2.2em;color:#c2410c;letter-spacing:-0.5px'>+"+cash+"만원 추가 혜택!</strong>"; 
-    // 가족 혜택 배지 표시
-    var fb2 = document.getElementById("familyBadge");
-    if (fb2) fb2.style.display = "block";
-  }
-    else { cb.style.display="none"; var fb2 = document.getElementById("familyBadge"); if(fb2) fb2.style.display="none"; }
+  if (cash > 0) { cb.style.display="none"; }
+    else { cb.style.display="none"; }
   }
   var mf = document.getElementById("mob_fee");
   if (mf) mf.textContent = finalFee.toLocaleString()+"원"+(cash>0?" (+현금 "+cash+"만원)":"");
