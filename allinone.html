@@ -1079,7 +1079,48 @@ function loadData() {
       }
     }
     renderPlanDetail(currentPlanTab);
-  }).catch(function(e){ console.error("Firebase load error:", e); renderPlanDetail(currentPlanTab); });
+    // Supabase에서 visible_plans 설정 읽기 (어드민 ON/OFF)
+    loadVisiblePlans();
+  }).catch(function(e){ console.error("Firebase load error:", e); renderPlanDetail(currentPlanTab); loadVisiblePlans(); });
+}
+
+/* ════ 어드민 요금제 ON/OFF ════ */
+var _SB_URL = 'https://txzkjunbkakuzyyhqlvw.supabase.co';
+var _SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4emtqdW5ia2FrdXp5eWhxbHZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0OTc3MTYsImV4cCI6MjA5MjA3MzcxNn0.C4Q51_vzN3hWKptzV1ZBdR3fZevINOaj0VI70iUEmoo';
+
+function loadVisiblePlans() {
+  fetch(_SB_URL + '/rest/v1/app_settings?key=eq.landing.visible_plans&select=value', {
+    headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + _SB_KEY }
+  }).then(function(r){ return r.json(); }).then(function(data) {
+    if (!data || !data[0] || !data[0].value) return;
+    var plans = data[0].value; // e.g. [95000] or [95000, 115000, 130000]
+    if (!Array.isArray(plans) || plans.length === 0) return;
+    console.log('[AIO] visible_plans:', plans);
+    applyVisiblePlans(plans);
+  }).catch(function(e){ console.warn('[AIO] visible_plans 로드 실패:', e); });
+}
+
+function applyVisiblePlans(plans) {
+  var tw = document.getElementById('planTabsWrap');
+  if (!tw) return;
+  var allPlanDefs = [
+    {price:95000, label:'플러스플랜95'},
+    {price:115000, label:'플러스플랜115'},
+    {price:130000, label:'플러스플랜130'}
+  ];
+  var filtered = allPlanDefs.filter(function(p){ return plans.indexOf(p.price) !== -1; });
+  if (!filtered.length) return;
+  tw.style.gridTemplateColumns = 'repeat(' + filtered.length + ',1fr)';
+  tw.innerHTML = filtered.map(function(p, i) {
+    // planArr에서 name 가져오기
+    var customName = window._planArr && window._planArr.find(function(a){ return a.price === p.price; });
+    var label = (customName && customName.name) || p.label;
+    return '<button class="plan-tab' + (i===0?' on':'') + '" onclick="selPlanTab(' + p.price + ')" id="pt_' + p.price + '">' + label + '</button>';
+  }).join('');
+  // 첫 번째 탭으로 초기화
+  var firstPrice = filtered[0].price;
+  currentPlanTab = firstPrice;
+  renderPlanDetail(firstPrice);
 }
 
 /* ════ 모달 ════ */
