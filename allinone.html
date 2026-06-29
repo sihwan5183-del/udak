@@ -430,7 +430,7 @@ a{text-decoration:none;color:inherit}
 
     <!-- 추가혜택 섹션 -->
     <div class="bonus-section" id="bonusSec">
-      <div class="bonus-sec-ttl">🎁 추가 혜택 선택</div>
+      <div class="bonus-sec-ttl">🎁 올인원 요금제 추가 혜택</div>
       <div class="bonus-sec-sub">선택하신 요금제에 포함된 무료 혜택입니다</div>
       <div class="bonus-items" id="bonusItems"></div>
     </div>
@@ -616,7 +616,7 @@ a{text-decoration:none;color:inherit}
     </div>
     <div id="lgu_warn" style="display:none;margin-top:14px;padding:14px 16px;background:#e8f4fd;border-radius:10px;border:1.5px solid #90caf9">
       <div style="font-size:13px;font-weight:800;color:#1565c0;margin-bottom:4px">ℹ️ LG U+ 인터넷 기존 사용 고객</div>
-      <div style="font-size:12px;color:#1e40af;line-height:1.7">인터넷 500MB 요금 면제 혜택을 제외한 나머지 혜택(워치·탭·OTT 등)은 동일하게 제공됩니다.<br>아래에서 요금제를 선택해주세요.</div>
+      <div style="font-size:12px;color:#1e40af;line-height:1.7">🏠 우리집 인터넷 요금 면제 요금 면제 혜택을 제외한 나머지 혜택(워치·탭·OTT 등)은 동일하게 제공됩니다.<br>아래에서 요금제를 선택해주세요.</div>
     </div>
   </div>
 </div>
@@ -772,7 +772,7 @@ var PLAN_FEATS = {
     icon: "<img src=\"./files/u__.png\" style=\"height:52px;width:auto;vertical-align:middle\">",
     feats: [
       {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
-      {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"인터넷 500MB", monthly:"월 33,000원"}
+      {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"🏠 우리집 인터넷 요금 면제", device:"🏠 우리집 인터넷 요금 면제", monthly:"월 33,000원"}
     ]
   },
   115000: {
@@ -782,7 +782,7 @@ var PLAN_FEATS = {
       {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
       {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
       {icon:"<img src=\"./files/tab.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
-      {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"인터넷 500MB", monthly:"월 33,000원"},
+      {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"🏠 우리집 인터넷 요금 면제", device:"🏠 우리집 인터넷 요금 면제", monthly:"월 33,000원"},
       {icon:"📺", name:"OTT 1개 선택", device:"", monthly:"넷플릭스 · 디즈니+ · 티빙"}
     ]
   },
@@ -793,7 +793,7 @@ var PLAN_FEATS = {
       {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
       {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시 워치8 40mm", device:"기기값 489,500원", monthly:"월 요금 11,000원"},
       {icon:"<img src=\"./files/tab.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"갤럭시탭 A11+", device:"기기값 448,800원", monthly:"월 요금 22,000원"},
-      {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"인터넷 500MB", monthly:"월 33,000원"},
+      {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"🏠 우리집 인터넷 요금 면제", device:"🏠 우리집 인터넷 요금 면제", monthly:"월 33,000원"},
       {icon:"📺", name:"OTT 1개 선택", device:"", monthly:"넷플릭스 · 디즈니+ · 티빙"},
       {icon:"👧", name:"자녀 요금 할인", device:"", monthly:"월 -33,000원 (만 19세 미만)"}
     ]
@@ -1021,20 +1021,20 @@ function loadData() {
       var tm = (pf.tab_monthly||22000).toLocaleString();
       var im = (pf.internet_monthly||33000).toLocaleString();
       var cd = (pf.child_discount||33000).toLocaleString();
-      PLAN_FEATS[95000].feats[1] = {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"인터넷 500MB", monthly:"월 "+im+"원"};
+      PLAN_FEATS[95000].feats[1] = {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"🏠 우리집 인터넷 요금 면제", device:"🏠 우리집 인터넷 요금 면제", monthly:"월 "+im+"원"};
       PLAN_FEATS[115000].feats[1] = {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
       PLAN_FEATS[115000].feats[2] = {icon:"<img src=\"./files/tab.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:tn, device:"기기값 "+td+"원", monthly:"월 요금 "+tm+"원"};
-      PLAN_FEATS[115000].feats[3] = {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"인터넷 500MB", monthly:"월 "+im+"원"};
+      PLAN_FEATS[115000].feats[3] = {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"🏠 우리집 인터넷 요금 면제", device:"🏠 우리집 인터넷 요금 면제", monthly:"월 "+im+"원"};
       PLAN_FEATS[130000].feats[1] = {icon:"<img src=\"./files/watch.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:wn, device:"기기값 "+wd+"원", monthly:"월 요금 "+wm+"원"};
       PLAN_FEATS[130000].feats[2] = {icon:"<img src=\"./files/tab.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:tn, device:"기기값 "+td+"원", monthly:"월 요금 "+tm+"원"};
-      PLAN_FEATS[130000].feats[3] = {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"인터넷 500MB", device:"인터넷 500MB", monthly:"월 "+im+"원"};
+      PLAN_FEATS[130000].feats[3] = {icon:"<img src=\"./files/internet.png\" style=\"height:40px;width:auto;vertical-align:middle\">", name:"🏠 우리집 인터넷 요금 면제", device:"🏠 우리집 인터넷 요금 면제", monthly:"월 "+im+"원"};
       PLAN_FEATS[130000].feats[4] = {icon:"👧", name:"자녀 요금 할인", device:"", monthly:"월 -"+cd+"원 (만 19세 미만)"};
       PLAN_FEATS[130000].feats[5] = {icon:"📺", name:"OTT 1개 선택", device:"", monthly:"넷플릭스 · 디즈니+ · 티빙"};
       // bonus 금액 맵도 업데이트
       window._bonusAmtMap = {
         "갤럭시 워치8 40mm": "기기 "+wd+"원 면제 + 월 "+wm+"원 면제",
         "갤럭시탭 A11+": "기기 "+td+"원 면제 + 월 "+tm+"원 면제",
-        "인터넷 500MB": "월 "+im+"원 면제",
+        "🏠 우리집 인터넷 요금 면제": "월 "+im+"원 면제",
         "OTT 1개 선택": "",
         "자녀 요금 할인": "자녀 요금제에서 월 "+cd+"원 추가 할인"
       };
@@ -1835,7 +1835,7 @@ function updateBonusSummary() {
   var amtMap = window._bonusAmtMap || {
     "갤럭시 워치8 40mm": "기기 489,500원 면제 + 월 11,000원 면제",
     "갤럭시탭 A11+": "기기 448,800원 면제 + 월 22,000원 면제",
-    "인터넷 500MB": "월 33,000원 면제",
+    "🏠 우리집 인터넷 요금 면제": "월 33,000원 면제",
     "OTT 1개 선택": "",
     "자녀 요금 할인": "자녀 요금제에서 월 33,000원 추가 할인"
   };
@@ -1843,7 +1843,7 @@ function updateBonusSummary() {
   var monthlyMap = {
     "갤럭시 워치8 40mm": 11000,
     "갤럭시탭 A11+": 22000,
-    "인터넷 500MB": 33000,
+    "🏠 우리집 인터넷 요금 면제": 33000,
     "OTT 1개 선택": 0,
     "자녀 요금 할인": 33000
   };
@@ -1855,7 +1855,7 @@ function updateBonusSummary() {
   var deviceItemMap = {
     "갤럭시 워치8 40mm": {device: pf.watch_device||489500, monthly: pf.watch_monthly||11000},
     "갤럭시탭 A11+": {device: pf.tab_device||448800, monthly: pf.tab_monthly||22000},
-    "인터넷 500MB": {device:0, monthly: pf.internet_monthly||33000},
+    "🏠 우리집 인터넷 요금 면제": {device:0, monthly: pf.internet_monthly||33000},
     "자녀 요금 할인": {device:0, monthly: pf.child_discount||33000}
   };
 
