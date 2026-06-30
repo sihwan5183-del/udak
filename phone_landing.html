@@ -508,11 +508,19 @@ function applyTexts(){
 
 /* ===================== STEP 1. 브랜드/기기 (어드민 category 필드 기준) ===================== */
 function renderBrandTabs(){
-  const brands=[...new Set(devices.map(d=>d.category).filter(Boolean))].filter(b=>brandVis[b]!==false);
-  if(!brands.includes(curBrand)) curBrand=brands[0]||'';
-  document.getElementById('brandTabs').innerHTML=brands.map(b=>
-    `<div class="tab ${b===curBrand?'on':''}" onclick="selBrand('${b}')">${b}</div>`
-  ).join('');
+  const allBrands=[...new Set(devices.map(d=>d.category).filter(Boolean))];
+  const visibleTabs=allBrands.filter(b=>brandVis[b]!==false);
+  /* curBrand는 토글 노출여부와 무관하게, 실제 보유한 카테고리 중에서 결정 (제품은 항상 보여야 함) */
+  if(!allBrands.includes(curBrand)) curBrand=visibleTabs[0]||allBrands[0]||'';
+  const tabsEl=document.getElementById('brandTabs');
+  if(visibleTabs.length<=1){
+    tabsEl.style.display='none';
+  }else{
+    tabsEl.style.display='';
+    tabsEl.innerHTML=visibleTabs.map(b=>
+      `<div class="tab ${b===curBrand?'on':''}" onclick="selBrand('${b}')">${b}</div>`
+    ).join('');
+  }
 }
 window.selBrand=function(b){curBrand=b;renderBrandTabs();renderDevices();}
 
