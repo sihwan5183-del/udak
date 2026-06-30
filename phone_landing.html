@@ -247,7 +247,7 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
   </div>
 
   <!-- STEP 4. 혜택 요약 -->
-  <div class="section">
+  <div class="section" id="step4">
     <div class="step-label"><span class="step-num">4</span><span class="step-title">예상 혜택을 확인해 주세요</span></div>
     <div id="bonusCallout"></div>
     <div class="benefit-box">
@@ -548,7 +548,7 @@ function renderDevices(){
     const heroImg=isOn?(sel.color?.img||d.img):'';
     const colorLabel=isOn&&sel.color?(sel.color.name.split('|')[1]||''):'';
     return `
-    <div class="dev-card ${isOn?'on':''} ${dimmed?'dimmed':''}" onclick="selDevice('${d.id}')">
+    <div class="dev-card ${isOn?'on':''} ${dimmed?'dimmed':''}" id="devcard-${d.id}" onclick="selDevice('${d.id}')">
       <div class="dev-head">
         <div class="dev-check">${isOn?'✓':''}</div>
         ${thumbImg?`<img class="dev-img" src="${thumbImg}">`:'<div class="dev-img"></div>'}
@@ -578,14 +578,23 @@ function renderDevices(){
   }).join('') || '<div style="font-size:13px;color:var(--g400);padding:20px 0;text-align:center">표시할 기기가 없어요</div>';
 }
 window.selDevice=function(id){
-  if(sel.device?.id===id){ sel.device=null; }
-
+  const wasOn=sel.device?.id===id;
+  if(wasOn){ sel.device=null; }
   else{
     sel.device=devices.find(d=>d.id===id);
     sel.storage=sel.device.storageList?.[0]||null;
     sel.color=sel.device.colors?.[0]||null;
   }
   renderDevices(); calc();
+  if(!wasOn){
+    setTimeout(()=>{
+      const el=document.getElementById('devcard-'+id);
+      if(el){
+        const y=el.getBoundingClientRect().top+window.scrollY-12;
+        window.scrollTo({top:y,behavior:'smooth'});
+      }
+    },280);
+  }
 }
 window.selStorage=function(devId,name){
   if(sel.device?.id!==devId) selDevice(devId);
@@ -651,7 +660,7 @@ function renderPlans(){
 window.selPlan=function(id){
   sel.plan=plans.find(p=>p.id===id);
   renderPlans(); calc(); renderBonusCallout();
-  scrollToStep('step6');
+  scrollToStep('step4');
 }
 function renderBonusCallout(){
   const box=document.getElementById('bonusCallout');
