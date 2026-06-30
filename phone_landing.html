@@ -230,6 +230,15 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=921171610476690&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6HQ1YWXCT2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-6HQ1YWXCT2');
+</script>
+<!-- End GA4 -->
 </head>
 <body>
 <div class="wrap">
@@ -609,6 +618,7 @@ window.selDevice=function(id){
   }
   renderDevices(); calc();
   if(!wasOn){
+    if(typeof gtag==='function') gtag('event','select_device',{device_name:sel.device?.name||''});
     setTimeout(()=>{
       const el=document.getElementById('devcard-'+id);
       if(el){
@@ -667,6 +677,7 @@ window.selCarrier=function(c){
   sel.carrier=c; sel.jointype=(c==='LG U+')?'기기변경':'번호이동';
   CARRIERS.forEach(x=>document.getElementById('car-'+x.replace(/\s/g,'')).classList.toggle('on',x===c));
   calc();
+  if(typeof gtag==='function') gtag('event','select_carrier',{carrier_name:c});
   scrollToStep('step3');
 }
 
@@ -700,6 +711,7 @@ function renderPlans(){
 window.selPlan=function(id){
   sel.plan=plans.find(p=>p.id===id);
   renderPlans(); calc(); renderBonusCallout();
+  if(typeof gtag==='function') gtag('event','select_plan',{plan_name:sel.plan?.name||''});
   scrollToStep('step4');
 }
 function renderBonusCallout(){
@@ -888,6 +900,15 @@ window.submitForm=async function(){
       fbq('track','Lead',{
         content_name: sel.device?.name||'',
         content_category: sel.plan?.name||'',
+        value: window._estimatedFee||0,
+        currency: 'KRW'
+      });
+    }
+    if(typeof gtag==='function'){
+      gtag('event','generate_lead',{
+        device_name: sel.device?.name||'',
+        plan_name: sel.plan?.name||'',
+        carrier_name: sel.carrier||'',
         value: window._estimatedFee||0,
         currency: 'KRW'
       });
