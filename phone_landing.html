@@ -262,7 +262,7 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
 <!-- 하단 고정 CTA -->
 <div class="sticky-cta">
   <div class="price"><div class="lbl">예상 기기값</div><div class="val" id="ctaPrice">0원</div></div>
-  <button id="subBtn" onclick="submitForm()">상담 신청하기 →</button>
+  <button id="subBtn" onclick="submitForm()">지금 상담 신청하기 →</button>
 </div>
 
 <!-- 완료 모달 -->
@@ -640,13 +640,13 @@ window.submitForm=async function(){
     console.error(e);
     alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
   }finally{
-    btn.disabled=false; btn.textContent='상담 신청하기 →';
+    btn.disabled=false; btn.textContent='지금 상담 신청하기 →';
   }
 };
 
 function fillSummaryModal(name,birth,phone){
   const colorName=sel.color?(sel.color.name.split('|')[1]||''):'';
-  document.getElementById('sumImg').src=sel.device?.img||'';
+  document.getElementById('sumImg').src=sel.color?.img||sel.device?.img||'';
   document.getElementById('sumName').textContent=sel.device?.name||'';
   document.getElementById('sumSpec').textContent=[sel.storage?.name,colorName].filter(Boolean).join(' · ');
   document.getElementById('sumPrice').textContent=(window._estimatedFee||0).toLocaleString()+'원';
