@@ -63,11 +63,13 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
 .dev-arrow{color:var(--g300);font-size:13px;transition:transform .15s}
 .dev-card.on .dev-arrow{transform:rotate(180deg)}
 .dev-body{max-height:0;overflow:hidden;transition:max-height .25s ease}
-.dev-card.on .dev-body{max-height:480px;margin-top:14px}
+.dev-card.on .dev-body{max-height:620px;margin-top:14px}
 .dev-row-label{font-size:12px;color:var(--g600);font-weight:600;margin-bottom:8px}
-.hero-wrap{display:flex;flex-direction:column;align-items:center;background:var(--g50);border-radius:var(--rs);padding:18px 0 12px;margin-bottom:14px}
-.hero-img{width:120px;height:120px;object-fit:contain}
-.hero-label{margin-top:8px;font-size:12px;font-weight:700;color:var(--g600);background:#fff;padding:3px 10px;border-radius:999px;border:1px solid var(--g200)}
+.hero-wrap{display:flex;flex-direction:column;align-items:center;background:#fff;border:1px solid var(--g100);border-radius:var(--rs);padding:18px 0 12px;margin-bottom:14px}
+.hero-img{width:180px;height:180px;object-fit:contain}
+.hero-label{margin-top:8px;font-size:12px;font-weight:700;color:var(--g600);background:var(--g50);padding:3px 10px;border-radius:999px;border:1px solid var(--g200)}
+.color-confirm-btn{width:100%;margin-top:16px;background:var(--or);color:#fff;border:none;border-radius:var(--rs);padding:13px 0;font-size:13.5px;font-weight:800;cursor:pointer}
+.color-confirm-btn:active{transform:scale(.98)}
 .chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
 .chip{padding:9px 16px;border:1.5px solid var(--g200);border-radius:999px;font-size:12.5px;font-weight:600;color:var(--g600);cursor:pointer}
 .chip:active{transform:scale(.96)}
@@ -412,6 +414,7 @@ function renderDevices(){
             <span class="color-sw" style="background:${hex}"></span><span>${label||''}</span>
           </div>`;
         }).join('')}</div>
+        ${isOn?`<button class="color-confirm-btn" onclick="event.stopPropagation();confirmDeviceSelection()">선택 완료 → 통신사 선택하기</button>`:''}
       </div>
     </div>`;
   }).join('') || '<div style="font-size:13px;color:var(--g400);padding:20px 0;text-align:center">표시할 기기가 없어요</div>';
@@ -435,6 +438,8 @@ window.selColor=function(devId,name){
   if(sel.device?.id!==devId) selDevice(devId);
   sel.color=sel.device.colors.find(c=>c.name===name);
   renderDevices(); calc();
+}
+window.confirmDeviceSelection=function(){
   scrollToStep('step2');
 }
 function scrollToStep(id){
