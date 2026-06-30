@@ -305,12 +305,12 @@ src="https://www.facebook.com/tr?id=921171610476690&ev=PageView&noscript=1"
       <label>이름</label>
     </div>
     <div class="field">
-      <input type="tel" id="fPhone" placeholder=" " required>
-      <label>연락처 (숫자만)</label>
+      <input type="tel" id="fPhone" placeholder=" " inputmode="numeric" maxlength="13" required>
+      <label>연락처</label>
     </div>
     <div class="field">
-      <input type="text" id="fBirth" placeholder=" " maxlength="8" inputmode="numeric" pattern="[0-9]*">
-      <label>생년월일 (YYYYMMDD)</label>
+      <input type="text" id="fBirth" placeholder=" " maxlength="10" inputmode="numeric">
+      <label>생년월일 (예: 1990.01.01)</label>
     </div>
     <div class="tp-label">상담 희망 시간</div>
     <input type="hidden" id="fTime" value="">
@@ -825,6 +825,21 @@ function renderChecklist(){
 /* ===================== floating label (input) ===================== */
 document.querySelectorAll('.field input').forEach(inp=>{
   inp.addEventListener('input',()=>{ inp.closest('.field').classList.toggle('has-val',!!inp.value); });
+});
+
+/* 연락처: 숫자만 입력, 010-1234-5678 자동 포맷 */
+document.getElementById('fPhone').addEventListener('input',function(){
+  let v=this.value.replace(/\D/g,'').slice(0,11);
+  if(v.length>3&&v.length<=7) v=v.slice(0,3)+'-'+v.slice(3);
+  else if(v.length>7) v=v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7,11);
+  this.value=v;
+});
+/* 생년월일: 숫자만 입력, 1990.01.01 자동 포맷 */
+document.getElementById('fBirth').addEventListener('input',function(){
+  let v=this.value.replace(/\D/g,'').slice(0,8);
+  if(v.length>4) v=v.slice(0,4)+'.'+v.slice(4);
+  if(v.length>7) v=v.slice(0,7)+'.'+v.slice(7,9);
+  this.value=v;
 });
 
 /* ===================== STEP 6. 신청 제출 (Supabase leads 동일 스키마) ===================== */
