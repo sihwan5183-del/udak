@@ -76,6 +76,14 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
 .plan-name{font-size:14.5px;font-weight:700;color:var(--g800)}
 .plan-name b{color:var(--or);margin-right:6px}
 .plan-price{font-size:13px;color:var(--g600);margin-top:1px}
+.plan-bonus-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.plan-bonus-chip{display:flex;align-items:center;gap:3px;background:var(--orl);color:var(--ord);font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px}
+.bonus-callout{margin-top:12px;background:var(--orl);border:1px solid #BFDBFE;border-radius:var(--r);padding:14px}
+.bonus-callout .bc-title{font-size:13px;font-weight:800;color:var(--ord);margin-bottom:8px}
+.bonus-callout .bc-item{display:flex;align-items:center;gap:10px;padding:6px 0}
+.bonus-callout .bc-item img{width:30px;height:30px;object-fit:contain;background:#fff;border-radius:8px;flex-shrink:0}
+.bonus-callout .bc-item .bc-name{font-size:13px;font-weight:700;color:var(--g800)}
+.bonus-callout .bc-item .bc-desc{font-size:11px;color:var(--g600)}
 
 /* ===== 혜택 요약 ===== */
 .benefit-box{background:var(--g50);border-radius:var(--r);padding:16px}
@@ -163,6 +171,7 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
   <!-- STEP 4. 혜택 요약 -->
   <div class="section">
     <div class="step-label"><span class="step-num">4</span><span class="step-title">예상 혜택을 확인해 주세요</span></div>
+    <div id="bonusCallout"></div>
     <div class="benefit-box">
       <div class="b-row"><span>출고가</span><span class="v b-strike" id="rLaunch">-</span></div>
       <div class="b-row disc"><span>공시지원금</span><span class="v" id="rDisc">-</span></div>
@@ -267,16 +276,29 @@ const TEXT_DEFAULTS={
   phoneCheck3:'유지 기간 경과 후에는 더 낮은 요금제로 자유롭게 변경하실 수 있어요',
 };
 
+let bonusData={};
+
 async function loadData(){
   try{
-    const[ds,ps,pols,tx]=await Promise.all([
-      db.ref('devices').once(),db.ref('plans').once(),db.ref('policy2').once(),db.ref('uitexts').once()
+    const[ds,ps,pols,tx,bp]=await Promise.all([
+      db.ref('devices').once(),db.ref('plans').once(),db.ref('policy2').once(),db.ref('uitexts').once(),db.ref('bonusPlans').once()
     ]);
     devices=ds.exists()?Object.entries(ds.val()).map(([id,v])=>({id,...v})).filter(d=>d.visible!==false).sort((a,b)=>(a.order||999)-(b.order||999)):[];
     plans=ps.exists()?Object.entries(ps.val()).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false).sort((a,b)=>a.monthlyPrice-b.monthlyPrice):[];
     policies=pols.exists()?Object.entries(pols.val()).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false):[];
     texts={...TEXT_DEFAULTS,...(tx.exists()?tx.val():{})};
-  }catch(e){console.error('Firebase load error',e);texts={...TEXT_DEFAULTS};}
+    if(bp.exists()){
+      const fb=bp.val();
+      const normalized={};
+      Object.entries(fb).forEach(([k,v])=>{
+        (v.planGroupMatch||[]).map(String).forEach(pg=>{normalized[pg]={...v};});
+        normalized[k]={...v};
+      });
+      bonusData=normalized;
+    }else{
+      bonusData={};
+    }
+  }catch(e){console.error('Firebase load error',e);texts={...TEXT_DEFAULTS};bonusData={};}
   applyTexts();
   renderBrandTabs();
   renderDevices();
@@ -370,22 +392,42 @@ window.selCarrier=function(c){
 }
 
 /* ===================== STEP 3. 요금제 ===================== */
+function findBonus(plangroup){ return bonusData[String(plangroup)]||null; }
+
 function renderPlans(){
   document.getElementById('planList').innerHTML=plans.map(p=>{
     const isOn=sel.plan?.id===p.id;
+    const bd=findBonus(p.plangroup);
+    const bonusRow=bd&&(bd.items||[]).length
+      ? `<div class="plan-bonus-row">${bd.items.map(i=>`<span class="plan-bonus-chip">🎁 ${i.name} ${i.ottOptions?'중 1개':'무료'}</span>`).join('')}</div>`
+      : '';
     return `
     <div class="plan-card ${isOn?'on':''}" onclick="selPlan('${p.id}')">
       <div class="plan-radio"></div>
       <div style="flex:1">
         <div class="plan-name">${p.name}</div>
         <div class="plan-price">월 ${p.monthlyPrice.toLocaleString()}원 · 데이터 무제한</div>
+        ${bonusRow}
       </div>
     </div>`;
   }).join('') || '<div style="font-size:13px;color:var(--g400);padding:20px 0;text-align:center">표시할 요금제가 없어요</div>';
 }
 window.selPlan=function(id){
   sel.plan=plans.find(p=>p.id===id);
-  renderPlans(); calc();
+  renderPlans(); calc(); renderBonusCallout();
+}
+function renderBonusCallout(){
+  const box=document.getElementById('bonusCallout');
+  if(!sel.plan){ box.innerHTML=''; return; }
+  const bd=findBonus(sel.plan.plangroup);
+  if(!bd||!(bd.items||[]).length){ box.innerHTML=''; return; }
+  box.innerHTML=`<div class="bonus-callout">
+    <div class="bc-title">🎁 ${bd.title||(sel.plan.name+' 고객님을 위한 무료 혜택!')}</div>
+    ${bd.items.map(i=>`<div class="bc-item">
+      ${i.img?`<img src="${i.img}">`:''}
+      <div><div class="bc-name">${i.name}${i.ottOptions?' (1개 선택)':''}</div><div class="bc-desc">${i.desc||''}</div></div>
+    </div>`).join('')}
+  </div>`;
 }
 
 /* ===================== STEP 4. 혜택 계산 (공시지원금 고정, 정책 매칭은 유닥과 동일 로직) ===================== */
