@@ -277,7 +277,7 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
 <!-- 하단 고정 CTA -->
 <div class="sticky-cta">
   <div class="price"><div class="lbl">예상 기기값</div><div class="val" id="ctaPrice">0원</div></div>
-  <button id="subBtn" onclick="submitForm()">지금 상담 신청하기 →</button>
+  <button id="subBtn" onclick="submitForm()">지금 상담 신청하기</button>
 </div>
 
 <!-- 완료 모달 -->
@@ -656,7 +656,7 @@ window.submitForm=async function(){
     console.error(e);
     alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
   }finally{
-    btn.disabled=false; btn.textContent='지금 상담 신청하기 →';
+    btn.disabled=false; btn.textContent='지금 상담 신청하기';
   }
 };
 
