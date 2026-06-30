@@ -330,6 +330,7 @@ let sel={device:null,carrier:null,jointype:null,storage:null,color:null,plan:nul
 /* 기기 할부원금에 적용되는 24개월 할부수수료 환산계수 (할부원금 × 1.0626 ÷ 24개월 = 월 할부금). 정책 바뀌면 여기 값만 수정 */
 const DEVICE_INSTALLMENT_FACTOR=1.0626;
 let curBrand='';
+let brandVis={};
 
 const TEXT_DEFAULTS={
   bannerImg:'',
@@ -343,13 +344,14 @@ let bonusData={};
 
 async function loadData(){
   try{
-    const[ds,ps,pols,tx,bp]=await Promise.all([
-      db.ref('devices').once(),db.ref('plans').once(),db.ref('policy2').once(),db.ref('uitexts').once(),db.ref('bonusPlans').once()
+    const[ds,ps,pols,tx,bp,bv]=await Promise.all([
+      db.ref('devices').once(),db.ref('plans').once(),db.ref('policy2').once(),db.ref('uitexts').once(),db.ref('bonusPlans').once(),db.ref('brandVisibility').once()
     ]);
     devices=ds.exists()?Object.entries(ds.val()).map(([id,v])=>({id,...v})).filter(d=>d.visible!==false).sort((a,b)=>(a.order||999)-(b.order||999)):[];
     plans=ps.exists()?Object.entries(ps.val()).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false).sort((a,b)=>a.monthlyPrice-b.monthlyPrice):[];
     policies=pols.exists()?Object.entries(pols.val()).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false):[];
     texts={...TEXT_DEFAULTS,...(tx.exists()?tx.val():{})};
+    brandVis=bv.exists()?bv.val():{};
     if(bp.exists()){
       const fb=bp.val();
       const normalized={};
@@ -361,7 +363,7 @@ async function loadData(){
     }else{
       bonusData={};
     }
-  }catch(e){console.error('Firebase load error',e);texts={...TEXT_DEFAULTS};bonusData={};}
+  }catch(e){console.error('Firebase load error',e);texts={...TEXT_DEFAULTS};bonusData={};brandVis={};}
   applyTexts();
   renderBrandTabs();
   renderDevices();
@@ -381,7 +383,7 @@ function applyTexts(){
 
 /* ===================== STEP 1. 브랜드/기기 (어드민 category 필드 기준) ===================== */
 function renderBrandTabs(){
-  const brands=[...new Set(devices.map(d=>d.category).filter(Boolean))];
+  const brands=[...new Set(devices.map(d=>d.category).filter(Boolean))].filter(b=>brandVis[b]!==false);
   if(!brands.includes(curBrand)) curBrand=brands[0]||'';
   document.getElementById('brandTabs').innerHTML=brands.map(b=>
     `<div class="tab ${b===curBrand?'on':''}" onclick="selBrand('${b}')">${b}</div>`
@@ -673,7 +675,7 @@ function fillSummaryModal(name,birth,phone){
 
 /* ===== 상담 희망 시간 드럼 피커 ===== */
 (function(){
-  var TIMES=['오전 10시~12시','오후 12시~3시','오후 3시~6시','오후 6시~9시'];
+  var TIMES=['오전 10시','오전 11시','오후 12시','오후 1시','오후 2시','오후 3시','오후 4시','오후 5시','오후 6시','오후 7시','오후 8시'];
   var list=document.getElementById('timeDrumList');
   if(list) list.innerHTML=TIMES.map(function(t){return'<div class="tp-item" onclick="window.selectTime(\''+t+'\')">'+t+'</div>';}).join('');
 })();
