@@ -361,7 +361,7 @@ window.selColor=function(devId,name){
 /* ===================== STEP 2. 통신사 ===================== */
 const CARRIERS=['SKT','KT','LG U+','알뜰폰'];
 document.getElementById('carrierGrid').innerHTML=CARRIERS.map(c=>
-  `<div class="carrier-btn" onclick="selCarrier('${c}')" id="car-${c.replace(/\\s/g,'')}">${c}</div>`
+  `<div class="carrier-btn" onclick="selCarrier('${c}')" id="car-${c.replace(/\s/g,'')}">${c}</div>`
 ).join('');
 window.selCarrier=function(c){
   sel.carrier=c; sel.jointype=(c==='LG U+')?'기기변경':'번호이동';
