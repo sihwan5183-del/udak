@@ -272,6 +272,10 @@ tr.drag-over{border-top:2px solid var(--or)}
       <div class="dyn-list" id="storageList"></div>
       <button class="dyn-add" onclick="addStorage()">+ 용량 추가</button>
 
+      <div class="sec-div" style="margin-top:16px">예상 실부담가 (정책 관리 기준 · 읽기전용)</div>
+      <p style="font-size:11px;color:var(--g400);margin:-4px 0 8px">※ 값 수정은 [정책 관리] 탭에서 해주세요. 여기서는 현재 설정된 정책이 이 기기에 어떻게 적용되는지만 보여줘요.</p>
+      <div id="devPolicyPreview"></div>
+
       <div class="sec-div" style="margin-top:16px">색상 <em style="color:var(--red)">*</em></div>
       <div class="dyn-list" id="colorList"></div>
       <button class="dyn-add" onclick="addColor()">+ 색상 추가</button>
@@ -539,6 +543,7 @@ window.openDevModal=function(){
   document.getElementById('storageList').innerHTML='';
   document.getElementById('colorList').innerHTML='';
   addStorage(); addColor();
+  document.getElementById('devPolicyPreview').innerHTML='<p style="font-size:12px;color:var(--g400);padding:8px 0">기기를 먼저 저장하면 예상 실부담가를 볼 수 있어요.</p>';
   openModal('devModal');
 };
 window.editDev=function(k){
@@ -555,13 +560,94 @@ window.editDev=function(k){
   (d.colors||[]).forEach(c=>{const[h,n]=(c.name||'').split('|');addColor(h,n,c.img||'');});
   if(!(d.storageList||[]).length) addStorage();
   if(!(d.colors||[]).length) addColor();
+  renderDevPolicyPreview(k);
   openModal('devModal');
 };
+
+/* ══ 기기수정 모달 - 정책 기준 예상가 미리보기 (읽기전용) ══ */
+function previewMatchPolicy(jt, ca, pg, devKey, storageName){
+  const fns=[
+    p=>p.jointype===jt&&p.carrier!=='all'&&p.carrier?.includes(ca)&&p.plangroup===pg,
+    p=>p.jointype===jt&&p.carrier==='all'&&p.plangroup===pg,
+    p=>p.jointype==='all'&&p.carrier!=='all'&&p.carrier?.includes(ca)&&p.plangroup===pg,
+    p=>p.jointype==='all'&&p.carrier==='all'&&p.plangroup===pg,
+    p=>p.jointype===jt&&p.carrier!=='all'&&p.carrier?.includes(ca)&&p.plangroup==='all',
+    p=>p.jointype===jt&&p.carrier==='all'&&p.plangroup==='all',
+    p=>p.jointype==='all'&&p.carrier!=='all'&&p.carrier?.includes(ca)&&p.plangroup==='all',
+    p=>p.jointype==='all'&&p.carrier==='all'&&p.plangroup==='all',
+  ];
+  const list=Object.values(polData).filter(p=>p.visible!==false);
+  for(const fn of fns){
+    const f=list.find(fn);
+    if(f){
+      if((f.excludedDevs||[]).includes(devKey)) continue;
+      if(f.deviceOverrides?.[devKey]){
+        const ov=f.deviceOverrides[devKey];
+        if(ov[storageName]) return{...f,...ov[storageName]};
+        if(ov.pubSupport!==undefined) return{...f,...ov};
+      }
+      return f;
+    }
+  }
+  return null;
+}
+function devPreviewCalcBox(basePrice, pol, label){
+  if(!basePrice) return `<span style="color:var(--g400)">출고가 미입력</span>`;
+  if(!pol) return `<span style="color:var(--g400)">매칭되는 정책 없음</span>`;
+  const sub=pol.pubSupport||0;
+  const udak=(pol.rebate||0)+(pol.distribution||0)+(pol.structure||0)+(pol.extraPolicy||0);
+  const fin=Math.max(0,basePrice-sub-udak);
+  const pct=basePrice>0?Math.round((1-fin/basePrice)*100):0;
+  return `<del style="color:var(--g400)">${basePrice.toLocaleString()}</del>
+    - <span style="color:var(--red)">공시 ${sub.toLocaleString()}원</span>${udak?` - <span style="color:var(--or)">유닥 ${udak.toLocaleString()}원</span>`:''}
+    = <strong style="color:var(--or)">${fin.toLocaleString()}원</strong>
+    <span style="background:var(--or);color:#fff;padding:1px 5px;border-radius:3px;font-size:10px">${pct}% 할인</span>`;
+}
+function renderDevPolicyPreview(devKey, storagesOverride){
+  const d=devData[devKey];
+  const box=document.getElementById('devPolicyPreview');
+  const storages=storagesOverride||d?.storageList||[];
+  const plans=Object.values(planData).filter(p=>p.visible!==false).sort((a,b)=>a.monthlyPrice-b.monthlyPrice);
+  if(!plans.length){ box.innerHTML='<p style="font-size:12px;color:var(--g400)">등록된 요금제가 없어요.</p>'; return; }
+  if(!storages.length){ box.innerHTML='<p style="font-size:12px;color:var(--g400)">용량을 먼저 입력해주세요.</p>'; return; }
+  box.innerHTML=storages.map(s=>{
+    const rows=plans.map(p=>{
+      const pg=Math.floor(p.monthlyPrice/1000).toString();
+      const tasaPol=previewMatchPolicy('번호이동','SKT',pg,devKey,s.name);
+      const jasaPol=previewMatchPolicy('기기변경','LG U+',pg,devKey,s.name);
+      return `<tr>
+        <td style="padding:6px 8px;font-size:11.5px;color:var(--g600);white-space:nowrap">${p.name}</td>
+        <td style="padding:6px 8px;font-size:11.5px;border-left:1px solid var(--g100)">${devPreviewCalcBox(s.price,tasaPol,'타사')}</td>
+        <td style="padding:6px 8px;font-size:11.5px;border-left:1px solid var(--g100)">${devPreviewCalcBox(s.price,jasaPol,'자사')}</td>
+      </tr>`;
+    }).join('');
+    return `<div style="border:1.5px solid var(--g200);border-radius:8px;margin-bottom:10px;overflow:hidden">
+      <div style="background:var(--g50);padding:6px 10px;font-size:12px;font-weight:700;color:var(--g800)">${s.name||'(이름 미입력)'} <span style="color:var(--g400);font-weight:500">(${(s.price||0).toLocaleString()}원)</span></div>
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr style="background:#fff">
+          <th style="text-align:left;padding:5px 8px;font-size:10.5px;color:var(--g400);font-weight:600">요금제</th>
+          <th style="text-align:left;padding:5px 8px;font-size:10.5px;color:var(--red);font-weight:600;border-left:1px solid var(--g100)">타사 전환 (번호이동)</th>
+          <th style="text-align:left;padding:5px 8px;font-size:10.5px;color:var(--or);font-weight:600;border-left:1px solid var(--g100)">자사 (LGU+ 기기변경)</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  }).join('');
+}
+window.refreshDevPolicyPreviewFromForm=function(){
+  const devKey=document.getElementById('dId').value||'__new__';
+  const storages=[...document.querySelectorAll('#storageList .dyn-row')].map(r=>{
+    const ins=[...r.querySelectorAll('input')];
+    return{name:ins[0].value.trim()||'기본',price:Number(ins[1].value)||0};
+  });
+  renderDevPolicyPreview(devKey, storages);
+};
+
 window.addStorage=function(name='',price=''){
   const row=document.createElement('div'); row.className='dyn-row';
-  row.innerHTML=`<input type="text" class="fi" placeholder="256GB" value="${name}" style="flex:0.5">
-    <input type="number" class="fi" placeholder="출고가(원)" value="${price}" style="flex:1">
-    <button class="dyn-del" onclick="this.parentElement.remove()">✕</button>`;
+  row.innerHTML=`<input type="text" class="fi" placeholder="256GB" value="${name}" style="flex:0.5" oninput="refreshDevPolicyPreviewFromForm()">
+    <input type="number" class="fi" placeholder="출고가(원)" value="${price}" style="flex:1" oninput="refreshDevPolicyPreviewFromForm()">
+    <button class="dyn-del" onclick="this.parentElement.remove();refreshDevPolicyPreviewFromForm()">✕</button>`;
   document.getElementById('storageList').appendChild(row);
 };
 window.addColor=function(hex='',name='',img=''){
