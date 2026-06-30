@@ -3,12 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<meta name="format-detection" content="telephone=no">
 <title>유닥 | 내 조건에 맞는 휴대폰 혜택 확인</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#F3F4F6}
-body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:#111;-webkit-tap-highlight-color:transparent;padding-bottom:84px}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:#111;-webkit-tap-highlight-color:transparent;padding-bottom:calc(84px + env(safe-area-inset-bottom));touch-action:manipulation}
 :root{
   --or:#2563EB;--orl:#EFF6FF;--ord:#1D4ED8;
   --g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g300:#D1D5DB;--g400:#9CA3AF;--g600:#6B7280;--g800:#1F2937;
@@ -36,14 +38,17 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
 .tabs{display:flex;gap:8px;background:var(--g100);padding:4px;border-radius:var(--r)}
 .tab{flex:1;text-align:center;padding:10px 0;border-radius:var(--rs);font-size:14px;font-weight:700;color:var(--g600);cursor:pointer;transition:all .15s}
 .tab.on{background:#fff;color:var(--g800);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tab:active{transform:scale(.97)}
 
 .carrier-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .carrier-btn{border:1.5px solid var(--g200);border-radius:var(--r);padding:16px 0;text-align:center;font-size:14px;font-weight:700;color:var(--g600);cursor:pointer;transition:all .15s;background:#fff}
 .carrier-btn.on{border-color:var(--or);background:var(--orl);color:var(--ord)}
+.carrier-btn:active{transform:scale(.97)}
 
 /* ===== 기기 카드 ===== */
 .dev-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
 .dev-card{border:1.5px solid var(--g200);border-radius:var(--r);padding:14px;cursor:pointer;transition:all .15s}
+.dev-card:active{transform:scale(.99)}
 .dev-card.on{border-color:var(--or);box-shadow:0 2px 10px rgba(249,115,22,.12)}
 .dev-head{display:flex;align-items:center;gap:12px}
 .dev-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--g300);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;transition:all .15s}
@@ -58,17 +63,20 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
 .dev-card.on .dev-body{max-height:220px;margin-top:14px}
 .dev-row-label{font-size:12px;color:var(--g600);font-weight:600;margin-bottom:8px}
 .chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-.chip{padding:7px 14px;border:1.5px solid var(--g200);border-radius:999px;font-size:12.5px;font-weight:600;color:var(--g600);cursor:pointer}
+.chip{padding:9px 16px;border:1.5px solid var(--g200);border-radius:999px;font-size:12.5px;font-weight:600;color:var(--g600);cursor:pointer}
+.chip:active{transform:scale(.96)}
 .chip.on{border-color:var(--or);background:var(--or);color:#fff}
-.color-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
-.color-item{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer}
-.color-sw{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--g200)}
+.color-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.color-item{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding:8px;border-radius:10px;min-width:44px}
+.color-item:active{background:var(--g50)}
+.color-sw{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--g200)}
 .color-item.on .color-sw{outline:2px solid var(--or);outline-offset:2px}
 .color-item span{font-size:10.5px;color:var(--g600)}
 
 /* ===== 요금제 ===== */
 .plan-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
 .plan-card{display:flex;align-items:center;gap:12px;border:1.5px solid var(--g200);border-radius:var(--r);padding:14px;cursor:pointer}
+.plan-card:active{transform:scale(.99)}
 .plan-card.on{border-color:var(--or);background:var(--orl)}
 .plan-radio{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--g300);flex-shrink:0;position:relative}
 .plan-card.on .plan-radio{border-color:var(--or)}
@@ -107,7 +115,7 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
 
 /* ===== 폼 (floating label) ===== */
 .field{position:relative;margin-bottom:14px}
-.field input,.field select{width:100%;border:1.5px solid var(--g200);border-radius:var(--rs);padding:18px 14px 6px;font-size:14.5px;font-family:inherit;color:var(--g800);background:#fff;appearance:none}
+.field input,.field select{width:100%;border:1.5px solid var(--g200);border-radius:var(--rs);padding:18px 14px 6px;font-size:16px;font-family:inherit;color:var(--g800);background:#fff;appearance:none}
 .field input:focus,.field select:focus{outline:none;border-color:var(--or)}
 .field label{position:absolute;left:14px;top:14px;font-size:14.5px;color:var(--g400);pointer-events:none;transition:all .15s}
 .field input:focus+label,.field input:not(:placeholder-shown)+label,
@@ -118,11 +126,12 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
 .privacy-note{font-size:11px;color:var(--g400);text-align:center;margin-top:4px}
 
 /* ===== 하단 고정 CTA ===== */
-.sticky-cta{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;background:#fff;border-top:1px solid var(--g200);padding:10px 18px;display:flex;align-items:center;gap:14px;z-index:50}
+.sticky-cta{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;background:#fff;border-top:1px solid var(--g200);padding:10px 18px calc(10px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:14px;z-index:50}
 .sticky-cta .price{flex-shrink:0}
 .sticky-cta .price .lbl{font-size:10.5px;color:var(--g400)}
 .sticky-cta .price .val{font-size:17px;font-weight:900;color:var(--or)}
 .sticky-cta button{flex:1;background:var(--or);color:#fff;border:none;border-radius:12px;padding:15px 0;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.sticky-cta button:active{transform:scale(.98)}
 .sticky-cta button:disabled{opacity:.6}
 
 /* ===== 완료 모달 ===== */
@@ -216,7 +225,7 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
       <label>연락처 (숫자만)</label>
     </div>
     <div class="field">
-      <input type="text" id="fBirth" placeholder=" " maxlength="8">
+      <input type="text" id="fBirth" placeholder=" " maxlength="8" inputmode="numeric" pattern="[0-9]*">
       <label>생년월일 (YYYYMMDD)</label>
     </div>
     <div class="field">
