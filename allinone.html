@@ -441,7 +441,7 @@ a{text-decoration:none;color:inherit}
       <div class="form-grid">
         <div class="fg"><label class="flbl">이름 <em>*</em></label><input class="fi" id="fName" type="text" placeholder="이름을 입력해주세요" oninput="onNameInput(this)"></div>
         <div class="fg"><label class="flbl">생년월일 <em>*</em></label><input class="fi" id="fBirth" type="text" placeholder="YYYY.MM.DD" maxlength="10" oninput="onBirthInput(this)" onblur="checkMinor()"></div>
-        <div class="fg"><label class="flbl">연락처 <em>*</em></label><input class="fi" id="fPhone" type="tel" placeholder="010-0000-0000" oninput="onPhoneInput(this);checkPhoneHint()" maxlength="13"><div id="phoneHint" style="font-size:11px;color:#dc2626;margin-top:4px;display:none">휴대폰 번호를 끝까지 입력해주세요.</div></div>
+        <div class="fg"><label class="flbl">연락처 <em>*</em></label><input class="fi" id="fPhone" type="tel" placeholder="010-0000-0000" value="010-" oninput="onPhoneInput(this);checkPhoneHint()" maxlength="13"><div id="phoneHint" style="font-size:11px;color:#dc2626;margin-top:4px;display:none">휴대폰 번호를 끝까지 입력해주세요.</div></div>
         <div class="fg"><label class="flbl">상담 가능 시간 <em>*</em></label>
           <div id="timePickerWrap" style="position:relative">
             <div id="timePickerDisplay" onclick="toggleTimePicker()" style="width:100%;padding:12px 14px;border:1.5px solid var(--g200);border-radius:10px;font-size:14px;color:var(--g600);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;transition:border-color .2s">
