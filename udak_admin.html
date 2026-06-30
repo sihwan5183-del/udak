@@ -173,6 +173,10 @@ tr.drag-over{border-top:2px solid var(--or)}
     <!-- 기기 -->
     <div class="panel on" id="panelDevice">
       <div class="panel-head">
+        <div class="panel-title">브랜드 노출 설정</div>
+      </div>
+      <div id="brandVisForm" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--g200)"></div>
+      <div class="panel-head">
         <div class="panel-title">기기 목록</div>
         <button class="btn-add" onclick="openDevModal()">+ 기기 추가</button>
       </div>
@@ -1217,9 +1221,40 @@ window.saveBonusAdmin = async function(){
   } catch(e){ toast('저장 실패: '+e.message, true); }
 };
 
+/* ══ 브랜드 노출 설정 (랜딩 브랜드탭 표시 여부) ══ */
+const BRAND_LIST=['삼성','애플','LG','기타'];
+let brandVisData={};
+async function loadBrandVis(){
+  try{
+    const s=await db.ref('brandVisibility').once('value');
+    brandVisData=s.exists()?s.val():{};
+  }catch(e){ brandVisData={}; }
+  renderBrandVis();
+}
+function renderBrandVis(){
+  const form=document.getElementById('brandVisForm');
+  if(!form) return;
+  form.innerHTML=BRAND_LIST.map(b=>{
+    const isOn=brandVisData[b]!==false; // 기본값 true
+    return `<label style="display:flex;align-items:center;gap:7px;cursor:pointer;border:1.5px solid var(--g200);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;color:${isOn?'var(--g800)':'var(--g400)'}">
+      <input type="checkbox" class="fchk" ${isOn?'checked':''} onchange="toggleBrandVis('${b}',this.checked)" style="width:15px;height:15px;accent-color:var(--or)">
+      ${b}
+    </label>`;
+  }).join('');
+}
+window.toggleBrandVis=async function(brand,checked){
+  brandVisData[brand]=checked;
+  renderBrandVis();
+  try{
+    await db.ref('brandVisibility/'+brand).set(checked);
+    toast(`${brand} 노출 ${checked?'ON':'OFF'} — 랜딩에 즉시 반영됩니다`);
+  }catch(e){ toast('저장 실패: '+e.message,true); }
+};
+
 async function loadAll(){
   await autoInit();
   await loadBonusAdmin(); // 최초 1회만 실행
+  await loadBrandVis();
   await Promise.all([loadDevices(),loadPlans(),loadPolicies(),loadTexts()]);
 }
 </script>
