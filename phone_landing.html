@@ -475,7 +475,12 @@ async function loadData(){
     devices=ds.exists()?Object.entries(ds.val()).map(([id,v])=>({id,...v})).filter(d=>d.visible!==false).sort((a,b)=>(a.order||999)-(b.order||999)):[];
     plans=ps.exists()?Object.entries(ps.val()).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false).sort((a,b)=>a.monthlyPrice-b.monthlyPrice):[];
     policies=pols.exists()?Object.entries(pols.val()).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false):[];
-    texts={...TEXT_DEFAULTS,...(tx.exists()?tx.val():{})};
+    {
+      const raw=tx.exists()?tx.val():{};
+      const cleaned={};
+      Object.entries(raw).forEach(([k,v])=>{ if(v!==''&&v!==null&&v!==undefined) cleaned[k]=v; });
+      texts={...TEXT_DEFAULTS,...cleaned};
+    }
     brandVis=bv.exists()?bv.val():{};
     if(bp.exists()){
       const fb=bp.val();
