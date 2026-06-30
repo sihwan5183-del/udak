@@ -157,13 +157,13 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
   </div>
 
   <!-- STEP 2. 통신사 -->
-  <div class="section">
+  <div class="section" id="step2">
     <div class="step-label"><span class="step-num">2</span><span class="step-title">현재 통신사를 선택해 주세요</span></div>
     <div class="carrier-grid" id="carrierGrid"></div>
   </div>
 
   <!-- STEP 3. 요금제 -->
-  <div class="section">
+  <div class="section" id="step3">
     <div class="step-label"><span class="step-num">3</span><span class="step-title">요금제를 선택해 주세요</span></div>
     <div class="plan-list" id="planList"></div>
   </div>
@@ -192,7 +192,7 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
   </div>
 
   <!-- STEP 6. 상담 신청 -->
-  <div class="section" style="padding-bottom:24px">
+  <div class="section" id="step6" style="padding-bottom:24px">
     <div class="step-label"><span class="step-num">6</span><span class="step-title">상담 신청하기</span></div>
     <div class="step-sub">상담 신청 후 바로 전화하지 않아요</div>
 
@@ -271,9 +271,7 @@ const TEXT_DEFAULTS={
   bannerLink:'',
   bannerTitle:'내 조건에 맞는 휴대폰 혜택 한눈에 확인',
   bannerSub:'복잡한 조건 없이, 쉽고 투명하게 비교해요',
-  phoneCheck1:'본 혜택은 약정 기준이며, 약정 해지 시 잔여 할인금이 청구될 수 있어요',
-  phoneCheck2:'가입 후 일정 기간은 선택한 요금제(또는 그 이상)를 유지해야 정상 혜택이 적용돼요',
-  phoneCheck3:'유지 기간 경과 후에는 더 낮은 요금제로 자유롭게 변경하실 수 있어요',
+  phoneCheck1:'최소 6개월간 요금제를 유지해주세요. 6개월 뒤에는 원가 기준 47,000원 이상 요금제로 변경할 수 있어요.',
 };
 
 let bonusData={};
@@ -382,6 +380,15 @@ window.selColor=function(devId,name){
   if(sel.device?.id!==devId) selDevice(devId);
   sel.color=sel.device.colors.find(c=>c.name===name);
   renderDevices(); calc();
+  scrollToStep('step2');
+}
+function scrollToStep(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  setTimeout(()=>{
+    const y=el.getBoundingClientRect().top+window.scrollY-12;
+    window.scrollTo({top:y,behavior:'smooth'});
+  },250);
 }
 
 /* ===================== STEP 2. 통신사 ===================== */
@@ -393,6 +400,7 @@ window.selCarrier=function(c){
   sel.carrier=c; sel.jointype=(c==='LG U+')?'기기변경':'번호이동';
   CARRIERS.forEach(x=>document.getElementById('car-'+x.replace(/\s/g,'')).classList.toggle('on',x===c));
   calc();
+  scrollToStep('step3');
 }
 
 /* ===================== STEP 3. 요금제 ===================== */
@@ -425,6 +433,7 @@ function renderPlans(){
 window.selPlan=function(id){
   sel.plan=plans.find(p=>p.id===id);
   renderPlans(); calc(); renderBonusCallout();
+  scrollToStep('step6');
 }
 function renderBonusCallout(){
   const box=document.getElementById('bonusCallout');
@@ -518,9 +527,9 @@ function calc(){
   window._estimatedFee=real;
 }
 
-/* ===================== STEP 5. 확인사항 (어드민 텍스트관리 phoneCheck1~3) ===================== */
+/* ===================== STEP 5. 확인사항 (어드민 텍스트관리 phoneCheck1, 한 줄) ===================== */
 function renderChecklist(){
-  const items=[texts.phoneCheck1,texts.phoneCheck2,texts.phoneCheck3].filter(Boolean);
+  const items=[texts.phoneCheck1].filter(Boolean);
   document.getElementById('checkList').innerHTML=items.map(t=>
     `<div class="check-item"><div class="check-ico">✓</div><p>${t}</p></div>`
   ).join('');
