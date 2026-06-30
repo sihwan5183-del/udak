@@ -506,7 +506,11 @@ async function loadData(){
 function applyTexts(){
   const img=document.getElementById('bannerImg');
   const link=document.getElementById('bannerLink');
-  if(texts.bannerImg){ img.src=texts.bannerImg; img.closest('.banner').style.display='block'; }
+  if(texts.bannerImg){
+    const sep=texts.bannerImg.includes('?')?'&':'?';
+    img.src=texts.bannerImg+sep+'v='+Math.floor(Date.now()/3600000); // 1시간 단위 캐시버스터
+    img.closest('.banner').style.display='block';
+  }
   else{ img.closest('.banner').style.display='none'; }
   if(texts.bannerLink){ link.href=texts.bannerLink; link.target='_blank'; } else { link.removeAttribute('href'); }
   document.getElementById('bannerTitle').textContent=texts.bannerTitle||'';
