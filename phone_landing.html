@@ -141,6 +141,21 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
 .field .sel-arrow{position:absolute;right:14px;top:18px;color:var(--g400);font-size:11px;pointer-events:none}
 .privacy-note{font-size:11px;color:var(--g400);text-align:center;margin-top:4px}
 
+/* ===== 상담 희망 시간 드럼 피커 ===== */
+.tp-label{font-size:12px;font-weight:700;color:var(--g600);margin-bottom:6px}
+.time-picker{border:1.5px solid var(--g200);border-radius:var(--rs);background:#fff;overflow:hidden;cursor:pointer;margin-bottom:14px}
+.time-picker.on{border-color:var(--or)}
+.tp-head{padding:16px 14px;font-size:16px;font-weight:600;color:var(--g800);display:flex;justify-content:space-between;align-items:center}
+.tp-arrow{font-size:10px;color:var(--g400);transition:transform .2s}
+.time-picker.on .tp-arrow{transform:rotate(180deg)}
+.tp-body{display:none;border-top:1px solid var(--g100);max-height:196px;overflow-y:auto}
+.tp-body::-webkit-scrollbar{width:0}
+.tp-item{padding:13px 0;font-size:14px;color:#C5C8CE;cursor:pointer;text-align:center;border-bottom:1px solid var(--g100);transition:all .15s}
+.tp-item:last-child{border-bottom:none}
+.tp-item:active{background:var(--g50)}
+.tp-item.tp-near{color:var(--g600);font-size:15px}
+.tp-item.tp-sel{color:var(--or);font-weight:800;font-size:17px}
+
 /* ===== 하단 고정 CTA ===== */
 .sticky-cta{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;background:#fff;border-top:1px solid var(--g200);padding:10px 18px calc(10px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:14px;z-index:50}
 .sticky-cta .price{flex-shrink:0}
@@ -243,16 +258,16 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
       <input type="text" id="fBirth" placeholder=" " maxlength="8" inputmode="numeric" pattern="[0-9]*">
       <label>생년월일 (YYYYMMDD)</label>
     </div>
-    <div class="field">
-      <select id="fTime" onchange="this.classList.toggle('has-val',!!this.value)">
-        <option value="" selected disabled hidden></option>
-        <option value="오전 10시~12시">오전 10시~12시</option>
-        <option value="오후 12시~3시">오후 12시~3시</option>
-        <option value="오후 3시~6시">오후 3시~6시</option>
-        <option value="오후 6시~9시">오후 6시~9시</option>
-      </select>
-      <label>상담 희망 시간</label>
-      <span class="sel-arrow">▾</span>
+    <div class="tp-label">상담 희망 시간</div>
+    <input type="hidden" id="fTime" value="">
+    <div class="time-picker" id="timePicker">
+      <div class="tp-head" onclick="toggleTimePicker()">
+        <span id="timeDisplayText" style="color:var(--g400)">선택해주세요</span>
+        <span class="tp-arrow">▼</span>
+      </div>
+      <div class="tp-body" id="timeDrum">
+        <div id="timeDrumList"></div>
+      </div>
     </div>
     <p class="privacy-note">🔒 입력하신 정보는 상담 목적으로만 사용되며 안전하게 보호됩니다</p>
   </div>
@@ -636,6 +651,7 @@ window.submitForm=async function(){
     document.getElementById('fPhone').value='';
     document.getElementById('fTime').value='';
     document.querySelectorAll('.field').forEach(f=>f.classList.remove('has-val'));
+    resetTimePicker();
   }catch(e){
     console.error(e);
     alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
@@ -654,6 +670,55 @@ function fillSummaryModal(name,birth,phone){
   document.getElementById('sumCBirth').textContent=birth||'-';
   document.getElementById('sumCPhone').textContent=phone||'-';
 }
+
+/* ===== 상담 희망 시간 드럼 피커 ===== */
+(function(){
+  var TIMES=['오전 10시~12시','오후 12시~3시','오후 3시~6시','오후 6시~9시'];
+  var list=document.getElementById('timeDrumList');
+  if(list) list.innerHTML=TIMES.map(function(t){return'<div class="tp-item" onclick="window.selectTime(\''+t+'\')">'+t+'</div>';}).join('');
+})();
+window.toggleTimePicker=function(){
+  var picker=document.getElementById('timePicker');
+  var drum=document.getElementById('timeDrum');
+  if(!picker||!drum) return;
+  var isOn=picker.classList.toggle('on');
+  drum.style.display=isOn?'block':'none';
+  if(isOn){
+    var s=drum.querySelector('.tp-sel');
+    if(s) setTimeout(function(){s.scrollIntoView({block:'center'});},30);
+  }
+};
+window.selectTime=function(t){
+  document.getElementById('fTime').value=t;
+  var txt=document.getElementById('timeDisplayText');
+  if(txt){txt.textContent=t;txt.style.color='var(--g800)';}
+  var items=[].slice.call(document.querySelectorAll('.tp-item'));
+  var idx=items.findIndex(function(el){return el.textContent.trim()===t;});
+  items.forEach(function(el,i){
+    el.classList.remove('tp-sel','tp-near');
+    if(i===idx) el.classList.add('tp-sel');
+    else if(Math.abs(i-idx)===1) el.classList.add('tp-near');
+  });
+  var picker=document.getElementById('timePicker');
+  var drum=document.getElementById('timeDrum');
+  if(picker) picker.classList.remove('on');
+  if(drum) drum.style.display='none';
+};
+function resetTimePicker(){
+  var txt=document.getElementById('timeDisplayText');
+  if(txt){txt.textContent='선택해주세요';txt.style.color='var(--g400)';}
+  document.querySelectorAll('.tp-item').forEach(function(el){el.classList.remove('tp-sel','tp-near');});
+  document.getElementById('timePicker')?.classList.remove('on');
+  var d=document.getElementById('timeDrum'); if(d) d.style.display='none';
+}
+document.addEventListener('click',function(e){
+  var p=document.getElementById('timePicker');
+  if(p&&!p.contains(e.target)){
+    p.classList.remove('on');
+    var d=document.getElementById('timeDrum');
+    if(d) d.style.display='none';
+  }
+});
 
 loadData();
 </script>
