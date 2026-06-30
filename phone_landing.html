@@ -213,6 +213,23 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
 .sum-row span:first-child{color:var(--g600)}
 .sum-row span:last-child{font-weight:700;color:var(--g800)}
 </style>
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '921171610476690');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=921171610476690&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 <div class="wrap">
@@ -867,6 +884,14 @@ window.submitForm=async function(){
       })
     });
     if(!res.ok) throw new Error(await res.text());
+    if(typeof fbq==='function'){
+      fbq('track','Lead',{
+        content_name: sel.device?.name||'',
+        content_category: sel.plan?.name||'',
+        value: window._estimatedFee||0,
+        currency: 'KRW'
+      });
+    }
     fillSummaryModal(name,birth,phone);
     document.getElementById('sModal').classList.add('on');
     document.getElementById('fName').value='';
