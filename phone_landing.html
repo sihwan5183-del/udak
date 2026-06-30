@@ -90,9 +90,6 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
 .monthly-box{margin-top:10px;background:#fff;border:1px solid var(--g200);border-radius:var(--rs);padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
 .monthly-box .lbl{font-size:12px;color:var(--g600)}
 .monthly-box .val{font-size:15px;font-weight:800;color:var(--g800)}
-.disc-toggle{display:flex;gap:6px;margin-bottom:12px}
-.disc-toggle button{flex:1;padding:8px 0;border-radius:var(--rs);border:1.5px solid var(--g200);background:#fff;font-size:12.5px;font-weight:700;color:var(--g600)}
-.disc-toggle button.on{border-color:var(--or);background:var(--or);color:#fff}
 
 /* ===== 확인사항 ===== */
 .check-list{display:flex;flex-direction:column;gap:10px}
@@ -136,11 +133,11 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
   <!-- 배너 (광고 배너와 동일 이미지로 교체) -->
   <div class="banner">
     <a href="#" id="bannerLink">
-      <img id="bannerImg" src="https://placehold.co/960x540/2563EB/ffffff?text=%EA%B4%91%EA%B3%A0+%EB%B0%B0%EB%84%88+%EC%9D%B4%EB%AF%B8%EC%A7%80" alt="배너">
+      <img id="bannerImg" src="" alt="배너">
     </a>
     <div class="banner-overlay">
-      <h1>내 조건에 맞는<br><b>휴대폰 혜택</b> 한눈에 확인</h1>
-      <p>복잡한 조건 없이, 쉽고 투명하게 비교해요</p>
+      <h1 id="bannerTitle"></h1>
+      <p id="bannerSub"></p>
     </div>
   </div>
 
@@ -166,13 +163,9 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
   <!-- STEP 4. 혜택 요약 -->
   <div class="section">
     <div class="step-label"><span class="step-num">4</span><span class="step-title">예상 혜택을 확인해 주세요</span></div>
-    <div class="disc-toggle">
-      <button class="on" data-disc="공시" onclick="setDisc('공시')">공시지원금</button>
-      <button data-disc="선약" onclick="setDisc('선약')">선택약정(요금 25%↓)</button>
-    </div>
     <div class="benefit-box">
       <div class="b-row"><span>출고가</span><span class="v b-strike" id="rLaunch">-</span></div>
-      <div class="b-row disc"><span id="rDiscLbl">공시지원금</span><span class="v" id="rDisc">-</span></div>
+      <div class="b-row disc"><span>공시지원금</span><span class="v" id="rDisc">-</span></div>
       <div class="b-row disc"><span>유닥 추가혜택</span><span class="v" id="rExtra">-</span></div>
       <div class="b-divider"></div>
       <div class="b-total"><span class="lbl">예상 기기값</span><span class="val" id="rTotal">0원</span></div>
@@ -260,37 +253,51 @@ const _utm=(function(){
 })();
 
 let devices=[],plans=[],policies=[];
-let sel={device:null,carrier:null,jointype:null,storage:null,color:null,plan:null,discType:'공시'};
-let curBrand='삼성';
+let texts={};
+let sel={device:null,carrier:null,jointype:null,storage:null,color:null,plan:null};
+let curBrand='';
 
-/* 확인사항 — 운영 정책 바뀌면 여기만 수정 */
-const CHECK_ITEMS=[
-  '본 혜택은 24개월 약정 기준이며, 약정 해지 시 잔여 할인금이 청구될 수 있어요',
-  '가입 후 6개월간은 선택한 요금제(또는 그 이상)를 유지해야 정상 혜택이 적용돼요',
-  '6개월 경과 후에는 더 낮은 요금제로 자유롭게 변경하실 수 있어요',
-];
-
-function brandOf(d){ return (d.name||'').includes('갤럭시') ? '삼성' : '애플'; }
+const TEXT_DEFAULTS={
+  bannerImg:'',
+  bannerLink:'',
+  bannerTitle:'내 조건에 맞는 휴대폰 혜택 한눈에 확인',
+  bannerSub:'복잡한 조건 없이, 쉽고 투명하게 비교해요',
+  phoneCheck1:'본 혜택은 약정 기준이며, 약정 해지 시 잔여 할인금이 청구될 수 있어요',
+  phoneCheck2:'가입 후 일정 기간은 선택한 요금제(또는 그 이상)를 유지해야 정상 혜택이 적용돼요',
+  phoneCheck3:'유지 기간 경과 후에는 더 낮은 요금제로 자유롭게 변경하실 수 있어요',
+};
 
 async function loadData(){
   try{
-    const[ds,ps,pols]=await Promise.all([
-      db.ref('devices').once(),db.ref('plans').once(),db.ref('policy2').once()
+    const[ds,ps,pols,tx]=await Promise.all([
+      db.ref('devices').once(),db.ref('plans').once(),db.ref('policy2').once(),db.ref('uitexts').once()
     ]);
     devices=ds.exists()?Object.entries(ds.val()).map(([id,v])=>({id,...v})).filter(d=>d.visible!==false).sort((a,b)=>(a.order||999)-(b.order||999)):[];
     plans=ps.exists()?Object.entries(ps.val()).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false).sort((a,b)=>a.monthlyPrice-b.monthlyPrice):[];
     policies=pols.exists()?Object.entries(pols.val()).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false):[];
-  }catch(e){console.error('Firebase load error',e);}
+    texts={...TEXT_DEFAULTS,...(tx.exists()?tx.val():{})};
+  }catch(e){console.error('Firebase load error',e);texts={...TEXT_DEFAULTS};}
+  applyTexts();
   renderBrandTabs();
   renderDevices();
   renderPlans();
   renderChecklist();
 }
 
-/* ===================== STEP 1. 브랜드/기기 ===================== */
+function applyTexts(){
+  const img=document.getElementById('bannerImg');
+  const link=document.getElementById('bannerLink');
+  if(texts.bannerImg){ img.src=texts.bannerImg; img.closest('.banner').style.display='block'; }
+  else{ img.closest('.banner').style.display='none'; }
+  if(texts.bannerLink){ link.href=texts.bannerLink; link.target='_blank'; } else { link.removeAttribute('href'); }
+  document.getElementById('bannerTitle').textContent=texts.bannerTitle||'';
+  document.getElementById('bannerSub').textContent=texts.bannerSub||'';
+}
+
+/* ===================== STEP 1. 브랜드/기기 (어드민 category 필드 기준) ===================== */
 function renderBrandTabs(){
-  const brands=[...new Set(devices.map(brandOf))];
-  if(!brands.includes(curBrand)) curBrand=brands[0]||'삼성';
+  const brands=[...new Set(devices.map(d=>d.category).filter(Boolean))];
+  if(!brands.includes(curBrand)) curBrand=brands[0]||'';
   document.getElementById('brandTabs').innerHTML=brands.map(b=>
     `<div class="tab ${b===curBrand?'on':''}" onclick="selBrand('${b}')">${b}</div>`
   ).join('');
@@ -298,7 +305,7 @@ function renderBrandTabs(){
 window.selBrand=function(b){curBrand=b;renderBrandTabs();renderDevices();}
 
 function renderDevices(){
-  const list=devices.filter(d=>brandOf(d)===curBrand);
+  const list=devices.filter(d=>d.category===curBrand);
   document.getElementById('devList').innerHTML=list.map(d=>{
     const repPrice=d.storageList?.[0]?.price||0;
     const isOn=sel.device?.id===d.id;
@@ -332,6 +339,7 @@ function renderDevices(){
 }
 window.selDevice=function(id){
   if(sel.device?.id===id){ sel.device=null; }
+
   else{
     sel.device=devices.find(d=>d.id===id);
     sel.storage=sel.device.storageList?.[0]||null;
@@ -365,12 +373,11 @@ window.selCarrier=function(c){
 function renderPlans(){
   document.getElementById('planList').innerHTML=plans.map(p=>{
     const isOn=sel.plan?.id===p.id;
-    const isBest=p.monthlyPrice===95000;
     return `
     <div class="plan-card ${isOn?'on':''}" onclick="selPlan('${p.id}')">
       <div class="plan-radio"></div>
       <div style="flex:1">
-        <div class="plan-name">${isBest?'<b>BEST</b>':''}${p.name}</div>
+        <div class="plan-name">${p.name}</div>
         <div class="plan-price">월 ${p.monthlyPrice.toLocaleString()}원 · 데이터 무제한</div>
       </div>
     </div>`;
@@ -381,12 +388,7 @@ window.selPlan=function(id){
   renderPlans(); calc();
 }
 
-/* ===================== STEP 4. 혜택 계산 (정책 매칭은 유닥과 동일 로직) ===================== */
-window.setDisc=function(v){
-  sel.discType=v;
-  document.querySelectorAll('.disc-toggle button').forEach(b=>b.classList.toggle('on',b.dataset.disc===v));
-  calc();
-}
+/* ===================== STEP 4. 혜택 계산 (공시지원금 고정, 정책 매칭은 유닥과 동일 로직) ===================== */
 function matchPolicy(){
   if(!sel.plan||!sel.carrier||!sel.jointype) return null;
   const pg=Math.floor(sel.plan.monthlyPrice/1000).toString();
@@ -429,32 +431,23 @@ function calc(){
   }
   const pol=matchPolicy();
   const mf=sel.plan.monthlyPrice;
-  let mainDisc=0,extra=0,monthlyDev=0;
-  if(sel.discType==='공시'){
-    mainDisc=pol?.pubSupport||0;
-    extra=(pol?.rebate||0)+(pol?.distribution||0)+(pol?.structure||0)+(pol?.extraPolicy||0);
-    monthlyDev=Math.round(Math.max(0,lp-mainDisc-extra)/24);
-    document.getElementById('rDiscLbl').textContent='공시지원금';
-  }else{
-    mainDisc=Math.round(mf*0.25);
-    extra=pol?((pol.rebate||0)+(pol.distribution||0)+(pol.structure||0)+(pol.extraPolicy||0)):0;
-    monthlyDev=Math.round(Math.max(0,lp-extra)/24);
-    document.getElementById('rDiscLbl').textContent='요금 할인(25%)';
-  }
+  const mainDisc=pol?.pubSupport||0;
+  const extra=(pol?.rebate||0)+(pol?.distribution||0)+(pol?.structure||0)+(pol?.extraPolicy||0);
+  const monthlyDev=Math.round(Math.max(0,lp-mainDisc-extra)/24);
   const real=Math.max(0,lp-mainDisc-extra);
   document.getElementById('rLaunch').textContent=lp.toLocaleString()+'원';
   document.getElementById('rDisc').textContent=mainDisc>0?'-'+mainDisc.toLocaleString()+'원':'-';
   document.getElementById('rExtra').textContent=extra>0?'-'+extra.toLocaleString()+'원':'-';
   document.getElementById('rTotal').textContent=real.toLocaleString()+'원';
-  const monthlyTotal=monthlyDev+(sel.discType==='선약'?(mf-mainDisc):mf);
-  document.getElementById('rMonthly').textContent=monthlyTotal.toLocaleString()+'원/월';
+  document.getElementById('rMonthly').textContent=(monthlyDev+mf).toLocaleString()+'원/월';
   document.getElementById('ctaPrice').textContent=real.toLocaleString()+'원';
   window._estimatedFee=real;
 }
 
-/* ===================== STEP 5. 확인사항 ===================== */
+/* ===================== STEP 5. 확인사항 (어드민 텍스트관리 phoneCheck1~3) ===================== */
 function renderChecklist(){
-  document.getElementById('checkList').innerHTML=CHECK_ITEMS.map(t=>
+  const items=[texts.phoneCheck1,texts.phoneCheck2,texts.phoneCheck3].filter(Boolean);
+  document.getElementById('checkList').innerHTML=items.map(t=>
     `<div class="check-item"><div class="check-ico">✓</div><p>${t}</p></div>`
   ).join('');
 }
@@ -484,7 +477,7 @@ window.submitForm=async function(){
         desired_device: sel.device?.name||null, storage: sel.storage?.name||null,
         color: sel.color?sel.color.name.split('|')[1]:null,
         desired_product: sel.plan?.name||null,
-        discount: sel.discType==='공시'?'공시지원금':'선택약정',
+        discount: '공시지원금',
         consult_time: time,
         channel: _utm.source==='meta'?'메타광고':'유닥',
         utm_campaign: _utm.campaign||null,
