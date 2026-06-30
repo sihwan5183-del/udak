@@ -141,6 +141,32 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
 .field .sel-arrow{position:absolute;right:14px;top:18px;color:var(--g400);font-size:11px;pointer-events:none}
 .privacy-note{font-size:11px;color:var(--g400);text-align:center;margin-top:4px}
 
+/* ===== 개인정보 동의 ===== */
+.agree-box{margin-top:18px;border:1.5px solid var(--g200);border-radius:var(--r);overflow:hidden}
+.agree-title{padding:14px 16px 8px;font-size:14px;font-weight:800;color:var(--g800)}
+.agree-all{display:flex;align-items:center;gap:9px;padding:12px 16px;background:var(--g50);cursor:pointer;font-size:13.5px;font-weight:700;color:var(--g800)}
+.agree-item{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-top:1px solid var(--g100);cursor:pointer}
+.agree-item-left{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--g800)}
+.agree-item-left .req{color:var(--or);font-weight:700;font-size:11.5px;margin-right:1px}
+.agree-detail-link{font-size:11.5px;color:var(--g400);text-decoration:underline;flex-shrink:0}
+.agree-chk{width:19px;height:19px;border-radius:6px;border:1.5px solid var(--g300);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:800;transition:all .15s}
+.agree-chk.on{background:var(--or);border-color:var(--or)}
+.agree-detail-box{display:none;padding:12px 16px 14px;background:var(--g50);border-top:1px solid var(--g100);font-size:11.5px;color:var(--g600);line-height:1.7}
+.agree-detail-box.on{display:block}
+.agree-detail-box p{margin-bottom:4px}
+.policy-link-btn{width:100%;padding:12px 0;border-top:1px solid var(--g100);background:#fff;font-size:12.5px;color:var(--g600);text-align:center;cursor:pointer;font-weight:600}
+.agree-warn{font-size:11.5px;color:var(--or);text-align:center;margin-top:8px;font-weight:600}
+
+/* 처리방침 전체보기 모달 */
+.policy-modal-box{background:#fff;border-radius:16px;width:100%;max-width:420px;max-height:80vh;display:flex;flex-direction:column}
+.policy-modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--g200);flex-shrink:0}
+.policy-modal-head h3{font-size:15px;font-weight:800;color:var(--g800)}
+.policy-modal-head button{background:none;border:none;font-size:18px;color:var(--g400);cursor:pointer;padding:4px}
+.policy-modal-body{padding:16px 18px;overflow-y:auto;font-size:12px;color:var(--g600);line-height:1.7}
+.policy-modal-body h4{font-size:13px;font-weight:800;color:var(--g800);margin:16px 0 6px}
+.policy-modal-body h4:first-child{margin-top:0}
+.policy-modal-body p{margin-bottom:8px;white-space:pre-line}
+
 /* ===== 상담 희망 시간 드럼 피커 ===== */
 .tp-label{font-size:12px;font-weight:700;color:var(--g600);margin-bottom:6px}
 .time-picker{border:1.5px solid var(--g200);border-radius:var(--rs);background:#fff;overflow:hidden;cursor:pointer;margin-bottom:14px}
@@ -270,6 +296,54 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
       </div>
     </div>
     <p class="privacy-note">🔒 입력하신 정보는 상담 목적으로만 사용되며 안전하게 보호됩니다</p>
+
+    <div class="agree-box">
+      <div class="agree-title">개인정보 동의</div>
+      <div class="agree-all" onclick="toggleAgreeAll()">
+        <div class="agree-chk on" id="chkAllIco">✓</div>
+        <span>전체 동의</span>
+      </div>
+
+      <div class="agree-item" onclick="toggleChk('chk1')">
+        <div class="agree-item-left"><div class="agree-chk on" id="chk1">✓</div><span><span class="req">[필수]</span> 개인정보 수집·이용 동의</span></div>
+        <span class="agree-detail-link" id="btn-detail1" onclick="event.stopPropagation();toggleDetail('detail1')">자세히</span>
+      </div>
+      <div id="detail1" class="agree-detail-box">
+        <p>휴대폰 상담 신청 확인 및 상담 연락 목적. 보유 기간: 상담 신청일로부터 3개월.</p>
+        <p>■ 수집 항목: 이름, 생년월일, 연락처, 현재 통신사, 희망 기기/요금제, 상담 희망 시간</p>
+        <p>■ 수집·이용 목적: 휴대폰 개통 상담 신청 확인, 본인 식별, 상담 연락 및 안내</p>
+        <p>■ 보유·이용 기간: 상담 신청일로부터 3개월 (관련 법령에 따라 보존이 필요한 경우 해당 기간까지)</p>
+        <p>■ 동의 거부 권리 및 거부 시 불이익: 동의를 거부하실 수 있으며, 거부 시 상담 신청이 제한됩니다.</p>
+      </div>
+
+      <div class="agree-item" onclick="toggleChk('chk2')">
+        <div class="agree-item-left"><div class="agree-chk on" id="chk2">✓</div><span><span class="req">[필수]</span> 개인정보 제3자 제공 동의</span></div>
+        <span class="agree-detail-link" id="btn-detail2" onclick="event.stopPropagation();toggleDetail('detail2')">자세히</span>
+      </div>
+      <div id="detail2" class="agree-detail-box">
+        <p>제공받는 자: (주)신세계정보통신 및 상담을 배정받은 LG U+ 매장. 보유 기간: 3개월.</p>
+        <p>■ 제공받는 자: (주)신세계정보통신 및 상담 배정 LG U+ 매장</p>
+        <p>■ 제공 항목: 이름, 연락처, 희망 기기/요금제, 상담 희망 시간</p>
+        <p>■ 제공 목적: 상담 진행, 개통 안내, 매장 방문 예약 등</p>
+        <p>■ 보유·이용 기간: 제공일로부터 3개월</p>
+        <p>■ 동의 거부 권리 및 거부 시 불이익: 동의를 거부하실 수 있으며, 거부 시 상담 신청이 제한됩니다.</p>
+      </div>
+
+      <div class="agree-item" onclick="toggleChk('chk3')">
+        <div class="agree-item-left"><div class="agree-chk on" id="chk3">✓</div><span><span class="req" style="color:var(--g400)">[선택]</span> 마케팅 정보 수신 동의</span></div>
+        <span class="agree-detail-link" id="btn-detail3" onclick="event.stopPropagation();toggleDetail('detail3')">자세히</span>
+      </div>
+      <div id="detail3" class="agree-detail-box">
+        <p>신제품/이벤트 안내. 거부해도 상담 신청에는 제한이 없습니다.</p>
+        <p>■ 수신 항목: 신제품 출시, 프로모션, 이벤트, 할인 혜택 등</p>
+        <p>■ 수신 방법: SMS, 카카오톡, 전화 등</p>
+        <p>■ 보유·이용 기간: 동의 철회 시까지</p>
+        <p>■ 동의 거부 권리: 동의를 거부하셔도 상담 신청에는 제한이 없습니다.</p>
+      </div>
+
+      <button class="policy-link-btn" onclick="document.getElementById('policyModal').classList.add('on')">개인정보 처리방침 자세히 보기</button>
+    </div>
+    <p class="agree-warn" id="agreeWarn" style="display:none">필수 동의 항목을 체크해 주세요</p>
   </div>
 
 </div>
@@ -300,6 +374,57 @@ body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;color:
     <div class="sum-row" style="border-bottom:none"><span>전화번호</span><span id="sumCPhone"></span></div>
     <div style="height:6px"></div>
     <button onclick="document.getElementById('sModal').classList.remove('on')">확인</button>
+  </div>
+</div>
+
+<!-- 개인정보 처리방침 전체보기 -->
+<div class="modal-bg" id="policyModal">
+  <div class="policy-modal-box">
+    <div class="policy-modal-head">
+      <h3>개인정보 처리방침</h3>
+      <button onclick="document.getElementById('policyModal').classList.remove('on')">✕</button>
+    </div>
+    <div class="policy-modal-body">
+        <h4>1. 개인정보 수집 및 이용 목적</h4>
+        <p>회사는 개인정보를 다음의 목적을 위해 처리합니다. 처리한 개인정보는 다음의 목적이외의 용도로는 사용되지 않으며 이용 목적이 변경될 시에는 사전동의를 구할 예정입니다.</p>
+        <p>가. 홈페이지 회원가입 및 관리
+회원 가입의사 확인, 회원제 서비스 제공에 따른 본인 식별·인증, 회원자격 유지·관리, 제한적 본인확인제 시행에 따른 본인확인, 서비스 부정이용 방지, 각종 고지·통지, 고충처리, 분쟁 조정을 위한 기록 보존 등을 목적으로 개인정보를 처리합니다.</p>
+        <p>나. 민원사무 처리
+민원인의 신원 확인, 민원사항 확인, 사실조사를 위한 연락·통지, 처리결과 통보 등을 목적으로 개인정보를 처리합니다.</p>
+        <p>다. 재화 또는 서비스 제공
+물품배송, 서비스 제공, 청구서 발송, 콘텐츠 제공, 맞춤 서비스 제공, 본인인증, 연령인증, 요금결제·정산 등을 목적으로 개인정보를 처리합니다.</p>
+        <p>라. 마케팅 및 광고에의 활용
+신규 서비스(제품) 개발 및 맞춤 서비스 제공, 이벤트 및 광고성 정보 제공 및 참여기회 제공, 인구통계학적 특성에 따른 서비스 제공 및 광고 게재, 서비스의 유효성 확인, 접속빈도 파악 또는 회원의 서비스 이용에 대한 통계 등을 목적으로 개인정보를 처리합니다.</p>
+        <h4>2. 수집하는 개인정보의 항목 및 수집방법</h4>
+        <p>가. 수집 항목</p>
+        <p>가-1. 회원 가입 시 수집항목
+- 필수항목: 이름, 성별, 로그인ID, 비밀번호, 이메일, 생년월일, 주소, 휴대폰번호
+- 선택항목: 자택번호, SMS 수신동의, 이메일 수신동의</p>
+        <p>가-2. 자동 수집
+- 접속 IP 정보, 쿠키, 서비스 이용 기록, 접속로그 등</p>
+        <p>가-3. 기타 (이벤트나 마케팅 활동 등)
+- 수집정보: 주소, 생년월일, 전화번호, 휴대폰번호, 이름, 이메일 등</p>
+        <p>나. 수집 방법
+- 홈페이지(회원가입), 서면양식, 전화, 팩스, 상담게시판, 이벤트응모, 서비스이용, 회원정보 수정</p>
+        <h4>3. 개인정보 수집에 대한 동의</h4>
+        <p>회사는 귀하께서 회사의 개인정보취급방침 또는 이용약관의 내용에 대해 「동의함」 버튼을 체크할 수 있는 절차를 마련하여, 「동의함」버튼을 체크하면 개인정보 수집에 대해 동의한 것으로 봅니다.</p>
+        <h4>4. 개인정보 자동 수집 장치의 설치·운영 및 거부에 관한 사항</h4>
+        <p>개별적인 맞춤서비스를 제공하기 위해 이용정보를 저장하고 수시로 불러오는 &#x27;쿠키(cookie)&#x27;를 사용합니다. 웹브라우저 상단의 &#x27;도구&amp;gt;인터넷옵션&amp;gt;개인정보&#x27; 메뉴의 옵션 설정을 통해 쿠키 저장을 거부할 수 있습니다. 쿠키 저장을 거부할 경우 맞춤형 서비스 이용에 어려움이 발생할 수 있습니다.</p>
+        <h4>5. 개인정보의 처리 및 보유 기간</h4>
+        <p>회사는 법령에 따른 개인정보 보유·이용기간 또는 정보주체로부터 개인정보를 수집시에 동의 받은 개인정보 보유·이용기간 내에서 개인정보를 처리·보유합니다. 회원가입 정보는 회원 탈퇴 시, 설문조사·이벤트 등 일시적 목적으로 수집한 정보는 해당 목적이 종료된 때 파기됩니다. 단, 관련 법령에 따라 계약 또는 청약철회 등에 관한 기록은 5년, 소비자의 불만 또는 분쟁처리에 관한 기록은 3년간 보유합니다.</p>
+        <h4>6. 개인정보의 제3자 제공 및 공유</h4>
+        <p>회사는 이용자의 동의가 있거나 관련 법령의 규정에 의한 경우를 제외하고는 어떠한 경우에도 이용자의 개인정보를 제3자에게 제공하지 않습니다. 다만 이용자가 사전에 동의한 경우, 서비스 제공에 따른 요금정산 또는 계약 이행을 위해 필요한 경우, 통계작성·마케팅분석·시장조사를 위해 특정 개인을 식별할 수 없는 형태로 가공하여 제공하는 경우, 관련 법령에 의하거나 수사기관의 요구가 있는 경우는 예외로 합니다.</p>
+        <h4>7. 정보주체의 권리, 의무 및 그 행사방법</h4>
+        <p>이용자는 개인정보주체로서 회사에 대해 언제든지 개인정보 열람, 정정, 삭제, 처리정지를 요구할 수 있으며, 서면·전자우편·모사전송(FAX) 등을 통해 요청하실 수 있습니다. 회사는 이에 대해 지체 없이 조치합니다. 권리 행사는 정보주체의 법정대리인이나 위임을 받은 자를 통해서도 가능합니다.</p>
+        <h4>8. 개인정보의 파기</h4>
+        <p>회사는 개인정보 처리목적이 달성된 경우 지체없이 해당 개인정보를 파기합니다. 전자적 파일 형태의 정보는 기록을 재생할 수 없는 기술적 방법으로, 종이에 출력된 개인정보는 분쇄 또는 소각을 통하여 파기합니다.</p>
+        <h4>9. 개인정보의 안전성 확보 조치</h4>
+        <p>회사는 개인정보보호법 제29조에 따라 개인정보 취급 직원의 최소화 및 교육, 정기적인 자체 감사(분기 1회), 내부관리계획의 수립·시행, 개인정보 암호화, 해킹 등에 대비한 기술적 대책, 접근 권한 제한, 접속기록 보관(최소 6개월) 및 위변조 방지, 문서보안을 위한 잠금장치 사용, 비인가자 출입 통제 등 기술적·관리적·물리적 조치를 시행하고 있습니다.</p>
+        <h4>10. 개인정보 보호책임자</h4>
+        <p>회사는 개인정보 처리에 관한 업무를 총괄해서 책임지는 개인정보 보호책임자를 지정하고 있으며, 서비스 이용 중 발생한 개인정보 관련 문의·불만처리·피해구제 등은 개인정보 보호책임자 및 담당부서로 문의하실 수 있습니다.</p>
+        <h4>11. 개인정보 처리방침 변경</h4>
+        <p>이 개인정보처리방침은 시행일로부터 적용되며, 법령 및 방침에 따른 변경사항이 있는 경우 시행 7일 전부터 공지사항을 통해 고지합니다.</p>
+    </div>
   </div>
 </div>
 
@@ -618,6 +743,40 @@ document.querySelectorAll('.field input').forEach(inp=>{
 });
 
 /* ===================== STEP 6. 신청 제출 (Supabase leads 동일 스키마) ===================== */
+/* ===================== 개인정보 동의 ===================== */
+function isChecked(id){ return document.getElementById(id)?.classList.contains('on'); }
+function updateChkAllIco(){
+  const all=isChecked('chk1')&&isChecked('chk2')&&isChecked('chk3');
+  document.getElementById('chkAllIco').classList.toggle('on',all);
+  document.getElementById('chkAllIco').textContent=all?'✓':'';
+}
+window.toggleChk=function(id){
+  const el=document.getElementById(id);
+  const on=el.classList.toggle('on');
+  el.textContent=on?'✓':'';
+  document.getElementById('agreeWarn').style.display='none';
+  updateChkAllIco();
+};
+window.toggleAgreeAll=function(){
+  const allOn=isChecked('chk1')&&isChecked('chk2')&&isChecked('chk3');
+  const next=!allOn;
+  ['chk1','chk2','chk3'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.classList.toggle('on',next);
+    el.textContent=next?'✓':'';
+  });
+  document.getElementById('chkAllIco').classList.toggle('on',next);
+  document.getElementById('chkAllIco').textContent=next?'✓':'';
+  document.getElementById('agreeWarn').style.display='none';
+};
+window.toggleDetail=function(id){
+  const box=document.getElementById(id);
+  const num=id.replace('detail','');
+  const btn=document.getElementById('btn-detail'+num);
+  const isOpen=box.classList.toggle('on');
+  if(btn) btn.textContent=isOpen?'접기':'자세히';
+};
+
 window.submitForm=async function(){
   const name=document.getElementById('fName').value.trim();
   const birth=document.getElementById('fBirth').value.trim();
@@ -625,6 +784,12 @@ window.submitForm=async function(){
   const time=document.getElementById('fTime').value;
   if(!name||!phone||!time){alert('이름, 연락처, 상담 희망 시간은 필수입니다.');return;}
   if(!sel.device||!sel.carrier||!sel.plan){alert('기기, 통신사, 요금제를 모두 선택해 주세요.');return;}
+  if(!isChecked('chk1')||!isChecked('chk2')){
+    document.getElementById('agreeWarn').style.display='block';
+    document.querySelector('.agree-box').scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  const marketingAgreed=isChecked('chk3');
   const btn=document.getElementById('subBtn');
   btn.disabled=true; btn.textContent='신청 중...';
   try{
