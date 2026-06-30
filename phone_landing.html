@@ -330,6 +330,10 @@ function renderDevices(){
   const list=devices.filter(d=>d.category===curBrand);
   document.getElementById('devList').innerHTML=list.map(d=>{
     const repPrice=d.storageList?.[0]?.price||0;
+    const best=bestPriceForDevice(d);
+    const priceHtml=best
+      ? `<span class="dev-price"><del style="color:var(--g400);font-weight:500;font-size:11.5px">${repPrice.toLocaleString()}원</del> ${best.price.toLocaleString()}원~ <span style="background:var(--or);color:#fff;font-size:10px;font-weight:800;padding:1px 6px;border-radius:4px;margin-left:2px">${best.pct}% 할인</span></span>`
+      : `<span class="dev-price">${repPrice.toLocaleString()}원~</span>`;
     const isOn=sel.device?.id===d.id;
     return `
     <div class="dev-card ${isOn?'on':''}" onclick="selDevice('${d.id}')">
@@ -338,7 +342,7 @@ function renderDevices(){
         ${d.img?`<img class="dev-img" src="${d.img}">`:'<div class="dev-img"></div>'}
         <div class="dev-info">
           <div class="dev-name">${d.name}</div>
-          <div class="dev-price">${repPrice.toLocaleString()}원~</div>
+          ${priceHtml}
         </div>
         <div class="dev-arrow">▾</div>
       </div>
@@ -392,7 +396,13 @@ window.selCarrier=function(c){
 }
 
 /* ===================== STEP 3. 요금제 ===================== */
-function findBonus(plangroup){ return bonusData[String(plangroup)]||null; }
+/* 휴대폰 단독랜딩 전용: '인터넷' 혜택은 올인원(결합) 전용이라 여기서는 제외하고 보여줌 (원본 bonusPlans 데이터는 안 건드림) */
+function findBonus(plangroup){
+  const bd=bonusData[String(plangroup)];
+  if(!bd) return null;
+  const items=(bd.items||[]).filter(i=>i.id!=='internet');
+  return{...bd,items};
+}
 
 function renderPlans(){
   document.getElementById('planList').innerHTML=plans.map(p=>{
@@ -431,10 +441,7 @@ function renderBonusCallout(){
 }
 
 /* ===================== STEP 4. 혜택 계산 (공시지원금 고정, 정책 매칭은 유닥과 동일 로직) ===================== */
-function matchPolicy(){
-  if(!sel.plan||!sel.carrier||!sel.jointype) return null;
-  const pg=Math.floor(sel.plan.monthlyPrice/1000).toString();
-  const jt=sel.jointype,ca=sel.carrier;
+function findPolicyFor(jt, ca, pg, devId, storageName){
   const fns=[
     p=>p.jointype===jt&&p.carrier!=='all'&&p.carrier?.includes(ca)&&p.plangroup===pg,
     p=>p.jointype===jt&&p.carrier==='all'&&p.plangroup===pg,
@@ -448,16 +455,41 @@ function matchPolicy(){
   for(const fn of fns){
     const f=policies.find(fn);
     if(f){
-      if(sel.device&&(f.excludedDevs||[]).includes(sel.device.id)) continue;
-      if(sel.device&&f.deviceOverrides?.[sel.device.id]){
-        const devOv=f.deviceOverrides[sel.device.id];
-        if(sel.storage&&devOv[sel.storage.name]) return{...f,...devOv[sel.storage.name]};
+      if(devId&&(f.excludedDevs||[]).includes(devId)) continue;
+      if(devId&&f.deviceOverrides?.[devId]){
+        const devOv=f.deviceOverrides[devId];
+        if(storageName&&devOv[storageName]) return{...f,...devOv[storageName]};
         if(devOv.pubSupport!==undefined) return{...f,...devOv};
       }
       return f;
     }
   }
   return null;
+}
+function matchPolicy(){
+  if(!sel.plan||!sel.carrier||!sel.jointype) return null;
+  const pg=Math.floor(sel.plan.monthlyPrice/1000).toString();
+  return findPolicyFor(sel.jointype, sel.carrier, pg, sel.device?.id, sel.storage?.name);
+}
+/* 기기 목록에 보여줄 "가장 유리한 조건" 최저 실부담가 계산 */
+function bestPriceForDevice(d){
+  const storage=d.storageList?.[0];
+  if(!storage||!storage.price) return null;
+  let best=null;
+  plans.forEach(p=>{
+    const pg=Math.floor(p.monthlyPrice/1000).toString();
+    [['번호이동','SKT'],['기기변경','LG U+']].forEach(([jt,ca])=>{
+      const pol=findPolicyFor(jt,ca,pg,d.id,storage.name);
+      if(!pol) return;
+      const mainDisc=pol.pubSupport||0;
+      const extra=(pol.rebate||0)+(pol.distribution||0)+(pol.structure||0)+(pol.extraPolicy||0);
+      const real=Math.max(0,storage.price-mainDisc-extra);
+      if(best===null||real<best) best=real;
+    });
+  });
+  if(best===null) return null;
+  const pct=storage.price>0?Math.round((1-best/storage.price)*100):0;
+  return{price:best,pct};
 }
 function calc(){
   const lp=sel.storage?.price||sel.device?.storageList?.[0]?.price||0;
