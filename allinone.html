@@ -319,8 +319,8 @@ a{text-decoration:none;color:inherit}
   <div>
     <div class="hero">
       <div class="hero-badge"><span style="color:#e4005f;font-weight:800">U+</span> 올인원</div>
-      <div class="hero-title">월 7만원대로<br>핸드폰+인터넷 요금을 한 번에 해결!</div>
-      <div class="hero-sub">30초 안에 내 혜택 바로 확인하세요 👇</div>
+      <div class="hero-title">U+로 통신사 옮기고,<br>월 7만원대로 핸드폰+인터넷 요금 한 번에!<br><span style="font-size:0.75em;color:#c2410c">게다가 현금 30만원까지?</span></div>
+      <div class="hero-sub">지금 바로 확인해보세요 👇</div>
     </div>
 
     <!-- 안내 문구 -->
@@ -354,7 +354,7 @@ a{text-decoration:none;color:inherit}
         </div>
       </div>
       <!-- STEP 3: 진행방식 -->
-      <div class="step-card locked" id="sc_jt" onclick="openMo('jt')">
+      <div class="step-card locked" id="sc_jt" onclick="openMo('jt')" style="display:none">
         <div class="step-card-inner">
           <div class="step-num">3</div>
           <div class="step-info">
@@ -389,7 +389,7 @@ a{text-decoration:none;color:inherit}
     </div>
 
     <!-- 할인방식 선택 -->
-    <div class="disc-card" id="discCard">
+    <div class="disc-card" id="discCard" style="display:none">
       <div class="disc-ttl">💳 할인 방식 선택</div>
       <div class="disc-btns" id="discBtns">
         <button class="disc-btn" id="dbPub" onclick="selDisc('pub')">공시지원금<br><small style="font-size:10px;font-weight:500;opacity:.8">유닥만의 특별 지원금 할인 받기</small></button>
@@ -399,7 +399,7 @@ a{text-decoration:none;color:inherit}
 
     <!-- 요금제 스텝카드 -->
     <div class="step-cards">
-      <div class="step-card locked" id="sc_plan" onclick="openMo('plan')">
+      <div class="step-card locked" id="sc_plan" onclick="openMo('plan')" style="display:none">
         <div class="step-card-inner">
           <div class="step-num" id="sn_plan">4</div>
           <div class="step-info">
@@ -412,7 +412,7 @@ a{text-decoration:none;color:inherit}
     </div>
 
     <!-- 결합 인원 -->
-    <div class="mem-card" id="memCard">
+    <div class="mem-card" id="memCard" style="display:none">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
         <div class="mem-ttl" style="margin-bottom:0">👨‍👩‍👧‍👦 가족 결합 인원</div>
         <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--g400);font-weight:600">
@@ -1116,6 +1116,46 @@ function applyVisiblePlans(plans) {
   renderPlanDetail(firstPrice);
 }
 
+
+/* ════ 자동 완료 + 폼 스크롤 ════ */
+function autoCompleteAndScroll() {
+  // 유심 선택
+  S.jt = 'usim';
+  setSum('jt', '유심만 변경');
+  unlock('sc_jt');
+  // 선택약정 자동
+  S.disc = 'sel';
+  setSum('disc', '선택약정');
+  unlock('sc_disc');
+  unlock('sc_plan');
+  // 요금제 95 자동
+  selPlanTab(95000);
+  currentPlanTab = 95000;
+  // 인터넷 혜택 자동 체크
+  setTimeout(function(){
+    var inetKey = '🏠 우리집 인터넷 요금 면제';
+    var bonusItems = document.getElementById('bonusItems');
+    if (bonusItems && bonusItems.children.length > 0) {
+      var firstItem = bonusItems.querySelector('.bonus-item-btn');
+      if (firstItem && !firstItem.classList.contains('on')) firstItem.click();
+    } else {
+      // 직접 bonus 설정
+      if (!window._inetLGUP) {
+        S.bonus = S.bonus || {};
+        S.bonus[inetKey] = true;
+        updateBonusSummary();
+      }
+    }
+    // 요금 계산
+    calcFee();
+    // 폼으로 스크롤
+    setTimeout(function(){
+      var fw = document.getElementById('formWrap');
+      if (fw) fw.scrollIntoView({behavior:'smooth', block:'start'});
+    }, 400);
+  }, 200);
+}
+
 /* ════ 모달 ════ */
 function openMo(type) {
   var el = document.getElementById("mo_" + type);
@@ -1251,7 +1291,7 @@ function sel(type, val) {
         var inetNewWrap = document.getElementById('inet_new_wrap');
         if (inetNewWrap) inetNewWrap.style.display = 'none';
         unlock("sc_jt");
-        setTimeout(function(){ closeMo(); setTimeout(function(){ openMo('jt'); }, 300); }, 200);
+        setTimeout(function(){ closeMo(); setTimeout(function(){ autoCompleteAndScroll(); }, 300); }, 200);
       } else {
         // 타사폰 + 타사인터넷 → 신규가입 여부 질문 표시 (어드민 ON일 때만)
         if (usimBtn) usimBtn.style.display = '';
@@ -2093,7 +2133,7 @@ function lguInetNewConfirm(isNew) {
   }
   unlock("sc_jt");
   closeMo();
-  setTimeout(function(){ openMo('jt'); }, 300);
+  setTimeout(function(){ autoCompleteAndScroll(); }, 300);
 }
 function lguWarnConfirm() {
   document.getElementById('lgu_warn').style.display = 'none';
@@ -2112,7 +2152,7 @@ function lguWarnConfirm() {
   }
   unlock("sc_jt");
   closeMo();
-  setTimeout(function(){ openMo('jt'); }, 300);
+  setTimeout(function(){ autoCompleteAndScroll(); }, 300);
 }
 function selInetNew(isNew) {
   var inetNewWrap = document.getElementById('inet_new_wrap');
@@ -2150,7 +2190,7 @@ function selInetNew(isNew) {
     }
   }
   unlock("sc_jt");
-  setTimeout(function(){ closeMo(); setTimeout(function(){ openMo('jt'); }, 300); }, 400);
+  setTimeout(function(){ closeMo(); setTimeout(function(){ autoCompleteAndScroll(); }, 300); }, 400);
 }
 // ── 상담 시간 피커
 var _timeOptions = ['오전 10시','오전 11시','오후 12시','오후 1시','오후 2시','오후 3시','오후 4시','오후 5시','오후 6시','오후 7시','오후 8시','언제든지 가능'];
