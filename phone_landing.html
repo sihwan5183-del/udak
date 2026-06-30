@@ -414,7 +414,7 @@ function renderDevices(){
             <span class="color-sw" style="background:${hex}"></span><span>${label||''}</span>
           </div>`;
         }).join('')}</div>
-        ${isOn?`<button class="color-confirm-btn" onclick="event.stopPropagation();confirmDeviceSelection()">선택 완료 → 통신사 선택하기</button>`:''}
+        ${isOn?`<button class="color-confirm-btn" onclick="event.stopPropagation();confirmDeviceSelection()">선택 완료</button>`:''}
       </div>
     </div>`;
   }).join('') || '<div style="font-size:13px;color:var(--g400);padding:20px 0;text-align:center">표시할 기기가 없어요</div>';
