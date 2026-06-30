@@ -671,7 +671,7 @@ a{text-decoration:none;color:inherit}
   <div class="mo-handle"></div>
   <div class="mo-head"><span class="mo-title">요금제 선택</span><button class="mo-close" onclick="closeMo()">×</button></div>
   <div class="plan-tabs" id="planTabsWrap" style="padding:0 20px 12px;flex-shrink:0;grid-template-columns:repeat(1,1fr)">
-    <button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>
+    <button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">올인원 요금제</button>
   </div>
   <div class="mo-body" style="flex:1;overflow-y:auto">
     <div class="plan-detail" id="planDetail"></div>
@@ -765,7 +765,7 @@ var PLAN_FEATS = {
       ]
   },
   95000: {
-    name: "플러스플랜 95",
+    name: "올인원 요금제",
     icon: "<img src=\"./files/u__.png\" style=\"height:52px;width:auto;vertical-align:middle\">",
     feats: [
       {icon:"♾️", name:"데이터 무제한", device:"", monthly:""},
@@ -806,7 +806,7 @@ var PLAN_FEATS_LGUP = {
       ]
   },
   95000: {
-    name: "플러스플랜 95",
+    name: "올인원 요금제",
     icon: "<img src=\"./files/u__.png\" style=\"height:52px;width:auto;vertical-align:middle\">",
     feats: [
       {icon:"♾️", name:"데이터 무제한", device:"", monthly:""}
@@ -1097,7 +1097,7 @@ function applyVisiblePlans(plans) {
   var tw = document.getElementById('planTabsWrap');
   if (!tw) return;
   var allPlanDefs = [
-    {price:95000, label:'플러스플랜95'},
+    {price:95000, label:'올인원 요금제'},
     {price:115000, label:'플러스플랜115'},
     {price:130000, label:'플러스플랜130'}
   ];
@@ -1241,7 +1241,7 @@ function sel(type, val) {
         // 탭 4개 (85포함)
         if (tw) {
           tw.style.gridTemplateColumns = 'repeat(1,1fr)';
-          tw.innerHTML = '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>';
+          tw.innerHTML = '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">올인원 요금제</button>';
         }
         setTimeout(function(){ selPlanTab(95000); }, 50);
       } else {
@@ -1250,7 +1250,7 @@ function sel(type, val) {
         if (planBtn) planBtn.style.display = 'none';
         if (tw) {
           tw.style.gridTemplateColumns = 'repeat(1,1fr)';
-          tw.innerHTML = '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>';
+          tw.innerHTML = '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">올인원 요금제</button>';
         }
         setTimeout(function(){ selPlanTab(95000); }, 50);
       }
@@ -1276,7 +1276,7 @@ function sel(type, val) {
       // 탭 3개 (85제외)
       if (tw) {
         tw.style.gridTemplateColumns = 'repeat(1,1fr)';
-        tw.innerHTML = '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>';
+        tw.innerHTML = '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">올인원 요금제</button>';
       }
       document.getElementById("lgu_warn").style.display = "none";
 
@@ -1787,13 +1787,13 @@ function renderBonusSec() {
     items.innerHTML = '<div style="background:#f0f4ff;border:1.5px solid #c7d4f8;border-radius:12px;padding:16px;text-align:center">' +
       '<div style="font-size:13px;font-weight:800;color:#1a237e;margin-bottom:8px">📊 잠깐! 요금제를 비교해보세요.</div>' +
       '<div style="font-size:12px;color:#374151;line-height:1.8;margin-bottom:14px">' +
-      '플러스플랜95 <span style="color:#dc2626;font-weight:700">(월 +10,000원)</span><br>' +
+      '올인원 요금제 <span style="color:#dc2626;font-weight:700">(월 +10,000원)</span><br>' +
       '→ 인터넷 요금 <strong>월 33,000원 면제</strong><br>' +
       '<span style="color:#1a237e;font-weight:800">한 달만 써도 이득이에요!</span>' +
       '</div>' +
       '<button onclick="openMo(\'plan\');setTimeout(function(){selPlanTab(95000);},300)" ' +
       'style="width:100%;padding:12px;background:#1a237e;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">' +
-      '👆 플러스플랜95로 변경하기</button>' +
+      '👆 올인원 요금제로 변경하기</button>' +
       '</div>';
     return;
   }
@@ -2128,7 +2128,7 @@ function lguInetNewConfirm(isNew) {
   }
   if (tw) {
     tw.style.gridTemplateColumns = 'repeat(1,1fr)';
-    tw.innerHTML = '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>';
+    tw.innerHTML = '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">올인원 요금제</button>';
     setTimeout(function(){ selPlanTab(95000); }, 50);
   }
   unlock("sc_jt");
@@ -2176,7 +2176,7 @@ function selInetNew(isNew) {
     if (usimBtn) usimBtn.style.display = '';
     if (tw) {
       tw.style.gridTemplateColumns = 'repeat(1,1fr)';
-      tw.innerHTML = '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>';
+      tw.innerHTML = '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">올인원 요금제</button>';
     }
   } else {
     // 신규가입 X → 인터넷 면제 X, 95만
@@ -2185,7 +2185,7 @@ function selInetNew(isNew) {
     if (usimBtn) usimBtn.style.display = '';
     if (tw) {
       tw.style.gridTemplateColumns = 'repeat(1,1fr)';
-      tw.innerHTML = '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">플러스플랜95</button>';
+      tw.innerHTML = '<button class="plan-tab on" onclick="selPlanTab(95000)" id="pt_95000">올인원 요금제</button>';
       setTimeout(function(){ selPlanTab(95000); }, 50);
     }
   }
