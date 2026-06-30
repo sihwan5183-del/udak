@@ -1092,7 +1092,7 @@ window.saveTexts = async function(){
     if(f.type==='toggle'){
       data[f.key] = el.checked; // boolean
     } else {
-      data[f.key] = el.value.trim() || f.def;
+      data[f.key] = el.value.trim();
     }
   });
   try{
