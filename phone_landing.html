@@ -458,10 +458,10 @@ let curBrand='';
 let brandVis={};
 
 const TEXT_DEFAULTS={
-  bannerImg:'',
+  bannerImg:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/phone_landing_banner.png',
   bannerLink:'',
-  bannerTitle:'내 조건에 맞는 휴대폰 혜택 한눈에 확인',
-  bannerSub:'복잡한 조건 없이, 쉽고 투명하게 비교해요',
+  bannerTitle:'',
+  bannerSub:'',
   phoneCheck1:'6개월 뒤 자유롭게 47,000원 이상 요금제로 변경할 수 있습니다.',
 };
 
@@ -504,6 +504,8 @@ function applyTexts(){
   if(texts.bannerLink){ link.href=texts.bannerLink; link.target='_blank'; } else { link.removeAttribute('href'); }
   document.getElementById('bannerTitle').textContent=texts.bannerTitle||'';
   document.getElementById('bannerSub').textContent=texts.bannerSub||'';
+  const overlay=document.querySelector('.banner-overlay');
+  if(overlay) overlay.style.display=(texts.bannerTitle||texts.bannerSub)?'block':'none';
 }
 
 /* ===================== STEP 1. 브랜드/기기 (어드민 category 필드 기준) ===================== */
