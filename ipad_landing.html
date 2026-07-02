@@ -452,12 +452,8 @@ async function submitForm() {
     document.getElementById('fName').value = '';
     document.getElementById('fBirth').value = '';
     document.getElementById('fPhone').value = '';
-    selected.phone = '';
-    selected.watch = '';
     privacyAgreed = false;
     document.getElementById('privacyCheck').classList.remove('on');
-    document.getElementById('accPhoneVal').textContent = '';
-    document.getElementById('accWatchVal').textContent = '';
 
   } catch (e) {
     alert('오류가 발생했습니다. 다시 시도해주세요.');
