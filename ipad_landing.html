@@ -229,47 +229,6 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
         <input class="fi" id="fPhone" type="tel" placeholder="- 없이 숫자만 입력해주세요. (예: 01012345678)" inputmode="numeric">
       </div>
 
-      <!-- 핸드폰 아코디언 -->
-      <div class="fg">
-        <label class="flbl">(선택사항) 원하는 핸드폰</label>
-        <div class="accordion" id="accPhone">
-          <div class="accordion-header" onclick="toggleAcc('accPhone')">
-            <span>기종 선택</span>
-            <div style="display:flex;align-items:center;gap:6px">
-              <span class="selected-val" id="accPhoneVal"></span>
-              <span class="accordion-arrow" id="accPhoneArrow">▼</span>
-            </div>
-          </div>
-          <div class="accordion-body" id="accPhoneBody">
-            <div class="acc-none" onclick="selectAcc('accPhone','')">선택 안함</div>
-            <div class="acc-option" onclick="selectAcc('accPhone','갤럭시 S26')">갤럭시 S26</div>
-            <div class="acc-option" onclick="selectAcc('accPhone','갤럭시 S26+')">갤럭시 S26+</div>
-            <div class="acc-option" onclick="selectAcc('accPhone','갤럭시 S26 Ultra')">갤럭시 S26 Ultra</div>
-            <div class="acc-option" onclick="selectAcc('accPhone','iPhone 17')">iPhone 17</div>
-            <div class="acc-option" onclick="selectAcc('accPhone','iPhone 17 Pro')">iPhone 17 Pro</div>
-            <div class="acc-option" onclick="selectAcc('accPhone','iPhone 17 Pro Max')">iPhone 17 Pro Max</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 스마트워치 아코디언 -->
-      <div class="fg">
-        <label class="flbl">(선택사항) 원하는 스마트 워치</label>
-        <div class="accordion" id="accWatch">
-          <div class="accordion-header" onclick="toggleAcc('accWatch')">
-            <span>기종 선택</span>
-            <div style="display:flex;align-items:center;gap:6px">
-              <span class="selected-val" id="accWatchVal"></span>
-              <span class="accordion-arrow" id="accWatchArrow">▼</span>
-            </div>
-          </div>
-          <div class="accordion-body" id="accWatchBody">
-            <div class="acc-none" onclick="selectAcc('accWatch','')">선택 안함</div>
-            <div class="acc-option" onclick="selectAcc('accWatch','Apple Watch')">Apple Watch</div>
-            <div class="acc-option" onclick="selectAcc('accWatch','갤럭시 워치')">갤럭시 워치</div>
-          </div>
-        </div>
-      </div>
 
       <div class="privacy-row">
         <div class="privacy-check" onclick="togglePrivacy()">
