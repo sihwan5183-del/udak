@@ -619,13 +619,7 @@ window.selDevice=function(id){
   renderDevices(); calc();
   if(!wasOn){
     if(typeof gtag==='function') gtag('event','select_device',{device_name:sel.device?.name||''});
-    setTimeout(()=>{
-      const el=document.getElementById('devcard-'+id);
-      if(el){
-        const y=el.getBoundingClientRect().top+window.scrollY-12;
-        smoothScrollTo(y);
-      }
-    },280);
+    setTimeout(()=>{ scrollToStep('step2'); },300);
   }
 }
 window.selStorage=function(devId,name){
