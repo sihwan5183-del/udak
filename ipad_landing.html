@@ -114,11 +114,6 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
   .btn-submit{height:52px;font-size:16px;border-radius:10px}
 }
 
-/* 통신사 버튼 */
-.carrier-btn{padding:12px 8px;background:#1a1a1a;border:1.5px solid #2a2a2a;border-radius:8px;font-size:14px;font-weight:600;color:#888;text-align:center;cursor:pointer;transition:all .15s}
-.carrier-btn:hover{border-color:#F97316;color:#fff}
-.carrier-btn.on{background:#F97316;border-color:#F97316;color:#fff;font-weight:900}
-
 /* 완료 모달 */
 .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
 .modal-ov.on{opacity:1;pointer-events:auto}
@@ -297,13 +292,43 @@ src="https://www.facebook.com/tr?id=921171610476690&ev=PageView&noscript=1"
 
       <div class="fg">
         <label class="flbl">현재 사용하고 있는 통신사 <em>*</em></label>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="carrierGroup">
-          <div class="carrier-btn" onclick="selectCarrier('LG U+')">LG U+</div>
-          <div class="carrier-btn" onclick="selectCarrier('SKT')">SKT</div>
-          <div class="carrier-btn" onclick="selectCarrier('KT')">KT</div>
-          <div class="carrier-btn" onclick="selectCarrier('알뜰폰')">알뜰폰</div>
+        <div class="accordion" id="accCarrier">
+          <div class="accordion-header" onclick="toggleAcc('accCarrier')">
+            <span>통신사 선택</span>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span class="selected-val" id="accCarrierVal"></span>
+              <span class="accordion-arrow" id="accCarrierArrow">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body" id="accCarrierBody">
+            <div class="acc-option" onclick="selectCarrierAcc('LG U+')">LG U+</div>
+            <div class="acc-option" onclick="selectCarrierAcc('SKT')">SKT</div>
+            <div class="acc-option" onclick="selectCarrierAcc('KT')">KT</div>
+            <div class="acc-option" onclick="selectCarrierAcc('알뜰폰')">알뜰폰</div>
+          </div>
         </div>
         <input type="hidden" id="fCarrier">
+      </div>
+
+      <div class="fg">
+        <label class="flbl">집에서 사용 중인 인터넷 통신사 <em>*</em></label>
+        <div class="accordion" id="accInternet">
+          <div class="accordion-header" onclick="toggleAcc('accInternet')">
+            <span>인터넷 통신사 선택</span>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span class="selected-val" id="accInternetVal"></span>
+              <span class="accordion-arrow" id="accInternetArrow">▼</span>
+            </div>
+          </div>
+          <div class="accordion-body" id="accInternetBody">
+            <div class="acc-option" onclick="selectInternetAcc('LG U+')">LG U+</div>
+            <div class="acc-option" onclick="selectInternetAcc('SKT')">SKT</div>
+            <div class="acc-option" onclick="selectInternetAcc('KT')">KT</div>
+            <div class="acc-option" onclick="selectInternetAcc('알뜰폰')">알뜰폰</div>
+            <div class="acc-option" onclick="selectInternetAcc('없음')">없음</div>
+          </div>
+        </div>
+        <input type="hidden" id="fInternet">
       </div>
 
       <div class="fg">
@@ -448,12 +473,24 @@ document.getElementById('fBirth').addEventListener('input', function() {
   this.value = this.value.replace(/\D/g, '').slice(0, 8);
 });
 
-// 통신사 선택
-function selectCarrier(val) {
+// 통신사 아코디언 선택
+function selectCarrierAcc(val) {
   document.getElementById('fCarrier').value = val;
-  document.querySelectorAll('.carrier-btn').forEach(el => {
-    el.classList.toggle('on', el.textContent === val);
+  document.getElementById('accCarrierVal').textContent = val;
+  document.querySelectorAll('#accCarrierBody .acc-option').forEach(el => {
+    el.classList.toggle('selected', el.textContent.trim() === val);
   });
+  document.getElementById('accCarrierBody').classList.remove('open');
+  document.getElementById('accCarrierArrow').classList.remove('open');
+}
+function selectInternetAcc(val) {
+  document.getElementById('fInternet').value = val;
+  document.getElementById('accInternetVal').textContent = val;
+  document.querySelectorAll('#accInternetBody .acc-option').forEach(el => {
+    el.classList.toggle('selected', el.textContent.trim() === val);
+  });
+  document.getElementById('accInternetBody').classList.remove('open');
+  document.getElementById('accInternetArrow').classList.remove('open');
 }
 
 // 제출
@@ -499,6 +536,7 @@ async function submitForm() {
         phone: phone.replace(/\D/g, ''),
         channel: '유닥',
         current_carrier: document.getElementById('fCarrier').value || null,
+        memo: document.getElementById('fInternet').value ? `인터넷통신사: ${document.getElementById('fInternet').value}` : null,
         created_at: new Date().toISOString()
       })
     });
