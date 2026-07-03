@@ -470,7 +470,7 @@ async function submitForm() {
         birth: birth || null,
         phone: phone.replace(/\D/g, ''),
         channel: '유닥',
-        memo: `통신사: ${document.getElementById('fCarrier').value}`,
+        current_carrier: document.getElementById('fCarrier').value || null,
         desired_device: selected.phone || null,
         additional_benefits: selected.watch || null,
         created_at: new Date().toISOString()
