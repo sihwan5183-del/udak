@@ -476,14 +476,8 @@ async function submitForm() {
   const BLACKLIST_PHONES = ['01039751390', '0103975-1390', '010-3975-1390'];
   const BLACKLIST_NAMES = ['임성기'];
   const phoneRawCheck = phone.replace(/\D/g, '');
-  if (BLACKLIST_PHONES.some(p => p.replace(/\D/g, '') === phoneRawCheck)) {
-    alert('신청이 불가한 번호입니다.');
-    btn.disabled = false;
-    btn.textContent = originalBtnText;
-    return;
-  }
-  if (BLACKLIST_NAMES.some(n => name.includes(n))) {
-    alert('신청이 불가합니다.');
+  if (BLACKLIST_PHONES.some(p => p.replace(/\D/g, '') === phoneRawCheck) || BLACKLIST_NAMES.some(n => name.includes(n))) {
+    document.getElementById('doneModal').classList.add('on');
     btn.disabled = false;
     btn.textContent = originalBtnText;
     return;
