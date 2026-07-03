@@ -430,10 +430,13 @@ function closePrivacyModal(agree) {
 function toggleAcc(id) {
   const body = document.getElementById(id + 'Body');
   const arrow = document.getElementById(id + 'Arrow');
+  if (!body || !arrow) return;
   const isOpen = body.classList.contains('open');
-  ['accPhone','accWatch'].forEach(a => {
-    document.getElementById(a+'Body').classList.remove('open');
-    document.getElementById(a+'Arrow').classList.remove('open');
+  ['accCarrier','accInternet'].forEach(a => {
+    const b = document.getElementById(a+'Body');
+    const ar = document.getElementById(a+'Arrow');
+    if (b) b.classList.remove('open');
+    if (ar) ar.classList.remove('open');
   });
   if (!isOpen) {
     body.classList.add('open');
