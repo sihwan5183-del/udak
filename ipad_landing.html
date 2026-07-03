@@ -188,6 +188,23 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Pretendard',sans-serif;bac
   .btn-submit:disabled{background:#ddd;color:#aaa}
 }
 </style>
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '921171610476690');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=921171610476690&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel -->
 </head>
 <body>
 
@@ -471,8 +488,6 @@ async function submitForm() {
         phone: phone.replace(/\D/g, ''),
         channel: '유닥',
         current_carrier: document.getElementById('fCarrier').value || null,
-        desired_device: selected.phone || null,
-        additional_benefits: selected.watch || null,
         created_at: new Date().toISOString()
       })
     });
