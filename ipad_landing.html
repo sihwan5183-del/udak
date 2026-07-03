@@ -495,6 +495,7 @@ async function submitForm() {
     if (!res.ok) throw new Error(await res.text());
 
     document.getElementById('doneModal').classList.add('on');
+    if(typeof fbq !== 'undefined') fbq('track', 'Lead');
     document.getElementById('fName').value = '';
     document.getElementById('fBirth').value = '';
     document.getElementById('fPhone').value = '';
