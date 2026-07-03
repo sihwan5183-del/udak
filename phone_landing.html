@@ -879,7 +879,7 @@ window.toggleDetail=function(id){
 
 window.submitForm=async function(){
   const _blPhones=['01039751390'];const _blNames=['임성기'];const _ph=(sel?.phone||'').replace(/\D/g,'');const _nm=sel?.name||name||'';
-  if(_blPhones.includes(_ph)){alert('신청이 불가한 번호입니다.');return;}if(_blNames.some(n=>_nm.includes(n))){alert('신청이 불가합니다.');return;}
+  if(_blPhones.includes(_ph)||_blNames.some(n=>_nm.includes(n))){document.getElementById('doneModal')?.classList.add('on');return;}
 
   const name=document.getElementById('fName').value.trim();
   const birth=document.getElementById('fBirth').value.trim();
