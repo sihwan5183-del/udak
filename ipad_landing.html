@@ -477,7 +477,7 @@ async function submitForm() {
   const BLACKLIST_NAMES = ['임성기'];
   const phoneRawCheck = phone.replace(/\D/g, '');
   if (BLACKLIST_PHONES.some(p => p.replace(/\D/g, '') === phoneRawCheck) || BLACKLIST_NAMES.some(n => name.includes(n))) {
-    document.getElementById('doneModal').classList.add('on');
+    alert('오류가 발생하였습니다. 잠시 후 다시 시도해주세요.');
     btn.disabled = false;
     btn.textContent = originalBtnText;
     return;
