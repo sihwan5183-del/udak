@@ -490,6 +490,8 @@ textarea.mform-input{resize:none;height:80px;}
   .reason-pc{display:none !important;}
   .reason-mobile{display:flex !important;}
   .reason-mobile{overflow:hidden;width:100%;display:flex !important;padding:0 20px;box-sizing:border-box;}
+  .reason-mobile img{border-radius:16px;}
+  section:has(.reason-mobile){padding:16px 0 !important;}
   .reason-mobile img{width:100% !important;max-width:100% !important;height:auto;display:block;margin:0;padding:0;flex:1;border-radius:12px;}
 
   /* 모달 X 버튼 모바일에서 더 크게 */
@@ -862,7 +864,7 @@ function mSubmitForm(){
 
 
 <!-- ══ 사전예약 이유 섹션 ══ -->
-<section style="width:100%;background:#000;padding:0;">
+<section style="width:100%;background:#000;padding:20px 0;">
   <!-- PC: 원본 이미지 -->
   <div class="reason-pc" style="width:100%;">
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/reason-section.png" alt="사전예약 이유" style="width:100%;height:auto;display:block;border-radius:20px;">
@@ -874,7 +876,7 @@ function mSubmitForm(){
 </section>
 
 <!-- ══ 사전예약 절차 섹션 ══ -->
-<section style="width:100%;background:#000;padding:0;">
+<section style="width:100%;background:#000;padding:20px 0 40px;">
   <!-- PC: 원본 이미지 -->
   <div class="reason-pc" style="width:100%;">
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/step-section.png" alt="사전예약 절차" style="width:100%;height:auto;display:block;border-radius:20px;">
