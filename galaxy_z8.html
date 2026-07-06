@@ -473,43 +473,51 @@ textarea.mform-input{resize:none;height:80px;}
   width:100%;max-width:1100px;
   position:relative;border-radius:20px;overflow:hidden;
 }
-.reason-img-wrap img{
+.reason-img-wrap > img{
   width:100%;height:auto;display:block;
 }
-/* 텍스트 오버레이 - 4개 카드 위치에 */
+/* 텍스트 오버레이 그리드 */
 .reason-overlays{
-  position:absolute;inset:0;
+  position:absolute;
+  /* 이미지 타이틀 영역(약 30%) 아래부터 */
+  top:30%;bottom:2%;left:0;right:0;
   display:grid;
   grid-template-columns:1fr 1fr;
   grid-template-rows:1fr 1fr;
-  /* 이미지 상단 타이틀 영역 제외 */
-  padding:28% 4% 4%;
-  gap:2%;
+  gap:0;
 }
 .reason-card-text{
   display:flex;flex-direction:column;
-  justify-content:flex-start;
-  padding:4% 6% 4% 42%;
+  justify-content:center;
+  /* 카드 내 이미지(왼쪽 38%) 제외한 오른쪽 텍스트 영역 */
+  padding:3% 5% 3% 38%;
 }
 .reason-card-title{
-  font-size:clamp(14px,1.8vw,22px);
+  font-size:clamp(13px,1.6vw,20px);
   font-weight:800;color:#fff;
-  line-height:1.2;margin-bottom:6px;
-  text-shadow:0 2px 8px rgba(0,0,0,.8);
+  line-height:1.25;margin-bottom:5px;
+  text-shadow:0 2px 8px rgba(0,0,0,.9);
 }
 .reason-card-body{
-  font-size:clamp(10px,1.1vw,14px);
-  color:rgba(255,255,255,.85);
-  line-height:1.6;
-  text-shadow:0 1px 4px rgba(0,0,0,.9);
+  font-size:clamp(9px,1vw,13px);
+  color:rgba(255,255,255,.88);
+  line-height:1.55;
+  text-shadow:0 1px 6px rgba(0,0,0,.95);
+  word-break:keep-all;
 }
 
-@media(max-width:640px){
+@media(max-width:768px){
   .reason-section{padding:60px 16px 60px;}
-  .reason-card-text{padding:2% 4% 2% 38%;}
-  .reason-card-title{font-size:clamp(11px,3vw,16px);}
-  .reason-card-body{font-size:clamp(9px,2.2vw,12px);}
+  .reason-overlays{top:28%;}
+  .reason-card-text{padding:2% 3% 2% 36%;}
+  .reason-card-title{font-size:clamp(10px,2.5vw,15px);}
+  .reason-card-body{font-size:clamp(8px,1.8vw,11px);}
 }
+@media(max-width:480px){
+  .reason-card-title{font-size:clamp(8px,2.8vw,12px);}
+  .reason-card-body{display:none;}
+}
+
 </style>
 </head>
 <body style="padding-bottom:90px;">
