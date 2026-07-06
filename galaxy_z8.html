@@ -359,9 +359,9 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
 }
 .reservation-overlay.open{display:flex;}
 .reservation-modal{
-  width:100%;max-width:480px;
+  width:100%;max-width:520px;
   background:#111;
-  border:1.5px solid rgba(255,255,255,.15);
+  border:1.5px solid rgba(255,255,255,.2);
   border-radius:24px;
   padding:36px 32px 32px;
   position:relative;
@@ -377,16 +377,16 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
   transition:background .2s;
 }
 .modal-close:hover{background:rgba(255,255,255,.15);}
-.modal-title{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.03em;margin-bottom:6px;}
-.modal-sub{font-size:13px;color:rgba(255,255,255,.35);margin-bottom:28px;line-height:1.6;}
+.modal-title{font-size:26px;font-weight:800;color:#fff;letter-spacing:-.03em;margin-bottom:8px;}
+.modal-sub{font-size:15px;color:rgba(255,255,255,.7);margin-bottom:28px;line-height:1.6;}
 
 .mform-group{margin-bottom:16px;}
-.mform-label{font-size:11px;font-weight:600;color:rgba(255,255,255,.4);margin-bottom:7px;letter-spacing:.08em;text-transform:uppercase;}
+.mform-label{font-size:14px;font-weight:700;color:rgba(255,255,255,.9);margin-bottom:10px;letter-spacing:.02em;}
 
 /* 상품 선택 */
 .mdevice-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:0;}
 .mdevice-card{
-  padding:14px 10px;text-align:center;
+  padding:18px 10px;text-align:center;
   background:rgba(255,255,255,.04);
   border:1.5px solid rgba(255,255,255,.1);
   border-radius:12px;cursor:pointer;
@@ -394,7 +394,7 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
 }
 .mdevice-card:hover{border-color:rgba(255,255,255,.25);}
 .mdevice-card.selected{border-color:rgba(234,0,120,.8);background:rgba(234,0,120,.1);}
-.mdevice-card-name{font-size:13px;font-weight:700;color:#fff;}
+.mdevice-card-name{font-size:15px;font-weight:700;color:#fff;}
 .mdevice-card-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:2px;}
 .mdevice-card.selected .mdevice-card-sub{color:rgba(234,0,120,.7);}
 
@@ -413,15 +413,15 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
 
 /* 입력 */
 .mform-input{
-  width:100%;background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.1);border-radius:11px;
-  padding:13px 14px;color:#fff;font-size:14px;
+  width:100%;background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.2);border-radius:11px;
+  padding:16px 16px;color:#fff;font-size:17px;
   outline:none;transition:all .2s;box-sizing:border-box;
 }
-.mform-input::placeholder{color:rgba(255,255,255,.2);}
+.mform-input::placeholder{color:rgba(255,255,255,.4);}
 .mform-input:focus{border-color:rgba(234,0,120,.5);background:rgba(234,0,120,.05);}
 textarea.mform-input{resize:none;height:80px;}
-.mform-hint{font-size:11px;color:rgba(255,255,255,.22);margin-top:4px;}
+.mform-hint{font-size:13px;color:rgba(255,255,255,.55);margin-top:6px;}
 
 /* 개인정보 */
 .mprivacy-wrap{display:flex;align-items:flex-start;gap:10px;margin-bottom:20px;}
@@ -432,7 +432,7 @@ textarea.mform-input{resize:none;height:80px;}
 }
 .mprivacy-check:checked{background:rgba(225,29,72,.8);border-color:rgba(225,29,72,.8);}
 .mprivacy-check:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:10px;color:#fff;font-weight:700;}
-.mprivacy-text{font-size:12px;color:rgba(255,255,255,.35);line-height:1.6;}
+.mprivacy-text{font-size:14px;color:rgba(255,255,255,.7);line-height:1.6;}
 .mprivacy-text a{color:rgba(234,0,120,.7);text-decoration:none;}
 
 /* 제출 버튼 */
