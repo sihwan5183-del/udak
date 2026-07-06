@@ -473,6 +473,10 @@ textarea.mform-input{resize:none;height:80px;}
   /* reason/step 이미지 섹션 */
   .reason-step-img{width:160vw;position:relative;left:50%;transform:translateX(-50%);border-radius:0;display:block;}
 
+  /* PC/모바일 이미지 전환 */
+  .reason-pc{display:none !important;}
+  .reason-mobile{display:flex !important;}
+
   /* 모달 X 버튼 모바일에서 더 크게 */
   .modal-close{width:44px;height:44px;font-size:24px;top:8px;right:8px;}
   .popup-close{width:44px;height:44px;font-size:24px;}
@@ -844,7 +848,12 @@ function mSubmitForm(){
 
 <!-- ══ 사전예약 이유 섹션 ══ -->
 <section style="width:100%;background:#000;padding:20px 0;">
-  <div style="display:flex;width:100%;gap:0;">
+  <!-- PC: 원본 이미지 -->
+  <div class="reason-pc" style="width:100%;max-width:1100px;margin:0 auto;">
+    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/reason-section.png" alt="사전예약 이유" style="width:100%;height:auto;display:block;border-radius:20px;">
+  </div>
+  <!-- 모바일: 좌우 분할 -->
+  <div class="reason-mobile" style="display:none;width:100%;gap:0;">
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/reason-left.png"  alt="사전예약 이유 좌" style="width:50%;height:auto;display:block;">
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/reason-right.png" alt="사전예약 이유 우" style="width:50%;height:auto;display:block;">
   </div>
@@ -852,7 +861,12 @@ function mSubmitForm(){
 
 <!-- ══ 사전예약 절차 섹션 ══ -->
 <section style="width:100%;background:#000;padding:0 0 20px;">
-  <div style="display:flex;width:100%;gap:0;">
+  <!-- PC: 원본 이미지 -->
+  <div class="reason-pc" style="width:100%;max-width:1100px;margin:0 auto;">
+    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/step-section.png" alt="사전예약 절차" style="width:100%;height:auto;display:block;border-radius:20px;">
+  </div>
+  <!-- 모바일: 좌우 분할 -->
+  <div class="reason-mobile" style="display:none;width:100%;gap:0;">
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/step-left.png"  alt="사전예약 절차 좌" style="width:50%;height:auto;display:block;">
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/step-right.png" alt="사전예약 절차 우" style="width:50%;height:auto;display:block;">
   </div>
