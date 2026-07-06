@@ -462,58 +462,151 @@ textarea.mform-input{resize:none;height:80px;}
   background:linear-gradient(135deg,#f0009a,#d4007a);
   box-shadow:0 12px 40px rgba(234,0,120,.3);
 }
+</style>
+</head>
+<body style="padding-bottom:90px;">
 
-/* ══ 사전예약 이유 섹션 ══ */
-.reason-section{
-  width:100%;background:#000;
-  padding:80px 40px 80px;
-  display:flex;flex-direction:column;align-items:center;
-}
-.reason-img-wrap{
-  width:100%;max-width:1100px;
-  position:relative;border-radius:20px;overflow:hidden;
-}
-.reason-img-wrap > img{
-  width:100%;height:auto;display:block;
-}
-.reason-overlays{
-  position:absolute;inset:0;
-  pointer-events:none;
-}
-/* 각 카드 텍스트: absolute로 정확한 위치에 배치 */
-/* 카드1: 상단27%~60%, 좌측0~50%, 텍스트영역 카드내 44~50% */
-.rc1{ position:absolute; top:27%; height:33%; left:24%; width:25%;
-  display:flex;flex-direction:column;justify-content:center;padding:1% 2%;}
-/* 카드2: 상단27%~60%, 좌측50~100%, 텍스트영역 카드내 오른쪽 */
-.rc2{ position:absolute; top:27%; height:33%; left:74%; width:25%;
-  display:flex;flex-direction:column;justify-content:center;padding:1% 2%;}
-/* 카드3: 하단60%~97%, 좌측0~50% */
-.rc3{ position:absolute; top:61%; height:33%; left:24%; width:25%;
-  display:flex;flex-direction:column;justify-content:center;padding:1% 2%;}
-/* 카드4: 하단60%~97%, 좌측50~100% */
-.rc4{ position:absolute; top:61%; height:33%; left:74%; width:25%;
-  display:flex;flex-direction:column;justify-content:center;padding:1% 2%;}
+<div class="spotlight-overlay"></div>
 
-.reason-card-title{
-  font-size:clamp(12px,1.5vw,19px);
-  font-weight:800;color:#fff;
-  line-height:1.25;margin-bottom:5px;
-  text-shadow:0 2px 8px rgba(0,0,0,.95);
-  word-break:keep-all;
-}
-.reason-card-body{
-  font-size:clamp(9px,.95vw,12px);
-  color:rgba(255,255,255,.9);
-  line-height:1.6;
-  text-shadow:0 1px 6px rgba(0,0,0,.95);
-  word-break:keep-all;
-}
-@media(max-width:640px){
-  .reason-section{padding:40px 12px;}
-  .reason-card-title{font-size:clamp(8px,2.2vw,12px);}
-  .reason-card-body{font-size:clamp(7px,1.6vw,10px);line-height:1.4;}
-}
-, {threshold:0.12});
+<!-- ══ 히어로 ══ -->
+<section class="hero">
+  <div class="top-bar">
+    <div class="logo-group">
+      <img class="logo-uplus" src="/assets/logo-udak.png" alt="LG U+">
+      <div class="logo-divider"></div>
+      <img class="logo-udak" src="/assets/logo-uplus.png" alt="유닥">
+    </div>
+    <p class="partner-label">유플러스 공식파트너사 유플러스 다이렉트</p>
+  </div>
+  <!-- <div class="galaxyz-mark"><img src="/assets/logo-divider.png" alt="Galaxy Z"></div> -->
+
+  <div class="hero-inner" id="heroInner">
+    <div class="showcase-wrap" id="showcaseWrap">
+      <img class="showcase-img" src="/assets/showcase-hero.png" alt="Galaxy Z Showcase">
+    </div>
+    <p class="showcase-disclaimer">*제품 사진은 AI로 생성된 이미지입니다. 자세한 제품 컬러와 스펙은 7월 22일 이후 공개됩니다.</p>
+    <div class="hero-text">
+      
+      <p class="hero-tag">유플러스 다이렉트와 함께하는</p>
+      <h1 class="hero-title">갤럭시 Z 폴더블 8 시리즈</h1>
+      <p class="hero-event">사전예약 이벤트</p>
+      <p class="hero-sub">제품 정보와 사전예약 혜택,<br>공개 즉시 빠르게 안내드립니다</p>
+      <p class="hero-sub2">하기의 유플러스 다이렉트만의 사전예약 혜택 확인하시고<br>누구보다 빠르게 폴더블 8의 정보와 혜택을 받아보세요.</p>
+      <div class="cta-wrap">
+        <a class="cta-primary cta-pink" href="#formSection">22일 공개 혜택을 가장 먼저 받아보세요.</a>
+      </div>
+    </div>
+  </div>
+
+  
+  </div>
+</section>
+</div>
+
+
+<!-- ══ 제품 3종 ══ -->
+<section class="products-section">
+  <div class="products-section-title">
+    <p class="pst-eyebrow">Galaxy Z 2026 Lineup</p>
+    <p class="pst-title">당신의 폴더블 8을 선택해 보세요.</p>
+  </div>
+  <div class="products-inner">
+    <div class="product-card flip" style="--delay:.0s" onclick="openModal('플립 8',this.querySelector('img').src,'rgba(160,100,255,.3)','rgba(160,100,255,.9)')">
+      <div class="product-img-wrap"><img src="/assets/benefit-watch.png" alt="플립 8"></div>
+      <div class="product-info"><span class="product-name">플립 8</span></div>
+    </div>
+    <div class="product-card fold" style="--delay:.15s" onclick="openModal('폴드 8',this.querySelector('img').src,'rgba(60,120,255,.3)','rgba(80,140,255,.9)')">
+      <div class="product-img-wrap"><img src="/assets/benefit-tab.png" alt="폴드 8"></div>
+      <div class="product-info"><span class="product-name">폴드 8</span></div>
+    </div>
+    <div class="product-card wide" style="--delay:.3s" onclick="openModal('폴드 8 와이드',this.querySelector('img').src,'rgba(180,200,255,.25)','rgba(200,215,255,.9)')">
+      <div class="product-img-wrap"><img src="/assets/benefit-internet.png" alt="폴드 8 와이드"></div>
+      <div class="product-info"><span class="product-name">폴드 8 와이드</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 케이스/필름/충전기 ══ -->
+<section class="case-section">
+  <div class="case-inner">
+    <p class="case-eyebrow">유플러스 다이렉트가 보장하는 혜택</p>
+    <img class="case-img" src="/assets/benefit-ipad.png" alt="혜택 구성품">
+    <ul class="case-list">
+      <li><span class="b-num">01</span><span class="b-item">프리미엄<br>클리어 케이스</span></li>
+      <li><span class="b-num">02</span><span class="b-item">강화 글래스<br>보호필름</span></li>
+      <li><span class="b-num">03</span><span class="b-item">고속 충전<br>어댑터</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══ 혜택 진열장 ══ -->
+<section class="benefit-grid-section">
+  <div class="benefit-grid-title">
+    <p class="bgt-eyebrow">Exclusive Benefits</p>
+    <h2 class="bgt-heading">유플러스 다이렉트만의<br>혜택을 골라보세요!</h2>
+    <p class="bgt-sub">혜택을 선택해 보세요.</p>
+  </div>
+  <div class="showcase-grid-wrap">
+    <img src="/assets/benefit-ott.png" alt="혜택 진열장">
+    <div class="grid-zones">
+      <div class="zone" onclick="openBenefit(0)"></div>
+      <div class="zone" onclick="openBenefit(1)"></div>
+      <div class="zone" onclick="openBenefit(2)"></div>
+      <div class="zone" onclick="openBenefit(3)"></div>
+      <div class="zone" onclick="openBenefit(4)"></div>
+      <div class="zone" onclick="openBenefit(5)"></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ 제품 모달 ══ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('active')">
+    </button>
+    <div class="modal-silhouette">
+      <img id="modalImg" src="" alt="">
+      <div class="modal-date-wrap">
+        <span class="modal-label">Galaxy Z 언팩</span>
+        <div class="modal-date"><em id="modalAccent">7</em>.22</div>
+        <span class="modal-unveil">Coming Soon</span>
+      </div>
+    </div>
+    <div class="modal-countdown">
+      <div class="cd-block"><span class="cd-num" id="cdDays">--</span><span class="cd-unit">Days</span></div>
+      <div class="cd-block"><span class="cd-num" id="cdHours">--</span><span class="cd-unit">Hours</span></div>
+      <div class="cd-block"><span class="cd-num" id="cdMins">--</span><span class="cd-unit">Mins</span></div>
+      <div class="cd-block"><span class="cd-num" id="cdSecs">--</span><span class="cd-unit">Secs</span></div>
+    </div>
+    <div class="modal-body">
+      <p class="modal-product-name" id="modalTitle">—</p>
+      <p class="modal-sub">언팩 이후 제품 상세 정보와 색상 · 스펙 · 혜택이 공개됩니다<br>사전예약 신청 후, 유닥에서 공개 정보를 먼저 안내받아보세요</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 혜택 팝업 ══ -->
+<div class="benefit-popup" id="benefitPopup" onclick="closeBenefit(event)">
+  <div class="popup-box">
+    <button class="popup-close" onclick="document.getElementById('benefitPopup').classList.remove('active')">
+    </button>
+    <div class="popup-product">
+      <img class="popup-product-img" id="popupImg" src="" alt="">
+    </div>
+    <div class="popup-body">
+      <p class="popup-name" id="popupName">—</p>
+      <p class="popup-desc" id="popupDesc">—</p>
+      <span class="popup-badge" id="popupBadge">유닥 단독 혜택</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// 스크롤 등장
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold:0.12});
 document.querySelectorAll('.product-card,.products-section-title,.case-eyebrow,.benefit-grid-title').forEach(el => observer.observe(el));
 
 // 제품 모달
@@ -543,12 +636,12 @@ function startCountdown() {
 
 // 혜택 팝업
 const BENEFITS = [
-  { name:"갤럭시 워치 9", desc:"사전예약 신청 고객 대상<br>갤럭시 워치 9 증정 혜택", badge:"워치 증정", glow:"rgba(80,200,120,.25)", img:"/assets/benefit-internet.png" },
-  { name:"갤럭시 탭 A11+", desc:"사전예약 신청 고객 대상<br>갤럭시 탭 A11+ 증정 혜택", badge:"탭 증정", glow:"rgba(60,160,255,.25)", img:"/assets/benefit-ipad.png" },
-  { name:"우리집 인터넷 요금 면제", desc:"유플러스로 통신사 이동하면<br>우리집 인터넷 요금이 무료라고?", badge:"인터넷 결합 혜택", glow:"rgba(255,200,60,.2)", img:"/assets/benefit-ott.png" },
-  { name:"티비형 iPad", desc:'사전예약 신청 고객 대상<br><span style="color:#ea0078;font-weight:700;">유플러스 다이렉트</span>에서 사전 예약을 하면<br>티비가 가능한 아이패드를 받을 수 있다구?', badge:"iPad 증정", glow:"rgba(200,200,255,.2)", img:"/assets/benefit-buds.png" },
-  { name:"OTT 혜택", desc:"사전예약 신청 고객 대상<br>넷플릭스 / 디즈니 플러스 / 티빙 택 1", badge:"OTT 혜택", glow:"rgba(255,60,60,.2)", img:"/assets/benefit-showcase.png" },
-  { name:"갤럭시 버즈3 프로", desc:"사전예약 신청 고객 대상<br>갤럭시 버즈3 프로 증정", badge:"버즈 증정", glow:"rgba(160,100,255,.25)", img:"/assets/case-img.png" },
+  { name:"갤럭시 워치 9", desc:"사전예약 신청 고객 대상<br>갤럭시 워치 9 증정 혜택", badge:"워치 증정", glow:"rgba(80,200,120,.25)", img:"/assets/benefit-buds.png" },
+  { name:"갤럭시 탭 A11+", desc:"사전예약 신청 고객 대상<br>갤럭시 탭 A11+ 증정 혜택", badge:"탭 증정", glow:"rgba(60,160,255,.25)", img:"/assets/benefit-showcase.png" },
+  { name:"우리집 인터넷 요금 면제", desc:"유플러스로 통신사 이동하면<br>우리집 인터넷 요금이 무료라고?", badge:"인터넷 결합 혜택", glow:"rgba(255,200,60,.2)", img:"/assets/case-img.png" },
+  { name:"티비형 iPad", desc:"사전예약 신청 고객 대상<br><span style="color:#ea0078;font-weight:700;">유플러스 다이렉트</span>에서 사전 예약을 하면<br>티비가 가능한 아이패드를 받을 수 있다구?", badge:"iPad 증정", glow:"rgba(200,200,255,.2)", img:"/assets/product-flip.png" },
+  { name:"OTT 혜택", desc:"사전예약 신청 고객 대상<br>넷플릭스 / 디즈니 플러스 / 티빙 택 1", badge:"OTT 혜택", glow:"rgba(255,60,60,.2)", img:"/assets/product-fold.png" },
+  { name:"갤럭시 버즈3 프로", desc:"사전예약 신청 고객 대상<br>갤럭시 버즈3 프로 증정", badge:"버즈 증정", glow:"rgba(160,100,255,.25)", img:"/assets/product-fold-wide.png" },
 ];
 
 function openBenefit(idx) {
