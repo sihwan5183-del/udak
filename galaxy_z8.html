@@ -20,16 +20,16 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
 @keyframes spotlight{0%{opacity:1}100%{opacity:0}}
 
 .top-bar{
-  width:100%;padding:20px 48px 0;
+  width:100%;padding:8px 48px 0;
   display:flex;align-items:center;justify-content:center;gap:0;
   flex-direction:column;
   opacity:0;animation:fadeup .5s ease 0.3s forwards;
   position:relative;z-index:5;
 }
 .logo-group{display:flex;align-items:center;gap:24px;}
-.logo-udak{height:160px;}
+.logo-udak{height:80px;}
 .logo-divider{width:1px;height:60px;background:rgba(255,255,255,.2);}
-.logo-uplus{height:92px;}
+.logo-uplus{height:52px;}
 .nav-label{display:none;}
 
 .galaxyz-mark{display:none;} */
@@ -39,7 +39,7 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
 .hero-inner{
   display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
   width:100%;min-height:auto;
-  padding:40px 40px 80px;
+  padding:16px 40px 60px;
   position:relative;
   gap:0;
 }
@@ -307,7 +307,7 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
   .top-bar{padding:16px 20px;}
   .logo-udak{height:56px;}.logo-uplus{height:28px;}.logo-divider{height:36px;}
   .nav-label,.galaxyz-mark{display:none;}
-  .hero-inner{flex-direction:column;padding:100px 24px 40px;gap:40px;text-align:center;}
+  .hero-inner{flex-direction:column;padding:20px 16px 30px;gap:20px;text-align:center;}
   .hero-text{align-items:center;}
   .hero-eyebrow{justify-content:center;}
   .showcase-img{width:min(380px,88vw);}
@@ -471,7 +471,7 @@ textarea.mform-input{resize:none;height:80px;}
   .benefit-grid-section{padding:40px 0 50px;}
 
   /* reason/step 이미지 섹션 */
-  .reason-step-img{width:calc(100% + 40px);margin-left:-20px;border-radius:0;}
+  .reason-step-img{width:100vw;margin-left:calc(-50vw + 50%);border-radius:0;display:block;}
 
   /* 모달 X 버튼 모바일에서 더 크게 */
   .modal-close{width:44px;height:44px;font-size:24px;top:8px;right:8px;}
@@ -843,14 +843,14 @@ function mSubmitForm(){
 
 
 <!-- ══ 사전예약 이유 섹션 ══ -->
-<section style="width:100%;background:#000;padding:60px 20px;display:flex;flex-direction:column;align-items:center;">
+<section style="width:100%;background:#000;padding:20px 0;display:flex;flex-direction:column;align-items:center;">
   <div style="width:100%;max-width:1100px;">
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/reason-section.png" alt="사전예약 이유" class="reason-step-img" style="width:100%;height:auto;display:block;border-radius:20px;">
   </div>
 </section>
 
 <!-- ══ 사전예약 절차 섹션 ══ -->
-<section style="width:100%;background:#000;padding:0 20px 60px;display:flex;flex-direction:column;align-items:center;">
+<section style="width:100%;background:#000;padding:0;display:flex;flex-direction:column;align-items:center;">
   <div style="width:100%;max-width:1100px;">
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/step-section.png" alt="간편한 사전예약 절차" class="reason-step-img" style="width:100%;height:auto;display:block;border-radius:20px;">
   </div>
