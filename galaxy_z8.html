@@ -102,7 +102,7 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
 /* ══════════════════════════════
    제품 3종
 ══════════════════════════════ */
-.products-section{width:100%;background:#000;padding:100px 0 120px;}
+.products-section{width:100%;background:#000;padding:60px 0 80px;}
 .products-section-title{
   text-align:center;margin-bottom:60px;
   opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease;
@@ -141,7 +141,7 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
 /* ══════════════════════════════
    케이스 혜택 섹션
 ══════════════════════════════ */
-.case-section{width:100%;background:#000;padding:80px 0 100px;}
+.case-section{width:100%;background:#000;padding:40px 0 60px;}
 .case-inner{max-width:1200px;margin:0 auto;padding:0 60px;display:flex;flex-direction:column;align-items:center;gap:0;}
 .case-eyebrow{
   font-size:clamp(16px,2vw,24px);font-weight:700;letter-spacing:.12em;
@@ -164,7 +164,7 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
 /* ══════════════════════════════
    혜택 진열장 섹션
 ══════════════════════════════ */
-.benefit-grid-section{width:100%;background:#000;padding:100px 0 120px;}
+.benefit-grid-section{width:100%;background:#000;padding:60px 0 80px;}
 .benefit-grid-title{
   text-align:center;margin-bottom:52px;
   opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease;
@@ -259,7 +259,7 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
 .modal-body{padding:20px 32px 30px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;border-top:1px solid rgba(255,255,255,.07);}
 .modal-product-name{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.01em;}
 .modal-sub{font-size:13px;color:rgba(255,255,255,.82);line-height:1.8;}
-.modal-close{position:absolute;top:14px;right:14px;z-index:10;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.modal-close{position:absolute;top:12px;right:12px;z-index:10;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;font-size:20px;color:#fff;font-weight:700;line-height:1;}
 .modal-close:hover{background:rgba(255,255,255,.18);}
 
 /* ══════════════════════════════
@@ -323,8 +323,8 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
   letter-spacing:.03em;line-height:1.8;
 }
 .showcase-disclaimer{
-  font-size:11px;color:rgba(255,255,255,.22);
-  text-align:center;letter-spacing:.02em;line-height:1.6;
+  font-size:12px;color:rgba(255,255,255,.85);
+  text-align:center;letter-spacing:.02em;line-height:1.8;
   margin-top:10px;margin-bottom:0;
   word-break:keep-all;
 }
@@ -458,6 +458,28 @@ textarea.mform-input{resize:none;height:80px;}
   .mdevice-grid{grid-template-columns:1fr 1fr;}
   .mcarrier-grid{grid-template-columns:repeat(2,1fr);}
   .sticky-cta-btn{font-size:16px;padding:18px;}
+
+  /* 모바일 disclaimer: 두 줄 명확하게 */
+  .showcase-disclaimer{font-size:12px;color:#fff;line-height:2;font-weight:400;}
+
+  /* 파트너 레이블 */
+  .partner-label{font-size:16px;letter-spacing:.08em;line-height:1.6;}
+
+  /* 제품 section 패딩 */
+  .products-section{padding:40px 0 50px;}
+  .case-section{padding:30px 0 40px;}
+  .benefit-grid-section{padding:40px 0 50px;}
+
+  /* reason/step 이미지 섹션 */
+  .reason-step-img{width:calc(100% + 40px);margin-left:-20px;border-radius:0;}
+
+  /* 모달 X 버튼 모바일에서 더 크게 */
+  .modal-close{width:44px;height:44px;font-size:24px;top:8px;right:8px;}
+  .popup-close{width:44px;height:44px;font-size:24px;}
+
+  /* case-list 간격 */
+  .case-list li{padding:16px 8px;}
+  .b-item{font-size:13px;}
 }
 
 .cta-primary.cta-pink{
@@ -483,7 +505,7 @@ textarea.mform-input{resize:none;height:80px;}
       <div class="logo-divider"></div>
       <img class="logo-udak" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/logo-uplus.png" alt="유닥">
     </div>
-    <p class="partner-label">유플러스 공식파트너사 유플러스 다이렉트</p>
+    <p class="partner-label">유플러스 공식파트너사<br>유플러스 다이렉트</p>
   </div>
   <!-- <div class="galaxyz-mark"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/logo-divider.png" alt="Galaxy Z"></div> -->
 
@@ -491,7 +513,7 @@ textarea.mform-input{resize:none;height:80px;}
     <div class="showcase-wrap" id="showcaseWrap">
       <img class="showcase-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/showcase-hero.png" alt="Galaxy Z Showcase">
     </div>
-    <p class="showcase-disclaimer">*제품 사진은 AI로 생성된 이미지입니다. 자세한 제품 컬러와 스펙은 7월 22일 이후 공개됩니다.</p>
+    <p class="showcase-disclaimer">*제품 사진은 AI로 생성된 이미지입니다.<br>자세한 제품 컬러와 스펙은 7월 22일 이후 공개됩니다.</p>
     <div class="hero-text">
       
       <p class="hero-tag">유플러스 다이렉트와 함께하는</p>
@@ -556,12 +578,12 @@ textarea.mform-input{resize:none;height:80px;}
   <div class="showcase-grid-wrap">
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-ott.png" alt="혜택 진열장">
     <div class="grid-zones">
-      <div class="zone" onclick="openBenefit(0)"><span class="zone-label">갤럭시 워치 9</span></div>
-      <div class="zone" onclick="openBenefit(1)"><span class="zone-label">갤럭시 탭 A11+</span></div>
-      <div class="zone" onclick="openBenefit(2)"><span class="zone-label">인터넷 요금 면제</span></div>
-      <div class="zone" onclick="openBenefit(3)"><span class="zone-label">티비형 iPad</span></div>
-      <div class="zone" onclick="openBenefit(4)"><span class="zone-label">OTT 혜택</span></div>
-      <div class="zone" onclick="openBenefit(5)"><span class="zone-label">갤럭시 버즈3 프로</span></div>
+      <div class="zone" onclick="openBenefit(0)"></div>
+      <div class="zone" onclick="openBenefit(1)"></div>
+      <div class="zone" onclick="openBenefit(2)"></div>
+      <div class="zone" onclick="openBenefit(3)"></div>
+      <div class="zone" onclick="openBenefit(4)"></div>
+      <div class="zone" onclick="openBenefit(5)"></div>
     </div>
   </div>
 </section>
@@ -570,8 +592,7 @@ textarea.mform-input{resize:none;height:80px;}
 <!-- ══ 제품 모달 ══ -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal-box">
-    <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('active')">
-    </button>
+    <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕</button>
     <div class="modal-silhouette">
       <img id="modalImg" src="" alt="">
       <div class="modal-date-wrap">
@@ -596,8 +617,7 @@ textarea.mform-input{resize:none;height:80px;}
 <!-- ══ 혜택 팝업 ══ -->
 <div class="benefit-popup" id="benefitPopup" onclick="closeBenefit(event)">
   <div class="popup-box">
-    <button class="popup-close" onclick="document.getElementById('benefitPopup').classList.remove('active')">
-    </button>
+    <button class="popup-close" onclick="document.getElementById('benefitPopup').classList.remove('active')">✕</button>
     <div class="popup-product">
       <img class="popup-product-img" id="popupImg" src="" alt="">
     </div>
@@ -825,14 +845,14 @@ function mSubmitForm(){
 <!-- ══ 사전예약 이유 섹션 ══ -->
 <section style="width:100%;background:#000;padding:60px 20px;display:flex;flex-direction:column;align-items:center;">
   <div style="width:100%;max-width:1100px;">
-    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/reason-section.png" alt="사전예약 이유" style="width:100%;height:auto;display:block;border-radius:20px;">
+    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/reason-section.png" alt="사전예약 이유" class="reason-step-img" style="width:100%;height:auto;display:block;border-radius:20px;">
   </div>
 </section>
 
 <!-- ══ 사전예약 절차 섹션 ══ -->
 <section style="width:100%;background:#000;padding:0 20px 60px;display:flex;flex-direction:column;align-items:center;">
   <div style="width:100%;max-width:1100px;">
-    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/step-section.png" alt="간편한 사전예약 절차" style="width:100%;height:auto;display:block;border-radius:20px;">
+    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/step-section.png" alt="간편한 사전예약 절차" class="reason-step-img" style="width:100%;height:auto;display:block;border-radius:20px;">
   </div>
 </section>
 
