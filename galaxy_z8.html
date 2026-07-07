@@ -553,28 +553,67 @@ textarea.mform-input{resize:none;height:80px;}
 .side-quick-btn:first-child .side-quick-label{color:#fff;}
 .side-quick-btn:last-child .side-quick-label{color:#3A1D1D;}
 
-/* 호버시 확장 */
-.side-quick-btn:hover{
-  width:110px;
-}
-.side-quick-btn .side-quick-expand{
-  font-size:11px;font-weight:700;
-  opacity:0;max-width:0;
-  overflow:hidden;
-  transition:opacity .2s .1s, max-width .25s;
-  white-space:nowrap;
-}
-.side-quick-btn:first-child .side-quick-expand{color:#fff;}
-.side-quick-btn:last-child .side-quick-expand{color:#3A1D1D;}
-.side-quick-btn:hover .side-quick-expand{
-  opacity:1;max-width:80px;
-}
-
 @media(max-width:640px){
   .side-quick{top:auto;bottom:80px;transform:none;}
   .side-quick-btn{width:48px;padding:12px 6px;}
-  .side-quick-btn:hover{width:48px;}
-  .side-quick-expand{display:none;}
+}
+
+/* ══ 전화상담 팝업 ══ */
+.phone-popup{
+  position:fixed;
+  right:64px;top:50%;transform:translateY(-50%);
+  z-index:901;
+  background:#1a1a1a;
+  border:1.5px solid rgba(234,0,120,.3);
+  border-radius:16px;
+  padding:20px 22px;
+  min-width:200px;
+  box-shadow:0 8px 40px rgba(0,0,0,.6);
+  display:none;
+  flex-direction:column;
+  gap:12px;
+  animation:popupIn .2s cubic-bezier(.22,1,.36,1);
+}
+.phone-popup.active{display:flex;}
+@keyframes popupIn{
+  from{opacity:0;transform:translateY(-50%) translateX(10px);}
+  to{opacity:1;transform:translateY(-50%) translateX(0);}
+}
+.phone-popup-title{
+  font-size:12px;color:rgba(255,255,255,.5);
+  font-weight:500;letter-spacing:.05em;
+}
+.phone-popup-number{
+  font-size:22px;font-weight:800;color:#fff;
+  letter-spacing:.05em;
+}
+.phone-popup-call{
+  display:block;width:100%;
+  padding:12px;
+  background:linear-gradient(135deg,#ea0078,#c4006a);
+  border:none;border-radius:10px;
+  color:#fff;font-size:14px;font-weight:700;
+  text-align:center;text-decoration:none;
+  cursor:pointer;
+  transition:opacity .2s;
+}
+.phone-popup-call:hover{opacity:.85;}
+.phone-popup-close{
+  position:absolute;top:10px;right:12px;
+  background:none;border:none;color:rgba(255,255,255,.3);
+  font-size:18px;cursor:pointer;line-height:1;
+}
+
+@media(max-width:640px){
+  .phone-popup{
+    right:56px;top:auto;bottom:130px;
+    transform:none;
+  }
+  .phone-popup.active{display:flex;}
+  @keyframes popupIn{
+    from{opacity:0;transform:translateX(10px);}
+    to{opacity:1;transform:translateX(0);}
+  }
 }
 
 /* ══ 사전예약 알림 티켓 ══ */
@@ -1010,6 +1049,10 @@ function closeTicket(){
   document.getElementById('ticketOverlay').classList.remove('active');
   document.body.style.overflow='';
 }
+function togglePhonePopup(){
+  var p = document.getElementById('phonePopup');
+  p.classList.toggle('active');
+}
 
 </script>
 
@@ -1163,21 +1206,27 @@ function closeTicket(){
 <!-- ══ 사이드 퀵 메뉴 ══ -->
 <div class="side-quick">
   <!-- 전화상담 -->
-  <a href="tel:16601412" class="side-quick-btn">
+  <button class="side-quick-btn" onclick="togglePhonePopup()">
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.55.57 1 1 0 011 1V20a1 1 0 01-1 1C9.61 21 3 14.39 3 6a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.55a1 1 0 01-.25 1.01l-2.2 2.23z" fill="#fff"/>
     </svg>
     <span class="side-quick-label">전화<br>상담</span>
-    <span class="side-quick-expand">&nbsp;1660-1412</span>
-  </a>
+  </button>
   <!-- 카카오톡 상담 -->
   <a href="http://pf.kakao.com/_HxfVxcn/chat" target="_blank" class="side-quick-btn">
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M12 3C7.03 3 3 6.36 3 10.5c0 2.7 1.7 5.07 4.27 6.43l-.9 3.32a.3.3 0 00.45.33l3.9-2.57c.41.05.84.08 1.28.08 4.97 0 9-3.36 9-7.5S16.97 3 12 3z" fill="#3A1D1D"/>
     </svg>
     <span class="side-quick-label" style="color:#3A1D1D;">카톡<br>문의</span>
-    <span class="side-quick-expand" style="color:#3A1D1D;">&nbsp;카카오 채널</span>
   </a>
+</div>
+
+<!-- 전화상담 팝업 -->
+<div class="phone-popup" id="phonePopup">
+  <button class="phone-popup-close" onclick="togglePhonePopup()">×</button>
+  <div class="phone-popup-title">전화 상담하기</div>
+  <div class="phone-popup-number">1660-1412</div>
+  <a href="tel:16601412" class="phone-popup-call">📞 &nbsp;전화 연결하기</a>
 </div>
 
 <!-- ══ 사전예약 알림 티켓 팝업 ══ -->
