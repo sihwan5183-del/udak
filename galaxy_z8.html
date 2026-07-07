@@ -532,25 +532,50 @@ textarea.mform-input{resize:none;height:80px;}
   to{transform:translateY(0) scale(1);opacity:1;}
 }
 .ticket-bg-img{width:100%;height:auto;display:block;}
+/* 칸별 정확한 위치: 이미지 픽셀 분석 기반 */
 .ticket-fields{
   position:absolute;
-  top:57%;left:19%;right:5%;
-  display:flex;flex-direction:column;
-  gap:1.8%;
+  inset:0;
+  pointer-events:none;
 }
-.ticket-field{
+/* 칸1: 희망기종 (top 44.3%, 아이콘 오른쪽 28.4%) */
+.ticket-field-1{
+  position:absolute;
+  top:44.3%;height:9%;
+  left:29%;right:5%;
   display:flex;align-items:center;
-  min-height:8%;
+}
+/* 칸2: 이름/연락처 (top 53.6%, 아이콘 오른쪽 20.6%) */
+.ticket-field-2{
+  position:absolute;
+  top:53.6%;height:7.5%;
+  left:22%;right:5%;
+  display:flex;align-items:center;
+}
+/* 칸3: 고정멘트1 (top 61.1%) */
+.ticket-field-3{
+  position:absolute;
+  top:61.1%;height:7.5%;
+  left:22%;right:5%;
+  display:flex;align-items:center;
+}
+/* 칸4: 고정멘트2 (top 68.6%) */
+.ticket-field-4{
+  position:absolute;
+  top:68.6%;height:7.5%;
+  left:22%;right:5%;
+  display:flex;align-items:center;
 }
 .ticket-field-val{
-  font-size:clamp(11px,3vw,15px);
+  font-size:clamp(10px,2.8vw,14px);
   font-weight:700;color:#fff;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  line-height:1.2;
 }
 .ticket-field-val.fixed{
-  font-size:clamp(9px,2.4vw,12px);
-  font-weight:400;color:rgba(255,255,255,.65);
-  white-space:normal;line-height:1.4;
+  font-size:clamp(9px,2.3vw,12px);
+  font-weight:400;color:rgba(255,255,255,.75);
+  white-space:normal;line-height:1.35;
 }
 .ticket-close-btn{
   position:absolute;top:-16px;right:-10px;
@@ -1079,18 +1104,22 @@ function closeTicket(){
   <div class="ticket-wrap">
     <img class="ticket-bg-img" src="/assets/ticket-bg.png" alt="사전예약 알림 티켓">
     <div class="ticket-fields">
-      <div class="ticket-field">
+      <!-- 칸1: 희망기종 -->
+      <div class="ticket-field-1">
         <span id="tkt-device" class="ticket-field-val"></span>
       </div>
-      <div class="ticket-field">
+      <!-- 칸2: 이름 / 연락처 -->
+      <div class="ticket-field-2">
         <span class="ticket-field-val">
           <span id="tkt-name"></span>&nbsp;/&nbsp;<span id="tkt-phone"></span>
         </span>
       </div>
-      <div class="ticket-field">
+      <!-- 칸3: 7.22 언팩 이후 순차 연락 -->
+      <div class="ticket-field-3">
         <span class="ticket-field-val fixed">7.22 언팩 이후 순차 연락드립니다</span>
       </div>
-      <div class="ticket-field">
+      <!-- 칸4: 010 순차 전화상담 -->
+      <div class="ticket-field-4">
         <span class="ticket-field-val fixed">010 번호로 순차 전화상담 예정</span>
       </div>
     </div>
