@@ -338,7 +338,7 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
 
 /* ══ Sticky CTA ══ */
 .sticky-cta{
-  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  position:fixed;bottom:0;left:0;right:64px;z-index:100;
   padding:12px 20px 16px;
   background:linear-gradient(to top,#000 70%,transparent);
   display:flex;justify-content:center;
@@ -613,6 +613,52 @@ textarea.mform-input{resize:none;height:80px;}
   @keyframes popupIn{
     from{opacity:0;transform:translateX(10px);}
     to{opacity:1;transform:translateX(0);}
+  }
+}
+
+/* ══ 카카오 팝업 ══ */
+.kakao-popup{
+  position:fixed;
+  right:64px;top:calc(50% + 68px);
+  z-index:901;
+  background:#FAE100;
+  border-radius:16px;
+  padding:20px 22px;
+  min-width:200px;
+  box-shadow:0 8px 40px rgba(0,0,0,.4);
+  display:none;
+  flex-direction:column;
+  gap:12px;
+  animation:popupIn .2s cubic-bezier(.22,1,.36,1);
+}
+.kakao-popup.active{display:flex;}
+.kakao-popup-title{
+  font-size:12px;color:rgba(0,0,0,.5);
+  font-weight:500;letter-spacing:.05em;
+}
+.kakao-popup-name{
+  font-size:16px;font-weight:800;color:#3A1D1D;
+}
+.kakao-popup-link{
+  display:block;width:100%;
+  padding:12px;
+  background:#3A1D1D;
+  border:none;border-radius:10px;
+  color:#FAE100;font-size:14px;font-weight:700;
+  text-align:center;text-decoration:none;
+  cursor:pointer;
+  transition:opacity .2s;
+}
+.kakao-popup-link:hover{opacity:.85;}
+.kakao-popup-close{
+  position:absolute;top:10px;right:12px;
+  background:none;border:none;color:rgba(0,0,0,.3);
+  font-size:18px;cursor:pointer;line-height:1;
+}
+@media(max-width:640px){
+  .kakao-popup{
+    right:56px;top:auto;bottom:70px;
+    transform:none;
   }
 }
 
@@ -1052,6 +1098,12 @@ function closeTicket(){
 function togglePhonePopup(){
   var p = document.getElementById('phonePopup');
   p.classList.toggle('active');
+  document.getElementById('kakaoPopup').classList.remove('active');
+}
+function toggleKakaoPopup(){
+  var k = document.getElementById('kakaoPopup');
+  k.classList.toggle('active');
+  document.getElementById('phonePopup').classList.remove('active');
 }
 
 </script>
@@ -1213,12 +1265,12 @@ function togglePhonePopup(){
     <span class="side-quick-label">전화<br>상담</span>
   </button>
   <!-- 카카오톡 상담 -->
-  <a href="http://pf.kakao.com/_HxfVxcn/chat" target="_blank" class="side-quick-btn">
+  <button class="side-quick-btn" onclick="toggleKakaoPopup()">
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M12 3C7.03 3 3 6.36 3 10.5c0 2.7 1.7 5.07 4.27 6.43l-.9 3.32a.3.3 0 00.45.33l3.9-2.57c.41.05.84.08 1.28.08 4.97 0 9-3.36 9-7.5S16.97 3 12 3z" fill="#3A1D1D"/>
     </svg>
     <span class="side-quick-label" style="color:#3A1D1D;">카톡<br>문의</span>
-  </a>
+  </button>
 </div>
 
 <!-- 전화상담 팝업 -->
@@ -1227,6 +1279,14 @@ function togglePhonePopup(){
   <div class="phone-popup-title">전화 상담하기</div>
   <div class="phone-popup-number">1660-1412</div>
   <a href="tel:16601412" class="phone-popup-call">📞 &nbsp;전화 연결하기</a>
+</div>
+
+<!-- 카카오톡 팝업 -->
+<div class="kakao-popup" id="kakaoPopup">
+  <button class="kakao-popup-close" onclick="toggleKakaoPopup()">×</button>
+  <div class="kakao-popup-title">카카오톡 문의하기</div>
+  <div class="kakao-popup-name">유플러스 다이렉트</div>
+  <a href="http://pf.kakao.com/_HxfVxcn/chat" target="_blank" class="kakao-popup-link">💬 &nbsp;카카오톡 문의</a>
 </div>
 
 <!-- ══ 사전예약 알림 티켓 팝업 ══ -->
