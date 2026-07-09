@@ -55,7 +55,7 @@ html,body{background:#fff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','Noto 
 .showcase-img{
   width:min(600px,70vw);height:auto;display:block;
   animation:float 6s ease-in-out 1.8s infinite;
-  filter:drop-shadow(0 20px 40px rgba(233,30,140,.15));
+  filter:none;
   pointer-events:none;
 }
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
@@ -126,9 +126,9 @@ html,body{background:#fff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','Noto 
 .product-img-wrap{width:100%;height:320px;display:flex;align-items:flex-end;justify-content:center;transition:transform .6s cubic-bezier(.22,1,.36,1);}
 .product-card:hover .product-img-wrap{transform:translateY(-18px);}
 .product-img-wrap img{max-width:100%;max-height:320px;width:auto;height:auto;filter:drop-shadow(0 24px 48px rgba(0,20,80,.5));transition:filter .6s cubic-bezier(.22,1,.36,1);}
-.product-card.flip:hover .product-img-wrap img{filter:drop-shadow(0 0 30px rgba(160,100,255,.5)) drop-shadow(0 0 80px rgba(120,60,220,.25)) drop-shadow(0 30px 50px rgba(233,30,140,.1));}
-.product-card.fold:hover .product-img-wrap img{filter:drop-shadow(0 0 30px rgba(60,120,255,.55)) drop-shadow(0 0 80px rgba(30,80,200,.28)) drop-shadow(0 30px 50px rgba(233,30,140,.1));}
-.product-card.wide:hover .product-img-wrap img{filter:drop-shadow(0 0 30px rgba(180,200,255,.45)) drop-shadow(0 0 80px rgba(140,160,220,.22)) drop-shadow(0 30px 50px rgba(233,30,140,.1));}
+.product-card.flip:hover .product-img-wrap img{filter:drop-shadow(0 8px 20px rgba(233,30,140,.2));}
+.product-card.fold:hover .product-img-wrap img{filter:drop-shadow(0 8px 20px rgba(233,30,140,.2));}
+.product-card.wide:hover .product-img-wrap img{filter:drop-shadow(0 8px 20px rgba(233,30,140,.2));}
 .product-info{margin-top:28px;text-align:center;display:flex;flex-direction:column;gap:6px;}
 .product-name{color:#1a1a1a;font-size:18px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:-.01em;transition:color .3s ease;}
 .product-card:hover .product-name{color:#1a1a1a;color:#1a1a1a;}
@@ -242,8 +242,8 @@ html,body{background:#fff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','Noto 
   transition:transform .45s cubic-bezier(.22,1,.36,1);
 }
 .modal-overlay.active .modal-box{transform:translateY(0) scale(1);}
-.modal-silhouette{width:100%;height:260px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:#000;}
-.modal-silhouette::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 50% 60%,var(--glow-color,rgba(80,120,255,.2)) 0%,transparent 70%);}
+.modal-silhouette{width:100%;height:260px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:#FFF0F5;}
+.modal-silhouette::before{display:none;}
 .modal-silhouette img{height:200px;width:auto;opacity:.2;filter:blur(1.5px) brightness(1.5);position:relative;z-index:1;}
 .modal-date-wrap{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
 .modal-label{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#aaa;}
@@ -284,7 +284,7 @@ html,body{background:#fff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','Noto 
   display:flex;align-items:center;justify-content:center;
   position:relative;overflow:hidden;
 }
-.popup-product::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 50% 60%,var(--glow,rgba(80,140,255,.25)) 0%,transparent 65%);}
+.popup-product::before{display:none;}
 .popup-product-img{
   height:180px;width:auto;position:relative;z-index:1;
   transform:translateY(60px) scale(0.8);opacity:0;
@@ -339,7 +339,7 @@ html,body{background:#fff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','Noto 
 .sticky-cta{
   position:fixed;bottom:0;left:0;right:0;z-index:100;
   padding:12px 80px 16px 20px;
-  background:linear-gradient(to top,#000 70%,transparent);
+  background:#fff;border-top:1px solid rgba(233,30,140,.12);
   display:flex;justify-content:center;
 }
 .sticky-cta-btn{
@@ -1119,7 +1119,7 @@ function toggleKakaoPopup(){
 </script>
 
 
-<!-- ══ 사전예약 이유 섹션 ══ --><!-- deploy:20260710-1330 -->
+<!-- ══ 사전예약 이유 섹션 ══ --><!-- deploy:20260710-1345 -->
 <section style="width:100%;background:#fff;padding:40px 0;">
   <!-- PC: 원본 이미지 -->
   <div class="reason-pc" style="width:100%;max-width:900px;margin:0 auto;padding:0 40px;">
