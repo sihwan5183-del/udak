@@ -126,9 +126,9 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
 .product-img-wrap{width:100%;height:320px;display:flex;align-items:flex-end;justify-content:center;background:#ffffff;transition:transform .6s cubic-bezier(.22,1,.36,1);}
 .product-card:hover .product-img-wrap{transform:translateY(-18px);}
 .product-img-wrap img{max-width:100%;max-height:320px;width:auto;height:auto;filter:none;transition:filter .6s cubic-bezier(.22,1,.36,1);}
-.product-card.flip:hover .product-img-wrap img{filter:drop-shadow(0 8px 20px rgba(233,30,140,.2));}
-.product-card.fold:hover .product-img-wrap img{filter:drop-shadow(0 8px 20px rgba(233,30,140,.2));}
-.product-card.wide:hover .product-img-wrap img{filter:drop-shadow(0 8px 20px rgba(233,30,140,.2));}
+.product-card.flip:hover .product-img-wrap img{filter:none;}
+.product-card.fold:hover .product-img-wrap img{filter:none;}
+.product-card.wide:hover .product-img-wrap img{filter:none;}
 .product-info{margin-top:28px;text-align:center;display:flex;flex-direction:column;gap:6px;}
 .product-name{font-size:18px;font-weight:700;color:#111111;letter-spacing:-.01em;transition:color .3s ease;}
 .product-card:hover .product-name{color:#1a1a1a;color:#1a1a1a;}
@@ -199,7 +199,7 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
 .zone-label{
   position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
   font-size:clamp(9px,1.1vw,13px);font-weight:700;color:#fff;
-  background:rgba(0,0,0,.55);backdrop-filter:blur(4px);
+  background:rgba(0,0,0,.55);backdrop-filter:none;
   padding:3px 10px;border-radius:20px;white-space:nowrap;
   pointer-events:none;letter-spacing:.02em;
 }
@@ -229,7 +229,7 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
 ══════════════════════════════ */
 .modal-overlay{
   position:fixed;inset:0;z-index:100;
-  background:rgba(0,0,0,.88);backdrop-filter:blur(16px);
+  background:rgba(0,0,0,.88);backdrop-filter:none;
   display:flex;align-items:center;justify-content:center;
   opacity:0;pointer-events:none;transition:opacity .4s ease;
 }
@@ -244,7 +244,7 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
 .modal-overlay.active .modal-box{transform:translateY(0) scale(1);}
 .modal-silhouette{width:100%;height:260px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:#ffffff;}
 .modal-silhouette::before{display:none;}
-.modal-silhouette img{height:200px;width:auto;opacity:.2;filter:blur(1.5px) brightness(1.5);position:relative;z-index:1;}
+.modal-silhouette img{height:200px;width:auto;opacity:1;filter:none;position:relative;z-index:1;}
 .modal-date-wrap{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
 .modal-label{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#aaa;}
 .modal-date{font-size:clamp(52px,12vw,76px);font-weight:800;color:#fff;letter-spacing:-.04em;line-height:1;}
@@ -267,7 +267,7 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
 .benefit-popup{
   position:fixed;inset:0;z-index:200;
   display:flex;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.88);backdrop-filter:blur(16px);
+  background:rgba(0,0,0,.88);backdrop-filter:none;
   opacity:0;pointer-events:none;transition:opacity .4s ease;
 }
 .benefit-popup.active{opacity:1;pointer-events:all;}
@@ -289,7 +289,7 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
   height:180px;width:auto;position:relative;z-index:1;
   transform:translateY(60px) scale(0.8);opacity:0;
   transition:transform .6s cubic-bezier(.22,1,.36,1) .1s,opacity .5s ease .1s;
-  filter:drop-shadow(0 20px 40px rgba(0,0,0,.8));
+  filter:none;
 }
 .benefit-popup.active .popup-product-img{transform:translateY(0) scale(1);opacity:1;}
 .popup-body{padding:28px 32px 32px;display:flex;flex-direction:column;gap:10px;background:#ffffff;border-top:1px solid #f0f0f0;}
@@ -664,7 +664,7 @@ textarea.mform-input{resize:none;height:80px;}
 /* ══ 사전예약 알림 티켓 ══ */
 .ticket-overlay{
   position:fixed;inset:0;z-index:9999;
-  background:rgba(0,0,0,.92);backdrop-filter:blur(20px);
+  background:rgba(0,0,0,.92);backdrop-filter:none;
   display:flex;align-items:center;justify-content:center;
   opacity:0;pointer-events:none;
   transition:opacity .4s ease;
@@ -1119,7 +1119,7 @@ function toggleKakaoPopup(){
 </script>
 
 
-<!-- ══ 사전예약 이유 섹션 ══ --><!-- deploy:20260710-1435 -->
+<!-- ══ 사전예약 이유 섹션 ══ --><!-- deploy:20260710-1450 -->
 <section style="width:100%;background:#ffffff;padding:40px 0;">
   <!-- PC: 원본 이미지 -->
   <div class="reason-pc" style="width:100%;max-width:900px;margin:0 auto;padding:0 40px;">
