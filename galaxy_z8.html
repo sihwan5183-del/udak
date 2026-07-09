@@ -142,14 +142,14 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
    케이스 혜택 섹션
 ══════════════════════════════ */
 .case-section{width:100%;background:#fff;padding:40px 0 60px;}
-.case-inner{max-width:1200px;margin:0 auto;padding:0 60px;display:flex;flex-direction:column;align-items:center;gap:0;}
+.case-inner{max-width:800px;margin:0 auto;padding:0 40px;display:flex;flex-direction:column;align-items:center;gap:0;}
 .case-eyebrow{
   font-size:clamp(16px,2vw,24px);font-weight:700;letter-spacing:.12em;
   text-transform:uppercase;color:#1A1A1A;margin-bottom:48px;text-align:center;
   opacity:0;transform:translateY(16px);transition:opacity .8s ease,transform .8s ease;
 }
 .case-eyebrow.visible{opacity:1;transform:translateY(0);}
-.case-img{width:100%;max-width:900px;height:auto;display:block;border-radius:16px;margin:0 auto;}
+.case-img{width:100%;max-width:700px;height:auto;display:block;border-radius:16px;margin:0 auto;}
 .case-list{list-style:none;display:flex;width:100%;border-top:1px solid rgba(233,30,140,.15);}
 .case-list li{
   flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;
@@ -175,7 +175,7 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
 .bgt-sub{font-size:clamp(13px,1.3vw,16px);color:rgba(255,255,255,.4);}
 
 .showcase-grid-wrap{
-  position:relative;width:min(900px,92vw);margin:0 auto;
+  position:relative;width:min(800px,88vw);margin:0 auto;
 }
 .showcase-grid-wrap img{width:100%;height:auto;display:block;border-radius:12px;}
 .grid-zones{
@@ -1110,9 +1110,9 @@ function toggleKakaoPopup(){
 
 
 <!-- ══ 사전예약 이유 섹션 ══ --><!-- deploy:20260710-1216 -->
-<section style="width:100%;background:#000;padding:40px 0;">
+<section style="width:100%;background:#fff;padding:40px 0;">
   <!-- PC: 원본 이미지 -->
-  <div class="reason-pc" style="width:100%;">
+  <div class="reason-pc" style="width:100%;max-width:900px;margin:0 auto;padding:0 40px;">
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/reason-section.png" alt="사전예약 이유" style="width:100%;height:auto;display:block;border-radius:20px;">
   </div>
   <!-- 모바일: 세로형 이미지 -->
@@ -1122,9 +1122,9 @@ function toggleKakaoPopup(){
 </section>
 
 <!-- ══ 사전예약 절차 섹션 ══ -->
-<section style="width:100%;background:#000;padding:40px 0 60px;">
+<section style="width:100%;background:#FFF8F8;padding:40px 0 60px;">
   <!-- PC: 원본 이미지 -->
-  <div class="reason-pc" style="width:100%;">
+  <div class="reason-pc" style="width:100%;max-width:900px;margin:0 auto;padding:0 40px;">
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/step-section.png" alt="사전예약 절차" style="width:100%;height:auto;display:block;border-radius:20px;">
   </div>
   <!-- 모바일: 세로형 이미지 -->
