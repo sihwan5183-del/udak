@@ -141,19 +141,19 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
 /* ══════════════════════════════
    케이스 혜택 섹션
 ══════════════════════════════ */
-.case-section{width:100%;background:#000;padding:40px 0 60px;}
+.case-section{width:100%;background:#fff;padding:40px 0 60px;}
 .case-inner{max-width:1200px;margin:0 auto;padding:0 60px;display:flex;flex-direction:column;align-items:center;gap:0;}
 .case-eyebrow{
   font-size:clamp(16px,2vw,24px);font-weight:700;letter-spacing:.12em;
-  text-transform:uppercase;color:#fff;margin-bottom:48px;text-align:center;
+  text-transform:uppercase;color:#1A1A1A;margin-bottom:48px;text-align:center;
   opacity:0;transform:translateY(16px);transition:opacity .8s ease,transform .8s ease;
 }
 .case-eyebrow.visible{opacity:1;transform:translateY(0);}
-.case-img{width:100%;height:auto;display:block;border-radius:16px;}
-.case-list{list-style:none;display:flex;width:100%;border-top:1px solid rgba(255,255,255,.1);}
+.case-img{width:100%;max-width:900px;height:auto;display:block;border-radius:16px;margin:0 auto;}
+.case-list{list-style:none;display:flex;width:100%;border-top:1px solid rgba(233,30,140,.15);}
 .case-list li{
   flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;
-  padding:32px 20px;border-right:1px solid rgba(255,255,255,.1);
+  padding:32px 20px;border-right:1px solid rgba(233,30,140,.15);
   transition:background .3s ease;
 }
 .case-list li:last-child{border-right:none;}
@@ -164,7 +164,7 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
 /* ══════════════════════════════
    혜택 진열장 섹션
 ══════════════════════════════ */
-.benefit-grid-section{width:100%;background:#000;padding:60px 0 80px;}
+.benefit-grid-section{width:100%;background:#FFF8F8;padding:60px 0 80px;}
 .benefit-grid-title{
   text-align:center;margin-bottom:52px;
   opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease;
@@ -175,7 +175,7 @@ html,body{background:#000;color:#fff;font-family:'Apple SD Gothic Neo','Noto San
 .bgt-sub{font-size:clamp(13px,1.3vw,16px);color:rgba(255,255,255,.4);}
 
 .showcase-grid-wrap{
-  position:relative;width:min(1100px,92vw);margin:0 auto;
+  position:relative;width:min(900px,92vw);margin:0 auto;
 }
 .showcase-grid-wrap img{width:100%;height:auto;display:block;border-radius:12px;}
 .grid-zones{
@@ -803,7 +803,7 @@ textarea.mform-input{resize:none;height:80px;}
 <section class="case-section">
   <div class="case-inner">
     <p class="case-eyebrow">유플러스 다이렉트가 보장하는 혜택</p>
-    <img class="case-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-ipad.png" alt="혜택 구성품">
+    <img class="case-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-ipad.png?v=20260710" alt="혜택 구성품">
     <ul class="case-list">
       <li><span class="b-num">01</span><span class="b-item">프리미엄<br>클리어 케이스</span></li>
       <li><span class="b-num">02</span><span class="b-item">강화 글래스<br>보호필름</span></li>
@@ -820,7 +820,7 @@ textarea.mform-input{resize:none;height:80px;}
     <p class="bgt-sub">혜택을 선택해 보세요.</p>
   </div>
   <div class="showcase-grid-wrap">
-    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-ott.png" alt="혜택 진열장">
+    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-ott.png?v=20260710" alt="혜택 진열장">
     <div class="grid-zones">
       <div class="zone" onclick="openBenefit(0)"></div>
       <div class="zone" onclick="openBenefit(1)"></div>
@@ -1116,7 +1116,7 @@ function toggleKakaoPopup(){
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/reason-section.png" alt="사전예약 이유" style="width:100%;height:auto;display:block;border-radius:20px;">
   </div>
   <!-- 모바일: 세로형 이미지 -->
-  <div class="reason-mobile" style="width:100%;">
+  <div class="reason-mobile" style="display:none;width:100%;">
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/reason-mobile.png" alt="사전예약 이유 모바일" style="width:100%;height:auto;display:block;">
   </div>
 </section>
@@ -1128,7 +1128,7 @@ function toggleKakaoPopup(){
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/step-section.png" alt="사전예약 절차" style="width:100%;height:auto;display:block;border-radius:20px;">
   </div>
   <!-- 모바일: 세로형 이미지 -->
-  <div class="reason-mobile" style="width:100%;">
+  <div class="reason-mobile" style="display:none;width:100%;">
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/step-mobile.png" alt="사전예약 절차 모바일" style="width:100%;height:auto;display:block;">
   </div>
 </section>
