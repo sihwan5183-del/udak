@@ -113,17 +113,17 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
 .products-inner{display:flex;align-items:stretch;max-width:1300px;margin:0 auto;}
 .product-card{
   flex:1;display:flex;flex-direction:column;align-items:center;
-  padding:50px 32px 40px;position:relative;cursor:pointer;
+  background:#ffffff;padding:50px 32px 40px;position:relative;cursor:pointer;
   opacity:0;transform:translateY(40px);
   transition:opacity .8s ease var(--delay),transform .8s cubic-bezier(.22,1,.36,1) var(--delay),background .4s ease;
 }
 .product-card.visible{opacity:1;transform:translateY(0);}
-.product-card:hover{background:rgba(233,30,140,.04);}
+.product-card:hover{background:#ffffff;}
 .product-card+.product-card::before{
   content:'';position:absolute;left:0;top:8%;bottom:8%;width:1px;
   background:rgba(233,30,140,.15);
 }
-.product-img-wrap{width:100%;height:320px;display:flex;align-items:flex-end;justify-content:center;transition:transform .6s cubic-bezier(.22,1,.36,1);}
+.product-img-wrap{width:100%;height:320px;display:flex;align-items:flex-end;justify-content:center;background:#ffffff;transition:transform .6s cubic-bezier(.22,1,.36,1);}
 .product-card:hover .product-img-wrap{transform:translateY(-18px);}
 .product-img-wrap img{max-width:100%;max-height:320px;width:auto;height:auto;filter:none;transition:filter .6s cubic-bezier(.22,1,.36,1);}
 .product-card.flip:hover .product-img-wrap img{filter:drop-shadow(0 8px 20px rgba(233,30,140,.2));}
@@ -802,7 +802,7 @@ textarea.mform-input{resize:none;height:80px;}
 <section class="case-section">
   <div class="case-inner">
     <p class="case-eyebrow">유플러스 다이렉트가 보장하는 혜택</p>
-    <img class="case-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-ipad.png?v=20260710" alt="혜택 구성품">
+    <img class="case-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-ipad.png?v=20260710b" alt="혜택 구성품">
     <ul class="case-list">
       <li><span class="b-num">01</span><span class="b-item">프리미엄<br>클리어 케이스</span></li>
       <li><span class="b-num">02</span><span class="b-item">강화 글래스<br>보호필름</span></li>
@@ -1119,7 +1119,7 @@ function toggleKakaoPopup(){
 </script>
 
 
-<!-- ══ 사전예약 이유 섹션 ══ --><!-- deploy:20260710-1425 -->
+<!-- ══ 사전예약 이유 섹션 ══ --><!-- deploy:20260710-1435 -->
 <section style="width:100%;background:#ffffff;padding:40px 0;">
   <!-- PC: 원본 이미지 -->
   <div class="reason-pc" style="width:100%;max-width:900px;margin:0 auto;padding:0 40px;">
