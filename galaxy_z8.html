@@ -281,7 +281,7 @@ html,body{background:#fff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','Noto 
 }
 .benefit-popup.active .popup-box{transform:scale(1) translateY(0);}
 .popup-product{
-  width:100%;height:240px;background:#000;
+  width:100%;height:240px;background:#FFF0F5;
   display:flex;align-items:center;justify-content:center;
   position:relative;overflow:hidden;
 }
@@ -293,12 +293,12 @@ html,body{background:#fff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','Noto 
   filter:drop-shadow(0 20px 40px rgba(0,0,0,.8));
 }
 .benefit-popup.active .popup-product-img{transform:translateY(0) scale(1);opacity:1;}
-.popup-body{padding:28px 32px 32px;display:flex;flex-direction:column;gap:10px;border-top:1px solid rgba(255,255,255,.07);}
-.popup-name{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em;}
-.popup-desc{font-size:14px;color:rgba(255,255,255,.65);line-height:1.8;}
+.popup-body{padding:28px 32px 32px;display:flex;flex-direction:column;gap:10px;border-top:1px solid rgba(233,30,140,.12);}
+.popup-name{font-size:22px;font-weight:800;color:#1a1a1a;letter-spacing:-.02em;}
+.popup-desc{font-size:14px;color:#555;line-height:1.8;}
 .popup-badge{display:inline-flex;align-items:center;padding:6px 14px;background:rgba(233,30,140,.05);border-radius:100px;font-size:12px;font-weight:600;color:#888;letter-spacing:.05em;width:fit-content;margin-top:4px;}
 .popup-close{position:absolute;top:14px;right:14px;z-index:10;width:30px;height:30px;border-radius:50%;background:rgba(233,30,140,.06);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;}
-.popup-close:hover{background:rgba(255,255,255,.18);}
+.popup-close:hover{background:rgba(233,30,140,.2);}
 
 @keyframes pulse{0%,100%{opacity:.3}50%{opacity:.9}}
 @keyframes fadeup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
@@ -859,7 +859,7 @@ textarea.mform-input{resize:none;height:80px;}
 </div>
 
 <!-- ══ 혜택 팝업 ══ -->
-<div class="benefit-popup" id="benefitPopup" onclick="closeBenefit(event)">
+<div class="benefit-popup" id="benefitPopup" onclick="closeBenefit(event)" style="background:rgba(0,0,0,.4);">
   <div class="popup-box">
     <button class="popup-close" onclick="document.getElementById('benefitPopup').classList.remove('active')">✕</button>
     <div class="popup-product" id="popupProductWrap">
@@ -910,7 +910,7 @@ function startCountdown() {
 const BENEFITS = [
   { name:"갤럭시 워치 9", desc:"사전예약 신청 고객 대상<br>갤럭시 워치 9 증정 혜택", badge:"워치 증정", glow:"rgba(80,200,120,.25)", img:"https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-buds.png" },
   { name:"갤럭시 탭 A11+", desc:"사전예약 신청 고객 대상<br>갤럭시 탭 A11+ 증정 혜택", badge:"탭 증정", glow:"rgba(60,160,255,.25)", img:"https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-ipad.png" },
-  { name:"우리집 인터넷 요금 면제", desc:"유플러스로 통신사 이동하면<br>우리집 인터넷 요금이 무료!<br><span style='font-size:28px'>📶</span>", badge:"인터넷 결합 혜택", glow:"rgba(255,200,60,.2)", img:"" },
+  { name:"우리집 인터넷 요금 면제", desc:"유플러스로 통신사 이동하면<br>우리집 인터넷 요금이 무료!<br><span style='font-size:28px;font-family:Apple Color Emoji,Segoe UI Emoji,sans-serif;'>🌐</span>", badge:"인터넷 결합 혜택", glow:"rgba(255,200,60,.2)", img:"" },
   { name:"티비형 iPad", desc:"사전예약 신청 고객 대상<br><span style='color:#ea0078;font-weight:700;'>유플러스 다이렉트</span>에서 사전 예약을 하면<br>티비가 가능한 아이패드를 받을 수 있다구?", badge:"iPad 증정", glow:"rgba(200,200,255,.2)", img:"https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-tab.png" },
   { name:"OTT 혜택", desc:"사전예약 신청 고객 대상<br>넷플릭스 / 디즈니 플러스 / 티빙 택 1", badge:"OTT 혜택", glow:"rgba(255,60,60,.2)", img:"https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-ott.png?v=ott" },
   { name:"얼리버드 한정 혜택", desc:"🎁 <strong>7.11~7.22 사전예약 후 구매 고객님께 드리는 한정 혜택!</strong><br><br>이 기간 안에 사전예약 후 구매하신<br>고객님에게만 드리는 특별 혜택입니다.", badge:"얼리버드 혜택", glow:"rgba(233,30,140,.25)", img:"https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-watch.png?v=gift" },
@@ -1120,7 +1120,7 @@ function toggleKakaoPopup(){
 </script>
 
 
-<!-- ══ 사전예약 이유 섹션 ══ --><!-- deploy:20260710-1300 -->
+<!-- ══ 사전예약 이유 섹션 ══ --><!-- deploy:20260710-1310 -->
 <section style="width:100%;background:#fff;padding:40px 0;">
   <!-- PC: 원본 이미지 -->
   <div class="reason-pc" style="width:100%;max-width:900px;margin:0 auto;padding:0 40px;">
