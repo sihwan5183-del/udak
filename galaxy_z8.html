@@ -15,7 +15,7 @@ html,body{background:#fff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','Noto 
 
 .spotlight-overlay{
   position:fixed;inset:0;background:#fff;z-index:50;
-  animation:spotlight 2s cubic-bezier(.4,0,.2,1) forwards;pointer-events:none;
+  animation:none;opacity:0;pointer-events:none;
 }
 @keyframes spotlight{0%{opacity:1}100%{opacity:0}}
 
@@ -55,7 +55,7 @@ html,body{background:#fff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','Noto 
 .showcase-img{
   width:min(600px,70vw);height:auto;display:block;
   animation:float 6s ease-in-out 1.8s infinite;
-  filter:drop-shadow(0 40px 80px rgba(0,0,0,.8));
+  filter:drop-shadow(0 20px 40px rgba(233,30,140,.15));
   pointer-events:none;
 }
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
@@ -72,18 +72,17 @@ html,body{background:#fff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','Noto 
   color:#E91E8C;margin-bottom:18px;
   display:flex;align-items:center;gap:12px;
 }
-.hero-eyebrow::before{content:'';display:inline-block;width:28px;height:1px;background:rgba(255,255,255,.4);}
-.hero-tag{font-size:clamp(14px,1.4vw,19px);font-weight:600;color:#fff;margin-bottom:12px;line-height:1.6;}
+.hero-eyebrow::before{content:'';display:inline-block;width:28px;height:1px;background:rgba(233,30,140,.4);}
+.hero-tag{font-size:clamp(14px,1.4vw,19px);font-weight:600;color:#E91E8C;margin-bottom:12px;line-height:1.6;}
 .hero-title{
   font-size:clamp(32px,4vw,58px);font-weight:800;
   letter-spacing:-.03em;line-height:1.1;margin-bottom:8px;word-break:keep-all;
-  background:linear-gradient(180deg,#fff 0%,rgba(255,255,255,.8) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  color:#1a1a1a;
   text-align:center;
 }
-.hero-event{font-size:clamp(22px,2.8vw,38px);font-weight:800;color:#fff;letter-spacing:-.02em;margin-bottom:24px;}
-.hero-sub{font-size:clamp(13px,1.3vw,16px);color:rgba(255,255,255,.75);font-weight:300;line-height:1.9;margin-bottom:12px;word-break:keep-all;}
-.hero-sub2{font-size:clamp(12px,1.2vw,15px);color:rgba(255,255,255,.75);font-weight:300;line-height:1.9;margin-bottom:36px;word-break:keep-all;}
+.hero-event{font-size:clamp(22px,2.8vw,38px);font-weight:800;color:#1a1a1a;letter-spacing:-.02em;margin-bottom:24px;}
+.hero-sub{font-size:clamp(13px,1.3vw,16px);color:#555;font-weight:300;line-height:1.9;margin-bottom:12px;word-break:keep-all;}
+.hero-sub2{font-size:clamp(12px,1.2vw,15px);color:#777;font-weight:300;line-height:1.9;margin-bottom:36px;word-break:keep-all;}
 
 .cta-wrap{display:flex;gap:14px;align-items:center;justify-content:center;}
 .cta-primary{
@@ -102,7 +101,7 @@ html,body{background:#fff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','Noto 
 /* ══════════════════════════════
    제품 3종
 ══════════════════════════════ */
-.products-section{width:100%;background:#000;padding:60px 0 80px;}
+.products-section{width:100%;background:#fff;padding:60px 0 80px;}
 .products-section-title{
   text-align:center;margin-bottom:60px;
   opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease;
@@ -119,20 +118,20 @@ html,body{background:#fff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','Noto 
   transition:opacity .8s ease var(--delay),transform .8s cubic-bezier(.22,1,.36,1) var(--delay),background .4s ease;
 }
 .product-card.visible{opacity:1;transform:translateY(0);}
-.product-card:hover{background:rgba(255,255,255,.025);}
+.product-card:hover{background:rgba(233,30,140,.04);}
 .product-card+.product-card::before{
   content:'';position:absolute;left:0;top:8%;bottom:8%;width:1px;
-  background:linear-gradient(to bottom,transparent,rgba(255,255,255,.3) 20%,rgba(255,255,255,.3) 80%,transparent);
+  background:rgba(233,30,140,.15);
 }
 .product-img-wrap{width:100%;height:320px;display:flex;align-items:flex-end;justify-content:center;transition:transform .6s cubic-bezier(.22,1,.36,1);}
 .product-card:hover .product-img-wrap{transform:translateY(-18px);}
 .product-img-wrap img{max-width:100%;max-height:320px;width:auto;height:auto;filter:drop-shadow(0 24px 48px rgba(0,20,80,.5));transition:filter .6s cubic-bezier(.22,1,.36,1);}
-.product-card.flip:hover .product-img-wrap img{filter:drop-shadow(0 0 30px rgba(160,100,255,.5)) drop-shadow(0 0 80px rgba(120,60,220,.25)) drop-shadow(0 30px 50px #000);}
-.product-card.fold:hover .product-img-wrap img{filter:drop-shadow(0 0 30px rgba(60,120,255,.55)) drop-shadow(0 0 80px rgba(30,80,200,.28)) drop-shadow(0 30px 50px #000);}
-.product-card.wide:hover .product-img-wrap img{filter:drop-shadow(0 0 30px rgba(180,200,255,.45)) drop-shadow(0 0 80px rgba(140,160,220,.22)) drop-shadow(0 30px 50px #000);}
+.product-card.flip:hover .product-img-wrap img{filter:drop-shadow(0 0 30px rgba(160,100,255,.5)) drop-shadow(0 0 80px rgba(120,60,220,.25)) drop-shadow(0 30px 50px rgba(233,30,140,.1));}
+.product-card.fold:hover .product-img-wrap img{filter:drop-shadow(0 0 30px rgba(60,120,255,.55)) drop-shadow(0 0 80px rgba(30,80,200,.28)) drop-shadow(0 30px 50px rgba(233,30,140,.1));}
+.product-card.wide:hover .product-img-wrap img{filter:drop-shadow(0 0 30px rgba(180,200,255,.45)) drop-shadow(0 0 80px rgba(140,160,220,.22)) drop-shadow(0 30px 50px rgba(233,30,140,.1));}
 .product-info{margin-top:28px;text-align:center;display:flex;flex-direction:column;gap:6px;}
-.product-name{font-size:18px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:-.01em;transition:color .3s ease;}
-.product-card:hover .product-name{color:#1a1a1a;}
+.product-name{color:#1a1a1a;font-size:18px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:-.01em;transition:color .3s ease;}
+.product-card:hover .product-name{color:#1a1a1a;color:#1a1a1a;}
 .product-badge{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:rgba(233,30,140,.3);transition:color .3s ease;}
 .product-card.flip:hover .product-badge{color:rgba(160,100,255,.6);}
 .product-card.fold:hover .product-badge{color:rgba(80,140,255,.6);}
@@ -785,7 +784,7 @@ textarea.mform-input{resize:none;height:80px;}
   </div>
   <div class="products-inner">
     <div class="product-card flip" style="--delay:.0s" onclick="openModal('플립 8',this.querySelector('img').src,'rgba(160,100,255,.3)','rgba(160,100,255,.9)')">
-      <div class="product-img-wrap"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-watch.png" alt="플립 8"></div>
+      <div class="product-img-wrap"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip.png" alt="플립 8"></div>
       <div class="product-info"><span class="product-name">플립 8</span></div>
     </div>
     <div class="product-card fold" style="--delay:.15s" onclick="openModal('폴드 8',this.querySelector('img').src,'rgba(60,120,255,.3)','rgba(80,140,255,.9)')">
@@ -1120,7 +1119,7 @@ function toggleKakaoPopup(){
 </script>
 
 
-<!-- ══ 사전예약 이유 섹션 ══ --><!-- deploy:20260710-1310 -->
+<!-- ══ 사전예약 이유 섹션 ══ --><!-- deploy:20260710-1330 -->
 <section style="width:100%;background:#fff;padding:40px 0;">
   <!-- PC: 원본 이미지 -->
   <div class="reason-pc" style="width:100%;max-width:900px;margin:0 auto;padding:0 40px;">
