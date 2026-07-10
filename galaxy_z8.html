@@ -1357,12 +1357,8 @@ function mSubmitForm(){
   });
 }
 function showTicket(name, phone, device){
-  document.getElementById('tkt-device').textContent = device || '미선택';
-  document.getElementById('tkt-name').textContent = name;
-  var ph = phone;
-  if(ph.length===11) ph=ph.slice(0,3)+'-'+ph.slice(3,7)+'-'+ph.slice(7);
-  document.getElementById('tkt-phone').textContent = ph;
-  document.getElementById('ticketOverlay').classList.add('active');
+  var el = document.getElementById('ticketOverlay');
+  el.style.display = 'flex';
   document.body.style.overflow='hidden';
 }
 function closeTicket(){
@@ -1670,30 +1666,10 @@ function fSubmit(){
 </div>
 
 <!-- ══ 사전예약 알림 티켓 팝업 ══ -->
-<div id="ticketOverlay" class="ticket-overlay" onclick="if(event.target===this)closeTicket()">
-  <div class="ticket-wrap">
-    <img class="ticket-bg-img" src="/assets/ticket-bg.png" alt="사전예약 알림 티켓">
-    <div class="ticket-fields">
-      <!-- 칸1: 희망기종 -->
-      <div class="ticket-field-1">
-        <span id="tkt-device" class="ticket-field-val"></span>
-      </div>
-      <!-- 칸2: 이름 / 연락처 -->
-      <div class="ticket-field-2">
-        <span class="ticket-field-val">
-          <span id="tkt-name"></span>&nbsp;/&nbsp;<span id="tkt-phone"></span>
-        </span>
-      </div>
-      <!-- 칸3: 7.22 언팩 이후 순차 연락 -->
-      <div class="ticket-field-3">
-        <span class="ticket-field-val fixed">7.22 언팩 이후 순차 연락드립니다</span>
-      </div>
-      <!-- 칸4: 010 순차 전화상담 -->
-      <div class="ticket-field-4">
-        <span class="ticket-field-val fixed">010 번호로 순차 전화상담 예정</span>
-      </div>
-    </div>
-    <button class="ticket-close-btn" onclick="closeTicket()">×</button>
+<div id="ticketOverlay" class="ticket-overlay" onclick="if(event.target===this)closeTicket()" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);align-items:center;justify-content:center;">
+  <div style="position:relative;width:90%;max-width:400px;">
+    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/ticket-complete.png" alt="사전예약 완료" style="width:100%;height:auto;display:block;border-radius:24px;">
+    <button onclick="closeTicket()" style="position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.3);border:none;color:#fff;font-size:18px;cursor:pointer;line-height:32px;text-align:center;">×</button>
   </div>
 </div>
 </body>
