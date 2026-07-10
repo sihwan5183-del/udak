@@ -131,8 +131,8 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
 .product-card{
   flex:1;display:flex;flex-direction:column;align-items:center;
   background:#ffffff;padding:24px 16px 24px;position:relative;cursor:pointer;
-  opacity:0;transform:translateY(40px);
-  transition:opacity .8s ease var(--delay),transform .8s cubic-bezier(.22,1,.36,1) var(--delay),background .4s ease;
+  opacity:1;transform:translateY(0);
+  transition:background .4s ease;
 }
 .product-card.visible{opacity:1;transform:translateY(0);}
 .product-card:hover{background:#ffffff;}
@@ -574,7 +574,7 @@ textarea.mform-input{resize:none;height:80px;}
 .side-quick{
   position:fixed;
   right:0;top:50%;transform:translateY(-50%);
-  z-index:900;
+  z-index:9000;
   display:flex;flex-direction:column;
   gap:0;
 }
