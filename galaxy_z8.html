@@ -371,12 +371,22 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
   }
   .product-card{
     flex:1;
-    padding:20px 8px 20px;
+    padding:16px 6px 16px;
     min-width:0;
+  }
+  .product-img-wrap{
+    height:auto !important;
+    min-height:0;
   }
   .product-img-wrap img{
     width:100%;
     max-width:100%;
+  }
+  .product-card+.product-card::before{
+    content:'';
+    position:absolute;
+    left:0;top:8%;bottom:8%;width:1px;
+    background:rgba(233,30,140,.15);
   }
   .product-name{
     font-size:12px;
