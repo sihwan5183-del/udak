@@ -1197,11 +1197,7 @@ function submitForm(){
   var birthDay = parseInt(birth.substring(4,6));
   var age = today.getFullYear() - birthYear;
   if(today.getMonth()+1 < birthMonth || (today.getMonth()+1 === birthMonth && today.getDate() < birthDay)) age--;
-  if(age<19){ alert('미성년자 고객님 안내
-
-미성년자 고객님은 개통 시 본인 신분증 확인과
-법정대리인 동의가 필수입니다.
-보호자와 함께 신청해 주세요.'); }
+  if(age<19){ alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 신청해 주세요.'); }
   if(!privacy){ alert('개인정보 수집 및 이용에 동의해주세요.'); return; }
   alert('사전예약 신청이 완료되었습니다!\n빠르게 연락드리겠습니다 :)');
 }
@@ -1267,11 +1263,7 @@ function mSubmitForm(){
   var bDay = parseInt(birth.substring(4,6));
   var age = today.getFullYear() - bYear;
   if(today.getMonth()+1 < bMonth || (today.getMonth()+1 === bMonth && today.getDate() < bDay)) age--;
-  if(age<19){ alert('미성년자 고객님 안내
-
-미성년자 고객님은 개통 시 본인 신분증 확인과
-법정대리인 동의가 필수입니다.
-보호자와 함께 신청해 주세요.'); }
+  if(age<19){ alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 신청해 주세요.'); }
   if(!ok){ alert('개인정보 수집 및 이용에 동의해주세요.'); return; }
   var phoneF = phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
   var birthF = '19'+birth.slice(0,2)+'-'+birth.slice(2,4)+'-'+birth.slice(4,6);
@@ -1507,11 +1499,7 @@ function fSubmit(){
   var bY=2000+parseInt(birth.substring(0,2));if(bY>today.getFullYear())bY-=100;
   var age=today.getFullYear()-bY;
   if(today.getMonth()+1<parseInt(birth.substring(2,4))||(today.getMonth()+1===parseInt(birth.substring(2,4))&&today.getDate()<parseInt(birth.substring(4,6))))age--;
-  if(age<19){ alert('미성년자 고객님 안내
-
-미성년자 고객님은 개통 시 본인 신분증 확인과
-법정대리인 동의가 필수입니다.
-보호자와 함께 신청해 주세요.'); }
+  if(age<19){ alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 신청해 주세요.'); }
   if(!privacy){alert('개인정보 수집 및 이용에 동의해주세요.');return;}
   var memo=document.getElementById('fMemo').value.trim();
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
