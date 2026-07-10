@@ -1497,7 +1497,10 @@ function fSubmit(){
   var today=new Date();
   var age=today.getFullYear()-parseInt(birth.substring(0,4));
   if(today.getMonth()+1<parseInt(birth.substring(4,6))||(today.getMonth()+1===parseInt(birth.substring(4,6))&&today.getDate()<parseInt(birth.substring(6,8))))age--;
-  if(age<19){alert('만 19세 미만 미성년자는 신청이 불가합니다.');return;}
+  if(age<19){
+    var go = confirm('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과 법정대리인 동의가 필수입니다.\n법정대리인 동의 없이 단독 구매 및 개통은 어렵습니다.\n보호자와 함께 신청해 주세요.\n\n[확인] 을 누르시면 신청이 계속됩니다.');
+    if(!go) return;
+  }
   if(!privacy){alert('개인정보 수집 및 이용에 동의해주세요.');return;}
   var memo=document.getElementById('fMemo').value.trim();
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
