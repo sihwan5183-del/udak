@@ -832,12 +832,7 @@ textarea.mform-input{resize:none;height:80px;}
     <div class="hero-text" style="margin-top:0;">
       <p class="hero-tag">유플러스 다이렉트와 함께하는</p>
       <h1 class="hero-title">갤럭시 Z 폴더블 8 시리즈</h1>
-      <p class="hero-event" style="position:relative;display:inline-block;">사전예약 이벤트
-        <svg style="position:absolute;bottom:-6px;left:0;width:100%;height:12px;" viewBox="0 0 200 12" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M2,8 C30,3 60,11 90,6 C120,1 150,10 198,5" stroke="#E91E8C" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
-          <path d="M2,10 C40,6 80,12 120,8 C155,5 175,9 198,7" stroke="#E91E8C" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/>
-        </svg>
-      </p>
+      <p class="hero-event" style="text-decoration:underline;text-decoration-color:#E91E8C;text-underline-offset:6px;text-decoration-thickness:3px;">사전예약 이벤트</p>
 
     </div>
 
@@ -1200,7 +1195,7 @@ function submitForm(){
   var birthDay = parseInt(birth.substring(6,8));
   var age = today.getFullYear() - birthYear;
   if(today.getMonth()+1 < birthMonth || (today.getMonth()+1 === birthMonth && today.getDate() < birthDay)) age--;
-  if(age < 19){ alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 방문해 주세요.'); return; }
+  if(age < 19){ alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 신청해 주세요.'); }
   if(!privacy){ alert('개인정보 수집 및 이용에 동의해주세요.'); return; }
   alert('사전예약 신청이 완료되었습니다!\n빠르게 연락드리겠습니다 :)');
 }
@@ -1262,7 +1257,7 @@ function mSubmitForm(){
   var today = new Date();
   var age = today.getFullYear() - parseInt(birth.substring(0,4));
   if(today.getMonth()+1 < parseInt(birth.substring(4,6)) || (today.getMonth()+1 === parseInt(birth.substring(4,6)) && today.getDate() < parseInt(birth.substring(6,8)))) age--;
-  if(age < 19){ alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 방문해 주세요.'); return; }
+  if(age < 19){ alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 신청해 주세요.'); }
   if(!ok){ alert('개인정보 수집 및 이용에 동의해주세요.'); return; }
   var phoneF = phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
   var birthF = '19'+birth.slice(0,2)+'-'+birth.slice(2,4)+'-'+birth.slice(4,6);
@@ -1497,7 +1492,7 @@ function fSubmit(){
   var today=new Date();
   var age=today.getFullYear()-parseInt(birth.substring(0,4));
   if(today.getMonth()+1<parseInt(birth.substring(4,6))||(today.getMonth()+1===parseInt(birth.substring(4,6))&&today.getDate()<parseInt(birth.substring(6,8))))age--;
-  if(age<19){ alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 방문해 주세요.'); return; }
+  if(age<19){ alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 신청해 주세요.'); }
   if(!privacy){alert('개인정보 수집 및 이용에 동의해주세요.');return;}
   var memo=document.getElementById('fMemo').value.trim();
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
