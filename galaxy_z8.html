@@ -33,7 +33,7 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
 .nav-label{display:none;}
 
 .galaxyz-mark{display:none;} */
-.galaxyz-mark img{width:90px;opacity:.08;filter:brightness(0) invert(1);}
+.galaxyz-mark img{width:90px;opacity:.08;filter:none;}
 
 /* ── 진열장 풀스크린 ── */
 .hero-inner{
@@ -107,8 +107,8 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
   opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease;
 }
 .products-section-title.visible{opacity:1;transform:translateY(0);}
-.pst-eyebrow{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:12px;}
-.pst-title{font-size:clamp(20px,2.5vw,32px);font-weight:700;color:#fff;letter-spacing:-.02em;}
+.pst-eyebrow{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#aaaaaa;margin-bottom:12px;}
+.pst-title{font-size:clamp(20px,2.5vw,32px);font-weight:700;color:#111111;letter-spacing:-.02em;}
 
 .products-inner{display:flex;align-items:stretch;max-width:1300px;margin:0 auto;}
 .product-card{
@@ -198,7 +198,7 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
 }
 .zone-label{
   position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
-  font-size:clamp(9px,1.1vw,13px);font-weight:700;color:#fff;
+  font-size:clamp(9px,1.1vw,13px);font-weight:700;color:#111111;
   background:rgba(0,0,0,.55);backdrop-filter:none;
   padding:3px 10px;border-radius:20px;white-space:nowrap;
   pointer-events:none;letter-spacing:.02em;
@@ -247,18 +247,18 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
 .modal-silhouette img{height:200px;width:auto;opacity:1;filter:none;position:relative;z-index:1;}
 .modal-date-wrap{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
 .modal-label{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#aaa;}
-.modal-date{font-size:clamp(52px,12vw,76px);font-weight:800;color:#fff;letter-spacing:-.04em;line-height:1;}
+.modal-date{font-size:clamp(52px,12vw,76px);font-weight:800;color:#111111;letter-spacing:-.04em;line-height:1;}
 .modal-date em{font-style:normal;}
 .modal-unveil{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-top:2px;}
 .modal-countdown{display:flex;border-top:1px solid rgba(255,255,255,.07);}
 .cd-block{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 0;border-right:1px solid rgba(255,255,255,.06);}
 .cd-block:last-child{border-right:none;}
-.cd-num{font-size:30px;font-weight:700;color:#fff;line-height:1;font-variant-numeric:tabular-nums;}
+.cd-num{font-size:30px;font-weight:700;color:#111111;line-height:1;font-variant-numeric:tabular-nums;}
 .cd-unit{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.28);}
 .modal-body{padding:20px 32px 30px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;border-top:1px solid rgba(255,255,255,.07);}
-.modal-product-name{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.01em;}
+.modal-product-name{font-size:18px;font-weight:700;color:#111111;letter-spacing:-.01em;}
 .modal-sub{font-size:13px;color:rgba(255,255,255,.82);line-height:1.8;}
-.modal-close{position:absolute;top:12px;right:12px;z-index:10;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;font-size:20px;color:#fff;font-weight:700;line-height:1;}
+.modal-close{position:absolute;top:12px;right:12px;z-index:10;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;font-size:20px;color:#111111;font-weight:700;line-height:1;}
 .modal-close:hover{background:rgba(255,255,255,.18);}
 
 /* ══════════════════════════════
@@ -318,7 +318,7 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
 .disclaimer{
   width:100%;background:#000;
   text-align:center;padding:20px 40px 40px;
-  font-size:11px;color:rgba(255,255,255,.25);
+  font-size:11px;color:#aaaaaa;
   letter-spacing:.03em;line-height:1.8;
 }
 .showcase-disclaimer{
@@ -347,7 +347,7 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
   padding:16px 48px;
   background:linear-gradient(135deg,#ea0078,#c4006a);
   border:none;border-radius:100px;
-  color:#fff;font-size:18px;font-weight:800;
+  color:#111111;font-size:18px;font-weight:800;
   letter-spacing:-.01em;cursor:pointer;
   box-shadow:0 8px 32px rgba(234,0,120,.4);
   transition:all .2s ease;white-space:nowrap;
@@ -383,11 +383,11 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
   transition:background .2s;
 }
 .modal-close:hover{background:rgba(255,255,255,.15);}
-.modal-title{font-size:26px;font-weight:800;color:#fff;letter-spacing:-.03em;margin-bottom:8px;}
-.modal-sub{font-size:15px;color:rgba(255,255,255,.7);margin-bottom:28px;line-height:1.6;}
+.modal-title{font-size:26px;font-weight:800;color:#111111;letter-spacing:-.03em;margin-bottom:8px;}
+.modal-sub{font-size:15px;color:#333333;margin-bottom:28px;line-height:1.6;}
 
 .mform-group{margin-bottom:16px;}
-.mform-label{font-size:14px;font-weight:700;color:rgba(255,255,255,.9);margin-bottom:10px;letter-spacing:.02em;}
+.mform-label{font-size:14px;font-weight:700;color:#111111;margin-bottom:10px;letter-spacing:.02em;}
 
 /* 상품 선택 */
 .mdevice-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:0;}
@@ -398,9 +398,9 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
   border-radius:12px;cursor:pointer;
   transition:all .2s ease;
 }
-.mdevice-card:hover{border-color:rgba(255,255,255,.25);}
+.mdevice-card:hover{border-color:#aaaaaa;}
 .mdevice-card.selected{border-color:rgba(234,0,120,.8);background:rgba(234,0,120,.1);}
-.mdevice-card-name{font-size:15px;font-weight:700;color:#fff;}
+.mdevice-card-name{font-size:15px;font-weight:700;color:#111111;}
 .mdevice-card-sub{font-size:10px;color:#E91E8C;margin-top:2px;}
 .mdevice-card.selected .mdevice-card-sub{color:rgba(234,0,120,.7);}
 
@@ -414,20 +414,20 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
   font-size:12px;font-weight:600;color:#999;
   transition:all .2s ease;
 }
-.mcarrier-card:hover{border-color:rgba(255,255,255,.25);color:#fff;}
-.mcarrier-card.selected{border-color:rgba(234,0,120,.8);background:rgba(234,0,120,.1);color:#fff;}
+.mcarrier-card:hover{border-color:#aaaaaa;color:#111111;}
+.mcarrier-card.selected{border-color:rgba(234,0,120,.8);background:rgba(234,0,120,.1);color:#111111;}
 
 /* 입력 */
 .mform-input{
   width:100%;background:rgba(233,30,140,.06);
   border:1.5px solid rgba(255,255,255,.2);border-radius:11px;
-  padding:16px 16px;color:#fff;font-size:17px;
+  padding:16px 16px;color:#111111;font-size:17px;
   outline:none;transition:all .2s;box-sizing:border-box;
 }
 .mform-input::placeholder{color:#aaa;}
 .mform-input:focus{border-color:rgba(234,0,120,.5);background:rgba(234,0,120,.05);}
 textarea.mform-input{resize:none;height:80px;}
-.mform-hint{font-size:13px;color:rgba(255,255,255,.55);margin-top:6px;}
+.mform-hint{font-size:13px;color:#555555;margin-top:6px;}
 
 /* 개인정보 */
 .mprivacy-wrap{display:flex;align-items:flex-start;gap:10px;margin-bottom:20px;}
@@ -437,8 +437,8 @@ textarea.mform-input{resize:none;height:80px;}
   cursor:pointer;appearance:none;margin-top:2px;position:relative;transition:all .2s;
 }
 .mprivacy-check:checked{background:rgba(225,29,72,.8);border-color:rgba(225,29,72,.8);}
-.mprivacy-check:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:10px;color:#fff;font-weight:700;}
-.mprivacy-text{font-size:14px;color:rgba(255,255,255,.7);line-height:1.6;}
+.mprivacy-check:checked::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:10px;color:#111111;font-weight:700;}
+.mprivacy-text{font-size:14px;color:#333333;line-height:1.6;}
 .mprivacy-text a{color:rgba(234,0,120,.7);text-decoration:none;}
 
 /* 제출 버튼 */
@@ -446,7 +446,7 @@ textarea.mform-input{resize:none;height:80px;}
   width:100%;padding:16px;
   background:linear-gradient(135deg,#ea0078,#c4006a);
   border:none;border-radius:13px;
-  color:#fff;font-size:16px;font-weight:700;
+  color:#111111;font-size:16px;font-weight:700;
   cursor:pointer;transition:all .2s;
   box-shadow:0 6px 24px rgba(234,0,120,.3);
 }
@@ -503,7 +503,7 @@ textarea.mform-input{resize:none;height:80px;}
 
 .cta-primary.cta-pink{
   background:linear-gradient(135deg,#ea0078,#c4006a);
-  color:#fff;
+  color:#111111;
   border-color:rgba(234,0,120,.4);
 }
 .cta-primary.cta-pink:hover{
@@ -549,7 +549,7 @@ textarea.mform-input{resize:none;height:80px;}
   letter-spacing:-.02em;line-height:1.2;
   text-align:center;
 }
-.side-quick-btn:first-child .side-quick-label{color:#fff;}
+.side-quick-btn:first-child .side-quick-label{color:#111111;}
 .side-quick-btn:last-child .side-quick-label{color:#3A1D1D;}
 
 @media(max-width:640px){
@@ -583,7 +583,7 @@ textarea.mform-input{resize:none;height:80px;}
   font-weight:500;letter-spacing:.05em;
 }
 .phone-popup-number{
-  font-size:22px;font-weight:800;color:#fff;
+  font-size:22px;font-weight:800;color:#111111;
   letter-spacing:.05em;
 }
 .phone-popup-call{
@@ -591,7 +591,7 @@ textarea.mform-input{resize:none;height:80px;}
   padding:12px;
   background:linear-gradient(135deg,#ea0078,#c4006a);
   border:none;border-radius:10px;
-  color:#fff;font-size:14px;font-weight:700;
+  color:#111111;font-size:14px;font-weight:700;
   text-align:center;text-decoration:none;
   cursor:pointer;
   transition:opacity .2s;
@@ -713,13 +713,13 @@ textarea.mform-input{resize:none;height:80px;}
 }
 .ticket-field-val{
   font-size:clamp(10px,2.8vw,14px);
-  font-weight:700;color:#fff;
+  font-weight:700;color:#111111;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   line-height:1.2;
 }
 .ticket-field-val.fixed{
   font-size:clamp(9px,2.3vw,12px);
-  font-weight:400;color:rgba(255,255,255,.8);
+  font-weight:400;color:#222222;
   white-space:normal;line-height:1.3;
 }
 .ticket-close-btn{
@@ -728,7 +728,7 @@ textarea.mform-input{resize:none;height:80px;}
   background:linear-gradient(135deg,#ea0078,#c4006a);
   border:none;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  color:#fff;font-size:20px;font-weight:700;
+  color:#111111;font-size:20px;font-weight:700;
   box-shadow:0 4px 20px rgba(234,0,120,.5);
   transition:transform .2s;
 }
@@ -1119,7 +1119,7 @@ function toggleKakaoPopup(){
 </script>
 
 
-<!-- ══ 사전예약 이유 섹션 ══ --><!-- deploy:20260710-1520 -->
+<!-- ══ 사전예약 이유 섹션 ══ --><!-- deploy:20260710-1530 -->
 <section style="width:100%;background:#ffffff;padding:40px 0;">
   <!-- PC: 원본 이미지 -->
   <div class="reason-pc" style="width:100%;max-width:900px;margin:0 auto;padding:0 40px;">
@@ -1163,9 +1163,9 @@ function toggleKakaoPopup(){
       <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px;">
         <thead>
           <tr style="background:rgba(233,30,140,.05);">
-            <th style="padding:10px 12px;text-align:left;color:rgba(255,255,255,.8);border:1px solid rgba(233,30,140,.12);font-weight:600;">항목</th>
-            <th style="padding:10px 12px;text-align:left;color:rgba(255,255,255,.8);border:1px solid rgba(233,30,140,.12);font-weight:600;">수집 목적</th>
-            <th style="padding:10px 12px;text-align:left;color:rgba(255,255,255,.8);border:1px solid rgba(233,30,140,.12);font-weight:600;">보유 기간</th>
+            <th style="padding:10px 12px;text-align:left;color:#222222;border:1px solid rgba(233,30,140,.12);font-weight:600;">항목</th>
+            <th style="padding:10px 12px;text-align:left;color:#222222;border:1px solid rgba(233,30,140,.12);font-weight:600;">수집 목적</th>
+            <th style="padding:10px 12px;text-align:left;color:#222222;border:1px solid rgba(233,30,140,.12);font-weight:600;">보유 기간</th>
           </tr>
         </thead>
         <tbody>
@@ -1177,20 +1177,20 @@ function toggleKakaoPopup(){
         </tbody>
       </table>
 
-      <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:12px;color:rgba(255,255,255,.45);line-height:1.7;">
-        <b style="color:rgba(255,255,255,.65);">※ 고지사항</b><br>
+      <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:12px;color:#666666;line-height:1.7;">
+        <b style="color:#444444;">※ 고지사항</b><br>
         · 위의 개인정보 수집·이용에 대한 동의를 거부할 권리가 있습니다.<br>
         · 동의를 거부하실 경우 사전예약 알림 서비스 이용이 제한될 수 있습니다.<br>
         · 수집된 개인정보는 제3자에게 제공되지 않습니다.<br>
         · 보유 기간 종료 후 해당 정보는 즉시 파기됩니다.
       </div>
 
-      <p style="font-size:11px;color:rgba(255,255,255,.25);text-align:center;">
+      <p style="font-size:11px;color:#aaaaaa;text-align:center;">
         문의: 유플러스 다이렉트 고객센터
       </p>
     </div>
 
-    <button onclick="closePrivacyModal()" style="width:100%;margin-top:24px;padding:13px;background:rgba(80,140,255,.2);border:1px solid rgba(80,140,255,.4);border-radius:12px;color:rgba(255,255,255,.8);font-size:14px;font-weight:600;cursor:pointer;">확인</button>
+    <button onclick="closePrivacyModal()" style="width:100%;margin-top:24px;padding:13px;background:rgba(80,140,255,.2);border:1px solid rgba(80,140,255,.4);border-radius:12px;color:#222222;font-size:14px;font-weight:600;cursor:pointer;">확인</button>
   </div>
 </div>
 
