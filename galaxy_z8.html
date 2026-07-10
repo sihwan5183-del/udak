@@ -1190,9 +1190,10 @@ function submitForm(){
   if(!phone || phone.length !== 11 || !phone.startsWith('010')){ alert('010으로 시작하는 11자리 전화번호를 입력해주세요.'); return; }
   if(!birth || birth.length !== 6){ alert('생년월일 6자리를 입력해주세요. (예: 930101)'); return; }
   var today = new Date();
-  var birthYear = parseInt(birth.substring(0,4));
-  var birthMonth = parseInt(birth.substring(4,6));
-  var birthDay = parseInt(birth.substring(6,8));
+  var birthYear = 2000 + parseInt(birth.substring(0,2));
+  if(birthYear > today.getFullYear()) birthYear -= 100;
+  var birthMonth = parseInt(birth.substring(2,4));
+  var birthDay = parseInt(birth.substring(4,6));
   var age = today.getFullYear() - birthYear;
   if(today.getMonth()+1 < birthMonth || (today.getMonth()+1 === birthMonth && today.getDate() < birthDay)) age--;
   if(age < 19){ alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 신청해 주세요.'); }
@@ -1255,8 +1256,12 @@ function mSubmitForm(){
   if(!phone || phone.length !== 11 || !phone.startsWith('010')){ alert('010으로 시작하는 11자리 전화번호를 입력해주세요.'); return; }
   if(!birth || birth.length !== 6){ alert('생년월일 6자리를 입력해주세요. (예: 930101)'); return; }
   var today = new Date();
-  var age = today.getFullYear() - parseInt(birth.substring(0,4));
-  if(today.getMonth()+1 < parseInt(birth.substring(4,6)) || (today.getMonth()+1 === parseInt(birth.substring(4,6)) && today.getDate() < parseInt(birth.substring(6,8)))) age--;
+  var bYear = 2000 + parseInt(birth.substring(0,2));
+  if(bYear > today.getFullYear()) bYear -= 100;
+  var bMonth = parseInt(birth.substring(2,4));
+  var bDay = parseInt(birth.substring(4,6));
+  var age = today.getFullYear() - bYear;
+  if(today.getMonth()+1 < bMonth || (today.getMonth()+1 === bMonth && today.getDate() < bDay)) age--;
   if(age < 19){ alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 신청해 주세요.'); }
   if(!ok){ alert('개인정보 수집 및 이용에 동의해주세요.'); return; }
   var phoneF = phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
