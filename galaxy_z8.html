@@ -1496,7 +1496,7 @@ function fSubmit(){
   if(!privacy){alert('개인정보 수집 및 이용에 동의해주세요.');return;}
   var memo=document.getElementById('fMemo').value.trim();
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
-  var birthF=birth.slice(0,4)+'-'+birth.slice(4,6)+'-'+birth.slice(6,8);
+  var birthF='19'+birth.slice(0,2)+'-'+birth.slice(2,4)+'-'+birth.slice(4,6);
   fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations',{
     method:'POST',
     headers:{
