@@ -1332,7 +1332,7 @@ function mSubmitForm(){
   if(!ok){ alert('개인정보 수집 및 이용에 동의해주세요.'); return; }
   var phoneF = phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
   var birthF = birth.slice(0,4)+'-'+birth.slice(4,6)+'-'+birth.slice(6,8);
-  var memoEl = document.getElementById('mUserMemo');
+  var memoEl = document.getElementById('mUserNote');
   var memo = memoEl ? memoEl.value.trim() : '';
   fetch('https://txzkjunbkakuzyyhqlvw.supabase.co/rest/v1/reservations',{
     method:'POST',
