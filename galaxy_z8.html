@@ -1334,12 +1334,12 @@ function mSubmitForm(){
   var birthF = birth.slice(0,4)+'-'+birth.slice(4,6)+'-'+birth.slice(6,8);
   var memoEl = document.getElementById('mUserNote');
   var memo = memoEl ? memoEl.value.trim() : '';
-  fetch('https://txzkjunbkakuzyyhqlvw.supabase.co/rest/v1/reservations',{
+  fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations',{
     method:'POST',
     headers:{
       'Content-Type':'application/json',
-      'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4emtqdW5ia2FrdXp5eWhxbHZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0OTc3MTYsImV4cCI6MjA5MjA3MzcxNn0.C4Q51_vzN3hWKptzV1ZBdR3fZevINOaj0VI70iUEmoo',
-      'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4emtqdW5ia2FrdXp5eWhxbHZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0OTc3MTYsImV4cCI6MjA5MjA3MzcxNn0.C4Q51_vzN3hWKptzV1ZBdR3fZevINOaj0VI70iUEmoo',
+      'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
+      'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
       'Prefer':'return=minimal'
     },
     body:JSON.stringify({name:name,phone:phoneF,carrier:mCarrier,channel:'메타광고',device_interest:mDevice,birth_date:birthF,memo:memo||null,status:'신규'})
@@ -1495,12 +1495,12 @@ function fSubmit(){
   var memo=document.getElementById('fMemo').value.trim();
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
   var birthF=birth.slice(0,4)+'-'+birth.slice(4,6)+'-'+birth.slice(6,8);
-  fetch('https://txzkjunbkakuzyyhqlvw.supabase.co/rest/v1/reservations',{
+  fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations',{
     method:'POST',
     headers:{
       'Content-Type':'application/json',
-      'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4emtqdW5ia2FrdXp5eWhxbHZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0OTc3MTYsImV4cCI6MjA5MjA3MzcxNn0.C4Q51_vzN3hWKptzV1ZBdR3fZevINOaj0VI70iUEmoo',
-      'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4emtqdW5ia2FrdXp5eWhxbHZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0OTc3MTYsImV4cCI6MjA5MjA3MzcxNn0.C4Q51_vzN3hWKptzV1ZBdR3fZevINOaj0VI70iUEmoo',
+      'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
+      'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
       'Prefer':'return=minimal'
     },
     body:JSON.stringify({name:name,phone:phoneF,carrier:fCarrier,channel:'메타광고',device_interest:fDevice,birth_date:birthF,memo:memo||null,status:'신규'})
