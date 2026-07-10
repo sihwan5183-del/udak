@@ -822,17 +822,13 @@ textarea.mform-input{resize:none;height:80px;}
 <section style="width:100%;background:#fff;position:relative;overflow:hidden;">
   <div style="position:relative;width:100%;overflow:hidden;" id="bannerSlot">
     <div id="bannerTrack" style="display:flex;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);">
-      <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner1.png" alt="유플러스 다이렉트 혜택" style="width:100%;height:auto;display:block;"></div>
-      <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner2.png" alt="크게는 폴드8 취향은 플립8" style="width:100%;height:auto;display:block;"></div>
-      <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner3.png" alt="업무는 넓게 폴드8" style="width:100%;height:auto;display:block;"></div>
-      <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner4.png" alt="주머니에 쏙 플립8" style="width:100%;height:auto;display:block;"></div>
+      <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner1.png" alt="배너1" style="width:100%;height:auto;display:block;"></div>
+      <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner2.png" alt="배너2" style="width:100%;height:auto;display:block;"></div>
+      <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner3.png" alt="배너3" style="width:100%;height:auto;display:block;"></div>
+      <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner4.png" alt="배너4" style="width:100%;height:auto;display:block;"></div>
     </div>
-
-    <!-- 좌우 버튼 -->
-    <button onclick="bannerSlide(-1)" style="position:absolute;top:50%;left:16px;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.85);border:none;cursor:pointer;font-size:20px;color:#333;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:10;">‹</button>
-    <button onclick="bannerSlide(1)" style="position:absolute;top:50%;right:16px;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.85);border:none;cursor:pointer;font-size:20px;color:#333;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:10;">›</button>
-
-    <!-- 도트 -->
+    <button onclick="bannerSlide(-1)" style="position:absolute;top:50%;left:16px;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.85);border:none;cursor:pointer;font-size:20px;color:#333;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:10;">&#8249;</button>
+    <button onclick="bannerSlide(1)" style="position:absolute;top:50%;right:16px;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.85);border:none;cursor:pointer;font-size:20px;color:#333;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:10;">&#8250;</button>
     <div id="bannerDots" style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:10;">
       <button onclick="bannerGoTo(0)" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;cursor:pointer;padding:0;transition:all .3s;"></button>
       <button onclick="bannerGoTo(1)" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;cursor:pointer;padding:0;transition:all .3s;"></button>
@@ -841,49 +837,6 @@ textarea.mform-input{resize:none;height:80px;}
     </div>
   </div>
 </section>
-
-<script>
-(function(){
-  var cur = 0;
-  var total = 4;
-  var timer;
-  var slot = document.getElementById('bannerSlot');
-  var track = document.getElementById('bannerTrack');
-  var dots = document.getElementById('bannerDots').querySelectorAll('button');
-
-  function updateDots(){
-    dots.forEach(function(d,i){
-      d.style.background = i===cur ? '#fff' : 'rgba(255,255,255,.5)';
-      d.style.width = i===cur ? '22px' : '8px';
-      d.style.borderRadius = i===cur ? '4px' : '50%';
-    });
-  }
-
-  window.bannerGoTo = function(idx){
-    cur = (idx + total) % total;
-    track.style.transform = 'translateX(-' + (100 * cur) + '%)';
-    updateDots();
-    clearInterval(timer);
-    timer = setInterval(function(){ window.bannerGoTo(cur+1); }, 4000);
-  };
-
-  window.bannerSlide = function(dir){
-    window.bannerGoTo(cur + dir);
-  };
-
-  // 터치 스와이프
-  var tx = 0;
-  slot.addEventListener('touchstart', function(e){ tx = e.changedTouches[0].clientX; }, {passive:true});
-  slot.addEventListener('touchend', function(e){
-    var dx = e.changedTouches[0].clientX - tx;
-    if(Math.abs(dx) >= 40){ window.bannerSlide(dx < 0 ? 1 : -1); }
-  }, {passive:true});
-
-  updateDots();
-  timer = setInterval(function(){ window.bannerGoTo(cur+1); }, 4000);
-})();
-</script>
-
 
 <!-- ══ 얼리버드 혜택 섹션 ══ -->
 <section style="width:100%;background:#f9f9fb;padding:56px 0;">
@@ -1109,6 +1062,21 @@ textarea.mform-input{resize:none;height:80px;}
 </div>
 
 <script>
+
+// 배너 슬라이더
+(function(){
+  var cur=0,total=4,timer;
+  var track=document.getElementById('bannerTrack');
+  var dots=document.getElementById('bannerDots').querySelectorAll('button');
+  function updateDots(){dots.forEach(function(d,i){d.style.background=i===cur?'#fff':'rgba(255,255,255,.5)';d.style.width=i===cur?'22px':'8px';d.style.borderRadius=i===cur?'4px':'50%';});}
+  window.bannerGoTo=function(idx){cur=(idx+total)%total;track.style.transform='translateX(-'+(100*cur)+'%)';updateDots();clearInterval(timer);timer=setInterval(function(){window.bannerGoTo(cur+1);},4000);};
+  window.bannerSlide=function(dir){window.bannerGoTo(cur+dir);};
+  var slot=document.getElementById('bannerSlot'),tx=0;
+  slot.addEventListener('touchstart',function(e){tx=e.changedTouches[0].clientX;},{passive:true});
+  slot.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>=40){window.bannerSlide(dx<0?1:-1);}},{passive:true});
+  updateDots();timer=setInterval(function(){window.bannerGoTo(cur+1);},4000);
+})();
+
 // 스크롤 등장
 const observer = new IntersectionObserver(entries => {
   entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
