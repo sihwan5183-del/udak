@@ -251,10 +251,10 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
 .modal-date em{font-style:normal;}
 .modal-unveil{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-top:2px;}
 .modal-countdown{display:flex;border-top:1px solid rgba(255,255,255,.07);}
-.cd-block{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 0;border-right:1px solid rgba(255,255,255,.06);}
+.cd-block{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 0;border-right:1px solid rgba(0,0,0,.08);}
 .cd-block:last-child{border-right:none;}
 .cd-num{font-size:30px;font-weight:700;color:#111111;line-height:1;font-variant-numeric:tabular-nums;}
-.cd-unit{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.28);}
+.cd-unit{font-size:12px;letter-spacing:.05em;color:#555555;font-weight:600;}
 .modal-body{padding:20px 32px 30px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;border-top:1px solid rgba(255,255,255,.07);}
 .modal-product-name{font-size:18px;font-weight:700;color:#111111;letter-spacing:-.01em;}
 .modal-sub{font-size:13px;color:rgba(255,255,255,.82);line-height:1.8;}
@@ -872,10 +872,10 @@ textarea.mform-input{resize:none;height:80px;}
       </div>
     </div>
     <div class="modal-countdown">
-      <div class="cd-block"><span class="cd-num" id="cdDays">--</span><span class="cd-unit">Days</span></div>
-      <div class="cd-block"><span class="cd-num" id="cdHours">--</span><span class="cd-unit">Hours</span></div>
-      <div class="cd-block"><span class="cd-num" id="cdMins">--</span><span class="cd-unit">Mins</span></div>
-      <div class="cd-block"><span class="cd-num" id="cdSecs">--</span><span class="cd-unit">Secs</span></div>
+      <div class="cd-block"><span class="cd-num" id="cdDays">--</span><span class="cd-unit">일</span></div>
+      <div class="cd-block"><span class="cd-num" id="cdHours">--</span><span class="cd-unit">시간</span></div>
+      <div class="cd-block"><span class="cd-num" id="cdMins">--</span><span class="cd-unit">분</span></div>
+      <div class="cd-block"><span class="cd-num" id="cdSecs">--</span><span class="cd-unit">초</span></div>
     </div>
     <div class="modal-body">
       <p class="modal-product-name" id="modalTitle">—</p>
@@ -1146,7 +1146,7 @@ function toggleKakaoPopup(){
 </script>
 
 
-<!-- ══ 사전예약 이유 섹션 ══ --><!-- deploy:20260710-1625 -->
+<!-- ══ 사전예약 이유 섹션 ══ --><!-- deploy:20260710-1630 -->
 <section style="width:100%;background:#ffffff;padding:40px 0;">
   <!-- PC: 원본 이미지 -->
   <div class="reason-pc" style="width:100%;max-width:900px;margin:0 auto;padding:0 40px;">
