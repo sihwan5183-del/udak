@@ -1429,9 +1429,9 @@ function toggleKakaoPopup(){
       <div style="margin-bottom:20px;">
         <p style="font-size:17px;font-weight:700;color:#111;margin-bottom:12px;">원하는 상품</p>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-          <button onclick="fSelectDevice(this,'갤럭시 Z 플립 8')" class="f-device-btn">갤럭시 Z<br>플립 8</button>
-          <button onclick="fSelectDevice(this,'갤럭시 Z 폴드 8')" class="f-device-btn">갤럭시 Z<br>폴드 8</button>
-          <button onclick="fSelectDevice(this,'갤럭시 Z 폴드 와이드 8')" class="f-device-btn">폴드<br>와이드 8</button>
+          <button onclick="fSelectDevice(this,'플립 8')" class="f-device-btn">플립 8</button>
+          <button onclick="fSelectDevice(this,'폴드 8')" class="f-device-btn">폴드 8</button>
+          <button onclick="fSelectDevice(this,'폴드 와이드 8')" class="f-device-btn">폴드 와이드 8</button>
         </div>
       </div>
       <div style="margin-bottom:20px;">
@@ -1470,7 +1470,7 @@ function toggleKakaoPopup(){
 </section>
 
 <style>
-.f-device-btn,.f-carrier-btn{padding:14px 8px;background:#fff;border:1.5px solid #ddd;border-radius:12px;font-size:14px;font-weight:700;color:#333;cursor:pointer;transition:all .2s;line-height:1.4;width:100%;}
+.f-device-btn,.f-carrier-btn{padding:14px 8px;background:#fff;border:1.5px solid #ddd;border-radius:12px;font-size:14px;font-weight:700;color:#333;cursor:pointer;transition:all .2s;width:100%;white-space:nowrap;}
 .f-device-btn.on,.f-carrier-btn.on{border-color:#E91E8C;background:rgba(233,30,140,.08);color:#E91E8C;}
 </style>
 
@@ -1581,14 +1581,14 @@ function fSubmit(){
     <div class="mform-group">
       <div class="mform-label">원하는 상품</div>
       <div class="mdevice-grid">
-        <div class="mdevice-card" onclick="mSelectDevice(this,'갤럭시 Z 플립 8')">
-          <div class="mdevice-card-name">갤럭시 Z 플립 8</div>
+        <div class="mdevice-card" onclick="mSelectDevice(this,'플립 8')">
+          <div class="mdevice-card-name">플립 8</div>
         </div>
-        <div class="mdevice-card" onclick="mSelectDevice(this,'갤럭시 Z 폴드 8')">
-          <div class="mdevice-card-name">갤럭시 Z 폴드 8</div>
+        <div class="mdevice-card" onclick="mSelectDevice(this,'폴드 8')">
+          <div class="mdevice-card-name">폴드 8</div>
         </div>
-        <div class="mdevice-card" onclick="mSelectDevice(this,'갤럭시 Z 폴드 와이드 8')">
-          <div class="mdevice-card-name">갤럭시 Z 폴드 와이드 8</div>
+        <div class="mdevice-card" onclick="mSelectDevice(this,'폴드 와이드 8')">
+          <div class="mdevice-card-name">폴드 와이드 8</div>
         </div>
       </div>
     </div>
