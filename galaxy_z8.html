@@ -1360,7 +1360,8 @@ function showTicket(name, phone, device){
   document.body.style.overflow='hidden';
 }
 function closeTicket(){
-  document.getElementById('ticketOverlay').classList.remove('active');
+  var el = document.getElementById('ticketOverlay');
+  el.style.display = 'none';
   document.body.style.overflow='';
 }
 function togglePhonePopup(){
