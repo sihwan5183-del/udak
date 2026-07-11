@@ -811,6 +811,7 @@ textarea.mform-input{resize:none;height:80px;}
 <section style="width:100%;background:#fff;">
   <div style="position:relative;width:100%;overflow:hidden;" id="bannerSlot">
     <div id="bannerTrack" style="display:flex;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);">
+      <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner0.jpg" alt="배너0" class="banner-img"></div>
       <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner1.png" alt="배너1" class="banner-img"></div>
       <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner2.png" alt="배너2" class="banner-img"></div>
       <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner3.png" alt="배너3" class="banner-img"></div>
@@ -823,6 +824,7 @@ textarea.mform-input{resize:none;height:80px;}
       <button onclick="bannerGoTo(1)" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;cursor:pointer;padding:0;transition:all .3s;"></button>
       <button onclick="bannerGoTo(2)" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;cursor:pointer;padding:0;transition:all .3s;"></button>
       <button onclick="bannerGoTo(3)" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;cursor:pointer;padding:0;transition:all .3s;"></button>
+      <button onclick="bannerGoTo(4)" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;cursor:pointer;padding:0;transition:all .3s;"></button>
     </div>
   </div>
 </section>
@@ -1082,7 +1084,7 @@ textarea.mform-input{resize:none;height:80px;}
 
 // 배너 슬라이더
 (function(){
-  var cur=0,total=4,timer;
+  var cur=0,total=5,timer;
   var track=document.getElementById('bannerTrack');
   var dots=document.getElementById('bannerDots').querySelectorAll('button');
   function updateDots(){dots.forEach(function(d,i){d.style.background=i===cur?'#fff':'rgba(255,255,255,.5)';d.style.width=i===cur?'22px':'8px';d.style.borderRadius=i===cur?'4px':'50%';});}
