@@ -799,6 +799,12 @@ textarea.mform-input{resize:none;height:80px;}
   #bannerSlot{max-width:750px;margin:0 auto;}
   .banner-img{width:750px;height:auto;display:block;}
 }
+
+/* 정보 5가지 이미지 모바일 확대 */
+@media (max-width:768px){
+  .info5-wrap{padding:0 !important;margin:28px -10px 0 !important;max-width:none !important;}
+  .info5-wrap img{border-radius:14px !important;}
+}
 </style>
 </head>
 <body style="padding-bottom:90px;">
@@ -840,7 +846,7 @@ textarea.mform-input{resize:none;height:80px;}
     </div>
 
     <!-- 신청하면 받는 정보 5개 -->
-    <div style="max-width:1100px;margin:36px auto 0;padding:0 20px;">
+    <div class="info5-wrap" style="max-width:1100px;margin:36px auto 0;padding:0 20px;">
       <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/info-5cards.jpg?v=20260711b" alt="신청하면 받는 정보 5개 - 달라진 점, 색상 디자인, 스펙 정보, 구매 혜택, 일정 안내" style="width:100%;height:auto;display:block;border-radius:20px;">
     </div>
   </div>
