@@ -1334,7 +1334,7 @@ function mSubmitForm(){
   var memo = memoEl ? memoEl.value.trim() : '';
   // 팝업 먼저 표시
   if(typeof fbq!=='undefined')fbq('track','Lead');
-  showTicket(name,phoneF,fDevice);
+  showTicket(name,phoneF,mDevice);
   // DB 저장 (백그라운드)
   fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations',{
     method:'POST',
@@ -1361,10 +1361,12 @@ function mSubmitForm(){
 function showTicket(name, phone, device){
   var el = document.getElementById('ticketOverlay');
   el.style.display = 'flex';
+  requestAnimationFrame(function(){ el.classList.add('active'); });
   document.body.style.overflow='hidden';
 }
 function closeTicket(){
   var el = document.getElementById('ticketOverlay');
+  el.classList.remove('active');
   el.style.display = 'none';
   document.body.style.overflow='';
 }
