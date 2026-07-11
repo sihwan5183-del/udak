@@ -259,7 +259,7 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
   transition:transform .45s cubic-bezier(.22,1,.36,1);
 }
 .modal-overlay.active .modal-box{transform:translateY(0) scale(1);}
-.modal-silhouette{width:100%;height:260px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:#ffffff;}
+.modal-silhouette{width:100%;height:260px;display:flex;align-items:center;justify-content:center;background:#ffffff;}
 .modal-silhouette::before{display:none;}
 .modal-silhouette img{height:200px;width:auto;opacity:1;filter:none;position:relative;z-index:1;}
 .modal-date-wrap{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
@@ -808,7 +808,7 @@ textarea.mform-input{resize:none;height:80px;}
 
 
 <!-- ══ 배너 슬라이더 ══ -->
-<section style="width:100%;background:#fff;position:relative;overflow:hidden;">
+<section style="width:100%;background:#fff;">
   <div style="position:relative;width:100%;overflow:hidden;" id="bannerSlot">
     <div id="bannerTrack" style="display:flex;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);">
       <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner1.png" alt="배너1" class="banner-img"></div>
@@ -924,93 +924,43 @@ textarea.mform-input{resize:none;height:80px;}
     </div>
 
     <!-- 아이패드 -->
-    <div style="background:#fff;border-radius:20px;padding:40px 24px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.06);position:relative;overflow:hidden;">
-      <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-ipad.png" alt="아이패드" style="width:95%;max-width:480px;height:auto;display:block;margin:0 auto 24px;mix-blend-mode:multiply;filter:blur(14px) brightness(0.95);">
-      <p style="font-size:22px;font-weight:800;color:#1A1A1A;margin-bottom:10px;filter:blur(8px);">티비도 되는 iPad</p>
-      <p style="font-size:14px;color:#555;line-height:1.8;filter:blur(6px);">사전예약 신청 고객 대상<br>다이렉트 사전예약 고객에게<br>티비도 되는 아이패드 혜택을 드립니다</p>
-      <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">
-        <!-- 커튼 이미지: 위에서 60%만 덮음 -->
-        <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/curtain.png" alt="커튼" style="position:absolute;top:-10%;left:-5%;width:110%;height:75%;object-fit:cover;object-position:bottom;">
-        <!-- 커튼 아래 그라디언트 페이드 -->
-        <div style="position:absolute;top:55%;left:0;right:0;height:20%;background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,0));"></div>
-        <!-- 뱃지 -->
-        <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);border-radius:10px;padding:6px 16px;text-align:center;white-space:nowrap;">
-          <p style="font-size:11px;color:rgba(255,220,180,.95);font-weight:700;letter-spacing:.08em;margin-bottom:1px;">🔒 COMING SOON</p>
-          <p style="font-size:13px;font-weight:800;color:#fff;">7.22 언팩 이후 공개</p>
-        </div>
-      </div>
+    <div style="background:#fff;border-radius:20px;padding:40px 24px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.06);">
+      <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-ipad.png" alt="아이패드" style="width:95%;max-width:480px;height:auto;display:block;margin:0 auto 24px;mix-blend-mode:multiply;">
+      <p style="font-size:22px;font-weight:800;color:#1A1A1A;margin-bottom:10px;">티비도 되는 iPad</p>
+      <p style="font-size:14px;color:#555;line-height:1.8;">사전예약 신청 고객 대상<br>다이렉트 사전예약 고객에게<br>티비도 되는 아이패드 혜택을 드립니다</p>
+
     </div>
 
     <!-- 워치 -->
-    <div style="background:#fff;border-radius:20px;padding:40px 24px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.06);position:relative;overflow:hidden;">
-      <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-watch.png" alt="워치" style="width:85%;max-width:340px;height:auto;display:block;margin:0 auto 24px;mix-blend-mode:multiply;filter:blur(14px) brightness(0.95);">
-      <p style="font-size:22px;font-weight:800;color:#1A1A1A;margin-bottom:10px;filter:blur(8px);">갤럭시 워치 9</p>
-      <p style="font-size:14px;color:#555;line-height:1.8;filter:blur(6px);">다이렉트 사전예약 고객 대상<br>갤럭시 워치 9 증정 혜택 제공</p>
-      <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">
-        <!-- 커튼 이미지: 위에서 60%만 덮음 -->
-        <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/curtain.png" alt="커튼" style="position:absolute;top:-10%;left:-5%;width:110%;height:75%;object-fit:cover;object-position:bottom;">
-        <!-- 커튼 아래 그라디언트 페이드 -->
-        <div style="position:absolute;top:55%;left:0;right:0;height:20%;background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,0));"></div>
-        <!-- 뱃지 -->
-        <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);border-radius:10px;padding:6px 16px;text-align:center;white-space:nowrap;">
-          <p style="font-size:11px;color:rgba(255,220,180,.95);font-weight:700;letter-spacing:.08em;margin-bottom:1px;">🔒 COMING SOON</p>
-          <p style="font-size:13px;font-weight:800;color:#fff;">7.22 언팩 이후 공개</p>
-        </div>
-      </div>
+    <div style="background:#fff;border-radius:20px;padding:40px 24px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.06);">
+      <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-watch.png" alt="워치" style="width:85%;max-width:340px;height:auto;display:block;margin:0 auto 24px;mix-blend-mode:multiply;">
+      <p style="font-size:22px;font-weight:800;color:#1A1A1A;margin-bottom:10px;">갤럭시 워치 9</p>
+      <p style="font-size:14px;color:#555;line-height:1.8;">다이렉트 사전예약 고객 대상<br>갤럭시 워치 9 증정 혜택 제공</p>
+
     </div>
 
     <!-- 탭 -->
-    <div style="background:#fff;border-radius:20px;padding:40px 24px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.06);position:relative;overflow:hidden;">
-      <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-tab.png" alt="탭" style="width:85%;max-width:340px;height:auto;display:block;margin:0 auto 24px;mix-blend-mode:multiply;filter:blur(14px) brightness(0.95);">
-      <p style="font-size:22px;font-weight:800;color:#1A1A1A;margin-bottom:10px;filter:blur(8px);">갤럭시 탭 A11+</p>
-      <p style="font-size:14px;color:#555;line-height:1.8;filter:blur(6px);">사전예약 신청 고객 대상<br>갤럭시 탭 A11+ 제공 혜택</p>
-      <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">
-        <!-- 커튼 이미지: 위에서 60%만 덮음 -->
-        <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/curtain.png" alt="커튼" style="position:absolute;top:-10%;left:-5%;width:110%;height:75%;object-fit:cover;object-position:bottom;">
-        <!-- 커튼 아래 그라디언트 페이드 -->
-        <div style="position:absolute;top:55%;left:0;right:0;height:20%;background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,0));"></div>
-        <!-- 뱃지 -->
-        <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);border-radius:10px;padding:6px 16px;text-align:center;white-space:nowrap;">
-          <p style="font-size:11px;color:rgba(255,220,180,.95);font-weight:700;letter-spacing:.08em;margin-bottom:1px;">🔒 COMING SOON</p>
-          <p style="font-size:13px;font-weight:800;color:#fff;">7.22 언팩 이후 공개</p>
-        </div>
-      </div>
+    <div style="background:#fff;border-radius:20px;padding:40px 24px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.06);">
+      <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-tab.png" alt="탭" style="width:85%;max-width:340px;height:auto;display:block;margin:0 auto 24px;mix-blend-mode:multiply;">
+      <p style="font-size:22px;font-weight:800;color:#1A1A1A;margin-bottom:10px;">갤럭시 탭 A11+</p>
+      <p style="font-size:14px;color:#555;line-height:1.8;">사전예약 신청 고객 대상<br>갤럭시 탭 A11+ 제공 혜택</p>
+
     </div>
 
     <!-- 인터넷 -->
-    <div style="background:#fff;border-radius:20px;padding:40px 24px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.06);position:relative;overflow:hidden;">
-      <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-wifi.png" alt="인터넷" style="width:85%;max-width:340px;height:auto;display:block;margin:0 auto 24px;mix-blend-mode:multiply;filter:blur(14px) brightness(0.95);">
-      <p style="font-size:22px;font-weight:800;color:#1A1A1A;margin-bottom:10px;filter:blur(8px);">인터넷 요금 지원 혜택</p>
-      <p style="font-size:14px;color:#555;line-height:1.8;filter:blur(6px);">다이렉트 결합 시<br>인터넷 요금 지원 혜택을 받아보세요</p>
-      <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">
-        <!-- 커튼 이미지: 위에서 60%만 덮음 -->
-        <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/curtain.png" alt="커튼" style="position:absolute;top:-10%;left:-5%;width:110%;height:75%;object-fit:cover;object-position:bottom;">
-        <!-- 커튼 아래 그라디언트 페이드 -->
-        <div style="position:absolute;top:55%;left:0;right:0;height:20%;background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,0));"></div>
-        <!-- 뱃지 -->
-        <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);border-radius:10px;padding:6px 16px;text-align:center;white-space:nowrap;">
-          <p style="font-size:11px;color:rgba(255,220,180,.95);font-weight:700;letter-spacing:.08em;margin-bottom:1px;">🔒 COMING SOON</p>
-          <p style="font-size:13px;font-weight:800;color:#fff;">7.22 언팩 이후 공개</p>
-        </div>
-      </div>
+    <div style="background:#fff;border-radius:20px;padding:40px 24px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.06);">
+      <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-wifi.png" alt="인터넷" style="width:85%;max-width:340px;height:auto;display:block;margin:0 auto 24px;mix-blend-mode:multiply;">
+      <p style="font-size:22px;font-weight:800;color:#1A1A1A;margin-bottom:10px;">인터넷 요금 지원 혜택</p>
+      <p style="font-size:14px;color:#555;line-height:1.8;">다이렉트 결합 시<br>인터넷 요금 지원 혜택을 받아보세요</p>
+
     </div>
 
     <!-- OTT -->
-    <div style="background:#fff;border-radius:20px;padding:40px 24px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.06);position:relative;overflow:hidden;">
-      <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-ott.png" alt="OTT" style="width:85%;max-width:340px;height:auto;display:block;margin:0 auto 24px;mix-blend-mode:multiply;filter:blur(14px) brightness(0.95);">
-      <p style="font-size:22px;font-weight:800;color:#1A1A1A;margin-bottom:10px;filter:blur(8px);">OTT 혜택</p>
-      <p style="font-size:14px;color:#555;line-height:1.8;filter:blur(6px);">OTT 서비스 이용권 혜택<br>넷플릭스 / 디즈니플러스 / 티빙 중 택 1</p>
-      <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">
-        <!-- 커튼 이미지: 위에서 60%만 덮음 -->
-        <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/curtain.png" alt="커튼" style="position:absolute;top:-10%;left:-5%;width:110%;height:75%;object-fit:cover;object-position:bottom;">
-        <!-- 커튼 아래 그라디언트 페이드 -->
-        <div style="position:absolute;top:55%;left:0;right:0;height:20%;background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,0));"></div>
-        <!-- 뱃지 -->
-        <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);border-radius:10px;padding:6px 16px;text-align:center;white-space:nowrap;">
-          <p style="font-size:11px;color:rgba(255,220,180,.95);font-weight:700;letter-spacing:.08em;margin-bottom:1px;">🔒 COMING SOON</p>
-          <p style="font-size:13px;font-weight:800;color:#fff;">7.22 언팩 이후 공개</p>
-        </div>
-      </div>
+    <div style="background:#fff;border-radius:20px;padding:40px 24px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.06);">
+      <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-ott.png" alt="OTT" style="width:85%;max-width:340px;height:auto;display:block;margin:0 auto 24px;mix-blend-mode:multiply;">
+      <p style="font-size:22px;font-weight:800;color:#1A1A1A;margin-bottom:10px;">OTT 혜택</p>
+      <p style="font-size:14px;color:#555;line-height:1.8;">OTT 서비스 이용권 혜택<br>넷플릭스 / 디즈니플러스 / 티빙 중 택 1</p>
+
     </div>
 
   </div>
