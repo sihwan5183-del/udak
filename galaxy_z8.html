@@ -1332,6 +1332,10 @@ function mSubmitForm(){
   var birthF = '19'+birth.slice(0,2)+'-'+birth.slice(2,4)+'-'+birth.slice(4,6);
   var memoEl = document.getElementById('mUserNote');
   var memo = memoEl ? memoEl.value.trim() : '';
+  // 팝업 먼저 표시
+  if(typeof fbq!=='undefined')fbq('track','Lead');
+  showTicket(name,phoneF,fDevice);
+  // DB 저장 (백그라운드)
   fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations',{
     method:'POST',
     headers:{
@@ -1568,6 +1572,10 @@ function fSubmit(){
   var memo=document.getElementById('fMemo').value.trim();
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
   var birthF='19'+birth.slice(0,2)+'-'+birth.slice(2,4)+'-'+birth.slice(4,6);
+  // 팝업 먼저 표시
+  if(typeof fbq!=='undefined')fbq('track','Lead');
+  showTicket(name,phoneF,fDevice);
+  // DB 저장 (백그라운드)
   fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations',{
     method:'POST',
     headers:{
