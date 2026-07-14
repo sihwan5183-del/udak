@@ -1068,6 +1068,29 @@ textarea.mform-input{resize:none;height:80px;}
   font-weight: 600;
 }
 .top-nav-sub-item .sub-icon { font-size: 14px; }
+/* PC: 로고/햄버거를 서브탭 컬럼에 맞춰 정렬 (로고→자주묻는질문 위, 햄버거→상담안내 위) */
+@media (min-width: 768px) {
+  .top-nav-inner {
+    max-width: none;
+    padding: 0;
+    justify-content: flex-start;
+  }
+  .top-nav-inner::before {
+    content: "";
+    flex: 1;
+  }
+  .top-nav-logo {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .top-nav-menu-btn {
+    flex: 1;
+    align-items: center;
+    padding: 6px 0;
+  }
+}
 /* 아코디언 */
 .faq-accordion { border-radius: 12px; overflow: hidden; border: 1px solid #f0f0f0; }
 .faq-acc-item { border-bottom: 1px solid #f0f0f0; }
