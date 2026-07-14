@@ -824,9 +824,166 @@ textarea.mform-input{resize:none;height:80px;}
 @media (max-width:768px){
   .page-title-sec{padding:36px 16px 24px !important;}
 }
+
+/* ══════════════════════════════
+   상단 네비게이션
+══════════════════════════════ */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  width: 100%;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+}
+.top-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 16px;
+  height: 50px;
+}
+.top-nav-logo {
+  font-size: 15px;
+  font-weight: 800;
+  color: #E2173D;
+  letter-spacing: -0.3px;
+  text-decoration: none;
+}
+.top-nav-logo span { color: #1a1a1a; }
+.top-nav-menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.top-nav-menu-btn span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #1a1a1a;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+/* 드로어 */
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 260px;
+  height: 100%;
+  background: #fff;
+  z-index: 9999;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+  transition: right 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+.nav-drawer.open { right: 0; }
+.nav-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.nav-drawer-header .logo {
+  font-size: 15px;
+  font-weight: 800;
+  color: #E2173D;
+}
+.nav-drawer-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  color: #666;
+  line-height: 1;
+}
+.nav-drawer-body { padding: 12px 0; flex: 1; }
+.nav-drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  font-size: 15px;
+  color: #1a1a1a;
+  text-decoration: none;
+  border-bottom: 1px solid #f8f8f8;
+  cursor: pointer;
+}
+.nav-drawer-item:hover { background: #fff5f7; color: #E2173D; }
+.nav-drawer-item .icon { font-size: 18px; }
+.nav-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 9998;
+  display: none;
+}
+.nav-drawer-overlay.open { display: block; }
+
 </style>
 </head>
 <body style="padding-bottom:90px;">
+<!-- ══ 상단 네비게이션 ══ -->
+<nav class="top-nav">
+  <div class="top-nav-inner">
+    <a href="#" class="top-nav-logo">유플러스 <span>다이렉트</span></a>
+    <button class="top-nav-menu-btn" onclick="openNavDrawer()" aria-label="메뉴">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- 드로어 오버레이 -->
+<div class="nav-drawer-overlay" id="navOverlay" onclick="closeNavDrawer()"></div>
+
+<!-- 드로어 메뉴 -->
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-header">
+    <span class="logo">유플러스 다이렉트</span>
+    <button class="nav-drawer-close" onclick="closeNavDrawer()">✕</button>
+  </div>
+  <div class="nav-drawer-body">
+    <a class="nav-drawer-item" href="#faq-section">
+      <span class="icon">💬</span> 궁금해요
+    </a>
+    <a class="nav-drawer-item" href="#faq-section">
+      <span class="icon">❓</span> 자주 묻는 질문
+    </a>
+    <a class="nav-drawer-item" href="tel:1660-1412">
+      <span class="icon">📞</span> 상담 안내
+    </a>
+    <a class="nav-drawer-item" href="https://pf.kakao.com/_HxfVxcn/chat" target="_blank">
+      <span class="icon">💛</span> 카카오톡 상담
+    </a>
+    <div class="nav-drawer-item" onclick="document.getElementById('mobileFormSection')?.scrollIntoView({behavior:'smooth'}); closeNavDrawer();">
+      <span class="icon">📋</span> 사전예약 신청
+    </div>
+  </div>
+</div>
+
+<script>
+function openNavDrawer() {
+  document.getElementById('navDrawer').classList.add('open');
+  document.getElementById('navOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeNavDrawer() {
+  document.getElementById('navDrawer').classList.remove('open');
+  document.getElementById('navOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
+
+
 
 <div class="spotlight-overlay"></div>
 
