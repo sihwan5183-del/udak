@@ -929,6 +929,111 @@ textarea.mform-input{resize:none;height:80px;}
 }
 .nav-drawer-overlay.open { display: block; }
 
+
+/* ══════════════════════════════
+   네비 모달
+══════════════════════════════ */
+.nav-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.nav-modal-overlay.open { display: flex; }
+.nav-modal {
+  background: #fff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 360px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  animation: modalSlideUp 0.3s ease;
+}
+@keyframes modalSlideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.nav-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.nav-modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+.nav-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #999;
+  line-height: 1;
+  padding: 2px 6px;
+}
+.nav-modal-body { padding: 20px; }
+.nav-modal-body .faq-item {
+  border-bottom: 1px solid #f5f5f5;
+  padding: 14px 0;
+}
+.nav-modal-body .faq-q {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 8px;
+}
+.nav-modal-body .faq-q::before {
+  content: "Q";
+  color: #E2173D;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.nav-modal-body .faq-a {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.6;
+  padding-left: 18px;
+}
+.nav-modal-body .contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f5f5f5;
+  text-decoration: none;
+  color: #1a1a1a;
+}
+.nav-modal-body .contact-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.nav-modal-body .contact-info .label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+.nav-modal-body .contact-info .desc {
+  font-size: 12px;
+  color: #888;
+  margin-top: 2px;
+}
+
 </style>
 </head>
 <body style="padding-bottom:90px;">
@@ -952,15 +1057,15 @@ textarea.mform-input{resize:none;height:80px;}
     <button class="nav-drawer-close" onclick="closeNavDrawer()">✕</button>
   </div>
   <div class="nav-drawer-body">
-    <a class="nav-drawer-item" href="#faq-section">
+    <div class="nav-drawer-item" onclick="openNavModal('modalCurio')">
       <span class="icon">💬</span> 궁금해요
-    </a>
-    <a class="nav-drawer-item" href="#faq-section">
+    </div>
+    <div class="nav-drawer-item" onclick="openNavModal('modalFaq')">
       <span class="icon">❓</span> 자주 묻는 질문
-    </a>
-    <a class="nav-drawer-item" href="tel:1660-1412">
+    </div>
+    <div class="nav-drawer-item" onclick="openNavModal('modalContact')">
       <span class="icon">📞</span> 상담 안내
-    </a>
+    </div>
     <a class="nav-drawer-item" href="https://pf.kakao.com/_HxfVxcn/chat" target="_blank">
       <span class="icon">💛</span> 카카오톡 상담
     </a>
@@ -1972,5 +2077,103 @@ function fSubmit(){
     <button onclick="closeTicket()" style="position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.3);border:none;color:#fff;font-size:18px;cursor:pointer;line-height:32px;text-align:center;">×</button>
   </div>
 </div>
+
+<!-- ══ 궁금해요 모달 ══ -->
+<div class="nav-modal-overlay" id="modalCurio" onclick="if(event.target===this)closeNavModal('modalCurio')">
+  <div class="nav-modal">
+    <div class="nav-modal-header">
+      <span class="nav-modal-title">💬 궁금해요</span>
+      <button class="nav-modal-close" onclick="closeNavModal('modalCurio')">✕</button>
+    </div>
+    <div class="nav-modal-body">
+      <div class="faq-item">
+        <div class="faq-q">지금 신청하면 어떤 혜택이 있나요?</div>
+        <div class="faq-a">얼리버드 사전예약 고객님께는 언팩 직후 가장 먼저 혜택을 안내드리며, 유플러스 다이렉트만의 특별 혜택을 드립니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">지금 바로 개통하는 건가요?</div>
+        <div class="faq-a">아닙니다! 지금은 사전 알림 신청이에요. 담당자가 7.22 이후 개별 연락드려 최대 혜택으로 안내해 드립니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">개인정보는 안전한가요?</div>
+        <div class="faq-a">LG U+ 공식 파트너사 신세계정보통신이 운영하며, 수집된 정보는 사전예약 안내 목적으로만 사용됩니다.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 자주 묻는 질문 모달 ══ -->
+<div class="nav-modal-overlay" id="modalFaq" onclick="if(event.target===this)closeNavModal('modalFaq')">
+  <div class="nav-modal">
+    <div class="nav-modal-header">
+      <span class="nav-modal-title">❓ 자주 묻는 질문</span>
+      <button class="nav-modal-close" onclick="closeNavModal('modalFaq')">✕</button>
+    </div>
+    <div class="nav-modal-body">
+      <div class="faq-item">
+        <div class="faq-q">기기는 언제 받을 수 있나요?</div>
+        <div class="faq-a">8월 4일부터 기기 수령 및 개통이 가능합니다. 서울·경기 고객님은 매장 방문 당일 수령도 가능해요!</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">지방 고객도 신청 가능한가요?</div>
+        <div class="faq-a">물론이죠! 온라인 전문팀이 상시 대기 중이며, 택배로 당일 발송도 가능합니다.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">이미 LG U+ 고객인데 신청 가능한가요?</div>
+        <div class="faq-a">네! 기변, 번호이동 모두 가능합니다. 담당자가 고객님 상황에 맞게 안내해 드릴게요.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">신청 후 취소할 수 있나요?</div>
+        <div class="faq-a">사전 알림 신청은 언제든 취소 가능합니다. 구매 의무가 전혀 없으니 부담 없이 신청해 주세요!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 상담 안내 모달 ══ -->
+<div class="nav-modal-overlay" id="modalContact" onclick="if(event.target===this)closeNavModal('modalContact')">
+  <div class="nav-modal">
+    <div class="nav-modal-header">
+      <span class="nav-modal-title">📞 상담 안내</span>
+      <button class="nav-modal-close" onclick="closeNavModal('modalContact')">✕</button>
+    </div>
+    <div class="nav-modal-body">
+      <a href="tel:1660-1412" class="contact-item">
+        <div class="contact-icon" style="background:#fff0f3;">📞</div>
+        <div class="contact-info">
+          <div class="label">전화 상담</div>
+          <div class="desc">1660-1412 · 평일 09:00~18:00</div>
+        </div>
+      </a>
+      <a href="https://pf.kakao.com/_HxfVxcn/chat" target="_blank" class="contact-item">
+        <div class="contact-icon" style="background:#FFF9E6;">💛</div>
+        <div class="contact-info">
+          <div class="label">카카오톡 상담</div>
+          <div class="desc">유닥 채널 · 24시간 문의 가능</div>
+        </div>
+      </a>
+      <a href="https://www.uplusdak.com" target="_blank" class="contact-item">
+        <div class="contact-icon" style="background:#f0f4ff;">🌐</div>
+        <div class="contact-info">
+          <div class="label">유닥 홈페이지</div>
+          <div class="desc">www.uplusdak.com</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+function openNavModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+  closeNavDrawer();
+}
+function closeNavModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
+
 </body>
 </html>
