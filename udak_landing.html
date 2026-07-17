@@ -337,7 +337,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
     <div>
       <div class="benefit-card">
         <div class="bc-head">
-          <span class="bc-ttl" id="txtBenefitTitle">유닥 예상 혜택 요약</span>
+          <span class="bc-ttl" id="txtBenefitTitle">혜택 요약 시트</span>
           <span class="auto-badge">자동 계산</span>
         </div>
         <div class="bc-dev">
@@ -515,7 +515,7 @@ const DTXT={
   sectionTitle:'원하는 핸드폰을 선택해주세요.',
   stepDeviceLbl:'원하는 제품',stepCarrierLbl:'현재 사용 통신사',stepStorageLbl:'용량 / 색상',stepPlanLbl:'요금제',
   discPub:'공시지원금',discSel:'선택약정',
-  benefitTitle:'유닥 예상 혜택 요약',
+  benefitTitle:'혜택 요약 시트',
   benefitNote:'',
   formTitle:'상담 신청하기',ctaKakao:'카카오톡 상담하기',ctaPhone:'상담 신청하기',
   privacyNote:'🔒 입력하신 정보는 상담 목적으로만 사용되며, 안전하게 보호됩니다.',
@@ -526,6 +526,7 @@ function applyTexts(t){
   tx.sectionTitle=DTXT.sectionTitle; // Firebase에 저장된 예전 값이 있어도 무시하고 항상 최신 문구 사용
   tx.ctaPhone=DTXT.ctaPhone; // 마찬가지로 Firebase에 박혀있는 옛날 "전화 상담 신청하기" 무시
   tx.benefitNote=DTXT.benefitNote; // 예상금액 안내 문구 완전 제거, Firebase 옛값도 무시
+  tx.benefitTitle=DTXT.benefitTitle; // 혜택 요약 시트 문구, Firebase 옛값 무시
   window._installmentNote = tx.installmentNote||'*기기 할부금 별도';
   window._installmentNoteOff = tx.installmentNoteOff===true||tx.installmentNoteOff==='true';
   document.getElementById('txtSectionTitle').textContent=tx.sectionTitle;
