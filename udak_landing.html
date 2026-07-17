@@ -290,7 +290,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
   <div class="content-grid">
     <!-- 왼쪽: 조건 선택 -->
     <div class="step-section">
-      <p class="sec-title" id="txtSectionTitle">내 조건 먼저 확인해보세요</p>
+      <p class="sec-title" id="txtSectionTitle">원하는 핸드폰을 선택해주세요.</p>
 
       <div class="step-card" id="sc1" onclick="tryOpen(&#39;device&#39;)" style="cursor:pointer">
         <div style="display:flex;align-items:center;gap:12px;padding:14px;pointer-events:none">
@@ -515,7 +515,7 @@ let sel={device:null,carrier:null,jointype:null,storage:null,color:null,plan:nul
 const DTXT={
   installmentNote:'*기기 할부금 별도',
   installmentNoteOff:false,
-  sectionTitle:'내 조건 먼저 확인해보세요',
+  sectionTitle:'원하는 핸드폰을 선택해주세요.',
   stepDeviceLbl:'원하는 제품',stepCarrierLbl:'현재 사용 통신사',stepStorageLbl:'용량 / 색상',stepPlanLbl:'요금제',
   discPub:'공시지원금',discSel:'선택약정',
   benefitTitle:'유닥 예상 혜택 요약',
@@ -876,12 +876,10 @@ let bonusData={};
 const DEFAULT_BONUS={
   '95':{planGroupMatch:['95'],title:'플러스플랜 95 고객님을 위한 무료 혜택!',items:[
     {id:'watch',name:'갤럭시 워치',desc:'기기값 + 월 요금 무료',amount:11000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png'},
-    {id:'internet',name:'인터넷 500M',desc:'3년 약정 기준 / 월 요금 무료',amount:33000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png'},
   ]},
   '115':{planGroupMatch:['115'],title:'플러스플랜 115 고객님을 위한 무료 혜택!',items:[
     {id:'watch',name:'갤럭시 워치',desc:'기기값 + 월 요금 무료',amount:11000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png'},
     {id:'tab',name:'갤럭시 탭',desc:'기기값 + 월 요금 무료',amount:22000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tab.png'},
-    {id:'internet',name:'인터넷 500M',desc:'3년 약정 기준 / 월 요금 무료',amount:33000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png'},
     {id:'ott',name:'OTT 혜택',desc:'원하는 스트리밍 1개 선택',amount:0,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/ott.png',ottOptions:[
       {id:'ott_disney',name:'디즈니+',emoji:'🏰',color:'#1B3D8F',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/disney.png'},
       {id:'ott_tving',name:'티빙',emoji:'📺',color:'#FF153C',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tving.png'},
@@ -1155,8 +1153,8 @@ function updateBonusSummary(key){
   const emptyMsg=document.getElementById('bonusEmptyMsg');
   if(emptyMsg){
     const pg=(bd.planGroupMatch||[])[0]||key;
-    if(pg==='115') emptyMsg.textContent='모바일 + 스마트 워치 + 스마트 탭 + 인터넷 요금을 한번에!';
-    else if(pg==='95') emptyMsg.textContent='모바일 + 스마트 워치 + 인터넷 요금을 한번에!';
+    if(pg==='115') emptyMsg.textContent='모바일 + 스마트 워치 + 스마트 탭 요금을 한번에!';
+    else if(pg==='95') emptyMsg.textContent='모바일 + 스마트 워치 요금을 한번에!';
     else emptyMsg.textContent='원하는 혜택을 왼쪽에서 선택해보세요';
   }
   // OTT처럼 서브아이템이 있는 경우도 selected 처리
