@@ -9,7 +9,7 @@
 
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#111;-webkit-tap-highlight-color:transparent}
-:root{--or:#F97316;--orl:#FFF7ED;--ord:#EA6B10;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g300:#D1D5DB;--g400:#9CA3AF;--g600:#6B7280;--g800:#1F2937;--r:12px;--rs:8px}
+:root{--or:#EA5186;--orl:#FFF0F5;--ord:#C93D6B;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g300:#D1D5DB;--g400:#9CA3AF;--g600:#6B7280;--g800:#1F2937;--r:12px;--rs:8px}
 
 /* ── 모바일 추가혜택 요약 Bottom Sheet ── */
 
@@ -110,7 +110,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 .fsel{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;appearance:none}
 
 /* 추가혜택 자동기입 미리보기 박스 */
-.benefit-preview{margin-top:10px;padding:10px 12px;background:#FFF7ED;border:1.5px solid #FED7AA;border-radius:8px;display:none}
+.benefit-preview{margin-top:10px;padding:10px 12px;background:#FFF0F5;border:1.5px solid #F6B8CC;border-radius:8px;display:none}
 .benefit-preview.on{display:block}
 .bp-title{font-size:11px;font-weight:700;color:var(--ord);margin-bottom:5px}
 .bp-items{display:flex;flex-wrap:wrap;gap:5px}
@@ -239,7 +239,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 .ott-opt span{font-size:11px;font-weight:600;color:var(--g800);text-align:center}
 
 .plan-bonus-badge{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
-.pbb{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--orl);color:var(--or);font-weight:700;border:1px solid #FED7AA}
+.pbb{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--orl);color:var(--or);font-weight:700;border:1px solid #F6B8CC}
 .pbb-data{background:#FEF3C7;color:#92400E;border-color:#FDE68A}
 @media(max-width:767px){
   .bonus-section.on{grid-template-columns:1fr;gap:12px}
@@ -372,7 +372,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
         <div class="bonus-title" style="margin-bottom:0"><span class="gift">🎁</span><span id="bonusSectionTitle">고객님을 위한 무료 혜택!</span></div>
         <div style="display:flex;gap:6px">
-          <button id="btnBenefitYes" onclick="setBenefitMode(true)" style="height:32px;padding:0 14px;border-radius:20px;border:1.5px solid #F97316;background:#F97316;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">받기</button>
+          <button id="btnBenefitYes" onclick="setBenefitMode(true)" style="height:32px;padding:0 14px;border-radius:20px;border:1.5px solid #EA5186;background:#EA5186;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">받기</button>
           <button id="btnBenefitNo" onclick="setBenefitMode(false)" style="height:32px;padding:0 14px;border-radius:20px;border:1.5px solid #E5E7EB;background:#fff;color:#6B7280;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">받지않기</button>
         </div>
       </div>
@@ -389,7 +389,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
       <div class="bonus-summary-rows" id="bonusSummaryRows"></div>
       <div id="bonusTotalBox" style="display:none;margin-top:12px">
         <!-- 혜택 금액 강조 -->
-        <div style="background:var(--orl);border-radius:10px;padding:16px 14px;text-align:center;border:1.5px solid #FED7AA">
+        <div style="background:var(--orl);border-radius:10px;padding:16px 14px;text-align:center;border:1.5px solid #F6B8CC">
           <div style="font-size:11px;color:var(--ord);font-weight:700;margin-bottom:6px;letter-spacing:.3px">✨ 무료 혜택 절약액</div>
           <div id="bonusTotalFeel" style="font-size:32px;font-weight:900;color:var(--or);line-height:1.1">-</div>
           <div id="bonusTotalNote" style="font-size:11px;color:var(--g600);margin-top:8px;line-height:1.6;text-align:left"></div>
@@ -844,7 +844,7 @@ window.selPlan=function(id){
   // 버튼 초기화
   const by=document.getElementById('btnBenefitYes');
   const bn=document.getElementById('btnBenefitNo');
-  if(by){by.style.background='#F97316';by.style.color='#fff';by.style.borderColor='#F97316';}
+  if(by){by.style.background='#EA5186';by.style.color='#fff';by.style.borderColor='#EA5186';}
   if(bn){bn.style.background='#fff';bn.style.color='#6B7280';bn.style.borderColor='#E5E7EB';}
   updateBenefitPreview();
   closeSheet();calc();renderBonusSection();
@@ -936,8 +936,8 @@ window.setBenefitMode=function(accept){
   benefitAccepted=accept;
   const yBtn=document.getElementById('btnBenefitYes');
   const nBtn=document.getElementById('btnBenefitNo');
-  if(yBtn){yBtn.style.background=accept?'#F97316':'#fff';yBtn.style.color=accept?'#fff':'#6B7280';yBtn.style.borderColor=accept?'#F97316':'#E5E7EB';}
-  if(nBtn){nBtn.style.background=!accept?'#F97316':'#fff';nBtn.style.color=!accept?'#fff':'#6B7280';nBtn.style.borderColor=!accept?'#F97316':'#E5E7EB';}
+  if(yBtn){yBtn.style.background=accept?'#EA5186':'#fff';yBtn.style.color=accept?'#fff':'#6B7280';yBtn.style.borderColor=accept?'#EA5186':'#E5E7EB';}
+  if(nBtn){nBtn.style.background=!accept?'#EA5186':'#fff';nBtn.style.color=!accept?'#fff':'#6B7280';nBtn.style.borderColor=!accept?'#EA5186':'#E5E7EB';}
   if(!accept) selectedBonuses=new Set();
   // sel.plan 기준으로 key 재확인 - currentBonusKey와 동기화
   const freshKey=getBonusPlanKey(sel.plan);
@@ -997,11 +997,11 @@ function _renderBonusItems(key,bd){
     const selOtt=isOtt?item.ottOptions.find(o=>selectedBonuses.has(o.id)):null;
     const on=isOtt?(!!selOtt):selectedBonuses.has(item.id);
     const selOttName=selOtt?' ('+selOtt.name+')':'';
-    const bg=on?'#FFF7ED':'#F9FAFB';
-    const border=on?'#F97316':'transparent';
-    const nameColor=on?'#F97316':'#1F2937';
-    const chkBg=on?'#F97316':'transparent';
-    const chkBorder=on?'#F97316':'#D1D5DB';
+    const bg=on?'#FFF0F5':'#F9FAFB';
+    const border=on?'#EA5186':'transparent';
+    const nameColor=on?'#EA5186':'#1F2937';
+    const chkBg=on?'#EA5186':'transparent';
+    const chkBorder=on?'#EA5186':'#D1D5DB';
     const imgBg=item.img?`url('${item.img}') center/contain no-repeat #fff`:'#F3F4F6';
     const iconEl=isOtt
       ?`<div style="width:32px;height:32px;border-radius:6px;flex-shrink:0;background:#F3F4F6;border:1px solid #E5E7EB;display:flex;align-items:center;justify-content:center;font-size:16px">${selOtt?selOtt.emoji:'🎬'}</div>`
@@ -1012,7 +1012,7 @@ function _renderBonusItems(key,bd){
         ${iconEl}
         <div style="flex:1;min-width:0">
           <div style="font-size:12px;font-weight:700;color:${nameColor}">${item.name}${on&&selOttName?` <span style="font-size:10px">${selOttName}</span>`:''}</div>
-          <div style="font-size:10px;font-weight:800;color:#F97316;margin-top:1px">${item.amount>0?'월 '+item.amount.toLocaleString()+'원 → 무료':'별도 안내'}</div>
+          <div style="font-size:10px;font-weight:800;color:#EA5186;margin-top:1px">${item.amount>0?'월 '+item.amount.toLocaleString()+'원 → 무료':'별도 안내'}</div>
         </div>
         <div style="width:20px;height:20px;flex-shrink:0;border-radius:50%;border:2px solid ${chkBorder};background:${chkBg};display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff">${on?'✓':''}</div>
       </div>
@@ -1030,9 +1030,9 @@ function _renderBonusItems(key,bd){
       <div class="ott-grid">${ottItem.ottOptions.map(o=>{
         const sel=selectedBonuses.has(o.id);
         const hasImg=!!o.img;
-        return`<div onclick="selectOtt(event,'${o.id}','${fixedKey}')" class="ott-opt${sel?' on':''}" data-ottimg="${o.img||''}" style="border-color:${sel?'#F97316':'#E5E7EB'};cursor:pointer">
+        return`<div onclick="selectOtt(event,'${o.id}','${fixedKey}')" class="ott-opt${sel?' on':''}" data-ottimg="${o.img||''}" style="border-color:${sel?'#EA5186':'#E5E7EB'};cursor:pointer">
           <div class="ott-icon" style="pointer-events:none;display:flex;align-items:center;justify-content:center;height:40px">${hasImg?`<img src="${o.img}" style="width:80px;height:40px;object-fit:contain">`:`<span style="font-size:24px">${o.emoji||'🎬'}</span>`}</div>
-          <span style="pointer-events:none;font-size:12px;font-weight:700;color:${sel?'#F97316':'#1F2937'}">${o.name}</span>
+          <span style="pointer-events:none;font-size:12px;font-weight:700;color:${sel?'#EA5186':'#1F2937'}">${o.name}</span>
         </div>`;
       }).join('')}
       </div>
@@ -1077,8 +1077,8 @@ function updateBonusHero(key){
   const size=imgs.length===1?140:imgs.length===2?100:80;
   wrap.innerHTML=imgs.map(i=>
     i.img
-      ?`<div style="width:${size}px;height:${size}px;border-radius:12px;background:url('${i.img}') center/contain no-repeat #fff;border:1.5px solid #FED7AA;flex-shrink:0"></div>`
-      :`<div style="width:${size}px;height:${size}px;border-radius:12px;background:#FFF7ED;border:1.5px solid #FED7AA;display:flex;align-items:center;justify-content:center;font-size:${size*0.4}px;flex-shrink:0">${i.emoji}</div>`
+      ?`<div style="width:${size}px;height:${size}px;border-radius:12px;background:url('${i.img}') center/contain no-repeat #fff;border:1.5px solid #F6B8CC;flex-shrink:0"></div>`
+      :`<div style="width:${size}px;height:${size}px;border-radius:12px;background:#FFF0F5;border:1.5px solid #F6B8CC;display:flex;align-items:center;justify-content:center;font-size:${size*0.4}px;flex-shrink:0">${i.emoji}</div>`
   ).join('');
 }
 
@@ -1197,11 +1197,11 @@ function updateBonusSummary(key){
     feelEl.innerHTML=`<span style="font-size:16px;color:var(--ord);font-weight:800">-</span>${total.toLocaleString()}<span style="font-size:16px;color:var(--ord);font-weight:800">원${hasExtra?' + α':''}</span>`;
     // 체감 요금 안내
     noteEl.innerHTML=`
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #FED7AA">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #F6B8CC">
         <span style="color:var(--g600)">요금제</span>
         <span style="font-weight:700">${planFee.toLocaleString()}원</span>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #FED7AA">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #F6B8CC">
         <span style="color:var(--g600)">혜택 할인</span>
         <span style="font-weight:700;color:var(--or)">-${total.toLocaleString()}원${hasExtra?' + α':''}</span>
       </div>
@@ -1383,11 +1383,11 @@ function openSummarySheet(key){
     if(amt>0) totalAmt+=amt;
     const imgHtml=imgSrc
       ?`<img src="${imgSrc}" style="width:32px;height:32px;object-fit:contain;border-radius:6px;border:1px solid #E5E7EB;flex-shrink:0;background:#fff">`
-      :`<div style="width:32px;height:32px;border-radius:6px;background:#FFF7ED;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🎁</div>`;
+      :`<div style="width:32px;height:32px;border-radius:6px;background:#FFF0F5;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🎁</div>`;
     return`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F3F4F6">
       ${imgHtml}
       <span style="flex:1;font-size:14px;font-weight:600;color:#1F2937">${name}</span>
-      <span style="font-size:13px;font-weight:800;color:#F97316">${amt>0?'-'+amt.toLocaleString()+'원':'별도'}</span>
+      <span style="font-size:13px;font-weight:800;color:#EA5186">${amt>0?'-'+amt.toLocaleString()+'원':'별도'}</span>
     </div>`;
   }).join('');
 
@@ -1399,22 +1399,22 @@ function openSummarySheet(key){
 
   document.getElementById('summarySheetBody').innerHTML=`
     ${rows}
-    <div style="margin-top:14px;background:#FFF7ED;border-radius:12px;padding:14px;border:1.5px solid #FED7AA">
-      <div style="font-size:11px;color:#EA6B10;font-weight:700;margin-bottom:8px;letter-spacing:.3px">✨ 무료 혜택 절약액</div>
-      <div style="font-size:28px;font-weight:900;color:#F97316;line-height:1">
+    <div style="margin-top:14px;background:#FFF0F5;border-radius:12px;padding:14px;border:1.5px solid #F6B8CC">
+      <div style="font-size:11px;color:#C93D6B;font-weight:700;margin-bottom:8px;letter-spacing:.3px">✨ 무료 혜택 절약액</div>
+      <div style="font-size:28px;font-weight:900;color:#EA5186;line-height:1">
         <span style="font-size:16px">-</span>${totalAmt.toLocaleString()}<span style="font-size:16px">원${hasExtra?' + α':''}</span>
       </div>
       ${planFee&&totalAmt?`
       <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px">
-        <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid #FED7AA">
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid #F6B8CC">
           <span style="color:#6B7280">요금제</span><span style="font-weight:700">${planFee.toLocaleString()}원</span>
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid #FED7AA">
-          <span style="color:#6B7280">혜택 할인</span><span style="font-weight:700;color:#F97316">-${totalAmt.toLocaleString()}원${hasExtra?' + α':''}</span>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid #F6B8CC">
+          <span style="color:#6B7280">혜택 할인</span><span style="font-weight:700;color:#EA5186">-${totalAmt.toLocaleString()}원${hasExtra?' + α':''}</span>
         </div>
         <div style="display:flex;justify-content:space-between;font-size:14px;padding:5px 0">
           <span style="font-weight:800;color:#1F2937">체감 요금</span>
-          <span style="font-weight:900;color:#F97316">${feel.toLocaleString()}원/월</span>
+          <span style="font-weight:900;color:#EA5186">${feel.toLocaleString()}원/월</span>
         </div>
       </div>`:''}
       ${hasExtra?'<div style="font-size:10px;color:#9CA3AF;margin-top:4px">*OTT 혜택 별도 안내</div>':''}
