@@ -524,6 +524,7 @@ const DTXT={
 function applyTexts(t){
   const tx={...DTXT,...t};
   tx.sectionTitle=DTXT.sectionTitle; // Firebase에 저장된 예전 값이 있어도 무시하고 항상 최신 문구 사용
+  tx.ctaPhone=DTXT.ctaPhone; // 마찬가지로 Firebase에 박혀있는 옛날 "전화 상담 신청하기" 무시
   window._installmentNote = tx.installmentNote||'*기기 할부금 별도';
   window._installmentNoteOff = tx.installmentNoteOff===true||tx.installmentNoteOff==='true';
   document.getElementById('txtSectionTitle').textContent=tx.sectionTitle;
