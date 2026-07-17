@@ -645,7 +645,7 @@ async function renderBanners() {
       <div class="banner-num">${i+1}</div>
       <div class="banner-fields">
         <input id="bPc${i}" value="${b?.pc||''}" placeholder="PC 이미지 URL (1440×400px)">
-        <input id="bMo${i}" value="${b?.mo||''}" placeholder="모바일 이미지 URL (750×400px)">
+        <input id="bMo${i}" value="${b?.mo||''}" placeholder="모바일 이미지 URL (750×550px)">
         <input id="bLk${i}" value="${b?.link||''}" placeholder="클릭 링크 URL (없으면 빈칸)">
       </div>
       ${b?.pc?`<img class="banner-preview" src="${b.pc}" onerror="this.style.display='none'">`:''}`;
