@@ -413,21 +413,17 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
         <div class="bp-items" id="bpItems"></div>
       </div>
       <div class="form-grid" style="margin-top:12px">
-        <div class="fg"><label class="flbl">이름 <em>*</em></label><input type="text" class="fi" id="fName" placeholder="이름을 입력해주세요"></div>
-        <div class="fg"><label class="flbl">생년월일 <em>*</em></label><input type="text" class="fi" id="fBirth" placeholder="YYYY-MM-DD" maxlength="10"></div>
-        <div class="fg"><label class="flbl">연락처 <em>*</em></label><input type="tel" class="fi" id="fPhone" placeholder="010-0000-0000"></div>
-        <div class="fg"><label class="flbl">상담 희망 시간 <em>*</em></label>
-          <input type="hidden" id="fTime" value="">
-          <div class="time-picker" id="timePicker">
-            <div class="tp-head" onclick="toggleTimePicker()">
-              <span id="timeDisplayText" style="color:var(--g400)">선택해주세요</span>
-              <span class="tp-arrow">▼</span>
-            </div>
-            <div class="tp-body" id="timeDrum">
-              <div id="timeDrumList"><div class="tp-item" onclick="window.selectTime(&#39;오전 10시&#39;)">오전 10시</div><div class="tp-item" onclick="window.selectTime(&#39;오전 11시&#39;)">오전 11시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 12시&#39;)">오후 12시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 1시&#39;)">오후 1시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 2시&#39;)">오후 2시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 3시&#39;)">오후 3시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 4시&#39;)">오후 4시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 5시&#39;)">오후 5시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 6시&#39;)">오후 6시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 7시&#39;)">오후 7시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 8시&#39;)">오후 8시</div></div>
-            </div>
-          </div>
+        <div class="fg"><label class="flbl">현재사용중인통신사 <em>*</em></label>
+          <select class="fi" id="fCarrier">
+            <option value="">선택해주세요</option>
+            <option value="SKT">SKT</option>
+            <option value="KT">KT</option>
+            <option value="LG U+">LG U+</option>
+            <option value="알뜰폰">알뜰폰</option>
+          </select>
         </div>
+        <div class="fg"><label class="flbl">이름 <em>*</em></label><input type="text" class="fi" id="fName" placeholder="이름을 입력해주세요"></div>
+        <div class="fg"><label class="flbl">연락처 <em>*</em></label><input type="tel" class="fi" id="fPhone" placeholder="010-0000-0000"></div>
       </div>
       <div class="cta-wrap">
         <a class="btn-kakao" id="kakaoBtn" href="https://pf.kakao.com/_HxfVxcn/chat" target="_blank">
@@ -1241,10 +1237,9 @@ function updateBonusSummary(key){
 /* SUBMIT */
 window.submitForm=async function(){
   const name=document.getElementById('fName').value.trim();
-  const birth=document.getElementById('fBirth').value.trim();
+  const carrier=document.getElementById('fCarrier').value;
   const phone=document.getElementById('fPhone').value.trim();
-  const time=document.getElementById('fTime').value;
-  if(!name||!phone||!time){alert('이름, 연락처, 상담 희망 시간은 필수입니다.');return;}
+  if(!name||!phone||!carrier){alert('현재사용중인통신사, 이름, 연락처는 필수입니다.');return;}
   const btn=document.getElementById('subBtn');
   btn.disabled=true;btn.innerHTML='📞 신청 중...';
   try{
@@ -1252,14 +1247,13 @@ window.submitForm=async function(){
       method:'POST',
       headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Prefer':'return=minimal'},
       body:JSON.stringify({
-        name,birth:birth||null,phone,
-        current_carrier:sel.carrier||null,jointype:sel.jointype||null,
+        name,phone,
+        current_carrier:carrier||sel.carrier||null,jointype:sel.jointype||null,
         desired_device:sel.device?.name||null,storage:sel.storage?.name||null,
         color:sel.color?sel.color.name.split('|')[1]:null,
         desired_product:sel.plan?.name||null,
         discount:sel.discType==='공시'?'공시지원금':'선택약정',
         additional_benefits:[...selectedBonuses].join(',')||null,
-        consult_time:time,
         channel:_utm.source==='meta'?'메타광고':'유닥',
         utm_campaign:_utm.campaign||null,
         estimated_fee:window._estimatedFee||null,
@@ -1268,13 +1262,8 @@ window.submitForm=async function(){
     });
     if(!res.ok) throw new Error(await res.text());
     document.getElementById('sModal').classList.add('on');
-    ['fName','fBirth','fPhone'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('fTime').value='';
-  document.getElementById('timeDisplayText').textContent='선택해주세요';
-  document.getElementById('timeDisplayText').style.color='var(--g400)';
-  document.querySelectorAll('.tp-item').forEach(el=>el.classList.remove('tp-sel','tp-near'));
-  document.getElementById('timePicker')?.classList.remove('on');
-  const rd=document.getElementById('timeDrum'); if(rd) rd.style.display='none';
+    ['fName','fPhone'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('fCarrier').value='';
   }catch(e){console.error(e);alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');}
   finally{btn.disabled=false;btn.innerHTML='📞 <span id="txtCtaPhone">상담 신청하기</span>';}
 };
@@ -1290,12 +1279,6 @@ function moveBanner(){
 
 
 /* AUTO FORMAT */
-document.getElementById('fBirth').addEventListener('input',function(){
-  let v=this.value.replace(/\D/g,'');
-  if(v.length>4) v=v.slice(0,4)+'-'+v.slice(4);
-  if(v.length>7) v=v.slice(0,7)+'-'+v.slice(7,9);
-  this.value=v;
-});
 document.getElementById('fPhone').addEventListener('input',function(){
   let v=this.value.replace(/\D/g,'');
   if(v.length>3&&v.length<=7) v=v.slice(0,3)+'-'+v.slice(3);
