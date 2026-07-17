@@ -324,7 +324,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
         </div>
       </div>
 
-      <div class="disc-box">
+      <div class="disc-box" style="display:none">
         <div class="disc-box-title">할인 방식 선택</div>
         <div class="disc-wrap">
           <button class="disc-btn on" id="dPub" onclick="setDisc(&#39;공시&#39;)"><span id="txtDiscPub">공시지원금</span></button>
@@ -526,6 +526,7 @@ const DTXT={
 };
 function applyTexts(t){
   const tx={...DTXT,...t};
+  tx.sectionTitle=DTXT.sectionTitle; // Firebase에 저장된 예전 값이 있어도 무시하고 항상 최신 문구 사용
   window._installmentNote = tx.installmentNote||'*기기 할부금 별도';
   window._installmentNoteOff = tx.installmentNoteOff===true||tx.installmentNoteOff==='true';
   document.getElementById('txtSectionTitle').textContent=tx.sectionTitle;
@@ -1159,8 +1160,8 @@ function updateBonusSummary(key){
   const emptyMsg=document.getElementById('bonusEmptyMsg');
   if(emptyMsg){
     const pg=(bd.planGroupMatch||[])[0]||key;
-    if(pg==='115') emptyMsg.textContent='모바일 + 스마트 워치 + 스마트 탭 요금을 한번에!';
-    else if(pg==='95') emptyMsg.textContent='모바일 + 스마트 워치 요금을 한번에!';
+    if(pg==='115') emptyMsg.textContent='스마트워치 · 갤럭시탭 기기값 전액 지원!';
+    else if(pg==='95') emptyMsg.textContent='스마트워치 기기값 전액 지원!';
     else emptyMsg.textContent='원하는 혜택을 왼쪽에서 선택해보세요';
   }
   // OTT처럼 서브아이템이 있는 경우도 selected 처리
