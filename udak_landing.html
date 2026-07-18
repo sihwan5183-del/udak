@@ -388,7 +388,6 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
   z-index: 999;
   width: 100%;
   background: #fff;
-  border-bottom: 2px solid var(--g200);
   box-shadow: 0 2px 10px rgba(0,0,0,0.08);
 }
 .top-nav-inner {
@@ -422,7 +421,7 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
   display: block;
   width: 22px;
   height: 2px;
-  background: var(--or);
+  background: #1a1a1a;
   border-radius: 2px;
   transition: all 0.3s;
 }
@@ -595,8 +594,8 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top: 1px solid var(--g200);
-  background: linear-gradient(180deg, rgba(234,81,134,.08) 0%, #fff 100%);
+  background: #fff;
+  border-bottom: 2px solid var(--or);
 }
 .top-nav-sub-item {
   flex: 1;
@@ -613,7 +612,7 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
   white-space: nowrap;
 }
 .top-nav-sub-item:not(:last-child) {
-  border-right: 1px solid var(--g300);
+  border-right: 1px solid var(--g100);
 }
 .top-nav-sub-item:hover,
 .top-nav-sub-item.active {
@@ -621,7 +620,7 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
   border-bottom-color: var(--or);
   font-weight: 600;
 }
-.top-nav-sub-item .sub-icon { font-size: 14px; }
+.top-nav-sub-item .sub-svg { width: 15px; height: 15px; display: inline-block; vertical-align: -3px; margin-right: 2px; }
 /* PC: 로고/햄버거를 서브탭 컬럼에 맞춰 정렬 (로고→자주묻는질문 위, 햄버거→상담안내 위) */
 @media (min-width: 768px) {
   .top-nav-inner {
@@ -843,16 +842,16 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
   </div>
   <div class="top-nav-sub">
     <a class="top-nav-sub-item" href="/galaxy_z8" style="text-decoration:none;color:inherit;">
-      <span class="sub-icon">📱</span> 폴더블 8 사전예약
+      <svg class="sub-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg> 폴더블 8 사전예약
     </a>
     <div class="top-nav-sub-item" onclick="openNavModal('modalCurio')">
-      <span class="sub-icon">💬</span> 궁금해요
+      <svg class="sub-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> 궁금해요
     </div>
     <div class="top-nav-sub-item" onclick="openNavModal('modalFaq')">
-      <span class="sub-icon">❓</span> 자주 묻는 질문
+      <svg class="sub-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 2-3 4"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> 자주 묻는 질문
     </div>
     <div class="top-nav-sub-item" onclick="openNavModal('modalContact')">
-      <span class="sub-icon">🎧</span> 상담 안내
+      <svg class="sub-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg> 상담 안내
     </div>
   </div>
 </nav>
