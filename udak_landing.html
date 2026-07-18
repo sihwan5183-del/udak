@@ -113,6 +113,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 .dd-plan-item.on{background:var(--orl);color:var(--or);font-weight:700}
 .dd-plan-item b{font-weight:700;color:inherit}
 .dd-plan-summary{background:var(--g50);border-radius:0 0 12px 12px;padding:11px 16px;font-size:12.5px;color:var(--g600);margin-top:-1px;border:1.5px solid var(--g200);border-top:none}
+.dd-plan-summary div+div{margin-top:4px}
 .dd-plan-head:has(+ .dd-plan-list),.dd-plan-head:has(+ .dd-plan-summary){border-radius:12px 12px 0 0}
 .dd-inet-card{display:flex;align-items:center;gap:14px;background:var(--g50);border-radius:12px;padding:14px 16px}
 .dd-inet-ttl{font-size:14px;font-weight:700;color:var(--g800);margin:0 0 2px}
@@ -1193,7 +1194,12 @@ function renderDetailPlan(){
     }).join('')}</div>`;
   } else if(sp){
     const isUnlimited=UNLIMITED_GROUPS.includes(sp.plangroup);
-    if(isUnlimited) html+=`<div class="dd-plan-summary">데이터 무제한</div>`;
+    const featLines=(sp.features||'').split('\n').map(s=>s.trim()).filter(Boolean);
+    if(featLines.length){
+      html+=`<div class="dd-plan-summary">${featLines.map(l=>`<div>${l}</div>`).join('')}</div>`;
+    } else if(isUnlimited){
+      html+=`<div class="dd-plan-summary">데이터 무제한</div>`;
+    }
   }
   wrap.innerHTML=html;
 }

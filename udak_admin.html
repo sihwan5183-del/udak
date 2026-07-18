@@ -308,6 +308,7 @@ tr.drag-over{border-top:2px solid var(--or)}
         <div class="fg"><label class="flbl">요금 그룹 (자동)</label><input type="text" class="fi" id="pGrp" readonly="" style="background:var(--g50);color:var(--g400)"></div>
       </div>
       <div class="fchk-row"><input type="checkbox" class="fchk" id="pVis" checked=""><label for="pVis">랜딩페이지 노출</label></div>
+      <div class="fg"><label class="flbl">요금제 상세 안내 (한 줄에 하나씩)</label><textarea class="fi" id="pFeatures" rows="4" placeholder="데이터 무제한&#10;테더링+쉐어링 70GB&#10;집/이동전화 무제한+부가통화 300분&#10;U+ 모바일tv 기본 월정액 무료"></textarea></div>
     </div>
     <div class="modal-ft">
       <button class="btn-cancel" onclick="closeModal(&#39;planModal&#39;)">취소</button>
@@ -733,7 +734,7 @@ async function loadPlans(){
 }
 window.openPlanModal=function(){
   document.getElementById('planModalTitle').textContent='요금제 추가';
-  ['pId','pName','pPrice','pGrp'].forEach(id=>document.getElementById(id).value='');
+  ['pId','pName','pPrice','pGrp','pFeatures'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('pVis').checked=true;
   openModal('planModal');
 };
@@ -745,6 +746,7 @@ window.editPlan=function(k){
   document.getElementById('pPrice').value=p.monthlyPrice||'';
   document.getElementById('pGrp').value=p.plangroup||Math.floor((p.monthlyPrice||0)/1000);
   document.getElementById('pVis').checked=p.visible!==false;
+  document.getElementById('pFeatures').value=p.features||'';
   openModal('planModal');
 };
 window.savePlan=async function(){
@@ -753,7 +755,7 @@ window.savePlan=async function(){
   const price=Number(document.getElementById('pPrice').value);
   if(!name||!price){alert('요금제명과 월정액을 입력해주세요');return;}
   const orderVal=id?(planData[id]?.order||0):Object.keys(planData).length;
-  const data={name,monthlyPrice:price,plangroup:Math.floor(price/1000).toString(),visible:document.getElementById('pVis').checked,order:orderVal};
+  const data={name,monthlyPrice:price,plangroup:Math.floor(price/1000).toString(),visible:document.getElementById('pVis').checked,order:orderVal,features:document.getElementById('pFeatures').value.trim()};
   try{
     if(id){await db.ref(`plans/${id}`).update(data);}
     else{await db.ref('plans').push(data);}
