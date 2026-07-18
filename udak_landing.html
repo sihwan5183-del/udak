@@ -331,7 +331,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 <body>
 
 <!-- 배너 -->
-<div class="banner-wrap">
+<div class="banner-wrap" id="topBanner">
   <div class="banner-track" id="bTrack" style="transform: translateX(0%);"><div class="banner-slide"><a href="https://www.uplusdak.com/video.php" target="_blank" rel="noopener"><img class="bn-pc" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner1_pc.png" alt="배너 1"><img class="bn-mo" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner1_mo.png" alt="배너 1"></a></div><div class="banner-slide"><a href="https://landing.uplusdak.com/galaxy_z8" target="_blank" rel="noopener"><img class="bn-pc" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner2_pc.png" alt="배너 2"><img class="bn-mo" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner2_mo.png" alt="배너 2"></a></div></div>
   <button class="bn-arr bn-prev" id="bPrev" onclick="slide(-1)" style="display: flex;">‹</button>
   <button class="bn-arr bn-next" id="bNext" onclick="slide(1)" style="display: flex;">›</button>
@@ -1087,6 +1087,7 @@ function refreshDetailPrice(){
 
 window.openDeviceDetail=function(id){
   window.selDevice(id);
+  document.getElementById('topBanner').style.display='none';
   document.getElementById('catalogList').style.display='none';
   document.getElementById('dcatSubtabs').style.display='none';
   document.querySelector('.dcat-tabs').style.display='none';
@@ -1096,10 +1097,11 @@ window.openDeviceDetail=function(id){
   document.getElementById('ddImg').innerHTML=sel.device.img?`<img src="${sel.device.img}" alt="${sel.device.name}">`:'';
   renderDetailColors();renderDetailStorage();renderDetailCarrier();renderDetailPlan();
   refreshDetailPrice();
-  dd.scrollIntoView({behavior:'smooth',block:'start'});
+  window.scrollTo({top:0,behavior:'smooth'});
 };
 window.closeDeviceDetail=function(){
   document.getElementById('deviceDetail').style.display='none';
+  document.getElementById('topBanner').style.display='';
   document.getElementById('catalogList').style.display='block';
   document.getElementById('dcatSubtabs').style.display=catState.brand==='삼성'?'flex':'none';
   document.querySelector('.dcat-tabs').style.display='flex';
