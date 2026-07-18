@@ -111,6 +111,8 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 .dd-plan-item{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;font-size:13.5px;color:var(--g600);cursor:pointer;border-top:1px solid var(--g100)}
 .dd-plan-item.on{background:var(--orl);color:var(--or);font-weight:700}
 .dd-plan-item b{font-weight:700;color:inherit}
+.dd-plan-summary{background:var(--g50);border-radius:0 0 12px 12px;padding:11px 16px;font-size:12.5px;color:var(--g600);margin-top:-1px;border:1.5px solid var(--g200);border-top:none}
+.dd-plan-head:has(+ .dd-plan-list),.dd-plan-head:has(+ .dd-plan-summary){border-radius:12px 12px 0 0}
 .dd-inet-card{display:flex;align-items:center;gap:14px;background:var(--g50);border-radius:12px;padding:14px 16px}
 .dd-inet-ttl{font-size:14px;font-weight:700;color:var(--g800);margin:0 0 2px}
 .dd-inet-sub{font-size:12.5px;color:var(--or);font-weight:700;margin:0}
@@ -420,7 +422,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
             <div class="ddetail-sec">
               <div class="dd-inet-card">
                 <div>
-                  <p class="dd-inet-ttl">인터넷+TV 설치</p>
+                  <p class="dd-inet-ttl"><b class="dcard-uplus">U+</b>로 인터넷+TV 변경시</p>
                   <p class="dd-inet-sub">80만원 현금 혜택</p>
                 </div>
                 <div class="dd-toggle">
@@ -1177,6 +1179,7 @@ window.togglePlanDropdown=function(){
 function renderDetailPlan(){
   const wrap=document.getElementById('ddPlan');
   const sp=sel.plan;
+  const UNLIMITED_GROUPS=['85','95','115'];
   let html=`<div class="dd-plan-head" onclick="togglePlanDropdown()">
     <span>${sp?sp.name:'요금제를 선택해주세요'}</span>
     ${sp?`<b>월 ${sp.monthlyPrice.toLocaleString()}원</b>`:''}
@@ -1187,6 +1190,9 @@ function renderDetailPlan(){
       const on=sel.plan?.id===p.id;
       return`<div class="dd-plan-item${on?' on':''}" onclick="pickDetailPlan('${p.id}')"><span>${p.name}</span><b>월 ${p.monthlyPrice.toLocaleString()}원</b></div>`;
     }).join('')}</div>`;
+  } else if(sp){
+    const isUnlimited=UNLIMITED_GROUPS.includes(sp.plangroup);
+    if(isUnlimited) html+=`<div class="dd-plan-summary">데이터 무제한</div>`;
   }
   wrap.innerHTML=html;
 }
