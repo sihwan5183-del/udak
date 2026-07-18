@@ -101,6 +101,25 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 .dd-chip.carrier{flex:1;min-width:80px}
 .dd-chip.plan{flex:1;min-width:70px}
 .ddetail-jointype{font-size:13px;color:var(--sky);background:var(--orl);border-radius:8px;padding:10px 14px;margin-top:10px;font-weight:600}
+#ddPlan{width:100%}
+.dd-plan-head{display:flex;align-items:center;gap:8px;padding:14px 16px;border:1.5px solid var(--g200);border-radius:12px;cursor:pointer;font-size:14.5px;font-weight:700;color:var(--g800);background:#fff}
+.dd-plan-head b{margin-left:auto;color:var(--or);font-weight:700;font-size:15px}
+.dd-plan-head i{font-size:10px;color:var(--g400);font-style:normal}
+.dd-plan-list{border:1.5px solid var(--g200);border-top:none;border-radius:0 0 12px 12px;overflow:hidden}
+.dd-plan-item{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;font-size:13.5px;color:var(--g600);cursor:pointer;border-top:1px solid var(--g100)}
+.dd-plan-item.on{background:var(--orl);color:var(--or);font-weight:700}
+.dd-plan-item b{font-weight:700;color:inherit}
+.dd-inet-card{display:flex;align-items:center;gap:14px;background:var(--g50);border-radius:12px;padding:14px 16px}
+.dd-inet-ttl{font-size:14px;font-weight:700;color:var(--g800);margin:0 0 2px}
+.dd-inet-sub{font-size:12.5px;color:var(--or);font-weight:700;margin:0}
+.dd-toggle{display:flex;gap:6px;margin-left:auto}
+.dd-toggle-btn{padding:9px 14px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;font-size:12.5px;font-weight:600;color:var(--g600);cursor:pointer;font-family:inherit}
+.dd-toggle-btn.on{border-color:var(--or);color:var(--or);background:var(--orl);font-weight:700}
+.dd-bonus-list{display:flex;flex-direction:column;gap:10px}
+.dd-bonus-item{display:flex;gap:12px;align-items:center;background:var(--orl);border-radius:12px;padding:12px 14px}
+.dd-bonus-ico{font-size:22px;flex-shrink:0}
+.dd-bonus-name{font-size:14px;font-weight:700;color:var(--g800);margin:0}
+.dd-bonus-desc{font-size:12px;color:var(--g600);margin:2px 0 0}
 .ddetail-extra-banner{display:flex;align-items:center;gap:10px;background:var(--or);color:#fff;border-radius:12px;padding:14px 16px;margin-bottom:26px;font-size:14px;font-weight:700}
 .ddetail-extra-banner b{font-size:19px;margin-left:auto}
 .ddetail-extra-banner .tag{background:rgba(255,255,255,.25);font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:100px;margin-left:0}
@@ -396,6 +415,22 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
               <p class="ddetail-jointype" id="ddJointype" style="display:none"></p>
             </div>
             <div class="ddetail-sec"><p class="ddetail-lbl">요금제 선택</p><div class="ddetail-row" id="ddPlan"></div></div>
+            <div class="ddetail-sec">
+              <div class="dd-inet-card">
+                <div>
+                  <p class="dd-inet-ttl">인터넷+TV 설치</p>
+                  <p class="dd-inet-sub">80만원 현금 혜택</p>
+                </div>
+                <div class="dd-toggle">
+                  <button class="dd-toggle-btn" id="btnInetYes" onclick="setInternetTv(true)" type="button">상담신청</button>
+                  <button class="dd-toggle-btn on" id="btnInetNo" onclick="setInternetTv(false)" type="button">신청안함</button>
+                </div>
+              </div>
+            </div>
+            <div class="ddetail-sec" id="ddBonusSec" style="display:none">
+              <p class="ddetail-lbl">추가 혜택</p>
+              <div class="dd-bonus-list" id="ddBonusList"></div>
+            </div>
             <div class="ddetail-extra-banner" id="ddExtraBanner" style="display:none">
               <span>유닥 특별지원금</span><b id="ddExtraAmt">-</b><span class="tag">즉시할인</span>
             </div>
@@ -661,7 +696,7 @@ let plans=[
   {id:'p105',name:'5G 프리미어 플러스',monthlyPrice:105000,plangroup:'105',visible:true},
 ];
 let policies=[];
-let sel={device:null,carrier:null,jointype:null,storage:null,color:null,plan:null,discType:'공시',lockedColorImg:''};
+let sel={device:null,carrier:null,jointype:null,storage:null,color:null,plan:null,discType:'공시',lockedColorImg:'',internetTv:false};
 
 const DTXT={
   installmentNote:'*기기 할부금 별도',
@@ -1132,13 +1167,44 @@ function renderDetailCarrier(){
     return`<span class="dd-chip carrier${on?' on':''}" onclick="pickDetailCarrier('${n}')">${n}</span>`;
   }).join('');
 }
+let planDropdownOpen=false;
+window.togglePlanDropdown=function(){
+  planDropdownOpen=!planDropdownOpen;
+  renderDetailPlan();
+};
 function renderDetailPlan(){
   const wrap=document.getElementById('ddPlan');
-  wrap.innerHTML=(plans||[]).map(p=>{
-    const on=sel.plan?.id===p.id;
-    return`<span class="dd-chip plan${on?' on':''}" onclick="pickDetailPlan('${p.id}')">${p.plangroup||p.name}</span>`;
-  }).join('');
+  const sp=sel.plan;
+  let html=`<div class="dd-plan-head" onclick="togglePlanDropdown()">
+    <span>${sp?sp.name:'요금제를 선택해주세요'}</span>
+    ${sp?`<b>월 ${sp.monthlyPrice.toLocaleString()}원</b>`:''}
+    <i>${planDropdownOpen?'▲':'▼'}</i>
+  </div>`;
+  if(planDropdownOpen){
+    html+=`<div class="dd-plan-list">${(plans||[]).map(p=>{
+      const on=sel.plan?.id===p.id;
+      return`<div class="dd-plan-item${on?' on':''}" onclick="pickDetailPlan('${p.id}')"><span>${p.name}</span><b>월 ${p.monthlyPrice.toLocaleString()}원</b></div>`;
+    }).join('')}</div>`;
+  }
+  wrap.innerHTML=html;
 }
+function refreshDetailBonus(){
+  const sec=document.getElementById('ddBonusSec');
+  const list=document.getElementById('ddBonusList');
+  if(!sec||!list) return;
+  if(!sel.plan){ sec.style.display='none'; return; }
+  const pg=Math.floor(sel.plan.monthlyPrice/1000).toString();
+  const key=Object.keys(bonusData||{}).find(k=>(bonusData[k].planGroupMatch||[]).includes(pg));
+  const items=key?(bonusData[key].items||[]):[];
+  if(!items.length){ sec.style.display='none'; return; }
+  sec.style.display='block';
+  list.innerHTML=items.map(i=>`<div class="dd-bonus-item"><span class="dd-bonus-ico">🎁</span><div><p class="dd-bonus-name">${i.name}</p><p class="dd-bonus-desc">${i.desc||''}</p></div></div>`).join('');
+}
+window.setInternetTv=function(v){
+  sel.internetTv=v;
+  document.getElementById('btnInetYes').classList.toggle('on',v);
+  document.getElementById('btnInetNo').classList.toggle('on',!v);
+};
 function refreshDetailPrice(){
   const el=document.getElementById('ddPrice');
   if(!el) return;
@@ -1203,6 +1269,7 @@ function refreshDetailImg(){
 
 window.openDeviceDetail=function(id){
   window.selDevice(id);
+  planDropdownOpen=false;
   const dd=document.getElementById('deviceDetail');
   dd.style.display='block';
   dd.scrollTop=0;
@@ -1211,6 +1278,7 @@ window.openDeviceDetail=function(id){
   refreshDetailImg();
   renderDetailColors();renderDetailStorage();renderDetailCarrier();renderDetailPlan();
   refreshDetailPrice();
+  refreshDetailBonus();
 };
 window.closeDeviceDetail=function(){
   document.getElementById('deviceDetail').style.display='none';
@@ -1219,7 +1287,7 @@ window.closeDeviceDetail=function(){
 window.pickDetailColor=function(i){ window.selColor(i); renderDetailColors(); calc(); refreshDetailPrice(); refreshDetailImg(); };
 window.pickDetailStorage=function(i){ window.selStorage(i); renderDetailStorage(); calc(); refreshDetailPrice(); };
 window.pickDetailCarrier=function(n){ window.selCarrier(n); renderDetailCarrier(); refreshDetailPrice(); };
-window.pickDetailPlan=function(id){ window.selPlan(id); renderDetailPlan(); refreshDetailPrice(); };
+window.pickDetailPlan=function(id){ window.selPlan(id); planDropdownOpen=false; renderDetailPlan(); refreshDetailPrice(); refreshDetailBonus(); };
 window.ctaFromDetail=function(){
   if(!sel.device||!sel.color||!sel.storage||!sel.carrier||!sel.plan){
     showStepToast('색상, 용량, 통신사, 요금제를 모두 선택해주세요');
@@ -1232,6 +1300,7 @@ window.ctaFromDetail=function(){
     ['통신사',sel.carrier+(sel.jointype?' ('+sel.jointype+')':'')],
     ['요금제',sel.plan.name],
   ];
+  if(sel.internetTv) rows.push(['인터넷+TV','상담 신청']);
   let html=rows.map(r=>`<div class="apply-srow"><span>${r[0]}</span><b>${r[1]}</b></div>`).join('');
   html+=`<div class="apply-srow total"><span>월 예상 부담금</span><b>${(window._estimatedFee||0).toLocaleString()}원</b></div>`;
   document.getElementById('applySummary').innerHTML=html;
@@ -1653,7 +1722,7 @@ window.submitForm=async function(){
         color:sel.color?sel.color.name.split('|')[1]:null,
         desired_product:sel.plan?.name||null,
         discount:sel.discType==='공시'?'공시지원금':'선택약정',
-        additional_benefits:[...selectedBonuses].join(',')||null,
+        additional_benefits:[...selectedBonuses,...(sel.internetTv?['인터넷+TV 상담신청']:[])].join(',')||null,
         channel:_utm.source==='meta'?'메타광고':'유닥',
         utm_campaign:_utm.campaign||null,
         estimated_fee:window._estimatedFee||null,
