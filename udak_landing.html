@@ -380,10 +380,555 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
 .tp-item.tp-near{color:var(--g600);font-size:14px}
 .tp-item.tp-sel{color:var(--or);font-weight:800;font-size:16px}
 
+
+/* ══ 상단 네비게이션 CSS (galaxy_z8에서 이식) ══ */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  width: 100%;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+}
+.top-nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 16px;
+  height: 50px;
+}
+.top-nav-logo {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--or);
+  letter-spacing: -0.3px;
+  text-decoration: none;
+}
+.top-nav-logo { color: #1a1a1a; }
+.top-nav-logo span { color: #1a1a1a; }
+.top-nav-menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.top-nav-menu-btn span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #1a1a1a;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+/* 드로어 */
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 260px;
+  height: 100%;
+  background: #fff;
+  z-index: 9999;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+  transition: right 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+.nav-drawer.open { right: 0; }
+.nav-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.nav-drawer-header .logo {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--or);
+}
+.nav-drawer-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  color: #666;
+  line-height: 1;
+}
+.nav-drawer-body { padding: 12px 0; flex: 1; }
+.nav-drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  font-size: 15px;
+  color: #1a1a1a;
+  text-decoration: none;
+  border-bottom: 1px solid #f8f8f8;
+  cursor: pointer;
+}
+.nav-drawer-item:hover { background: #fff5f7; color: var(--or); }
+.nav-drawer-item .icon { font-size: 18px; }
+.nav-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 9998;
+  display: none;
+}
+.nav-drawer-overlay.open { display: block; }
+
+
+/* ══════════════════════════════
+   네비 모달
+══════════════════════════════ */
+.nav-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.nav-modal-overlay.open { display: flex; }
+.nav-modal {
+  background: #fff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 360px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  animation: modalSlideUp 0.3s ease;
+}
+@keyframes modalSlideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.nav-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.nav-modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+.nav-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #999;
+  line-height: 1;
+  padding: 2px 6px;
+}
+.nav-modal-body { padding: 20px; }
+.nav-modal-body .faq-item {
+  border-bottom: 1px solid #f5f5f5;
+  padding: 14px 0;
+}
+.nav-modal-body .faq-q {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 8px;
+}
+.nav-modal-body .faq-q::before {
+  content: "Q";
+  color: var(--or);
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.nav-modal-body .faq-a {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.6;
+  padding-left: 18px;
+}
+.nav-modal-body .contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f5f5f5;
+  text-decoration: none;
+  color: #1a1a1a;
+}
+.nav-modal-body .contact-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.nav-modal-body .contact-info .label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+.nav-modal-body .contact-info .desc {
+  font-size: 12px;
+  color: #888;
+  margin-top: 2px;
+}
+
+
+/* ══ 네비 서브탭 ══ */
+.top-nav-sub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid #f0f0f0;
+  background: #fff;
+}
+.top-nav-sub-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 10px 4px;
+  font-size: 12px;
+  color: #555;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.top-nav-sub-item:not(:last-child) {
+  border-right: 1px solid #f0f0f0;
+}
+.top-nav-sub-item:hover,
+.top-nav-sub-item.active {
+  color: var(--or);
+  border-bottom-color: var(--or);
+  font-weight: 600;
+}
+.top-nav-sub-item .sub-icon { font-size: 14px; }
+/* PC: 로고/햄버거를 서브탭 컬럼에 맞춰 정렬 (로고→자주묻는질문 위, 햄버거→상담안내 위) */
+@media (min-width: 768px) {
+  .top-nav-inner {
+    max-width: none;
+    padding: 0;
+    justify-content: flex-start;
+  }
+  .top-nav-inner::before {
+    content: "";
+    flex: 1;
+  }
+  .top-nav-logo {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .top-nav-menu-btn {
+    flex: 1;
+    align-items: center;
+    padding: 6px 0;
+  }
+}
+/* 아코디언 */
+.faq-accordion { border-radius: 12px; overflow: hidden; border: 1px solid #f0f0f0; }
+.faq-acc-item { border-bottom: 1px solid #f0f0f0; }
+.faq-acc-item:last-child { border-bottom: none; }
+.faq-acc-q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  gap: 8px;
+}
+.faq-acc-q .num { color: var(--or); flex-shrink: 0; }
+.faq-acc-q .arr { color: #aaa; font-size: 16px; flex-shrink: 0; transition: transform 0.2s; }
+.faq-acc-item.open .faq-acc-q .arr { transform: rotate(180deg); color: var(--or); }
+.faq-acc-item.open .faq-acc-q { color: var(--or); }
+.faq-acc-a {
+  display: none;
+  padding: 0 16px 14px 16px;
+  font-size: 13px;
+  color: #555;
+  line-height: 1.7;
+  background: #fafafa;
+}
+.faq-acc-item.open .faq-acc-a { display: block; }
+.nav-modal-sub { font-size: 13px; color: #888; text-align: center; margin-bottom: 14px; }
+
 </style>
 
 </head>
 <body>
+
+<!-- ══ 상단 네비게이션 (galaxy_z8에서 이식) ══ -->
+<nav class="top-nav">
+  <div class="top-nav-inner">
+    <a href="#" class="top-nav-logo"><span style="color:var(--or);">U+</span> <span style="color:#1a1a1a;">다이렉트</span></a>
+    <button class="top-nav-menu-btn" onclick="openNavDrawer()" aria-label="메뉴">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="top-nav-sub">
+    <a class="top-nav-sub-item" href="/galaxy_z8" style="text-decoration:none;color:inherit;">
+      <span class="sub-icon">📱</span> 폴더블 8 사전예약
+    </a>
+    <div class="top-nav-sub-item" onclick="openNavModal('modalCurio')">
+      <span class="sub-icon">💬</span> 궁금해요
+    </div>
+    <div class="top-nav-sub-item" onclick="openNavModal('modalFaq')">
+      <span class="sub-icon">❓</span> 자주 묻는 질문
+    </div>
+    <div class="top-nav-sub-item" onclick="openNavModal('modalContact')">
+      <span class="sub-icon">🎧</span> 상담 안내
+    </div>
+  </div>
+</nav>
+
+<!-- 드로어 오버레이 -->
+<div class="nav-drawer-overlay" id="navOverlay" onclick="closeNavDrawer()"></div>
+
+<!-- 드로어 메뉴 -->
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-header">
+    <span class="logo"><span style="color:var(--or);">U+</span> 다이렉트</span>
+    <button class="nav-drawer-close" onclick="closeNavDrawer()">✕</button>
+  </div>
+  <div class="nav-drawer-body">
+    <a class="nav-drawer-item" href="/galaxy_z8">
+      <span class="icon">📱</span> 폴더블 8 사전예약
+    </a>
+    <div class="nav-drawer-item" onclick="openNavModal('modalCurio')">
+      <span class="icon">💬</span> 궁금해요
+    </div>
+    <div class="nav-drawer-item" onclick="openNavModal('modalFaq')">
+      <span class="icon">❓</span> 자주 묻는 질문
+    </div>
+    <div class="nav-drawer-item" onclick="openNavModal('modalContact')">
+      <span class="icon">📞</span> 상담 안내
+    </div>
+  </div>
+</div>
+
+<script>
+function openNavDrawer() {
+  document.getElementById('navDrawer').classList.add('open');
+  document.getElementById('navOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeNavDrawer() {
+  document.getElementById('navDrawer').classList.remove('open');
+  document.getElementById('navOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
+
+<div class="nav-modal-overlay" id="modalCurio" onclick="if(event.target===this)closeNavModal('modalCurio')">
+  <div class="nav-modal">
+    <div class="nav-modal-header">
+      <span class="nav-modal-title">💬 궁금해요</span>
+      <button class="nav-modal-close" onclick="closeNavModal('modalCurio')">✕</button>
+    </div>
+    <div class="nav-modal-body">
+      <p class="nav-modal-sub">유플러스 다이렉트 사전예약에 대한 궁금증을 해결해 드립니다.</p>
+      <div class="faq-accordion" id="acc_curio">
+  <div class="faq-acc-item" onclick="toggleAcc('curio',0)">
+    <div class="faq-acc-q"><span class="num">1.</span><span style="flex:1">유플러스 다이렉트가 뭐예요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">유플러스 공식파트너사 ㈜신세계정보통신이 운영하는 온라인 채널입니다. 휴대폰 가입부터 사전예약, 구매 혜택 안내까지 온라인과 오프라인으로 도와드립니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('curio',1)">
+    <div class="faq-acc-q"><span class="num">2.</span><span style="flex:1">사전예약 알림을 신청하면 바로 개통되나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">아니요. 알림 신청은 정보 안내를 위한 사전 접수입니다. 구매와 개통은 안내 내용을 확인하신 뒤 고객님이 동의하실 때만 진행됩니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('curio',2)">
+    <div class="faq-acc-q"><span class="num">3.</span><span style="flex:1">신청하면 꼭 구매해야 하나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">아니요. 반드시 구매하실 필요는 없습니다. 제품 정보와 혜택을 확인하신 뒤 마음에 드실 때만 상담과 구매를 진행하시면 됩니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('curio',3)">
+    <div class="faq-acc-q"><span class="num">4.</span><span style="flex:1">신청하고 나서 절차는 어떻게 되나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">알림 신청 → 제품 정보 및 혜택 안내 → 구매 상담 → 최종 조건 확인 → 개통 순서로 진행됩니다. 모든 과정은 고객님 확인과 동의 후 진행됩니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('curio',4)">
+    <div class="faq-acc-q"><span class="num">5.</span><span style="flex:1">알림을 신청하면 어떤 정보를 받을 수 있나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">출시 일정, 색상, 스펙, 출고가, 사전예약 혜택과 구매 관련 정보를 안내받을 수 있습니다. 공개된 내용을 빠르게 정리해 전달드립니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('curio',5)">
+    <div class="faq-acc-q"><span class="num">6.</span><span style="flex:1">공식 혜택 외에 유플러스 다이렉트만의 혜택도 있나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">네. 공식 사전예약 혜택 외에 유플러스 다이렉트에서 제공 가능한 추가 혜택도 함께 안내드립니다. 혜택 내용은 진행 시점과 구매 조건에 따라 달라질 수 있습니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('curio',6)">
+    <div class="faq-acc-q"><span class="num">7.</span><span style="flex:1">제 조건에 맞는 구매 방법을 안내받을 수 있나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">네. 현재 통신사, 번호이동 또는 기기변경 여부, 사용 중인 요금제와 구매 상황을 확인한 뒤 적합한 방법을 안내드립니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('curio',7)">
+    <div class="faq-acc-q"><span class="num">8.</span><span style="flex:1">온라인으로만 진행할 수 있나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">아니요. 온라인 상담과 매장 방문 모두 가능합니다. 서울·경기 지역에 매장 30개를 운영하고 있어 가까운 매장에서 상담과 당일 개통도 가능합니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('curio',8)">
+    <div class="faq-acc-q"><span class="num">9.</span><span style="flex:1">개인정보는 어떻게 처리되나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">상담과 개통 진행에 필요한 범위에서만 개인정보를 수집·이용합니다. 접수된 정보는 관련 법령과 내부 기준에 따라 안전하게 관리됩니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('curio',9)">
+    <div class="faq-acc-q"><span class="num">10.</span><span style="flex:1">알림을 신청하면 바로 전화가 오나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">접수 순서와 상담 상황에 따라 문자 또는 전화로 안내드립니다. 전화 상담 시 010 번호로 연락드릴 수 있습니다.</div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 자주 묻는 질문 모달 ══ -->
+<div class="nav-modal-overlay" id="modalFaq" onclick="if(event.target===this)closeNavModal('modalFaq')">
+  <div class="nav-modal">
+    <div class="nav-modal-header">
+      <span class="nav-modal-title">❓ 자주 묻는 질문</span>
+      <button class="nav-modal-close" onclick="closeNavModal('modalFaq')">✕</button>
+    </div>
+    <div class="nav-modal-body">
+      <p class="nav-modal-sub">조건, 혜택, 진행 방식에 대해 많이 물어보시는 내용입니다.</p>
+      <div class="faq-accordion" id="acc_faq">
+  <div class="faq-acc-item" onclick="toggleAcc('faq',0)">
+    <div class="faq-acc-q"><span class="num">1.</span><span style="flex:1">제품 구매 절차는 어떻게 되나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">사전예약 알림을 신청하시면 사전예약 오픈 후 제품 정보와 혜택을 안내드립니다. 내용을 확인한 뒤 구매를 원하시면 상담을 진행하고, 최종 조건에 동의하실 때 개통을 도와드립니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('faq',1)">
+    <div class="faq-acc-q"><span class="num">2.</span><span style="flex:1">꼭 높은 요금제를 사용해야 하나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">아니요. 고객님의 사용 패턴과 상황을 확인한 뒤 적합한 요금제를 안내드립니다. 다만 높은 요금제를 사용할수록 지원금이나 추가 혜택이 더 커질 수 있습니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('faq',2)">
+    <div class="faq-acc-q"><span class="num">3.</span><span style="flex:1">부가서비스 가입은 필수인가요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">아니요. 부가서비스 가입은 필수가 아닙니다. 다만 분실이나 파손에 대비할 수 있도록 휴대폰 보험은 선택사항으로 안내드리고 있습니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('faq',3)">
+    <div class="faq-acc-q"><span class="num">4.</span><span style="flex:1">제휴카드 가입은 필수인가요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">아니요. 제휴카드 가입은 필수가 아닙니다. 제휴카드 할인은 고객님이 원하시는 경우에만 별도로 안내드립니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('faq',4)">
+    <div class="faq-acc-q"><span class="num">5.</span><span style="flex:1">더블스토리지가 뭐예요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">기본 용량을 구매해도 한 단계 더 큰 저장 용량을 제공하는 사전예약 혜택입니다. 예를 들어 256GB 모델 구매 시 512GB 모델을 제공하는 방식이며, 최종 혜택은 공식 발표 후 확정됩니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('faq',5)">
+    <div class="faq-acc-q"><span class="num">6.</span><span style="flex:1">유플러스 다이렉트만의 혜택이 궁금해요.</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">공식 사전예약 혜택과 함께 유플러스 다이렉트에서 제공 가능한 추가 혜택을 안내드립니다. 구체적인 혜택은 진행 시점과 구매 조건에 따라 달라질 수 있습니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('faq',6)">
+    <div class="faq-acc-q"><span class="num">7.</span><span style="flex:1">약속한 혜택은 어디서 확인할 수 있나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">상담 과정에서 적용 가능한 혜택을 안내드리며, 개통 전 최종 조건 확인 단계에서 다시 한번 확인해드립니다. 고객님이 최종 내용을 확인하고 동의하신 뒤 개통이 진행됩니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('faq',7)">
+    <div class="faq-acc-q"><span class="num">8.</span><span style="flex:1">번호이동과 기기변경 모두 가능한가요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">네. 번호이동과 기기변경 모두 가능합니다. 현재 통신사와 이용 상황을 확인한 뒤 가능한 진행 방법을 안내드립니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('faq',8)">
+    <div class="faq-acc-q"><span class="num">9.</span><span style="flex:1">위약금이나 잔여 할부금도 상담할 수 있나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">네. 현재 사용 중인 통신사의 위약금, 남아 있는 단말기 할부금과 번호이동 가능 여부까지 함께 상담해드립니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('faq',9)">
+    <div class="faq-acc-q"><span class="num">10.</span><span style="flex:1">개통 전에 최종 조건을 다시 확인할 수 있나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">네. 개통 전에 기기, 요금제, 부가서비스, 제휴카드, 할인과 혜택 내용을 최종 확인해드립니다. 고객님이 모든 조건에 동의하실 때만 개통이 진행됩니다.</div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 상담 안내 모달 ══ -->
+<div class="nav-modal-overlay" id="modalContact" onclick="if(event.target===this)closeNavModal('modalContact')">
+  <div class="nav-modal">
+    <div class="nav-modal-header">
+      <span class="nav-modal-title">🎧 상담 안내</span>
+      <button class="nav-modal-close" onclick="closeNavModal('modalContact')">✕</button>
+    </div>
+    <div class="nav-modal-body">
+      <p class="nav-modal-sub">가벼운 문의부터 해지·위약금까지 편하게 상담받으실 수 있습니다.</p>
+      <div class="faq-accordion" id="acc_contact">
+  <div class="faq-acc-item" onclick="toggleAcc('contact',0)">
+    <div class="faq-acc-q"><span class="num">1.</span><span style="flex:1">어떤 내용을 상담받을 수 있나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">제품 정보, 출시 일정, 색상, 출고가처럼 간단한 문의부터 요금제, 혜택, 번호이동, 기기변경까지 상담받을 수 있습니다. 현재 사용 중인 휴대폰과 통신 상황을 확인해 필요한 내용을 안내드립니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('contact',1)">
+    <div class="faq-acc-q"><span class="num">2.</span><span style="flex:1">요금제와 구매 혜택도 함께 상담할 수 있나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">네. 현재 사용 중인 요금제와 실제 이용 패턴을 확인한 뒤 적합한 요금제를 안내드립니다. 공식 혜택과 유플러스 다이렉트에서 제공 가능한 추가 혜택도 함께 확인해드립니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('contact',2)">
+    <div class="faq-acc-q"><span class="num">3.</span><span style="flex:1">번호이동과 기기변경 중 어떤 방법이 유리한지 알 수 있나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">네. 현재 통신사, 사용 기간, 위약금, 단말기 할부금과 받을 수 있는 혜택을 비교해 안내드립니다. 고객님 상황에서 부담이 적고 혜택이 나은 진행 방법을 함께 확인해드립니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('contact',3)">
+    <div class="faq-acc-q"><span class="num">4.</span><span style="flex:1">해지, 위약금, 잔여 할부금도 상담할 수 있나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">네. 현재 통신사의 약정, 예상 위약금, 남아 있는 단말기 할부금과 이동 가능 여부를 함께 상담해드립니다. 정확한 금액은 기존 통신사 확인이 필요할 수 있으며, 확인 방법과 진행 방향을 안내해드립니다.</div>
+  </div>
+  <div class="faq-acc-item" onclick="toggleAcc('contact',4)">
+    <div class="faq-acc-q"><span class="num">5.</span><span style="flex:1">전화 상담이 부담스러운데 다른 방법도 있나요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">네. 전화 상담이 부담스러우시면 카카오톡 채팅으로도 문의하실 수 있습니다. 간단한 문의는 채팅으로 안내드리고, 본인 확인이나 개통 절차가 필요한 경우에만 전화 상담을 요청드릴 수 있습니다.</div>
+  </div>
+</div>
+      
+      <div style="margin-top:16px;background:#fff8f0;border-radius:12px;padding:14px 16px;">
+  <div style="font-size:12px;font-weight:700;color:var(--or);margin-bottom:8px;">📋 상담 진행 안내</div>
+  <div style="font-size:12px;color:#555;line-height:2;">
+    상담 신청 → 문의 내용 확인 → 문자·카카오톡 또는 전화 상담<br>
+    → 제품·요금제·혜택 안내 → 최종 조건 확인 → 고객님 동의 후 개통 진행
+  </div>
+</div>
+<div style="margin-top:10px;background:#f8f8f8;border-radius:12px;padding:14px 16px;">
+  <div style="font-size:12px;font-weight:700;color:#555;margin-bottom:8px;">📌 상담 전 확인사항</div>
+  <div style="font-size:12px;color:#777;line-height:1.9;">
+    • 상담은 접수 순서에 따라 순차적으로 진행됩니다.<br>
+    • 전화 상담 시 010 번호로 연락드릴 수 있습니다.<br>
+    • 상담을 받았다고 해서 반드시 구매·개통해야 하는 것은 아닙니다.<br>
+    • 개통은 최종 조건 확인 후 고객님 동의 시에만 진행됩니다.
+  </div>
+</div>
+      
+      <div style="margin-top:12px;text-align:center;">
+        <a href="tel:1660-1412" style="display:inline-flex;align-items:center;gap:6px;background:var(--or);color:#fff;font-size:14px;font-weight:700;padding:12px 28px;border-radius:50px;text-decoration:none;">
+          📞 전화 상담  1660-1412
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+function toggleAcc(modalId, idx) {
+  const acc = document.getElementById('acc_' + modalId);
+  const items = acc.querySelectorAll('.faq-acc-item');
+  items[idx].classList.toggle('open');
+}
+</script>
+<script>
+function openNavModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+  closeNavDrawer();
+}
+function closeNavModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
+
 
 <!-- 배너 -->
 <div class="banner-wrap" id="topBanner">
