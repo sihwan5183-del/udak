@@ -1502,6 +1502,8 @@ function matchPolicy(){
   return null;
 }
 
+// 기기 할부 이자 계수 (LG U+ 24개월 할부 기준, phone_landing.html과 동일 값)
+const DEVICE_INSTALLMENT_FACTOR=1.0626;
 function calc(){
   if(!sel.device||!sel.carrier||!sel.plan) return;
   const pol=matchPolicy();
@@ -1511,15 +1513,15 @@ function calc(){
   if(sel.discType==='공시'){
     mainDisc=pol?.pubSupport||0;
     extra=(pol?.rebate||0)+(pol?.distribution||0)+(pol?.structure||0)+(pol?.extraPolicy||0);
-    // 기기할부금 = (출고가 - 공시지원금 - 유닥할인) / 24
-    monthlyDev=Math.round(Math.max(0,lp-mainDisc-extra)/24);
+    // 기기할부금 = (출고가 - 공시지원금 - 유닥할인) x 할부이자(1.0626) / 24
+    monthlyDev=Math.round(Math.max(0,lp-mainDisc-extra)*DEVICE_INSTALLMENT_FACTOR/24);
     total=mf+monthlyDev;
     document.getElementById('rDiscLbl').textContent='공시지원금';
   } else {
     mainDisc=Math.round(mf*0.25);
     extra=pol?((pol.rebate||0)+(pol.distribution||0)+(pol.structure||0)+(pol.extraPolicy||0)):0;
-    // 기기할부금 = (출고가 - 유닥할인) / 24
-    monthlyDev=Math.round(Math.max(0,lp-extra)/24);
+    // 기기할부금 = (출고가 - 유닥할인) x 할부이자(1.0626) / 24
+    monthlyDev=Math.round(Math.max(0,lp-extra)*DEVICE_INSTALLMENT_FACTOR/24);
     total=(mf-mainDisc)+monthlyDev;
     document.getElementById('rDiscLbl').textContent='요금 할인(25%)';
   }
