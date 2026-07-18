@@ -675,6 +675,159 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
 .faq-acc-item.open .faq-acc-a { display: block; }
 .nav-modal-sub { font-size: 13px; color: #888; text-align: center; margin-bottom: 14px; }
 
+
+/* ══ 사이드 퀵메뉴(전화/카톡) CSS (galaxy_z8에서 이식) ══ */
+.side-quick{
+  position:fixed;
+  right:0;top:50%;transform:translateY(-50%);
+  z-index:9000;
+  display:flex;flex-direction:column;
+  gap:0;
+}
+.side-quick-btn{
+  width:56px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:5px;
+  padding:14px 8px;
+  cursor:pointer;
+  border:none;outline:none;
+  text-decoration:none;
+  position:relative;
+  transition:width .25s ease;
+  overflow:hidden;
+  white-space:nowrap;
+}
+.side-quick-btn:first-child{
+  background:linear-gradient(160deg,#ea0078,#c4006a);
+  border-radius:14px 0 0 0;
+}
+.side-quick-btn:last-child{
+  background:linear-gradient(160deg,#FAE100,#F9D000);
+  border-radius:0 0 0 14px;
+}
+.side-quick-btn svg{
+  width:26px;height:26px;flex-shrink:0;
+}
+.side-quick-label{
+  font-size:10px;font-weight:700;
+  letter-spacing:-.02em;line-height:1.2;
+  text-align:center;
+}
+.side-quick-btn:first-child .side-quick-label{color:#111111;}
+.side-quick-btn:last-child .side-quick-label{color:#3A1D1D;}
+
+@media(max-width:640px){
+  .side-quick{top:auto;bottom:80px;transform:none;}
+  .side-quick-btn{width:48px;padding:12px 6px;}
+}
+
+/* ══ 전화상담 팝업 ══ */
+.phone-popup{
+  position:fixed;
+  right:64px;top:50%;transform:translateY(-50%);
+  z-index:9001;
+  background:#ffffff;
+  border:1.5px solid #FFD6E8;
+  border-radius:16px;
+  padding:20px 22px;
+  min-width:200px;
+  box-shadow:0 4px 24px rgba(233,30,140,.15);
+  display:none;
+  flex-direction:column;
+  gap:12px;
+  animation:popupIn .2s cubic-bezier(.22,1,.36,1);
+}
+.phone-popup.active{display:flex;}
+@keyframes popupIn{
+  from{opacity:0;transform:translateY(-50%) translateX(10px);}
+  to{opacity:1;transform:translateY(-50%) translateX(0);}
+}
+.phone-popup-title{
+  font-size:12px;color:#888888;
+  font-weight:500;letter-spacing:.05em;text-align:center;
+}
+.phone-popup-number{
+  font-size:22px;font-weight:800;color:#E91E8C;
+  letter-spacing:.05em;text-align:center;
+}
+.phone-popup-call{
+  display:block;width:100%;
+  padding:12px;
+  background:linear-gradient(135deg,#ea0078,#c4006a);
+  border:none;border-radius:10px;
+  color:#111111;font-size:14px;font-weight:700;
+  text-align:center;text-decoration:none;
+  cursor:pointer;
+  transition:opacity .2s;
+}
+.phone-popup-call:hover{opacity:.85;}
+.phone-popup-close{
+  position:absolute;top:10px;right:12px;
+  background:none;border:none;color:#E91E8C;
+  font-size:18px;cursor:pointer;line-height:1;
+}
+
+@media(max-width:640px){
+  .phone-popup{
+    right:56px;top:auto;bottom:130px;
+    transform:none;
+  }
+  .phone-popup.active{display:flex;}
+  @keyframes popupIn{
+    from{opacity:0;transform:translateX(10px);}
+    to{opacity:1;transform:translateX(0);}
+  }
+}
+
+/* ══ 카카오 팝업 ══ */
+.kakao-popup{
+  position:fixed;
+  right:64px;top:calc(50% + 68px);
+  z-index:9001;
+  background:#ffffff;
+  border:1.5px solid #FFD6E8;
+  border-radius:16px;
+  padding:20px 22px;
+  min-width:200px;
+  box-shadow:0 4px 24px rgba(233,30,140,.15);
+  display:none;
+  flex-direction:column;
+  gap:12px;
+  animation:popupIn .2s cubic-bezier(.22,1,.36,1);
+}
+.kakao-popup.active{display:flex;}
+.kakao-popup-title{
+  font-size:12px;color:#888888;
+  font-weight:500;letter-spacing:.05em;text-align:center;
+}
+.kakao-popup-name{
+  font-size:16px;font-weight:800;color:#1A1A1A;text-align:center;
+}
+.kakao-popup-link{
+  display:block;width:100%;
+  padding:12px;
+  background:#3A1D1D;
+  border:none;border-radius:10px;
+  color:#FAE100;font-size:14px;font-weight:700;
+  text-align:center;text-decoration:none;
+  cursor:pointer;
+  transition:opacity .2s;
+}
+.kakao-popup-link:hover{opacity:.85;}
+.kakao-popup-close{
+  position:absolute;top:10px;right:12px;
+  background:none;border:none;color:rgba(0,0,0,.3);
+  font-size:18px;cursor:pointer;line-height:1;
+}
+@media(max-width:640px){
+  .kakao-popup{
+    right:56px;top:auto;bottom:70px;
+    transform:none;
+  }
+}
+
+
 </style>
 
 </head>
@@ -2534,6 +2687,53 @@ window.addEventListener('pageshow',function(e){
   var bonusSection=document.getElementById('bonusSection');
   if(bonusSection) bonusSection.style.display='none';
 });
+</script>
+
+<!-- ══ 사이드 퀵 메뉴 ══ -->
+<div class="side-quick">
+  <!-- 전화상담 -->
+  <button class="side-quick-btn" onclick="togglePhonePopup()">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.55.57 1 1 0 011 1V20a1 1 0 01-1 1C9.61 21 3 14.39 3 6a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.55a1 1 0 01-.25 1.01l-2.2 2.23z" fill="#fff"/>
+    </svg>
+    <span class="side-quick-label">전화<br>상담</span>
+  </button>
+  <!-- 카카오톡 상담 -->
+  <button class="side-quick-btn" onclick="toggleKakaoPopup()">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 3C7.03 3 3 6.36 3 10.5c0 2.7 1.7 5.07 4.27 6.43l-.9 3.32a.3.3 0 00.45.33l3.9-2.57c.41.05.84.08 1.28.08 4.97 0 9-3.36 9-7.5S16.97 3 12 3z" fill="#3A1D1D"/>
+    </svg>
+    <span class="side-quick-label" style="color:#3A1D1D;">카톡<br>문의</span>
+  </button>
+</div>
+
+<!-- 전화상담 팝업 -->
+<div class="phone-popup" id="phonePopup">
+  <button class="phone-popup-close" onclick="togglePhonePopup()">×</button>
+  <div class="phone-popup-title">전화 상담하기</div>
+  <div class="phone-popup-number">1660-1412</div>
+  <a href="tel:16601412" class="phone-popup-call">📞 &nbsp;전화 연결하기</a>
+</div>
+
+<!-- 카카오톡 팝업 -->
+<div class="kakao-popup" id="kakaoPopup">
+  <button class="kakao-popup-close" onclick="toggleKakaoPopup()">×</button>
+  <div class="kakao-popup-title">카카오톡 문의하기</div>
+  <div class="kakao-popup-name">유플러스 다이렉트</div>
+  <a href="http://pf.kakao.com/_HxfVxcn/chat" target="_blank" class="kakao-popup-link">💬 &nbsp;카카오톡 문의</a>
+</div>
+
+<script>
+function togglePhonePopup(){
+  var p = document.getElementById('phonePopup');
+  p.classList.toggle('active');
+  document.getElementById('kakaoPopup').classList.remove('active');
+}
+function toggleKakaoPopup(){
+  var k = document.getElementById('kakaoPopup');
+  k.classList.toggle('active');
+  document.getElementById('phonePopup').classList.remove('active');
+}
 </script>
 
 </body></html>
