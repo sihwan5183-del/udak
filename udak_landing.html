@@ -81,13 +81,16 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 .dcat-subtabs{display:flex;gap:16px;margin-bottom:12px;padding:0 2px}
 .dcat-sub{font-size:13px;font-weight:600;color:var(--g400);padding-bottom:7px;cursor:pointer;border-bottom:2px solid transparent}
 .dcat-sub.on{color:var(--g800);border-bottom-color:var(--g800)}
-.dcard{display:flex;gap:12px;align-items:center;padding:13px;border:1.5px solid var(--g200);border-radius:var(--rs);background:#fff;cursor:pointer;margin-bottom:8px}
+.dcat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dcard{padding:14px;border:1.5px solid var(--g200);border-radius:14px;background:#fff;cursor:pointer}
 .dcard:active{background:var(--g50)}
-.dcard-img{width:52px;height:52px;object-fit:contain;border-radius:6px;flex-shrink:0;background:var(--g50)}
-.dcard-name{font-size:15px;font-weight:700;color:var(--g800);margin:0 0 3px}
-.dcard-price{font-size:12.5px;color:var(--g600);margin:0}
-.dcard-price b{color:var(--or);font-weight:700}
-.dcat-empty{text-align:center;padding:36px 0;color:var(--g400);font-size:13px}
+.dcard-badge{display:inline-block;background:var(--orl);color:var(--or);font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:100px;margin-bottom:10px}
+.dcard-img{width:100%;aspect-ratio:1/1;object-fit:contain;border-radius:10px;background:var(--g50);margin-bottom:10px}
+.dcard-name{font-size:19px;font-weight:800;color:var(--g800);margin:0 0 12px;line-height:1.25}
+.dcard-prow{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;font-size:12.5px;color:var(--g600)}
+.dcard-prow+.dcard-prow{border-top:1px solid var(--g100)}
+.dcard-prow b{font-size:15px;font-weight:800;color:var(--g800)}
+.dcat-empty{grid-column:1/-1;text-align:center;padding:36px 0;color:var(--g400);font-size:13px}
 #deviceDetail{background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:16px;padding-bottom:88px;position:relative}
 .ddetail-back{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--g600);cursor:pointer;margin-bottom:12px;font-weight:600}
 .ddetail-img{width:100%;height:170px;border-radius:var(--rs);background:var(--g50);display:flex;align-items:center;justify-content:center;margin-bottom:12px;overflow:hidden}
@@ -334,7 +337,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
         <span class="dcat-sub on" id="dcatSubS" onclick="setCatalogSub('S')">갤럭시 S시리즈</span>
         <span class="dcat-sub" id="dcatSubZ" onclick="setCatalogSub('Z')">갤럭시 Z시리즈</span>
       </div>
-      <div id="catalogList"></div>
+      <div id="catalogList" class="dcat-grid"></div>
 
       <div id="deviceDetail" style="display:none">
         <div class="ddetail-back" onclick="closeDeviceDetail()">‹ 목록으로</div>
@@ -1004,16 +1007,13 @@ function renderCatalogList(){
   wrap.innerHTML=list.map(d=>{
     const chg=planObj?quickQuote(d,'LG U+','기기변경',planObj):null;
     const mnp=planObj?quickQuote(d,'SKT','번호이동',planObj):null;
-    const priceLine=(chg!=null&&mnp!=null)
-      ? (planObj.plangroup+' 요금제 기준 · 기기변경 <b>'+chg.toLocaleString()+'원</b> · 번호이동 <b>'+mnp.toLocaleString()+'원</b>')
-      : ((d.storageList?.[0]?.price||0).toLocaleString()+'원~');
+    const badgeTxt=planObj?(planObj.plangroup+' 요금제 기준'):'';
     return`<div class="dcard" onclick="openDeviceDetail('${d.id}')">
+      ${badgeTxt?`<span class="dcard-badge">${badgeTxt}</span>`:''}
       ${d.img?`<img class="dcard-img" src="${d.img}" alt="${d.name}">`:`<div class="dcard-img"></div>`}
-      <div style="flex:1;min-width:0">
-        <p class="dcard-name">${d.name}</p>
-        <p class="dcard-price">${priceLine}</p>
-      </div>
-      <span style="color:var(--g400)">›</span>
+      <p class="dcard-name">${d.name}</p>
+      ${chg!=null?`<div class="dcard-prow"><span>U+ 고객 기기변경</span><b>${chg.toLocaleString()}원</b></div>`:''}
+      ${mnp!=null?`<div class="dcard-prow"><span>U+로 번호이동</span><b>${mnp.toLocaleString()}원</b></div>`:''}
     </div>`;
   }).join('');
 }
