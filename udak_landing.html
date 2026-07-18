@@ -36,20 +36,14 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 
 /* LAYOUT */
 .wrap{max-width:1100px;margin:0 auto;padding:0 16px}
-.content-grid{display:block;margin-top:16px}
+.content-grid{display:block;margin-top:16px;max-width:600px;margin-left:auto;margin-right:auto}
 
-/* PC 레이아웃: 왼쪽=제품사진+스텝, 오른쪽=혜택카드 */
+/* PC 레이아웃: 우측 혜택카드 폐지로 단일 중앙정렬 컬럼 사용 */
 @media(min-width:768px){
-  .content-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
-  .step-section{margin-top:0;min-height:100%}
-  .benefit-card{margin-top:0;position:sticky;top:16px}
   .form-grid{grid-template-columns:1fr 1fr}
-  /* PC에서는 화면 정중앙 모달 */
+  /* PC에서는 화면 정중앙 모달 (구버전, 현재 미사용이지만 호환용으로 유지) */
   .sheet{bottom:auto!important;left:50%!important;top:50%!important;right:auto!important;width:460px!important;max-height:76vh!important;border-radius:16px!important;transform:translate(-50%,-50%) scale(.95)!important;opacity:0!important;transition:all .25s!important;pointer-events:none!important}
   .sheet.on{transform:translate(-50%,-50%) scale(1)!important;opacity:1!important;pointer-events:auto!important}
-}
-@media(min-width:1024px){
-  .content-grid{grid-template-columns:1.1fr 1fr}
 }
 
 /* STEP SECTION */
