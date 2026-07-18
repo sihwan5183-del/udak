@@ -219,6 +219,22 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 .succ-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
 .succ-ov.on{opacity:1;pointer-events:auto}
 .succ-box{background:#fff;border-radius:20px;padding:36px 22px;text-align:center;max-width:280px;width:100%}
+
+.apply-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:210;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.apply-ov.on{opacity:1;pointer-events:auto}
+.apply-box{background:#fff;border-radius:20px 20px 0 0;padding:22px 20px 24px;max-width:460px;width:100%;max-height:86vh;overflow-y:auto;position:relative}
+.apply-ttl{font-size:17px;font-weight:800;color:var(--g800);margin:0 0 4px}
+.apply-x{position:absolute;top:18px;right:18px;font-size:20px;color:var(--g400);cursor:pointer;background:none;border:none;padding:4px}
+.apply-summary{background:var(--g50);border-radius:12px;padding:14px 16px;margin:14px 0 18px}
+.apply-srow{display:flex;justify-content:space-between;font-size:13px;color:var(--g600);padding:5px 0}
+.apply-srow b{color:var(--g800);font-weight:700}
+.apply-srow.total{border-top:1px solid var(--g200);margin-top:6px;padding-top:10px}
+.apply-srow.total b{color:var(--or);font-size:16px}
+.apply-fg{margin-bottom:12px}
+.apply-fg label{display:block;font-size:12.5px;color:var(--g600);font-weight:600;margin-bottom:6px}
+.apply-fg input{width:100%;height:44px;border:1.5px solid var(--g200);border-radius:10px;padding:0 14px;font-size:14px;font-family:inherit;box-sizing:border-box}
+.apply-fg input:focus{outline:none;border-color:var(--or)}
+.apply-submit{width:100%;background:var(--or);color:#fff;border:none;padding:15px;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;margin-top:6px;font-family:inherit}
 .succ-ico{font-size:44px;margin-bottom:14px}
 .succ-title{font-size:19px;font-weight:900;margin-bottom:7px}
 .succ-desc{font-size:13px;color:var(--g600);line-height:1.7}
@@ -397,7 +413,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
     </div>
 
     <!-- 오른쪽: 혜택 카드 -->
-    <div>
+    <div style="display:none" id="oldBenefitCardWrap">
       <div class="benefit-card">
         <div class="bc-head">
           <span class="bc-ttl" id="txtBenefitTitle">혜택 요약 시트</span>
@@ -466,8 +482,8 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
     </div>
   </div>
 
-  <!-- 상담 신청 폼 -->
-  <div class="form-wrap" id="formWrap">
+  <!-- 상담 신청 폼 (구버전, 신규 모달로 대체 - 내부 요소는 submitForm()에서 계속 사용하므로 숨김만) -->
+  <div class="form-wrap" id="formWrap" style="display:none">
     <div class="form-card">
       <p class="form-ttl" id="txtFormTitle">상담 신청하기</p>
       <!-- 선택 내용 자동기입 미리보기 -->
@@ -510,6 +526,19 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
   <div class="sh-handle"></div>
   <div class="sh-head"><span class="sh-title" id="shTitle">선택</span><button class="sh-x" onclick="closeSheet()">✕</button></div>
   <div class="sh-body" id="shBody"></div>
+</div>
+
+<div class="apply-ov" id="applyModal">
+  <div class="apply-box">
+    <button class="apply-x" onclick="closeApplyModal()" type="button">✕</button>
+    <p class="apply-ttl">상담 신청하기</p>
+    <p style="font-size:12.5px;color:var(--g600);margin:0">고르신 내용이 자동으로 입력됐어요</p>
+    <div class="apply-summary" id="applySummary"></div>
+    <div class="apply-fg"><label>이름 *</label><input type="text" id="mName" placeholder="이름을 입력해주세요"></div>
+    <div class="apply-fg"><label>전화번호 *</label><input type="tel" id="mPhone" placeholder="010-0000-0000"></div>
+    <div class="apply-fg"><label>생년월일 *</label><input type="text" id="mBirth" placeholder="YYYY-MM-DD" maxlength="10"></div>
+    <button class="apply-submit" id="applySubmitBtn" onclick="submitFromApplyModal()" type="button">신청하기</button>
+  </div>
 </div>
 
 <div class="succ-ov" id="sModal">
@@ -1080,8 +1109,43 @@ window.pickDetailStorage=function(i){ window.selStorage(i); renderDetailStorage(
 window.pickDetailCarrier=function(n){ window.selCarrier(n); renderDetailCarrier(); refreshDetailPrice(); };
 window.pickDetailPlan=function(id){ window.selPlan(id); renderDetailPlan(); refreshDetailPrice(); };
 window.ctaFromDetail=function(){
-  const target=document.getElementById('formWrap');
-  if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+  if(!sel.device||!sel.color||!sel.storage||!sel.carrier||!sel.plan){
+    showStepToast('색상, 용량, 통신사, 요금제를 모두 선택해주세요');
+    return;
+  }
+  const colorName=sel.color.name.split('|')[1]||'';
+  const rows=[
+    ['기기',sel.device.name],
+    ['색상 / 용량',colorName+' / '+sel.storage.name],
+    ['통신사',sel.carrier+(sel.jointype?' ('+sel.jointype+')':'')],
+    ['요금제',sel.plan.name],
+  ];
+  let html=rows.map(r=>`<div class="apply-srow"><span>${r[0]}</span><b>${r[1]}</b></div>`).join('');
+  html+=`<div class="apply-srow total"><span>월 예상 부담금</span><b>${(window._estimatedFee||0).toLocaleString()}원</b></div>`;
+  document.getElementById('applySummary').innerHTML=html;
+  document.getElementById('applyModal').classList.add('on');
+};
+window.closeApplyModal=function(){
+  document.getElementById('applyModal').classList.remove('on');
+};
+window.submitFromApplyModal=async function(){
+  const name=document.getElementById('mName').value.trim();
+  const phone=document.getElementById('mPhone').value.trim();
+  const birth=document.getElementById('mBirth').value.trim();
+  if(!name||!phone||!birth){alert('이름, 전화번호, 생년월일을 모두 입력해주세요.');return;}
+  document.getElementById('fName').value=name;
+  document.getElementById('fPhone').value=phone;
+  document.getElementById('fBirth').value=birth;
+  document.getElementById('fCarrier').value=sel.carrier||'';
+  const btn=document.getElementById('applySubmitBtn');
+  btn.disabled=true;btn.textContent='신청 중...';
+  await window.submitForm();
+  btn.disabled=false;btn.textContent='신청하기';
+  if(document.getElementById('fName').value===''){
+    // submitForm 성공 시 원본 필드가 초기화됨 -> 신청 성공으로 판단
+    document.getElementById('applyModal').classList.remove('on');
+    ['mName','mPhone','mBirth'].forEach(id=>document.getElementById(id).value='');
+  }
 };
 
 window.setDisc=function(t){
@@ -1510,6 +1574,18 @@ document.getElementById('fBirth').addEventListener('input',function(){
   this.value=v;
 });
 document.getElementById('fPhone').addEventListener('input',function(){
+  let v=this.value.replace(/\D/g,'');
+  if(v.length>3&&v.length<=7) v=v.slice(0,3)+'-'+v.slice(3);
+  else if(v.length>7) v=v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7,11);
+  this.value=v;
+});
+document.getElementById('mBirth').addEventListener('input',function(){
+  let v=this.value.replace(/\D/g,'');
+  if(v.length>4) v=v.slice(0,4)+'-'+v.slice(4);
+  if(v.length>7) v=v.slice(0,7)+'-'+v.slice(7,9);
+  this.value=v;
+});
+document.getElementById('mPhone').addEventListener('input',function(){
   let v=this.value.replace(/\D/g,'');
   if(v.length>3&&v.length<=7) v=v.slice(0,3)+'-'+v.slice(3);
   else if(v.length>7) v=v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7,11);
