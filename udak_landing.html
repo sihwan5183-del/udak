@@ -84,16 +84,17 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
 .dcard-img{width:100%;aspect-ratio:1/1;object-fit:contain;border-radius:10px;background:#fff;border:1.5px solid var(--g200);margin-bottom:12px;display:block;box-sizing:border-box}
 .dcard-pricebox{background:var(--orl);border-radius:10px;padding:12px 12px 10px;text-align:left}
 .dcard-pricebox-lbl{font-size:11px;font-weight:700;color:var(--g600);margin:0 0 8px}
-.dcard-prow{display:flex;align-items:center;gap:8px;padding:6px 0}
+.dcard-prow{padding:8px 0}
 .dcard-prow+.dcard-prow{border-top:1px solid rgba(0,0,0,.06)}
+.dcard-prow-top{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.dcard-plabel{flex:1;font-size:12.5px;color:var(--g600);font-weight:600;text-align:left;line-height:1.3}
+.dcard-pval{display:block;font-size:17px;font-weight:800;color:var(--g800);text-align:right}
+.dcard-pval.pink{color:var(--or)}
 .dcard-prow span{display:block;font-size:11px;color:var(--g600);margin-bottom:2px;line-height:1.3}
 .dcard-prow b{display:block;font-size:14px;font-weight:800;color:var(--g800)}
 .dcard-picon{display:block;width:24px;height:24px;line-height:24px;border-radius:50%;font-size:10px;font-weight:800;flex-shrink:0;box-sizing:border-box;text-align:center;padding-top:5.5px}
 .dcard-picon.uplus{background:var(--or);color:#fff}
 .dcard-picon.device{background:var(--sky);color:#fff}
-.dcard-plabel{flex:1;font-size:12.5px;color:var(--g600);font-weight:600;text-align:left}
-.dcard-pval{font-size:15px;font-weight:800;color:var(--g800);white-space:nowrap}
-.dcard-pval.pink{color:var(--or)}
 .dcard-uplus{color:var(--or);font-weight:800}
 .dcard-prow .dcard-uplus{display:inline;color:var(--or)}
 .dd-nobreak{white-space:nowrap}
@@ -1158,8 +1159,8 @@ function renderCatalogList(){
       ${d.img?`<img class="dcard-img" src="${d.img}" alt="${d.name}">`:`<div class="dcard-img"></div>`}
       <div class="dcard-pricebox">
         <p class="dcard-pricebox-lbl">판매가</p>
-        ${mnp!=null?`<div class="dcard-prow"><span class="dcard-picon uplus">U+</span><span class="dcard-plabel"><b class="dcard-uplus">U+</b>로 통신사 이동시</span><b class="dcard-pval pink">${mnp.toLocaleString()}원</b></div>`:''}
-        ${chg!=null?`<div class="dcard-prow"><span class="dcard-picon device">U+</span><span class="dcard-plabel"><b class="dcard-uplus">U+</b> 고객 기기변경</span><b class="dcard-pval">${chg.toLocaleString()}원</b></div>`:''}
+        ${mnp!=null?`<div class="dcard-prow"><div class="dcard-prow-top"><span class="dcard-picon uplus">U+</span><span class="dcard-plabel"><b class="dcard-uplus">U+</b>로 통신사 이동시</span></div><b class="dcard-pval pink">${mnp.toLocaleString()}원</b></div>`:''}
+        ${chg!=null?`<div class="dcard-prow"><div class="dcard-prow-top"><span class="dcard-picon device">U+</span><span class="dcard-plabel"><b class="dcard-uplus">U+</b> 고객 기기변경</span></div><b class="dcard-pval">${chg.toLocaleString()}원</b></div>`:''}
       </div>
     </div>`;
   }).join('');
