@@ -74,6 +74,40 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 .disc-btn{flex:1;padding:9px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--g600);text-align:center;transition:all .15s;font-family:inherit}
 .disc-btn.on{border-color:var(--sky);color:var(--sky);background:var(--orl)}
 
+/* DEVICE CATALOG (신규) */
+.dcat-tabs{display:flex;gap:6px;margin-bottom:10px}
+.dcat-tab{flex:1;text-align:center;padding:11px;border:1.5px solid var(--g200);border-radius:var(--rs);background:#fff;font-size:14px;font-weight:700;color:var(--g600);cursor:pointer;font-family:inherit}
+.dcat-tab.on{border-color:var(--or);color:var(--or);background:var(--orl)}
+.dcat-subtabs{display:flex;gap:16px;margin-bottom:12px;padding:0 2px}
+.dcat-sub{font-size:13px;font-weight:600;color:var(--g400);padding-bottom:7px;cursor:pointer;border-bottom:2px solid transparent}
+.dcat-sub.on{color:var(--g800);border-bottom-color:var(--g800)}
+.dcard{display:flex;gap:12px;align-items:center;padding:13px;border:1.5px solid var(--g200);border-radius:var(--rs);background:#fff;cursor:pointer;margin-bottom:8px}
+.dcard:active{background:var(--g50)}
+.dcard-img{width:52px;height:52px;object-fit:contain;border-radius:6px;flex-shrink:0;background:var(--g50)}
+.dcard-name{font-size:15px;font-weight:700;color:var(--g800);margin:0 0 3px}
+.dcard-price{font-size:12.5px;color:var(--g600);margin:0}
+.dcard-price b{color:var(--or);font-weight:700}
+.dcat-empty{text-align:center;padding:36px 0;color:var(--g400);font-size:13px}
+#deviceDetail{background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:16px;padding-bottom:88px;position:relative}
+.ddetail-back{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--g600);cursor:pointer;margin-bottom:12px;font-weight:600}
+.ddetail-img{width:100%;height:170px;border-radius:var(--rs);background:var(--g50);display:flex;align-items:center;justify-content:center;margin-bottom:12px;overflow:hidden}
+.ddetail-img img{max-width:100%;max-height:100%;object-fit:contain}
+.ddetail-name{font-size:17px;font-weight:800;color:var(--g800);margin:0 0 16px}
+.ddetail-sec{margin-bottom:16px}
+.ddetail-lbl{font-size:12.5px;color:var(--g600);font-weight:600;margin:0 0 8px}
+.ddetail-row{display:flex;gap:8px;flex-wrap:wrap}
+.dd-color{width:34px;height:34px;border-radius:50%;cursor:pointer;border:2px solid transparent;box-shadow:0 0 0 1px var(--g200) inset}
+.dd-color.on{border-color:var(--or)}
+.dd-chip{padding:10px 14px;border:1.5px solid var(--g200);border-radius:var(--rs);font-size:13px;font-weight:600;color:var(--g600);cursor:pointer;background:#fff;text-align:center}
+.dd-chip.on{border-color:var(--or);color:var(--or);background:var(--orl);font-weight:700}
+.dd-chip.carrier{flex:1;min-width:70px}
+.dd-chip.plan{flex:1;min-width:60px}
+.ddetail-sticky{position:sticky;bottom:0;left:0;right:0;background:#fff;border-top:1.5px solid var(--g200);margin:16px -16px -16px;padding:12px 16px;display:flex;align-items:center;gap:12px}
+.ddetail-price{flex:1;line-height:1.3}
+.ddetail-price span{display:block;font-size:11.5px;color:var(--g600)}
+.ddetail-price strong{display:block;font-size:18px;color:var(--or)}
+.ddetail-cta{background:var(--or);color:#fff;border:none;padding:13px 20px;border-radius:var(--rs);font-size:13.5px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit}
+
 /* BENEFIT CARD */
 .benefit-card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:18px;margin-top:12px}
 .bc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
@@ -279,7 +313,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 
 <!-- 배너 -->
 <div class="banner-wrap">
-  <div class="banner-track" id="bTrack" style="transform: translateX(-100%);"><div class="banner-slide"><a href="https://www.uplusdak.com/video.php" target="_blank" rel="noopener"><img class="bn-pc" src="./랜딩_files/banner1_pc.png" alt="배너 1"><img class="bn-mo" src="./랜딩_files/banner1_mo.png" alt="배너 1"></a></div><div class="banner-slide"><a href="https://link.inpock.co.kr/ssgcompany" target="_blank" rel="noopener"><img class="bn-pc" src="./랜딩_files/banner2_pc.png" alt="배너 2"><img class="bn-mo" src="./랜딩_files/banner2_mo.png" alt="배너 2"></a></div><div class="banner-slide"><a href="https://landing.uplusdak.com/ipad_landing" target="_blank" rel="noopener"><img class="bn-pc" src="./랜딩_files/banner3_pc.png" alt="배너 3"><img class="bn-mo" src="./랜딩_files/banner3_mo.png" alt="배너 3"></a></div><div class="banner-slide"><img class="bn-pc" src="./랜딩_files/banner4_pc.png" alt="배너 4"><img class="bn-mo" src="./랜딩_files/banner4_mo.png" alt="배너 4"></div></div>
+  <div class="banner-track" id="bTrack" style="transform: translateX(0%);"><div class="banner-slide"><a href="https://www.uplusdak.com/video.php" target="_blank" rel="noopener"><img class="bn-pc" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner1_pc.png" alt="배너 1"><img class="bn-mo" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner1_mo.png" alt="배너 1"></a></div><div class="banner-slide"><a href="https://landing.uplusdak.com/galaxy_z8" target="_blank" rel="noopener"><img class="bn-pc" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner2_pc.png" alt="배너 2"><img class="bn-mo" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner2_mo.png" alt="배너 2"></a></div></div>
   <button class="bn-arr bn-prev" id="bPrev" onclick="slide(-1)" style="display: flex;">‹</button>
   <button class="bn-arr bn-next" id="bNext" onclick="slide(1)" style="display: flex;">›</button>
   <div class="bn-dots" id="bDots"><div class="dot" onclick="goSlide(0)"></div><div class="dot on" onclick="goSlide(1)"></div><div class="dot" onclick="goSlide(2)"></div><div class="dot" onclick="goSlide(3)"></div></div>
@@ -290,8 +324,33 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
   <div class="content-grid">
     <!-- 왼쪽: 조건 선택 -->
     <div class="step-section">
-      <p class="sec-title" id="txtSectionTitle">내 조건 먼저 확인해보세요</p>
+      <p class="sec-title" id="txtSectionTitle">원하는 핸드폰을 선택해주세요.</p>
 
+      <div class="dcat-tabs">
+        <button class="dcat-tab on" id="dcatBrandSamsung" onclick="setCatalogBrand('삼성')" type="button">삼성</button>
+        <button class="dcat-tab" id="dcatBrandApple" onclick="setCatalogBrand('애플')" type="button">애플</button>
+      </div>
+      <div class="dcat-subtabs" id="dcatSubtabs">
+        <span class="dcat-sub on" id="dcatSubS" onclick="setCatalogSub('S')">갤럭시 S시리즈</span>
+        <span class="dcat-sub" id="dcatSubZ" onclick="setCatalogSub('Z')">갤럭시 Z시리즈</span>
+      </div>
+      <div id="catalogList"></div>
+
+      <div id="deviceDetail" style="display:none">
+        <div class="ddetail-back" onclick="closeDeviceDetail()">‹ 목록으로</div>
+        <div class="ddetail-img" id="ddImg"></div>
+        <p class="ddetail-name" id="ddName"></p>
+        <div class="ddetail-sec"><p class="ddetail-lbl">색상 선택</p><div class="ddetail-row" id="ddColors"></div></div>
+        <div class="ddetail-sec"><p class="ddetail-lbl">용량 선택</p><div class="ddetail-row" id="ddStorage"></div></div>
+        <div class="ddetail-sec"><p class="ddetail-lbl">현재 사용 통신사</p><div class="ddetail-row" id="ddCarrier"></div></div>
+        <div class="ddetail-sec"><p class="ddetail-lbl">요금제 선택</p><div class="ddetail-row" id="ddPlan"></div></div>
+        <div class="ddetail-sticky">
+          <div class="ddetail-price"><span>월 예상 부담금</span><strong id="ddPrice">-</strong></div>
+          <button class="ddetail-cta" onclick="ctaFromDetail()" type="button">상담 신청하기</button>
+        </div>
+      </div>
+
+      <div id="oldStepUI" style="display:none">
       <div class="step-card" id="sc1" onclick="tryOpen(&#39;device&#39;)" style="cursor:pointer">
         <div style="display:flex;align-items:center;gap:12px;padding:14px;pointer-events:none">
           <div class="step-icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg></div>
@@ -324,12 +383,13 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
         </div>
       </div>
 
-      <div class="disc-box">
+      <div class="disc-box" style="display:none">
         <div class="disc-box-title">할인 방식 선택</div>
         <div class="disc-wrap">
           <button class="disc-btn on" id="dPub" onclick="setDisc(&#39;공시&#39;)"><span id="txtDiscPub">공시지원금</span></button>
           <button class="disc-btn" id="dSel" onclick="setDisc(&#39;선택&#39;)"><span id="txtDiscSel">선택약정</span></button>
         </div>
+      </div>
       </div>
     </div>
 
@@ -337,7 +397,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
     <div>
       <div class="benefit-card">
         <div class="bc-head">
-          <span class="bc-ttl" id="txtBenefitTitle">유닥 예상 혜택 요약</span>
+          <span class="bc-ttl" id="txtBenefitTitle">혜택 요약 시트</span>
           <span class="auto-badge">자동 계산</span>
         </div>
         <div class="bc-dev">
@@ -360,7 +420,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
           <span class="bc-total-lbl">예상 월 부담금 <span style="font-size:11px;font-weight:500;color:var(--g600)">(요금제 + 기기 할부금)</span></span>
           <span class="bc-total-val" id="rTotal">-</span>
         </div>
-        <p class="bc-note" id="txtBenefitNote">※ 위 금액은 선택하신 조건 기준 예상 금액입니다.<br>정확한 혜택은 상담을 통해 안내드립니다.</p>
+        <p class="bc-note" id="txtBenefitNote" style="display:none"></p>
       </div>
     </div>
   </div>
@@ -413,21 +473,18 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
         <div class="bp-items" id="bpItems"></div>
       </div>
       <div class="form-grid" style="margin-top:12px">
-        <div class="fg"><label class="flbl">이름 <em>*</em></label><input type="text" class="fi" id="fName" placeholder="이름을 입력해주세요"></div>
-        <div class="fg"><label class="flbl">생년월일 <em>*</em></label><input type="text" class="fi" id="fBirth" placeholder="YYYY-MM-DD" maxlength="10"></div>
-        <div class="fg"><label class="flbl">연락처 <em>*</em></label><input type="tel" class="fi" id="fPhone" placeholder="010-0000-0000"></div>
-        <div class="fg"><label class="flbl">상담 희망 시간 <em>*</em></label>
-          <input type="hidden" id="fTime" value="">
-          <div class="time-picker" id="timePicker">
-            <div class="tp-head" onclick="toggleTimePicker()">
-              <span id="timeDisplayText" style="color:var(--g400)">선택해주세요</span>
-              <span class="tp-arrow">▼</span>
-            </div>
-            <div class="tp-body" id="timeDrum">
-              <div id="timeDrumList"><div class="tp-item" onclick="window.selectTime(&#39;오전 10시&#39;)">오전 10시</div><div class="tp-item" onclick="window.selectTime(&#39;오전 11시&#39;)">오전 11시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 12시&#39;)">오후 12시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 1시&#39;)">오후 1시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 2시&#39;)">오후 2시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 3시&#39;)">오후 3시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 4시&#39;)">오후 4시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 5시&#39;)">오후 5시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 6시&#39;)">오후 6시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 7시&#39;)">오후 7시</div><div class="tp-item" onclick="window.selectTime(&#39;오후 8시&#39;)">오후 8시</div></div>
-            </div>
-          </div>
+        <div class="fg"><label class="flbl">현재사용중인 통신사 <em>*</em></label>
+          <select class="fi" id="fCarrier">
+            <option value="">선택해주세요</option>
+            <option value="SKT">SKT</option>
+            <option value="KT">KT</option>
+            <option value="LG U+">LG U+</option>
+            <option value="알뜰폰">알뜰폰</option>
+          </select>
         </div>
+        <div class="fg"><label class="flbl">이름 <em>*</em></label><input type="text" class="fi" id="fName" placeholder="이름을 입력해주세요"></div>
+        <div class="fg"><label class="flbl">전화번호 <em>*</em></label><input type="tel" class="fi" id="fPhone" placeholder="010-0000-0000"></div>
+        <div class="fg"><label class="flbl">생년월일 <em>*</em></label><input type="text" class="fi" id="fBirth" placeholder="YYYY-MM-DD" maxlength="10"></div>
       </div>
       <div class="cta-wrap">
         <a class="btn-kakao" id="kakaoBtn" href="https://pf.kakao.com/_HxfVxcn/chat" target="_blank">
@@ -515,17 +572,21 @@ let sel={device:null,carrier:null,jointype:null,storage:null,color:null,plan:nul
 const DTXT={
   installmentNote:'*기기 할부금 별도',
   installmentNoteOff:false,
-  sectionTitle:'내 조건 먼저 확인해보세요',
+  sectionTitle:'원하는 핸드폰을 선택해주세요.',
   stepDeviceLbl:'원하는 제품',stepCarrierLbl:'현재 사용 통신사',stepStorageLbl:'용량 / 색상',stepPlanLbl:'요금제',
   discPub:'공시지원금',discSel:'선택약정',
-  benefitTitle:'유닥 예상 혜택 요약',
-  benefitNote:'※ 위 금액은 선택하신 조건 기준 예상 금액입니다.\n정확한 혜택은 상담을 통해 안내드립니다.',
+  benefitTitle:'혜택 요약 시트',
+  benefitNote:'',
   formTitle:'상담 신청하기',ctaKakao:'카카오톡 상담하기',ctaPhone:'상담 신청하기',
   privacyNote:'🔒 입력하신 정보는 상담 목적으로만 사용되며, 안전하게 보호됩니다.',
   kakaoUrl:'https://pf.kakao.com/_HxfVxcn/chat',
 };
 function applyTexts(t){
   const tx={...DTXT,...t};
+  tx.sectionTitle=DTXT.sectionTitle; // Firebase에 저장된 예전 값이 있어도 무시하고 항상 최신 문구 사용
+  tx.ctaPhone=DTXT.ctaPhone; // 마찬가지로 Firebase에 박혀있는 옛날 "전화 상담 신청하기" 무시
+  tx.benefitNote=DTXT.benefitNote; // 예상금액 안내 문구 완전 제거, Firebase 옛값도 무시
+  tx.benefitTitle=DTXT.benefitTitle; // 혜택 요약 시트 문구, Firebase 옛값 무시
   window._installmentNote = tx.installmentNote||'*기기 할부금 별도';
   window._installmentNoteOff = tx.installmentNoteOff===true||tx.installmentNoteOff==='true';
   document.getElementById('txtSectionTitle').textContent=tx.sectionTitle;
@@ -537,6 +598,7 @@ function applyTexts(t){
   document.getElementById('txtDiscSel').textContent=tx.discSel;
   document.getElementById('txtBenefitTitle').textContent=tx.benefitTitle;
   document.getElementById('txtBenefitNote').innerHTML=tx.benefitNote.replace(/\n/g,'<br>');
+  document.getElementById('txtBenefitNote').style.display=tx.benefitNote?'':'none';
   document.getElementById('txtFormTitle').textContent=tx.formTitle;
   document.getElementById('txtCtaKakao').textContent=tx.ctaKakao;
   document.getElementById('txtCtaPhone').textContent=tx.ctaPhone;
@@ -570,7 +632,8 @@ async function load(){
 }):MPLAN;
     policies=pols.exists()?Object.entries(pols.val()).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false):MPOL;
     applyTexts(txs.exists()?txs.val():{});
-  }catch(e){devices=MDEV;plans=MPLAN;policies=MPOL;applyTexts({});}
+    renderCatalogList();
+  }catch(e){devices=MDEV;plans=MPLAN;policies=MPOL;applyTexts({});renderCatalogList();}
 }
 
 function matchPolicy(){
@@ -678,6 +741,7 @@ function updateBenefitPreview(){
 
 /* ── 다음 단계 자동 이동 ── */
 function autoNextStep(currentType){
+  return; // 신규 카탈로그 UI에서는 자동 모달 오픈 불필요
   const nextMap={device:'carrier',carrier:'storage',storage:'plan'};
   const next=nextMap[currentType];
   if(!next) return;
@@ -864,6 +928,162 @@ window.selPlan=function(id){
     }
   },350);
 };
+
+/* ── 신규 기기 카탈로그 (실제 devices/plans/policies 데이터만 사용) ── */
+let catState={brand:'삼성',sub:'S'};
+
+function categorizeDevice(d){
+  const id=(d.id||'').toLowerCase();
+  const nm=d.name||'';
+  if(id.startsWith('z')||nm.includes('폴드')||nm.includes('플립')) return{brand:'삼성',sub:'Z'};
+  if(id.startsWith('s')||nm.includes('갤럭시')) return{brand:'삼성',sub:'S'};
+  return{brand:'애플',sub:null};
+}
+
+function quickQuote(device,carrierName,jointype,planObj){
+  if(!planObj||!device) return null;
+  const storage=device.storageList?.[0];
+  const lp=storage?.price||0;
+  const pg=Math.floor(planObj.monthlyPrice/1000).toString();
+  const fns=[
+    p=>p.jointype===jointype&&p.carrier!=='all'&&p.carrier?.includes(carrierName)&&p.plangroup===pg,
+    p=>p.jointype===jointype&&p.carrier==='all'&&p.plangroup===pg,
+    p=>p.jointype==='all'&&p.carrier!=='all'&&p.carrier?.includes(carrierName)&&p.plangroup===pg,
+    p=>p.jointype==='all'&&p.carrier==='all'&&p.plangroup===pg,
+    p=>p.jointype===jointype&&p.carrier!=='all'&&p.carrier?.includes(carrierName)&&p.plangroup==='all',
+    p=>p.jointype===jointype&&p.carrier==='all'&&p.plangroup==='all',
+    p=>p.jointype==='all'&&p.carrier!=='all'&&p.carrier?.includes(carrierName)&&p.plangroup==='all',
+    p=>p.jointype==='all'&&p.carrier==='all'&&p.plangroup==='all',
+  ];
+  let pol=null;
+  for(const fn of fns){
+    const f=(policies||[]).find(fn);
+    if(f){
+      if((f.excludedDevs||[]).includes(device.id)) continue;
+      if(f.deviceOverrides?.[device.id]){
+        const ov=f.deviceOverrides[device.id];
+        if(storage&&ov[storage.name]) pol={...f,...ov[storage.name]};
+        else if(ov.pubSupport!==undefined) pol={...f,...ov};
+        else pol=f;
+      } else pol=f;
+      break;
+    }
+  }
+  const mainDisc=pol?.pubSupport||0;
+  const extra=(pol?.rebate||0)+(pol?.distribution||0)+(pol?.structure||0)+(pol?.extraPolicy||0);
+  return Math.max(0,lp-mainDisc-extra);
+}
+
+window.setCatalogBrand=function(b){
+  catState.brand=b;
+  document.getElementById('dcatBrandSamsung').className='dcat-tab'+(b==='삼성'?' on':'');
+  document.getElementById('dcatBrandApple').className='dcat-tab'+(b==='애플'?' on':'');
+  document.getElementById('dcatSubtabs').style.display=b==='삼성'?'flex':'none';
+  renderCatalogList();
+};
+window.setCatalogSub=function(s){
+  catState.sub=s;
+  document.getElementById('dcatSubS').className='dcat-sub'+(s==='S'?' on':'');
+  document.getElementById('dcatSubZ').className='dcat-sub'+(s==='Z'?' on':'');
+  renderCatalogList();
+};
+
+function renderCatalogList(){
+  const wrap=document.getElementById('catalogList');
+  if(!wrap) return;
+  const list=(devices||[]).filter(d=>{
+    const c=categorizeDevice(d);
+    if(catState.brand==='애플') return c.brand==='애플';
+    return c.brand==='삼성'&&c.sub===catState.sub;
+  });
+  if(!list.length){
+    wrap.innerHTML='<div class="dcat-empty">'+(catState.brand==='삼성'&&catState.sub==='Z'?'갤럭시 Z시리즈 준비중입니다':'표시할 기기가 없습니다')+'</div>';
+    return;
+  }
+  const planObj=(plans||[]).find(p=>p.plangroup==='85')||(plans||[])[0];
+  wrap.innerHTML=list.map(d=>{
+    const chg=planObj?quickQuote(d,'LG U+','기기변경',planObj):null;
+    const mnp=planObj?quickQuote(d,'SKT','번호이동',planObj):null;
+    const priceLine=(chg!=null&&mnp!=null)
+      ? (planObj.plangroup+' 요금제 기준 · 기기변경 <b>'+chg.toLocaleString()+'원</b> · 번호이동 <b>'+mnp.toLocaleString()+'원</b>')
+      : ((d.storageList?.[0]?.price||0).toLocaleString()+'원~');
+    return`<div class="dcard" onclick="openDeviceDetail('${d.id}')">
+      ${d.img?`<img class="dcard-img" src="${d.img}" alt="${d.name}">`:`<div class="dcard-img"></div>`}
+      <div style="flex:1;min-width:0">
+        <p class="dcard-name">${d.name}</p>
+        <p class="dcard-price">${priceLine}</p>
+      </div>
+      <span style="color:var(--g400)">›</span>
+    </div>`;
+  }).join('');
+}
+
+function renderDetailColors(){
+  const wrap=document.getElementById('ddColors');
+  wrap.innerHTML=(sel.device.colors||[]).map((c,i)=>{
+    const[hx]=c.name.split('|');
+    const on=sel.color?.name===c.name;
+    return`<span class="dd-color${on?' on':''}" style="background:${hx}" onclick="pickDetailColor(${i})"></span>`;
+  }).join('');
+}
+function renderDetailStorage(){
+  const wrap=document.getElementById('ddStorage');
+  wrap.innerHTML=(sel.device.storageList||[]).map((s,i)=>{
+    const on=sel.storage?.name===s.name;
+    return`<span class="dd-chip${on?' on':''}" onclick="pickDetailStorage(${i})">${s.name}</span>`;
+  }).join('');
+}
+function renderDetailCarrier(){
+  const carriers=['SKT','KT','LG U+','알뜰폰'];
+  const wrap=document.getElementById('ddCarrier');
+  wrap.innerHTML=carriers.map(n=>{
+    const on=sel.carrier===n;
+    return`<span class="dd-chip carrier${on?' on':''}" onclick="pickDetailCarrier('${n}')">${n}</span>`;
+  }).join('');
+}
+function renderDetailPlan(){
+  const wrap=document.getElementById('ddPlan');
+  wrap.innerHTML=(plans||[]).map(p=>{
+    const on=sel.plan?.id===p.id;
+    return`<span class="dd-chip plan${on?' on':''}" onclick="pickDetailPlan('${p.id}')">${p.plangroup||p.name}</span>`;
+  }).join('');
+}
+function refreshDetailPrice(){
+  const el=document.getElementById('ddPrice');
+  if(!el) return;
+  el.textContent=(window._estimatedFee!=null&&sel.device&&sel.carrier&&sel.plan)
+    ? window._estimatedFee.toLocaleString()+'원'
+    : '-';
+}
+
+window.openDeviceDetail=function(id){
+  window.selDevice(id);
+  document.getElementById('catalogList').style.display='none';
+  document.getElementById('dcatSubtabs').style.display='none';
+  document.querySelector('.dcat-tabs').style.display='none';
+  const dd=document.getElementById('deviceDetail');
+  dd.style.display='block';
+  document.getElementById('ddName').textContent=sel.device.name;
+  document.getElementById('ddImg').innerHTML=sel.device.img?`<img src="${sel.device.img}" alt="${sel.device.name}">`:'';
+  renderDetailColors();renderDetailStorage();renderDetailCarrier();renderDetailPlan();
+  refreshDetailPrice();
+  dd.scrollIntoView({behavior:'smooth',block:'start'});
+};
+window.closeDeviceDetail=function(){
+  document.getElementById('deviceDetail').style.display='none';
+  document.getElementById('catalogList').style.display='block';
+  document.getElementById('dcatSubtabs').style.display=catState.brand==='삼성'?'flex':'none';
+  document.querySelector('.dcat-tabs').style.display='flex';
+};
+window.pickDetailColor=function(i){ window.selColor(i); renderDetailColors(); calc(); refreshDetailPrice(); };
+window.pickDetailStorage=function(i){ window.selStorage(i); renderDetailStorage(); calc(); refreshDetailPrice(); };
+window.pickDetailCarrier=function(n){ window.selCarrier(n); renderDetailCarrier(); refreshDetailPrice(); };
+window.pickDetailPlan=function(id){ window.selPlan(id); renderDetailPlan(); refreshDetailPrice(); };
+window.ctaFromDetail=function(){
+  const target=document.getElementById('formWrap');
+  if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+};
+
 window.setDisc=function(t){
   sel.discType=t;
   document.getElementById('dPub').className='disc-btn'+(t==='공시'?' on':'');
@@ -876,12 +1096,10 @@ let bonusData={};
 const DEFAULT_BONUS={
   '95':{planGroupMatch:['95'],title:'플러스플랜 95 고객님을 위한 무료 혜택!',items:[
     {id:'watch',name:'갤럭시 워치',desc:'기기값 + 월 요금 무료',amount:11000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png'},
-    {id:'internet',name:'인터넷 500M',desc:'3년 약정 기준 / 월 요금 무료',amount:33000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png'},
   ]},
   '115':{planGroupMatch:['115'],title:'플러스플랜 115 고객님을 위한 무료 혜택!',items:[
     {id:'watch',name:'갤럭시 워치',desc:'기기값 + 월 요금 무료',amount:11000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png'},
     {id:'tab',name:'갤럭시 탭',desc:'기기값 + 월 요금 무료',amount:22000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tab.png'},
-    {id:'internet',name:'인터넷 500M',desc:'3년 약정 기준 / 월 요금 무료',amount:33000,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/internet.png'},
     {id:'ott',name:'OTT 혜택',desc:'원하는 스트리밍 1개 선택',amount:0,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/ott.png',ottOptions:[
       {id:'ott_disney',name:'디즈니+',emoji:'🏰',color:'#1B3D8F',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/disney.png'},
       {id:'ott_tving',name:'티빙',emoji:'📺',color:'#FF153C',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tving.png'},
@@ -911,6 +1129,12 @@ async function loadBonusData(){
     console.log('[bonusData keys]',Object.keys(bonusData));
   }
   catch(e){bonusData=DEFAULT_BONUS;console.log('[bonusData] fallback to default');}
+  // 인터넷 혜택 항목은 Firebase 저장값과 무관하게 항상 제외
+  Object.keys(bonusData).forEach(k=>{
+    if(bonusData[k]&&Array.isArray(bonusData[k].items)){
+      bonusData[k]={...bonusData[k],items:bonusData[k].items.filter(i=>i.id!=='internet')};
+    }
+  });
 }
 
 let selectedBonuses=new Set();
@@ -1155,8 +1379,8 @@ function updateBonusSummary(key){
   const emptyMsg=document.getElementById('bonusEmptyMsg');
   if(emptyMsg){
     const pg=(bd.planGroupMatch||[])[0]||key;
-    if(pg==='115') emptyMsg.textContent='모바일 + 스마트 워치 + 스마트 탭 + 인터넷 요금을 한번에!';
-    else if(pg==='95') emptyMsg.textContent='모바일 + 스마트 워치 + 인터넷 요금을 한번에!';
+    if(pg==='115') emptyMsg.textContent='스마트워치 · 갤럭시탭 기기값 전액 지원!';
+    else if(pg==='95') emptyMsg.textContent='스마트워치 기기값 전액 지원!';
     else emptyMsg.textContent='원하는 혜택을 왼쪽에서 선택해보세요';
   }
   // OTT처럼 서브아이템이 있는 경우도 selected 처리
@@ -1236,10 +1460,10 @@ function updateBonusSummary(key){
 /* SUBMIT */
 window.submitForm=async function(){
   const name=document.getElementById('fName').value.trim();
-  const birth=document.getElementById('fBirth').value.trim();
+  const carrier=document.getElementById('fCarrier').value;
   const phone=document.getElementById('fPhone').value.trim();
-  const time=document.getElementById('fTime').value;
-  if(!name||!phone||!time){alert('이름, 연락처, 상담 희망 시간은 필수입니다.');return;}
+  const birth=document.getElementById('fBirth').value.trim();
+  if(!name||!phone||!carrier||!birth){alert('현재사용중인 통신사, 이름, 전화번호, 생년월일은 필수입니다.');return;}
   const btn=document.getElementById('subBtn');
   btn.disabled=true;btn.innerHTML='📞 신청 중...';
   try{
@@ -1247,14 +1471,13 @@ window.submitForm=async function(){
       method:'POST',
       headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Prefer':'return=minimal'},
       body:JSON.stringify({
-        name,birth:birth||null,phone,
-        current_carrier:sel.carrier||null,jointype:sel.jointype||null,
+        name,phone,birth:birth||null,
+        current_carrier:carrier||sel.carrier||null,jointype:sel.jointype||null,
         desired_device:sel.device?.name||null,storage:sel.storage?.name||null,
         color:sel.color?sel.color.name.split('|')[1]:null,
         desired_product:sel.plan?.name||null,
         discount:sel.discType==='공시'?'공시지원금':'선택약정',
         additional_benefits:[...selectedBonuses].join(',')||null,
-        consult_time:time,
         channel:_utm.source==='meta'?'메타광고':'유닥',
         utm_campaign:_utm.campaign||null,
         estimated_fee:window._estimatedFee||null,
@@ -1263,13 +1486,8 @@ window.submitForm=async function(){
     });
     if(!res.ok) throw new Error(await res.text());
     document.getElementById('sModal').classList.add('on');
-    ['fName','fBirth','fPhone'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('fTime').value='';
-  document.getElementById('timeDisplayText').textContent='선택해주세요';
-  document.getElementById('timeDisplayText').style.color='var(--g400)';
-  document.querySelectorAll('.tp-item').forEach(el=>el.classList.remove('tp-sel','tp-near'));
-  document.getElementById('timePicker')?.classList.remove('on');
-  const rd=document.getElementById('timeDrum'); if(rd) rd.style.display='none';
+    ['fName','fPhone','fBirth'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('fCarrier').value='';
   }catch(e){console.error(e);alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.');}
   finally{btn.disabled=false;btn.innerHTML='📞 <span id="txtCtaPhone">상담 신청하기</span>';}
 };
@@ -1311,6 +1529,7 @@ function updateBenefitImg(){
   }
 }
 
+renderCatalogList();
 load();
 
 // ── 시간 피커 ──
@@ -1448,9 +1667,7 @@ function closeSummarySheet(){
 // link: 클릭 시 이동할 URL (없으면 빈 문자열)
 const BANNERS=[
   {pc:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner1_pc.png',mo:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner1_mo.png',link:'https://www.uplusdak.com/video.php'},
-  {pc:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner2_pc.png',mo:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner2_mo.png',link:'https://link.inpock.co.kr/ssgcompany'},
-  {pc:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner3_pc.png',mo:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner3_mo.png',link:'https://landing.uplusdak.com/ipad_landing'},
-  {pc:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner4_pc.png',mo:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner4_mo.png',link:''},
+  {pc:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner2_pc.png',mo:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/banner2_mo.png',link:'https://landing.uplusdak.com/galaxy_z8'},
 ];
 (function initBanners(){
   const track=document.getElementById('bTrack');
