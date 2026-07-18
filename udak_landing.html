@@ -81,9 +81,11 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 .dcard-badge{display:inline-block;background:var(--orl);color:var(--or);font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;margin-bottom:8px}
 .dcard-img{width:100%;aspect-ratio:1/1;object-fit:contain;border-radius:10px;background:#fff;border:1.5px solid var(--g200);margin-bottom:8px;display:block;box-sizing:border-box}
 .dcard-name{font-size:16.5px;font-weight:800;color:var(--g800);margin:0 0 10px;line-height:1.3;text-align:center}
-.dcard-prow{display:flex;justify-content:center;align-items:baseline;gap:5px;padding:6px 0;font-size:11.5px;color:var(--g600);white-space:nowrap}
+.dcard-prow{padding:7px 0;text-align:center}
 .dcard-prow+.dcard-prow{border-top:1px solid var(--g100)}
-.dcard-prow b{font-size:13.5px;font-weight:800;color:var(--g800);white-space:nowrap}
+.dcard-prow span{display:block;font-size:11px;color:var(--g600);margin-bottom:2px;line-height:1.3}
+.dcard-prow b{display:block;font-size:14px;font-weight:800;color:var(--g800)}
+.dcard-uplus{color:var(--or);font-weight:800}
 .dcat-empty{grid-column:1/-1;text-align:center;padding:36px 0;color:var(--g400);font-size:13px}
 #deviceDetail{position:fixed;inset:0;z-index:150;background:#fff;overflow-y:auto;padding:16px 20px 100px}
 .ddetail-back{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--g600);cursor:pointer;margin-bottom:14px;font-weight:600}
@@ -1138,8 +1140,8 @@ function renderCatalogList(){
       ${badgeTxt?`<span class="dcard-badge">${badgeTxt}</span>`:''}
       ${d.img?`<img class="dcard-img" src="${d.img}" alt="${d.name}">`:`<div class="dcard-img"></div>`}
       <p class="dcard-name">${d.name}</p>
-      ${chg!=null?`<div class="dcard-prow"><span>기기변경</span><b>${chg.toLocaleString()}원</b></div>`:''}
-      ${mnp!=null?`<div class="dcard-prow"><span>번호이동</span><b>${mnp.toLocaleString()}원</b></div>`:''}
+      ${mnp!=null?`<div class="dcard-prow"><span><b class="dcard-uplus">U+</b>으로 번호이동시 판매가</span><b>${mnp.toLocaleString()}원</b></div>`:''}
+      ${chg!=null?`<div class="dcard-prow"><span><b class="dcard-uplus">U+</b> 고객 기기변경시 판매가</span><b>${chg.toLocaleString()}원</b></div>`:''}
     </div>`;
   }).join('');
 }
