@@ -1145,8 +1145,8 @@ function renderCatalogList(){
       ${badgeTxt?`<span class="dcard-badge">${badgeTxt}</span>`:''}
       ${d.img?`<img class="dcard-img" src="${d.img}" alt="${d.name}">`:`<div class="dcard-img"></div>`}
       <p class="dcard-name">${d.name}</p>
-      ${mnp!=null?`<div class="dcard-prow"><span><span class="dd-nobreak"><b class="dcard-uplus">U+</b>으로</span> 번호이동시 판매가</span><b>${mnp.toLocaleString()}원</b></div>`:''}
-      ${chg!=null?`<div class="dcard-prow"><span><span class="dd-nobreak"><b class="dcard-uplus">U+</b> 고객</span> 기기변경시 판매가</span><b>${chg.toLocaleString()}원</b></div>`:''}
+      ${mnp!=null?`<div class="dcard-prow"><span><b class="dcard-uplus">U+</b>로 번호이동시</span><b>판매가 ${mnp.toLocaleString()}원</b></div>`:''}
+      ${chg!=null?`<div class="dcard-prow"><span><b class="dcard-uplus">U+</b> 고객 기기변경시</span><b>판매가 ${chg.toLocaleString()}원</b></div>`:''}
     </div>`;
   }).join('');
 }
