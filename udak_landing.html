@@ -100,11 +100,25 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
 .dd-chip.on{border-color:var(--or);color:var(--or);background:var(--orl);font-weight:700}
 .dd-chip.carrier{flex:1;min-width:80px}
 .dd-chip.plan{flex:1;min-width:70px}
-.ddetail-breakdown{background:var(--g50);border-radius:12px;padding:14px 16px}
+.ddetail-jointype{font-size:13px;color:var(--sky);background:var(--orl);border-radius:8px;padding:10px 14px;margin-top:10px;font-weight:600}
+.ddetail-extra-banner{display:flex;align-items:center;gap:10px;background:var(--or);color:#fff;border-radius:12px;padding:14px 16px;margin-bottom:26px;font-size:14px;font-weight:700}
+.ddetail-extra-banner b{font-size:19px;margin-left:auto}
+.ddetail-extra-banner .tag{background:rgba(255,255,255,.25);font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:100px;margin-left:0}
+.ddetail-breakdown{background:var(--g50);border-radius:12px;padding:16px}
+.ddb-group{padding:4px 0}
+.ddb-head{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:700;color:var(--g800);margin-bottom:8px}
+.ddb-head b{margin-left:auto;font-size:16px}
+.ddb-badge{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:var(--or);color:#fff;font-size:11px;font-weight:800;border-radius:5px}
+.ddb-sub{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--g600);padding:4px 0 4px 28px}
+.ddb-sub b{color:var(--g600);font-weight:600}
 .ddb-row{display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;color:var(--g600);padding:6px 0}
 .ddb-row b{color:var(--g800);font-weight:700}
-.ddb-row.total{border-top:1.5px solid var(--g200);margin-top:6px;padding-top:12px;font-size:15px;font-weight:700;color:var(--g800)}
-.ddb-row.total b{color:var(--or);font-size:18px}
+.ddb-row.total{border-top:1px dashed var(--g300);margin:6px 0 0 28px;padding-top:10px;font-size:14px;font-weight:700;color:var(--g800)}
+.ddb-row.total b{color:var(--or);font-size:16px}
+.ddb-divider{height:1px;background:var(--g200);margin:14px 0}
+.ddb-divider.thick{height:2px;background:var(--g800);margin:16px 0 12px}
+.ddb-final{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;font-weight:700;color:var(--g800)}
+.ddb-final strong{color:var(--or);font-size:22px}
 .ddetail-sticky{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1.5px solid var(--g200);padding:14px 20px;z-index:151}
 .ddetail-sticky-inner{display:flex;align-items:center;gap:14px}
 .ddetail-price{flex:1;line-height:1.3}
@@ -118,6 +132,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
   .ddetail-sticky-inner{max-width:900px;margin:0 auto}
 }
 .ddetail-price span{display:block;font-size:11.5px;color:var(--g600)}
+.ddetail-price span b{color:var(--g800);font-weight:700}
 .ddetail-price strong{display:block;font-size:18px;color:var(--or)}
 .ddetail-cta{background:var(--or);color:#fff;border:none;padding:13px 20px;border-radius:var(--rs);font-size:13.5px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit}
 
@@ -375,22 +390,42 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:#fff;color:#11
             <p class="ddetail-name" id="ddName"></p>
             <div class="ddetail-sec"><p class="ddetail-lbl">색상 선택</p><div class="ddetail-row" id="ddColors"></div></div>
             <div class="ddetail-sec"><p class="ddetail-lbl">용량 선택</p><div class="ddetail-row" id="ddStorage"></div></div>
-            <div class="ddetail-sec"><p class="ddetail-lbl">현재 사용 통신사</p><div class="ddetail-row" id="ddCarrier"></div></div>
+            <div class="ddetail-sec">
+              <p class="ddetail-lbl">현재 사용 통신사</p>
+              <div class="ddetail-row" id="ddCarrier"></div>
+              <p class="ddetail-jointype" id="ddJointype" style="display:none"></p>
+            </div>
             <div class="ddetail-sec"><p class="ddetail-lbl">요금제 선택</p><div class="ddetail-row" id="ddPlan"></div></div>
+            <div class="ddetail-extra-banner" id="ddExtraBanner" style="display:none">
+              <span>유닥 특별지원금</span><b id="ddExtraAmt">-</b><span class="tag">즉시할인</span>
+            </div>
             <div class="ddetail-sec">
               <p class="ddetail-lbl">혜택 상세</p>
               <div class="ddetail-breakdown">
-                <div class="ddb-row"><span>출고가</span><b id="ddbLaunch">-</b></div>
-                <div class="ddb-row"><span>공시지원금</span><b id="ddbDisc">-</b></div>
-                <div class="ddb-row"><span>유닥 특별지원금</span><b id="ddbExtra">-</b></div>
-                <div class="ddb-row total"><span>기기값</span><b id="ddbReal">-</b></div>
+                <div class="ddb-group">
+                  <div class="ddb-head"><span class="ddb-badge">A</span>월 통신요금<b id="ddbFee">-</b></div>
+                  <div class="ddb-sub"><span id="ddbPlanName">-</span><b id="ddbPlanPrice">-</b></div>
+                </div>
+                <div class="ddb-divider"></div>
+                <div class="ddb-group">
+                  <div class="ddb-head"><span class="ddb-badge">B</span>월 할부금(24개월)<b id="ddbMonthlyDev">-</b></div>
+                  <div class="ddb-sub"><span>출고가</span><b id="ddbLaunch">-</b></div>
+                  <div class="ddb-sub"><span>공시지원금</span><b id="ddbDisc">-</b></div>
+                  <div class="ddb-sub"><span>유닥 특별지원금</span><b id="ddbExtra">-</b></div>
+                  <div class="ddb-row total"><span>할부원금(기기값)</span><b id="ddbReal">-</b></div>
+                </div>
+                <div class="ddb-divider thick"></div>
+                <div class="ddb-final"><span><b>A+B</b> 월납부금</span><strong id="ddbTotal">-</strong></div>
               </div>
             </div>
           </div>
         </div>
         <div class="ddetail-sticky">
           <div class="ddetail-sticky-inner">
-            <div class="ddetail-price"><span>월 예상 부담금</span><strong id="ddPrice">-</strong></div>
+            <div class="ddetail-price">
+              <span id="ddPriceParts">월 예상 부담금</span>
+              <strong id="ddPrice">-</strong>
+            </div>
             <button class="ddetail-cta" onclick="ctaFromDetail()" type="button">상담 신청하기</button>
           </div>
         </div>
@@ -1107,15 +1142,56 @@ function renderDetailPlan(){
 function refreshDetailPrice(){
   const el=document.getElementById('ddPrice');
   if(!el) return;
-  el.textContent=(window._estimatedFee!=null&&sel.device&&sel.carrier&&sel.plan)
-    ? window._estimatedFee.toLocaleString()+'원'
-    : '-';
   const ready=sel.device&&sel.carrier&&sel.plan;
   const g=id=>document.getElementById(id);
+  el.textContent=(window._estimatedFee!=null&&ready)
+    ? window._estimatedFee.toLocaleString()+'원'
+    : '-';
+
+  // A: 월 통신요금
+  g('ddbFee').textContent=ready?g('rFee').textContent:'-';
+  g('ddbPlanName').textContent=sel.plan?sel.plan.name:'-';
+  g('ddbPlanPrice').textContent=ready?g('rFee').textContent:'-';
+
+  // B: 월 할부금 + 세부내역
+  g('ddbMonthlyDev').textContent=ready?g('rMonthlyDev').textContent:'-';
   g('ddbLaunch').textContent=ready?g('rLaunch').textContent:'-';
   g('ddbDisc').textContent=ready?g('rDisc').textContent:'-';
   g('ddbExtra').textContent=ready?g('rExtra').textContent:'-';
   g('ddbReal').textContent=ready?g('rReal').textContent:'-';
+
+  // A+B 합계
+  g('ddbTotal').textContent=ready?g('rTotal').textContent:'-';
+
+  // 하단 sticky 3분할 표기
+  const partsEl=g('ddPriceParts');
+  if(ready){
+    partsEl.innerHTML=`월 할부금 <b>${g('rMonthlyDev').textContent}</b> + 월 통신요금 <b>${g('rFee').textContent}</b>`;
+  } else {
+    partsEl.textContent='월 예상 부담금';
+  }
+
+  // 가입유형 안내
+  const jtEl=g('ddJointype');
+  if(sel.carrier&&sel.jointype){
+    jtEl.style.display='block';
+    jtEl.textContent=sel.jointype==='기기변경'
+      ? '지금 쓰시는 LG U+ 그대로, 기기만 새로 바꾸는 기기변경으로 진행돼요'
+      : `쓰던 번호 그대로, 통신사만 LG U+로 바꾸는 번호이동으로 진행돼요`;
+  } else {
+    jtEl.style.display='none';
+  }
+
+  // 유닥 특별지원금 강조 배너
+  const banner=g('ddExtraBanner');
+  const extraTxt=ready?g('rExtra').textContent:'-';
+  const extraNum=parseInt((extraTxt||'').replace(/[^0-9]/g,''))||0;
+  if(ready&&extraNum>0){
+    banner.style.display='flex';
+    g('ddExtraAmt').textContent=extraTxt.replace('-','')+' 할인';
+  } else {
+    banner.style.display='none';
+  }
 }
 function refreshDetailImg(){
   const wrap=document.getElementById('ddImg');
