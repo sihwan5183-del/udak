@@ -1084,6 +1084,13 @@ function refreshDetailPrice(){
     ? window._estimatedFee.toLocaleString()+'원'
     : '-';
 }
+function refreshDetailImg(){
+  const wrap=document.getElementById('ddImg');
+  if(!wrap||!sel.device) return;
+  const deviceImg=sel.device.img||'';
+  const src=sel.lockedColorImg||(deviceImg.startsWith('http')?deviceImg:'');
+  wrap.innerHTML=src?`<img src="${src}" alt="${sel.device.name}">`:'';
+}
 
 window.openDeviceDetail=function(id){
   window.selDevice(id);
@@ -1092,7 +1099,7 @@ window.openDeviceDetail=function(id){
   dd.scrollTop=0;
   document.body.style.overflow='hidden';
   document.getElementById('ddName').textContent=sel.device.name;
-  document.getElementById('ddImg').innerHTML=sel.device.img?`<img src="${sel.device.img}" alt="${sel.device.name}">`:'';
+  refreshDetailImg();
   renderDetailColors();renderDetailStorage();renderDetailCarrier();renderDetailPlan();
   refreshDetailPrice();
 };
@@ -1100,7 +1107,7 @@ window.closeDeviceDetail=function(){
   document.getElementById('deviceDetail').style.display='none';
   document.body.style.overflow='';
 };
-window.pickDetailColor=function(i){ window.selColor(i); renderDetailColors(); calc(); refreshDetailPrice(); };
+window.pickDetailColor=function(i){ window.selColor(i); renderDetailColors(); calc(); refreshDetailPrice(); refreshDetailImg(); };
 window.pickDetailStorage=function(i){ window.selStorage(i); renderDetailStorage(); calc(); refreshDetailPrice(); };
 window.pickDetailCarrier=function(n){ window.selCarrier(n); renderDetailCarrier(); refreshDetailPrice(); };
 window.pickDetailPlan=function(id){ window.selPlan(id); renderDetailPlan(); refreshDetailPrice(); };
