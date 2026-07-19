@@ -886,8 +886,21 @@ window.toggleDevRow=function(devKey, checked){
 
 window.applyBulk=function(){
   const vals={pub:document.getElementById('bPub').value,reb:document.getElementById('bReb').value,dist:document.getElementById('bDist').value,ext:document.getElementById('bExt').value};
+  // 이미 개별로 값이 입력된 행이 있는지 먼저 확인 (개별값이 공통값보다 우선이어야 함)
+  let hasFilled=false;
   ['pub','reb','dist','ext'].forEach(f=>{
-    document.querySelectorAll(`.dp-${f}:not(:disabled)`).forEach(el=>{el.value=vals[f];});
+    document.querySelectorAll(`.dp-${f}:not(:disabled)`).forEach(el=>{
+      if(el.value!=='') hasFilled=true;
+    });
+  });
+  let overwrite=true;
+  if(hasFilled){
+    overwrite=confirm('이미 개별 값이 입력된 기기가 있습니다.\n\n[확인] = 전체 덮어쓰기 (개별 입력값 포함 전부 공통값으로 교체)\n[취소] = 빈 칸만 채우기 (이미 값이 있는 행은 그대로 유지)');
+  }
+  ['pub','reb','dist','ext'].forEach(f=>{
+    document.querySelectorAll(`.dp-${f}:not(:disabled)`).forEach(el=>{
+      if(overwrite||el.value==='') el.value=vals[f];
+    });
   });
   Object.keys(devData).forEach(k=>{
     (devData[k]?.storageList||[{name:'기본'}]).forEach(s=>updateRowCalc(k,s.name));
