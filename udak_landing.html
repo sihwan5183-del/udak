@@ -1996,6 +1996,9 @@ function refreshDetailImg(){
 
 window.openDeviceDetail=function(id){
   window.selDevice(id);
+  if((sel.device.colors||[]).length===1) window.selColor(0);
+  if((sel.device.storageList||[]).length===1) window.selStorage(0);
+  if(sel.color&&sel.storage) calc();
   planDropdownOpen=false;
   const dd=document.getElementById('deviceDetail');
   dd.style.display='block';
