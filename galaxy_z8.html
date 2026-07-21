@@ -257,16 +257,20 @@ html,body{background:#ffffff;color:#1a1a1a;font-family:'Apple SD Gothic Neo','No
   background:rgba(0,0,0,.88);backdrop-filter:none;
   display:flex;align-items:center;justify-content:center;
   opacity:0;pointer-events:none;transition:opacity .4s ease;
+  padding:20px;box-sizing:border-box;
 }
 .modal-overlay.active{opacity:1;pointer-events:all;}
 .modal-box{
   position:relative;width:min(520px,90vw);
+  max-height:85vh;
   background:#ffffff;border:1px solid rgba(255,255,255,.08);
   border-radius:28px;overflow:hidden;
+  display:flex;flex-direction:column;
   transform:translateY(32px) scale(0.97);
   transition:transform .45s cubic-bezier(.22,1,.36,1);
 }
 .modal-overlay.active .modal-box{transform:translateY(0) scale(1);}
+.modal-scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .modal-silhouette{width:100%;height:260px;display:flex;align-items:center;justify-content:center;background:#ffffff;}
 .modal-silhouette::before{display:none;}
 .modal-silhouette img{height:200px;width:auto;opacity:1;filter:none;position:relative;z-index:1;}
@@ -1479,28 +1483,33 @@ function closeNavDrawer() {
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal-box">
     <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕</button>
-    <div class="modal-silhouette">
-      <img id="modalImg" src="" alt="">
-    </div>
-    <div class="modal-body" style="text-align:left;padding:22px 28px 28px;align-items:flex-start;">
-      <span style="display:inline-block;background:rgba(233,30,140,.08);color:#E91E8C;font-size:11px;font-weight:700;letter-spacing:.02em;padding:5px 12px;border-radius:100px;margin-bottom:10px;">&lt; 언팩전 예상 스펙 &gt;</span>
-      <p class="modal-product-name" id="modalTitle" style="text-align:left;margin:0 0 16px;">—</p>
-
-      <p style="font-size:12px;color:#999;font-weight:600;margin:0 0 8px;">색상</p>
-      <div id="modalColors" style="display:flex;gap:14px;margin-bottom:18px;"></div>
-
-      <p style="font-size:12px;color:#999;font-weight:600;margin:0 0 8px;">용량</p>
-      <div id="modalCapacity" style="display:flex;gap:8px;margin-bottom:12px;"></div>
-
-      <p id="modalPrice" style="font-size:20px;font-weight:800;color:#E91E8C;margin:0 0 16px;">—</p>
-
-      <div style="background:#f9f9fb;border-radius:12px;padding:12px 14px;margin-bottom:14px;">
-        <p id="modalChipset" style="font-size:13px;color:#333;font-weight:700;margin:0;">—</p>
+    <div class="modal-scroll">
+      <div class="modal-silhouette">
+        <img id="modalImg" src="" alt="">
       </div>
+      <div class="modal-body" style="text-align:left;padding:22px 28px 28px;align-items:flex-start;">
+        <span style="display:inline-block;background:rgba(233,30,140,.08);color:#E91E8C;font-size:11px;font-weight:700;letter-spacing:.02em;padding:5px 12px;border-radius:100px;margin-bottom:10px;">&lt; 언팩전 예상 스펙 &gt;</span>
+        <p class="modal-product-name" id="modalTitle" style="text-align:left;margin:0 0 16px;">—</p>
 
-      <p id="modalFeature" style="font-size:13px;color:#555;line-height:1.7;margin:0 0 16px;">—</p>
+        <p style="font-size:12px;color:#999;font-weight:600;margin:0 0 8px;">색상</p>
+        <div id="modalColors" style="display:flex;gap:14px;margin-bottom:18px;"></div>
 
-      <p style="font-size:11px;color:#aaa;line-height:1.6;margin:0;border-top:1px solid #f0f0f0;padding-top:12px;">* 위 정보는 공식 발표 전 예상 스펙이며, 7.22 언팩 발표 후 실제와 다를 수 있습니다.</p>
+        <p style="font-size:12px;color:#999;font-weight:600;margin:0 0 8px;">용량</p>
+        <div id="modalCapacity" style="display:flex;gap:8px;margin-bottom:18px;"></div>
+
+        <div style="margin:0 0 16px;">
+          <p style="font-size:12px;color:#999;font-weight:600;margin:0 0 4px;">출고가</p>
+          <p id="modalPrice" style="font-size:22px;font-weight:800;color:#1A1A1A;margin:0;">—</p>
+        </div>
+
+        <div style="background:#f9f9fb;border-radius:12px;padding:12px 14px;margin-bottom:14px;">
+          <p id="modalChipset" style="font-size:13px;color:#333;font-weight:700;margin:0;">—</p>
+        </div>
+
+        <p id="modalFeature" style="font-size:13px;color:#555;line-height:1.7;margin:0 0 16px;">—</p>
+
+        <p style="font-size:11px;color:#aaa;line-height:1.6;margin:0;border-top:1px solid #f0f0f0;padding-top:12px;">* 위 정보는 공식 발표 전 예상 스펙이며, 7.22 언팩 발표 후 실제와 다를 수 있습니다.</p>
+      </div>
     </div>
   </div>
 </div>
@@ -1623,7 +1632,7 @@ function renderModalCapacity() {
     const active = i === currentCapIndex;
     return `<span onclick="selectModalCapacity(${i})" style="cursor:pointer;user-select:none;padding:7px 16px;border:1.5px solid ${active?'#E91E8C':'#ddd'};border-radius:100px;font-size:13px;font-weight:700;color:${active?'#E91E8C':'#555'};background:${active?'rgba(233,30,140,.06)':'#fff'};transition:all .15s;">${cap.label}</span>`;
   }).join('');
-  document.getElementById('modalPrice').textContent = currentModalSpec.capacity[currentCapIndex].label + ' ' + currentModalSpec.capacity[currentCapIndex].price;
+  document.getElementById('modalPrice').innerHTML = currentModalSpec.capacity[currentCapIndex].price + ' <span style="font-size:13px;font-weight:600;color:#E91E8C;">예상</span>';
 }
 
 function selectModalCapacity(i) {
