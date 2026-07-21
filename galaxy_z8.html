@@ -1316,35 +1316,11 @@ function closeNavDrawer() {
 
 
 
-<!-- ══ 지원금 혜택 섹션 ══ -->
+<!-- ══ 티비프리란 섹션 ══ -->
 <section style="width:100%;background:#ffffff;padding:40px 0 0;">
   <div style="max-width:600px;margin:0 auto;padding:0 24px;">
-        <!-- 카운트다운 -->
-    <div id="benefitCountdown" style="text-align:center;background:#ffffff;border:1px solid #e5e5e5;border-radius:16px;padding:20px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.04);">
-      <p style="font-size:13px;color:#1A1A1A;font-weight:700;margin-bottom:8px;">🔒 <span style="color:#E91E8C;">7.22</span> 언팩 이후 전체 공개</p>
-      <div style="display:flex;justify-content:center;gap:12px;">
-        <div style="text-align:center;">
-          <div id="cd-days" style="font-size:32px;font-weight:800;color:#1A1A1A;line-height:1;">--</div>
-          <div style="font-size:11px;color:#999;margin-top:2px;">일</div>
-        </div>
-        <div style="font-size:28px;font-weight:300;color:#ddd;line-height:1.2;">:</div>
-        <div style="text-align:center;">
-          <div id="cd-hours" style="font-size:32px;font-weight:800;color:#1A1A1A;line-height:1;">--</div>
-          <div style="font-size:11px;color:#999;margin-top:2px;">시간</div>
-        </div>
-        <div style="font-size:28px;font-weight:300;color:#ddd;line-height:1.2;">:</div>
-        <div style="text-align:center;">
-          <div id="cd-mins" style="font-size:32px;font-weight:800;color:#1A1A1A;line-height:1;">--</div>
-          <div style="font-size:11px;color:#999;margin-top:2px;">분</div>
-        </div>
-        <div style="font-size:28px;font-weight:300;color:#ddd;line-height:1.2;">:</div>
-        <div style="text-align:center;">
-          <div id="cd-secs" style="font-size:32px;font-weight:800;color:#1A1A1A;line-height:1;">--</div>
-          <div style="font-size:11px;color:#999;margin-top:2px;">초</div>
-        </div>
-      </div>
-    </div>
-    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit-subsidy2.jpg?v=20260711b" alt="제품은 같아도, 혜택은 다릅니다 - 유플러스 다이렉트만의 지원금" style="width:100%;height:auto;display:block;border-radius:20px;">
+    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/tvfree-intro.jpg" alt="티비프리란 - TV를 따로 두기엔 부담스럽고 휴대폰으로 보기엔 아쉬우셨나요" style="width:100%;height:auto;display:block;border-radius:20px;margin-bottom:20px;">
+    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/tvfree-benefit.jpg" alt="사전예약 고객님 전용 TV형 태블릿 혜택" style="width:100%;height:auto;display:block;border-radius:20px;">
   </div>
 </section>
 
@@ -1442,32 +1418,7 @@ function closeNavDrawer() {
 
   </div>
 
-<script>
-(function(){
-  var target = new Date('2026-07-22T00:00:00+09:00');
-  function update(){
-    var now = new Date();
-    var diff = target - now;
-    if(diff <= 0){
-      document.getElementById('cd-days').textContent='0';
-      document.getElementById('cd-hours').textContent='00';
-      document.getElementById('cd-mins').textContent='00';
-      document.getElementById('cd-secs').textContent='00';
-      return;
-    }
-    var d = Math.floor(diff/86400000);
-    var h = Math.floor((diff%86400000)/3600000);
-    var m = Math.floor((diff%3600000)/60000);
-    var s = Math.floor((diff%60000)/1000);
-    document.getElementById('cd-days').textContent=d;
-    document.getElementById('cd-hours').textContent=String(h).padStart(2,'0');
-    document.getElementById('cd-mins').textContent=String(m).padStart(2,'0');
-    document.getElementById('cd-secs').textContent=String(s).padStart(2,'0');
-  }
-  update();
-  setInterval(update, 1000);
-})();
-</script>
+
 </section>
 
 
