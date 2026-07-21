@@ -825,6 +825,16 @@ textarea.mform-input{resize:none;height:80px;}
   .process-mobile-wrap img{width:100% !important;border-radius:0 !important;}
 }
 
+/* 모바일에서 이미지 살짝 확대 (컨테이너 패딩 벗어나게) */
+@media (max-width:640px){
+  .img-enlarge-mobile{
+    width:calc(100% + 24px) !important;
+    max-width:calc(100% + 24px) !important;
+    margin-left:-12px !important;
+    margin-right:-12px !important;
+  }
+}
+
 /* 혜택 카드 블러 (7.22 공개 전) */
 .benefit-card-blur > *{filter:blur(10px);pointer-events:none;user-select:none;}
 .benefit-card-blur::after{
@@ -1368,7 +1378,7 @@ function closeNavDrawer() {
   <div style="max-width:520px;margin:0 auto;padding:0 20px;">
 
     <!-- 가족이동 + 인터넷TV 이동 혜택 (원본) -->
-    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/moving-benefit-full.jpg" alt="U+로 통신사를 이동하는 고객님에게 드리는 혜택 - 가족도 함께 이동하면 1인당 30만원, 인터넷 TV도 함께 이동하면 현금 80만원 혜택" style="width:100%;height:auto;display:block;margin-bottom:16px;">
+    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/moving-benefit-full.jpg" alt="U+로 통신사를 이동하는 고객님에게 드리는 혜택 - 가족도 함께 이동하면 1인당 30만원, 인터넷 TV도 함께 이동하면 현금 80만원 혜택" style="width:100%;height:auto;display:block;margin-bottom:16px;" class="img-enlarge-mobile">
 
     <!-- 가족 특별가 (원본) -->
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/familyprice-full.jpg" alt="사전예약 고객님 가족 특별가 - 갤럭시 S25 엣지, 갤럭시 S26, 아이폰17" style="width:100%;height:auto;display:block;margin:32px 0 16px;">
@@ -1380,7 +1390,7 @@ function closeNavDrawer() {
 <!-- ══ 요금제별 다이렉트 혜택 섹션 ══ -->
 <section style="width:100%;background:#ffffff;padding:8px 0 40px;">
   <div style="max-width:600px;margin:0 auto;padding:0 24px;">
-    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/plan-benefit-watch-v2.jpg" alt="요금제별 다이렉트 혜택 - 갤럭시 워치, 워치+탭 혜택" style="width:100%;height:auto;display:block;">
+    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/plan-benefit-watch-v2.jpg" alt="요금제별 다이렉트 혜택 - 갤럭시 워치, 워치+탭 혜택" style="width:100%;height:auto;display:block;" class="img-enlarge-mobile">
   </div>
 </section>
 
@@ -1392,7 +1402,7 @@ function closeNavDrawer() {
 <!-- ══ 티비프리란 섹션 ══ -->
 <section style="width:100%;background:#ffffff;padding:40px 0 0;">
   <div style="max-width:600px;margin:0 auto;padding:0 24px;">
-    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/tvfree-benefit-v2.jpg" alt="사전예약 고객님 전용 TV형 태블릿 혜택" style="width:100%;height:auto;display:block;border-radius:20px;margin-bottom:20px;">
+    <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/tvfree-benefit-v2.jpg" alt="사전예약 고객님 전용 TV형 태블릿 혜택" style="width:100%;height:auto;display:block;border-radius:20px;margin-bottom:20px;" class="img-enlarge-mobile">
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/tvfree-intro.jpg" alt="티비프리란 - TV를 따로 두기엔 부담스럽고 휴대폰으로 보기엔 아쉬우셨나요" style="width:100%;height:auto;display:block;border-radius:20px;margin-bottom:28px;">
 
     <p style="text-align:center;font-size:12px;letter-spacing:.2em;color:#E91E8C;font-weight:700;margin-bottom:6px;">SPECIFICATION</p>
@@ -1400,13 +1410,13 @@ function closeNavDrawer() {
 
     <!-- 스펙 카드 가로 캐러셀 -->
     <div style="display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:4px 24px 14px;margin:0 -24px;">
-      <div style="flex:0 0 72%;scroll-snap-align:start;border-radius:20px;overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,.08);border:1px solid #f0f0f0;">
+      <div style="flex:0 0 84%;scroll-snap-align:start;border-radius:20px;overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,.08);border:1px solid #f0f0f0;">
         <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/spec-ipad.jpg" alt="티비형 아이패드 128GB 주요 스펙" style="width:100%;height:auto;display:block;">
       </div>
-      <div style="flex:0 0 72%;scroll-snap-align:start;border-radius:20px;overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,.08);border:1px solid #f0f0f0;">
+      <div style="flex:0 0 84%;scroll-snap-align:start;border-radius:20px;overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,.08);border:1px solid #f0f0f0;">
         <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/spec-tvfree4.jpg" alt="U+ tv 프리4 주요 스펙" style="width:100%;height:auto;display:block;">
       </div>
-      <div style="flex:0 0 72%;scroll-snap-align:start;border-radius:20px;overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,.08);border:1px solid #f0f0f0;">
+      <div style="flex:0 0 84%;scroll-snap-align:start;border-radius:20px;overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,.08);border:1px solid #f0f0f0;">
         <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/spec-tvfree5.jpg" alt="U+ tv 프리5 주요 스펙" style="width:100%;height:auto;display:block;">
       </div>
     </div>
