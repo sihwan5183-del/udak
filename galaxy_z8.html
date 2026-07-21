@@ -1216,8 +1216,54 @@ function closeNavDrawer() {
 
 <div class="spotlight-overlay"></div>
 
+<!-- ══ 히어로 문구 + 카운트다운 ══ -->
+<div style="text-align:center;padding:28px 20px 4px;">
+  <p style="font-size:12px;color:#999;font-weight:600;margin:0 0 10px;">혜택 종료까지</p>
+  <div id="heroCountdown" style="display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #f5d6e8;border-radius:14px;padding:12px 18px;margin-bottom:16px;box-shadow:0 4px 16px rgba(233,30,140,.10);">
+    <div style="text-align:center;min-width:36px;">
+      <div id="hcd-days" style="font-size:22px;font-weight:800;color:#E91E8C;line-height:1;font-variant-numeric:tabular-nums;">--</div>
+      <div style="font-size:10px;color:#999;margin-top:3px;">일</div>
+    </div>
+    <div style="font-size:18px;font-weight:300;color:#eee;">:</div>
+    <div style="text-align:center;min-width:36px;">
+      <div id="hcd-hours" style="font-size:22px;font-weight:800;color:#E91E8C;line-height:1;font-variant-numeric:tabular-nums;">--</div>
+      <div style="font-size:10px;color:#999;margin-top:3px;">시간</div>
+    </div>
+    <div style="font-size:18px;font-weight:300;color:#eee;">:</div>
+    <div style="text-align:center;min-width:36px;">
+      <div id="hcd-mins" style="font-size:22px;font-weight:800;color:#E91E8C;line-height:1;font-variant-numeric:tabular-nums;">--</div>
+      <div style="font-size:10px;color:#999;margin-top:3px;">분</div>
+    </div>
+    <div style="font-size:18px;font-weight:300;color:#eee;">:</div>
+    <div style="text-align:center;min-width:36px;">
+      <div id="hcd-secs" style="font-size:22px;font-weight:800;color:#E91E8C;line-height:1;font-variant-numeric:tabular-nums;">--</div>
+      <div style="font-size:10px;color:#999;margin-top:3px;">초</div>
+    </div>
+  </div>
+  <p style="font-size:13px;color:#E91E8C;font-weight:700;letter-spacing:.04em;margin:0 0 8px;">&lt; 7.22 ~ 8.3 까지 &gt;</p>
+  <h1 style="font-size:24px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin:0;">폴더블 8 사전예약 시작</h1>
+</div>
+<script>
+(function(){
+  var target = new Date('2026-08-03T23:59:59+09:00');
+  function update(){
+    var diff = target - new Date();
+    if(diff <= 0){
+      ['days','hours','mins','secs'].forEach(function(u){document.getElementById('hcd-'+u).textContent = u==='days' ? '0' : '00';});
+      return;
+    }
+    document.getElementById('hcd-days').textContent  = Math.floor(diff/86400000);
+    document.getElementById('hcd-hours').textContent = String(Math.floor(diff%86400000/3600000)).padStart(2,'0');
+    document.getElementById('hcd-mins').textContent  = String(Math.floor(diff%3600000/60000)).padStart(2,'0');
+    document.getElementById('hcd-secs').textContent  = String(Math.floor(diff%60000/1000)).padStart(2,'0');
+  }
+  update();
+  setInterval(update, 1000);
+})();
+</script>
+
 <!-- ══ 배너 슬라이더 ══ -->
-<section style="width:100%;background:#fff;padding:32px 16px 28px;box-sizing:border-box;">
+<section style="width:100%;background:#fff;padding:20px 16px 28px;box-sizing:border-box;">
   <div style="position:relative;width:100%;overflow:hidden;border:1px solid #e8e8e8;border-radius:16px;" id="bannerSlot">
     <div id="bannerTrack" style="display:flex;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);">
       <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner-unpack1.jpg" alt="드디어 시작된 폴더블 8 사전예약" class="banner-img"></div>
@@ -1235,12 +1281,6 @@ function closeNavDrawer() {
     </div>
   </div>
 </section>
-
-<!-- ══ 히어로 문구 ══ -->
-<div style="text-align:center;padding:24px 20px 4px;">
-  <p style="font-size:13px;color:#E91E8C;font-weight:700;letter-spacing:.04em;margin:0 0 8px;">&lt; 7.22 ~ 8.3 &gt;</p>
-  <h1 style="font-size:24px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin:0;">폴더블 8 사전예약 시작</h1>
-</div>
 
 <!-- ══ 히어로 ══ -->
 <section class="hero">
