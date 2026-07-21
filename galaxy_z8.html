@@ -1484,14 +1484,15 @@ function closeNavDrawer() {
     </div>
     <div class="modal-body" style="text-align:left;padding:22px 28px 28px;align-items:flex-start;">
       <span style="display:inline-block;background:rgba(233,30,140,.08);color:#E91E8C;font-size:11px;font-weight:700;letter-spacing:.02em;padding:5px 12px;border-radius:100px;margin-bottom:10px;">&lt; 언팩전 예상 스펙 &gt;</span>
-      <p class="modal-product-name" id="modalTitle" style="text-align:left;margin:0 0 6px;">—</p>
-      <p id="modalPrice" style="font-size:14px;font-weight:700;color:#1A1A1A;margin:0 0 16px;">—</p>
+      <p class="modal-product-name" id="modalTitle" style="text-align:left;margin:0 0 16px;">—</p>
 
       <p style="font-size:12px;color:#999;font-weight:600;margin:0 0 8px;">색상</p>
-      <div id="modalColors" style="display:flex;gap:14px;margin-bottom:16px;"></div>
+      <div id="modalColors" style="display:flex;gap:14px;margin-bottom:18px;"></div>
 
       <p style="font-size:12px;color:#999;font-weight:600;margin:0 0 8px;">용량</p>
-      <div id="modalCapacity" style="display:flex;gap:8px;margin-bottom:16px;"></div>
+      <div id="modalCapacity" style="display:flex;gap:8px;margin-bottom:12px;"></div>
+
+      <p id="modalPrice" style="font-size:20px;font-weight:800;color:#E91E8C;margin:0 0 16px;">—</p>
 
       <div style="background:#f9f9fb;border-radius:12px;padding:12px 14px;margin-bottom:14px;">
         <p id="modalChipset" style="font-size:13px;color:#333;font-weight:700;margin:0;">—</p>
@@ -1545,39 +1546,48 @@ document.querySelectorAll('.product-card,.products-section-title,.case-eyebrow,.
 // 제품 모달 - 언팩전 예상 스펙
 const PRODUCT_SPECS = {
   '갤럭시 Z 폴드8 울트라': {
-    price: '256GB 2,577,300원 · 512GB 2,830,300원',
     colors: [
       {name:'바이올렛 쉐도우', hex:'#5C4E77'},
       {name:'그라파이트', hex:'#3A3A3C'},
       {name:'크림', hex:'#F0E6D2'}
     ],
-    capacity: ['256GB','512GB'],
+    capacity: [
+      {label:'256GB', price:'2,577,300원'},
+      {label:'512GB', price:'2,830,300원'}
+    ],
     chipset: '스냅드래곤8 엘리트 젠5 · 5,000mAh',
     feature: '멀티태스킹에 특화된 생산성 타겟 모델입니다. 라운딩 처리로 펼치기 쉽고, 기존 대비 0.1mm 얇아져 체감상 더 얇고 가볍습니다.'
   },
   '갤럭시 Z 폴드8 와이드': {
-    price: '256GB 2,277,000원 · 512GB 2,530,000원',
     colors: [
       {name:'라벤더', hex:'#C3B6DE'},
       {name:'그라파이트', hex:'#3A3A3C'},
       {name:'크림', hex:'#F0E6D2'}
     ],
-    capacity: ['256GB','512GB'],
+    capacity: [
+      {label:'256GB', price:'2,277,000원'},
+      {label:'512GB', price:'2,530,000원'}
+    ],
     chipset: '스냅드래곤8 엘리트 젠5 · 4,800mAh',
     feature: '여권 사이즈와 동일한 크기로, 웹툰·쇼츠·영상을 풀화면으로 시청할 수 있습니다.'
   },
   '갤럭시 Z 플립8': {
-    price: '256GB 1,683,000원 · 512GB 1,936,000원',
     colors: [
       {name:'핑크', hex:'#F2C6D6'},
       {name:'그라파이트', hex:'#3A3A3C'},
       {name:'크림', hex:'#F0E6D2'}
     ],
-    capacity: ['256GB','512GB'],
+    capacity: [
+      {label:'256GB', price:'1,683,000원'},
+      {label:'512GB', price:'1,936,000원'}
+    ],
     chipset: '엑시노스2600 · 4,300mAh',
     feature: '베젤이 얇아지고 라운딩 처리로 펼치기 쉬워졌습니다.'
   }
 };
+
+let currentModalSpec = null;
+let currentCapIndex = 0;
 
 function openModal(title, src, glowColor, accentColor) {
   document.getElementById('modalTitle').textContent = title;
@@ -1585,8 +1595,10 @@ function openModal(title, src, glowColor, accentColor) {
   document.querySelector('.modal-silhouette').style.setProperty('--glow-color', glowColor);
 
   const spec = PRODUCT_SPECS[title];
+  currentModalSpec = spec;
+  currentCapIndex = 0;
+
   if (spec) {
-    document.getElementById('modalPrice').textContent = spec.price;
     document.getElementById('modalChipset').textContent = spec.chipset;
     document.getElementById('modalFeature').textContent = spec.feature;
 
@@ -1598,14 +1610,27 @@ function openModal(title, src, glowColor, accentColor) {
       </div>`
     ).join('');
 
-    const capEl = document.getElementById('modalCapacity');
-    capEl.innerHTML = spec.capacity.map((cap, i) =>
-      `<span style="padding:7px 16px;border:1.5px solid ${i===0?'#E91E8C':'#ddd'};border-radius:100px;font-size:13px;font-weight:700;color:${i===0?'#E91E8C':'#555'};">${cap}</span>`
-    ).join('');
+    renderModalCapacity();
   }
 
   document.getElementById('modalOverlay').classList.add('active');
 }
+
+function renderModalCapacity() {
+  if (!currentModalSpec) return;
+  const capEl = document.getElementById('modalCapacity');
+  capEl.innerHTML = currentModalSpec.capacity.map((cap, i) => {
+    const active = i === currentCapIndex;
+    return `<span onclick="selectModalCapacity(${i})" style="cursor:pointer;user-select:none;padding:7px 16px;border:1.5px solid ${active?'#E91E8C':'#ddd'};border-radius:100px;font-size:13px;font-weight:700;color:${active?'#E91E8C':'#555'};background:${active?'rgba(233,30,140,.06)':'#fff'};transition:all .15s;">${cap.label}</span>`;
+  }).join('');
+  document.getElementById('modalPrice').textContent = currentModalSpec.capacity[currentCapIndex].label + ' ' + currentModalSpec.capacity[currentCapIndex].price;
+}
+
+function selectModalCapacity(i) {
+  currentCapIndex = i;
+  renderModalCapacity();
+}
+
 function closeModal(e) { if(e.target.id==='modalOverlay') document.getElementById('modalOverlay').classList.remove('active'); }
 
 // 혜택 팝업
