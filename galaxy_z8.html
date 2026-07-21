@@ -1481,21 +1481,25 @@ function closeNavDrawer() {
     <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('active')">✕</button>
     <div class="modal-silhouette">
       <img id="modalImg" src="" alt="">
-      <div class="modal-date-wrap">
-        <span class="modal-label">Galaxy Z 언팩</span>
-        <div class="modal-date"><em id="modalAccent">7</em>.22</div>
-        <span class="modal-unveil">Coming Soon</span>
+    </div>
+    <div class="modal-body" style="text-align:left;padding:22px 28px 28px;align-items:flex-start;">
+      <span style="display:inline-block;background:rgba(233,30,140,.08);color:#E91E8C;font-size:11px;font-weight:700;letter-spacing:.02em;padding:5px 12px;border-radius:100px;margin-bottom:10px;">&lt; 언팩전 예상 스펙 &gt;</span>
+      <p class="modal-product-name" id="modalTitle" style="text-align:left;margin:0 0 6px;">—</p>
+      <p id="modalPrice" style="font-size:14px;font-weight:700;color:#1A1A1A;margin:0 0 16px;">—</p>
+
+      <p style="font-size:12px;color:#999;font-weight:600;margin:0 0 8px;">색상</p>
+      <div id="modalColors" style="display:flex;gap:14px;margin-bottom:16px;"></div>
+
+      <p style="font-size:12px;color:#999;font-weight:600;margin:0 0 8px;">용량</p>
+      <div id="modalCapacity" style="display:flex;gap:8px;margin-bottom:16px;"></div>
+
+      <div style="background:#f9f9fb;border-radius:12px;padding:12px 14px;margin-bottom:14px;">
+        <p id="modalChipset" style="font-size:13px;color:#333;font-weight:700;margin:0;">—</p>
       </div>
-    </div>
-    <div class="modal-countdown">
-      <div class="cd-block"><span class="cd-num" id="cdDays">--</span><span class="cd-unit">일</span></div>
-      <div class="cd-block"><span class="cd-num" id="cdHours">--</span><span class="cd-unit">시간</span></div>
-      <div class="cd-block"><span class="cd-num" id="cdMins">--</span><span class="cd-unit">분</span></div>
-      <div class="cd-block"><span class="cd-num" id="cdSecs">--</span><span class="cd-unit">초</span></div>
-    </div>
-    <div class="modal-body">
-      <p class="modal-product-name" id="modalTitle">—</p>
-      <p class="modal-sub">언팩 이후 제품 상세 정보와 색상 · 스펙 · 혜택이 공개됩니다<br>사전 알림 신청 후, 유닥에서 공개 정보를 먼저 안내받아보세요</p>
+
+      <p id="modalFeature" style="font-size:13px;color:#555;line-height:1.7;margin:0 0 16px;">—</p>
+
+      <p style="font-size:11px;color:#aaa;line-height:1.6;margin:0;border-top:1px solid #f0f0f0;padding-top:12px;">* 위 정보는 공식 발표 전 예상 스펙이며, 7.22 언팩 발표 후 실제와 다를 수 있습니다.</p>
     </div>
   </div>
 </div>
@@ -1538,30 +1542,71 @@ const observer = new IntersectionObserver(entries => {
 }, {threshold:0.12});
 document.querySelectorAll('.product-card,.products-section-title,.case-eyebrow,.benefit-grid-title').forEach(el => observer.observe(el));
 
-// 제품 모달
+// 제품 모달 - 언팩전 예상 스펙
+const PRODUCT_SPECS = {
+  '갤럭시 Z 폴드8 울트라': {
+    price: '256GB 2,577,300원 · 512GB 2,830,300원',
+    colors: [
+      {name:'바이올렛 쉐도우', hex:'#5C4E77'},
+      {name:'그라파이트', hex:'#3A3A3C'},
+      {name:'크림', hex:'#F0E6D2'}
+    ],
+    capacity: ['256GB','512GB'],
+    chipset: '스냅드래곤8 엘리트 젠5 · 5,000mAh',
+    feature: '멀티태스킹에 특화된 생산성 타겟 모델입니다. 라운딩 처리로 펼치기 쉽고, 기존 대비 0.1mm 얇아져 체감상 더 얇고 가볍습니다.'
+  },
+  '갤럭시 Z 폴드8 와이드': {
+    price: '256GB 2,277,000원 · 512GB 2,530,000원',
+    colors: [
+      {name:'라벤더', hex:'#C3B6DE'},
+      {name:'그라파이트', hex:'#3A3A3C'},
+      {name:'크림', hex:'#F0E6D2'}
+    ],
+    capacity: ['256GB','512GB'],
+    chipset: '스냅드래곤8 엘리트 젠5 · 4,800mAh',
+    feature: '여권 사이즈와 동일한 크기로, 웹툰·쇼츠·영상을 풀화면으로 시청할 수 있습니다.'
+  },
+  '갤럭시 Z 플립8': {
+    price: '256GB 1,683,000원 · 512GB 1,936,000원',
+    colors: [
+      {name:'핑크', hex:'#F2C6D6'},
+      {name:'그라파이트', hex:'#3A3A3C'},
+      {name:'크림', hex:'#F0E6D2'}
+    ],
+    capacity: ['256GB','512GB'],
+    chipset: '엑시노스2600 · 4,300mAh',
+    feature: '베젤이 얇아지고 라운딩 처리로 펼치기 쉬워졌습니다.'
+  }
+};
+
 function openModal(title, src, glowColor, accentColor) {
   document.getElementById('modalTitle').textContent = title;
   document.getElementById('modalImg').src = src;
   document.querySelector('.modal-silhouette').style.setProperty('--glow-color', glowColor);
-  document.getElementById('modalAccent').style.color = accentColor;
+
+  const spec = PRODUCT_SPECS[title];
+  if (spec) {
+    document.getElementById('modalPrice').textContent = spec.price;
+    document.getElementById('modalChipset').textContent = spec.chipset;
+    document.getElementById('modalFeature').textContent = spec.feature;
+
+    const colorsEl = document.getElementById('modalColors');
+    colorsEl.innerHTML = spec.colors.map(c =>
+      `<div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+        <span style="display:block;width:28px;height:28px;border-radius:50%;background:${c.hex};border:1px solid rgba(0,0,0,.08);"></span>
+        <span style="font-size:10px;color:#888;white-space:nowrap;">${c.name}</span>
+      </div>`
+    ).join('');
+
+    const capEl = document.getElementById('modalCapacity');
+    capEl.innerHTML = spec.capacity.map((cap, i) =>
+      `<span style="padding:7px 16px;border:1.5px solid ${i===0?'#E91E8C':'#ddd'};border-radius:100px;font-size:13px;font-weight:700;color:${i===0?'#E91E8C':'#555'};">${cap}</span>`
+    ).join('');
+  }
+
   document.getElementById('modalOverlay').classList.add('active');
-  startCountdown();
 }
 function closeModal(e) { if(e.target.id==='modalOverlay') document.getElementById('modalOverlay').classList.remove('active'); }
-
-let _cd;
-function startCountdown() {
-  clearInterval(_cd);
-  function tick() {
-    const diff = new Date('2026-07-22T10:00:00+09:00') - new Date();
-    if(diff<=0){ ['Days','Hours','Mins','Secs'].forEach(u=>document.getElementById('cd'+u).textContent='00'); return; }
-    document.getElementById('cdDays').textContent  = String(Math.floor(diff/86400000)).padStart(2,'0');
-    document.getElementById('cdHours').textContent = String(Math.floor(diff%86400000/3600000)).padStart(2,'0');
-    document.getElementById('cdMins').textContent  = String(Math.floor(diff%3600000/60000)).padStart(2,'0');
-    document.getElementById('cdSecs').textContent  = String(Math.floor(diff%60000/1000)).padStart(2,'0');
-  }
-  tick(); _cd = setInterval(tick,1000);
-}
 
 // 혜택 팝업
 const BENEFITS = [
