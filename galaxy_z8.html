@@ -1241,8 +1241,43 @@ function closeNavDrawer() {
     </div>
   </div>
   <p style="font-size:13px;color:#E91E8C;font-weight:700;letter-spacing:.04em;margin:0 0 8px;">&lt; 7.22 ~ 8.3 까지 &gt;</p>
-  <h1 style="font-size:24px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin:0;">폴더블 8 사전예약 시작</h1>
+  <h1 style="font-size:24px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin:0 0 20px;">폴더블 8 사전예약 시작</h1>
+
+  <p style="font-size:13px;color:#1A1A1A;font-weight:700;margin:0 0 10px;">&lt; 유플러스 다이렉트 사전예약 지원금 공개 &gt;</p>
+  <div id="subsidyCountdown" style="display:inline-flex;align-items:center;gap:6px;background:#1A1A1A;border-radius:14px;padding:12px 20px;box-shadow:0 4px 16px rgba(0,0,0,.15);">
+    <div style="text-align:center;min-width:36px;">
+      <div id="sc-hours" style="font-size:22px;font-weight:800;color:#fff;line-height:1;font-variant-numeric:tabular-nums;">--</div>
+      <div style="font-size:10px;color:#999;margin-top:3px;">시간</div>
+    </div>
+    <div style="font-size:18px;font-weight:300;color:#555;">:</div>
+    <div style="text-align:center;min-width:36px;">
+      <div id="sc-mins" style="font-size:22px;font-weight:800;color:#fff;line-height:1;font-variant-numeric:tabular-nums;">--</div>
+      <div style="font-size:10px;color:#999;margin-top:3px;">분</div>
+    </div>
+    <div style="font-size:18px;font-weight:300;color:#555;">:</div>
+    <div style="text-align:center;min-width:36px;">
+      <div id="sc-secs" style="font-size:22px;font-weight:800;color:#E91E8C;line-height:1;font-variant-numeric:tabular-nums;">--</div>
+      <div style="font-size:10px;color:#999;margin-top:3px;">초</div>
+    </div>
+  </div>
 </div>
+<script>
+(function(){
+  var target = new Date('2026-07-22T00:00:00+09:00');
+  function update(){
+    var diff = target - new Date();
+    if(diff <= 0){
+      ['hours','mins','secs'].forEach(function(u){document.getElementById('sc-'+u).textContent = '00';});
+      return;
+    }
+    document.getElementById('sc-hours').textContent = String(Math.floor(diff/3600000)).padStart(2,'0');
+    document.getElementById('sc-mins').textContent  = String(Math.floor(diff%3600000/60000)).padStart(2,'0');
+    document.getElementById('sc-secs').textContent  = String(Math.floor(diff%60000/1000)).padStart(2,'0');
+  }
+  update();
+  setInterval(update, 1000);
+})();
+</script>
 <script>
 (function(){
   var target = new Date('2026-08-03T23:59:59+09:00');
