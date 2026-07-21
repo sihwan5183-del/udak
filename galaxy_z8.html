@@ -2182,8 +2182,29 @@ function fSubmit(){
 
 <!-- ══ Sticky CTA ══ -->
 <div class="sticky-cta">
-  <button class="sticky-cta-btn" onclick="openReservationModal()">사전예약 신청하기</button>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;">
+    <p style="font-size:12px;color:#888;font-weight:600;margin:0;letter-spacing:-.01em;">혜택 종료까지 <span id="mcd-days" style="color:#E91E8C;font-weight:800;font-variant-numeric:tabular-nums;">--</span>일 <span id="mcd-hours" style="color:#E91E8C;font-weight:800;font-variant-numeric:tabular-nums;">--</span>:<span id="mcd-mins" style="color:#E91E8C;font-weight:800;font-variant-numeric:tabular-nums;">--</span>:<span id="mcd-secs" style="color:#E91E8C;font-weight:800;font-variant-numeric:tabular-nums;">--</span></p>
+    <button class="sticky-cta-btn" onclick="openReservationModal()">사전예약 신청하기</button>
+  </div>
 </div>
+<script>
+(function(){
+  var target = new Date('2026-08-03T23:59:59+09:00');
+  function update(){
+    var diff = target - new Date();
+    if(diff <= 0){
+      ['days','hours','mins','secs'].forEach(function(u){document.getElementById('mcd-'+u).textContent = u==='days' ? '0' : '00';});
+      return;
+    }
+    document.getElementById('mcd-days').textContent  = Math.floor(diff/86400000);
+    document.getElementById('mcd-hours').textContent = String(Math.floor(diff%86400000/3600000)).padStart(2,'0');
+    document.getElementById('mcd-mins').textContent  = String(Math.floor(diff%3600000/60000)).padStart(2,'0');
+    document.getElementById('mcd-secs').textContent  = String(Math.floor(diff%60000/1000)).padStart(2,'0');
+  }
+  update();
+  setInterval(update, 1000);
+})();
+</script>
 
 <!-- ══ 사전예약 모달 ══ -->
 <div class="reservation-overlay" id="reservationOverlay" onclick="closeReservationModal(event)">
