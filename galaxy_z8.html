@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta property="og:title" content="갤럭시 Z 폴더블 8 사전예약 — 유플러스 다이렉트">
 <meta property="og:description" content="7.10~7.22 사전 알림 신청 후 구매 시 신세계 상품권 5만원 지급! 유플러스 다이렉트에서 가장 먼저 받아보세요.">
-<meta property="og:image" content="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner-unpack1-v2.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner-ipad0.jpg">
 <meta property="og:url" content="https://landing.uplusdak.com/galaxy_z8">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="갤럭시 Z 폴더블 8 사전예약 — 유플러스 다이렉트">
 <meta name="twitter:description" content="7.10~7.22 사전 알림 신청 후 구매 시 신세계 상품권 5만원 지급!">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner-unpack1-v2.jpg">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner-ipad0.jpg">
 <title>Galaxy Z 폴더블 8 사전예약 — 유닥</title>
 <!-- Meta Pixel -->
 <script>
@@ -1236,6 +1236,7 @@ function closeNavDrawer() {
 <section style="width:100%;background:#fff;padding:20px 16px 8px;box-sizing:border-box;">
   <div style="position:relative;width:100%;overflow:hidden;border:1px solid #e8e8e8;border-radius:16px;" id="bannerSlot">
     <div id="bannerTrack" style="display:flex;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);">
+      <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner-ipad0.jpg" alt="폴더블 사전예약 구매시 아이패드가 0원 또는 10만원대에" class="banner-img"></div>
       <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner-unpack1-v2.jpg" alt="드디어 시작된 폴더블 8 사전예약" class="banner-img"></div>
       <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner-unpack2.jpg" alt="티비형 태블릿 PC 티비프리" class="banner-img"></div>
       <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner-unpack3.jpg" alt="폴더블 8 X 티비형 iPad 역대급 사전예약 혜택" class="banner-img"></div>
@@ -1248,6 +1249,7 @@ function closeNavDrawer() {
       <button onclick="bannerGoTo(1)" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;cursor:pointer;padding:0;transition:all .3s;"></button>
       <button onclick="bannerGoTo(2)" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;cursor:pointer;padding:0;transition:all .3s;"></button>
       <button onclick="bannerGoTo(3)" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;cursor:pointer;padding:0;transition:all .3s;"></button>
+      <button onclick="bannerGoTo(4)" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;cursor:pointer;padding:0;transition:all .3s;"></button>
     </div>
   </div>
 </section>
@@ -1491,7 +1493,7 @@ function closeNavDrawer() {
 
 // 배너 슬라이더
 (function(){
-  var cur=0,total=4,timer;
+  var cur=0,total=5,timer;
   var track=document.getElementById('bannerTrack');
   var dots=document.getElementById('bannerDots').querySelectorAll('button');
   function updateDots(){dots.forEach(function(d,i){d.style.background=i===cur?'#fff':'rgba(255,255,255,.5)';d.style.width=i===cur?'22px':'8px';d.style.borderRadius=i===cur?'4px':'50%';});}
