@@ -1236,9 +1236,9 @@ function closeNavDrawer() {
 <section style="width:100%;background:#fff;padding:20px 16px 8px;box-sizing:border-box;">
   <div style="position:relative;width:100%;overflow:hidden;border:1px solid #e8e8e8;border-radius:16px;" id="bannerSlot">
     <div id="bannerTrack" style="display:flex;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);">
-      <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner-ipad0-v2.jpg" alt="폴더블 사전예약 구매시 아이패드가 0원 또는 10만원대에" class="banner-img"></div>
+      <div style="flex:0 0 100%;cursor:pointer;" onclick="document.getElementById('benefit4-section').scrollIntoView({behavior:'smooth'})"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner-ipad0-v2.jpg" alt="폴더블 사전예약 구매시 아이패드가 0원 또는 10만원대에" class="banner-img"></div>
       <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner-unpack1-v2.jpg" alt="드디어 시작된 폴더블 8 사전예약" class="banner-img"></div>
-      <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner-unpack2.jpg" alt="티비형 태블릿 PC 티비프리" class="banner-img"></div>
+      <div style="flex:0 0 100%;cursor:pointer;" onclick="document.getElementById('benefit3-section').scrollIntoView({behavior:'smooth'})"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner-unpack2.jpg" alt="티비형 태블릿 PC 티비프리" class="banner-img"></div>
       <div style="flex:0 0 100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/plan-benefit-watch-v2.jpg" alt="요금제별 다이렉트 혜택" class="banner-img"></div>
     </div>
     <button onclick="bannerSlide(-1)" style="position:absolute;top:50%;left:16px;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.85);border:none;cursor:pointer;font-size:20px;color:#333;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:10;">&#8249;</button>
@@ -1345,7 +1345,7 @@ function closeNavDrawer() {
 </section>
 
 <!-- ══ 혜택3. 티비프리란 ══ -->
-<section style="width:100%;background:#ffffff;padding:48px 0 0;">
+<section id="benefit3-section" style="width:100%;background:#ffffff;padding:48px 0 0;scroll-margin-top:70px;">
   <div style="max-width:600px;margin:0 auto;padding:0 24px;">
     <p style="text-align:center;font-size:13px;font-weight:800;color:#E91E8C;letter-spacing:.06em;margin:0 0 20px;">혜택3</p>
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/tvfree-combined.jpg" alt="유플러스 다이렉트의 사전예약 고객님 전용 혜택, TV형 태블릿" style="width:100%;height:auto;display:block;border-radius:20px;border:1px solid #ececec;margin-bottom:20px;" class="img-enlarge-mobile">
@@ -1356,7 +1356,7 @@ function closeNavDrawer() {
 </section>
 
 <!-- ══ 혜택4. TV형 아이패드 혜택 ══ -->
-<section style="width:100%;background:#ffffff;padding:48px 0 8px;">
+<section id="benefit4-section" style="width:100%;background:#ffffff;padding:48px 0 8px;scroll-margin-top:70px;">
   <div style="max-width:600px;margin:0 auto;padding:0 16px;">
     <p style="text-align:center;font-size:13px;font-weight:800;color:#E91E8C;letter-spacing:.06em;margin:0 0 20px;">혜택4</p>
     <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/benefit4-tvform-ipad.jpg" alt="사전예약 고객님 전용 TV형 아이패드 혜택" style="width:100%;height:auto;display:block;border-radius:16px;border:1px solid #ececec;" class="img-enlarge-mobile">
