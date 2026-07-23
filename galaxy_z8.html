@@ -24,9 +24,11 @@ fbq('track', 'PageView');
 <script>
 // UTM 기반 채널 분기 (기본: 메타광고)
 var PAGE_CHANNEL = '메타광고';
+var PAGE_UTM_CAMPAIGN = null;
 try {
   var _us = new URLSearchParams(location.search).get('utm_source');
   if (_us === 'x' || _us === 'twitter') PAGE_CHANNEL = 'X';
+  PAGE_UTM_CAMPAIGN = new URLSearchParams(location.search).get('utm_campaign') || null;
 } catch(e) {}
 </script>
 <style>
@@ -1804,7 +1806,7 @@ function mSubmitForm(){
       'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
       'Prefer':'return=minimal'
     },
-    body:JSON.stringify({name:name,phone:phoneF,carrier:mCarrier,channel:PAGE_CHANNEL,device_interest:mDevice,birth_date:birthF,memo:memo||null,status:'신규'})
+    body:JSON.stringify({name:name,phone:phoneF,carrier:mCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:mDevice,birth_date:birthF,memo:memo||null,status:'신규'})
   }).then(function(res){
     if(res.ok){
       if(typeof fbq!=='undefined') fbq('track','Lead');
@@ -2067,7 +2069,7 @@ function fSubmit(){
       'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
       'Prefer':'return=minimal'
     },
-    body:JSON.stringify({name:name,phone:phoneF,carrier:fCarrier,channel:PAGE_CHANNEL,device_interest:fDevice,birth_date:birthF,memo:memo||null,status:'신규'})
+    body:JSON.stringify({name:name,phone:phoneF,carrier:fCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:fDevice,birth_date:birthF,memo:memo||null,status:'신규'})
   }).then(function(){
     if(typeof fbq!=='undefined')fbq('track','Lead');
     showTicket(name,phoneF,fDevice);
