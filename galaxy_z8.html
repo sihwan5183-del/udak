@@ -27,7 +27,7 @@ var PAGE_CHANNEL = '메타광고';
 var PAGE_UTM_CAMPAIGN = null;
 try {
   var _us = new URLSearchParams(location.search).get('utm_source');
-  if (_us === 'x' || _us === 'twitter') PAGE_CHANNEL = 'X';
+  if (_us === 'x' || _us === 'twitter') PAGE_CHANNEL = '기타';
   PAGE_UTM_CAMPAIGN = new URLSearchParams(location.search).get('utm_campaign') || null;
 } catch(e) {}
 </script>
