@@ -1340,7 +1340,7 @@ function closeNavDrawer() {
 
         <p class="pcard-label">컬러</p>
         <div class="pcard-colors" id="pcard-colors-wide">
-          <button class="pcard-color active" onclick="pcardSelectColor('wide',0)"><span class="pcard-color-dot" style="background:#1c1c1e;"></span><span class="pcard-color-name">블랙</span></button>
+          <button class="pcard-color active" onclick="pcardSelectColor('wide',0)"><span class="pcard-color-dot" style="background:#3A3A3C;"></span><span class="pcard-color-name">그라파이트</span></button>
           <button class="pcard-color" onclick="pcardSelectColor('wide',1)"><span class="pcard-color-dot" style="background:#F0E6D2;"></span><span class="pcard-color-name">크림</span></button>
           <button class="pcard-color" onclick="pcardSelectColor('wide',2)"><span class="pcard-color-dot" style="background:#C9BFE0;"></span><span class="pcard-color-name">라벤더</span></button>
         </div>
@@ -1435,7 +1435,7 @@ function closeNavDrawer() {
 const PCARD_DATA = {
   wide: {
     colors: [
-      {name:'블랙', hex:'#1c1c1e', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black.png'},
+      {name:'그라파이트', hex:'#3A3A3C', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black.png'},
       {name:'크림', hex:'#F0E6D2', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-cream.png'},
       {name:'라벤더', hex:'#C9BFE0', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-lavender.png'}
     ],
@@ -1497,17 +1497,25 @@ function pickColorCap(scope, key, idx, isColor){
   document.querySelectorAll('#'+scope+'ColorGrid .pcard-color').forEach(function(el,i){ el.classList.toggle('active', i===curColorIdx); });
   document.querySelectorAll('#'+scope+'CapGrid .pcard-cap-btn').forEach(function(el,i){ el.classList.toggle('active', i===curCapIdx); });
 }
-function deviceInterestWithOptions(scope){
+function selectedColorOf(scope){
   var device = scope==='m' ? mDevice : fDevice;
   var key = deviceKeyFromName(device);
-  if(!key) return device;
+  if(!key) return undefined;
   var data = PCARD_DATA[key];
   var colorIdx = scope==='m'?mColorIdx:fColorIdx;
-  var capIdx = scope==='m'?mCapIdx:fCapIdx;
-  var colorName = data.colors[colorIdx] ? data.colors[colorIdx].name : '';
-  var capLabel = capIdx===0?'256GB':'512GB';
-  return device + ' · ' + colorName + ' · ' + capLabel;
+  return data.colors[colorIdx] ? data.colors[colorIdx].name : undefined;
 }
+function selectedCapacityOf(scope){
+  var device = scope==='m' ? mDevice : fDevice;
+  var key = deviceKeyFromName(device);
+  if(!key) return undefined;
+  var capIdx = scope==='m'?mCapIdx:fCapIdx;
+  return capIdx===0 ? '256GB' : '512GB';
+}
+function mSelectedColor(){ return selectedColorOf('m'); }
+function mSelectedCapacity(){ return selectedCapacityOf('m'); }
+function fSelectedColor(){ return selectedColorOf('f'); }
+function fSelectedCapacity(){ return selectedCapacityOf('f'); }
 let pcardState = { wide:{color:0,cap:0}, ultra:{color:0,cap:0}, flip:{color:0,cap:0} };
 function pcardSelectColor(key, idx){
   pcardState[key].color = idx;
@@ -2017,7 +2025,7 @@ function mSubmitForm(){
       'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
       'Prefer':'return=minimal'
     },
-    body:JSON.stringify({name:name,phone:phoneF,carrier:mCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:deviceInterestWithOptions('m'),birth_date:birthF,memo:memo||null,status:'신규'})
+    body:JSON.stringify({name:name,phone:phoneF,carrier:mCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:mDevice,capacity:mSelectedCapacity(),product_color:mSelectedColor(),birth_date:birthF,memo:memo||null,status:'신규'})
   }).then(function(res){
     if(res.ok){
       if(typeof fbq!=='undefined') fbq('track','Lead');
@@ -2286,7 +2294,7 @@ function fSubmit(){
       'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
       'Prefer':'return=minimal'
     },
-    body:JSON.stringify({name:name,phone:phoneF,carrier:fCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:deviceInterestWithOptions('f'),birth_date:birthF,memo:memo||null,status:'신규'})
+    body:JSON.stringify({name:name,phone:phoneF,carrier:fCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:fDevice,capacity:fSelectedCapacity(),product_color:fSelectedColor(),birth_date:birthF,memo:memo||null,status:'신규'})
   }).then(function(){
     if(typeof fbq!=='undefined')fbq('track','Lead');
     showTicket(name,phoneF,fDevice);
