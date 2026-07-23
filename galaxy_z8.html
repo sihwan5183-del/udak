@@ -1280,6 +1280,7 @@ function closeNavDrawer() {
 .pcard-cap-btn{flex:1;padding:10px 0;text-align:center;border:1.5px solid #ddd;border-radius:10px;font-size:14px;font-weight:700;color:#555;cursor:pointer;background:#fff;transition:all .15s;}
 .pcard-cap-btn.active{border-color:#E91E8C;background:rgba(233,30,140,.06);color:#E91E8C;}
 [id^="pcard-plan-"] .pcard-cap-btn{font-size:12px;padding:9px 0;}
+[id^="pcard-carrier-"] .pcard-cap-btn{font-size:12px;padding:9px 0;}
 .pcard-price-table{border-top:1px solid #f0f0f0;padding-top:14px;}
 .pcard-price-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:14px;}
 .pcard-price-row span{color:#888;}
@@ -1305,6 +1306,14 @@ function closeNavDrawer() {
           </div>
         </div>
         <div class="pcard-imgbox"><img id="pcard-img-wide" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black.png" alt="갤럭시 Z 폴드8"></div>
+
+        <p class="pcard-label">현재 사용 중인 통신사</p>
+        <div class="pcard-cap" id="pcard-carrier-wide">
+          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('wide',0)">SKT</div>
+          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('wide',1)">KT</div>
+          <div class="pcard-cap-btn active" onclick="pcardSelectCarrier('wide',2)">LG U+</div>
+          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('wide',3)">알뜰폰</div>
+        </div>
 
         <p class="pcard-label">컬러</p>
         <div class="pcard-colors" id="pcard-colors-wide">
@@ -1345,6 +1354,14 @@ function closeNavDrawer() {
         </div>
         <div class="pcard-imgbox"><img id="pcard-img-ultra" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-graphite.png" alt="갤럭시 Z 폴드8 울트라"></div>
 
+        <p class="pcard-label">현재 사용 중인 통신사</p>
+        <div class="pcard-cap" id="pcard-carrier-ultra">
+          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('ultra',0)">SKT</div>
+          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('ultra',1)">KT</div>
+          <div class="pcard-cap-btn active" onclick="pcardSelectCarrier('ultra',2)">LG U+</div>
+          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('ultra',3)">알뜰폰</div>
+        </div>
+
         <p class="pcard-label">컬러</p>
         <div class="pcard-colors" id="pcard-colors-ultra">
           <button class="pcard-color active" onclick="pcardSelectColor('ultra',0)"><span class="pcard-color-dot" style="background:#3A3A3C;"></span><span class="pcard-color-name">그라파이트</span></button>
@@ -1383,6 +1400,14 @@ function closeNavDrawer() {
           </div>
         </div>
         <div class="pcard-imgbox"><img id="pcard-img-flip" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-graphite.png" alt="갤럭시 Z 플립8"></div>
+
+        <p class="pcard-label">현재 사용 중인 통신사</p>
+        <div class="pcard-cap" id="pcard-carrier-flip">
+          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('flip',0)">SKT</div>
+          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('flip',1)">KT</div>
+          <div class="pcard-cap-btn active" onclick="pcardSelectCarrier('flip',2)">LG U+</div>
+          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('flip',3)">알뜰폰</div>
+        </div>
 
         <p class="pcard-label">컬러</p>
         <div class="pcard-colors" id="pcard-colors-flip">
@@ -1514,6 +1539,10 @@ function pcardSelectCap(key, idx){
 function pcardSelectPlan(key, idx){
   var planEls = document.querySelectorAll('#pcard-plan-'+key+' .pcard-cap-btn');
   planEls.forEach(function(el,i){ el.classList.toggle('active', i===idx); });
+}
+function pcardSelectCarrier(key, idx){
+  var carrierEls = document.querySelectorAll('#pcard-carrier-'+key+' .pcard-cap-btn');
+  carrierEls.forEach(function(el,i){ el.classList.toggle('active', i===idx); });
 }
 function pcardRender(key){
   var data = PCARD_DATA[key];
