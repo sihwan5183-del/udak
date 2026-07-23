@@ -1293,34 +1293,194 @@ function closeNavDrawer() {
 </script>
 
 
-<!-- ══ 제품 3종 섹션 ══ -->
+<!-- ══ 제품 3종 섹션 (카드형) ══ -->
+<style>
+.pcard-wrap{display:flex;flex-direction:column;gap:20px;}
+.pcard{background:#ffffff;border:1px solid #ececec;border-radius:24px;box-shadow:0 2px 14px rgba(0,0,0,.05);padding:24px 20px 22px;}
+.pcard-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;}
+.pcard-name{font-size:19px;font-weight:800;color:#1A1A1A;margin:0;}
+.pcard-tagline{font-size:12px;color:#999;margin:2px 0 0;}
+.pcard-imgbox{width:100%;height:250px;display:flex;align-items:center;justify-content:center;background:#fafafa;border-radius:16px;margin-bottom:18px;overflow:hidden;}
+.pcard-imgbox img{max-width:92%;max-height:92%;width:auto;height:auto;object-fit:contain;}
+.pcard-label{font-size:11px;color:#aaa;font-weight:700;margin:0 0 8px;letter-spacing:.03em;}
+.pcard-colors{display:flex;gap:14px;margin-bottom:18px;}
+.pcard-color{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;background:none;border:none;padding:0;}
+.pcard-color-dot{width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);border:2px solid transparent;transition:border-color .15s;}
+.pcard-color.active .pcard-color-dot{border-color:#E91E8C;}
+.pcard-color-name{font-size:10px;color:#999;white-space:nowrap;}
+.pcard-color.active .pcard-color-name{color:#E91E8C;font-weight:700;}
+.pcard-cap{display:flex;gap:8px;margin-bottom:20px;}
+.pcard-cap-btn{flex:1;padding:10px 0;text-align:center;border:1.5px solid #ddd;border-radius:10px;font-size:14px;font-weight:700;color:#555;cursor:pointer;background:#fff;transition:all .15s;}
+.pcard-cap-btn.active{border-color:#E91E8C;background:rgba(233,30,140,.06);color:#E91E8C;}
+.pcard-price-table{border-top:1px solid #f0f0f0;padding-top:14px;}
+.pcard-price-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:14px;}
+.pcard-price-row span{color:#888;}
+.pcard-price-row strong{color:#1A1A1A;font-size:17px;font-weight:800;}
+.pcard-price-row.sub strong{color:#E91E8C;font-size:14px;font-weight:700;}
+.pcard-price-note{font-size:11px;color:#bbb;margin-top:8px;line-height:1.5;}
+.pcard-cta{width:100%;margin-top:18px;padding:14px;background:#E91E8C;border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;}
+</style>
+
 <section style="width:100%;background:#ffffff;padding:56px 0 64px;">
   <div style="max-width:520px;margin:0 auto;padding:0 20px;">
     <h2 style="text-align:center;font-size:26px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin:0 0 8px;">갤럭시 Z 폴더블 <span style="color:#E91E8C;">8 시리즈</span></h2>
-    <p style="text-align:center;font-size:14px;color:#888;margin:0 0 28px;">원하는 모델을 선택해보세요</p>
+    <p style="text-align:center;font-size:14px;color:#888;margin:0 0 28px;">용량과 컬러를 선택해 가격을 확인해보세요</p>
 
-    <!-- 폴드 8 와이드 -->
-    <div onclick="openModal('갤럭시 Z 폴드8 와이드',this.querySelector('img').src,'rgba(180,200,255,.25)','rgba(200,215,255,.9)')" style="background:#ffffff;border:1px solid #ececec;border-radius:24px;box-shadow:0 2px 14px rgba(0,0,0,.05);padding:28px 24px 24px;text-align:center;cursor:pointer;margin-bottom:16px;">
-      <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-fold-wide2.png" alt="폴드 8 와이드" style="width:100%;max-width:360px;height:auto;display:block;margin:0 auto 16px;">
-      <p style="font-size:12px;color:#555;margin:0 0 4px;">더 넓게, 더 몰입감 있게</p>
-      <p style="font-size:19px;font-weight:800;color:#1A1A1A;margin:0;">폴드 8 와이드 <span style="color:#999;">›</span></p>
-    </div>
+    <div class="pcard-wrap">
 
-    <!-- 폴드 8 울트라 -->
-    <div onclick="openModal('갤럭시 Z 폴드8 울트라',this.querySelector('img').src,'rgba(60,120,255,.3)','rgba(80,140,255,.9)')" style="background:#ffffff;border:1px solid #ececec;border-radius:24px;box-shadow:0 2px 14px rgba(0,0,0,.05);padding:28px 24px 24px;text-align:center;cursor:pointer;margin-bottom:16px;">
-      <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-fold-ultra.png" alt="폴드 8 울트라" style="width:100%;max-width:360px;height:auto;display:block;margin:0 auto 16px;">
-      <p style="font-size:12px;color:#555;margin:0 0 4px;">완벽한 밸런스의</p>
-      <p style="font-size:19px;font-weight:800;color:#1A1A1A;margin:0;">폴드 8 울트라 <span style="color:#999;">›</span></p>
-    </div>
+      <!-- 폴드 8 와이드 -->
+      <div class="pcard">
+        <div class="pcard-top">
+          <div>
+            <p class="pcard-name">갤럭시 Z 폴드8 와이드</p>
+            <p class="pcard-tagline">더 넓게, 더 몰입감 있게</p>
+          </div>
+        </div>
+        <div class="pcard-imgbox"><img id="pcard-img-wide" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black.png" alt="갤럭시 Z 폴드8 와이드"></div>
 
-    <!-- 플립 8 -->
-    <div onclick="openModal('갤럭시 Z 플립8',this.querySelector('img').src,'rgba(160,100,255,.3)','rgba(160,100,255,.9)')" style="background:#ffffff;border:1px solid #ececec;border-radius:24px;box-shadow:0 2px 14px rgba(0,0,0,.05);padding:28px 24px 24px;text-align:center;cursor:pointer;">
-      <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip8.png" alt="플립 8" style="width:100%;max-width:360px;height:auto;display:block;margin:0 auto 16px;">
-      <p style="font-size:12px;color:#555;margin:0 0 4px;">주머니 속 프리미엄</p>
-      <p style="font-size:19px;font-weight:800;color:#1A1A1A;margin:0;">플립 8 <span style="color:#999;">›</span></p>
+        <p class="pcard-label">컬러</p>
+        <div class="pcard-colors" id="pcard-colors-wide">
+          <button class="pcard-color active" onclick="pcardSelectColor('wide',0)"><span class="pcard-color-dot" style="background:#1c1c1e;"></span><span class="pcard-color-name">블랙</span></button>
+          <button class="pcard-color" onclick="pcardSelectColor('wide',1)"><span class="pcard-color-dot" style="background:#F0E6D2;"></span><span class="pcard-color-name">크림</span></button>
+          <button class="pcard-color" onclick="pcardSelectColor('wide',2)"><span class="pcard-color-dot" style="background:#C9BFE0;"></span><span class="pcard-color-name">라벤더</span></button>
+        </div>
+
+        <p class="pcard-label">용량</p>
+        <div class="pcard-cap" id="pcard-cap-wide">
+          <div class="pcard-cap-btn active" onclick="pcardSelectCap('wide',0)">256GB</div>
+          <div class="pcard-cap-btn" onclick="pcardSelectCap('wide',1)">512GB</div>
+        </div>
+
+        <div class="pcard-price-table">
+          <div class="pcard-price-row"><span>출고가격</span><strong id="pcard-price-wide">2,277,000원</strong></div>
+          <div class="pcard-price-row sub"><span>공시 지원금</span><strong>공개예정</strong></div>
+          <div class="pcard-price-row sub"><span>유닥 지원금</span><strong>공개예정</strong></div>
+          <p class="pcard-price-note">* 언팩전 예상 출고가이며, 공시·유닥 지원금은 7.23 언팩 이후 공개됩니다.</p>
+        </div>
+
+        <button class="pcard-cta" onclick="openReservationModal()">이 모델로 사전예약 신청</button>
+      </div>
+
+      <!-- 폴드 8 울트라 -->
+      <div class="pcard">
+        <div class="pcard-top">
+          <div>
+            <p class="pcard-name">갤럭시 Z 폴드8 울트라</p>
+            <p class="pcard-tagline">완벽한 밸런스의</p>
+          </div>
+        </div>
+        <div class="pcard-imgbox"><img id="pcard-img-ultra" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-graphite.png" alt="갤럭시 Z 폴드8 울트라"></div>
+
+        <p class="pcard-label">컬러</p>
+        <div class="pcard-colors" id="pcard-colors-ultra">
+          <button class="pcard-color active" onclick="pcardSelectColor('ultra',0)"><span class="pcard-color-dot" style="background:#3A3A3C;"></span><span class="pcard-color-name">그라파이트</span></button>
+          <button class="pcard-color" onclick="pcardSelectColor('ultra',1)"><span class="pcard-color-dot" style="background:#5C4E77;"></span><span class="pcard-color-name">바이올렛 쉐도우</span></button>
+          <button class="pcard-color" onclick="pcardSelectColor('ultra',2)"><span class="pcard-color-dot" style="background:#F0E6D2;"></span><span class="pcard-color-name">크림</span></button>
+        </div>
+
+        <p class="pcard-label">용량</p>
+        <div class="pcard-cap" id="pcard-cap-ultra">
+          <div class="pcard-cap-btn active" onclick="pcardSelectCap('ultra',0)">256GB</div>
+          <div class="pcard-cap-btn" onclick="pcardSelectCap('ultra',1)">512GB</div>
+        </div>
+
+        <div class="pcard-price-table">
+          <div class="pcard-price-row"><span>출고가격</span><strong id="pcard-price-ultra">2,577,300원</strong></div>
+          <div class="pcard-price-row sub"><span>공시 지원금</span><strong>공개예정</strong></div>
+          <div class="pcard-price-row sub"><span>유닥 지원금</span><strong>공개예정</strong></div>
+          <p class="pcard-price-note">* 언팩전 예상 출고가이며, 공시·유닥 지원금은 7.23 언팩 이후 공개됩니다.</p>
+        </div>
+
+        <button class="pcard-cta" onclick="openReservationModal()">이 모델로 사전예약 신청</button>
+      </div>
+
+      <!-- 플립 8 -->
+      <div class="pcard">
+        <div class="pcard-top">
+          <div>
+            <p class="pcard-name">갤럭시 Z 플립8</p>
+            <p class="pcard-tagline">주머니 속 프리미엄</p>
+          </div>
+        </div>
+        <div class="pcard-imgbox"><img id="pcard-img-flip" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-graphite.png" alt="갤럭시 Z 플립8"></div>
+
+        <p class="pcard-label">컬러</p>
+        <div class="pcard-colors" id="pcard-colors-flip">
+          <button class="pcard-color active" onclick="pcardSelectColor('flip',0)"><span class="pcard-color-dot" style="background:#3A3A3C;"></span><span class="pcard-color-name">그라파이트</span></button>
+          <button class="pcard-color" onclick="pcardSelectColor('flip',1)"><span class="pcard-color-dot" style="background:#F0E6D2;"></span><span class="pcard-color-name">크림</span></button>
+          <button class="pcard-color" onclick="pcardSelectColor('flip',2)"><span class="pcard-color-dot" style="background:#F2C6D6;"></span><span class="pcard-color-name">핑크</span></button>
+        </div>
+
+        <p class="pcard-label">용량</p>
+        <div class="pcard-cap" id="pcard-cap-flip">
+          <div class="pcard-cap-btn active" onclick="pcardSelectCap('flip',0)">256GB</div>
+          <div class="pcard-cap-btn" onclick="pcardSelectCap('flip',1)">512GB</div>
+        </div>
+
+        <div class="pcard-price-table">
+          <div class="pcard-price-row"><span>출고가격</span><strong id="pcard-price-flip">1,683,000원</strong></div>
+          <div class="pcard-price-row sub"><span>공시 지원금</span><strong>공개예정</strong></div>
+          <div class="pcard-price-row sub"><span>유닥 지원금</span><strong>공개예정</strong></div>
+          <p class="pcard-price-note">* 언팩전 예상 출고가이며, 공시·유닥 지원금은 7.23 언팩 이후 공개됩니다.</p>
+        </div>
+
+        <button class="pcard-cta" onclick="openReservationModal()">이 모델로 사전예약 신청</button>
+      </div>
+
     </div>
   </div>
 </section>
+
+<script>
+const PCARD_DATA = {
+  wide: {
+    colors: [
+      {name:'블랙', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black.png'},
+      {name:'크림', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-cream.png'},
+      {name:'라벤더', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-lavender.png'}
+    ],
+    capacity: [2277000, 2530000]
+  },
+  ultra: {
+    colors: [
+      {name:'그라파이트', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-graphite.png'},
+      {name:'바이올렛 쉐도우', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-violet.png'},
+      {name:'크림', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-cream.png'}
+    ],
+    capacity: [2577300, 2830300]
+  },
+  flip: {
+    colors: [
+      {name:'그라파이트', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-graphite.png'},
+      {name:'크림', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-cream.png'},
+      {name:'핑크', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-pink.png'}
+    ],
+    capacity: [1683000, 1936000]
+  }
+};
+let pcardState = { wide:{color:0,cap:0}, ultra:{color:0,cap:0}, flip:{color:0,cap:0} };
+function pcardSelectColor(key, idx){
+  pcardState[key].color = idx;
+  pcardRender(key);
+}
+function pcardSelectCap(key, idx){
+  pcardState[key].cap = idx;
+  pcardRender(key);
+}
+function pcardRender(key){
+  var data = PCARD_DATA[key];
+  var st = pcardState[key];
+  var color = data.colors[st.color];
+  var price = data.capacity[st.cap];
+  document.getElementById('pcard-img-'+key).src = color.img;
+  var colorEls = document.querySelectorAll('#pcard-colors-'+key+' .pcard-color');
+  colorEls.forEach(function(el,i){ el.classList.toggle('active', i===st.color); });
+  var capEls = document.querySelectorAll('#pcard-cap-'+key+' .pcard-cap-btn');
+  capEls.forEach(function(el,i){ el.classList.toggle('active', i===st.cap); });
+  document.getElementById('pcard-price-'+key).textContent = price.toLocaleString()+'원';
+}
+</script>
+
 
 <!-- ══ 혜택 대제목 ══ -->
 <section style="width:100%;background:#ffffff;padding:56px 0 8px;">
