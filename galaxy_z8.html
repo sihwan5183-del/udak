@@ -1435,29 +1435,79 @@ function closeNavDrawer() {
 const PCARD_DATA = {
   wide: {
     colors: [
-      {name:'블랙', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black.png'},
-      {name:'크림', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-cream.png'},
-      {name:'라벤더', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-lavender.png'}
+      {name:'블랙', hex:'#1c1c1e', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black.png'},
+      {name:'크림', hex:'#F0E6D2', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-cream.png'},
+      {name:'라벤더', hex:'#C9BFE0', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-lavender.png'}
     ],
     capacity: [2277000, 2530000]
   },
   ultra: {
     colors: [
-      {name:'그라파이트', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-graphite.png'},
-      {name:'바이올렛 쉐도우', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-violet.png'},
-      {name:'크림', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-cream.png'}
+      {name:'그라파이트', hex:'#3A3A3C', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-graphite.png'},
+      {name:'바이올렛 쉐도우', hex:'#5C4E77', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-violet.png'},
+      {name:'크림', hex:'#F0E6D2', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-cream.png'}
     ],
     capacity: [2577300, 2830300]
   },
   flip: {
     colors: [
-      {name:'그라파이트', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-graphite.png'},
-      {name:'크림', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-cream.png'},
-      {name:'핑크', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-pink.png'}
+      {name:'그라파이트', hex:'#3A3A3C', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-graphite.png'},
+      {name:'크림', hex:'#F0E6D2', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-cream.png'},
+      {name:'핑크', hex:'#F2C6D6', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-pink.png'}
     ],
     capacity: [1683000, 1936000]
   }
 };
+
+// 공통: 기기명 문자열 -> PCARD_DATA 키
+function deviceKeyFromName(name){
+  if(!name) return null;
+  if(name.indexOf('플립')>-1) return 'flip';
+  if(name.indexOf('와이드')>-1) return 'wide';
+  if(name.indexOf('울트라')>-1) return 'ultra';
+  return null;
+}
+var mColorIdx = 0, mCapIdx = 0;
+var fColorIdx = 0, fCapIdx = 0;
+function renderDeviceColorCap(scope){
+  var device = scope==='m' ? mDevice : fDevice;
+  var key = deviceKeyFromName(device);
+  var group = document.getElementById(scope+'ColorCapGroup');
+  if(!group) return;
+  if(!key){ group.style.display='none'; return; }
+  if(scope==='m'){ mColorIdx=0; mCapIdx=0; } else { fColorIdx=0; fCapIdx=0; }
+  group.style.display='block';
+  var data = PCARD_DATA[key];
+  var colorGrid = document.getElementById(scope+'ColorGrid');
+  var capGrid = document.getElementById(scope+'CapGrid');
+  colorGrid.innerHTML = data.colors.map(function(c,i){
+    var active = i===0;
+    return '<button type="button" class="pcard-color'+(active?' active':'')+'" onclick="pickColorCap(\''+scope+'\',\''+key+'\','+i+',true)"><span class="pcard-color-dot" style="background:'+c.hex+';"></span><span class="pcard-color-name">'+c.name+'</span></button>';
+  }).join('');
+  capGrid.innerHTML = data.capacity.map(function(p,i){
+    var active = i===0;
+    return '<div class="pcard-cap-btn'+(active?' active':'')+'" onclick="pickColorCap(\''+scope+'\',\''+key+'\','+i+',false)">'+(i===0?'256GB':'512GB')+'</div>';
+  }).join('');
+}
+function pickColorCap(scope, key, idx, isColor){
+  if(scope==='m'){ if(isColor) mColorIdx=idx; else mCapIdx=idx; }
+  else { if(isColor) fColorIdx=idx; else fCapIdx=idx; }
+  var curColorIdx = scope==='m'?mColorIdx:fColorIdx;
+  var curCapIdx = scope==='m'?mCapIdx:fCapIdx;
+  document.querySelectorAll('#'+scope+'ColorGrid .pcard-color').forEach(function(el,i){ el.classList.toggle('active', i===curColorIdx); });
+  document.querySelectorAll('#'+scope+'CapGrid .pcard-cap-btn').forEach(function(el,i){ el.classList.toggle('active', i===curCapIdx); });
+}
+function deviceInterestWithOptions(scope){
+  var device = scope==='m' ? mDevice : fDevice;
+  var key = deviceKeyFromName(device);
+  if(!key) return device;
+  var data = PCARD_DATA[key];
+  var colorIdx = scope==='m'?mColorIdx:fColorIdx;
+  var capIdx = scope==='m'?mCapIdx:fCapIdx;
+  var colorName = data.colors[colorIdx] ? data.colors[colorIdx].name : '';
+  var capLabel = capIdx===0?'256GB':'512GB';
+  return device + ' · ' + colorName + ' · ' + capLabel;
+}
 let pcardState = { wide:{color:0,cap:0}, ultra:{color:0,cap:0}, flip:{color:0,cap:0} };
 function pcardSelectColor(key, idx){
   pcardState[key].color = idx;
@@ -1917,6 +1967,7 @@ function closeReservationModal(e){
 function mSelectDevice(el, val){
   document.querySelectorAll('.mdevice-card').forEach(function(c){ c.classList.remove('selected'); });
   el.classList.add('selected'); mDevice = val;
+  renderDeviceColorCap('m');
 }
 function mSelectCarrier(el, val){
   document.querySelectorAll('.mcarrier-card').forEach(function(c){ c.classList.remove('selected'); });
@@ -1966,7 +2017,7 @@ function mSubmitForm(){
       'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
       'Prefer':'return=minimal'
     },
-    body:JSON.stringify({name:name,phone:phoneF,carrier:mCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:mDevice,birth_date:birthF,memo:memo||null,status:'신규'})
+    body:JSON.stringify({name:name,phone:phoneF,carrier:mCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:deviceInterestWithOptions('m'),birth_date:birthF,memo:memo||null,status:'신규'})
   }).then(function(res){
     if(res.ok){
       if(typeof fbq!=='undefined') fbq('track','Lead');
@@ -2151,6 +2202,12 @@ function toggleKakaoPopup(){
           <button onclick="fSelectDevice(this,'폴드 와이드 8')" class="f-device-btn">갤럭시 Z 폴드8 와이드</button>
         </div>
       </div>
+      <div id="fColorCapGroup" style="display:none;margin-bottom:20px;">
+        <p style="font-size:17px;font-weight:700;color:#111;margin-bottom:12px;">컬러</p>
+        <div class="pcard-colors" id="fColorGrid" style="margin-bottom:16px;"></div>
+        <p style="font-size:17px;font-weight:700;color:#111;margin-bottom:12px;">용량</p>
+        <div class="pcard-cap" id="fCapGrid"></div>
+      </div>
       <div style="margin-bottom:20px;">
         <p style="font-size:17px;font-weight:700;color:#111;margin-bottom:12px;">현재 사용 중인 통신사</p>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;">
@@ -2193,7 +2250,7 @@ function toggleKakaoPopup(){
 
 <script>
 var fDevice='', fCarrier='';
-function fSelectDevice(el,val){document.querySelectorAll('.f-device-btn').forEach(function(b){b.classList.remove('on');});el.classList.add('on');fDevice=val;}
+function fSelectDevice(el,val){document.querySelectorAll('.f-device-btn').forEach(function(b){b.classList.remove('on');});el.classList.add('on');fDevice=val;renderDeviceColorCap('f');}
 function fSelectCarrier(el,val){document.querySelectorAll('.f-carrier-btn').forEach(function(b){b.classList.remove('on');});el.classList.add('on');fCarrier=val;}
 function fFormatPhone(el){var v=el.value.replace(/[^0-9]/g,'');if(v.length>11)v=v.slice(0,11);if(v.length<=3)el.value=v;else if(v.length<=7)el.value=v.slice(0,3)+'-'+v.slice(3);else el.value=v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7);}
 var BLOCKED_PHONES = ['01044713759'];
@@ -2229,7 +2286,7 @@ function fSubmit(){
       'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
       'Prefer':'return=minimal'
     },
-    body:JSON.stringify({name:name,phone:phoneF,carrier:fCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:fDevice,birth_date:birthF,memo:memo||null,status:'신규'})
+    body:JSON.stringify({name:name,phone:phoneF,carrier:fCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:deviceInterestWithOptions('f'),birth_date:birthF,memo:memo||null,status:'신규'})
   }).then(function(){
     if(typeof fbq!=='undefined')fbq('track','Lead');
     showTicket(name,phoneF,fDevice);
@@ -2333,6 +2390,13 @@ function fSubmit(){
           <div class="mdevice-card-name">갤럭시 Z 폴드8 와이드</div>
         </div>
       </div>
+    </div>
+
+    <div class="mform-group" id="mColorCapGroup" style="display:none;">
+      <div class="mform-label">컬러</div>
+      <div class="pcard-colors" id="mColorGrid" style="margin-bottom:16px;"></div>
+      <div class="mform-label">용량</div>
+      <div class="pcard-cap" id="mCapGrid"></div>
     </div>
 
     <div class="mform-group">
