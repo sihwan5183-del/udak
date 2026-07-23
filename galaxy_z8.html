@@ -1328,15 +1328,15 @@ function closeNavDrawer() {
 
     <div class="pcard-wrap">
 
-      <!-- 폴드 8 와이드 -->
+      <!-- 폴드 8 -->
       <div class="pcard">
         <div class="pcard-top">
           <div>
-            <p class="pcard-name">갤럭시 Z 폴드8 와이드</p>
+            <p class="pcard-name">갤럭시 Z 폴드8</p>
             <p class="pcard-tagline">더 넓게, 더 몰입감 있게</p>
           </div>
         </div>
-        <div class="pcard-imgbox"><img id="pcard-img-wide" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black.png" alt="갤럭시 Z 폴드8 와이드"></div>
+        <div class="pcard-imgbox"><img id="pcard-img-wide" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black.png" alt="갤럭시 Z 폴드8"></div>
 
         <p class="pcard-label">컬러</p>
         <div class="pcard-colors" id="pcard-colors-wide">
@@ -1463,8 +1463,8 @@ const PCARD_DATA = {
 function deviceKeyFromName(name){
   if(!name) return null;
   if(name.indexOf('플립')>-1) return 'flip';
-  if(name.indexOf('와이드')>-1) return 'wide';
   if(name.indexOf('울트라')>-1) return 'ultra';
+  if(name.indexOf('폴드')>-1) return 'wide';
   return null;
 }
 var mColorIdx = 0, mCapIdx = 0;
@@ -1728,7 +1728,7 @@ const PRODUCT_SPECS = {
     chipset: '스냅드래곤8 엘리트 젠5 · 5,000mAh',
     feature: '멀티태스킹에 특화된 생산성 타겟 모델입니다. 라운딩 처리로 펼치기 쉽고, 기존 대비 0.1mm 얇아져 체감상 더 얇고 가볍습니다.'
   },
-  '갤럭시 Z 폴드8 와이드': {
+  '갤럭시 Z 폴드8': {
     colors: [
       {name:'라벤더', hex:'#C3B6DE'},
       {name:'그라파이트', hex:'#3A3A3C'},
@@ -2205,9 +2205,9 @@ function toggleKakaoPopup(){
       <div style="margin-bottom:20px;">
         <p style="font-size:17px;font-weight:700;color:#111;margin-bottom:12px;">원하는 상품</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <button onclick="fSelectDevice(this,'플립 8')" class="f-device-btn">갤럭시 Z 플립8</button>
-          <button onclick="fSelectDevice(this,'폴드 8 울트라')" class="f-device-btn">갤럭시 Z 폴드8 울트라</button>
-          <button onclick="fSelectDevice(this,'폴드 와이드 8')" class="f-device-btn">갤럭시 Z 폴드8 와이드</button>
+          <button onclick="fSelectDevice(this,'갤럭시 Z 플립8')" class="f-device-btn">갤럭시 Z 플립8</button>
+          <button onclick="fSelectDevice(this,'갤럭시 Z 폴드8 울트라')" class="f-device-btn">갤럭시 Z 폴드8 울트라</button>
+          <button onclick="fSelectDevice(this,'갤럭시 Z 폴드8')" class="f-device-btn">갤럭시 Z 폴드8</button>
         </div>
       </div>
       <div id="fColorCapGroup" style="display:none;margin-bottom:20px;">
@@ -2394,8 +2394,8 @@ function fSubmit(){
         <div class="mdevice-card" onclick="mSelectDevice(this,'갤럭시 Z 폴드8 울트라')">
           <div class="mdevice-card-name">갤럭시 Z 폴드8 울트라</div>
         </div>
-        <div class="mdevice-card" onclick="mSelectDevice(this,'갤럭시 Z 폴드8 와이드')">
-          <div class="mdevice-card-name">갤럭시 Z 폴드8 와이드</div>
+        <div class="mdevice-card" onclick="mSelectDevice(this,'갤럭시 Z 폴드8')">
+          <div class="mdevice-card-name">갤럭시 Z 폴드8</div>
         </div>
       </div>
     </div>
