@@ -1254,43 +1254,10 @@ function closeNavDrawer() {
   </div>
 </section>
 
-<!-- ══ 지원금 공개 카운트다운 (배너 밑) ══ -->
-<div style="text-align:center;padding:20px 20px 8px;">
-  <p style="font-size:13px;color:#1A1A1A;font-weight:700;margin:0 0 10px;">&lt; 7.23 낮 12시, 언팩 이후 사전예약 구매 지원금 공개 &gt;</p>
-  <div id="subsidyCountdown" style="display:inline-flex;align-items:center;gap:6px;background:#1A1A1A;border-radius:14px;padding:12px 20px;box-shadow:0 4px 16px rgba(0,0,0,.15);">
-    <div style="text-align:center;min-width:36px;">
-      <div id="sc-hours" style="font-size:22px;font-weight:800;color:#fff;line-height:1;font-variant-numeric:tabular-nums;">--</div>
-      <div style="font-size:10px;color:#999;margin-top:3px;">시간</div>
-    </div>
-    <div style="font-size:18px;font-weight:300;color:#555;">:</div>
-    <div style="text-align:center;min-width:36px;">
-      <div id="sc-mins" style="font-size:22px;font-weight:800;color:#fff;line-height:1;font-variant-numeric:tabular-nums;">--</div>
-      <div style="font-size:10px;color:#999;margin-top:3px;">분</div>
-    </div>
-    <div style="font-size:18px;font-weight:300;color:#555;">:</div>
-    <div style="text-align:center;min-width:36px;">
-      <div id="sc-secs" style="font-size:22px;font-weight:800;color:#E91E8C;line-height:1;font-variant-numeric:tabular-nums;">--</div>
-      <div style="font-size:10px;color:#999;margin-top:3px;">초</div>
-    </div>
-  </div>
+<!-- ══ 구매 지원금 안내 (배너 밑) ══ -->
+<div style="max-width:520px;margin:0 auto;padding:20px 20px 8px;">
+  <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/subsidy-reveal.jpg" alt="유플러스 다이렉트 구매 지원 안내 - 번호이동 최대 45만원, 기기변경 최대 30만원, 공시지원금은 추후 공개" style="width:100%;height:auto;display:block;border-radius:16px;border:1px solid #ececec;">
 </div>
-<script>
-(function(){
-  var target = new Date('2026-07-23T12:00:00+09:00');
-  function update(){
-    var diff = target - new Date();
-    if(diff <= 0){
-      ['hours','mins','secs'].forEach(function(u){document.getElementById('sc-'+u).textContent = '00';});
-      return;
-    }
-    document.getElementById('sc-hours').textContent = String(Math.floor(diff/3600000)).padStart(2,'0');
-    document.getElementById('sc-mins').textContent  = String(Math.floor(diff%3600000/60000)).padStart(2,'0');
-    document.getElementById('sc-secs').textContent  = String(Math.floor(diff%60000/1000)).padStart(2,'0');
-  }
-  update();
-  setInterval(update, 1000);
-})();
-</script>
 
 
 <!-- ══ 제품 3종 섹션 (카드형) ══ -->
