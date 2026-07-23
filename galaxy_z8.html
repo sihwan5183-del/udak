@@ -1279,6 +1279,7 @@ function closeNavDrawer() {
 .pcard-cap{display:flex;gap:8px;margin-bottom:20px;}
 .pcard-cap-btn{flex:1;padding:10px 0;text-align:center;border:1.5px solid #ddd;border-radius:10px;font-size:14px;font-weight:700;color:#555;cursor:pointer;background:#fff;transition:all .15s;}
 .pcard-cap-btn.active{border-color:#E91E8C;background:rgba(233,30,140,.06);color:#E91E8C;}
+[id^="pcard-plan-"] .pcard-cap-btn{font-size:12px;padding:9px 0;}
 .pcard-price-table{border-top:1px solid #f0f0f0;padding-top:14px;}
 .pcard-price-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:14px;}
 .pcard-price-row span{color:#888;}
@@ -1318,6 +1319,13 @@ function closeNavDrawer() {
           <div class="pcard-cap-btn" onclick="pcardSelectCap('wide',1)">512GB → 1TB</div>
         </div>
 
+        <p class="pcard-label">요금제</p>
+        <div class="pcard-cap" id="pcard-plan-wide">
+          <div class="pcard-cap-btn" onclick="pcardSelectPlan('wide',0)">85,000원</div>
+          <div class="pcard-cap-btn active" onclick="pcardSelectPlan('wide',1)">95,000원</div>
+          <div class="pcard-cap-btn" onclick="pcardSelectPlan('wide',2)">115,000원</div>
+        </div>
+
         <div class="pcard-price-table">
           <div class="pcard-price-row"><span>출고가격</span><strong id="pcard-price-wide">2,277,000원</strong></div>
           <div class="pcard-price-row sub"><span>공시 지원금</span><strong>공개예정</strong></div>
@@ -1350,6 +1358,13 @@ function closeNavDrawer() {
           <div class="pcard-cap-btn" onclick="pcardSelectCap('ultra',1)">512GB → 1TB</div>
         </div>
 
+        <p class="pcard-label">요금제</p>
+        <div class="pcard-cap" id="pcard-plan-ultra">
+          <div class="pcard-cap-btn" onclick="pcardSelectPlan('ultra',0)">85,000원</div>
+          <div class="pcard-cap-btn active" onclick="pcardSelectPlan('ultra',1)">95,000원</div>
+          <div class="pcard-cap-btn" onclick="pcardSelectPlan('ultra',2)">115,000원</div>
+        </div>
+
         <div class="pcard-price-table">
           <div class="pcard-price-row"><span>출고가격</span><strong id="pcard-price-ultra">2,577,300원</strong></div>
           <div class="pcard-price-row sub"><span>공시 지원금</span><strong>공개예정</strong></div>
@@ -1380,6 +1395,13 @@ function closeNavDrawer() {
         <div class="pcard-cap" id="pcard-cap-flip">
           <div class="pcard-cap-btn active" onclick="pcardSelectCap('flip',0)">256GB → 512GB</div>
           <div class="pcard-cap-btn" onclick="pcardSelectCap('flip',1)">512GB → 1TB</div>
+        </div>
+
+        <p class="pcard-label">요금제</p>
+        <div class="pcard-cap" id="pcard-plan-flip">
+          <div class="pcard-cap-btn" onclick="pcardSelectPlan('flip',0)">85,000원</div>
+          <div class="pcard-cap-btn active" onclick="pcardSelectPlan('flip',1)">95,000원</div>
+          <div class="pcard-cap-btn" onclick="pcardSelectPlan('flip',2)">115,000원</div>
         </div>
 
         <div class="pcard-price-table">
@@ -1488,6 +1510,10 @@ function pcardSelectColor(key, idx){
 function pcardSelectCap(key, idx){
   pcardState[key].cap = idx;
   pcardRender(key);
+}
+function pcardSelectPlan(key, idx){
+  var planEls = document.querySelectorAll('#pcard-plan-'+key+' .pcard-cap-btn');
+  planEls.forEach(function(el,i){ el.classList.toggle('active', i===idx); });
 }
 function pcardRender(key){
   var data = PCARD_DATA[key];
