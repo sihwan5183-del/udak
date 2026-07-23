@@ -1328,6 +1328,13 @@ function closeNavDrawer() {
           <div class="pcard-cap-btn" onclick="pcardSelectCap('wide',1)">512GB → 1TB</div>
         </div>
 
+        <p class="pcard-label">요금제</p>
+        <div class="pcard-cap" id="pcard-plan-wide">
+          <div class="pcard-cap-btn" onclick="pcardSelectPlan('wide',0)">85,000원</div>
+          <div class="pcard-cap-btn active" onclick="pcardSelectPlan('wide',1)">95,000원</div>
+          <div class="pcard-cap-btn" onclick="pcardSelectPlan('wide',2)">115,000원</div>
+        </div>
+
         <div class="pcard-price-table">
           <div class="pcard-price-row"><span>출고가격</span><strong id="pcard-price-wide">2,277,000원</strong></div>
           <div class="pcard-price-row sub"><span>공시 지원금</span><strong>공개예정</strong></div>
@@ -1370,6 +1377,13 @@ function closeNavDrawer() {
           <div class="pcard-cap-btn" onclick="pcardSelectCap('ultra',1)">512GB → 1TB</div>
         </div>
 
+        <p class="pcard-label">요금제</p>
+        <div class="pcard-cap" id="pcard-plan-ultra">
+          <div class="pcard-cap-btn" onclick="pcardSelectPlan('ultra',0)">85,000원</div>
+          <div class="pcard-cap-btn active" onclick="pcardSelectPlan('ultra',1)">95,000원</div>
+          <div class="pcard-cap-btn" onclick="pcardSelectPlan('ultra',2)">115,000원</div>
+        </div>
+
         <div class="pcard-price-table">
           <div class="pcard-price-row"><span>출고가격</span><strong id="pcard-price-ultra">2,577,300원</strong></div>
           <div class="pcard-price-row sub"><span>공시 지원금</span><strong>공개예정</strong></div>
@@ -1410,6 +1424,13 @@ function closeNavDrawer() {
         <div class="pcard-cap" id="pcard-cap-flip">
           <div class="pcard-cap-btn active" onclick="pcardSelectCap('flip',0)">256GB → 512GB</div>
           <div class="pcard-cap-btn" onclick="pcardSelectCap('flip',1)">512GB → 1TB</div>
+        </div>
+
+        <p class="pcard-label">요금제</p>
+        <div class="pcard-cap" id="pcard-plan-flip">
+          <div class="pcard-cap-btn" onclick="pcardSelectPlan('flip',0)">85,000원</div>
+          <div class="pcard-cap-btn active" onclick="pcardSelectPlan('flip',1)">95,000원</div>
+          <div class="pcard-cap-btn" onclick="pcardSelectPlan('flip',2)">115,000원</div>
         </div>
 
         <div class="pcard-price-table">
@@ -1513,8 +1534,8 @@ function mSelectedCapacity(){ return selectedCapacityOf('m'); }
 function fSelectedColor(){ return selectedColorOf('f'); }
 function fSelectedCapacity(){ return selectedCapacityOf('f'); }
 const UDAK_SUBSIDY = {
-  lguplus: { low: 200000, high: 300000 }, // 85k/95k, 115k
-  other:   { low: 350000, high: 450000 }
+  lguplus: 300000,
+  other: 450000
 };
 let pcardState = {
   wide:{color:0,cap:0,carrier:2,plan:1},
@@ -1547,17 +1568,13 @@ function pcardRender(key){
   colorEls.forEach(function(el,i){ el.classList.toggle('active', i===st.color); });
   var capEls = document.querySelectorAll('#pcard-cap-'+key+' .pcard-cap-btn');
   capEls.forEach(function(el,i){ el.classList.toggle('active', i===st.cap); });
-  var planEls = document.querySelectorAll('#pcard-plan-'+key+' .pcard-cap-btn');
-  planEls.forEach(function(el,i){ el.classList.toggle('active', i===st.plan); });
   var carrierEls = document.querySelectorAll('#pcard-carrier-'+key+' .pcard-cap-btn');
   carrierEls.forEach(function(el,i){ el.classList.toggle('active', i===st.carrier); });
   document.getElementById('pcard-price-'+key).textContent = price.toLocaleString()+'원';
 
-  // 유닥 지원금 계산: 통신사(LG U+ vs 타사) x 요금제(85/95=low, 115=high)
+  // 유닥 지원금: 자사(LG U+) 30만원 고정 / 타사 45만원 고정
   var isLguplus = (st.carrier === 2);
-  var isHighPlan = (st.plan === 2); // 115,000원
-  var group = isLguplus ? UDAK_SUBSIDY.lguplus : UDAK_SUBSIDY.other;
-  var udak = isHighPlan ? group.high : group.low;
+  var udak = isLguplus ? UDAK_SUBSIDY.lguplus : UDAK_SUBSIDY.other;
   var benefit = price - udak;
 
   document.getElementById('pcard-udak-'+key).textContent = udak.toLocaleString()+'원';
