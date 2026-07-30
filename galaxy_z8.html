@@ -1558,8 +1558,9 @@ function fSelectedColor(){ return selectedColorOf('f'); }
 function fSelectedCapacity(){ return selectedCapacityOf('f'); }
 const GONGSI_SUBSIDY = 500000;
 const UDAK_SUBSIDY = {
-  lguplus: 300000,
-  other: 450000
+  wide:  { lguplus: 300000, other: 450000 },
+  ultra: { lguplus: 300000, other: 500000 },
+  flip:  { lguplus: 300000, other: 500000 }
 };
 let pcardState = {
   wide:{color:0,cap:0,carrier:2,plan:1},
@@ -1596,9 +1597,10 @@ function pcardRender(key){
   carrierEls.forEach(function(el,i){ el.classList.toggle('active', i===st.carrier); });
   document.getElementById('pcard-price-'+key).textContent = price.toLocaleString()+'원';
 
-  // 유닥 지원금: 자사(LG U+) 30만원 고정 / 타사 45만원 고정
+  // 유닥 지원금: 자사(LG U+) 30만원 고정 / 타사(SKT·KT·알뜰폰)는 제품별 상이
   var isLguplus = (st.carrier === 2);
-  var udak = isLguplus ? UDAK_SUBSIDY.lguplus : UDAK_SUBSIDY.other;
+  var subsidyRow = UDAK_SUBSIDY[key];
+  var udak = isLguplus ? subsidyRow.lguplus : subsidyRow.other;
   var benefit = price - (GONGSI_SUBSIDY + udak);
 
   document.getElementById('pcard-gongsi-'+key).textContent = GONGSI_SUBSIDY.toLocaleString()+'원';
