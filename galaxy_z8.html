@@ -1234,6 +1234,50 @@ function closeNavDrawer() {
   <h1 style="font-size:24px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin:0;">폴더블 8 사전예약 시작</h1>
 </div>
 
+<!-- ══ 사전예약 마감 카운트다운 ══ -->
+<div style="text-align:center;padding:14px 20px 4px;">
+  <p style="font-size:13px;color:#1A1A1A;font-weight:700;margin:0 0 10px;">&lt; 사전예약 8.3 오후 7시 마감 &gt;</p>
+  <div id="deadlineCountdown" style="display:inline-flex;align-items:center;gap:6px;background:#1A1A1A;border-radius:14px;padding:12px 20px;box-shadow:0 4px 16px rgba(0,0,0,.15);">
+    <div style="text-align:center;min-width:36px;">
+      <div id="dc-days" style="font-size:22px;font-weight:800;color:#fff;line-height:1;font-variant-numeric:tabular-nums;">--</div>
+      <div style="font-size:10px;color:#999;margin-top:3px;">일</div>
+    </div>
+    <div style="font-size:18px;font-weight:300;color:#555;">:</div>
+    <div style="text-align:center;min-width:36px;">
+      <div id="dc-hours" style="font-size:22px;font-weight:800;color:#fff;line-height:1;font-variant-numeric:tabular-nums;">--</div>
+      <div style="font-size:10px;color:#999;margin-top:3px;">시간</div>
+    </div>
+    <div style="font-size:18px;font-weight:300;color:#555;">:</div>
+    <div style="text-align:center;min-width:36px;">
+      <div id="dc-mins" style="font-size:22px;font-weight:800;color:#fff;line-height:1;font-variant-numeric:tabular-nums;">--</div>
+      <div style="font-size:10px;color:#999;margin-top:3px;">분</div>
+    </div>
+    <div style="font-size:18px;font-weight:300;color:#555;">:</div>
+    <div style="text-align:center;min-width:36px;">
+      <div id="dc-secs" style="font-size:22px;font-weight:800;color:#E91E8C;line-height:1;font-variant-numeric:tabular-nums;">--</div>
+      <div style="font-size:10px;color:#999;margin-top:3px;">초</div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var target = new Date('2026-08-03T19:00:00+09:00');
+  function update(){
+    var diff = target - new Date();
+    if(diff <= 0){
+      ['days','hours','mins','secs'].forEach(function(u){document.getElementById('dc-'+u).textContent = '00';});
+      return;
+    }
+    document.getElementById('dc-days').textContent  = String(Math.floor(diff/86400000)).padStart(2,'0');
+    document.getElementById('dc-hours').textContent = String(Math.floor(diff%86400000/3600000)).padStart(2,'0');
+    document.getElementById('dc-mins').textContent  = String(Math.floor(diff%3600000/60000)).padStart(2,'0');
+    document.getElementById('dc-secs').textContent  = String(Math.floor(diff%60000/1000)).padStart(2,'0');
+  }
+  update();
+  setInterval(update, 1000);
+})();
+</script>
+
 <!-- ══ 배너 슬라이더 ══ -->
 <section style="width:100%;background:#fff;padding:20px 16px 8px;box-sizing:border-box;">
   <div style="position:relative;width:100%;overflow:hidden;border:1px solid #e8e8e8;border-radius:16px;" id="bannerSlot">
