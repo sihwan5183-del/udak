@@ -1598,6 +1598,9 @@ ucatLoadFirebase();
 .uwt-model-img{width:100%;aspect-ratio:1/1;object-fit:contain;margin-bottom:8px;display:block;}
 .uwt-model-size{font-size:11px;color:#999;margin-top:2px;}
 .uwt-detail-img{width:96px;height:96px;object-fit:contain;background:#fff;border:1px solid #ececec;border-radius:12px;margin:0 auto 14px;display:block;}
+.uwt-detail-colors{display:flex;justify-content:center;gap:10px;margin-bottom:16px;}
+.uwt-detail-color{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;box-shadow:0 0 0 1px #ececec inset;}
+.uwt-detail-color.on{border-color:#E91E8C;box-shadow:0 0 0 1px #E91E8C inset;}
 .uwt-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center;padding:20px;}
 .uwt-modal-overlay.open{display:flex;}
 .uwt-detail{position:relative;margin:0;border-radius:20px;background:#fff;padding:30px 22px 24px;max-width:380px;width:100%;max-height:85vh;overflow-y:auto;box-sizing:border-box;}
@@ -1634,6 +1637,7 @@ ucatLoadFirebase();
     <div class="uwt-detail" id="uwtDetail">
       <button class="uwt-detail-close" onclick="uwtCloseDetail()" type="button">×</button>
       <img class="uwt-detail-img" id="uwtDetailImg" src="" alt="" style="display:none">
+      <div class="uwt-detail-colors" id="uwtDetailColors" style="display:none"></div>
       <p style="font-size:16px;font-weight:800;color:#1A1A1A;margin:0 0 16px;text-align:center;" id="uwtDetailName">-</p>
       <div class="uwt-detail-box">
         <div class="uwt-detail-row"><span>출고가격</span><b id="uwtLaunch">-</b></div>
@@ -1699,7 +1703,7 @@ function uwtRenderCats(){
   const allModels=[].concat(...Object.values(UWT_MODELS));
   wrap.innerHTML=cats.map(c=>{
     const isOpen=uwtState.openCat===c.id;
-    const models=UWT_MODELS[c.id]||[];
+    const models=(UWT_MODELS[c.id]||[]).filter(m=>(uwtPricing[m.id]?.visible)!==false);
     const pickedModel=uwtState.openModel?allModels.find(m=>m.id===uwtState.openModel):null;
     const pickedInThisCat=pickedModel&&models.some(m=>m.id===pickedModel.id);
     return`<div>
@@ -1716,11 +1720,15 @@ function uwtRenderCats(){
       })():''}
       <div class="uwt-modelbox${isOpen?' open':''}" id="uwtModelbox_${c.id}">
         ${models.length?`<div class="uwt-modelgrid">
-          ${models.map(m=>`<div class="uwt-model${uwtState.openModel===m.id?' on':''}" onclick="uwtPickModel('${m.id}',event)">
-            ${m.img?`<img class="uwt-model-img" src="${m.img}" alt="${m.name}">`:''}
-            <div class="uwt-model-name">${m.name}</div>
-            ${m.size?`<div class="uwt-model-size">${m.size}</div>`:''}
-          </div>`).join('')}
+          ${models.map(m=>{
+            const fbColors=uwtPricing[m.id]?.colors;
+            const cardImg=(fbColors&&fbColors[0]&&fbColors[0].img)||m.img;
+            return`<div class="uwt-model${uwtState.openModel===m.id?' on':''}" onclick="uwtPickModel('${m.id}',event)">
+              ${cardImg?`<img class="uwt-model-img" src="${cardImg}" alt="${m.name}">`:''}
+              <div class="uwt-model-name">${m.name}</div>
+              ${m.size?`<div class="uwt-model-size">${m.size}</div>`:''}
+            </div>`;
+          }).join('')}
         </div>`:`<div class="uwt-empty">모델 목록 준비중입니다</div>`}
       </div>
     </div>`;
@@ -1739,16 +1747,39 @@ window.uwtCloseDetail=function(){
 };
 
 let uwtPreviewModelId=null;
+let uwtPreviewColorIdx=0;
+function uwtRefreshDetailImg(){
+  const model=[].concat(...Object.values(UWT_MODELS)).find(m=>m.id===uwtPreviewModelId);
+  const fbColors=uwtPricing[uwtPreviewModelId]?.colors;
+  const detailImgEl=document.getElementById('uwtDetailImg');
+  const src=(fbColors&&fbColors[uwtPreviewColorIdx]&&fbColors[uwtPreviewColorIdx].img)||model.img;
+  if(src){ detailImgEl.src=src; detailImgEl.alt=model.name; detailImgEl.style.display='block'; }
+  else { detailImgEl.style.display='none'; }
+}
+window.uwtPickPreviewColor=function(idx){
+  uwtPreviewColorIdx=idx;
+  const fbColors=uwtPricing[uwtPreviewModelId]?.colors||[];
+  document.querySelectorAll('#uwtDetailColors .uwt-detail-color').forEach((el,i)=>el.classList.toggle('on',i===idx));
+  uwtRefreshDetailImg();
+};
 window.uwtPickModel=function(modelId,ev){
   if(ev) ev.stopPropagation();
   uwtPreviewModelId=modelId;
+  uwtPreviewColorIdx=0;
   const allModels=[].concat(...Object.values(UWT_MODELS));
   const model=allModels.find(m=>m.id===modelId);
   const detail=document.getElementById('uwtModalOverlay');
   document.getElementById('uwtDetailName').textContent=model.name+(model.size?' ('+model.size+')':'');
-  const detailImgEl=document.getElementById('uwtDetailImg');
-  if(model.img){ detailImgEl.src=model.img; detailImgEl.alt=model.name; detailImgEl.style.display='block'; }
-  else { detailImgEl.style.display='none'; }
+  const fbColors=uwtPricing[modelId]?.colors;
+  const colorsWrap=document.getElementById('uwtDetailColors');
+  if(fbColors&&fbColors.length){
+    colorsWrap.style.display='flex';
+    colorsWrap.innerHTML=fbColors.map((c,i)=>`<span class="uwt-detail-color${i===0?' on':''}" style="background:${c.hex||'#ccc'}" title="${c.name}" onclick="uwtPickPreviewColor(${i})"></span>`).join('');
+  } else {
+    colorsWrap.style.display='none';
+    colorsWrap.innerHTML='';
+  }
+  uwtRefreshDetailImg();
   const pInfo=uwtGetPriceInfo(modelId);
   if(pInfo){
     document.getElementById('uwtLaunch').textContent=pInfo.price.toLocaleString()+'원';

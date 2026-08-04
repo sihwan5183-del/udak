@@ -1304,27 +1304,55 @@ function renderSecondAdmin(){
   if(!form) return;
   form.innerHTML=SECOND_MODELS.map(m=>{
     const d=secondAdminData[m.id]||{};
-    return`<div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:8px;align-items:end;background:var(--g50);padding:12px;border-radius:8px;margin-bottom:10px">
-      <div class="fg" style="margin-bottom:0"><label class="flbl">모델</label><div style="height:36px;display:flex;align-items:center;font-size:13px;font-weight:700">${m.name}</div></div>
-      <div class="fg" style="margin-bottom:0"><label class="flbl">출고가(원)</label><input type="number" class="fi" style="height:36px" id="sd_${m.id}_price" value="${d.price||''}" placeholder="예: 350000"></div>
-      <div class="fg" style="margin-bottom:0"><label class="flbl">공시지원금(원)</label><input type="number" class="fi" style="height:36px" id="sd_${m.id}_pub" value="${d.pubSupport||''}" placeholder="0"></div>
-      <div class="fg" style="margin-bottom:0"><label class="flbl">유닥지원금(원)</label><input type="number" class="fi" style="height:36px" id="sd_${m.id}_udak" value="${d.udakSupport||''}" placeholder="0"></div>
+    const isVisible=d.visible!==false;
+    const colors=d.colors||[];
+    return`<div style="background:var(--g50);padding:16px;border-radius:10px;margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-size:14px;font-weight:800">${m.name}</div>
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:12.5px;font-weight:700;color:${isVisible?'var(--g800)':'var(--g400)'}">
+          <input type="checkbox" class="fchk" id="sd_${m.id}_visible" ${isVisible?'checked':''} onchange="this.nextSibling.textContent=this.checked?' 노출 중':' 숨김(품절)'" style="width:15px;height:15px;accent-color:var(--or)">
+          <span>${isVisible?' 노출 중':' 숨김(품절)'}</span>
+        </label>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+        <div class="fg" style="margin-bottom:0"><label class="flbl">출고가(원)</label><input type="number" class="fi" style="height:36px" id="sd_${m.id}_price" value="${d.price||''}" placeholder="예: 350000"></div>
+        <div class="fg" style="margin-bottom:0"><label class="flbl">공시지원금(원)</label><input type="number" class="fi" style="height:36px" id="sd_${m.id}_pub" value="${d.pubSupport||''}" placeholder="0"></div>
+        <div class="fg" style="margin-bottom:0"><label class="flbl">유닥지원금(원)</label><input type="number" class="fi" style="height:36px" id="sd_${m.id}_udak" value="${d.udakSupport||''}" placeholder="0"></div>
+      </div>
+      <div style="font-size:11.5px;font-weight:700;color:var(--g400);margin-bottom:8px">컬러 (최대 4개, 색상명 비워두면 미사용)</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        ${[0,1,2,3].map(i=>{
+          const c=colors[i]||{};
+          return`<div style="display:grid;grid-template-columns:1fr 0.7fr 1.3fr;gap:8px">
+            <input type="text" class="fi" style="height:34px;font-size:12.5px" id="sd_${m.id}_c${i}_name" value="${c.name||''}" placeholder="색상명 (예: 그라파이트)">
+            <input type="text" class="fi" style="height:34px;font-size:12.5px;font-family:monospace" id="sd_${m.id}_c${i}_hex" value="${c.hex||''}" placeholder="#3A3A3C">
+            <input type="text" class="fi" style="height:34px;font-size:12.5px;font-family:monospace" id="sd_${m.id}_c${i}_img" value="${c.img||''}" placeholder="이미지 URL 또는 파일명">
+          </div>`;
+        }).join('')}
+      </div>
     </div>`;
   }).join('');
 }
 window.saveSecondAdmin=async function(){
   const updated={};
   SECOND_MODELS.forEach(m=>{
+    const colors=[0,1,2,3].map(i=>({
+      name: document.getElementById(`sd_${m.id}_c${i}_name`)?.value||'',
+      hex: document.getElementById(`sd_${m.id}_c${i}_hex`)?.value||'',
+      img: document.getElementById(`sd_${m.id}_c${i}_img`)?.value||''
+    })).filter(c=>c.name.trim()!=='');
     updated[m.id]={
       price: Number(document.getElementById(`sd_${m.id}_price`)?.value)||0,
       pubSupport: Number(document.getElementById(`sd_${m.id}_pub`)?.value)||0,
-      udakSupport: Number(document.getElementById(`sd_${m.id}_udak`)?.value)||0
+      udakSupport: Number(document.getElementById(`sd_${m.id}_udak`)?.value)||0,
+      visible: document.getElementById(`sd_${m.id}_visible`)?.checked!==false,
+      colors: colors
     };
   });
   try{
     await db.ref('watchDevices').set(updated);
     secondAdminData=updated;
-    toast('세컨드 기기 가격 저장 완료 — 랜딩에 즉시 반영됩니다');
+    toast('세컨드 기기 정보 저장 완료 — 랜딩에 즉시 반영됩니다');
   } catch(e){ toast('저장 실패: '+e.message, true); }
 };
 
