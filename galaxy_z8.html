@@ -1566,9 +1566,14 @@ ucatLoadFirebase();
 .uwt-wrap{max-width:520px;margin:0 auto;padding:0 20px;}
 .uwt-title{font-size:24px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin:0 0 6px;text-align:center;}
 .uwt-sub{font-size:14px;color:#888;text-align:center;margin:0 0 28px;}
-.uwt-plantabs{display:flex;gap:8px;margin-bottom:16px;}
-.uwt-plantab{flex:1;text-align:center;padding:13px;border:1.5px solid #ececec;border-radius:12px;background:#fff;font-size:14.5px;font-weight:700;color:#666;cursor:pointer;font-family:inherit;}
-.uwt-plantab.on{border-color:#E91E8C;color:#E91E8C;background:rgba(233,30,140,.06);}
+.uwt-plangrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.uwt-plancard{border:1.5px solid #ececec;border-radius:16px;padding:18px 14px;background:#fff;cursor:pointer;text-align:center;}
+.uwt-plancard.on{border-color:#E91E8C;background:rgba(233,30,140,.04);}
+.uwt-plancard-badge{display:inline-block;background:rgba(233,30,140,.06);color:#E91E8C;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;margin-bottom:10px;}
+.uwt-plancard.on .uwt-plancard-badge{background:#E91E8C;color:#fff;}
+.uwt-plancard-name{font-size:15.5px;font-weight:800;color:#1A1A1A;margin:0 0 4px;}
+.uwt-plancard-price{font-size:12.5px;color:#999;margin:0;}
+.uwt-plancard.on .uwt-plancard-price{color:#E91E8C;font-weight:700;}
 .uwt-catlist{display:flex;flex-direction:column;gap:8px;}
 .uwt-cat{display:flex;align-items:center;gap:12px;padding:16px 18px;border:1.5px solid #ececec;border-radius:14px;background:#fff;cursor:pointer;}
 .uwt-cat.on{border-color:#E91E8C;background:rgba(233,30,140,.04);}
@@ -1598,9 +1603,17 @@ ucatLoadFirebase();
   <p class="uwt-title">요금제별 혜택 선택하기</p>
   <p class="uwt-sub">요금제를 고르면 함께 받는 기기가 보여요</p>
 
-  <div class="uwt-plantabs">
-    <button class="uwt-plantab on" id="uwtPlan95" onclick="uwtSetPlan('95')" type="button">플러스플랜 95</button>
-    <button class="uwt-plantab" id="uwtPlan115" onclick="uwtSetPlan('115')" type="button">플러스플랜 115</button>
+  <div class="uwt-plangrid">
+    <div class="uwt-plancard on" id="uwtPlan95" onclick="uwtSetPlan('95')">
+      <span class="uwt-plancard-badge">PLAN 95</span>
+      <p class="uwt-plancard-name">플러스플랜 95</p>
+      <p class="uwt-plancard-price">월 95,000원</p>
+    </div>
+    <div class="uwt-plancard" id="uwtPlan115" onclick="uwtSetPlan('115')">
+      <span class="uwt-plancard-badge">PLAN 115</span>
+      <p class="uwt-plancard-name">플러스플랜 115</p>
+      <p class="uwt-plancard-price">월 115,000원</p>
+    </div>
   </div>
 
   <div class="uwt-catlist" id="uwtCatList"></div>
@@ -1648,8 +1661,8 @@ async function uwtLoadPricing(){
 window.uwtSetPlan=function(p){
   uwtState.plan=p;
   uwtState.openCat=null;uwtState.openModel=null;
-  document.getElementById('uwtPlan95').className='uwt-plantab'+(p==='95'?' on':'');
-  document.getElementById('uwtPlan115').className='uwt-plantab'+(p==='115'?' on':'');
+  document.getElementById('uwtPlan95').className='uwt-plancard'+(p==='95'?' on':'');
+  document.getElementById('uwtPlan115').className='uwt-plancard'+(p==='115'?' on':'');
   document.getElementById('uwtDetail').className='uwt-detail';
   uwtRenderCats();
 };
