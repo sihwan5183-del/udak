@@ -1575,12 +1575,10 @@ ucatLoadFirebase();
 .uwt-plancard-price{font-size:12.5px;color:#999;margin:0;}
 .uwt-plancard.on .uwt-plancard-price{color:#E91E8C;font-weight:700;}
 .uwt-catlist{display:flex;flex-direction:column;gap:8px;}
-.uwt-cat{display:flex;align-items:center;gap:12px;padding:16px 18px;border:1.5px solid #ececec;border-radius:14px;background:#fff;cursor:pointer;}
+.uwt-cat{display:flex;align-items:center;justify-content:center;padding:18px;border:1.5px solid #ececec;border-radius:14px;background:#fff;cursor:pointer;}
 .uwt-cat.on{border-color:#E91E8C;background:rgba(233,30,140,.04);}
-.uwt-cat-ico{font-size:22px;flex-shrink:0;}
-.uwt-cat-name{font-size:15px;font-weight:700;color:#1A1A1A;flex:1;}
-.uwt-cat-arr{font-size:13px;color:#bbb;transition:transform .2s;}
-.uwt-cat.on .uwt-cat-arr{transform:rotate(90deg);color:#E91E8C;}
+.uwt-cat-name{font-size:16px;font-weight:800;color:#1A1A1A;text-align:center;}
+.uwt-cat.on .uwt-cat-name{color:#E91E8C;}
 .uwt-modelbox{overflow:hidden;max-height:0;transition:max-height .25s ease;}
 .uwt-modelbox.open{max-height:900px;}
 .uwt-modelgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 2px 4px;}
@@ -1683,9 +1681,7 @@ function uwtRenderCats(){
     const models=UWT_MODELS[c.id]||[];
     return`<div>
       <div class="uwt-cat${isOpen?' on':''}" onclick="uwtToggleCat('${c.id}')">
-        <span class="uwt-cat-ico">${c.ico}</span>
         <span class="uwt-cat-name">${c.name}</span>
-        <span class="uwt-cat-arr">›</span>
       </div>
       <div class="uwt-modelbox${isOpen?' open':''}" id="uwtModelbox_${c.id}">
         ${models.length?`<div class="uwt-modelgrid">
