@@ -508,7 +508,7 @@ async function loadFirebaseAndRender(){
       fetch(UCAT_DB_URL+'/plans.json').then(r=>r.json()).catch(()=>null),
       fetch(UCAT_DB_URL+'/policy2.json').then(r=>r.json()).catch(()=>null)
     ]);
-    const fbDevices=ds?Object.entries(ds).map(([id,v])=>({id,...v})).filter(d=>d.visible!==false):UCAT_MDEV_FALLBACK;
+    const fbDevices=ds?Object.entries(ds).map(([id,v])=>({id,...v})).filter(d=>d.visible!==false&&!/폴드|플립/.test(d.name||'')):UCAT_MDEV_FALLBACK;
     const fbPolicies=pols?Object.entries(pols).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false):[];
     if(ps){ const arr=Object.entries(ps).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false); if(arr.length) ucatPlans=arr; }
     ucatDevices=[...UCAT_Z8_DEVICES,...fbDevices];
