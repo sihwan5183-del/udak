@@ -1570,13 +1570,28 @@ window.openUcatDetail=function(id){
   detail.scrollTop=0;
   requestAnimationFrame(()=>detail.classList.add('open'));
   document.body.style.overflow='hidden';
+  history.pushState({ucatDetailId:id},'','#device-'+id);
 };
-window.closeUcatDetail=function(){
+function _doCloseUcatDetail(){
   const detail=document.getElementById('ucatDetail');
   detail.classList.remove('open');
   document.body.style.overflow='';
   setTimeout(()=>{ detail.style.display='none'; },280);
+}
+window.closeUcatDetail=function(){
+  // 목록으로 버튼: 실제 브라우저 히스토리를 뒤로 이동시킴 -> popstate가 실제 닫기 처리
+  if(history.state&&history.state.ucatDetailId){
+    history.back();
+  } else {
+    _doCloseUcatDetail();
+  }
 };
+window.addEventListener('popstate',function(e){
+  // 브라우저/기기 뒤로가기(스와이프 포함)로 device 상세 상태를 벗어난 경우도 동일하게 처리
+  if(!e.state||!e.state.ucatDetailId){
+    _doCloseUcatDetail();
+  }
+});
 function renderUcatDetailColors(){
   const wrap=document.getElementById('udColors');
   wrap.innerHTML=(ucatSel.device.colors||[]).map((c,i)=>{
