@@ -1164,17 +1164,17 @@ textarea.mform-input{resize:none;height:80px;}
     </button>
   </div>
   <div class="top-nav-sub">
-    <a class="top-nav-sub-item" href="/udak_landing" style="text-decoration:none;color:inherit;">
-      <span class="sub-icon">☀️</span> 여름 특별 기획전
-    </a>
-    <div class="top-nav-sub-item" onclick="openNavModal('modalCurio')">
-      <span class="sub-icon">💬</span> 궁금해요
+    <div class="top-nav-sub-item" onclick="uwtNavPlaceholder('유플러스 다이렉트란')">
+      <span class="sub-icon">🏢</span> 유플러스 다이렉트란
     </div>
-    <div class="top-nav-sub-item" onclick="openNavModal('modalFaq')">
-      <span class="sub-icon">❓</span> 자주 묻는 질문
+    <div class="top-nav-sub-item" onclick="uwtNavGoto('.ucat-wrap')">
+      <span class="sub-icon">📱</span> 핸드폰
     </div>
-    <div class="top-nav-sub-item" onclick="openNavModal('modalContact')">
-      <span class="sub-icon">🎧</span> 상담 안내
+    <div class="top-nav-sub-item" onclick="uwtNavGoto('.uwt-wrap')">
+      <span class="sub-icon">🎁</span> 요금제별 혜택
+    </div>
+    <div class="top-nav-sub-item" onclick="uwtNavPlaceholder('인터넷')">
+      <span class="sub-icon">🌐</span> 인터넷
     </div>
   </div>
 </nav>
@@ -1189,17 +1189,17 @@ textarea.mform-input{resize:none;height:80px;}
     <button class="nav-drawer-close" onclick="closeNavDrawer()">✕</button>
   </div>
   <div class="nav-drawer-body">
-    <a class="nav-drawer-item" href="/udak_landing">
-      <span class="icon">☀️</span> 여름 특별 기획전
-    </a>
-    <div class="nav-drawer-item" onclick="openNavModal('modalCurio')">
-      <span class="icon">💬</span> 궁금해요
+    <div class="nav-drawer-item" onclick="uwtNavPlaceholder('유플러스 다이렉트란'); closeNavDrawer();">
+      <span class="icon">🏢</span> 유플러스 다이렉트란
     </div>
-    <div class="nav-drawer-item" onclick="openNavModal('modalFaq')">
-      <span class="icon">❓</span> 자주 묻는 질문
+    <div class="nav-drawer-item" onclick="uwtNavGoto('.ucat-wrap'); closeNavDrawer();">
+      <span class="icon">📱</span> 핸드폰
     </div>
-    <div class="nav-drawer-item" onclick="openNavModal('modalContact')">
-      <span class="icon">📞</span> 상담 안내
+    <div class="nav-drawer-item" onclick="uwtNavGoto('.uwt-wrap'); closeNavDrawer();">
+      <span class="icon">🎁</span> 요금제별 혜택
+    </div>
+    <div class="nav-drawer-item" onclick="uwtNavPlaceholder('인터넷'); closeNavDrawer();">
+      <span class="icon">🌐</span> 인터넷
     </div>
     <a class="nav-drawer-item" href="https://pf.kakao.com/_HxfVxcn/chat" target="_blank">
       <span class="icon">💛</span> 카카오톡 상담
@@ -1211,6 +1211,12 @@ textarea.mform-input{resize:none;height:80px;}
 </div>
 
 <script>
+function uwtNavPlaceholder(label){
+  alert(label+' 페이지는 곧 오픈 예정입니다. 조금만 기다려주세요!');
+}
+function uwtNavGoto(selector){
+  document.querySelector(selector)?.scrollIntoView({behavior:'smooth',block:'start'});
+}
 function openNavDrawer() {
   document.getElementById('navDrawer').classList.add('open');
   document.getElementById('navOverlay').classList.add('open');
