@@ -2405,7 +2405,7 @@ window.mPickSecondPlan=function(p){
   renderMSecondModels();
 };
 window.mPickSecondModel=function(id){ mSecondDevice=(mSecondDevice===id?null:id); renderMSecondModels(); };
-renderMSecondModels();
+if(document.readyState==='complete'){ renderMSecondModels(); } else { window.addEventListener('load', renderMSecondModels); }
 function mFormatPhone(el){
   var v = el.value.replace(/\D/g,'');
   // 010 자동입력 제거됨
