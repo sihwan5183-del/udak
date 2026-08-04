@@ -1640,6 +1640,155 @@ function renderUb1(bonusData){
 </script>
 
 
+<!-- ══ 요금제별 혜택 선택하기 (플랜→카테고리→모델 드릴다운, 모바일 최적화) ══ -->
+<style>
+.uwt-wrap{max-width:600px;margin:32px auto 0;padding:0 24px;}
+.uwt-title{font-size:18px;font-weight:800;color:#1A1A1A;margin:0 0 4px;text-align:center;}
+.uwt-sub{font-size:12.5px;color:#999;text-align:center;margin:0 0 18px;}
+.uwt-plantabs{display:flex;gap:8px;margin-bottom:16px;}
+.uwt-plantab{flex:1;text-align:center;padding:13px;border:1.5px solid #ececec;border-radius:12px;background:#fff;font-size:14.5px;font-weight:700;color:#666;cursor:pointer;font-family:inherit;}
+.uwt-plantab.on{border-color:#E91E8C;color:#E91E8C;background:rgba(233,30,140,.06);}
+.uwt-catlist{display:flex;flex-direction:column;gap:8px;}
+.uwt-cat{display:flex;align-items:center;gap:12px;padding:16px 18px;border:1.5px solid #ececec;border-radius:14px;background:#fff;cursor:pointer;}
+.uwt-cat.on{border-color:#E91E8C;background:rgba(233,30,140,.04);}
+.uwt-cat-ico{font-size:22px;flex-shrink:0;}
+.uwt-cat-name{font-size:15px;font-weight:700;color:#1A1A1A;flex:1;}
+.uwt-cat-arr{font-size:13px;color:#bbb;transition:transform .2s;}
+.uwt-cat.on .uwt-cat-arr{transform:rotate(90deg);color:#E91E8C;}
+.uwt-modelbox{overflow:hidden;max-height:0;transition:max-height .25s ease;}
+.uwt-modelbox.open{max-height:900px;}
+.uwt-modelgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 2px 4px;}
+.uwt-model{border:1.5px solid #ececec;border-radius:12px;padding:12px;text-align:center;cursor:pointer;background:#fff;}
+.uwt-model.on{border-color:#E91E8C;background:rgba(233,30,140,.05);}
+.uwt-model-name{font-size:13px;font-weight:700;color:#1A1A1A;line-height:1.35;}
+.uwt-model-size{font-size:11px;color:#999;margin-top:2px;}
+.uwt-detail{margin-top:14px;border-radius:14px;background:#f9f9fb;padding:16px 18px;display:none;}
+.uwt-detail.open{display:block;}
+.uwt-detail-row{display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;color:#666;padding:6px 0;}
+.uwt-detail-row b{color:#1A1A1A;font-weight:700;}
+.uwt-detail-row.total{border-top:1px dashed #ddd;margin-top:6px;padding-top:12px;}
+.uwt-detail-row.total b{color:#E91E8C;font-size:17px;}
+.uwt-empty{font-size:12px;color:#bbb;text-align:center;padding:16px 0;}
+</style>
+<div class="uwt-wrap">
+  <p class="uwt-title">요금제별 혜택 선택하기</p>
+  <p class="uwt-sub">플러스플랜을 고르면 함께 받을 수 있는 기기를 확인할 수 있어요</p>
+
+  <div class="uwt-plantabs">
+    <button class="uwt-plantab on" id="uwtPlan95" onclick="uwtSetPlan('95')" type="button">플러스플랜 95</button>
+    <button class="uwt-plantab" id="uwtPlan115" onclick="uwtSetPlan('115')" type="button">플러스플랜 115</button>
+  </div>
+
+  <div class="uwt-catlist" id="uwtCatList"></div>
+
+  <div class="uwt-detail" id="uwtDetail">
+    <p style="font-size:14px;font-weight:800;color:#1A1A1A;margin:0 0 12px;" id="uwtDetailName">-</p>
+    <div class="uwt-detail-row"><span>출고가격</span><b id="uwtLaunch">-</b></div>
+    <div class="uwt-detail-row"><span>공시지원금</span><b id="uwtPub">-</b></div>
+    <div class="uwt-detail-row"><span>유플러스 다이렉트 지원금</span><b id="uwtUdak">-</b></div>
+    <div class="uwt-detail-row total"><span>자부담금</span><b id="uwtSelfpay">-</b></div>
+  </div>
+</div>
+
+<script>
+/* 요금제별 혜택 선택 - 워치/탭 드릴다운. 가격은 Firebase watchDevices에서, 없으면 '가격 등록 필요' 표시 (임의 금액 표기 안 함) */
+const UWT_CATEGORIES={
+  '95':[{id:'watch',name:'스마트워치',ico:'⌚'}],
+  '115':[{id:'watch',name:'스마트워치',ico:'⌚'},{id:'tab',name:'태블릿',ico:'📱'}]
+};
+const UWT_MODELS={
+  watch:[
+    {id:'watch8-40',name:'갤럭시 워치 8',size:'40mm'},
+    {id:'watch8-44',name:'갤럭시 워치 8',size:'44mm'},
+    {id:'watch9-40',name:'갤럭시 워치 9',size:'40mm'},
+    {id:'watch9-44',name:'갤럭시 워치 9',size:'44mm'},
+    {id:'watch-ultra1',name:'갤럭시 워치 울트라 1',size:''},
+    {id:'watch-ultra2',name:'갤럭시 워치 울트라 2',size:''}
+  ],
+  tab:[]
+};
+let uwtPricing={}; // Firebase에서 채움: {modelId: {price, pubSupport, udakSupport}}
+let uwtState={plan:'95',openCat:null,openModel:null};
+
+async function uwtLoadPricing(){
+  try{
+    const dbUrl=(typeof UCAT_DB_URL!=='undefined'?UCAT_DB_URL:'https://udak-c6832-default-rtdb.firebaseio.com');
+    const r=await fetch(dbUrl+'/watchDevices.json');
+    const data=await r.json();
+    uwtPricing=data||{};
+  }catch(e){ uwtPricing={}; }
+}
+
+window.uwtSetPlan=function(p){
+  uwtState.plan=p;
+  uwtState.openCat=null;uwtState.openModel=null;
+  document.getElementById('uwtPlan95').className='uwt-plantab'+(p==='95'?' on':'');
+  document.getElementById('uwtPlan115').className='uwt-plantab'+(p==='115'?' on':'');
+  document.getElementById('uwtDetail').className='uwt-detail';
+  uwtRenderCats();
+};
+
+function uwtRenderCats(){
+  const wrap=document.getElementById('uwtCatList');
+  const cats=UWT_CATEGORIES[uwtState.plan]||[];
+  wrap.innerHTML=cats.map(c=>{
+    const isOpen=uwtState.openCat===c.id;
+    const models=UWT_MODELS[c.id]||[];
+    return`<div>
+      <div class="uwt-cat${isOpen?' on':''}" onclick="uwtToggleCat('${c.id}')">
+        <span class="uwt-cat-ico">${c.ico}</span>
+        <span class="uwt-cat-name">${c.name}</span>
+        <span class="uwt-cat-arr">›</span>
+      </div>
+      <div class="uwt-modelbox${isOpen?' open':''}" id="uwtModelbox_${c.id}">
+        ${models.length?`<div class="uwt-modelgrid">
+          ${models.map(m=>`<div class="uwt-model${uwtState.openModel===m.id?' on':''}" onclick="uwtPickModel('${m.id}',event)">
+            <div class="uwt-model-name">${m.name}</div>
+            ${m.size?`<div class="uwt-model-size">${m.size}</div>`:''}
+          </div>`).join('')}
+        </div>`:`<div class="uwt-empty">모델 목록 준비중입니다</div>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.uwtToggleCat=function(catId){
+  uwtState.openCat=(uwtState.openCat===catId)?null:catId;
+  uwtState.openModel=null;
+  document.getElementById('uwtDetail').className='uwt-detail';
+  uwtRenderCats();
+};
+
+window.uwtPickModel=function(modelId,ev){
+  if(ev) ev.stopPropagation();
+  uwtState.openModel=modelId;
+  uwtRenderCats();
+  const allModels=[].concat(...Object.values(UWT_MODELS));
+  const model=allModels.find(m=>m.id===modelId);
+  const pr=uwtPricing[modelId];
+  const detail=document.getElementById('uwtDetail');
+  document.getElementById('uwtDetailName').textContent=model.name+(model.size?' ('+model.size+')':'');
+  if(pr&&pr.price!=null){
+    const price=Number(pr.price)||0, pub=Number(pr.pubSupport)||0, udak=Number(pr.udakSupport)||0;
+    const selfPay=Math.max(0,price-pub-udak);
+    document.getElementById('uwtLaunch').textContent=price.toLocaleString()+'원';
+    document.getElementById('uwtPub').textContent=pub.toLocaleString()+'원';
+    document.getElementById('uwtUdak').textContent=udak.toLocaleString()+'원';
+    document.getElementById('uwtSelfpay').textContent=selfPay.toLocaleString()+'원';
+  } else {
+    document.getElementById('uwtLaunch').textContent='-';
+    document.getElementById('uwtPub').textContent='-';
+    document.getElementById('uwtUdak').textContent='-';
+    document.getElementById('uwtSelfpay').textContent='가격 등록 필요';
+  }
+  detail.className='uwt-detail open';
+  detail.scrollIntoView({behavior:'smooth',block:'nearest'});
+};
+
+uwtRenderCats();
+uwtLoadPricing();
+</script>
+
 <!-- ══ 혜택3. 티비프리란 ══ -->
 <section id="benefit3-section" style="width:100%;background:#ffffff;padding:48px 0 0;scroll-margin-top:70px;">
   <div style="max-width:600px;margin:0 auto;padding:0 24px;">
