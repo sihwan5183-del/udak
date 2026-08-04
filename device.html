@@ -169,7 +169,7 @@ function renderPage(){
     <div class="udetail-sec">
       <p class="udetail-lbl">월 납부금액 구성</p>
       <div class="udetail-breakdown2">
-        <div class="udb2-row"><span class="udb2-badge">A</span><span>월 통신요금</span><b id="udbFee">-</b></div>
+        <div class="udb2-row"><span class="udb2-badge">A</span><span>월 통신요금</span><span style="margin-left:auto;text-align:right;"><span id="udbFeeOrig" style="text-decoration:line-through;color:#bbb;font-size:11px;margin-right:5px;display:none;"></span><b id="udbFee">-</b></span></div>
         <div class="udb2-row"><span class="udb2-badge">B</span><span>월 할부금(24개월)</span><b id="udbDev">-</b></div>
       </div>
     </div>
@@ -233,6 +233,7 @@ function refreshImg(){
   const src=(c&&c.img)||ucatSel.device.img||'';
   document.getElementById('udImg').innerHTML=src?`<img src="${src}" alt="${ucatSel.device.name}">`:'';
 }
+const UD_INSTALLMENT_RATE=1.0626; // 24개월 할부 결제시 할부이자 배율
 function refreshPrice(){
   const d=ucatSel.device;
   const st=d.storageList[ucatSel.storage||0];
@@ -240,13 +241,21 @@ function refreshPrice(){
   const planObj=ucatSel.plan||ucatPlans[0];
   const q=ucatQuote({...d,storageList:[st]},ucatSel.carrier,jointype,planObj);
   const monthlyFeeFull=planObj?planObj.monthlyPrice:0;
-  let monthlyFee,monthlyDev,subReady=true;
+  let monthlyFee,monthlyDev,subReady=true,principal;
   if(ucatSel.discountMethod==='commitment'){
     monthlyFee=Math.round(monthlyFeeFull*0.75);
-    monthlyDev=Math.round(st.price/24);
+    principal=st.price;
   } else {
-    if(!q){ subReady=false; monthlyFee=monthlyFeeFull; monthlyDev=Math.round(st.price/24); }
-    else { monthlyFee=monthlyFeeFull; monthlyDev=Math.round(q.final/24); }
+    if(!q){ subReady=false; monthlyFee=monthlyFeeFull; principal=st.price; }
+    else { monthlyFee=monthlyFeeFull; principal=q.final; }
+  }
+  monthlyDev=Math.round(principal*UD_INSTALLMENT_RATE/24);
+  const feeOrigEl=document.getElementById('udbFeeOrig');
+  if(ucatSel.discountMethod==='commitment'){
+    feeOrigEl.style.display='inline';
+    feeOrigEl.textContent=monthlyFeeFull.toLocaleString()+'원(25%↓)';
+  } else {
+    feeOrigEl.style.display='none';
   }
   document.getElementById('udbFee').textContent=monthlyFee.toLocaleString()+'원';
   document.getElementById('udbDev').textContent=monthlyDev.toLocaleString()+'원';
