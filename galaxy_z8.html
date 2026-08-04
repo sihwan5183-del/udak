@@ -1561,90 +1561,11 @@ ucatLoadFirebase();
   </div>
 </section>
 
-<!-- ══ 혜택1. 요금제별 다이렉트 혜택 (Firebase bonusPlans 실시간 연동) ══ -->
-<style>
-.ub1-plancard{border:1.5px solid #ececec;border-radius:18px;padding:22px 20px;margin-bottom:16px;background:#fff;}
-.ub1-plantitle{font-size:17px;font-weight:800;color:#1A1A1A;margin:0 0 4px;}
-.ub1-planspec{font-size:12.5px;color:#999;margin:0 0 18px;}
-.ub1-item{display:flex;gap:14px;align-items:center;padding:14px 0;border-top:1px solid #f2f2f2;}
-.ub1-item:first-of-type{border-top:none;}
-.ub1-item-img{width:52px;height:52px;border-radius:12px;background:#f9f9fb;object-fit:contain;flex-shrink:0;border:1px solid #ececec;}
-.ub1-item-name{font-size:14.5px;font-weight:700;color:#1A1A1A;margin:0 0 3px;}
-.ub1-item-desc{font-size:12px;color:#888;margin:0;}
-.ub1-item-right{margin-left:auto;text-align:right;flex-shrink:0;}
-.ub1-item-free{font-size:13px;font-weight:800;color:#E91E8C;white-space:nowrap;}
-.ub1-item-selfpay{font-size:11px;color:#e2173d;font-weight:700;margin-top:2px;white-space:nowrap;}
-.ub1-note{font-size:11px;color:#aaa;text-align:center;margin-top:14px;line-height:1.6;}
-</style>
-<section id="benefit1-section" style="width:100%;background:#ffffff;padding:48px 0 8px;scroll-margin-top:70px;">
-  <div style="max-width:600px;margin:0 auto;padding:0 24px;">
-    <p style="text-align:center;font-size:13px;font-weight:800;color:#E91E8C;letter-spacing:.06em;margin:0 0 8px;">혜택1</p>
-    <p style="text-align:center;font-size:22px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin:0 0 6px;">요금제별 다이렉트 혜택</p>
-    <p style="text-align:center;font-size:13.5px;color:#888;margin:0 0 22px;">해당 요금제를 유지하는 동안에는 별도의 요금제 부과 없이 함께 드려요</p>
-    <div id="ub1List"></div>
-    <p class="ub1-note">※ 절감액은 해당 요금제 유지 기간 동안 적용되며, 항목별 자부담금이 있는 경우 별도 표기됩니다. 실제 구성은 상담 시 확인해주세요.</p>
-  </div>
-</section>
-
-<script>
-const UB1_PLAN_SPEC={
-  '95':'플러스플랜 95 · 월 95,000원 · 테더링+쉐어링 80GB',
-  '115':'플러스플랜 115 · 월 115,000원 · 테더링+쉐어링 100GB · 참 쉬운 가족 데이터 50GB'
-};
-const UB1_DEFAULT_BONUS={
-  '95':{planGroupMatch:['95'],title:'플러스플랜 95 고객님을 위한 무료 혜택!',items:[
-    {id:'watch',name:'갤럭시 워치',desc:'기기값 + 월 요금 무료',amount:11000,selfPay:0,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png'}
-  ]},
-  '115':{planGroupMatch:['115'],title:'플러스플랜 115 고객님을 위한 무료 혜택!',items:[
-    {id:'watch',name:'갤럭시 워치',desc:'기기값 + 월 요금 무료',amount:11000,selfPay:0,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/watch.png'},
-    {id:'tab',name:'갤럭시 탭',desc:'기기값 + 월 요금 무료',amount:22000,selfPay:0,img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/files/tab.png'}
-  ]}
-};
-
-function renderUb1(bonusData){
-  const wrap=document.getElementById('ub1List');
-  if(!wrap) return;
-  const keys=['95','115'];
-  wrap.innerHTML=keys.map(key=>{
-    const bd=bonusData[key];
-    if(!bd) return '';
-    const items=(bd.items||[]).filter(i=>i.id!=='ott'&&i.id!=='internet');
-    if(!items.length) return '';
-    return`<div class="ub1-plancard">
-      <p class="ub1-plantitle">${bd.title||('플러스플랜 '+key)}</p>
-      <p class="ub1-planspec">${UB1_PLAN_SPEC[key]||''}</p>
-      ${items.map(i=>`<div class="ub1-item">
-        ${i.img?`<img class="ub1-item-img" src="${i.img}" alt="${i.name}" onerror="this.style.display='none'">`:''}
-        <div>
-          <p class="ub1-item-name">${i.name}</p>
-          <p class="ub1-item-desc">${i.desc||''}</p>
-        </div>
-        <div class="ub1-item-right">
-          ${i.amount?`<div class="ub1-item-free">월 ${Number(i.amount).toLocaleString()}원 무료</div>`:''}
-          ${i.selfPay?`<div class="ub1-item-selfpay">자부담금 ${Number(i.selfPay).toLocaleString()}원</div>`:''}
-        </div>
-      </div>`).join('')}
-    </div>`;
-  }).join('');
-}
-
-(async function loadUb1(){
-  try{
-    const r=await fetch((typeof UCAT_DB_URL!=='undefined'?UCAT_DB_URL:'https://udak-c6832-default-rtdb.firebaseio.com')+'/bonusPlans.json');
-    const data=await r.json();
-    renderUb1(data&&Object.keys(data).length?data:UB1_DEFAULT_BONUS);
-  }catch(e){
-    renderUb1(UB1_DEFAULT_BONUS);
-  }
-})();
-</script>
-
-
 <!-- ══ 요금제별 혜택 선택하기 (플랜→카테고리→모델 드릴다운, 모바일 최적화) ══ -->
 <style>
-.uwt-wrap{max-width:600px;margin:32px auto 0;padding:0 24px;}
-.uwt-title{font-size:18px;font-weight:800;color:#1A1A1A;margin:0 0 4px;text-align:center;}
-.uwt-sub{font-size:12.5px;color:#999;text-align:center;margin:0 0 18px;}
+.uwt-wrap{max-width:520px;margin:0 auto;padding:0 20px;}
+.uwt-title{font-size:24px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin:0 0 6px;text-align:center;}
+.uwt-sub{font-size:14px;color:#888;text-align:center;margin:0 0 28px;}
 .uwt-plantabs{display:flex;gap:8px;margin-bottom:16px;}
 .uwt-plantab{flex:1;text-align:center;padding:13px;border:1.5px solid #ececec;border-radius:12px;background:#fff;font-size:14.5px;font-weight:700;color:#666;cursor:pointer;font-family:inherit;}
 .uwt-plantab.on{border-color:#E91E8C;color:#E91E8C;background:rgba(233,30,140,.06);}
@@ -1670,9 +1591,10 @@ function renderUb1(bonusData){
 .uwt-detail-row.total b{color:#E91E8C;font-size:17px;}
 .uwt-empty{font-size:12px;color:#bbb;text-align:center;padding:16px 0;}
 </style>
+<section style="width:100%;background:#ffffff;padding:56px 0 64px;">
 <div class="uwt-wrap">
   <p class="uwt-title">요금제별 혜택 선택하기</p>
-  <p class="uwt-sub">플러스플랜을 고르면 함께 받을 수 있는 기기를 확인할 수 있어요</p>
+  <p class="uwt-sub">요금제를 고르면 함께 받는 기기가 보여요</p>
 
   <div class="uwt-plantabs">
     <button class="uwt-plantab on" id="uwtPlan95" onclick="uwtSetPlan('95')" type="button">플러스플랜 95</button>
@@ -1689,6 +1611,7 @@ function renderUb1(bonusData){
     <div class="uwt-detail-row total"><span>자부담금</span><b id="uwtSelfpay">-</b></div>
   </div>
 </div>
+</section>
 
 <script>
 /* 요금제별 혜택 선택 - 워치/탭 드릴다운. 가격은 Firebase watchDevices에서, 없으면 '가격 등록 필요' 표시 (임의 금액 표기 안 함) */
