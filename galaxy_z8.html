@@ -1582,7 +1582,9 @@ ucatLoadFirebase();
 .uwt-model{border:1.5px solid #ececec;border-radius:12px;padding:12px;text-align:center;cursor:pointer;background:#fff;}
 .uwt-model.on{border-color:#E91E8C;background:rgba(233,30,140,.05);}
 .uwt-model-name{font-size:13px;font-weight:700;color:#1A1A1A;line-height:1.35;}
+.uwt-model-img{width:100%;aspect-ratio:1/1;object-fit:contain;margin-bottom:8px;display:block;}
 .uwt-model-size{font-size:11px;color:#999;margin-top:2px;}
+.uwt-detail-img{width:88px;height:88px;object-fit:contain;background:#fff;border:1px solid #ececec;border-radius:12px;margin:0 auto 12px;display:block;}
 .uwt-detail{margin-top:14px;border-radius:14px;background:#f9f9fb;padding:16px 18px;display:none;}
 .uwt-detail.open{display:block;}
 .uwt-detail-row{display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;color:#666;padding:6px 0;}
@@ -1604,7 +1606,8 @@ ucatLoadFirebase();
   <div class="uwt-catlist" id="uwtCatList"></div>
 
   <div class="uwt-detail" id="uwtDetail">
-    <p style="font-size:14px;font-weight:800;color:#1A1A1A;margin:0 0 12px;" id="uwtDetailName">-</p>
+    <img class="uwt-detail-img" id="uwtDetailImg" src="" alt="" style="display:none">
+    <p style="font-size:14px;font-weight:800;color:#1A1A1A;margin:0 0 12px;text-align:center;" id="uwtDetailName">-</p>
     <div class="uwt-detail-row"><span>출고가격</span><b id="uwtLaunch">-</b></div>
     <div class="uwt-detail-row"><span>공시지원금</span><b id="uwtPub">-</b></div>
     <div class="uwt-detail-row"><span>유플러스 다이렉트 지원금</span><b id="uwtUdak">-</b></div>
@@ -1621,12 +1624,12 @@ const UWT_CATEGORIES={
 };
 const UWT_MODELS={
   watch:[
-    {id:'watch8-40',name:'갤럭시 워치 8',size:'40mm'},
-    {id:'watch8-44',name:'갤럭시 워치 8',size:'44mm'},
-    {id:'watch9-40',name:'갤럭시 워치 9',size:'40mm'},
-    {id:'watch9-44',name:'갤럭시 워치 9',size:'44mm'},
-    {id:'watch-ultra1',name:'갤럭시 워치 울트라 1',size:''},
-    {id:'watch-ultra2',name:'갤럭시 워치 울트라 2',size:''}
+    {id:'watch8-40',name:'갤럭시 워치 8',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch8.png'},
+    {id:'watch8-44',name:'갤럭시 워치 8',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch8.png'},
+    {id:'watch9-40',name:'갤럭시 워치 9',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch9.png'},
+    {id:'watch9-44',name:'갤럭시 워치 9',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch9.png'},
+    {id:'watch-ultra1',name:'갤럭시 워치 울트라 1',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-ultra1.png'},
+    {id:'watch-ultra2',name:'갤럭시 워치 울트라 2',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-ultra2.png'}
   ],
   tab:[]
 };
@@ -1666,6 +1669,7 @@ function uwtRenderCats(){
       <div class="uwt-modelbox${isOpen?' open':''}" id="uwtModelbox_${c.id}">
         ${models.length?`<div class="uwt-modelgrid">
           ${models.map(m=>`<div class="uwt-model${uwtState.openModel===m.id?' on':''}" onclick="uwtPickModel('${m.id}',event)">
+            ${m.img?`<img class="uwt-model-img" src="${m.img}" alt="${m.name}">`:''}
             <div class="uwt-model-name">${m.name}</div>
             ${m.size?`<div class="uwt-model-size">${m.size}</div>`:''}
           </div>`).join('')}
@@ -1691,6 +1695,9 @@ window.uwtPickModel=function(modelId,ev){
   const pr=uwtPricing[modelId];
   const detail=document.getElementById('uwtDetail');
   document.getElementById('uwtDetailName').textContent=model.name+(model.size?' ('+model.size+')':'');
+  const detailImgEl=document.getElementById('uwtDetailImg');
+  if(model.img){ detailImgEl.src=model.img; detailImgEl.alt=model.name; detailImgEl.style.display='block'; }
+  else { detailImgEl.style.display='none'; }
   if(pr&&pr.price!=null){
     const price=Number(pr.price)||0, pub=Number(pr.pubSupport)||0, udak=Number(pr.udakSupport)||0;
     const selfPay=Math.max(0,price-pub-udak);
