@@ -1803,6 +1803,7 @@ window.uwtPickModel=function(modelId,ev){
 window.uwtConfirmModel=function(){
   if(!uwtPreviewModelId) return;
   uwtState.openModel=uwtPreviewModelId;
+  uwtState.openCat=null;
   uwtCloseDetail();
   uwtRenderCats();
   setTimeout(()=>{
