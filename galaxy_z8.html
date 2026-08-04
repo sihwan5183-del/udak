@@ -1601,6 +1601,7 @@ ucatLoadFirebase();
 .uwt-detail-row b{color:#1A1A1A;font-weight:700;}
 .uwt-detail-row.total{border-top:1px dashed #ddd;margin-top:6px;padding-top:12px;}
 .uwt-detail-row.total b{color:#E91E8C;font-size:17px;}
+.uwt-detail-confirm{width:100%;margin-top:16px;padding:15px;background:#E91E8C;border:none;border-radius:13px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;}
 .uwt-empty{font-size:12px;color:#bbb;text-align:center;padding:16px 0;}
 </style>
 <section style="width:100%;background:#ffffff;padding:56px 0 64px;">
@@ -1634,6 +1635,7 @@ ucatLoadFirebase();
         <div class="uwt-detail-row"><span>유플러스 다이렉트 지원금</span><b id="uwtUdak">-</b></div>
         <div class="uwt-detail-row total"><span>자부담금</span><b id="uwtSelfpay">-</b></div>
       </div>
+      <button class="uwt-detail-confirm" id="uwtConfirmBtn" onclick="uwtConfirmModel()" type="button">이 모델 선택하기</button>
     </div>
   </div>
 </div>
@@ -1728,10 +1730,10 @@ window.uwtCloseDetail=function(){
   document.body.style.overflow='';
 };
 
+let uwtPreviewModelId=null;
 window.uwtPickModel=function(modelId,ev){
   if(ev) ev.stopPropagation();
-  uwtState.openModel=modelId;
-  uwtRenderCats();
+  uwtPreviewModelId=modelId;
   const allModels=[].concat(...Object.values(UWT_MODELS));
   const model=allModels.find(m=>m.id===modelId);
   const detail=document.getElementById('uwtModalOverlay');
@@ -1753,6 +1755,12 @@ window.uwtPickModel=function(modelId,ev){
   }
   detail.classList.add('open');
   document.body.style.overflow='hidden';
+};
+window.uwtConfirmModel=function(){
+  if(!uwtPreviewModelId) return;
+  uwtState.openModel=uwtPreviewModelId;
+  uwtCloseDetail();
+  uwtRenderCats();
 };
 
 uwtRenderCats();
