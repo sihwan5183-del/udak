@@ -485,9 +485,15 @@ window.ctaGo=function(){
   const total=document.getElementById('udHeroAmt').textContent;
   const img=document.getElementById('udImg').querySelector('img')?document.getElementById('udImg').querySelector('img').src:(d.img||'');
   const jointype=ucatSel.carrier==='LG U+'?'기기변경':'번호이동';
+  const allWatchModels=[].concat(...Object.values(UWT_MODELS));
+  const pickedIds=Object.values(uwtSelectedByCat||{}).filter(Boolean);
+  const pickedModels=pickedIds.map(id=>allWatchModels.find(m=>m.id===id)).filter(Boolean);
+  const watchNames=pickedModels.map(m=>m.name+(m.size?' '+m.size:'')).join(' + ');
+  const watchSelfpaySum=pickedModels.reduce((sum,m)=>{ const info=uwtGetPriceInfo(m.id); return sum+(info?info.selfPay:0); },0);
   const p=new URLSearchParams({
     openReserve:d.name, oColor:colorName, oStorage:storageName, oCarrier:ucatSel.carrier,
-    oJointype:jointype, oPlan:planName, oTotal:total, oImg:img
+    oJointype:jointype, oPlan:planName, oTotal:total, oImg:img,
+    oWatch:watchNames, oWatchSelfpay:pickedModels.length?watchSelfpaySum.toLocaleString()+'원':''
   });
   window.location.href='/galaxy_z8?'+p.toString();
 };

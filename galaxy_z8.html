@@ -2333,7 +2333,8 @@ function openReservationModal(){
   if(dev){
     mDevice=dev;
     const oColor=params.get('oColor'), oStorage=params.get('oStorage'), oCarrier=params.get('oCarrier'),
-          oJointype=params.get('oJointype'), oPlan=params.get('oPlan'), oTotal=params.get('oTotal'), oImg=params.get('oImg');
+          oJointype=params.get('oJointype'), oPlan=params.get('oPlan'), oTotal=params.get('oTotal'), oImg=params.get('oImg'),
+          oWatch=params.get('oWatch'), oWatchSelfpay=params.get('oWatchSelfpay');
     setTimeout(()=>{
       openReservationModal();
       const summaryBox=document.getElementById('mOrderSummaryBox');
@@ -2343,6 +2344,14 @@ function openReservationModal(){
         document.getElementById('mOrderSummaryOpts').textContent=[oColor,oJointype?(oJointype+'('+oCarrier+')'):oCarrier,oPlan].filter(Boolean).join(' | ');
         document.getElementById('mOrderSummaryTotal').textContent='월 '+oTotal;
         if(oImg) document.getElementById('mOrderSummaryImg').src=oImg;
+        if(oWatch){
+          document.getElementById('mOrderSummaryWatchRow').style.display='block';
+          document.getElementById('mOrderSummaryWatchName').textContent=oWatch;
+          document.getElementById('mOrderSummaryWatchSelfpay').textContent=oWatchSelfpay?('자부담금 '+oWatchSelfpay):'';
+        }
+        // 이미 device.html에서 상품/요금제별 혜택을 다 고르고 온 상태라, 중복으로 다시 고르게 하지 않고 선택 UI는 숨김
+        const selGrid=document.getElementById('mSelectorGrid');
+        if(selGrid) selGrid.style.display='none';
       }
       document.querySelectorAll('.mdevice-card').forEach(function(b){ if(b.textContent.trim()===dev){ b.classList.add('selected'); mDevice=dev; } });
       if(oCarrier){ document.querySelectorAll('.mcarrier-card').forEach(function(b){ if(b.textContent.trim()===oCarrier){ b.classList.add('selected'); mCarrier=oCarrier; } }); }
@@ -2440,12 +2449,15 @@ function mSubmitForm(){
   var birthF = '19'+birth.slice(0,2)+'-'+birth.slice(2,4)+'-'+birth.slice(4,6);
   var memoEl = document.getElementById('mUserNote');
   var memo = memoEl ? memoEl.value.trim() : '';
+  var urlWatchParam = new URLSearchParams(window.location.search).get('oWatch');
   if(mSecondDevice){
     var allSecModelsM=[].concat(...Object.values(typeof UWT_MODELS!=='undefined'?UWT_MODELS:{}));
     var secModelObjM=allSecModelsM.find(function(m){return m.id===mSecondDevice;});
     if(secModelObjM){
       memo=(memo?memo+' / ':'')+'요금제별혜택 희망: '+secModelObjM.name+(secModelObjM.size?' '+secModelObjM.size:'')+' (PLAN '+mSecondPlan+')';
     }
+  } else if(urlWatchParam){
+    memo=(memo?memo+' / ':'')+'요금제별혜택 희망: '+urlWatchParam;
   }
   // 팝업 먼저 표시
   if(typeof fbq!=='undefined')fbq('track','Lead');
@@ -2764,19 +2776,29 @@ function fSubmit(){
     <div class="modal-title">사전예약 신청하기</div>
     <div class="modal-sub">언팩 후 혜택 정보를 가장 먼저 받아보세요.<br>곧 공개될 유플러스 다이렉트 사전예약 지원금을 확인해보세요.</div>
 
-    <div id="mOrderSummaryBox" style="display:none;background:#f7f7f9;border-radius:14px;padding:14px;margin-bottom:18px;">
-      <p style="font-size:11px;font-weight:700;color:#999;margin-bottom:8px;">주문 상품</p>
-      <div style="display:flex;gap:12px;align-items:center;">
+    <div id="mOrderSummaryBox" style="display:none;background:#f7f7f9;border-radius:14px;padding:16px;margin-bottom:18px;">
+      <p style="font-size:11px;font-weight:700;color:#999;margin-bottom:10px;">주문 상품</p>
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
         <img id="mOrderSummaryImg" src="" alt="" style="width:48px;height:48px;object-fit:contain;background:#fff;border:1px solid #ececec;border-radius:8px;flex-shrink:0;">
         <div>
           <p id="mOrderSummaryName" style="font-size:14px;font-weight:800;color:#1A1A1A;margin:0 0 2px;"></p>
-          <p id="mOrderSummaryOpts" style="font-size:11px;color:#888;margin:0 0 3px;"></p>
-          <p id="mOrderSummaryTotal" style="font-size:14px;font-weight:800;color:#E91E8C;margin:0;"></p>
+          <p id="mOrderSummaryOpts" style="font-size:11px;color:#888;margin:0;"></p>
         </div>
+      </div>
+      <div id="mOrderSummaryWatchRow" style="display:none;border-top:1px dashed #ddd;padding-top:10px;margin-bottom:10px;">
+        <p style="font-size:11px;color:#999;margin:0 0 3px;">🎁 요금제별 혜택</p>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;">
+          <span id="mOrderSummaryWatchName" style="font-size:12.5px;font-weight:700;color:#1A1A1A;"></span>
+          <span id="mOrderSummaryWatchSelfpay" style="font-size:12px;font-weight:700;color:#E91E8C;"></span>
+        </div>
+      </div>
+      <div style="border-top:1px dashed #ddd;padding-top:10px;display:flex;justify-content:space-between;align-items:baseline;">
+        <span style="font-size:11px;color:#999;">월 납부금액</span>
+        <p id="mOrderSummaryTotal" style="font-size:16px;font-weight:800;color:#E91E8C;margin:0;"></p>
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+    <div id="mSelectorGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
       <div class="mform-group" style="margin-bottom:0;">
         <div class="mform-label" style="font-size:14px;margin-bottom:8px;">원하는 상품</div>
         <div style="display:flex;flex-direction:column;gap:6px;">
