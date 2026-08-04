@@ -2332,16 +2332,16 @@ function openReservationModal(){
     mDevice=dev;
     const oColor=params.get('oColor'), oStorage=params.get('oStorage'), oCarrier=params.get('oCarrier'),
           oJointype=params.get('oJointype'), oPlan=params.get('oPlan'), oTotal=params.get('oTotal'), oImg=params.get('oImg');
-    const summaryBox=document.getElementById('mOrderSummaryBox');
-    if(oTotal&&summaryBox){
-      summaryBox.style.display='block';
-      document.getElementById('mOrderSummaryName').textContent=dev;
-      document.getElementById('mOrderSummaryOpts').textContent=[oColor,oJointype?(oJointype+'('+oCarrier+')'):oCarrier,oPlan].filter(Boolean).join(' | ');
-      document.getElementById('mOrderSummaryTotal').textContent='월 '+oTotal;
-      if(oImg) document.getElementById('mOrderSummaryImg').src=oImg;
-    }
     setTimeout(()=>{
       openReservationModal();
+      const summaryBox=document.getElementById('mOrderSummaryBox');
+      if(oTotal&&summaryBox){
+        summaryBox.style.display='block';
+        document.getElementById('mOrderSummaryName').textContent=dev;
+        document.getElementById('mOrderSummaryOpts').textContent=[oColor,oJointype?(oJointype+'('+oCarrier+')'):oCarrier,oPlan].filter(Boolean).join(' | ');
+        document.getElementById('mOrderSummaryTotal').textContent='월 '+oTotal;
+        if(oImg) document.getElementById('mOrderSummaryImg').src=oImg;
+      }
       document.querySelectorAll('.mdevice-card').forEach(function(b){ if(b.textContent.trim()===dev){ b.classList.add('selected'); mDevice=dev; } });
       if(oCarrier){ document.querySelectorAll('.mcarrier-card').forEach(function(b){ if(b.textContent.trim()===oCarrier){ b.classList.add('selected'); mCarrier=oCarrier; } }); }
     },300);
