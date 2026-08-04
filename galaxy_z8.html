@@ -1819,7 +1819,11 @@ const UWT_MODELS={
   ]
 };
 let uwtPricing={}; // Firebase에서 채움: {modelId: {price, pubSupport, udakSupport}}
-let uwtState={plan:'95',openCat:null,openModel:null};
+let uwtState={plan:'95',openCat:null,selectedByCat:{}};
+function uwtFindCategoryForModel(modelId){
+  for(const catId in UWT_MODELS){ if(UWT_MODELS[catId].some(m=>m.id===modelId)) return catId; }
+  return null;
+}
 
 async function uwtLoadPricing(){
   try{
@@ -1832,7 +1836,7 @@ async function uwtLoadPricing(){
 
 window.uwtSetPlan=function(p){
   uwtState.plan=p;
-  uwtState.openCat=null;uwtState.openModel=null;
+  uwtState.openCat=null;
   document.getElementById('uwtPlan95').className='uwt-plancard'+(p==='95'?' on':'');
   document.getElementById('uwtPlan115').className='uwt-plancard'+(p==='115'?' on':'');
   uwtCloseDetail();
@@ -1852,13 +1856,13 @@ function uwtRenderCats(){
   wrap.innerHTML=cats.map(c=>{
     const isOpen=uwtState.openCat===c.id;
     const models=(UWT_MODELS[c.id]||[]).filter(m=>(uwtPricing[m.id]?.visible)!==false);
-    const pickedModel=uwtState.openModel?allModels.find(m=>m.id===uwtState.openModel):null;
-    const pickedInThisCat=pickedModel&&models.some(m=>m.id===pickedModel.id);
+    const pickedModelId=uwtState.selectedByCat[c.id];
+    const pickedModel=pickedModelId?allModels.find(m=>m.id===pickedModelId):null;
     return`<div>
       <div class="uwt-cat${isOpen?' on':''}" onclick="uwtToggleCat('${c.id}')">
         <span class="uwt-cat-name">${c.name}</span>
       </div>
-      ${pickedInThisCat?(()=>{
+      ${pickedModel?(()=>{
         const info=uwtGetPriceInfo(pickedModel.id);
         return`<div class="uwt-picksummary" onclick="uwtPickModel('${pickedModel.id}')">
           <span class="uwt-picksummary-check">✓</span>
@@ -1871,7 +1875,7 @@ function uwtRenderCats(){
           ${models.map(m=>{
             const fbColors=uwtPricing[m.id]?.colors;
             const cardImg=(fbColors&&fbColors[0]&&fbColors[0].img)||m.img;
-            return`<div class="uwt-model${uwtState.openModel===m.id?' on':''}" onclick="uwtPickModel('${m.id}',event)">
+            return`<div class="uwt-model${pickedModelId===m.id?' on':''}" onclick="uwtPickModel('${m.id}',event)">
               ${cardImg?`<img class="uwt-model-img" src="${cardImg}" alt="${m.name}">`:''}
               <div class="uwt-model-name">${m.name}</div>
               ${m.size?`<div class="uwt-model-size">${m.size}</div>`:''}
@@ -1945,7 +1949,8 @@ window.uwtPickModel=function(modelId,ev){
 };
 window.uwtConfirmModel=function(){
   if(!uwtPreviewModelId) return;
-  uwtState.openModel=uwtPreviewModelId;
+  const cat=uwtFindCategoryForModel(uwtPreviewModelId);
+  if(cat) uwtState.selectedByCat[cat]=uwtPreviewModelId;
   uwtState.openCat=null;
   uwtCloseDetail();
   uwtRenderCats();

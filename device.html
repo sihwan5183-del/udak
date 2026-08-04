@@ -155,7 +155,11 @@ const UWT_MODELS={
   ]
 };
 let uwtPricing={};
-let uwtOpenCat=null, uwtOpenModel=null, uwtPreviewModelId=null, uwtPreviewColorIdx=0;
+let uwtOpenCat=null, uwtSelectedByCat={}, uwtPreviewModelId=null, uwtPreviewColorIdx=0;
+function uwtFindCategoryForModel(modelId){
+  for(const catId in UWT_MODELS){ if(UWT_MODELS[catId].some(m=>m.id===modelId)) return catId; }
+  return null;
+}
 async function uwtLoadPricing(){
   try{
     const r=await fetch(UCAT_DB_URL+'/watchDevices.json');
@@ -181,13 +185,13 @@ function renderUwtSection(){
   wrap.innerHTML=cats.map(c=>{
     const isOpen=uwtOpenCat===c.id;
     const models=(UWT_MODELS[c.id]||[]).filter(m=>(uwtPricing[m.id]?.visible)!==false);
-    const pickedModel=uwtOpenModel?allModels.find(m=>m.id===uwtOpenModel):null;
-    const pickedInThisCat=pickedModel&&models.some(m=>m.id===pickedModel.id);
+    const pickedModelId=uwtSelectedByCat[c.id];
+    const pickedModel=pickedModelId?allModels.find(m=>m.id===pickedModelId):null;
     return`<div>
       <div class="uwt-cat${isOpen?' on':''}" onclick="uwtToggleCat('${c.id}')">
         <span class="uwt-cat-name">${c.name}</span>
       </div>
-      ${pickedInThisCat?(()=>{
+      ${pickedModel?(()=>{
         const info=uwtGetPriceInfo(pickedModel.id);
         return`<div class="uwt-picksummary" onclick="uwtPickModel('${pickedModel.id}')">
           <span class="uwt-picksummary-check">✓</span>
@@ -200,7 +204,7 @@ function renderUwtSection(){
           ${models.map(m=>{
             const fbColors=uwtPricing[m.id]?.colors;
             const cardImg=(fbColors&&fbColors[0]&&fbColors[0].img)||m.img;
-            return`<div class="uwt-model${uwtOpenModel===m.id?' on':''}" onclick="uwtPickModel('${m.id}',event)">
+            return`<div class="uwt-model${pickedModelId===m.id?' on':''}" onclick="uwtPickModel('${m.id}',event)">
               ${cardImg?`<img class="uwt-model-img" src="${cardImg}" alt="${m.name}">`:''}
               <div class="uwt-model-name">${m.name}</div>
               ${m.size?`<div class="uwt-model-size">${m.size}</div>`:''}
@@ -261,7 +265,8 @@ window.uwtPickModel=function(modelId,ev){
 };
 window.uwtConfirmModel=function(){
   if(!uwtPreviewModelId) return;
-  uwtOpenModel=uwtPreviewModelId;
+  const cat=uwtFindCategoryForModel(uwtPreviewModelId);
+  if(cat) uwtSelectedByCat[cat]=uwtPreviewModelId;
   uwtOpenCat=null;
   uwtCloseDetail();
   renderUwtSection();
@@ -319,7 +324,7 @@ function renderPage(){
     return;
   }
   ucatSel={device:d,color:0,storage:0,carrier:'LG U+',plan:(ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0]),discountMethod:'pubSupport',planListOpen:false};
-  uwtOpenCat=null; uwtOpenModel=null;
+  uwtOpenCat=null; uwtSelectedByCat={};
   document.title=d.name+' — 유플러스 다이렉트';
   document.getElementById('dContent').innerHTML=`
     <div class="udetail-img" id="udImg"></div>
