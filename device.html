@@ -281,8 +281,19 @@ function refreshPrice(){
   document.getElementById('udHeroSub').textContent=(planObj?planObj.name:'-')+' / 24개월 기준'+(subReady?'':' · 공시지원금 정책 준비중(할부원금 기준)');
 }
 window.ctaGo=function(){
-  // 예약/상담 신청은 galaxy_z8의 신청폼으로 이동 (기기명 쿼리로 전달, 거기서 자동 오픈)
-  window.location.href='/galaxy_z8?openReserve='+encodeURIComponent(ucatSel.device.name);
+  const d=ucatSel.device;
+  const colorObj=d.colors&&d.colors[ucatSel.color];
+  const colorName=colorObj?colorObj.name.split('|')[1]:'';
+  const storageName=d.storageList[ucatSel.storage||0].name;
+  const planName=ucatSel.plan?ucatSel.plan.name:'';
+  const total=document.getElementById('udHeroAmt').textContent;
+  const img=document.getElementById('udImg').querySelector('img')?document.getElementById('udImg').querySelector('img').src:(d.img||'');
+  const jointype=ucatSel.carrier==='LG U+'?'기기변경':'번호이동';
+  const p=new URLSearchParams({
+    openReserve:d.name, oColor:colorName, oStorage:storageName, oCarrier:ucatSel.carrier,
+    oJointype:jointype, oPlan:planName, oTotal:total, oImg:img
+  });
+  window.location.href='/galaxy_z8?'+p.toString();
 };
 
 async function loadFirebaseAndRender(){

@@ -2325,12 +2325,26 @@ function openReservationModal(){
   document.body.style.overflow = 'hidden';
 }
 (function(){
-  // device.html에서 상담문의/주문신청하기 누르고 넘어온 경우 자동으로 신청폼 오픈
+  // device.html에서 상담문의/주문신청하기 누르고 넘어온 경우 자동으로 신청폼 오픈 + 주문요약 카드 채움
   const params=new URLSearchParams(window.location.search);
   const dev=params.get('openReserve');
   if(dev){
     mDevice=dev;
-    setTimeout(()=>{ openReservationModal(); },300);
+    const oColor=params.get('oColor'), oStorage=params.get('oStorage'), oCarrier=params.get('oCarrier'),
+          oJointype=params.get('oJointype'), oPlan=params.get('oPlan'), oTotal=params.get('oTotal'), oImg=params.get('oImg');
+    if(oTotal){
+      document.getElementById('orderSummaryBox').style.display='block';
+      document.getElementById('orderSummaryName').textContent=dev;
+      document.getElementById('orderSummaryOpts').textContent=[oColor,oJointype?(oJointype+'('+oCarrier+')'):oCarrier,oPlan].filter(Boolean).join(' | ');
+      document.getElementById('orderSummaryTotal').textContent='월 '+oTotal;
+      if(oImg) document.getElementById('orderSummaryImg').src=oImg;
+    }
+    setTimeout(()=>{
+      openReservationModal();
+      // 폼 내 제품/통신사 버튼도 동일하게 미리 선택
+      document.querySelectorAll('.f-device-btn').forEach(function(b){ if(b.textContent.trim()===dev){ b.classList.add('on'); fDevice=dev; } });
+      if(oCarrier){ document.querySelectorAll('.f-carrier-btn').forEach(function(b){ if(b.textContent.trim()===oCarrier){ b.classList.add('on'); fCarrier=oCarrier; } }); }
+    },300);
   }
 })();
 function closeReservationModal(e){
@@ -2513,6 +2527,17 @@ function toggleKakaoPopup(){
       <p style="font-size:14px;color:#888;line-height:1.6;">언팩 후 혜택 정보를 가장 먼저 받아보세요.<br>곧 공개될 유플러스 다이렉트 사전예약 지원금을 확인해보세요.</p>
     </div>
     <div style="background:#fff;border-radius:20px;padding:32px 28px;box-shadow:0 4px 24px rgba(0,0,0,.06);">
+      <div id="orderSummaryBox" style="display:none;background:#f7f7f9;border-radius:14px;padding:16px;margin-bottom:24px;">
+        <p style="font-size:12px;font-weight:700;color:#999;margin-bottom:10px;">주문 상품</p>
+        <div style="display:flex;gap:14px;align-items:center;">
+          <img id="orderSummaryImg" src="" alt="" style="width:56px;height:56px;object-fit:contain;background:#fff;border:1px solid #ececec;border-radius:10px;flex-shrink:0;">
+          <div>
+            <p id="orderSummaryName" style="font-size:15px;font-weight:800;color:#1A1A1A;margin:0 0 3px;"></p>
+            <p id="orderSummaryOpts" style="font-size:12px;color:#888;margin:0 0 4px;"></p>
+            <p id="orderSummaryTotal" style="font-size:16px;font-weight:800;color:#E91E8C;margin:0;"></p>
+          </div>
+        </div>
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
         <div>
           <p style="font-size:15px;font-weight:700;color:#111;margin-bottom:10px;">원하는 상품</p>
