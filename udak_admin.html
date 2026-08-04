@@ -1205,11 +1205,12 @@ function renderBonusAdmin(){
       <div style="font-size:12px;font-weight:700;color:var(--g600);margin-bottom:10px">혜택 아이템</div>
       <div style="display:flex;flex-direction:column;gap:10px">
         ${(bd.items||[]).map((item,i)=>`
-          <div style="display:grid;grid-template-columns:0.8fr 1fr 1fr 0.6fr;gap:8px;align-items:end;background:var(--g50);padding:12px;border-radius:8px">
+          <div style="display:grid;grid-template-columns:0.8fr 1fr 1fr 0.6fr 0.6fr;gap:8px;align-items:end;background:var(--g50);padding:12px;border-radius:8px">
             <div class="fg" style="margin-bottom:0"><label class="flbl">항목명</label><input type="text" class="fi" style="height:36px" id="bi_${key}_${i}_name" value="${item.name}"></div>
             <div class="fg" style="margin-bottom:0"><label class="flbl">설명</label><input type="text" class="fi" style="height:36px" id="bi_${key}_${i}_desc" value="${item.desc}"></div>
             <div class="fg" style="margin-bottom:0"><label class="flbl">이미지 파일명</label><input type="text" class="fi" style="height:36px;font-family:monospace" id="bi_${key}_${i}_img" value="${item.img}" placeholder="watch.jpg"></div>
             <div class="fg" style="margin-bottom:0"><label class="flbl">절감액(원)</label><input type="number" class="fi" style="height:36px" id="bi_${key}_${i}_amount" value="${item.amount}" placeholder="0=별도안내"></div>
+            <div class="fg" style="margin-bottom:0"><label class="flbl" style="color:var(--red)">자부담금(원)</label><input type="number" class="fi" style="height:36px" id="bi_${key}_${i}_selfpay" value="${item.selfPay||0}" placeholder="0=전액무료"></div>
           </div>`).join('')}
       </div>
     </div>`;
@@ -1227,6 +1228,7 @@ window.saveBonusAdmin = async function(){
       item.desc = document.getElementById(`bi_${key}_${i}_desc`)?.value || item.desc;
       item.img = document.getElementById(`bi_${key}_${i}_img`)?.value || item.img;
       item.amount = Number(document.getElementById(`bi_${key}_${i}_amount`)?.value)||0;
+      item.selfPay = Number(document.getElementById(`bi_${key}_${i}_selfpay`)?.value)||0;
     });
   });
   try{
