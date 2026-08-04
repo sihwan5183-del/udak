@@ -1579,6 +1579,10 @@ ucatLoadFirebase();
 .uwt-cat.on{border-color:#E91E8C;background:rgba(233,30,140,.04);}
 .uwt-cat-name{font-size:16px;font-weight:800;color:#1A1A1A;text-align:center;}
 .uwt-cat.on .uwt-cat-name{color:#E91E8C;}
+.uwt-picksummary{display:flex;align-items:center;gap:8px;background:rgba(233,30,140,.05);border:1.5px solid rgba(233,30,140,.25);border-radius:12px;padding:12px 14px;margin-top:8px;cursor:pointer;}
+.uwt-picksummary-check{width:18px;height:18px;border-radius:50%;background:#E91E8C;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.uwt-picksummary-name{font-size:12.5px;font-weight:700;color:#1A1A1A;flex:1;}
+.uwt-picksummary-price{font-size:12.5px;font-weight:800;color:#E91E8C;white-space:nowrap;}
 .uwt-modelbox{overflow:hidden;max-height:0;transition:max-height .25s ease;}
 .uwt-modelbox.open{max-height:900px;}
 .uwt-modelgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 2px 4px;}
@@ -1673,16 +1677,33 @@ window.uwtSetPlan=function(p){
   uwtRenderCats();
 };
 
+function uwtGetPriceInfo(modelId){
+  const pr=uwtPricing[modelId];
+  if(!pr||pr.price==null) return null;
+  const price=Number(pr.price)||0, pub=Number(pr.pubSupport)||0, udak=Number(pr.udakSupport)||0;
+  return {price,pub,udak,selfPay:Math.max(0,price-pub-udak)};
+}
 function uwtRenderCats(){
   const wrap=document.getElementById('uwtCatList');
   const cats=UWT_CATEGORIES[uwtState.plan]||[];
+  const allModels=[].concat(...Object.values(UWT_MODELS));
   wrap.innerHTML=cats.map(c=>{
     const isOpen=uwtState.openCat===c.id;
     const models=UWT_MODELS[c.id]||[];
+    const pickedModel=uwtState.openModel?allModels.find(m=>m.id===uwtState.openModel):null;
+    const pickedInThisCat=pickedModel&&models.some(m=>m.id===pickedModel.id);
     return`<div>
       <div class="uwt-cat${isOpen?' on':''}" onclick="uwtToggleCat('${c.id}')">
         <span class="uwt-cat-name">${c.name}</span>
       </div>
+      ${pickedInThisCat?(()=>{
+        const info=uwtGetPriceInfo(pickedModel.id);
+        return`<div class="uwt-picksummary" onclick="uwtPickModel('${pickedModel.id}')">
+          <span class="uwt-picksummary-check">✓</span>
+          <span class="uwt-picksummary-name">${pickedModel.name}${pickedModel.size?' ('+pickedModel.size+')':''} 선택</span>
+          <span class="uwt-picksummary-price">${info?('자부담금 '+info.selfPay.toLocaleString()+'원'):'가격 등록 필요'}</span>
+        </div>`;
+      })():''}
       <div class="uwt-modelbox${isOpen?' open':''}" id="uwtModelbox_${c.id}">
         ${models.length?`<div class="uwt-modelgrid">
           ${models.map(m=>`<div class="uwt-model${uwtState.openModel===m.id?' on':''}" onclick="uwtPickModel('${m.id}',event)">
@@ -1714,19 +1735,17 @@ window.uwtPickModel=function(modelId,ev){
   uwtRenderCats();
   const allModels=[].concat(...Object.values(UWT_MODELS));
   const model=allModels.find(m=>m.id===modelId);
-  const pr=uwtPricing[modelId];
   const detail=document.getElementById('uwtModalOverlay');
   document.getElementById('uwtDetailName').textContent=model.name+(model.size?' ('+model.size+')':'');
   const detailImgEl=document.getElementById('uwtDetailImg');
   if(model.img){ detailImgEl.src=model.img; detailImgEl.alt=model.name; detailImgEl.style.display='block'; }
   else { detailImgEl.style.display='none'; }
-  if(pr&&pr.price!=null){
-    const price=Number(pr.price)||0, pub=Number(pr.pubSupport)||0, udak=Number(pr.udakSupport)||0;
-    const selfPay=Math.max(0,price-pub-udak);
-    document.getElementById('uwtLaunch').textContent=price.toLocaleString()+'원';
-    document.getElementById('uwtPub').textContent=pub.toLocaleString()+'원';
-    document.getElementById('uwtUdak').textContent=udak.toLocaleString()+'원';
-    document.getElementById('uwtSelfpay').textContent=selfPay.toLocaleString()+'원';
+  const pInfo=uwtGetPriceInfo(modelId);
+  if(pInfo){
+    document.getElementById('uwtLaunch').textContent=pInfo.price.toLocaleString()+'원';
+    document.getElementById('uwtPub').textContent=pInfo.pub.toLocaleString()+'원';
+    document.getElementById('uwtUdak').textContent=pInfo.udak.toLocaleString()+'원';
+    document.getElementById('uwtSelfpay').textContent=pInfo.selfPay.toLocaleString()+'원';
   } else {
     document.getElementById('uwtLaunch').textContent='-';
     document.getElementById('uwtPub').textContent='-';
