@@ -1469,6 +1469,8 @@ function ucatQuote(device,carrierName,jointype,planObj){
   const storage=device.storageList&&device.storageList[0];
   const lp=storage?storage.price:0;
   const pg=planObj?Math.floor(planObj.monthlyPrice/1000).toString():'85';
+  const isZ8=(device.id||'').startsWith('z-');
+  const searchPolicies=isZ8?UCAT_Z8_POLICIES:(ucatPolicies||[]);
   const fns=[
     p=>p.jointype===jointype&&p.carrier!=='all'&&p.carrier&&p.carrier.includes(carrierName)&&p.plangroup===pg,
     p=>p.jointype===jointype&&p.carrier==='all'&&p.plangroup===pg,
@@ -1481,7 +1483,7 @@ function ucatQuote(device,carrierName,jointype,planObj){
   ];
   let pol=null;
   for(const fn of fns){
-    const f=(ucatPolicies||[]).find(fn);
+    const f=searchPolicies.find(fn);
     if(f){
       if((f.excludedDevs||[]).includes(device.id)) continue;
       if(f.deviceOverrides&&f.deviceOverrides[device.id]){
