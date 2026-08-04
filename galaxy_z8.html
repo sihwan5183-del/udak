@@ -1486,9 +1486,15 @@ function ucatQuote(device,carrierName,jointype,planObj){
     const f=searchPolicies.find(fn);
     if(f){
       if((f.excludedDevs||[]).includes(device.id)) continue;
-      if(f.deviceOverrides&&f.deviceOverrides[device.id]){
-        const ov=f.deviceOverrides[device.id];
-        pol={...f,...ov};
+      const rawOv=f.deviceOverrides&&f.deviceOverrides[device.id];
+      if(rawOv){
+        // 실제 어드민에서 생성되는 override는 용량(예: '256GB') 하위에 중첩되어 있음.
+        // 중첩 구조를 못 찾으면 과거 형식(평면 구조)도 폴백으로 지원.
+        const storageName=storage?storage.name:null;
+        const nested=storageName?rawOv[storageName]:null;
+        const flat=(rawOv.pubSupport!=null||rawOv.rebate!=null)?rawOv:null;
+        const ov=nested||flat;
+        pol=ov?{...f,...ov}:f;
       } else pol=f;
       break;
     }
