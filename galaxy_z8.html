@@ -1297,6 +1297,39 @@ function closeNavDrawer() {
 .udb-row.total{border-top:1px dashed #eee;margin-top:6px;padding-top:12px;font-size:14px;}
 .udb-row.total b{color:#E91E8C;font-size:17px;}
 .udetail-cta{width:100%;margin-top:8px;padding:16px;background:#E91E8C;border:none;border-radius:13px;color:#fff;font-size:16px;font-weight:800;cursor:pointer;}
+
+.udetail-hero{background:rgba(233,30,140,.05);border:1px solid rgba(233,30,140,.15);border-radius:16px;padding:20px;margin-bottom:24px;}
+.udetail-hero-lbl{font-size:12.5px;color:#888;font-weight:700;margin:0 0 6px;}
+.udetail-hero-amt{font-size:30px;font-weight:800;color:#E91E8C;letter-spacing:-.02em;}
+.udetail-hero-amt span{font-size:17px;font-weight:700;margin-left:2px;}
+.udetail-hero-sub{font-size:12px;color:#999;margin:4px 0 0;}
+.udetail-plan-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:1.5px solid #ececec;border-radius:12px;cursor:pointer;}
+.udetail-plan-row.open{border-radius:12px 12px 0 0;}
+.udetail-plan-left{font-size:13px;color:#888;font-weight:700;}
+.udetail-plan-mid{font-size:14px;color:#1A1A1A;font-weight:800;margin-left:8px;}
+.udetail-plan-right{display:flex;align-items:center;gap:6px;}
+.udetail-plan-price{color:#E91E8C;font-weight:800;font-size:14px;}
+.udetail-plan-arrow{font-size:10px;color:#bbb;transition:transform .2s;}
+.udetail-plan-row.open .udetail-plan-arrow{transform:rotate(180deg);}
+.udetail-plan-list{border:1.5px solid #ececec;border-top:none;border-radius:0 0 12px 12px;overflow:hidden;}
+.udetail-plan-item{display:flex;justify-content:space-between;padding:12px 16px;font-size:13px;color:#666;cursor:pointer;border-top:1px solid #f2f2f2;}
+.udetail-plan-item.on{background:rgba(233,30,140,.05);color:#E91E8C;font-weight:700;}
+.udetail-discount-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.udetail-discount-card{border:1.5px solid #ececec;border-radius:12px;padding:12px 14px;cursor:pointer;position:relative;}
+.udetail-discount-card.on{border-color:#E91E8C;background:rgba(233,30,140,.04);}
+.udetail-discount-name{font-size:13.5px;font-weight:800;color:#1A1A1A;margin:0 0 4px;}
+.udetail-discount-desc{font-size:11px;color:#888;line-height:1.5;}
+.udetail-discount-check{position:absolute;top:10px;right:10px;width:16px;height:16px;border-radius:50%;background:#E91E8C;color:#fff;font-size:10px;display:none;align-items:center;justify-content:center;}
+.udetail-discount-card.on .udetail-discount-check{display:flex;}
+.udetail-breakdown2{background:#f9f9fb;border-radius:12px;padding:16px;}
+.udb2-row{display:flex;align-items:center;gap:8px;font-size:13.5px;color:#666;padding:7px 0;}
+.udb2-badge{width:18px;height:18px;border-radius:5px;background:#E91E8C;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.udb2-row b{margin-left:auto;color:#1A1A1A;font-weight:700;}
+.udetail-benefit-row{display:flex;gap:8px;flex-wrap:wrap;}
+.udetail-benefit-tag{flex:1;min-width:90px;text-align:center;padding:12px 8px;border:1.5px solid #ececec;border-radius:10px;font-size:12px;font-weight:700;color:#666;}
+.udetail-btnrow2{display:flex;gap:10px;margin-top:8px;}
+.udetail-btn-consult{flex:1;padding:16px;background:#fff;border:1.5px solid #E91E8C;border-radius:13px;color:#E91E8C;font-size:15px;font-weight:800;cursor:pointer;}
+.udetail-btn-order{flex:1.3;padding:16px;background:#E91E8C;border:none;border-radius:13px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;}
 </style>
 
 <section style="width:100%;background:#ffffff;padding:56px 0 64px;">
@@ -1320,21 +1353,47 @@ function closeNavDrawer() {
       <div class="udetail-img" id="udImg"></div>
       <p class="udetail-name" id="udName"></p>
 
+      <div class="udetail-hero">
+        <p class="udetail-hero-lbl">예상 월 납부금액</p>
+        <p class="udetail-hero-amt" id="udHeroAmt">-<span>원</span></p>
+        <p class="udetail-hero-sub" id="udHeroSub">-</p>
+      </div>
+
       <div class="udetail-sec"><p class="udetail-lbl">컬러</p><div class="udetail-row" id="udColors"></div></div>
       <div class="udetail-sec"><p class="udetail-lbl">용량</p><div class="udetail-row" id="udStorage"></div></div>
       <div class="udetail-sec"><p class="udetail-lbl">현재 사용 중인 통신사</p><div class="udetail-row" id="udCarrier"></div></div>
 
       <div class="udetail-sec">
-        <p class="udetail-lbl">예상 혜택가격 <span style="color:#bbb;font-weight:400;">(85 요금제 기준)</span></p>
-        <div class="udetail-breakdown">
-          <div class="udb-row"><span>출고가</span><b id="udbLaunch">-</b></div>
-          <div class="udb-row"><span>공시지원금</span><b id="udbPub">-</b></div>
-          <div class="udb-row"><span>유닥 지원금</span><b id="udbExtra">-</b></div>
-          <div class="udb-row total"><span>예상 혜택가격</span><b id="udbFinal">-</b></div>
+        <p class="udetail-lbl">요금제</p>
+        <div id="udPlanWrap"></div>
+      </div>
+
+      <div class="udetail-sec">
+        <p class="udetail-lbl">할인방식</p>
+        <div class="udetail-discount-grid" id="udDiscount"></div>
+      </div>
+
+      <div class="udetail-sec">
+        <p class="udetail-lbl">월 납부금액 구성</p>
+        <div class="udetail-breakdown2">
+          <div class="udb2-row"><span class="udb2-badge">A</span><span>월 통신요금</span><b id="udbFee">-</b></div>
+          <div class="udb2-row"><span class="udb2-badge">B</span><span>월 할부금(24개월)</span><b id="udbDev">-</b></div>
         </div>
       </div>
 
-      <button class="udetail-cta" onclick="ctaUcat()" type="button">이 모델로 상담 신청</button>
+      <div class="udetail-sec">
+        <p class="udetail-lbl">🎁 추가 혜택</p>
+        <div class="udetail-benefit-row">
+          <div class="udetail-benefit-tag">📺 인터넷+TV</div>
+          <div class="udetail-benefit-tag">💳 카드할인</div>
+          <div class="udetail-benefit-tag">👨‍👩‍👧 결합할인</div>
+        </div>
+      </div>
+
+      <div class="udetail-btnrow2">
+        <button class="udetail-btn-consult" onclick="ctaUcat()" type="button">상담 문의</button>
+        <button class="udetail-btn-order" onclick="ctaUcat()" type="button">주문 신청하기</button>
+      </div>
     </div>
   </div>
 </section>
@@ -1377,7 +1436,7 @@ let ucatDevices=[...UCAT_Z8_DEVICES];
 let ucatPolicies=[...UCAT_Z8_POLICIES];
 let ucatPlans=[{plangroup:'85',monthlyPrice:85000,name:'5G 프리미어 에센셜'}];
 let ucatState={brand:'삼성',sub:'Z'};
-let ucatSel={device:null,color:null,storage:null,carrier:null};
+let ucatSel={device:null,color:null,storage:null,carrier:null,plan:null,discountMethod:'pubSupport',planListOpen:false};
 
 async function ucatLoadFirebase(){
   // (초기 Z8 카드 즉시 렌더는 아래 renderUcatGrid() 최초 호출에서 처리됨)
@@ -1486,13 +1545,13 @@ function renderUcatGrid(){
 window.openUcatDetail=function(id){
   const d=(ucatDevices||[]).find(x=>x.id===id);
   if(!d) return;
-  ucatSel={device:d,color:0,storage:0,carrier:'LG U+'};
+  ucatSel={device:d,color:0,storage:0,carrier:'LG U+',plan:(ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0]),discountMethod:'pubSupport',planListOpen:false};
   document.getElementById('ucatGrid').parentElement.querySelector('.ucat-tabs').style.display='none';
   document.getElementById('ucatSubtabs').style.display='none';
   document.getElementById('ucatGrid').style.display='none';
   document.getElementById('ucatDetail').style.display='block';
   document.getElementById('udName').textContent=d.name;
-  renderUcatDetailColors();renderUcatDetailStorage();renderUcatDetailCarrier();
+  renderUcatDetailColors();renderUcatDetailStorage();renderUcatDetailCarrier();renderUdPlanRow();renderUdDiscount();
   refreshUcatImg();refreshUcatPrice();
   window.scrollTo({top:document.getElementById('ucatDetail').getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'});
 };
@@ -1525,6 +1584,39 @@ function renderUcatDetailCarrier(){
 window.pickUcatColor=function(i){ucatSel.color=i;renderUcatDetailColors();refreshUcatImg();};
 window.pickUcatStorage=function(i){ucatSel.storage=i;renderUcatDetailStorage();refreshUcatPrice();};
 window.pickUcatCarrier=function(n){ucatSel.carrier=n;renderUcatDetailCarrier();refreshUcatPrice();};
+
+function renderUdPlanRow(){
+  const wrap=document.getElementById('udPlanWrap');
+  if(!wrap) return;
+  const open=ucatSel.planListOpen;
+  const plans=ucatPlans||[];
+  wrap.innerHTML=`<div class="udetail-plan-row${open?' open':''}" onclick="toggleUdPlanList()">
+    <div><span class="udetail-plan-mid">${ucatSel.plan?ucatSel.plan.name:'-'}</span></div>
+    <div class="udetail-plan-right"><span class="udetail-plan-price">월 ${(ucatSel.plan?ucatSel.plan.monthlyPrice:0).toLocaleString()}원</span><span class="udetail-plan-arrow">▾</span></div>
+  </div>
+  ${open?`<div class="udetail-plan-list">${plans.map((p,i)=>`<div class="udetail-plan-item${ucatSel.plan&&ucatSel.plan.plangroup===p.plangroup?' on':''}" onclick="pickUdPlan(${i})"><span>${p.name}</span><b>월 ${p.monthlyPrice.toLocaleString()}원</b></div>`).join('')}</div>`:''}`;
+}
+window.toggleUdPlanList=function(){ ucatSel.planListOpen=!ucatSel.planListOpen; renderUdPlanRow(); };
+window.pickUdPlan=function(i){ ucatSel.plan=ucatPlans[i]; ucatSel.planListOpen=false; renderUdPlanRow(); refreshUcatPrice(); };
+
+function renderUdDiscount(){
+  const wrap=document.getElementById('udDiscount');
+  if(!wrap) return;
+  const pInfo=ucatSel.plan?ucatSel.plan.monthlyPrice:0;
+  wrap.innerHTML=`
+    <div class="udetail-discount-card${ucatSel.discountMethod==='pubSupport'?' on':''}" onclick="pickUdDiscount('pubSupport')">
+      <span class="udetail-discount-check">✓</span>
+      <p class="udetail-discount-name">공시지원금</p>
+      <p class="udetail-discount-desc">기기값 할인, 요금제 정상가</p>
+    </div>
+    <div class="udetail-discount-card${ucatSel.discountMethod==='commitment'?' on':''}" onclick="pickUdDiscount('commitment')">
+      <span class="udetail-discount-check">✓</span>
+      <p class="udetail-discount-name">선택약정</p>
+      <p class="udetail-discount-desc">요금제 25% 할인, 기기값 정상가</p>
+    </div>`;
+}
+window.pickUdDiscount=function(method){ ucatSel.discountMethod=method; renderUdDiscount(); refreshUcatPrice(); };
+
 function refreshUcatImg(){
   const wrap=document.getElementById('udImg');
   const c=ucatSel.device.colors&&ucatSel.device.colors[ucatSel.color];
@@ -1536,17 +1628,28 @@ function refreshUcatPrice(){
   const st=d.storageList[ucatSel.storage||0];
   const isLguplus=ucatSel.carrier==='LG U+';
   const jointype=isLguplus?'기기변경':'번호이동';
-  const planObj=ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0];
+  const planObj=ucatSel.plan||ucatPlans[0];
   const q=ucatQuote({...d,storageList:[st]},ucatSel.carrier,jointype,planObj);
-  document.getElementById('udbLaunch').textContent=st.price.toLocaleString()+'원';
-  if(q){
-    document.getElementById('udbPub').textContent=q.pub.toLocaleString()+'원';
-    document.getElementById('udbExtra').textContent=q.extra.toLocaleString()+'원';
-    document.getElementById('udbFinal').textContent=q.final.toLocaleString()+'원';
+  const monthlyFeeFull=planObj?planObj.monthlyPrice:0;
+  let monthlyFee, monthlyDev, subReady=true;
+  if(ucatSel.discountMethod==='commitment'){
+    monthlyFee=Math.round(monthlyFeeFull*0.75);
+    monthlyDev=Math.round(st.price/24);
   } else {
-    document.getElementById('udbPub').textContent='-';
-    document.getElementById('udbExtra').textContent='-';
-    document.getElementById('udbFinal').textContent='정책 준비중';
+    if(!q){ subReady=false; monthlyFee=monthlyFeeFull; monthlyDev=Math.round(st.price/24); }
+    else { monthlyFee=monthlyFeeFull; monthlyDev=Math.round(q.final/24); }
+  }
+  const total=monthlyFee+monthlyDev;
+  document.getElementById('udbFee').textContent=monthlyFee.toLocaleString()+'원';
+  document.getElementById('udbDev').textContent=monthlyDev.toLocaleString()+'원';
+  const heroAmt=document.getElementById('udHeroAmt');
+  const heroSub=document.getElementById('udHeroSub');
+  if(!subReady){
+    heroAmt.innerHTML=total.toLocaleString()+'<span>원</span>';
+    heroSub.textContent=(planObj?planObj.name:'-')+' / 24개월 기준 · 공시지원금 정책 준비중(할부원금 기준)';
+  } else {
+    heroAmt.innerHTML=total.toLocaleString()+'<span>원</span>';
+    heroSub.textContent=(planObj?planObj.name:'-')+' / 24개월 기준';
   }
 }
 window.ctaUcat=function(){
