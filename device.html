@@ -166,6 +166,15 @@ function renderPage(){
     <div class="udetail-sec"><p class="udetail-lbl">현재 사용 중인 통신사</p><div class="udetail-row" id="udCarrier"></div></div>
     <div class="udetail-sec"><p class="udetail-lbl">요금제</p><div id="udPlanWrap"></div></div>
     <div class="udetail-sec"><p class="udetail-lbl">할인방식</p><div class="udetail-discount-grid" id="udDiscount"></div></div>
+    <div class="udetail-sec" id="udSubsidyWrap" style="display:none">
+      <p class="udetail-lbl">지원금 상세</p>
+      <div class="udetail-breakdown2">
+        <div class="udb2-row"><span>출고가</span><b id="udbListPrice">-</b></div>
+        <div class="udb2-row"><span>공시지원금</span><b id="udbPubAmt" style="color:#E91E8C;">-</b></div>
+        <div class="udb2-row"><span>유플러스 다이렉트 혜택</span><b id="udbExtraAmt" style="color:#E91E8C;">-</b></div>
+        <div class="udb2-row" style="border-top:1px dashed #ddd;margin-top:4px;padding-top:10px;"><span>남은 할부원금</span><b id="udbPrincipal">-</b></div>
+      </div>
+    </div>
     <div class="udetail-sec">
       <p class="udetail-lbl">월 납부금액 구성</p>
       <div class="udetail-breakdown2">
@@ -242,12 +251,21 @@ function refreshPrice(){
   const q=ucatQuote({...d,storageList:[st]},ucatSel.carrier,jointype,planObj);
   const monthlyFeeFull=planObj?planObj.monthlyPrice:0;
   let monthlyFee,monthlyDev,subReady=true,principal;
+  const subsidyWrap=document.getElementById('udSubsidyWrap');
   if(ucatSel.discountMethod==='commitment'){
     monthlyFee=Math.round(monthlyFeeFull*0.75);
     principal=st.price;
+    subsidyWrap.style.display='none';
   } else {
-    if(!q){ subReady=false; monthlyFee=monthlyFeeFull; principal=st.price; }
-    else { monthlyFee=monthlyFeeFull; principal=q.final; }
+    if(!q){ subReady=false; monthlyFee=monthlyFeeFull; principal=st.price; subsidyWrap.style.display='none'; }
+    else {
+      monthlyFee=monthlyFeeFull; principal=q.final;
+      subsidyWrap.style.display='block';
+      document.getElementById('udbListPrice').textContent=st.price.toLocaleString()+'원';
+      document.getElementById('udbPubAmt').textContent='-'+q.pub.toLocaleString()+'원';
+      document.getElementById('udbExtraAmt').textContent='-'+q.extra.toLocaleString()+'원';
+      document.getElementById('udbPrincipal').textContent=q.final.toLocaleString()+'원';
+    }
   }
   monthlyDev=Math.round(principal*UD_INSTALLMENT_RATE/24);
   const feeOrigEl=document.getElementById('udbFeeOrig');
