@@ -1719,7 +1719,6 @@ function uwtRenderCats(){
 
 window.uwtToggleCat=function(catId){
   uwtState.openCat=(uwtState.openCat===catId)?null:catId;
-  uwtState.openModel=null;
   uwtCloseDetail();
   uwtRenderCats();
 };
