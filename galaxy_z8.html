@@ -2325,25 +2325,25 @@ function openReservationModal(){
   document.body.style.overflow = 'hidden';
 }
 (function(){
-  // device.html에서 상담문의/주문신청하기 누르고 넘어온 경우 자동으로 신청폼 오픈 + 주문요약 카드 채움
+  // device.html에서 상담문의/주문신청하기 누르고 넘어온 경우 자동으로 신청폼(실제 라이브 모달) 오픈 + 주문요약 카드 채움
   const params=new URLSearchParams(window.location.search);
   const dev=params.get('openReserve');
   if(dev){
     mDevice=dev;
     const oColor=params.get('oColor'), oStorage=params.get('oStorage'), oCarrier=params.get('oCarrier'),
           oJointype=params.get('oJointype'), oPlan=params.get('oPlan'), oTotal=params.get('oTotal'), oImg=params.get('oImg');
-    if(oTotal){
-      document.getElementById('orderSummaryBox').style.display='block';
-      document.getElementById('orderSummaryName').textContent=dev;
-      document.getElementById('orderSummaryOpts').textContent=[oColor,oJointype?(oJointype+'('+oCarrier+')'):oCarrier,oPlan].filter(Boolean).join(' | ');
-      document.getElementById('orderSummaryTotal').textContent='월 '+oTotal;
-      if(oImg) document.getElementById('orderSummaryImg').src=oImg;
+    const summaryBox=document.getElementById('mOrderSummaryBox');
+    if(oTotal&&summaryBox){
+      summaryBox.style.display='block';
+      document.getElementById('mOrderSummaryName').textContent=dev;
+      document.getElementById('mOrderSummaryOpts').textContent=[oColor,oJointype?(oJointype+'('+oCarrier+')'):oCarrier,oPlan].filter(Boolean).join(' | ');
+      document.getElementById('mOrderSummaryTotal').textContent='월 '+oTotal;
+      if(oImg) document.getElementById('mOrderSummaryImg').src=oImg;
     }
     setTimeout(()=>{
       openReservationModal();
-      // 폼 내 제품/통신사 버튼도 동일하게 미리 선택
-      document.querySelectorAll('.f-device-btn').forEach(function(b){ if(b.textContent.trim()===dev){ b.classList.add('on'); fDevice=dev; } });
-      if(oCarrier){ document.querySelectorAll('.f-carrier-btn').forEach(function(b){ if(b.textContent.trim()===oCarrier){ b.classList.add('on'); fCarrier=oCarrier; } }); }
+      document.querySelectorAll('.mdevice-card').forEach(function(b){ if(b.textContent.trim()===dev){ b.classList.add('selected'); mDevice=dev; } });
+      if(oCarrier){ document.querySelectorAll('.mcarrier-card').forEach(function(b){ if(b.textContent.trim()===oCarrier){ b.classList.add('selected'); mCarrier=oCarrier; } }); }
     },300);
   }
 })();
@@ -2390,6 +2390,22 @@ function mSelectCarrier(el, val){
   document.querySelectorAll('.mcarrier-card').forEach(function(c){ c.classList.remove('selected'); });
   el.classList.add('selected'); mCarrier = val;
 }
+var mSecondPlan='95', mSecondDevice=null;
+function renderMSecondModels(){
+  var wrap=document.getElementById('mSecondModelList');
+  if(!wrap) return;
+  var cats=(typeof UWT_CATEGORIES!=='undefined'?UWT_CATEGORIES[mSecondPlan]:[])||[];
+  var models=[].concat(...cats.map(function(c){return (typeof UWT_MODELS!=='undefined'?UWT_MODELS[c.id]:[])||[];}));
+  wrap.innerHTML=models.length?models.map(function(m){return'<button type="button" class="f-secmodel-btn'+(mSecondDevice===m.id?' on':'')+'" onclick="mPickSecondModel(\''+m.id+'\')">'+m.name+(m.size?' '+m.size:'')+'</button>';}).join(''):'<span style="font-size:11px;color:#bbb;">준비중</span>';
+}
+window.mPickSecondPlan=function(p){
+  mSecondPlan=p; mSecondDevice=null;
+  document.getElementById('mSecPlan95').className='f-secplan-btn'+(p==='95'?' on':'');
+  document.getElementById('mSecPlan115').className='f-secplan-btn'+(p==='115'?' on':'');
+  renderMSecondModels();
+};
+window.mPickSecondModel=function(id){ mSecondDevice=(mSecondDevice===id?null:id); renderMSecondModels(); };
+renderMSecondModels();
 function mFormatPhone(el){
   var v = el.value.replace(/\D/g,'');
   // 010 자동입력 제거됨
@@ -2422,6 +2438,13 @@ function mSubmitForm(){
   var birthF = '19'+birth.slice(0,2)+'-'+birth.slice(2,4)+'-'+birth.slice(4,6);
   var memoEl = document.getElementById('mUserNote');
   var memo = memoEl ? memoEl.value.trim() : '';
+  if(mSecondDevice){
+    var allSecModelsM=[].concat(...Object.values(typeof UWT_MODELS!=='undefined'?UWT_MODELS:{}));
+    var secModelObjM=allSecModelsM.find(function(m){return m.id===mSecondDevice;});
+    if(secModelObjM){
+      memo=(memo?memo+' / ':'')+'요금제별혜택 희망: '+secModelObjM.name+(secModelObjM.size?' '+secModelObjM.size:'')+' (PLAN '+mSecondPlan+')';
+    }
+  }
   // 팝업 먼저 표시
   if(typeof fbq!=='undefined')fbq('track','Lead');
   showTicket(name,phoneF,mDevice);
@@ -2739,18 +2762,40 @@ function fSubmit(){
     <div class="modal-title">사전예약 신청하기</div>
     <div class="modal-sub">언팩 후 혜택 정보를 가장 먼저 받아보세요.<br>곧 공개될 유플러스 다이렉트 사전예약 지원금을 확인해보세요.</div>
 
-    <div class="mform-group">
-      <div class="mform-label">원하는 상품</div>
-      <div class="mdevice-grid">
-        <div class="mdevice-card" onclick="mSelectDevice(this,'갤럭시 Z 플립8')">
-          <div class="mdevice-card-name">갤럭시 Z 플립8</div>
+    <div id="mOrderSummaryBox" style="display:none;background:#f7f7f9;border-radius:14px;padding:14px;margin-bottom:18px;">
+      <p style="font-size:11px;font-weight:700;color:#999;margin-bottom:8px;">주문 상품</p>
+      <div style="display:flex;gap:12px;align-items:center;">
+        <img id="mOrderSummaryImg" src="" alt="" style="width:48px;height:48px;object-fit:contain;background:#fff;border:1px solid #ececec;border-radius:8px;flex-shrink:0;">
+        <div>
+          <p id="mOrderSummaryName" style="font-size:14px;font-weight:800;color:#1A1A1A;margin:0 0 2px;"></p>
+          <p id="mOrderSummaryOpts" style="font-size:11px;color:#888;margin:0 0 3px;"></p>
+          <p id="mOrderSummaryTotal" style="font-size:14px;font-weight:800;color:#E91E8C;margin:0;"></p>
         </div>
-        <div class="mdevice-card" onclick="mSelectDevice(this,'갤럭시 Z 폴드8 울트라')">
-          <div class="mdevice-card-name">갤럭시 Z 폴드8 울트라</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+      <div class="mform-group" style="margin-bottom:0;">
+        <div class="mform-label" style="font-size:14px;margin-bottom:8px;">원하는 상품</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="mdevice-card" style="padding:10px 6px;" onclick="mSelectDevice(this,'갤럭시 Z 플립8')">
+            <div class="mdevice-card-name">갤럭시 Z 플립8</div>
+          </div>
+          <div class="mdevice-card" style="padding:10px 6px;" onclick="mSelectDevice(this,'갤럭시 Z 폴드8 울트라')">
+            <div class="mdevice-card-name">갤럭시 Z 폴드8 울트라</div>
+          </div>
+          <div class="mdevice-card" style="padding:10px 6px;" onclick="mSelectDevice(this,'갤럭시 Z 폴드8')">
+            <div class="mdevice-card-name">갤럭시 Z 폴드8</div>
+          </div>
         </div>
-        <div class="mdevice-card" onclick="mSelectDevice(this,'갤럭시 Z 폴드8')">
-          <div class="mdevice-card-name">갤럭시 Z 폴드8</div>
+      </div>
+      <div class="mform-group" style="margin-bottom:0;">
+        <div class="mform-label" style="font-size:14px;margin-bottom:8px;">요금제별 혜택 <span style="font-size:10px;color:#bbb;font-weight:400;">(선택)</span></div>
+        <div style="display:flex;gap:6px;margin-bottom:6px;">
+          <button type="button" onclick="mPickSecondPlan('95')" id="mSecPlan95" class="f-secplan-btn on">PLAN 95</button>
+          <button type="button" onclick="mPickSecondPlan('115')" id="mSecPlan115" class="f-secplan-btn">PLAN 115</button>
         </div>
+        <div id="mSecondModelList" style="display:flex;flex-wrap:wrap;gap:5px;"></div>
       </div>
     </div>
 
