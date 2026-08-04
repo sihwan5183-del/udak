@@ -2513,12 +2513,22 @@ function toggleKakaoPopup(){
       <p style="font-size:14px;color:#888;line-height:1.6;">언팩 후 혜택 정보를 가장 먼저 받아보세요.<br>곧 공개될 유플러스 다이렉트 사전예약 지원금을 확인해보세요.</p>
     </div>
     <div style="background:#fff;border-radius:20px;padding:32px 28px;box-shadow:0 4px 24px rgba(0,0,0,.06);">
-      <div style="margin-bottom:20px;">
-        <p style="font-size:17px;font-weight:700;color:#111;margin-bottom:12px;">원하는 상품</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <button onclick="fSelectDevice(this,'갤럭시 Z 플립8')" class="f-device-btn">갤럭시 Z 플립8</button>
-          <button onclick="fSelectDevice(this,'갤럭시 Z 폴드8 울트라')" class="f-device-btn">갤럭시 Z 폴드8 울트라</button>
-          <button onclick="fSelectDevice(this,'갤럭시 Z 폴드8')" class="f-device-btn">갤럭시 Z 폴드8</button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+        <div>
+          <p style="font-size:15px;font-weight:700;color:#111;margin-bottom:10px;">원하는 상품</p>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <button onclick="fSelectDevice(this,'갤럭시 Z 플립8')" class="f-device-btn">갤럭시 Z 플립8</button>
+            <button onclick="fSelectDevice(this,'갤럭시 Z 폴드8 울트라')" class="f-device-btn">갤럭시 Z 폴드8 울트라</button>
+            <button onclick="fSelectDevice(this,'갤럭시 Z 폴드8')" class="f-device-btn">갤럭시 Z 폴드8</button>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:15px;font-weight:700;color:#111;margin-bottom:10px;">요금제별 혜택 <span style="font-size:11px;color:#bbb;font-weight:500;">(선택)</span></p>
+          <div style="display:flex;gap:6px;margin-bottom:8px;">
+            <button type="button" onclick="fPickSecondPlan('95')" id="fSecPlan95" class="f-secplan-btn on">PLAN 95</button>
+            <button type="button" onclick="fPickSecondPlan('115')" id="fSecPlan115" class="f-secplan-btn">PLAN 115</button>
+          </div>
+          <div id="fSecondModelList" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
         </div>
       </div>
       <div id="fColorCapGroup" style="display:none;margin-bottom:20px;">
@@ -2565,12 +2575,32 @@ function toggleKakaoPopup(){
 <style>
 .f-device-btn,.f-carrier-btn{padding:14px 8px;background:#fff;border:1.5px solid #ddd;border-radius:12px;font-size:13px;font-weight:700;color:#333;cursor:pointer;transition:all .2s;width:100%;white-space:normal;line-height:1.3;}
 .f-device-btn.on,.f-carrier-btn.on{border-color:#E91E8C;background:rgba(233,30,140,.08);color:#E91E8C;}
+.f-secplan-btn{flex:1;padding:9px 4px;background:#fff;border:1.5px solid #ddd;border-radius:8px;font-size:11.5px;font-weight:700;color:#666;cursor:pointer;font-family:inherit;}
+.f-secplan-btn.on{border-color:#E91E8C;background:rgba(233,30,140,.06);color:#E91E8C;}
+.f-secmodel-btn{padding:8px 10px;background:#fff;border:1.5px solid #ddd;border-radius:8px;font-size:11.5px;font-weight:700;color:#666;cursor:pointer;font-family:inherit;}
+.f-secmodel-btn.on{border-color:#E91E8C;background:rgba(233,30,140,.06);color:#E91E8C;}
 </style>
 
 <script>
 var fDevice='', fCarrier='';
 function fSelectDevice(el,val){document.querySelectorAll('.f-device-btn').forEach(function(b){b.classList.remove('on');});el.classList.add('on');fDevice=val;renderDeviceColorCap('f');}
 function fSelectCarrier(el,val){document.querySelectorAll('.f-carrier-btn').forEach(function(b){b.classList.remove('on');});el.classList.add('on');fCarrier=val;}
+var fSecondPlan='95', fSecondDevice=null;
+function renderFSecondModels(){
+  const wrap=document.getElementById('fSecondModelList');
+  if(!wrap) return;
+  const cats=(typeof UWT_CATEGORIES!=='undefined'?UWT_CATEGORIES[fSecondPlan]:[])||[];
+  const models=[].concat(...cats.map(c=>(typeof UWT_MODELS!=='undefined'?UWT_MODELS[c.id]:[])||[]));
+  wrap.innerHTML=models.length?models.map(m=>`<button type="button" class="f-secmodel-btn${fSecondDevice===m.id?' on':''}" onclick="fPickSecondModel('${m.id}')">${m.name}${m.size?' '+m.size:''}</button>`).join(''):'<span style="font-size:11px;color:#bbb;">준비중</span>';
+}
+window.fPickSecondPlan=function(p){
+  fSecondPlan=p; fSecondDevice=null;
+  document.getElementById('fSecPlan95').className='f-secplan-btn'+(p==='95'?' on':'');
+  document.getElementById('fSecPlan115').className='f-secplan-btn'+(p==='115'?' on':'');
+  renderFSecondModels();
+};
+window.fPickSecondModel=function(id){ fSecondDevice=(fSecondDevice===id?null:id); renderFSecondModels(); };
+renderFSecondModels();
 function fFormatPhone(el){var v=el.value.replace(/[^0-9]/g,'');if(v.length>11)v=v.slice(0,11);if(v.length<=3)el.value=v;else if(v.length<=7)el.value=v.slice(0,3)+'-'+v.slice(3);else el.value=v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7);}
 var BLOCKED_PHONES = ['01044713759'];
 function fSubmit(){
@@ -2591,6 +2621,13 @@ function fSubmit(){
   if(age<19){ alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 신청해 주세요.'); return; }
   if(!privacy){alert('개인정보 수집 및 이용에 동의해주세요.');return;}
   var memo=document.getElementById('fMemo').value.trim();
+  if(fSecondDevice){
+    var allSecModels=[].concat(...Object.values(typeof UWT_MODELS!=='undefined'?UWT_MODELS:{}));
+    var secModelObj=allSecModels.find(function(m){return m.id===fSecondDevice;});
+    if(secModelObj){
+      memo=(memo?memo+' / ':'')+'요금제별혜택 희망: '+secModelObj.name+(secModelObj.size?' '+secModelObj.size:'')+' (PLAN '+fSecondPlan+')';
+    }
+  }
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
   var birthF='19'+birth.slice(0,2)+'-'+birth.slice(2,4)+'-'+birth.slice(4,6);
   // 팝업 먼저 표시
