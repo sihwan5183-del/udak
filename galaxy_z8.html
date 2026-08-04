@@ -1339,17 +1339,17 @@ const UCAT_DB_URL='https://udak-c6832-default-rtdb.firebaseio.com';
 
 const UCAT_Z8_DEVICES=[
   {id:'z-fold8',name:'갤럭시 Z 폴드8',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black-v2.png',
-    storageList:[{name:'256GB → 512GB',price:2277000},{name:'512GB → 1TB',price:2530000}],
+    storageList:[{name:'256GB',price:2277000}],
     colors:[{name:'#3A3A3C|그라파이트',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black-v2.png'},
             {name:'#F0E6D2|크림',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-cream-v2.png'},
             {name:'#C9BFE0|라벤더',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-lavender-v2.png'}]},
   {id:'z-fold8-ultra',name:'갤럭시 Z 폴드8 울트라',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-graphite-v2.png',
-    storageList:[{name:'256GB → 512GB',price:2577300},{name:'512GB → 1TB',price:2830300}],
+    storageList:[{name:'256GB',price:2577300}],
     colors:[{name:'#3A3A3C|그라파이트',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-graphite-v2.png'},
             {name:'#5C4E77|바이올렛 쉐도우',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-violet-v2.png'},
             {name:'#F0E6D2|크림',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-cream-v2.png'}]},
   {id:'z-flip8',name:'갤럭시 Z 플립8',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-graphite-v2.png',
-    storageList:[{name:'256GB → 512GB',price:1683000},{name:'512GB → 1TB',price:1936000}],
+    storageList:[{name:'256GB',price:1683000}],
     colors:[{name:'#3A3A3C|그라파이트',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-graphite-v2.png'},
             {name:'#F0E6D2|크림',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-cream-v2.png'},
             {name:'#F2C6D6|핑크',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-pink-v2.png'}]}
@@ -2104,6 +2104,34 @@ function closeReservationModal(e){
     document.body.style.overflow = '';
   }
 }
+function deviceKeyFromZ8Name(name){
+  if(!name) return null;
+  return (typeof UCAT_Z8_DEVICES!=='undefined'?UCAT_Z8_DEVICES:[]).find(function(d){return d.name===name;})||null;
+}
+var mColorIdx=0, fColorIdx=0;
+function renderDeviceColorCap(scope){
+  var deviceName = scope==='m' ? mDevice : fDevice;
+  var device = deviceKeyFromZ8Name(deviceName);
+  var group = document.getElementById(scope+'ColorCapGroup');
+  if(!group) return;
+  if(!device){ group.style.display='none'; return; }
+  if(scope==='m'){ mColorIdx=0; } else { fColorIdx=0; }
+  group.style.display='block';
+  var colorGrid = document.getElementById(scope+'ColorGrid');
+  var capGrid = document.getElementById(scope+'CapGrid');
+  colorGrid.innerHTML = (device.colors||[]).map(function(c,i){
+    var hex = c.name.split('|')[0];
+    var active = i===0;
+    return '<span class="ud-color'+(active?' on':'')+'" style="background:'+hex+';" onclick="pickColorCap(\''+scope+'\','+i+')"></span>';
+  }).join('');
+  var storageName = (device.storageList&&device.storageList[0])?device.storageList[0].name:'256GB';
+  capGrid.innerHTML = '<span class="ud-chip on" style="cursor:default;">'+storageName+'</span>';
+}
+function pickColorCap(scope, idx){
+  if(scope==='m'){ mColorIdx=idx; } else { fColorIdx=idx; }
+  var curIdx = scope==='m'?mColorIdx:fColorIdx;
+  document.querySelectorAll('#'+scope+'ColorGrid .ud-color').forEach(function(el,i){ el.classList.toggle('on', i===curIdx); });
+}
 function mSelectDevice(el, val){
   document.querySelectorAll('.mdevice-card').forEach(function(c){ c.classList.remove('selected'); });
   el.classList.add('selected'); mDevice = val;
@@ -2261,7 +2289,7 @@ function toggleKakaoPopup(){
       <div id="fColorCapGroup" style="display:none;margin-bottom:20px;">
         <p style="font-size:17px;font-weight:700;color:#111;margin-bottom:12px;">컬러</p>
         <div class="pcard-colors" id="fColorGrid" style="margin-bottom:16px;"></div>
-        <p style="font-size:17px;font-weight:700;color:#111;margin-bottom:12px;">용량 <span style="font-size:12px;color:#E91E8C;font-weight:700;">더블스토리지 적용</span></p>
+        <p style="font-size:17px;font-weight:700;color:#111;margin-bottom:12px;">용량</p>
         <div class="pcard-cap" id="fCapGrid"></div>
       </div>
       <div style="margin-bottom:20px;">
@@ -2451,7 +2479,7 @@ function fSubmit(){
     <div class="mform-group" id="mColorCapGroup" style="display:none;">
       <div class="mform-label">컬러</div>
       <div class="pcard-colors" id="mColorGrid" style="margin-bottom:16px;"></div>
-      <div class="mform-label">용량 <span style="font-size:11px;color:#E91E8C;font-weight:700;">더블스토리지 적용</span></div>
+      <div class="mform-label">용량</div>
       <div class="pcard-cap" id="mCapGrid"></div>
     </div>
 
@@ -2623,8 +2651,8 @@ function fSubmit(){
     <div class="faq-acc-a">아니요. 제휴카드 가입은 필수가 아닙니다. 제휴카드 할인은 고객님이 원하시는 경우에만 별도로 안내드립니다.</div>
   </div>
   <div class="faq-acc-item" onclick="toggleAcc('faq',4)">
-    <div class="faq-acc-q"><span class="num">5.</span><span style="flex:1">더블스토리지가 뭐예요?</span><span class="arr">▾</span></div>
-    <div class="faq-acc-a">기본 용량을 구매해도 한 단계 더 큰 저장 용량을 제공하는 사전예약 혜택입니다. 예를 들어 256GB 모델 구매 시 512GB 모델을 제공하는 방식이며, 최종 혜택은 공식 발표 후 확정됩니다.</div>
+    <div class="faq-acc-q"><span class="num">5.</span><span style="flex:1">용량은 256GB 하나뿐인가요?</span><span class="arr">▾</span></div>
+    <div class="faq-acc-a">네, 이번 사전예약은 256GB 단일 용량으로 진행됩니다. 더 큰 용량이 필요하신 경우 상담을 통해 별도로 안내해드립니다.</div>
   </div>
   <div class="faq-acc-item" onclick="toggleAcc('faq',5)">
     <div class="faq-acc-q"><span class="num">6.</span><span style="flex:1">유플러스 다이렉트만의 혜택이 궁금해요.</span><span class="arr">▾</span></div>
