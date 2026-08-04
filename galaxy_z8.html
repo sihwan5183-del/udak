@@ -1239,6 +1239,7 @@ function closeNavDrawer() {
       <div style="flex:0 0 100%;height:100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner1.png" alt="폴더블8 사전예약 놓쳤다고? 256GB 재고 확보" class="banner-img"></div>
       <div style="flex:0 0 100%;height:100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner2.png" alt="폴더블8 256GB 재고 대량 확보, 빠른 수령 가능" class="banner-img"></div>
       <div style="flex:0 0 100%;height:100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner3.png" alt="갤럭시 S시리즈, 돌고 돌아 결국 S시리즈" class="banner-img"></div>
+      <div style="flex:0 0 100%;height:100%;"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner4.png" alt="아이폰17 사면 애플워치 가져갈 수 있는데?" class="banner-img"></div>
     </div>
     <button onclick="bannerSlide(-1)" style="position:absolute;top:50%;left:16px;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.85);border:none;cursor:pointer;font-size:20px;color:#333;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:10;">&#8249;</button>
     <button onclick="bannerSlide(1)" style="position:absolute;top:50%;right:16px;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.85);border:none;cursor:pointer;font-size:20px;color:#333;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15);z-index:10;">&#8250;</button>
@@ -1246,6 +1247,7 @@ function closeNavDrawer() {
       <button onclick="bannerGoTo(0)" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;cursor:pointer;padding:0;transition:all .3s;"></button>
       <button onclick="bannerGoTo(1)" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;cursor:pointer;padding:0;transition:all .3s;"></button>
       <button onclick="bannerGoTo(2)" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;cursor:pointer;padding:0;transition:all .3s;"></button>
+      <button onclick="bannerGoTo(3)" style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);border:none;cursor:pointer;padding:0;transition:all .3s;"></button>
     </div>
   </div>
 </section>
@@ -2078,7 +2080,7 @@ uwtLoadPricing();
 
 // 배너 슬라이더
 (function(){
-  var cur=0,total=3,timer;
+  var cur=0,total=4,timer;
   var track=document.getElementById('bannerTrack');
   var dots=document.getElementById('bannerDots').querySelectorAll('button');
   function updateDots(){dots.forEach(function(d,i){d.style.background=i===cur?'#fff':'rgba(255,255,255,.5)';d.style.width=i===cur?'22px':'8px';d.style.borderRadius=i===cur?'4px':'50%';});}
