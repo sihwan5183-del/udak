@@ -141,25 +141,41 @@ const UWT_CATEGORIES={
   '95':[{id:'watch',name:'혜택1'}],
   '115':[{id:'watch',name:'혜택1'},{id:'tab',name:'혜택2'}]
 };
+const UWT_WATCH_SERIES=[
+  {id:'w8',name:'갤럭시 워치 8'},
+  {id:'w9',name:'갤럭시 워치 9'},
+  {id:'ultra',name:'갤럭시 워치 울트라'},
+  {id:'apple',name:'애플워치'}
+];
 const UWT_MODELS={
-  watch:[
-    {id:'watch8-40',name:'갤럭시 워치 8',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch8.png'},
-    {id:'watch8-44',name:'갤럭시 워치 8',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch8.png'},
-    {id:'watch9-40',name:'갤럭시 워치 9',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch9.png'},
-    {id:'watch9-44',name:'갤럭시 워치 9',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch9.png'},
-    {id:'watch-ultra1',name:'갤럭시 워치 울트라 1',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-ultra1.png'},
-    {id:'watch-ultra2',name:'갤럭시 워치 울트라 2',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-ultra2.png'},
-    {id:'watch-se3-40',name:'애플워치 SE3',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-se3-midnight.png'},
-    {id:'watch-se3-44',name:'애플워치 SE3',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-se3-midnight.png'}
-  ],
+  watch:{
+    w8:[
+      {id:'watch8-40',name:'갤럭시 워치 8',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch8.png'},
+      {id:'watch8-44',name:'갤럭시 워치 8',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch8.png'}
+    ],
+    w9:[
+      {id:'watch9-40',name:'갤럭시 워치 9',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch9.png'},
+      {id:'watch9-44',name:'갤럭시 워치 9',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch9.png'}
+    ],
+    ultra:[
+      {id:'watch-ultra1',name:'갤럭시 워치 울트라 1',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-ultra1.png'},
+      {id:'watch-ultra2',name:'갤럭시 워치 울트라 2',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-ultra2.png'}
+    ],
+    apple:[
+      {id:'watch-se3-40',name:'애플워치 SE3',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-se3-midnight.png'},
+      {id:'watch-se3-44',name:'애플워치 SE3',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-se3-midnight.png'}
+    ]
+  },
   tab:[
     {id:'tab-a11plus',name:'갤럭시 탭 A11+',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/tab-a11plus.png'}
   ]
 };
+function uwtFlatten(data){ return Array.isArray(data)?data:[].concat(...Object.values(data||{})); }
+function uwtAllModelsFlat(){ return [].concat(...Object.values(UWT_MODELS).map(uwtFlatten)); }
 let uwtPricing={};
-let uwtOpenCat=null, uwtSelectedByCat={}, uwtPreviewModelId=null, uwtPreviewColorIdx=0;
+let uwtOpenCat=null, uwtOpenSeries=null, uwtSelectedByCat={}, uwtPreviewModelId=null, uwtPreviewColorIdx=0;
 function uwtFindCategoryForModel(modelId){
-  for(const catId in UWT_MODELS){ if(UWT_MODELS[catId].some(m=>m.id===modelId)) return catId; }
+  for(const catId in UWT_MODELS){ if(uwtFlatten(UWT_MODELS[catId]).some(m=>m.id===modelId)) return catId; }
   return null;
 }
 async function uwtLoadPricing(){
@@ -183,51 +199,87 @@ function renderUwtSection(){
   if(!cats){ sec.style.display='none'; return; }
   sec.style.display='block';
   const wrap=document.getElementById('uwtCatList');
-  const allModels=[].concat(...Object.values(UWT_MODELS));
+  const allModels=uwtAllModelsFlat();
   wrap.innerHTML=cats.map(c=>{
     const isOpen=uwtOpenCat===c.id;
-    const models=(UWT_MODELS[c.id]||[]).filter(m=>(uwtPricing[m.id]?.visible)!==false);
     const pickedModelId=uwtSelectedByCat[c.id];
     const pickedModel=pickedModelId?allModels.find(m=>m.id===pickedModelId):null;
+    const pickSummaryHtml=pickedModel?(()=>{
+      const info=uwtGetPriceInfo(pickedModel.id);
+      return`<div class="uwt-picksummary" onclick="uwtPickModel('${pickedModel.id}')">
+        <span class="uwt-picksummary-check">✓</span>
+        <span class="uwt-picksummary-name">${pickedModel.name}${pickedModel.size?' ('+pickedModel.size+')':''} 선택</span>
+        <span class="uwt-picksummary-price">${info?('자부담금 '+info.selfPay.toLocaleString()+'원'):'가격 등록 필요'}</span>
+      </div>`;
+    })():'';
+    let modelBoxHtml;
+    if(c.id==='watch'){
+      modelBoxHtml=`<div class="uwt-catlist" style="padding:12px 2px 4px;">
+        ${UWT_WATCH_SERIES.map(s=>{
+          const seriesOpen=uwtOpenSeries===s.id;
+          const seriesModels=(UWT_MODELS.watch[s.id]||[]).filter(m=>(uwtPricing[m.id]?.visible)!==false);
+          return`<div>
+            <div class="uwt-cat${seriesOpen?' on':''}" style="padding:14px;" onclick="uwtToggleSeries('${s.id}')">
+              <span class="uwt-cat-name" style="font-size:14px;">${s.name}</span>
+            </div>
+            <div class="uwt-modelbox${seriesOpen?' open':''}">
+              ${seriesModels.length?`<div class="uwt-modelgrid">
+                ${seriesModels.map(m=>{
+                  const fbColors=uwtPricing[m.id]?.colors;
+                  const cardImg=(fbColors&&fbColors[0]&&fbColors[0].img)||m.img;
+                  return`<div class="uwt-model${pickedModelId===m.id?' on':''}" onclick="uwtPickModel('${m.id}',event)">
+                    ${cardImg?`<img class="uwt-model-img" src="${cardImg}" alt="${m.name}">`:''}
+                    <div class="uwt-model-name">${m.name}</div>
+                    ${m.size?`<div class="uwt-model-size">${m.size}</div>`:''}
+                  </div>`;
+                }).join('')}
+              </div>`:`<div class="uwt-empty">모델 목록 준비중입니다</div>`}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    } else {
+      const models=uwtFlatten(UWT_MODELS[c.id]||[]).filter(m=>(uwtPricing[m.id]?.visible)!==false);
+      modelBoxHtml=`${models.length?`<div class="uwt-modelgrid">
+        ${models.map(m=>{
+          const fbColors=uwtPricing[m.id]?.colors;
+          const cardImg=(fbColors&&fbColors[0]&&fbColors[0].img)||m.img;
+          return`<div class="uwt-model${pickedModelId===m.id?' on':''}" onclick="uwtPickModel('${m.id}',event)">
+            ${cardImg?`<img class="uwt-model-img" src="${cardImg}" alt="${m.name}">`:''}
+            <div class="uwt-model-name">${m.name}</div>
+            ${m.size?`<div class="uwt-model-size">${m.size}</div>`:''}
+          </div>`;
+        }).join('')}
+      </div>`:`<div class="uwt-empty">모델 목록 준비중입니다</div>`}`;
+    }
     return`<div>
       <div class="uwt-cat${isOpen?' on':''}" onclick="uwtToggleCat('${c.id}')">
         <span class="uwt-cat-name">${c.name}</span>
       </div>
-      ${pickedModel?(()=>{
-        const info=uwtGetPriceInfo(pickedModel.id);
-        return`<div class="uwt-picksummary" onclick="uwtPickModel('${pickedModel.id}')">
-          <span class="uwt-picksummary-check">✓</span>
-          <span class="uwt-picksummary-name">${pickedModel.name}${pickedModel.size?' ('+pickedModel.size+')':''} 선택</span>
-          <span class="uwt-picksummary-price">${info?('자부담금 '+info.selfPay.toLocaleString()+'원'):'가격 등록 필요'}</span>
-        </div>`;
-      })():''}
+      ${pickSummaryHtml}
       <div class="uwt-modelbox${isOpen?' open':''}">
-        ${models.length?`<div class="uwt-modelgrid">
-          ${models.map(m=>{
-            const fbColors=uwtPricing[m.id]?.colors;
-            const cardImg=(fbColors&&fbColors[0]&&fbColors[0].img)||m.img;
-            return`<div class="uwt-model${pickedModelId===m.id?' on':''}" onclick="uwtPickModel('${m.id}',event)">
-              ${cardImg?`<img class="uwt-model-img" src="${cardImg}" alt="${m.name}">`:''}
-              <div class="uwt-model-name">${m.name}</div>
-              ${m.size?`<div class="uwt-model-size">${m.size}</div>`:''}
-            </div>`;
-          }).join('')}
-        </div>`:`<div class="uwt-empty">모델 목록 준비중입니다</div>`}
+        ${isOpen?modelBoxHtml:''}
       </div>
     </div>`;
   }).join('');
 }
 window.uwtToggleCat=function(catId){
   uwtOpenCat=(uwtOpenCat===catId)?null:catId;
+  uwtOpenSeries=null;
   uwtCloseDetail();
   renderUwtSection();
 };
+window.uwtToggleSeries=function(seriesId){
+  uwtOpenSeries=(uwtOpenSeries===seriesId)?null:seriesId;
+  renderUwtSection();
+};
+
 window.uwtCloseDetail=function(){
   document.getElementById('uwtModalOverlay').classList.remove('open');
   document.body.style.overflow='';
 };
 function uwtRefreshDetailImg(){
-  const model=[].concat(...Object.values(UWT_MODELS)).find(m=>m.id===uwtPreviewModelId);
+  const model=uwtAllModelsFlat().find(m=>m.id===uwtPreviewModelId);
   const fbColors=uwtPricing[uwtPreviewModelId]?.colors;
   const el=document.getElementById('uwtDetailImg');
   const src=(fbColors&&fbColors[uwtPreviewColorIdx]&&fbColors[uwtPreviewColorIdx].img)||model.img;
@@ -241,7 +293,7 @@ window.uwtPickPreviewColor=function(idx){
 window.uwtPickModel=function(modelId,ev){
   if(ev) ev.stopPropagation();
   uwtPreviewModelId=modelId; uwtPreviewColorIdx=0;
-  const model=[].concat(...Object.values(UWT_MODELS)).find(m=>m.id===modelId);
+  const model=uwtAllModelsFlat().find(m=>m.id===modelId);
   document.getElementById('uwtDetailName').textContent=model.name+(model.size?' ('+model.size+')':'');
   const fbColors=uwtPricing[modelId]?.colors;
   const colorsWrap=document.getElementById('uwtDetailColors');
@@ -487,7 +539,7 @@ window.ctaGo=function(){
   const total=document.getElementById('udHeroAmt').textContent;
   const img=document.getElementById('udImg').querySelector('img')?document.getElementById('udImg').querySelector('img').src:(d.img||'');
   const jointype=ucatSel.carrier==='LG U+'?'기기변경':'번호이동';
-  const allWatchModels=[].concat(...Object.values(UWT_MODELS));
+  const allWatchModels=uwtAllModelsFlat();
   const pickedIds=Object.values(uwtSelectedByCat||{}).filter(Boolean);
   const pickedModels=pickedIds.map(id=>allWatchModels.find(m=>m.id===id)).filter(Boolean);
   const watchNames=pickedModels.map(m=>m.name+(m.size?' '+m.size:'')).join(' + ');

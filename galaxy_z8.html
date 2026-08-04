@@ -1792,25 +1792,41 @@ const UWT_CATEGORIES={
   '95':[{id:'watch',name:'혜택1',ico:'⌚'}],
   '115':[{id:'watch',name:'혜택1',ico:'⌚'},{id:'tab',name:'혜택2',ico:'📱'}]
 };
+const UWT_WATCH_SERIES=[
+  {id:'w8',name:'갤럭시 워치 8'},
+  {id:'w9',name:'갤럭시 워치 9'},
+  {id:'ultra',name:'갤럭시 워치 울트라'},
+  {id:'apple',name:'애플워치'}
+];
 const UWT_MODELS={
-  watch:[
-    {id:'watch8-40',name:'갤럭시 워치 8',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch8.png'},
-    {id:'watch8-44',name:'갤럭시 워치 8',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch8.png'},
-    {id:'watch9-40',name:'갤럭시 워치 9',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch9.png'},
-    {id:'watch9-44',name:'갤럭시 워치 9',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch9.png'},
-    {id:'watch-ultra1',name:'갤럭시 워치 울트라 1',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-ultra1.png'},
-    {id:'watch-ultra2',name:'갤럭시 워치 울트라 2',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-ultra2.png'},
-    {id:'watch-se3-40',name:'애플워치 SE3',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-se3-midnight.png'},
-    {id:'watch-se3-44',name:'애플워치 SE3',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-se3-midnight.png'}
-  ],
+  watch:{
+    w8:[
+      {id:'watch8-40',name:'갤럭시 워치 8',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch8.png'},
+      {id:'watch8-44',name:'갤럭시 워치 8',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch8.png'}
+    ],
+    w9:[
+      {id:'watch9-40',name:'갤럭시 워치 9',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch9.png'},
+      {id:'watch9-44',name:'갤럭시 워치 9',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch9.png'}
+    ],
+    ultra:[
+      {id:'watch-ultra1',name:'갤럭시 워치 울트라 1',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-ultra1.png'},
+      {id:'watch-ultra2',name:'갤럭시 워치 울트라 2',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-ultra2.png'}
+    ],
+    apple:[
+      {id:'watch-se3-40',name:'애플워치 SE3',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-se3-midnight.png'},
+      {id:'watch-se3-44',name:'애플워치 SE3',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-se3-midnight.png'}
+    ]
+  },
   tab:[
     {id:'tab-a11plus',name:'갤럭시 탭 A11+',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/tab-a11plus.png'}
   ]
 };
+function uwtFlatten(data){ return Array.isArray(data)?data:[].concat(...Object.values(data||{})); }
+function uwtAllModelsFlat(){ return [].concat(...Object.values(UWT_MODELS).map(uwtFlatten)); }
 let uwtPricing={}; // Firebase에서 채움: {modelId: {price, pubSupport, udakSupport}}
-let uwtState={plan:'95',openCat:null,selectedByCat:{}};
+let uwtState={plan:'95',openCat:null,openSeries:null,selectedByCat:{}};
 function uwtFindCategoryForModel(modelId){
-  for(const catId in UWT_MODELS){ if(UWT_MODELS[catId].some(m=>m.id===modelId)) return catId; }
+  for(const catId in UWT_MODELS){ if(uwtFlatten(UWT_MODELS[catId]).some(m=>m.id===modelId)) return catId; }
   return null;
 }
 
@@ -1841,25 +1857,49 @@ function uwtGetPriceInfo(modelId){
 function uwtRenderCats(){
   const wrap=document.getElementById('uwtCatList');
   const cats=UWT_CATEGORIES[uwtState.plan]||[];
-  const allModels=[].concat(...Object.values(UWT_MODELS));
+  const allModels=uwtAllModelsFlat();
   wrap.innerHTML=cats.map(c=>{
     const isOpen=uwtState.openCat===c.id;
-    const models=(UWT_MODELS[c.id]||[]).filter(m=>(uwtPricing[m.id]?.visible)!==false);
     const pickedModelId=uwtState.selectedByCat[c.id];
     const pickedModel=pickedModelId?allModels.find(m=>m.id===pickedModelId):null;
-    return`<div>
-      <div class="uwt-cat${isOpen?' on':''}" onclick="uwtToggleCat('${c.id}')">
-        <span class="uwt-cat-name">${c.name}</span>
-      </div>
-      ${pickedModel?(()=>{
-        const info=uwtGetPriceInfo(pickedModel.id);
-        return`<div class="uwt-picksummary" onclick="uwtPickModel('${pickedModel.id}')">
-          <span class="uwt-picksummary-check">✓</span>
-          <span class="uwt-picksummary-name">${pickedModel.name}${pickedModel.size?' ('+pickedModel.size+')':''} 선택</span>
-          <span class="uwt-picksummary-price">${info?('자부담금 '+info.selfPay.toLocaleString()+'원'):'가격 등록 필요'}</span>
-        </div>`;
-      })():''}
-      <div class="uwt-modelbox${isOpen?' open':''}" id="uwtModelbox_${c.id}">
+    const pickSummaryHtml=pickedModel?(()=>{
+      const info=uwtGetPriceInfo(pickedModel.id);
+      return`<div class="uwt-picksummary" onclick="uwtPickModel('${pickedModel.id}')">
+        <span class="uwt-picksummary-check">✓</span>
+        <span class="uwt-picksummary-name">${pickedModel.name}${pickedModel.size?' ('+pickedModel.size+')':''} 선택</span>
+        <span class="uwt-picksummary-price">${info?('자부담금 '+info.selfPay.toLocaleString()+'원'):'가격 등록 필요'}</span>
+      </div>`;
+    })():'';
+    let modelBoxHtml;
+    if(c.id==='watch'){
+      // 워치는 시리즈(갤럭시워치8/9/울트라/애플워치)로 한번 더 나눠서, 시리즈 누르면 그 안의 사이즈 모델이 뜸
+      modelBoxHtml=`<div class="uwt-catlist" style="padding:12px 2px 4px;">
+        ${UWT_WATCH_SERIES.map(s=>{
+          const seriesOpen=uwtState.openSeries===s.id;
+          const seriesModels=(UWT_MODELS.watch[s.id]||[]).filter(m=>(uwtPricing[m.id]?.visible)!==false);
+          return`<div>
+            <div class="uwt-cat${seriesOpen?' on':''}" style="padding:14px;" onclick="uwtToggleSeries('${s.id}')">
+              <span class="uwt-cat-name" style="font-size:14px;">${s.name}</span>
+            </div>
+            <div class="uwt-modelbox${seriesOpen?' open':''}">
+              ${seriesModels.length?`<div class="uwt-modelgrid">
+                ${seriesModels.map(m=>{
+                  const fbColors=uwtPricing[m.id]?.colors;
+                  const cardImg=(fbColors&&fbColors[0]&&fbColors[0].img)||m.img;
+                  return`<div class="uwt-model${pickedModelId===m.id?' on':''}" onclick="uwtPickModel('${m.id}',event)">
+                    ${cardImg?`<img class="uwt-model-img" src="${cardImg}" alt="${m.name}">`:''}
+                    <div class="uwt-model-name">${m.name}</div>
+                    ${m.size?`<div class="uwt-model-size">${m.size}</div>`:''}
+                  </div>`;
+                }).join('')}
+              </div>`:`<div class="uwt-empty">모델 목록 준비중입니다</div>`}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    } else {
+      const models=uwtFlatten(UWT_MODELS[c.id]||[]).filter(m=>(uwtPricing[m.id]?.visible)!==false);
+      modelBoxHtml=`<div class="uwt-modelbox${isOpen?' open':''}" id="uwtModelbox_${c.id}">
         ${models.length?`<div class="uwt-modelgrid">
           ${models.map(m=>{
             const fbColors=uwtPricing[m.id]?.colors;
@@ -1871,13 +1911,29 @@ function uwtRenderCats(){
             </div>`;
           }).join('')}
         </div>`:`<div class="uwt-empty">모델 목록 준비중입니다</div>`}
+      </div>`;
+    }
+    return`<div>
+      <div class="uwt-cat${isOpen?' on':''}" onclick="uwtToggleCat('${c.id}')">
+        <span class="uwt-cat-name">${c.name}</span>
+      </div>
+      ${pickSummaryHtml}
+      <div class="uwt-modelbox${isOpen?' open':''}" id="uwtModelbox_${c.id}">
+        ${isOpen?modelBoxHtml:''}
       </div>
     </div>`;
   }).join('');
 }
 
+window.uwtToggleSeries=function(seriesId){
+  uwtState.openSeries=(uwtState.openSeries===seriesId)?null:seriesId;
+  uwtRenderCats();
+};
+
+
 window.uwtToggleCat=function(catId){
   uwtState.openCat=(uwtState.openCat===catId)?null:catId;
+  uwtState.openSeries=null;
   uwtCloseDetail();
   uwtRenderCats();
 };
@@ -1890,7 +1946,7 @@ window.uwtCloseDetail=function(){
 let uwtPreviewModelId=null;
 let uwtPreviewColorIdx=0;
 function uwtRefreshDetailImg(){
-  const model=[].concat(...Object.values(UWT_MODELS)).find(m=>m.id===uwtPreviewModelId);
+  const model=uwtAllModelsFlat().find(m=>m.id===uwtPreviewModelId);
   const fbColors=uwtPricing[uwtPreviewModelId]?.colors;
   const detailImgEl=document.getElementById('uwtDetailImg');
   const src=(fbColors&&fbColors[uwtPreviewColorIdx]&&fbColors[uwtPreviewColorIdx].img)||model.img;
@@ -1907,7 +1963,7 @@ window.uwtPickModel=function(modelId,ev){
   if(ev) ev.stopPropagation();
   uwtPreviewModelId=modelId;
   uwtPreviewColorIdx=0;
-  const allModels=[].concat(...Object.values(UWT_MODELS));
+  const allModels=uwtAllModelsFlat();
   const model=allModels.find(m=>m.id===modelId);
   const detail=document.getElementById('uwtModalOverlay');
   document.getElementById('uwtDetailName').textContent=model.name+(model.size?' ('+model.size+')':'');
@@ -2373,7 +2429,7 @@ function renderMSecondModels(){
   var wrap=document.getElementById('mSecondModelList');
   if(!wrap) return;
   var cats=(typeof UWT_CATEGORIES!=='undefined'?UWT_CATEGORIES[mSecondPlan]:[])||[];
-  var models=[].concat(...cats.map(function(c){return (typeof UWT_MODELS!=='undefined'?UWT_MODELS[c.id]:[])||[];}));
+  var models=[].concat(...cats.map(function(c){return uwtFlatten((typeof UWT_MODELS!=='undefined'?UWT_MODELS[c.id]:[])||[]);}));
   wrap.innerHTML=models.length?models.map(function(m){return'<button type="button" class="f-secmodel-btn'+(mSecondDevice===m.id?' on':'')+'" onclick="mPickSecondModel(\''+m.id+'\')">'+m.name+(m.size?' '+m.size:'')+'</button>';}).join(''):'<span style="font-size:11px;color:#bbb;">준비중</span>';
 }
 window.mPickSecondPlan=function(p){
@@ -2418,7 +2474,7 @@ function mSubmitForm(){
   var memo = memoEl ? memoEl.value.trim() : '';
   var urlWatchParam = new URLSearchParams(window.location.search).get('oWatch');
   if(mSecondDevice){
-    var allSecModelsM=[].concat(...Object.values(typeof UWT_MODELS!=='undefined'?UWT_MODELS:{}));
+    var allSecModelsM=uwtAllModelsFlat();
     var secModelObjM=allSecModelsM.find(function(m){return m.id===mSecondDevice;});
     if(secModelObjM){
       memo=(memo?memo+' / ':'')+'요금제별혜택 희망: '+secModelObjM.name+(secModelObjM.size?' '+secModelObjM.size:'')+' (PLAN '+mSecondPlan+')';
@@ -2619,7 +2675,7 @@ function renderFSecondModels(){
   const wrap=document.getElementById('fSecondModelList');
   if(!wrap) return;
   const cats=(typeof UWT_CATEGORIES!=='undefined'?UWT_CATEGORIES[fSecondPlan]:[])||[];
-  const models=[].concat(...cats.map(c=>(typeof UWT_MODELS!=='undefined'?UWT_MODELS[c.id]:[])||[]));
+  const models=[].concat(...cats.map(c=>uwtFlatten((typeof UWT_MODELS!=='undefined'?UWT_MODELS[c.id]:[])||[])));
   wrap.innerHTML=models.length?models.map(m=>`<button type="button" class="f-secmodel-btn${fSecondDevice===m.id?' on':''}" onclick="fPickSecondModel('${m.id}')">${m.name}${m.size?' '+m.size:''}</button>`).join(''):'<span style="font-size:11px;color:#bbb;">준비중</span>';
 }
 window.fPickSecondPlan=function(p){
@@ -2651,7 +2707,7 @@ function fSubmit(){
   if(!privacy){alert('개인정보 수집 및 이용에 동의해주세요.');return;}
   var memo=document.getElementById('fMemo').value.trim();
   if(fSecondDevice){
-    var allSecModels=[].concat(...Object.values(typeof UWT_MODELS!=='undefined'?UWT_MODELS:{}));
+    var allSecModels=uwtAllModelsFlat();
     var secModelObj=allSecModels.find(function(m){return m.id===fSecondDevice;});
     if(secModelObj){
       memo=(memo?memo+' / ':'')+'요금제별혜택 희망: '+secModelObj.name+(secModelObj.size?' '+secModelObj.size:'')+' (PLAN '+fSecondPlan+')';
