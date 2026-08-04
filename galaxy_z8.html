@@ -1610,7 +1610,9 @@ ucatLoadFirebase();
 .uwt-detail-row b{color:#1A1A1A;font-weight:700;}
 .uwt-detail-row.total{border-top:1px dashed #ddd;margin-top:6px;padding-top:12px;}
 .uwt-detail-row.total b{color:#E91E8C;font-size:17px;}
-.uwt-detail-confirm{width:100%;margin-top:16px;padding:15px;background:#E91E8C;border:none;border-radius:13px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;}
+.uwt-detail-btnrow{display:flex;gap:10px;margin-top:16px;}
+.uwt-detail-back{flex:1;padding:15px;background:#fff;border:1.5px solid #ddd;border-radius:13px;color:#666;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;}
+.uwt-detail-confirm{flex:1.4;padding:15px;background:#E91E8C;border:none;border-radius:13px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;}
 .uwt-empty{font-size:12px;color:#bbb;text-align:center;padding:16px 0;}
 </style>
 <section style="width:100%;background:#ffffff;padding:56px 0 64px;">
@@ -1645,7 +1647,10 @@ ucatLoadFirebase();
         <div class="uwt-detail-row"><span>유플러스 다이렉트 지원금</span><b id="uwtUdak">-</b></div>
         <div class="uwt-detail-row total"><span>자부담금</span><b id="uwtSelfpay">-</b></div>
       </div>
-      <button class="uwt-detail-confirm" id="uwtConfirmBtn" onclick="uwtConfirmModel()" type="button">이 모델 선택하기</button>
+      <div class="uwt-detail-btnrow">
+        <button class="uwt-detail-back" onclick="uwtCloseDetail()" type="button">뒤로 가기</button>
+        <button class="uwt-detail-confirm" id="uwtConfirmBtn" onclick="uwtConfirmModel()" type="button">모델 선택하기</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1800,6 +1805,9 @@ window.uwtConfirmModel=function(){
   uwtState.openModel=uwtPreviewModelId;
   uwtCloseDetail();
   uwtRenderCats();
+  setTimeout(()=>{
+    document.querySelector('.uwt-picksummary')?.scrollIntoView({behavior:'smooth',block:'center'});
+  },100);
 };
 
 uwtRenderCats();
