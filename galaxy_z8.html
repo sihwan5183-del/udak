@@ -1280,7 +1280,11 @@ function closeNavDrawer() {
 .ucard-pval.pink{color:#E91E8C;}
 .ucat-empty{grid-column:1/-1;text-align:center;padding:36px 0;color:#999;font-size:13px;}
 
-.udetail-back{display:flex;align-items:center;gap:6px;font-size:14px;color:#666;cursor:pointer;margin-bottom:16px;font-weight:600;}
+#ucatDetail{position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:1500;overflow-y:auto;transform:translateX(100%);transition:transform .28s ease;}
+#ucatDetail.open{transform:translateX(0);}
+.udetail-topbar{position:sticky;top:0;background:#fff;border-bottom:1px solid #f0f0f0;padding:14px 20px;display:flex;align-items:center;gap:10px;z-index:2;}
+.udetail-inner{max-width:520px;margin:0 auto;padding:20px 20px 40px;}
+.udetail-back{display:flex;align-items:center;gap:6px;font-size:14px;color:#666;cursor:pointer;font-weight:600;}
 .udetail-img{width:100%;aspect-ratio:1/1;border-radius:16px;background:#fff;border:1.5px solid #ececec;box-sizing:border-box;display:flex;align-items:center;justify-content:center;margin-bottom:20px;overflow:hidden;}
 .udetail-img img{max-width:92%;max-height:92%;object-fit:contain;}
 .udetail-name{font-size:22px;font-weight:800;color:#1A1A1A;margin:0 0 22px;text-align:center;}
@@ -1349,7 +1353,10 @@ function closeNavDrawer() {
     <div id="ucatGrid" class="ucat-grid"></div>
 
     <div id="ucatDetail" style="display:none">
-      <div class="udetail-back" onclick="closeUcatDetail()">‹ 목록으로</div>
+      <div class="udetail-topbar">
+        <div class="udetail-back" onclick="closeUcatDetail()">‹ 목록으로</div>
+      </div>
+      <div class="udetail-inner">
       <div class="udetail-img" id="udImg"></div>
       <p class="udetail-name" id="udName"></p>
 
@@ -1393,6 +1400,7 @@ function closeNavDrawer() {
       <div class="udetail-btnrow2">
         <button class="udetail-btn-consult" onclick="ctaUcat()" type="button">상담 문의</button>
         <button class="udetail-btn-order" onclick="ctaUcat()" type="button">주문 신청하기</button>
+      </div>
       </div>
     </div>
   </div>
@@ -1554,20 +1562,20 @@ window.openUcatDetail=function(id){
   const d=(ucatDevices||[]).find(x=>x.id===id);
   if(!d) return;
   ucatSel={device:d,color:0,storage:0,carrier:'LG U+',plan:(ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0]),discountMethod:'pubSupport',planListOpen:false};
-  document.getElementById('ucatGrid').parentElement.querySelector('.ucat-tabs').style.display='none';
-  document.getElementById('ucatSubtabs').style.display='none';
-  document.getElementById('ucatGrid').style.display='none';
-  document.getElementById('ucatDetail').style.display='block';
   document.getElementById('udName').textContent=d.name;
   renderUcatDetailColors();renderUcatDetailStorage();renderUcatDetailCarrier();renderUdPlanRow();renderUdDiscount();
   refreshUcatImg();refreshUcatPrice();
-  window.scrollTo({top:document.getElementById('ucatDetail').getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'});
+  const detail=document.getElementById('ucatDetail');
+  detail.style.display='block';
+  detail.scrollTop=0;
+  requestAnimationFrame(()=>detail.classList.add('open'));
+  document.body.style.overflow='hidden';
 };
 window.closeUcatDetail=function(){
-  document.getElementById('ucatDetail').style.display='none';
-  document.getElementById('ucatGrid').style.display='grid';
-  document.getElementById('ucatGrid').parentElement.querySelector('.ucat-tabs').style.display='flex';
-  if(ucatState.brand==='삼성') document.getElementById('ucatSubtabs').style.display='flex';
+  const detail=document.getElementById('ucatDetail');
+  detail.classList.remove('open');
+  document.body.style.overflow='';
+  setTimeout(()=>{ detail.style.display='none'; },280);
 };
 function renderUcatDetailColors(){
   const wrap=document.getElementById('udColors');
