@@ -1247,310 +1247,311 @@ function closeNavDrawer() {
   </div>
 </section>
 
-<!-- ══ 제품 3종 섹션 (카드형) ══ -->
+<!-- ══ 통합 카탈로그 (삼성/애플 · 실시간 연동) ══ -->
 <style>
-.pcard-wrap{display:flex;flex-direction:column;gap:20px;}
-.pcard{background:#ffffff;border:1px solid #ececec;border-radius:24px;box-shadow:0 2px 14px rgba(0,0,0,.05);padding:24px 20px 22px;}
-.pcard-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;}
-.pcard-name{font-size:19px;font-weight:800;color:#1A1A1A;margin:0;}
-.pcard-tagline{font-size:12px;color:#999;margin:2px 0 0;}
-.pcard-imgbox{width:100%;height:250px;display:flex;align-items:center;justify-content:center;background:#fafafa;border-radius:16px;margin-bottom:18px;overflow:hidden;}
-.pcard-imgbox img{max-width:92%;max-height:92%;width:auto;height:auto;object-fit:contain;}
-.pcard-label{font-size:11px;color:#aaa;font-weight:700;margin:0 0 8px;letter-spacing:.03em;}
-.pcard-colors{display:flex;gap:14px;margin-bottom:18px;}
-.pcard-color{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;background:none;border:none;padding:0;}
-.pcard-color-dot{width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);border:2px solid transparent;transition:border-color .15s;}
-.pcard-color.active .pcard-color-dot{border-color:#E91E8C;}
-.pcard-color-name{font-size:10px;color:#999;white-space:nowrap;}
-.pcard-color.active .pcard-color-name{color:#E91E8C;font-weight:700;}
-.pcard-cap{display:flex;gap:8px;margin-bottom:20px;}
-.pcard-cap-btn{flex:1;padding:10px 0;text-align:center;border:1.5px solid #ddd;border-radius:10px;font-size:14px;font-weight:700;color:#555;cursor:pointer;background:#fff;transition:all .15s;}
-.pcard-cap-btn.active{border-color:#E91E8C;background:rgba(233,30,140,.06);color:#E91E8C;}
-[id^="pcard-plan-"] .pcard-cap-btn{font-size:12px;padding:9px 0;}
-[id^="pcard-carrier-"] .pcard-cap-btn{font-size:12px;padding:9px 0;}
-.pcard-price-table{border-top:1px solid #f0f0f0;padding-top:14px;}
-.pcard-price-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:14px;}
-.pcard-price-row span{color:#888;}
-.pcard-price-row strong{color:#1A1A1A;font-size:17px;font-weight:800;}
-.pcard-price-row.sub strong{color:#E91E8C;font-size:14px;font-weight:700;}
-.pcard-price-note{font-size:11px;color:#bbb;margin-top:8px;line-height:1.5;}
-.pcard-cta{width:100%;margin-top:18px;padding:14px;background:#E91E8C;border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;}
+.ucat-wrap{max-width:520px;margin:0 auto;padding:0 20px;}
+.ucat-title{font-size:24px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin:0 0 6px;text-align:center;}
+.ucat-sub-lbl{font-size:14px;color:#888;margin:0 0 24px;text-align:center;}
+.ucat-tabs{display:flex;gap:6px;margin-bottom:12px;}
+.ucat-tab{flex:1;text-align:center;padding:12px;border:1.5px solid #ececec;border-radius:10px;background:#fff;font-size:14px;font-weight:700;color:#666;cursor:pointer;font-family:inherit;}
+.ucat-tab.on{border-color:#E91E8C;color:#E91E8C;background:rgba(233,30,140,.06);}
+.ucat-subtabs{display:flex;gap:18px;margin-bottom:14px;padding:0 2px;}
+.ucat-sub{font-size:13.5px;font-weight:600;color:#999;padding-bottom:8px;cursor:pointer;border-bottom:2px solid transparent;}
+.ucat-sub.on{color:#1A1A1A;border-bottom-color:#1A1A1A;}
+.ucat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ucard{padding:12px 12px 16px;border:1.5px solid #ececec;border-radius:16px;background:#fff;cursor:pointer;text-align:center;min-width:0;transition:border-color .15s;}
+.ucard:active{background:#fafafa;}
+.ucard-badge{display:inline-block;background:rgba(233,30,140,.06);color:#E91E8C;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;margin-bottom:8px;}
+.ucard-name{font-size:16px;font-weight:800;color:#1A1A1A;margin:0 0 6px;line-height:1.3;}
+.ucard-storage{display:inline-block;background:#f3f4f6;color:#666;font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:100px;margin-bottom:10px;}
+.ucard-img{width:100%;aspect-ratio:1/1;object-fit:contain;border-radius:10px;background:#fff;border:1.5px solid #ececec;margin-bottom:12px;display:block;box-sizing:border-box;}
+.ucard-pricebox{background:rgba(233,30,140,.05);border-radius:10px;padding:10px 10px 8px;text-align:left;}
+.ucard-pricebox-lbl{font-size:11px;font-weight:700;color:#888;margin:0 0 8px;}
+.ucard-prow{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 0;}
+.ucard-prow+.ucard-prow{border-top:1px solid rgba(0,0,0,.06);}
+.ucard-typetag{display:inline-block;padding:2.5px 6px;border:1.2px solid #ddd;border-radius:6px;font-size:9.5px;font-weight:700;color:#666;background:#fff;white-space:nowrap;flex-shrink:0;}
+.ucard-pval{font-size:13.5px;font-weight:800;color:#1A1A1A;white-space:nowrap;}
+.ucard-pval.pink{color:#E91E8C;}
+.ucat-empty{grid-column:1/-1;text-align:center;padding:36px 0;color:#999;font-size:13px;}
+
+.udetail-back{display:flex;align-items:center;gap:6px;font-size:14px;color:#666;cursor:pointer;margin-bottom:16px;font-weight:600;}
+.udetail-img{width:100%;aspect-ratio:1/1;border-radius:16px;background:#fff;border:1.5px solid #ececec;box-sizing:border-box;display:flex;align-items:center;justify-content:center;margin-bottom:20px;overflow:hidden;}
+.udetail-img img{max-width:92%;max-height:92%;object-fit:contain;}
+.udetail-name{font-size:22px;font-weight:800;color:#1A1A1A;margin:0 0 22px;text-align:center;}
+.udetail-sec{margin-bottom:22px;}
+.udetail-lbl{font-size:13px;color:#888;font-weight:700;margin:0 0 10px;}
+.udetail-row{display:flex;gap:10px;flex-wrap:wrap;}
+.ud-color{width:40px;height:40px;border-radius:50%;cursor:pointer;border:2px solid transparent;box-shadow:0 0 0 1px #ececec inset;}
+.ud-color.on{border-color:#E91E8C;box-shadow:0 0 0 1px #E91E8C inset;}
+.ud-chip{padding:12px 14px;border:1.5px solid #ddd;border-radius:10px;font-size:13.5px;font-weight:700;color:#555;cursor:pointer;background:#fff;text-align:center;flex:1;min-width:80px;}
+.ud-chip.on{border-color:#E91E8C;color:#E91E8C;background:rgba(233,30,140,.06);}
+.udetail-breakdown{background:#f9f9fb;border-radius:12px;padding:16px;}
+.udb-row{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;color:#666;padding:7px 0;}
+.udb-row b{color:#1A1A1A;font-weight:700;}
+.udb-row.total{border-top:1px dashed #eee;margin-top:6px;padding-top:12px;font-size:14px;}
+.udb-row.total b{color:#E91E8C;font-size:17px;}
+.udetail-cta{width:100%;margin-top:8px;padding:16px;background:#E91E8C;border:none;border-radius:13px;color:#fff;font-size:16px;font-weight:800;cursor:pointer;}
 </style>
 
 <section style="width:100%;background:#ffffff;padding:56px 0 64px;">
-  <div style="max-width:520px;margin:0 auto;padding:0 20px;">
-    <h2 style="text-align:center;font-size:26px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin:0 0 8px;">갤럭시 Z 폴더블 <span style="color:#E91E8C;">8 시리즈</span></h2>
-    <p style="text-align:center;font-size:14px;color:#888;margin:0 0 28px;">용량과 컬러를 선택해 가격을 확인해보세요</p>
+  <div class="ucat-wrap">
+    <p class="ucat-title">지금 유닥에서 만나는<br>스마트폰 라인업</p>
+    <p class="ucat-sub-lbl">브랜드와 시리즈를 선택해 가격을 확인해보세요</p>
 
-    <div class="pcard-wrap">
+    <div class="ucat-tabs">
+      <button class="ucat-tab on" id="ucatBrandSamsung" onclick="setUcatBrand('삼성')" type="button">삼성</button>
+      <button class="ucat-tab" id="ucatBrandApple" onclick="setUcatBrand('애플')" type="button">애플</button>
+    </div>
+    <div class="ucat-subtabs" id="ucatSubtabs">
+      <span class="ucat-sub on" id="ucatSubZ" onclick="setUcatSub('Z')">갤럭시 Z시리즈</span>
+      <span class="ucat-sub" id="ucatSubS" onclick="setUcatSub('S')">갤럭시 S시리즈</span>
+    </div>
 
-      <!-- 폴드 8 -->
-      <div class="pcard">
-        <div class="pcard-top">
-          <div>
-            <p class="pcard-name">갤럭시 Z 폴드8</p>
-            <p class="pcard-tagline">더 넓게, 더 몰입감 있게</p>
-          </div>
+    <div id="ucatGrid" class="ucat-grid"></div>
+
+    <div id="ucatDetail" style="display:none">
+      <div class="udetail-back" onclick="closeUcatDetail()">‹ 목록으로</div>
+      <div class="udetail-img" id="udImg"></div>
+      <p class="udetail-name" id="udName"></p>
+
+      <div class="udetail-sec"><p class="udetail-lbl">컬러</p><div class="udetail-row" id="udColors"></div></div>
+      <div class="udetail-sec"><p class="udetail-lbl">용량</p><div class="udetail-row" id="udStorage"></div></div>
+      <div class="udetail-sec"><p class="udetail-lbl">현재 사용 중인 통신사</p><div class="udetail-row" id="udCarrier"></div></div>
+
+      <div class="udetail-sec">
+        <p class="udetail-lbl">예상 혜택가격 <span style="color:#bbb;font-weight:400;">(85 요금제 기준)</span></p>
+        <div class="udetail-breakdown">
+          <div class="udb-row"><span>출고가</span><b id="udbLaunch">-</b></div>
+          <div class="udb-row"><span>공시지원금</span><b id="udbPub">-</b></div>
+          <div class="udb-row"><span>유닥 지원금</span><b id="udbExtra">-</b></div>
+          <div class="udb-row total"><span>예상 혜택가격</span><b id="udbFinal">-</b></div>
         </div>
-        <div class="pcard-imgbox"><img id="pcard-img-wide" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black-v2.png" alt="갤럭시 Z 폴드8"></div>
-
-        <p class="pcard-label">현재 사용 중인 통신사</p>
-        <div class="pcard-cap" id="pcard-carrier-wide">
-          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('wide',0)">SKT</div>
-          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('wide',1)">KT</div>
-          <div class="pcard-cap-btn active" onclick="pcardSelectCarrier('wide',2)">LG U+</div>
-          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('wide',3)">알뜰폰</div>
-        </div>
-
-        <p class="pcard-label">컬러</p>
-        <div class="pcard-colors" id="pcard-colors-wide">
-          <button class="pcard-color active" onclick="pcardSelectColor('wide',0)"><span class="pcard-color-dot" style="background:#3A3A3C;"></span><span class="pcard-color-name">그라파이트</span></button>
-          <button class="pcard-color" onclick="pcardSelectColor('wide',1)"><span class="pcard-color-dot" style="background:#F0E6D2;"></span><span class="pcard-color-name">크림</span></button>
-          <button class="pcard-color" onclick="pcardSelectColor('wide',2)"><span class="pcard-color-dot" style="background:#C9BFE0;"></span><span class="pcard-color-name">라벤더</span></button>
-        </div>
-
-        <p class="pcard-label">용량 <span style="font-size:11px;color:#E91E8C;font-weight:700;">더블스토리지 적용</span></p>
-        <div class="pcard-cap" id="pcard-cap-wide">
-          <div class="pcard-cap-btn active" onclick="pcardSelectCap('wide',0)">256GB → 512GB</div>
-          <div class="pcard-cap-btn" onclick="pcardSelectCap('wide',1)">512GB → 1TB</div>
-        </div>
-
-        <div class="pcard-price-table">
-          <div class="pcard-price-row"><span>출고가격</span><strong id="pcard-price-wide">2,277,000원</strong></div>
-          <div class="pcard-price-row sub"><span>공시 지원금</span><strong id="pcard-gongsi-wide">500,000원</strong></div>
-          <div class="pcard-price-row sub"><span>유닥 지원금</span><strong id="pcard-udak-wide">200,000원</strong></div>
-          <div class="pcard-price-row" style="border-top:1px dashed #eee;margin-top:6px;padding-top:12px;"><span>예상 혜택가격</span><strong id="pcard-benefit-wide" style="color:#E91E8C;">2,077,000원</strong></div>
-        </div>
-
-        <button class="pcard-cta" onclick="openReservationModal()">이 모델로 사전예약 신청</button>
       </div>
 
-      <!-- 폴드 8 울트라 -->
-      <div class="pcard">
-        <div class="pcard-top">
-          <div>
-            <p class="pcard-name">갤럭시 Z 폴드8 울트라</p>
-            <p class="pcard-tagline">완벽한 밸런스의</p>
-          </div>
-        </div>
-        <div class="pcard-imgbox"><img id="pcard-img-ultra" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-graphite-v2.png" alt="갤럭시 Z 폴드8 울트라"></div>
-
-        <p class="pcard-label">현재 사용 중인 통신사</p>
-        <div class="pcard-cap" id="pcard-carrier-ultra">
-          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('ultra',0)">SKT</div>
-          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('ultra',1)">KT</div>
-          <div class="pcard-cap-btn active" onclick="pcardSelectCarrier('ultra',2)">LG U+</div>
-          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('ultra',3)">알뜰폰</div>
-        </div>
-
-        <p class="pcard-label">컬러</p>
-        <div class="pcard-colors" id="pcard-colors-ultra">
-          <button class="pcard-color active" onclick="pcardSelectColor('ultra',0)"><span class="pcard-color-dot" style="background:#3A3A3C;"></span><span class="pcard-color-name">그라파이트</span></button>
-          <button class="pcard-color" onclick="pcardSelectColor('ultra',1)"><span class="pcard-color-dot" style="background:#5C4E77;"></span><span class="pcard-color-name">바이올렛 쉐도우</span></button>
-          <button class="pcard-color" onclick="pcardSelectColor('ultra',2)"><span class="pcard-color-dot" style="background:#F0E6D2;"></span><span class="pcard-color-name">크림</span></button>
-        </div>
-
-        <p class="pcard-label">용량 <span style="font-size:11px;color:#E91E8C;font-weight:700;">더블스토리지 적용</span></p>
-        <div class="pcard-cap" id="pcard-cap-ultra">
-          <div class="pcard-cap-btn active" onclick="pcardSelectCap('ultra',0)">256GB → 512GB</div>
-          <div class="pcard-cap-btn" onclick="pcardSelectCap('ultra',1)">512GB → 1TB</div>
-        </div>
-
-        <div class="pcard-price-table">
-          <div class="pcard-price-row"><span>출고가격</span><strong id="pcard-price-ultra">2,577,300원</strong></div>
-          <div class="pcard-price-row sub"><span>공시 지원금</span><strong id="pcard-gongsi-ultra">500,000원</strong></div>
-          <div class="pcard-price-row sub"><span>유닥 지원금</span><strong id="pcard-udak-ultra">200,000원</strong></div>
-          <div class="pcard-price-row" style="border-top:1px dashed #eee;margin-top:6px;padding-top:12px;"><span>예상 혜택가격</span><strong id="pcard-benefit-ultra" style="color:#E91E8C;">2,077,000원</strong></div>
-        </div>
-
-        <button class="pcard-cta" onclick="openReservationModal()">이 모델로 사전예약 신청</button>
-      </div>
-
-      <!-- 플립 8 -->
-      <div class="pcard">
-        <div class="pcard-top">
-          <div>
-            <p class="pcard-name">갤럭시 Z 플립8</p>
-            <p class="pcard-tagline">주머니 속 프리미엄</p>
-          </div>
-        </div>
-        <div class="pcard-imgbox"><img id="pcard-img-flip" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-graphite-v2.png" alt="갤럭시 Z 플립8"></div>
-
-        <p class="pcard-label">현재 사용 중인 통신사</p>
-        <div class="pcard-cap" id="pcard-carrier-flip">
-          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('flip',0)">SKT</div>
-          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('flip',1)">KT</div>
-          <div class="pcard-cap-btn active" onclick="pcardSelectCarrier('flip',2)">LG U+</div>
-          <div class="pcard-cap-btn" onclick="pcardSelectCarrier('flip',3)">알뜰폰</div>
-        </div>
-
-        <p class="pcard-label">컬러</p>
-        <div class="pcard-colors" id="pcard-colors-flip">
-          <button class="pcard-color active" onclick="pcardSelectColor('flip',0)"><span class="pcard-color-dot" style="background:#3A3A3C;"></span><span class="pcard-color-name">그라파이트</span></button>
-          <button class="pcard-color" onclick="pcardSelectColor('flip',1)"><span class="pcard-color-dot" style="background:#F0E6D2;"></span><span class="pcard-color-name">크림</span></button>
-          <button class="pcard-color" onclick="pcardSelectColor('flip',2)"><span class="pcard-color-dot" style="background:#F2C6D6;"></span><span class="pcard-color-name">핑크</span></button>
-        </div>
-
-        <p class="pcard-label">용량 <span style="font-size:11px;color:#E91E8C;font-weight:700;">더블스토리지 적용</span></p>
-        <div class="pcard-cap" id="pcard-cap-flip">
-          <div class="pcard-cap-btn active" onclick="pcardSelectCap('flip',0)">256GB → 512GB</div>
-          <div class="pcard-cap-btn" onclick="pcardSelectCap('flip',1)">512GB → 1TB</div>
-        </div>
-
-        <div class="pcard-price-table">
-          <div class="pcard-price-row"><span>출고가격</span><strong id="pcard-price-flip">1,683,000원</strong></div>
-          <div class="pcard-price-row sub"><span>공시 지원금</span><strong id="pcard-gongsi-flip">500,000원</strong></div>
-          <div class="pcard-price-row sub"><span>유닥 지원금</span><strong id="pcard-udak-flip">200,000원</strong></div>
-          <div class="pcard-price-row" style="border-top:1px dashed #eee;margin-top:6px;padding-top:12px;"><span>예상 혜택가격</span><strong id="pcard-benefit-flip" style="color:#E91E8C;">2,077,000원</strong></div>
-        </div>
-
-        <button class="pcard-cta" onclick="openReservationModal()">이 모델로 사전예약 신청</button>
-      </div>
-
+      <button class="udetail-cta" onclick="ctaUcat()" type="button">이 모델로 사전예약 신청</button>
     </div>
   </div>
 </section>
 
 <script>
-const PCARD_DATA = {
-  wide: {
-    colors: [
-      {name:'그라파이트', hex:'#3A3A3C', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black-v2.png'},
-      {name:'크림', hex:'#F0E6D2', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-cream-v2.png'},
-      {name:'라벤더', hex:'#C9BFE0', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-lavender-v2.png'}
-    ],
-    capacity: [2277000, 2530000]
-  },
-  ultra: {
-    colors: [
-      {name:'그라파이트', hex:'#3A3A3C', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-graphite-v2.png'},
-      {name:'바이올렛 쉐도우', hex:'#5C4E77', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-violet-v2.png'},
-      {name:'크림', hex:'#F0E6D2', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-cream-v2.png'}
-    ],
-    capacity: [2577300, 2830300]
-  },
-  flip: {
-    colors: [
-      {name:'그라파이트', hex:'#3A3A3C', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-graphite-v2.png'},
-      {name:'크림', hex:'#F0E6D2', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-cream-v2.png'},
-      {name:'핑크', hex:'#F2C6D6', img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-pink-v2.png'}
-    ],
-    capacity: [1683000, 1936000]
+/* ── 통합 카탈로그: 삼성(S/Z)+애플, 갤럭시S·아이폰은 Firebase 실시간, 갤럭시Z는 이 캠페인 전용 데이터 ── */
+const UCAT_DB_URL='https://udak-c6832-default-rtdb.firebaseio.com';
+
+const UCAT_Z8_DEVICES=[
+  {id:'z-fold8',name:'갤럭시 Z 폴드8',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black-v2.png',
+    storageList:[{name:'256GB → 512GB',price:2277000},{name:'512GB → 1TB',price:2530000}],
+    colors:[{name:'#3A3A3C|그라파이트',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black-v2.png'},
+            {name:'#F0E6D2|크림',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-cream-v2.png'},
+            {name:'#C9BFE0|라벤더',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-lavender-v2.png'}]},
+  {id:'z-fold8-ultra',name:'갤럭시 Z 폴드8 울트라',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-graphite-v2.png',
+    storageList:[{name:'256GB → 512GB',price:2577300},{name:'512GB → 1TB',price:2830300}],
+    colors:[{name:'#3A3A3C|그라파이트',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-graphite-v2.png'},
+            {name:'#5C4E77|바이올렛 쉐도우',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-violet-v2.png'},
+            {name:'#F0E6D2|크림',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-cream-v2.png'}]},
+  {id:'z-flip8',name:'갤럭시 Z 플립8',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-graphite-v2.png',
+    storageList:[{name:'256GB → 512GB',price:1683000},{name:'512GB → 1TB',price:1936000}],
+    colors:[{name:'#3A3A3C|그라파이트',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-graphite-v2.png'},
+            {name:'#F0E6D2|크림',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-cream-v2.png'},
+            {name:'#F2C6D6|핑크',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-pink-v2.png'}]}
+];
+const UCAT_Z8_POLICIES=[
+  {name:'Z8 기기변경(LGU+)',jointype:'기기변경',carrier:'LG U+',plangroup:'all',pubSupport:500000,rebate:300000,distribution:0,structure:0,extraPolicy:0,deviceOverrides:{},excludedDevs:[]},
+  {name:'Z8 번호이동(타사)',jointype:'번호이동',carrier:'SKT,KT,알뜰폰',plangroup:'all',pubSupport:500000,rebate:500000,distribution:0,structure:0,extraPolicy:0,deviceOverrides:{'z-fold8':{rebate:450000}},excludedDevs:[]}
+];
+const UCAT_MDEV_FALLBACK=[
+  {id:'s26',name:'갤럭시 S26',img:'',storageList:[{name:'256GB',price:1254000},{name:'512GB',price:1386000}],colors:[{name:'#4B5563|그라파이트',img:''},{name:'#C084FC|바이올렛',img:''},{name:'#F9A8D4|핑크골드',img:''}]},
+  {id:'s26p',name:'갤럭시 S26+',img:'',storageList:[{name:'256GB',price:1452000},{name:'512GB',price:1584000}],colors:[{name:'#1E3A5F|네이비',img:''},{name:'#F5F5F5|화이트실버',img:''}]},
+  {id:'s26u',name:'갤럭시 S26 울트라',img:'',storageList:[{name:'256GB',price:1797000},{name:'512GB',price:1929000},{name:'1TB',price:2178000}],colors:[{name:'#1C1C1C|티타늄블랙',img:''},{name:'#C0B090|티타늄화이트',img:''}]},
+  {id:'ip17',name:'아이폰 17',img:'',storageList:[{name:'128GB',price:990000},{name:'256GB',price:1122000},{name:'512GB',price:1386000}],colors:[{name:'#FFFFFF|화이트',img:''},{name:'#000000|블랙',img:''},{name:'#FFB6C1|핑크',img:''}]},
+  {id:'ip17p',name:'아이폰 17 Pro',img:'',storageList:[{name:'128GB',price:1290000},{name:'256GB',price:1422000},{name:'512GB',price:1686000},{name:'1TB',price:1950000}],colors:[{name:'#8E8E93|내추럴티타늄',img:''},{name:'#1C1C1E|블랙티타늄',img:''},{name:'#D4AF37|데저트티타늄',img:''}]},
+  {id:'ip17pm',name:'아이폰 17 Pro Max',img:'',storageList:[{name:'256GB',price:1590000},{name:'512GB',price:1854000},{name:'1TB',price:2118000}],colors:[{name:'#8E8E93|내추럴티타늄',img:''},{name:'#1C1C1E|블랙티타늄',img:''},{name:'#D4AF37|데저트티타늄',img:''}]}
+];
+
+let ucatDevices=[...UCAT_Z8_DEVICES];
+let ucatPolicies=[...UCAT_Z8_POLICIES];
+let ucatPlans=[{plangroup:'85',monthlyPrice:85000,name:'5G 프리미어 에센셜'}];
+let ucatState={brand:'삼성',sub:'Z'};
+let ucatSel={device:null,color:null,storage:null,carrier:null};
+
+async function ucatLoadFirebase(){
+  // (초기 Z8 카드 즉시 렌더는 아래 renderUcatGrid() 최초 호출에서 처리됨)
+  try{
+    const [ds,ps,pols]=await Promise.all([
+      fetch(UCAT_DB_URL+'/devices.json').then(r=>r.json()).catch(()=>null),
+      fetch(UCAT_DB_URL+'/plans.json').then(r=>r.json()).catch(()=>null),
+      fetch(UCAT_DB_URL+'/policy2.json').then(r=>r.json()).catch(()=>null)
+    ]);
+    const fbDevices=ds?Object.entries(ds).map(([id,v])=>({id,...v})).filter(d=>d.visible!==false):UCAT_MDEV_FALLBACK;
+    const fbPolicies=pols?Object.entries(pols).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false):[];
+    if(ps){ const arr=Object.entries(ps).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false); if(arr.length) ucatPlans=arr; }
+    ucatDevices=[...UCAT_Z8_DEVICES,...fbDevices];
+    ucatPolicies=[...UCAT_Z8_POLICIES,...fbPolicies];
+  }catch(e){
+    ucatDevices=[...UCAT_Z8_DEVICES,...UCAT_MDEV_FALLBACK];
   }
+  renderUcatGrid();
+}
+
+function ucatCategorize(d){
+  const nm=d.name||'';
+  if(nm.includes('폴드')||nm.includes('플립')) return{brand:'삼성',sub:'Z'};
+  if(nm.includes('갤럭시')) return{brand:'삼성',sub:'S'};
+  return{brand:'애플',sub:null};
+}
+
+function ucatQuote(device,carrierName,jointype,planObj){
+  if(!device) return null;
+  const storage=device.storageList&&device.storageList[0];
+  const lp=storage?storage.price:0;
+  const pg=planObj?Math.floor(planObj.monthlyPrice/1000).toString():'85';
+  const fns=[
+    p=>p.jointype===jointype&&p.carrier!=='all'&&p.carrier&&p.carrier.includes(carrierName)&&p.plangroup===pg,
+    p=>p.jointype===jointype&&p.carrier==='all'&&p.plangroup===pg,
+    p=>p.jointype==='all'&&p.carrier!=='all'&&p.carrier&&p.carrier.includes(carrierName)&&p.plangroup===pg,
+    p=>p.jointype==='all'&&p.carrier==='all'&&p.plangroup===pg,
+    p=>p.jointype===jointype&&p.carrier!=='all'&&p.carrier&&p.carrier.includes(carrierName)&&p.plangroup==='all',
+    p=>p.jointype===jointype&&p.carrier==='all'&&p.plangroup==='all',
+    p=>p.jointype==='all'&&p.carrier!=='all'&&p.carrier&&p.carrier.includes(carrierName)&&p.plangroup==='all',
+    p=>p.jointype==='all'&&p.carrier==='all'&&p.plangroup==='all',
+  ];
+  let pol=null;
+  for(const fn of fns){
+    const f=(ucatPolicies||[]).find(fn);
+    if(f){
+      if((f.excludedDevs||[]).includes(device.id)) continue;
+      if(f.deviceOverrides&&f.deviceOverrides[device.id]){
+        const ov=f.deviceOverrides[device.id];
+        pol={...f,...ov};
+      } else pol=f;
+      break;
+    }
+  }
+  if(!pol) return null;
+  const pub=pol.pubSupport||0;
+  const extra=(pol.rebate||0)+(pol.distribution||0)+(pol.structure||0)+(pol.extraPolicy||0);
+  return {price:lp, pub:pub, extra:extra, final:Math.max(0,lp-pub-extra)};
+}
+
+window.setUcatBrand=function(b){
+  ucatState.brand=b;
+  document.getElementById('ucatBrandSamsung').className='ucat-tab'+(b==='삼성'?' on':'');
+  document.getElementById('ucatBrandApple').className='ucat-tab'+(b==='애플'?' on':'');
+  document.getElementById('ucatSubtabs').style.display=b==='삼성'?'flex':'none';
+  renderUcatGrid();
+};
+window.setUcatSub=function(s){
+  ucatState.sub=s;
+  document.getElementById('ucatSubZ').className='ucat-sub'+(s==='Z'?' on':'');
+  document.getElementById('ucatSubS').className='ucat-sub'+(s==='S'?' on':'');
+  renderUcatGrid();
 };
 
-// 공통: 기기명 문자열 -> PCARD_DATA 키
-function deviceKeyFromName(name){
-  if(!name) return null;
-  if(name.indexOf('플립')>-1) return 'flip';
-  if(name.indexOf('울트라')>-1) return 'ultra';
-  if(name.indexOf('폴드')>-1) return 'wide';
-  return null;
-}
-var mColorIdx = 0, mCapIdx = 0;
-var fColorIdx = 0, fCapIdx = 0;
-function renderDeviceColorCap(scope){
-  var device = scope==='m' ? mDevice : fDevice;
-  var key = deviceKeyFromName(device);
-  var group = document.getElementById(scope+'ColorCapGroup');
-  if(!group) return;
-  if(!key){ group.style.display='none'; return; }
-  if(scope==='m'){ mColorIdx=0; mCapIdx=0; } else { fColorIdx=0; fCapIdx=0; }
-  group.style.display='block';
-  var data = PCARD_DATA[key];
-  var colorGrid = document.getElementById(scope+'ColorGrid');
-  var capGrid = document.getElementById(scope+'CapGrid');
-  colorGrid.innerHTML = data.colors.map(function(c,i){
-    var active = i===0;
-    return '<button type="button" class="pcard-color'+(active?' active':'')+'" onclick="pickColorCap(\''+scope+'\',\''+key+'\','+i+',true)"><span class="pcard-color-dot" style="background:'+c.hex+';"></span><span class="pcard-color-name">'+c.name+'</span></button>';
+function renderUcatGrid(){
+  const wrap=document.getElementById('ucatGrid');
+  if(!wrap) return;
+  const planObj=ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0];
+  const list=(ucatDevices||[]).filter(d=>{
+    const c=ucatCategorize(d);
+    if(ucatState.brand==='애플') return c.brand==='애플';
+    return c.brand==='삼성'&&c.sub===ucatState.sub;
+  });
+  if(!list.length){
+    wrap.innerHTML='<div class="ucat-empty">'+(ucatState.brand==='삼성'&&ucatState.sub==='S'?'갤럭시 S시리즈 준비중입니다':'표시할 기기가 없습니다')+'</div>';
+    return;
+  }
+  wrap.innerHTML=list.map(d=>{
+    const chg=ucatQuote(d,'LG U+','기기변경',planObj);
+    const mnp=ucatQuote(d,'SKT','번호이동',planObj);
+    const storageTxt=(d.storageList&&d.storageList[0])?d.storageList[0].name:'';
+    return`<div class="ucard" onclick="openUcatDetail('${d.id}')">
+      <span class="ucard-badge">85 요금제 기준</span>
+      <p class="ucard-name">${d.name}</p>
+      ${storageTxt?`<span class="ucard-storage">${storageTxt}</span>`:''}
+      ${d.img?`<img class="ucard-img" src="${d.img}" alt="${d.name}">`:`<div class="ucard-img"></div>`}
+      <div class="ucard-pricebox">
+        <p class="ucard-pricebox-lbl">예상 혜택가</p>
+        ${mnp?`<div class="ucard-prow"><span class="ucard-typetag">번호이동</span><b class="ucard-pval pink">${mnp.final.toLocaleString()}원</b></div>`:''}
+        ${chg?`<div class="ucard-prow"><span class="ucard-typetag">기기변경</span><b class="ucard-pval">${chg.final.toLocaleString()}원</b></div>`:''}
+      </div>
+    </div>`;
   }).join('');
-  capGrid.innerHTML = data.capacity.map(function(p,i){
-    var active = i===0;
-    return '<div class="pcard-cap-btn'+(active?' active':'')+'" onclick="pickColorCap(\''+scope+'\',\''+key+'\','+i+',false)">'+(i===0?'256GB → 512GB':'512GB → 1TB')+'</div>';
+}
+
+window.openUcatDetail=function(id){
+  const d=(ucatDevices||[]).find(x=>x.id===id);
+  if(!d) return;
+  ucatSel={device:d,color:0,storage:0,carrier:'LG U+'};
+  document.getElementById('ucatGrid').parentElement.querySelector('.ucat-tabs').style.display='none';
+  document.getElementById('ucatSubtabs').style.display='none';
+  document.getElementById('ucatGrid').style.display='none';
+  document.getElementById('ucatDetail').style.display='block';
+  document.getElementById('udName').textContent=d.name;
+  renderUcatDetailColors();renderUcatDetailStorage();renderUcatDetailCarrier();
+  refreshUcatImg();refreshUcatPrice();
+  window.scrollTo({top:document.getElementById('ucatDetail').getBoundingClientRect().top+window.scrollY-80,behavior:'smooth'});
+};
+window.closeUcatDetail=function(){
+  document.getElementById('ucatDetail').style.display='none';
+  document.getElementById('ucatGrid').style.display='grid';
+  document.getElementById('ucatGrid').parentElement.querySelector('.ucat-tabs').style.display='flex';
+  if(ucatState.brand==='삼성') document.getElementById('ucatSubtabs').style.display='flex';
+};
+function renderUcatDetailColors(){
+  const wrap=document.getElementById('udColors');
+  wrap.innerHTML=(ucatSel.device.colors||[]).map((c,i)=>{
+    const hx=c.name.split('|')[0];
+    return`<span class="ud-color${ucatSel.color===i?' on':''}" style="background:${hx}" onclick="pickUcatColor(${i})"></span>`;
   }).join('');
 }
-function pickColorCap(scope, key, idx, isColor){
-  if(scope==='m'){ if(isColor) mColorIdx=idx; else mCapIdx=idx; }
-  else { if(isColor) fColorIdx=idx; else fCapIdx=idx; }
-  var curColorIdx = scope==='m'?mColorIdx:fColorIdx;
-  var curCapIdx = scope==='m'?mCapIdx:fCapIdx;
-  document.querySelectorAll('#'+scope+'ColorGrid .pcard-color').forEach(function(el,i){ el.classList.toggle('active', i===curColorIdx); });
-  document.querySelectorAll('#'+scope+'CapGrid .pcard-cap-btn').forEach(function(el,i){ el.classList.toggle('active', i===curCapIdx); });
+function renderUcatDetailStorage(){
+  const wrap=document.getElementById('udStorage');
+  wrap.innerHTML=(ucatSel.device.storageList||[]).map((s,i)=>{
+    return`<span class="ud-chip${ucatSel.storage===i?' on':''}" onclick="pickUcatStorage(${i})">${s.name}</span>`;
+  }).join('');
 }
-function selectedColorOf(scope){
-  var device = scope==='m' ? mDevice : fDevice;
-  var key = deviceKeyFromName(device);
-  if(!key) return undefined;
-  var data = PCARD_DATA[key];
-  var colorIdx = scope==='m'?mColorIdx:fColorIdx;
-  return data.colors[colorIdx] ? data.colors[colorIdx].name : undefined;
+function renderUcatDetailCarrier(){
+  const carriers=['SKT','KT','LG U+','알뜰폰'];
+  const wrap=document.getElementById('udCarrier');
+  wrap.innerHTML=carriers.map(n=>{
+    return`<span class="ud-chip${ucatSel.carrier===n?' on':''}" onclick="pickUcatCarrier('${n}')">${n}</span>`;
+  }).join('');
 }
-function selectedCapacityOf(scope){
-  var device = scope==='m' ? mDevice : fDevice;
-  var key = deviceKeyFromName(device);
-  if(!key) return undefined;
-  var capIdx = scope==='m'?mCapIdx:fCapIdx;
-  return capIdx===0 ? '256GB' : '512GB';
+window.pickUcatColor=function(i){ucatSel.color=i;renderUcatDetailColors();refreshUcatImg();};
+window.pickUcatStorage=function(i){ucatSel.storage=i;renderUcatDetailStorage();refreshUcatPrice();};
+window.pickUcatCarrier=function(n){ucatSel.carrier=n;renderUcatDetailCarrier();refreshUcatPrice();};
+function refreshUcatImg(){
+  const wrap=document.getElementById('udImg');
+  const c=ucatSel.device.colors&&ucatSel.device.colors[ucatSel.color];
+  const src=(c&&c.img)||ucatSel.device.img||'';
+  wrap.innerHTML=src?`<img src="${src}" alt="${ucatSel.device.name}">`:'';
 }
-function mSelectedColor(){ return selectedColorOf('m'); }
-function mSelectedCapacity(){ return selectedCapacityOf('m'); }
-function fSelectedColor(){ return selectedColorOf('f'); }
-function fSelectedCapacity(){ return selectedCapacityOf('f'); }
-const GONGSI_SUBSIDY = 500000;
-const UDAK_SUBSIDY = {
-  wide:  { lguplus: 300000, other: 450000 },
-  ultra: { lguplus: 300000, other: 500000 },
-  flip:  { lguplus: 300000, other: 500000 }
+function refreshUcatPrice(){
+  const d=ucatSel.device;
+  const st=d.storageList[ucatSel.storage||0];
+  const isLguplus=ucatSel.carrier==='LG U+';
+  const jointype=isLguplus?'기기변경':'번호이동';
+  const planObj=ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0];
+  const q=ucatQuote({...d,storageList:[st]},ucatSel.carrier,jointype,planObj);
+  document.getElementById('udbLaunch').textContent=st.price.toLocaleString()+'원';
+  if(q){
+    document.getElementById('udbPub').textContent=q.pub.toLocaleString()+'원';
+    document.getElementById('udbExtra').textContent=q.extra.toLocaleString()+'원';
+    document.getElementById('udbFinal').textContent=q.final.toLocaleString()+'원';
+  } else {
+    document.getElementById('udbPub').textContent='-';
+    document.getElementById('udbExtra').textContent='-';
+    document.getElementById('udbFinal').textContent='정책 준비중';
+  }
+}
+window.ctaUcat=function(){
+  mDevice=ucatSel.device.name;
+  openReservationModal();
 };
-let pcardState = {
-  wide:{color:0,cap:0,carrier:2,plan:1},
-  ultra:{color:0,cap:0,carrier:2,plan:1},
-  flip:{color:0,cap:0,carrier:2,plan:1}
-};
-function pcardSelectColor(key, idx){
-  pcardState[key].color = idx;
-  pcardRender(key);
-}
-function pcardSelectCap(key, idx){
-  pcardState[key].cap = idx;
-  pcardRender(key);
-}
-function pcardSelectPlan(key, idx){
-  pcardState[key].plan = idx;
-  pcardRender(key);
-}
-function pcardSelectCarrier(key, idx){
-  pcardState[key].carrier = idx;
-  pcardRender(key);
-}
-function pcardRender(key){
-  var data = PCARD_DATA[key];
-  var st = pcardState[key];
-  var color = data.colors[st.color];
-  var price = data.capacity[st.cap];
-  document.getElementById('pcard-img-'+key).src = color.img;
-  var colorEls = document.querySelectorAll('#pcard-colors-'+key+' .pcard-color');
-  colorEls.forEach(function(el,i){ el.classList.toggle('active', i===st.color); });
-  var capEls = document.querySelectorAll('#pcard-cap-'+key+' .pcard-cap-btn');
-  capEls.forEach(function(el,i){ el.classList.toggle('active', i===st.cap); });
-  var carrierEls = document.querySelectorAll('#pcard-carrier-'+key+' .pcard-cap-btn');
-  carrierEls.forEach(function(el,i){ el.classList.toggle('active', i===st.carrier); });
-  document.getElementById('pcard-price-'+key).textContent = price.toLocaleString()+'원';
 
-  // 유닥 지원금: 자사(LG U+) 30만원 고정 / 타사(SKT·KT·알뜰폰)는 제품별 상이
-  var isLguplus = (st.carrier === 2);
-  var subsidyRow = UDAK_SUBSIDY[key];
-  var udak = isLguplus ? subsidyRow.lguplus : subsidyRow.other;
-  var benefit = price - (GONGSI_SUBSIDY + udak);
-
-  document.getElementById('pcard-gongsi-'+key).textContent = GONGSI_SUBSIDY.toLocaleString()+'원';
-  document.getElementById('pcard-udak-'+key).textContent = udak.toLocaleString()+'원';
-  document.getElementById('pcard-benefit-'+key).textContent = benefit.toLocaleString()+'원';
-}
-pcardRender('wide');
-pcardRender('ultra');
-pcardRender('flip');
+renderUcatGrid();
+ucatLoadFirebase();
 </script>
+
 
 
 <!-- ══ 혜택 대제목 ══ -->
