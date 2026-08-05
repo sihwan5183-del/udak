@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>요금제별 혜택 — 유플러스 다이렉트</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;background:#fff;color:#111;-webkit-tap-highlight-color:transparent;}
+a{text-decoration:none;color:inherit;}
+
+.btopbar{position:sticky;top:0;background:#fff;border-bottom:1px solid #f0f0f0;padding:16px 20px;display:flex;align-items:center;gap:10px;z-index:10;}
+.btopbar-back{display:flex;align-items:center;gap:6px;font-size:14px;color:#666;font-weight:600;}
+
+.uwt-wrap{max-width:520px;margin:0 auto;padding:0 20px;}
+.uwt-title{font-size:24px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin:0 0 6px;text-align:center;}
+.uwt-sub{font-size:14px;color:#888;text-align:center;margin:0 0 28px;}
+.uwt-plangrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.uwt-plancard{border:1.5px solid #ececec;border-radius:16px;padding:18px 14px;background:#fff;cursor:pointer;text-align:center;}
+.uwt-plancard.on{border-color:#E91E8C;background:rgba(233,30,140,.04);}
+.uwt-plancard-badge{display:inline-block;background:rgba(233,30,140,.06);color:#E91E8C;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;margin-bottom:10px;}
+.uwt-plancard.on .uwt-plancard-badge{background:#E91E8C;color:#fff;}
+.uwt-plancard-name{font-size:15.5px;font-weight:800;color:#1A1A1A;margin:0 0 4px;}
+.uwt-plancard-price{font-size:12.5px;color:#999;margin:0;}
+.uwt-plancard.on .uwt-plancard-price{color:#E91E8C;font-weight:700;}
+.uwt-catlist{display:flex;flex-direction:column;gap:8px;}
+.uwt-cat{display:flex;align-items:center;justify-content:center;padding:18px;border:1.5px solid #ececec;border-radius:14px;background:#fff;cursor:pointer;}
+.uwt-cat.on{border-color:#E91E8C;background:rgba(233,30,140,.04);}
+.uwt-cat-name{font-size:16px;font-weight:800;color:#1A1A1A;text-align:center;}
+.uwt-cat.on .uwt-cat-name{color:#E91E8C;}
+.uwt-picksummary{display:flex;align-items:center;gap:8px;background:rgba(233,30,140,.05);border:1.5px solid rgba(233,30,140,.25);border-radius:12px;padding:12px 14px;margin-top:8px;cursor:pointer;}
+.uwt-picksummary-check{width:18px;height:18px;border-radius:50%;background:#E91E8C;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.uwt-picksummary-name{font-size:12.5px;font-weight:700;color:#1A1A1A;flex:1;}
+.uwt-picksummary-price{font-size:12.5px;font-weight:800;color:#E91E8C;white-space:nowrap;}
+.uwt-modelbox{overflow:hidden;max-height:0;transition:max-height .25s ease;}
+.uwt-modelbox.open{max-height:900px;}
+.uwt-modelgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 2px 4px;}
+.uwt-model{border:1.5px solid #ececec;border-radius:12px;padding:12px;text-align:center;cursor:pointer;background:#fff;}
+.uwt-model.on{border-color:#E91E8C;background:rgba(233,30,140,.05);}
+.uwt-model-name{font-size:13px;font-weight:700;color:#1A1A1A;line-height:1.35;}
+.uwt-model-img{width:100%;aspect-ratio:1/1;object-fit:contain;margin-bottom:8px;display:block;}
+.uwt-model-size{font-size:11px;color:#999;margin-top:2px;}
+.uwt-detail-img{width:96px;height:96px;object-fit:contain;background:#fff;border:1px solid #ececec;border-radius:12px;margin:0 auto 14px;display:block;}
+.uwt-detail-colors{display:flex;justify-content:center;gap:10px;margin-bottom:16px;}
+.uwt-detail-color{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;box-shadow:0 0 0 1px #ececec inset;}
+.uwt-detail-color.on{border-color:#E91E8C;box-shadow:0 0 0 1px #E91E8C inset;}
+.uwt-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center;padding:20px;}
+.uwt-modal-overlay.open{display:flex;}
+.uwt-detail{position:relative;margin:0;border-radius:20px;background:#fff;padding:30px 22px 24px;max-width:380px;width:100%;max-height:85vh;overflow-y:auto;box-sizing:border-box;}
+.uwt-detail-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:none;background:#f3f4f6;color:#666;font-size:18px;cursor:pointer;line-height:1;}
+.uwt-detail-box{border-radius:14px;background:#f9f9fb;padding:16px 18px;}
+.uwt-detail-row{display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;color:#666;padding:6px 0;}
+.uwt-detail-row b{color:#1A1A1A;font-weight:700;}
+.uwt-detail-row.total{border-top:1px dashed #ddd;margin-top:6px;padding-top:12px;}
+.uwt-detail-row.total b{color:#E91E8C;font-size:17px;}
+.uwt-detail-btnrow{display:flex;gap:10px;margin-top:16px;}
+.uwt-detail-back{flex:1;padding:15px;background:#fff;border:1.5px solid #ddd;border-radius:13px;color:#666;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;}
+.uwt-detail-confirm{flex:1.4;padding:15px;background:#E91E8C;border:none;border-radius:13px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;}
+.uwt-empty{font-size:12px;color:#bbb;text-align:center;padding:16px 0;}
+</style>
+</head>
+<body>
+
+<div class="btopbar">
+  <a class="btopbar-back" href="/galaxy_z8">‹ 돌아가기</a>
+</div>
+
+<section style="width:100%;background:#ffffff;padding:36px 0 64px;">
+<div class="uwt-wrap">
+  <p class="uwt-title">요금제별 혜택 선택하기</p>
+  <p class="uwt-sub">요금제를 고르면 함께 받는 기기가 보여요</p>
+
+  <div class="uwt-plangrid">
+    <div class="uwt-plancard on" id="uwtPlan95" onclick="uwtSetPlan('95')">
+      <span class="uwt-plancard-badge">PLAN 95</span>
+      <p class="uwt-plancard-name">플러스플랜 95</p>
+      <p class="uwt-plancard-price">월 95,000원</p>
+    </div>
+    <div class="uwt-plancard" id="uwtPlan115" onclick="uwtSetPlan('115')">
+      <span class="uwt-plancard-badge">PLAN 115</span>
+      <p class="uwt-plancard-name">플러스플랜 115</p>
+      <p class="uwt-plancard-price">월 115,000원</p>
+    </div>
+  </div>
+
+  <div class="uwt-catlist" id="uwtCatList"></div>
+
+  <div class="uwt-modal-overlay" id="uwtModalOverlay" onclick="if(event.target===this)uwtCloseDetail()">
+    <div class="uwt-detail" id="uwtDetail">
+      <button class="uwt-detail-close" onclick="uwtCloseDetail()" type="button">×</button>
+      <img class="uwt-detail-img" id="uwtDetailImg" src="" alt="" style="display:none">
+      <div class="uwt-detail-colors" id="uwtDetailColors" style="display:none"></div>
+      <p style="font-size:16px;font-weight:800;color:#1A1A1A;margin:0 0 16px;text-align:center;" id="uwtDetailName">-</p>
+      <div class="uwt-detail-box">
+        <div class="uwt-detail-row"><span>출고가격</span><b id="uwtLaunch">-</b></div>
+        <div class="uwt-detail-row"><span>공시지원금</span><b id="uwtPub">-</b></div>
+        <div class="uwt-detail-row"><span>유플러스 다이렉트 지원금</span><b id="uwtUdak">-</b></div>
+        <div class="uwt-detail-row total"><span>자부담금</span><b id="uwtSelfpay">-</b></div>
+      </div>
+      <div class="uwt-detail-btnrow">
+        <button class="uwt-detail-back" onclick="uwtCloseDetail()" type="button">뒤로 가기</button>
+        <button class="uwt-detail-confirm" id="uwtConfirmBtn" onclick="uwtConfirmModel()" type="button">모델 선택하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<script>
+const UCAT_DB_URL='https://udak-c6832-default-rtdb.firebaseio.com';
+/* 요금제별 혜택 선택 - 워치/탭 드릴다운. 가격은 Firebase watchDevices에서, 없으면 '가격 등록 필요' 표시 (임의 금액 표기 안 함) */
+const UWT_CATEGORIES={
+  '95':[{id:'watch',name:'혜택1',ico:'⌚'}],
+  '115':[{id:'watch',name:'혜택1',ico:'⌚'},{id:'tab',name:'혜택2',ico:'📱'}]
+};
+const UWT_WATCH_SERIES=[
+  {id:'w8',name:'갤럭시 워치 8'},
+  {id:'w9',name:'갤럭시 워치 9'},
+  {id:'ultra',name:'갤럭시 워치 울트라'},
+  {id:'apple',name:'애플워치'}
+];
+const UWT_MODELS={
+  watch:{
+    w8:[
+      {id:'watch8-40',name:'갤럭시 워치 8',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch8.png'},
+      {id:'watch8-44',name:'갤럭시 워치 8',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch8.png'}
+    ],
+    w9:[
+      {id:'watch9-40',name:'갤럭시 워치 9',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch9.png'},
+      {id:'watch9-44',name:'갤럭시 워치 9',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch9.png'}
+    ],
+    ultra:[
+      {id:'watch-ultra1',name:'갤럭시 워치 울트라 1',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-ultra1.png'},
+      {id:'watch-ultra2',name:'갤럭시 워치 울트라 2',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-ultra2.png'}
+    ],
+    apple:[
+      {id:'watch-se3-40',name:'애플워치 SE3',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-se3-midnight.png'},
+      {id:'watch-se3-44',name:'애플워치 SE3',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-se3-midnight.png'}
+    ]
+  },
+  tab:[
+    {id:'tab-a11plus',name:'갤럭시 탭 A11+',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/tab-a11plus.png'}
+  ]
+};
+function uwtFlatten(data){ return Array.isArray(data)?data:[].concat(...Object.values(data||{})); }
+function uwtAllModelsFlat(){ return [].concat(...Object.values(UWT_MODELS).map(uwtFlatten)); }
+let uwtPricing={};
+let uwtState={plan:'95',openCat:null,openSeries:null,selectedByCat:{}};
+function uwtFindCategoryForModel(modelId){
+  for(const catId in UWT_MODELS){ if(uwtFlatten(UWT_MODELS[catId]).some(m=>m.id===modelId)) return catId; }
+  return null;
+}
+
+async function uwtLoadPricing(){
+  try{
+    const r=await fetch(UCAT_DB_URL+'/watchDevices.json');
+    const data=await r.json();
+    uwtPricing=data||{};
+  }catch(e){ uwtPricing={}; }
+  uwtRenderCats();
+}
+function uwtGetPriceInfo(modelId){
+  const pr=uwtPricing[modelId];
+  if(!pr||pr.price==null) return null;
+  const price=Number(pr.price)||0, pub=Number(pr.pubSupport)||0, udak=Number(pr.udakSupport)||0;
+  return {price,pub,udak,selfPay:Math.max(0,price-pub-udak)};
+}
+function uwtRenderCats(){
+  const wrap=document.getElementById('uwtCatList');
+  if(!wrap) return;
+  const cats=UWT_CATEGORIES[uwtState.plan]||[];
+  const allModels=uwtAllModelsFlat();
+  wrap.innerHTML=cats.map(c=>{
+    const isOpen=uwtState.openCat===c.id;
+    const pickedModelId=uwtState.selectedByCat[c.id];
+    const pickedModel=pickedModelId?allModels.find(m=>m.id===pickedModelId):null;
+    const pickSummaryHtml=pickedModel?(()=>{
+      const info=uwtGetPriceInfo(pickedModel.id);
+      return`<div class="uwt-picksummary" onclick="uwtPickModel('${pickedModel.id}')">
+        <span class="uwt-picksummary-check">✓</span>
+        <span class="uwt-picksummary-name">${pickedModel.name}${pickedModel.size?' ('+pickedModel.size+')':''} 선택</span>
+        <span class="uwt-picksummary-price">${info?('자부담금 '+info.selfPay.toLocaleString()+'원'):'가격 등록 필요'}</span>
+      </div>`;
+    })():'';
+    let modelBoxHtml;
+    if(c.id==='watch'){
+      modelBoxHtml=`<div class="uwt-catlist" style="padding:12px 2px 4px;">
+        ${UWT_WATCH_SERIES.map(s=>{
+          const seriesOpen=uwtState.openSeries===s.id;
+          const seriesModels=(UWT_MODELS.watch[s.id]||[]).filter(m=>(uwtPricing[m.id]?.visible)!==false);
+          return`<div>
+            <div class="uwt-cat${seriesOpen?' on':''}" style="padding:14px;" onclick="uwtToggleSeries('${s.id}')">
+              <span class="uwt-cat-name" style="font-size:14px;">${s.name}</span>
+            </div>
+            <div class="uwt-modelbox${seriesOpen?' open':''}">
+              ${seriesModels.length?`<div class="uwt-modelgrid">
+                ${seriesModels.map(m=>{
+                  const fbColors=uwtPricing[m.id]?.colors;
+                  const cardImg=(fbColors&&fbColors[0]&&fbColors[0].img)||m.img;
+                  return`<div class="uwt-model${pickedModelId===m.id?' on':''}" onclick="uwtPickModel('${m.id}',event)">
+                    ${cardImg?`<img class="uwt-model-img" src="${cardImg}" alt="${m.name}">`:''}
+                    <div class="uwt-model-name">${m.name}</div>
+                    ${m.size?`<div class="uwt-model-size">${m.size}</div>`:''}
+                  </div>`;
+                }).join('')}
+              </div>`:`<div class="uwt-empty">모델 목록 준비중입니다</div>`}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    } else {
+      const models=uwtFlatten(UWT_MODELS[c.id]||[]).filter(m=>(uwtPricing[m.id]?.visible)!==false);
+      modelBoxHtml=`<div class="uwt-modelgrid">
+        ${models.map(m=>{
+          const fbColors=uwtPricing[m.id]?.colors;
+          const cardImg=(fbColors&&fbColors[0]&&fbColors[0].img)||m.img;
+          return`<div class="uwt-model${pickedModelId===m.id?' on':''}" onclick="uwtPickModel('${m.id}',event)">
+            ${cardImg?`<img class="uwt-model-img" src="${cardImg}" alt="${m.name}">`:''}
+            <div class="uwt-model-name">${m.name}</div>
+            ${m.size?`<div class="uwt-model-size">${m.size}</div>`:''}
+          </div>`;
+        }).join('')}
+      </div>`;
+    }
+    return`<div>
+      <div class="uwt-cat${isOpen?' on':''}" onclick="uwtToggleCat('${c.id}')">
+        <span class="uwt-cat-name">${c.name}</span>
+      </div>
+      ${pickSummaryHtml}
+      <div class="uwt-modelbox${isOpen?' open':''}" id="uwtModelbox_${c.id}">
+        ${isOpen?modelBoxHtml:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+window.uwtSetPlan=function(p){
+  uwtState.plan=p;
+  uwtState.openCat=null;
+  document.getElementById('uwtPlan95').className='uwt-plancard'+(p==='95'?' on':'');
+  document.getElementById('uwtPlan115').className='uwt-plancard'+(p==='115'?' on':'');
+  uwtRenderCats();
+};
+window.uwtToggleCat=function(catId){
+  uwtState.openCat=(uwtState.openCat===catId)?null:catId;
+  uwtState.openSeries=null;
+  uwtCloseDetail();
+  uwtRenderCats();
+};
+window.uwtToggleSeries=function(seriesId){
+  uwtState.openSeries=(uwtState.openSeries===seriesId)?null:seriesId;
+  uwtRenderCats();
+};
+window.uwtCloseDetail=function(){
+  document.getElementById('uwtModalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+};
+let uwtPreviewModelId=null, uwtPreviewColorIdx=0;
+function uwtRefreshDetailImg(){
+  const model=uwtAllModelsFlat().find(m=>m.id===uwtPreviewModelId);
+  const fbColors=uwtPricing[uwtPreviewModelId]?.colors;
+  const el=document.getElementById('uwtDetailImg');
+  const src=(fbColors&&fbColors[uwtPreviewColorIdx]&&fbColors[uwtPreviewColorIdx].img)||model.img;
+  if(src){ el.src=src; el.alt=model.name; el.style.display='block'; } else { el.style.display='none'; }
+}
+window.uwtPickPreviewColor=function(idx){
+  uwtPreviewColorIdx=idx;
+  document.querySelectorAll('#uwtDetailColors .uwt-detail-color').forEach((el,i)=>el.classList.toggle('on',i===idx));
+  uwtRefreshDetailImg();
+};
+window.uwtPickModel=function(modelId,ev){
+  if(ev) ev.stopPropagation();
+  uwtPreviewModelId=modelId; uwtPreviewColorIdx=0;
+  const model=uwtAllModelsFlat().find(m=>m.id===modelId);
+  document.getElementById('uwtDetailName').textContent=model.name+(model.size?' ('+model.size+')':'');
+  const fbColors=uwtPricing[modelId]?.colors;
+  const colorsWrap=document.getElementById('uwtDetailColors');
+  if(fbColors&&fbColors.length){
+    colorsWrap.style.display='flex';
+    colorsWrap.innerHTML=fbColors.map((c,i)=>`<span class="uwt-detail-color${i===0?' on':''}" style="background:${c.hex||'#ccc'}" title="${c.name}" onclick="uwtPickPreviewColor(${i})"></span>`).join('');
+  } else { colorsWrap.style.display='none'; colorsWrap.innerHTML=''; }
+  uwtRefreshDetailImg();
+  const pInfo=uwtGetPriceInfo(modelId);
+  if(pInfo){
+    document.getElementById('uwtLaunch').textContent=pInfo.price.toLocaleString()+'원';
+    document.getElementById('uwtPub').textContent=pInfo.pub.toLocaleString()+'원';
+    document.getElementById('uwtUdak').textContent=pInfo.udak.toLocaleString()+'원';
+    document.getElementById('uwtSelfpay').textContent=pInfo.selfPay.toLocaleString()+'원';
+  } else {
+    document.getElementById('uwtLaunch').textContent='-';
+    document.getElementById('uwtPub').textContent='-';
+    document.getElementById('uwtUdak').textContent='-';
+    document.getElementById('uwtSelfpay').textContent='가격 등록 필요';
+  }
+  document.getElementById('uwtModalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+};
+window.uwtConfirmModel=function(){
+  if(!uwtPreviewModelId) return;
+  const cat=uwtFindCategoryForModel(uwtPreviewModelId);
+  if(cat) uwtState.selectedByCat[cat]=uwtPreviewModelId;
+  uwtState.openCat=null;
+  uwtCloseDetail();
+  uwtRenderCats();
+  setTimeout(()=>{
+    document.querySelector('.uwt-picksummary')?.scrollIntoView({behavior:'smooth',block:'center'});
+  },100);
+};
+uwtRenderCats();
+uwtLoadPricing();
+</script>
+
+</body></html>

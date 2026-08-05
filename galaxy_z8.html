@@ -1169,7 +1169,7 @@ textarea.mform-input{resize:none;height:80px;}
     <div class="top-nav-sub-item" onclick="uwtNavGoto('.ucat-wrap')">
       핸드폰
     </div>
-    <div class="top-nav-sub-item" onclick="uwtNavGoto('.uwt-wrap')">
+    <div class="top-nav-sub-item" onclick="window.location.href='/benefits'">
       요금제별 혜택
     </div>
     <div class="top-nav-sub-item" onclick="uwtNavPlaceholder('인터넷')">
@@ -1194,7 +1194,7 @@ textarea.mform-input{resize:none;height:80px;}
     <div class="nav-drawer-item" onclick="uwtNavGoto('.ucat-wrap'); closeNavDrawer();">
       핸드폰
     </div>
-    <div class="nav-drawer-item" onclick="uwtNavGoto('.uwt-wrap'); closeNavDrawer();">
+    <div class="nav-drawer-item" onclick="window.location.href='/benefits'">
       요금제별 혜택
     </div>
     <div class="nav-drawer-item" onclick="uwtNavPlaceholder('인터넷'); closeNavDrawer();">
@@ -1747,46 +1747,7 @@ ucatLoadFirebase();
 .uwt-detail-confirm{flex:1.4;padding:15px;background:#E91E8C;border:none;border-radius:13px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;}
 .uwt-empty{font-size:12px;color:#bbb;text-align:center;padding:16px 0;}
 </style>
-<section style="width:100%;background:#ffffff;padding:56px 0 64px;">
-<div class="uwt-wrap">
-  <p class="uwt-title">요금제별 혜택 선택하기</p>
-  <p class="uwt-sub">요금제를 고르면 함께 받는 기기가 보여요</p>
-
-  <div class="uwt-plangrid">
-    <div class="uwt-plancard on" id="uwtPlan95" onclick="uwtSetPlan('95')">
-      <span class="uwt-plancard-badge">PLAN 95</span>
-      <p class="uwt-plancard-name">플러스플랜 95</p>
-      <p class="uwt-plancard-price">월 95,000원</p>
-    </div>
-    <div class="uwt-plancard" id="uwtPlan115" onclick="uwtSetPlan('115')">
-      <span class="uwt-plancard-badge">PLAN 115</span>
-      <p class="uwt-plancard-name">플러스플랜 115</p>
-      <p class="uwt-plancard-price">월 115,000원</p>
-    </div>
-  </div>
-
-  <div class="uwt-catlist" id="uwtCatList"></div>
-
-  <div class="uwt-modal-overlay" id="uwtModalOverlay" onclick="if(event.target===this)uwtCloseDetail()">
-    <div class="uwt-detail" id="uwtDetail">
-      <button class="uwt-detail-close" onclick="uwtCloseDetail()" type="button">×</button>
-      <img class="uwt-detail-img" id="uwtDetailImg" src="" alt="" style="display:none">
-      <div class="uwt-detail-colors" id="uwtDetailColors" style="display:none"></div>
-      <p style="font-size:16px;font-weight:800;color:#1A1A1A;margin:0 0 16px;text-align:center;" id="uwtDetailName">-</p>
-      <div class="uwt-detail-box">
-        <div class="uwt-detail-row"><span>출고가격</span><b id="uwtLaunch">-</b></div>
-        <div class="uwt-detail-row"><span>공시지원금</span><b id="uwtPub">-</b></div>
-        <div class="uwt-detail-row"><span>유플러스 다이렉트 지원금</span><b id="uwtUdak">-</b></div>
-        <div class="uwt-detail-row total"><span>자부담금</span><b id="uwtSelfpay">-</b></div>
-      </div>
-      <div class="uwt-detail-btnrow">
-        <button class="uwt-detail-back" onclick="uwtCloseDetail()" type="button">뒤로 가기</button>
-        <button class="uwt-detail-confirm" id="uwtConfirmBtn" onclick="uwtConfirmModel()" type="button">모델 선택하기</button>
-      </div>
-    </div>
-  </div>
-</div>
-</section>
+<!-- ══ 요금제별 혜택은 별도 독립 페이지(/benefits)로 이동함 (2026-08-05) ══ -->
 
 <script>
 /* 요금제별 혜택 선택 - 워치/탭 드릴다운. 가격은 Firebase watchDevices에서, 없으면 '가격 등록 필요' 표시 (임의 금액 표기 안 함) */
@@ -1858,6 +1819,7 @@ function uwtGetPriceInfo(modelId){
 }
 function uwtRenderCats(){
   const wrap=document.getElementById('uwtCatList');
+  if(!wrap) return;
   const cats=UWT_CATEGORIES[uwtState.plan]||[];
   const allModels=uwtAllModelsFlat();
   wrap.innerHTML=cats.map(c=>{
