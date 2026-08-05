@@ -110,8 +110,8 @@ a{text-decoration:none;color:inherit;}
 const UCAT_DB_URL='https://udak-c6832-default-rtdb.firebaseio.com';
 /* 요금제별 혜택 선택 - 워치/탭 드릴다운. 가격은 Firebase watchDevices에서, 없으면 '가격 등록 필요' 표시 (임의 금액 표기 안 함) */
 const UWT_CATEGORIES={
-  '95':[{id:'watch',name:'혜택1',ico:'⌚'}],
-  '115':[{id:'watch',name:'혜택1',ico:'⌚'},{id:'tab',name:'혜택2',ico:'📱'}]
+  '95':[{id:'watch',name:'스마트워치',ico:'⌚'},{id:'dailyplus',name:'데일리플러스',ico:'🎵'}],
+  '115':[{id:'watch',name:'스마트워치',ico:'⌚'},{id:'tab',name:'혜택2',ico:'📱'},{id:'dailyplus',name:'데일리플러스',ico:'🎵'}]
 };
 const UWT_WATCH_SERIES=[
   {id:'w8',name:'갤럭시 워치 8'},
@@ -140,6 +140,13 @@ const UWT_MODELS={
   },
   tab:[
     {id:'tab-a11plus',name:'갤럭시 탭 A11+',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/tab-a11plus.png'}
+  ],
+  dailyplus:[
+    {id:'dp-googleone',name:'구글원'},
+    {id:'dp-moazine',name:'모아진'},
+    {id:'dp-kyobosam',name:'교보문고 sam'},
+    {id:'dp-genie',name:'지니뮤직'},
+    {id:'dp-millie',name:'밀리의 서재'}
   ]
 };
 function uwtFlatten(data){ return Array.isArray(data)?data:[].concat(...Object.values(data||{})); }
@@ -175,6 +182,12 @@ function uwtRenderCats(){
     const pickedModelId=uwtState.selectedByCat[c.id];
     const pickedModel=pickedModelId?allModels.find(m=>m.id===pickedModelId):null;
     const pickSummaryHtml=pickedModel?(()=>{
+      if(c.id==='dailyplus'){
+        return`<div class="uwt-picksummary" onclick="uwtToggleCat('${c.id}')">
+          <span class="uwt-picksummary-check">✓</span>
+          <span class="uwt-picksummary-name">${pickedModel.name} 선택</span>
+        </div>`;
+      }
       const info=uwtGetPriceInfo(pickedModel.id);
       return`<div class="uwt-picksummary" onclick="uwtPickModel('${pickedModel.id}')">
         <span class="uwt-picksummary-check">✓</span>
@@ -183,7 +196,14 @@ function uwtRenderCats(){
       </div>`;
     })():'';
     let modelBoxHtml;
-    if(c.id==='watch'){
+    if(c.id==='dailyplus'){
+      const dpModels=uwtFlatten(UWT_MODELS.dailyplus||[]);
+      modelBoxHtml=`<p style="font-size:12px;color:#999;margin:0 0 10px;text-align:center;">5개 중 택 1</p><div class="uwt-modelgrid">
+        ${dpModels.map(m=>`<div class="uwt-model${pickedModelId===m.id?' on':''}" onclick="uwtPickDailyPlus('${m.id}')">
+          <div class="uwt-model-name">${m.name}</div>
+        </div>`).join('')}
+      </div>`;
+    } else if(c.id==='watch'){
       modelBoxHtml=`<div class="uwt-catlist" style="padding:12px 2px 4px;">
         ${UWT_WATCH_SERIES.map(s=>{
           const seriesOpen=uwtState.openSeries===s.id;
@@ -249,6 +269,11 @@ window.uwtToggleCat=function(catId){
 window.uwtToggleSeries=function(seriesId){
   uwtState.openSeries=(uwtState.openSeries===seriesId)?null:seriesId;
   uwtRenderCats();
+};
+window.uwtPickDailyPlus=function(modelId){
+  uwtState.selectedByCat.dailyplus=(uwtState.selectedByCat.dailyplus===modelId)?null:modelId;
+  uwtRenderCats();
+  setTimeout(()=>{ document.querySelector('.uwt-picksummary')?.scrollIntoView({behavior:'smooth',block:'center'}); },100);
 };
 window.uwtCloseDetail=function(){
   document.getElementById('uwtModalOverlay').classList.remove('open');
