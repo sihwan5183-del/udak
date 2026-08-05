@@ -323,7 +323,7 @@ window.uwtConfirmModel=function(){
   if(cat) uwtSelectedByCat[cat]=uwtPreviewModelId;
   uwtOpenCat=null;
   uwtCloseDetail();
-  renderUwtSection();
+  refreshPrice();
   setTimeout(()=>{ document.querySelector('.uwt-picksummary')?.scrollIntoView({behavior:'smooth',block:'center'}); },100);
 };
 let ucatPolicies=[...UCAT_Z8_POLICIES];
@@ -429,6 +429,7 @@ function renderPage(){
       <div class="udetail-breakdown2">
         <div class="udb2-row"><span class="udb2-badge">A</span><span>월 통신요금</span><span style="margin-left:auto;text-align:right;"><span id="udbFeeOrig" style="text-decoration:line-through;color:#bbb;font-size:11px;margin-right:5px;display:none;"></span><b id="udbFee">-</b></span></div>
         <div class="udb2-row"><span class="udb2-badge">B</span><span>월 할부금(24개월)</span><b id="udbDev">-</b></div>
+        <div class="udb2-row" id="udbWatchRow" style="display:none;"><span class="udb2-badge">C</span><span>요금제별 혜택 할부금(24개월)</span><b id="udbWatch">-</b></div>
       </div>
     </div>
     <div class="udetail-sec">
@@ -526,7 +527,16 @@ function refreshPrice(){
   }
   document.getElementById('udbFee').textContent=monthlyFee.toLocaleString()+'원';
   document.getElementById('udbDev').textContent=monthlyDev.toLocaleString()+'원';
-  document.getElementById('udHeroAmt').innerHTML=(monthlyFee+monthlyDev).toLocaleString()+'<span>원</span>';
+  const watchSelfPaySum=Object.values(uwtSelectedByCat||{}).filter(Boolean).reduce((sum,id)=>{ const info=uwtGetPriceInfo(id); return sum+(info?info.selfPay:0); },0);
+  const watchMonthly=watchSelfPaySum>0?Math.round(watchSelfPaySum*UD_INSTALLMENT_RATE/24):0;
+  const udbWatchRow=document.getElementById('udbWatchRow');
+  if(watchMonthly>0){
+    udbWatchRow.style.display='flex';
+    document.getElementById('udbWatch').textContent=watchMonthly.toLocaleString()+'원';
+  } else {
+    udbWatchRow.style.display='none';
+  }
+  document.getElementById('udHeroAmt').innerHTML=(monthlyFee+monthlyDev+watchMonthly).toLocaleString()+'<span>원</span>';
   document.getElementById('udHeroSub').textContent=(planObj?planObj.name:'-')+' / 24개월 기준'+(subReady?'':' · 공시지원금 정책 준비중(할부원금 기준)');
   renderUwtSection();
 }
