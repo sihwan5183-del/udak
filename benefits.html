@@ -175,7 +175,13 @@ const UWT_MODELS={
     {id:'dp-genie',name:'지니뮤직',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-genie.png',desc:'최신 음원부터 다양한 플레이리스트까지 즐길 수 있는 음악 스트리밍 서비스입니다.'},
     {id:'dp-millie',name:'밀리의 서재',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-millie.jpg',desc:'전자책과 오디오북을 즐길 수 있는 독서 구독 플랫폼입니다.'}
   ],
-  premiumplus:[]
+  premiumplus:[
+    {id:'pp-netflix',name:'넷플릭스',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/pp-netflix.png',desc:'다양한 영화와 드라마, 오리지널 콘텐츠를 즐길 수 있는 OTT 스트리밍 서비스입니다.'},
+    {id:'pp-disneyplus',name:'디즈니플러스',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/pp-disneyplus.png',desc:'디즈니·픽사·마블·스타워즈 등 다양한 콘텐츠를 즐길 수 있는 OTT 스트리밍 서비스입니다.'},
+    {id:'pp-tving',name:'티빙',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/pp-tving.png',desc:'국내 인기 방송 프로그램과 오리지널 콘텐츠를 즐길 수 있는 OTT 스트리밍 서비스입니다.'},
+    {id:'pp-ytpremium',name:'유튜브 프리미엄',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/pp-ytpremium.png',desc:'광고 없이 유튜브를 즐길 수 있는 서비스로, 10,450원 혜택이 적용되어 월 4,450원에 이용 가능합니다.'},
+    {id:'pp-easy2plus',name:'우리집지킴이 Easy2+',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/pp-easy2plus.png',desc:'움직임·문열림 감지 센서로 집안 상태를 확인할 수 있는 홈 보안 서비스입니다.'}
+  ]
 };
 function uwtFlatten(data){ return Array.isArray(data)?data:[].concat(...Object.values(data||{})); }
 function uwtAllModelsFlat(){ return [].concat(...Object.values(UWT_MODELS).map(uwtFlatten)); }
@@ -209,8 +215,9 @@ function uwtRenderCats(){
     const isOpen=uwtState.openCat===c.id;
     const pickedModelId=uwtState.selectedByCat[c.id];
     const pickedModel=pickedModelId?allModels.find(m=>m.id===pickedModelId):null;
+    const isDpStyle=(c.id==='dailyplus'||c.id==='premiumplus');
     const pickSummaryHtml=pickedModel?(()=>{
-      if(c.id==='dailyplus'){
+      if(isDpStyle){
         return`<div class="uwt-picksummary" onclick="uwtToggleCat('${c.id}')">
           <span class="uwt-picksummary-check">✓</span>
           <span class="uwt-picksummary-name">${pickedModel.name} 선택</span>
@@ -224,10 +231,10 @@ function uwtRenderCats(){
       </div>`;
     })():'';
     let modelBoxHtml;
-    if(c.id==='dailyplus'){
-      const dpModels=uwtFlatten(UWT_MODELS.dailyplus||[]);
-      modelBoxHtml=`<p style="font-size:12px;color:#999;margin:0 0 10px;text-align:center;">5개 중 택 1</p><div class="uwt-modelgrid">
-        ${dpModels.map(m=>`<div class="uwt-model${pickedModelId===m.id?' on':''}" onclick="uwtShowDpInfo('${m.id}')">
+    if(isDpStyle){
+      const dpModels=uwtFlatten(UWT_MODELS[c.id]||[]);
+      modelBoxHtml=`<p style="font-size:12px;color:#999;margin:0 0 10px;text-align:center;">${dpModels.length}개 중 택 1</p><div class="uwt-modelgrid">
+        ${dpModels.map(m=>`<div class="uwt-model${pickedModelId===m.id?' on':''}" onclick="uwtShowDpInfo('${m.id}','${c.id}')">
           ${m.img?`<img class="uwt-model-img" src="${m.img}" alt="${m.name}" style="border-radius:12px;">`:''}
           <div class="uwt-model-name">${m.name}</div>
         </div>`).join('')}
@@ -315,9 +322,11 @@ window.uwtToggleSeries=function(seriesId){
   uwtRenderCats();
 };
 window.uwtDpPreviewId=null;
-window.uwtShowDpInfo=function(modelId){
+window.uwtDpPreviewCat=null;
+window.uwtShowDpInfo=function(modelId,catId){
   window.uwtDpPreviewId=modelId;
-  const m=uwtFlatten(UWT_MODELS.dailyplus).find(x=>x.id===modelId);
+  window.uwtDpPreviewCat=catId;
+  const m=uwtFlatten(UWT_MODELS[catId]||[]).find(x=>x.id===modelId);
   if(!m) return;
   document.getElementById('uwtDpImg').src=m.img||'';
   document.getElementById('uwtDpImg').alt=m.name;
@@ -331,8 +340,8 @@ window.uwtCloseDpModal=function(){
   document.body.style.overflow='';
 };
 window.uwtConfirmDailyPlus=function(){
-  if(!window.uwtDpPreviewId) return;
-  uwtState.selectedByCat.dailyplus=window.uwtDpPreviewId;
+  if(!window.uwtDpPreviewId||!window.uwtDpPreviewCat) return;
+  uwtState.selectedByCat[window.uwtDpPreviewCat]=window.uwtDpPreviewId;
   uwtState.openCat=null;
   window.uwtCloseDpModal();
   uwtRenderCats();
