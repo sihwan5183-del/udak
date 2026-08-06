@@ -103,6 +103,19 @@ a{text-decoration:none;color:inherit;}
       </div>
     </div>
   </div>
+
+  <div class="uwt-modal-overlay" id="uwtDpModalOverlay" onclick="if(event.target===this)uwtCloseDpModal()">
+    <div class="uwt-detail" style="text-align:center;">
+      <button class="uwt-detail-close" onclick="uwtCloseDpModal()" type="button">×</button>
+      <img id="uwtDpImg" src="" alt="" style="width:72px;height:72px;object-fit:contain;border-radius:16px;margin:0 auto 16px;display:block;">
+      <p id="uwtDpName" style="font-size:17px;font-weight:800;color:#1A1A1A;margin:0 0 12px;"></p>
+      <p id="uwtDpDesc" style="font-size:13.5px;color:#666;line-height:1.6;margin:0 0 20px;"></p>
+      <div class="uwt-detail-btnrow">
+        <button class="uwt-detail-back" onclick="uwtCloseDpModal()" type="button">뒤로 가기</button>
+        <button class="uwt-detail-confirm" onclick="uwtConfirmDailyPlus()" type="button">선택하기</button>
+      </div>
+    </div>
+  </div>
 </div>
 </section>
 
@@ -142,11 +155,11 @@ const UWT_MODELS={
     {id:'tab-a11plus',name:'갤럭시 탭 A11+',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/tab-a11plus.png'}
   ],
   dailyplus:[
-    {id:'dp-googleone',name:'구글원',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-googleone.png'},
-    {id:'dp-moazine',name:'모아진',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-moazine.png'},
-    {id:'dp-kyobosam',name:'교보문고 sam',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-kyobosam.png'},
-    {id:'dp-genie',name:'지니뮤직',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-genie.png'},
-    {id:'dp-millie',name:'밀리의 서재',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-millie.jpg'}
+    {id:'dp-googleone',name:'구글원',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-googleone.png',desc:'구글 드라이브·포토·지메일 저장공간을 늘려주는 구글의 클라우드 저장공간 구독 서비스입니다.'},
+    {id:'dp-moazine',name:'모아진',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-moazine.png',desc:'다양한 잡지를 한 곳에서 골라볼 수 있는 잡지 정기구독 앱입니다.'},
+    {id:'dp-kyobosam',name:'교보문고 sam',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-kyobosam.png',desc:'교보문고의 eBook 월정액 서비스로, 다양한 전자책을 무제한으로 읽을 수 있습니다.'},
+    {id:'dp-genie',name:'지니뮤직',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-genie.png',desc:'최신 음원부터 다양한 플레이리스트까지 즐길 수 있는 음악 스트리밍 서비스입니다.'},
+    {id:'dp-millie',name:'밀리의 서재',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-millie.jpg',desc:'전자책과 오디오북을 무제한으로 즐길 수 있는 독서 구독 플랫폼입니다.'}
   ]
 };
 function uwtFlatten(data){ return Array.isArray(data)?data:[].concat(...Object.values(data||{})); }
@@ -199,7 +212,7 @@ function uwtRenderCats(){
     if(c.id==='dailyplus'){
       const dpModels=uwtFlatten(UWT_MODELS.dailyplus||[]);
       modelBoxHtml=`<p style="font-size:12px;color:#999;margin:0 0 10px;text-align:center;">5개 중 택 1</p><div class="uwt-modelgrid">
-        ${dpModels.map(m=>`<div class="uwt-model${pickedModelId===m.id?' on':''}" onclick="uwtPickDailyPlus('${m.id}')">
+        ${dpModels.map(m=>`<div class="uwt-model${pickedModelId===m.id?' on':''}" onclick="uwtShowDpInfo('${m.id}')">
           ${m.img?`<img class="uwt-model-img" src="${m.img}" alt="${m.name}" style="border-radius:12px;">`:''}
           <div class="uwt-model-name">${m.name}</div>
         </div>`).join('')}
@@ -271,8 +284,26 @@ window.uwtToggleSeries=function(seriesId){
   uwtState.openSeries=(uwtState.openSeries===seriesId)?null:seriesId;
   uwtRenderCats();
 };
-window.uwtPickDailyPlus=function(modelId){
-  uwtState.selectedByCat.dailyplus=(uwtState.selectedByCat.dailyplus===modelId)?null:modelId;
+window.uwtDpPreviewId=null;
+window.uwtShowDpInfo=function(modelId){
+  window.uwtDpPreviewId=modelId;
+  const m=uwtFlatten(UWT_MODELS.dailyplus).find(x=>x.id===modelId);
+  if(!m) return;
+  document.getElementById('uwtDpImg').src=m.img||'';
+  document.getElementById('uwtDpImg').alt=m.name;
+  document.getElementById('uwtDpName').textContent=m.name;
+  document.getElementById('uwtDpDesc').textContent=m.desc||'';
+  document.getElementById('uwtDpModalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+};
+window.uwtCloseDpModal=function(){
+  document.getElementById('uwtDpModalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+};
+window.uwtConfirmDailyPlus=function(){
+  if(!window.uwtDpPreviewId) return;
+  uwtState.selectedByCat.dailyplus=window.uwtDpPreviewId;
+  window.uwtCloseDpModal();
   uwtRenderCats();
   setTimeout(()=>{ document.querySelector('.uwt-picksummary')?.scrollIntoView({behavior:'smooth',block:'center'}); },100);
 };
