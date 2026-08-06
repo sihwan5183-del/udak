@@ -333,6 +333,7 @@ window.uwtCloseDpModal=function(){
 window.uwtConfirmDailyPlus=function(){
   if(!window.uwtDpPreviewId) return;
   uwtState.selectedByCat.dailyplus=window.uwtDpPreviewId;
+  uwtState.openCat=null;
   window.uwtCloseDpModal();
   uwtRenderCats();
   setTimeout(()=>{ document.querySelector('.uwt-picksummary')?.scrollIntoView({behavior:'smooth',block:'center'}); },100);

@@ -339,6 +339,7 @@ window.uwtCloseDpModal=function(){
 window.uwtConfirmDailyPlus=function(){
   if(!window.uwtDpPreviewId) return;
   uwtSelectedByCat.dailyplus=window.uwtDpPreviewId;
+  uwtOpenCat=null;
   window.uwtCloseDpModal();
   refreshPrice();
   setTimeout(()=>{ document.querySelector('.uwt-picksummary')?.scrollIntoView({behavior:'smooth',block:'center'}); },100);
