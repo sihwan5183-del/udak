@@ -600,10 +600,14 @@ function renderPage(){
         <div class="udb2-row" style="border-top:1px dashed #ddd;margin-top:4px;padding-top:10px;"><span>남은 할부원금</span><b id="udbPrincipal">-</b></div>
       </div>
     </div>
+    <div class="udetail-sec" id="udFeeDetailWrap">
+      <p class="udetail-lbl">요금 상세</p>
+      <div class="udetail-breakdown2" id="udFeeDetailRows"></div>
+    </div>
     <div class="udetail-sec">
       <p class="udetail-lbl">월 납부금액 구성</p>
       <div class="udetail-breakdown2">
-        <div class="udb2-row"><span class="udb2-badge">A</span><span>월 통신요금</span><span style="margin-left:auto;text-align:right;"><span id="udbFeeOrig" style="text-decoration:line-through;color:#bbb;font-size:11px;margin-right:5px;display:none;"></span><b id="udbFee">-</b></span></div>
+        <div class="udb2-row"><span class="udb2-badge">A</span><span>월 통신요금</span><b id="udbFee">-</b></div>
         <div class="udb2-row"><span class="udb2-badge">B</span><span>월 할부금(24개월)</span><b id="udbDev">-</b></div>
         <div class="udb2-row" id="udbWatchRow" style="display:none;"><span class="udb2-badge">C</span><span>요금제별 혜택 할부금(24개월)</span><b id="udbWatch">-</b></div>
       </div>
@@ -671,7 +675,7 @@ const UD_BUNDLE_RATES={
   easy:{'2':3300,'3':5500,'4':6600},
   together:{'2':10000,'3':14000,'4':20000}
 };
-const UD_BUNDLE_LABELS={none:'미결합',easy:'참쉬운가족결합',together:'투게더결합'};
+const UD_BUNDLE_LABELS={none:'해당없음',easy:'참쉬운가족결합',together:'투게더결합'};
 const UD_WELFARE_OPTIONS=[
   {id:'none',name:'해당없음'},
   {id:'disabled',name:'장애인 (기본료 35% 할인)'},
@@ -749,13 +753,23 @@ function refreshPrice(){
   const extraDiscount=bundleDiscount+welfareDiscount;
   monthlyFee=Math.max(0,monthlyFee-extraDiscount);
   monthlyDev=Math.round(principal*UD_INSTALLMENT_RATE/24);
-  const feeOrigEl=document.getElementById('udbFeeOrig');
-  if(ucatSel.discountMethod==='commitment'||extraDiscount>0){
-    feeOrigEl.style.display='inline';
-    feeOrigEl.textContent=monthlyFeeFull.toLocaleString()+'원'+(ucatSel.discountMethod==='commitment'?'(25%↓)':'');
-  } else {
-    feeOrigEl.style.display='none';
+  const feeRows=[];
+  feeRows.push(`<div class="udb2-row"><span>${planObj?planObj.name:'요금제'}</span><b>${monthlyFeeFull.toLocaleString()}원</b></div>`);
+  if(ucatSel.discountMethod==='commitment'){
+    const commitAmt=monthlyFeeFull-Math.round(monthlyFeeFull*0.75);
+    feeRows.push(`<div class="udb2-row"><span>선택약정 할인(25%)</span><b style="color:#E91E8C;">-${commitAmt.toLocaleString()}원</b></div>`);
   }
+  if(bundleDiscount>0){
+    const sizeLabel=ucatSel.bundleSize==='4'?(ucatSel.bundleType==='easy'?'4인 이상':'4인'):ucatSel.bundleSize+'인';
+    feeRows.push(`<div class="udb2-row"><span>가족결합할인(${UD_BUNDLE_LABELS[ucatSel.bundleType]}·${sizeLabel})</span><b style="color:#E91E8C;">-${bundleDiscount.toLocaleString()}원</b></div>`);
+  }
+  if(welfareDiscount>0){
+    const wOpt=UD_WELFARE_OPTIONS.find(w=>w.id===ucatSel.welfareType);
+    const wLabel=wOpt?wOpt.name.split(' (')[0]:'';
+    feeRows.push(`<div class="udb2-row"><span>복지할인(${wLabel})</span><b style="color:#E91E8C;">-${welfareDiscount.toLocaleString()}원</b></div>`);
+  }
+  feeRows.push(`<div class="udb2-row" style="border-top:1px dashed #ddd;margin-top:4px;padding-top:10px;"><span>월 통신요금</span><b>${monthlyFee.toLocaleString()}원</b></div>`);
+  document.getElementById('udFeeDetailRows').innerHTML=feeRows.join('');
   document.getElementById('udbFee').textContent=monthlyFee.toLocaleString()+'원';
   document.getElementById('udbDev').textContent=monthlyDev.toLocaleString()+'원';
   const watchSelfPaySum=Object.values(uwtSelectedByCat||{}).filter(Boolean).reduce((sum,id)=>{ const info=uwtGetPriceInfo(id); return sum+(info?info.selfPay:0); },0);
