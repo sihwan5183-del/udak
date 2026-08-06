@@ -1038,10 +1038,14 @@ window.submitDeviceReserve=function(){
   var colorName=colorObj?colorObj.name.split('|')[1]:'';
   var storageName=d.storageList[ucatSel.storage||0].name;
   var allWatchModelsSub=uwtAllModelsFlat();
-  var pickedIdsSub=Object.values(uwtSelectedByCat||{}).filter(Boolean);
-  var pickedModelsSub=pickedIdsSub.map(function(id){return allWatchModelsSub.find(function(m){return m.id===id;});}).filter(Boolean);
+  var udxCatLabelsSub={watch:'워치',tab:'탭',premiumplus:'프리미엄플러스',dailyplus:'데일리플러스'};
+  var catPickEntriesSub=Object.entries(uwtSelectedByCat||{}).filter(function(e){return e[1];});
+  var pickedModelsSub=catPickEntriesSub.map(function(e){
+    var m=allWatchModelsSub.find(function(mm){return mm.id===e[1];});
+    return m?{cat:e[0],model:m}:null;
+  }).filter(Boolean);
   if(pickedModelsSub.length){
-    var watchNamesSub=pickedModelsSub.map(function(m){return m.name+(m.size?' '+m.size:'');}).join(' + ');
+    var watchNamesSub=pickedModelsSub.map(function(p){return (udxCatLabelsSub[p.cat]||p.cat)+':'+p.model.name+(p.model.size?' '+p.model.size:'');}).join(' + ');
     memo=(memo?memo+' / ':'')+'요금제별혜택 희망: '+watchNamesSub;
   }
   var jointypeSub=ucatSel.carrier==='LG U+'?'기기변경':'번호이동';
@@ -1050,10 +1054,11 @@ window.submitDeviceReserve=function(){
   var feeDetailTextSub=document.getElementById('udFeeDetailRows')?document.getElementById('udFeeDetailRows').innerText.replace(/\n/g,' ').replace(/\s+/g,' ').trim():'';
   var subsidyWrapSub=document.getElementById('udSubsidyWrap');
   var subsidyTextSub=(subsidyWrapSub&&subsidyWrapSub.style.display!=='none')?subsidyWrapSub.querySelector('.udetail-breakdown2').innerText.replace(/\n/g,' ').replace(/\s+/g,' ').trim():'';
-  var watchSnapshotSub=pickedModelsSub.length?pickedModelsSub.map(function(m){
-    var info=uwtGetPriceInfo(m.id);
-    return m.name+(m.size?'('+m.size+')':'')+' 자부담 '+(info?info.selfPay.toLocaleString()+'원':'-');
-  }).join(', '):'';
+  var watchSnapshotSub=pickedModelsSub.length?pickedModelsSub.map(function(p){
+    var info=uwtGetPriceInfo(p.model.id);
+    var label=udxCatLabelsSub[p.cat]||p.cat;
+    return label+':'+p.model.name+(p.model.size?'('+p.model.size+')':'')+' 자부담'+(info?info.selfPay.toLocaleString()+'원':'-');
+  }).join(' | '):'';
   var snapshotParts=[];
   if(feeDetailTextSub) snapshotParts.push('[요금상세] '+feeDetailTextSub);
   if(subsidyTextSub) snapshotParts.push('[지원금상세] '+subsidyTextSub);
