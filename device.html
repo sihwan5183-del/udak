@@ -315,7 +315,7 @@ function renderUwtSection(){
         </div>`;
       }
       const info=uwtGetPriceInfo(pickedModel.id);
-      return`<div class="uwt-picksummary" onclick="uwtPickModel('${pickedModel.id}')">
+      return`<div class="uwt-picksummary" onclick="uwtToggleCat('${c.id}')">
         <span class="uwt-picksummary-check">✓</span>
         <span class="uwt-picksummary-name">${pickedModel.name}${pickedModel.size?' ('+pickedModel.size+')':''} 선택</span>
         <span class="uwt-picksummary-price">${info?('자부담금 '+info.selfPay.toLocaleString()+'원'):'가격 등록 필요'}</span>
