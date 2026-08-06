@@ -989,7 +989,8 @@ window.openDeviceReserve=function(){
   const allWatchModels=uwtAllModelsFlat();
   const pickedIds=Object.values(uwtSelectedByCat||{}).filter(Boolean);
   const pickedModels=pickedIds.map(id=>allWatchModels.find(m=>m.id===id)).filter(Boolean);
-  const watchMonthlyText=document.getElementById('udbWatch')?document.getElementById('udbWatch').textContent:'-';
+  const udbWatchRowEl=document.getElementById('udbWatchRow');
+  const watchMonthlyText=(udbWatchRowEl&&udbWatchRowEl.style.display!=='none'&&document.getElementById('udbWatch'))?document.getElementById('udbWatch').textContent:'0원';
   if(pickedModels.length){
     const rows=pickedModels.map(m=>{
       const info=uwtGetPriceInfo(m.id);
