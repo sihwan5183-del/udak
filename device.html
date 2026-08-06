@@ -63,9 +63,14 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
 .uwt-pb-title{font-size:14.5px;font-weight:800;color:#1A1A1A;}
 .uwt-pb-sub{font-size:12.5px;color:#888;margin-top:3px;line-height:1.5;}
 .uwt-catlist{display:flex;flex-direction:column;gap:8px;}
-.uwt-cat{display:flex;align-items:center;justify-content:center;padding:16px;border:1.5px solid #ececec;border-radius:14px;background:#fff;cursor:pointer;}
+.uwt-cat{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px;border:1.5px solid #ececec;border-radius:14px;background:#fff;cursor:pointer;transition:border-color .15s;}
+.uwt-cat:hover{border-color:#f3b6d6;}
 .uwt-cat.on{border-color:#E91E8C;background:rgba(233,30,140,.04);}
-.uwt-cat-name{font-size:15px;font-weight:800;color:#1A1A1A;text-align:center;}
+.uwt-cat-left{display:flex;align-items:center;gap:10px;}
+.uwt-cat-ico{font-size:17px;flex-shrink:0;}
+.uwt-cat-name{font-size:15px;font-weight:800;color:#1A1A1A;text-align:left;}
+.uwt-cat-arrow{width:17px;height:17px;flex-shrink:0;transition:transform .2s;color:#E91E8C;}
+.uwt-cat.on .uwt-cat-arrow{transform:rotate(180deg);}
 .uwt-cat.on .uwt-cat-name{color:#E91E8C;}
 .uwt-picksummary{display:flex;align-items:center;gap:8px;background:rgba(233,30,140,.05);border:1.5px solid rgba(233,30,140,.25);border-radius:12px;padding:12px 14px;margin-top:8px;cursor:pointer;}
 .uwt-picksummary-check{width:18px;height:18px;border-radius:50%;background:#E91E8C;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -144,8 +149,8 @@ const UCAT_MDEV_FALLBACK=[
 let ucatDevices=[...UCAT_Z8_DEVICES];
 
 const UWT_CATEGORIES={
-  '95':[{id:'watch',name:'스마트워치'},{id:'dailyplus',name:'데일리플러스'}],
-  '115':[{id:'watch',name:'스마트워치'},{id:'tab',name:'혜택2'},{id:'premiumplus',name:'프리미엄플러스'},{id:'dailyplus',name:'데일리플러스'}]
+  '95':[{id:'watch',name:'스마트워치',ico:'⌚'},{id:'dailyplus',name:'데일리플러스',ico:'🎵'}],
+  '115':[{id:'watch',name:'스마트워치',ico:'⌚'},{id:'tab',name:'스마트탭',ico:'📱'},{id:'premiumplus',name:'프리미엄플러스',ico:'✨'},{id:'dailyplus',name:'데일리플러스',ico:'🎵'}]
 };
 const UWT_PLAN_BENEFITS={
   '95':[
@@ -275,6 +280,7 @@ function renderUwtSection(){
           return`<div>
             <div class="uwt-cat${seriesOpen?' on':''}" style="padding:14px;" onclick="uwtToggleSeries('${s.id}')">
               <span class="uwt-cat-name" style="font-size:14px;">${s.name}</span>
+              <svg class="uwt-cat-arrow" style="width:15px;height:15px;" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
             <div class="uwt-modelbox${seriesOpen?' open':''}">
               ${seriesModels.length?`<div class="uwt-modelgrid">
@@ -308,7 +314,11 @@ function renderUwtSection(){
     }
     return`<div>
       <div class="uwt-cat${isOpen?' on':''}" onclick="uwtToggleCat('${c.id}')">
-        <span class="uwt-cat-name">${c.name}</span>
+        <span class="uwt-cat-left">
+          ${c.ico?`<span class="uwt-cat-ico">${c.ico}</span>`:''}
+          <span class="uwt-cat-name">${c.name}</span>
+        </span>
+        <svg class="uwt-cat-arrow" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       ${pickSummaryHtml}
       <div class="uwt-modelbox${isOpen?' open':''}">
