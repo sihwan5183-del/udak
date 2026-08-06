@@ -1084,16 +1084,6 @@ window.submitDeviceReserve=function(){
       estimated_fee:estimatedFeeSub,
       created_at:new Date().toISOString()
     })
-  }).catch(function(e){ console.error('leads insert error:',e); });
-  fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations',{
-    method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
-      'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
-      'Prefer':'return=minimal'
-    },
-    body:JSON.stringify({name:name,phone:phoneF,carrier:ucatSel.carrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:d.name,capacity:storageName,product_color:colorName,birth_date:birthF,memo:memo||null,status:'신규'})
   }).then(function(res){
     if(res.ok){
       if(typeof fbq!=='undefined')fbq('track','Lead');
