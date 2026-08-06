@@ -142,11 +142,11 @@ const UWT_MODELS={
     {id:'tab-a11plus',name:'갤럭시 탭 A11+',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/tab-a11plus.png'}
   ],
   dailyplus:[
-    {id:'dp-googleone',name:'구글원'},
-    {id:'dp-moazine',name:'모아진'},
-    {id:'dp-kyobosam',name:'교보문고 sam'},
-    {id:'dp-genie',name:'지니뮤직'},
-    {id:'dp-millie',name:'밀리의 서재'}
+    {id:'dp-googleone',name:'구글원',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-googleone.png'},
+    {id:'dp-moazine',name:'모아진',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-moazine.png'},
+    {id:'dp-kyobosam',name:'교보문고 sam',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-kyobosam.png'},
+    {id:'dp-genie',name:'지니뮤직',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-genie.png'},
+    {id:'dp-millie',name:'밀리의 서재',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-millie.jpg'}
   ]
 };
 function uwtFlatten(data){ return Array.isArray(data)?data:[].concat(...Object.values(data||{})); }
@@ -200,6 +200,7 @@ function uwtRenderCats(){
       const dpModels=uwtFlatten(UWT_MODELS.dailyplus||[]);
       modelBoxHtml=`<p style="font-size:12px;color:#999;margin:0 0 10px;text-align:center;">5개 중 택 1</p><div class="uwt-modelgrid">
         ${dpModels.map(m=>`<div class="uwt-model${pickedModelId===m.id?' on':''}" onclick="uwtPickDailyPlus('${m.id}')">
+          ${m.img?`<img class="uwt-model-img" src="${m.img}" alt="${m.name}" style="border-radius:12px;">`:''}
           <div class="uwt-model-name">${m.name}</div>
         </div>`).join('')}
       </div>`;
