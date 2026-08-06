@@ -23,6 +23,12 @@ a{text-decoration:none;color:inherit;}
 .uwt-plancard-name{font-size:15.5px;font-weight:800;color:#1A1A1A;margin:0 0 4px;}
 .uwt-plancard-price{font-size:12.5px;color:#999;margin:0;}
 .uwt-plancard.on .uwt-plancard-price{color:#E91E8C;font-weight:700;}
+.uwt-pb-box{background:#f9f9fb;border-radius:16px;padding:18px 20px;}
+.uwt-pb-row{display:flex;gap:12px;padding:10px 0;}
+.uwt-pb-row+.uwt-pb-row{border-top:1px solid #ececec;}
+.uwt-pb-num{width:22px;height:22px;border-radius:50%;background:#E91E8C;color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.uwt-pb-title{font-size:14.5px;font-weight:800;color:#1A1A1A;}
+.uwt-pb-sub{font-size:12.5px;color:#888;margin-top:3px;line-height:1.5;}
 .uwt-catlist{display:flex;flex-direction:column;gap:8px;}
 .uwt-cat{display:flex;align-items:center;justify-content:center;padding:18px;border:1.5px solid #ececec;border-radius:14px;background:#fff;cursor:pointer;}
 .uwt-cat.on{border-color:#E91E8C;background:rgba(233,30,140,.04);}
@@ -83,6 +89,8 @@ a{text-decoration:none;color:inherit;}
     </div>
   </div>
 
+  <div id="uwtPlanBenefits" style="margin-bottom:20px;"></div>
+
   <div class="uwt-catlist" id="uwtCatList"></div>
 
   <div class="uwt-modal-overlay" id="uwtModalOverlay" onclick="if(event.target===this)uwtCloseDetail()">
@@ -125,6 +133,18 @@ const UCAT_DB_URL='https://udak-c6832-default-rtdb.firebaseio.com';
 const UWT_CATEGORIES={
   '95':[{id:'watch',name:'스마트워치',ico:'⌚'},{id:'dailyplus',name:'데일리플러스',ico:'🎵'}],
   '115':[{id:'watch',name:'스마트워치',ico:'⌚'},{id:'tab',name:'혜택2',ico:'📱'},{id:'premiumplus',name:'프리미엄플러스',ico:'✨'},{id:'dailyplus',name:'데일리플러스',ico:'🎵'}]
+};
+const UWT_PLAN_BENEFITS={
+  '95':[
+    {title:'데이터 무제한'},
+    {title:'테더링+쉐어링 80GB'},
+    {title:'스마트기기(워치) 1대 월정액 할인',sub:'최대 11,000원'}
+  ],
+  '115':[
+    {title:'데이터 무제한'},
+    {title:'테더링+쉐어링 100GB',sub:'참 쉬운 가족 데이터 50GB'},
+    {title:'스마트기기(워치/탭) 2대 월정액 할인',sub:'최대 33,000원'}
+  ]
 };
 const UWT_WATCH_SERIES=[
   {id:'galaxy',name:'갤럭시 워치'},
@@ -262,11 +282,26 @@ function uwtRenderCats(){
     </div>`;
   }).join('');
 }
+function renderPlanBenefits(){
+  const wrap=document.getElementById('uwtPlanBenefits');
+  if(!wrap) return;
+  const items=UWT_PLAN_BENEFITS[uwtState.plan]||[];
+  wrap.innerHTML=`<div class="uwt-pb-box">
+    ${items.map((it,i)=>`<div class="uwt-pb-row">
+      <span class="uwt-pb-num">${i+1}</span>
+      <div>
+        <div class="uwt-pb-title">${it.title}</div>
+        ${it.sub?`<div class="uwt-pb-sub">${it.sub}</div>`:''}
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
 window.uwtSetPlan=function(p){
   uwtState.plan=p;
   uwtState.openCat=null;
   document.getElementById('uwtPlan95').className='uwt-plancard'+(p==='95'?' on':'');
   document.getElementById('uwtPlan115').className='uwt-plancard'+(p==='115'?' on':'');
+  renderPlanBenefits();
   uwtRenderCats();
 };
 window.uwtToggleCat=function(catId){
@@ -357,6 +392,7 @@ window.uwtConfirmModel=function(){
     document.querySelector('.uwt-picksummary')?.scrollIntoView({behavior:'smooth',block:'center'});
   },100);
 };
+renderPlanBenefits();
 uwtRenderCats();
 uwtLoadPricing();
 </script>

@@ -56,6 +56,12 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
 .dempty{text-align:center;padding:80px 20px;color:#999;font-size:14px;}
 
 .uwt-sec-title{font-size:15px;font-weight:700;color:#111;margin:0 0 10px;}
+.uwt-pb-box{background:#f9f9fb;border-radius:16px;padding:18px 20px;}
+.uwt-pb-row{display:flex;gap:12px;padding:10px 0;}
+.uwt-pb-row+.uwt-pb-row{border-top:1px solid #ececec;}
+.uwt-pb-num{width:22px;height:22px;border-radius:50%;background:#E91E8C;color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.uwt-pb-title{font-size:14.5px;font-weight:800;color:#1A1A1A;}
+.uwt-pb-sub{font-size:12.5px;color:#888;margin-top:3px;line-height:1.5;}
 .uwt-catlist{display:flex;flex-direction:column;gap:8px;}
 .uwt-cat{display:flex;align-items:center;justify-content:center;padding:16px;border:1.5px solid #ececec;border-radius:14px;background:#fff;cursor:pointer;}
 .uwt-cat.on{border-color:#E91E8C;background:rgba(233,30,140,.04);}
@@ -141,6 +147,18 @@ const UWT_CATEGORIES={
   '95':[{id:'watch',name:'스마트워치'},{id:'dailyplus',name:'데일리플러스'}],
   '115':[{id:'watch',name:'스마트워치'},{id:'tab',name:'혜택2'},{id:'premiumplus',name:'프리미엄플러스'},{id:'dailyplus',name:'데일리플러스'}]
 };
+const UWT_PLAN_BENEFITS={
+  '95':[
+    {title:'데이터 무제한'},
+    {title:'테더링+쉐어링 80GB'},
+    {title:'스마트기기(워치) 1대 월정액 할인',sub:'최대 11,000원'}
+  ],
+  '115':[
+    {title:'데이터 무제한'},
+    {title:'테더링+쉐어링 100GB',sub:'참 쉬운 가족 데이터 50GB'},
+    {title:'스마트기기(워치/탭) 2대 월정액 할인',sub:'최대 33,000원'}
+  ]
+};
 const UWT_WATCH_SERIES=[
   {id:'galaxy',name:'갤럭시 워치'},
   {id:'apple',name:'애플워치'}
@@ -200,6 +218,19 @@ function renderUwtSection(){
   const cats=UWT_CATEGORIES[pg];
   if(!cats){ sec.style.display='none'; return; }
   sec.style.display='block';
+  const pbWrap=document.getElementById('uwtPlanBenefits');
+  if(pbWrap){
+    const items=UWT_PLAN_BENEFITS[pg]||[];
+    pbWrap.innerHTML=`<div class="uwt-pb-box">
+      ${items.map((it,i)=>`<div class="uwt-pb-row">
+        <span class="uwt-pb-num">${i+1}</span>
+        <div>
+          <div class="uwt-pb-title">${it.title}</div>
+          ${it.sub?`<div class="uwt-pb-sub">${it.sub}</div>`:''}
+        </div>
+      </div>`).join('')}
+    </div>`;
+  }
   const wrap=document.getElementById('uwtCatList');
   const allModels=uwtAllModelsFlat();
   wrap.innerHTML=cats.map(c=>{
@@ -433,6 +464,7 @@ function renderPage(){
     <div class="udetail-sec"><p class="udetail-lbl">요금제</p><div id="udPlanWrap"></div></div>
     <div class="udetail-sec" id="uwtSection" style="display:none">
       <p class="uwt-sec-title">🎁 요금제별 혜택</p>
+      <div id="uwtPlanBenefits" style="margin-bottom:16px;"></div>
       <div class="uwt-catlist" id="uwtCatList"></div>
     </div>
     <div class="udetail-sec"><p class="udetail-lbl">할인방식</p><div class="udetail-discount-grid" id="udDiscount"></div></div>
