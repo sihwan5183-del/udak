@@ -77,18 +77,17 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
 .udx-toggle.on{border-color:#E91E8C;background:rgba(233,30,140,.04);}
 .udx-toggle-name{font-size:14px;font-weight:800;color:#1A1A1A;}
 .udx-toggle.on .udx-toggle-name{color:#E91E8C;}
-.udx-body{max-height:0;overflow:hidden;transition:max-height .25s ease;}
-.udx-body.open{max-height:2000px;}
+.udx-body{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.udx-body.open{max-height:1200px;}
 .udx-inner{background:#f9f9fb;border-radius:12px;padding:16px;margin-top:10px;}
-.udx-group-title{font-size:12.5px;font-weight:800;color:#E91E8C;margin:0 0 8px;}
-.udx-group-title:not(:first-child){margin-top:16px;}
-.udx-item{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #ececec;font-size:13px;}
-.udx-item:last-child{border-bottom:none;}
-.udx-item-name{color:#333;font-weight:600;flex-shrink:0;}
-.udx-item-val{color:#666;text-align:right;line-height:1.5;}
-.udx-subgroup{background:#fff;border-radius:10px;padding:12px 14px;margin-top:8px;}
-.udx-subgroup-title{font-size:12.5px;font-weight:800;color:#1A1A1A;margin:0 0 6px;}
-.udx-subgroup-cond{font-size:11.5px;color:#aaa;margin:6px 0 0;line-height:1.5;}
+.udx-group-title{font-size:12.5px;font-weight:800;color:#E91E8C;margin:16px 0 8px;}
+.udx-bundle-btns{display:flex;gap:6px;}
+.udx-bundle-btn{flex:1;padding:11px 4px;background:#fff;border:1.5px solid #ddd;border-radius:10px;font-size:12.5px;font-weight:700;color:#666;cursor:pointer;text-align:center;font-family:inherit;}
+.udx-bundle-btn.on{border-color:#E91E8C;background:rgba(233,30,140,.06);color:#E91E8C;}
+.udx-select{width:100%;padding:12px 14px;border:1.5px solid #ddd;border-radius:10px;background:#fff;font-size:13.5px;font-weight:700;color:#333;font-family:inherit;margin-top:10px;appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="%23999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');background-repeat:no-repeat;background-position:right 12px center;}
+.udx-subgroup-cond{font-size:11.5px;color:#aaa;margin:8px 0 0;line-height:1.5;}
+.udx-result{margin-top:10px;padding:10px 12px;background:rgba(46,204,113,.08);border-radius:8px;font-size:13px;color:#1a9d5c;font-weight:700;}
+.udx-warn{margin-top:10px;padding:10px 12px;background:rgba(255,152,0,.08);border-radius:8px;font-size:12px;color:#c77700;line-height:1.5;}
 .uwt-picksummary{display:flex;align-items:center;gap:8px;background:rgba(233,30,140,.05);border:1.5px solid rgba(233,30,140,.25);border-radius:12px;padding:12px 14px;margin-top:8px;cursor:pointer;}
 .uwt-picksummary-check{width:18px;height:18px;border-radius:50%;background:#E91E8C;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .uwt-picksummary-name{font-size:12.5px;font-weight:700;color:#1A1A1A;flex:1;}
@@ -358,6 +357,39 @@ window.udxToggleOpen=function(){
   document.getElementById('udxToggle').classList.toggle('on');
   document.getElementById('udxBody').classList.toggle('open');
 };
+window.udxSetBundle=function(type){
+  ucatSel.bundleType=type;
+  if(type==='none') ucatSel.bundleSize='2';
+  udxRenderControls();
+  refreshPrice();
+};
+window.udxSetBundleSize=function(size){
+  ucatSel.bundleSize=size;
+  refreshPrice();
+};
+window.udxSetWelfare=function(id){
+  ucatSel.welfareType=id;
+  refreshPrice();
+};
+function udxRenderControls(){
+  const btnWrap=document.getElementById('udxBundleBtns');
+  if(!btnWrap) return;
+  btnWrap.innerHTML=['none','easy','together'].map(t=>`<button type="button" class="udx-bundle-btn${ucatSel.bundleType===t?' on':''}" onclick="udxSetBundle('${t}')">${UD_BUNDLE_LABELS[t]}</button>`).join('');
+  const sizeWrap=document.getElementById('udxBundleSizeWrap');
+  const sizeSelect=document.getElementById('udxBundleSize');
+  const condEl=document.getElementById('udxBundleCond');
+  if(ucatSel.bundleType==='none'){
+    sizeWrap.style.display='none';
+  } else {
+    sizeWrap.style.display='block';
+    const isTogether=ucatSel.bundleType==='together';
+    const sizes=isTogether?['2','3','4']:['2','3','4'];
+    sizeSelect.innerHTML=sizes.map(s=>`<option value="${s}"${ucatSel.bundleSize===s?' selected':''}>${s==='4'&&!isTogether?'4명 이상':s+'명'}</option>`).join('');
+    condEl.textContent=isTogether?'무선 1~5회선, 인터넷 1~5회선 · 월정액 85,000원 이상, 인터넷 500M 이상 가입 시 가능':'무선 1~10회선, 인터넷 1~3회선';
+  }
+  const welfareSelect=document.getElementById('udxWelfare');
+  welfareSelect.innerHTML=UD_WELFARE_OPTIONS.map(w=>`<option value="${w.id}"${ucatSel.welfareType===w.id?' selected':''}>${w.name}</option>`).join('');
+}
 window.uwtDpPreviewId=null;
 window.uwtDpPreviewCat=null;
 window.uwtShowDpInfo=function(modelId,catId){
@@ -439,7 +471,7 @@ window.uwtConfirmModel=function(){
 };
 let ucatPolicies=[...UCAT_Z8_POLICIES];
 let ucatPlans=[{plangroup:'85',monthlyPrice:85000,name:'5G 프리미어 에센셜'}];
-let ucatSel={device:null,color:0,storage:0,carrier:'LG U+',plan:null,discountMethod:'pubSupport',planListOpen:false};
+let ucatSel={device:null,color:0,storage:0,carrier:'LG U+',plan:null,discountMethod:'pubSupport',planListOpen:false,bundleType:'none',bundleSize:'2',welfareType:'none'};
 
 function ucatQuote(device,carrierName,jointype,planObj){
   if(!device) return null;
@@ -488,7 +520,7 @@ function renderPage(){
     document.getElementById('dContent').innerHTML='<div class="dempty">기기를 찾을 수 없습니다.<br><a href="/galaxy_z8" style="color:#E91E8C;font-weight:700;">목록으로 돌아가기</a></div>';
     return;
   }
-  ucatSel={device:d,color:0,storage:0,carrier:'LG U+',plan:(ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0]),discountMethod:'pubSupport',planListOpen:false};
+  ucatSel={device:d,color:0,storage:0,carrier:'LG U+',plan:(ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0]),discountMethod:'pubSupport',planListOpen:false,bundleType:'none',bundleSize:'2',welfareType:'none'};
   uwtOpenCat=null; uwtSelectedByCat={};
   document.title=d.name+' — 유플러스 다이렉트';
   document.getElementById('dContent').innerHTML=`
@@ -516,27 +548,16 @@ function renderPage(){
       </div>
       <div class="udx-body" id="udxBody">
         <div class="udx-inner">
+          <p class="udx-group-title" style="margin-top:0;">결합할인</p>
+          <div class="udx-bundle-btns" id="udxBundleBtns"></div>
+          <div id="udxBundleSizeWrap" style="display:none;">
+            <select class="udx-select" id="udxBundleSize" onchange="udxSetBundleSize(this.value)"></select>
+            <p class="udx-subgroup-cond" id="udxBundleCond"></p>
+            <div class="udx-result" id="udxBundleResult" style="display:none;"></div>
+          </div>
           <p class="udx-group-title">복지할인</p>
-          <div class="udx-item"><span class="udx-item-name">장애인</span><span class="udx-item-val">기본료 35% 할인</span></div>
-          <div class="udx-item"><span class="udx-item-name">국가유공자</span><span class="udx-item-val">기본료 35% 할인</span></div>
-          <div class="udx-item"><span class="udx-item-name">생계/의료급여 수급자</span><span class="udx-item-val">월정액 기준<br>최대 28,600원 할인</span></div>
-          <div class="udx-item"><span class="udx-item-name">주거/교육급여,<br>차상위계층</span><span class="udx-item-val">12,100원 + 초과분 35%<br>(최대 23,650원)</span></div>
-          <div class="udx-item"><span class="udx-item-name">기초연금수급자</span><span class="udx-item-val">월정액 50% 할인<br>(최대 12,100원)</span></div>
-          <p class="udx-group-title">가족결합</p>
-          <div class="udx-subgroup">
-            <p class="udx-subgroup-title">참쉬운가족결합</p>
-            <div class="udx-item"><span class="udx-item-name">2인</span><span class="udx-item-val">3,300원/월</span></div>
-            <div class="udx-item"><span class="udx-item-name">3인</span><span class="udx-item-val">5,500원/월</span></div>
-            <div class="udx-item"><span class="udx-item-name">4인 이상</span><span class="udx-item-val">6,600원/월</span></div>
-            <p class="udx-subgroup-cond">무선 1~10회선, 인터넷 1~3회선</p>
-          </div>
-          <div class="udx-subgroup">
-            <p class="udx-subgroup-title">투게더결합</p>
-            <div class="udx-item"><span class="udx-item-name">2인</span><span class="udx-item-val">10,000원/월</span></div>
-            <div class="udx-item"><span class="udx-item-name">3인</span><span class="udx-item-val">14,000원/월</span></div>
-            <div class="udx-item"><span class="udx-item-name">4인</span><span class="udx-item-val">20,000원/월</span></div>
-            <p class="udx-subgroup-cond">무선 1~5회선, 인터넷 1~5회선<br>월정액 85,000원 이상 · 인터넷 500M 이상 가입 시 가능</p>
-          </div>
+          <select class="udx-select" id="udxWelfare" onchange="udxSetWelfare(this.value)"></select>
+          <div class="udx-result" id="udxWelfareResult" style="display:none;"></div>
         </div>
       </div>
     </div>
@@ -647,6 +668,28 @@ function refreshImg(){
   const src=(c&&c.img)||ucatSel.device.img||'';
   document.getElementById('udImg').innerHTML=src?`<img src="${src}" alt="${ucatSel.device.name}">`:'';
 }
+const UD_BUNDLE_RATES={
+  easy:{'2':3300,'3':5500,'4':6600},
+  together:{'2':10000,'3':14000,'4':20000}
+};
+const UD_BUNDLE_LABELS={none:'미결합',easy:'참쉬운가족결합',together:'투게더결합'};
+const UD_WELFARE_OPTIONS=[
+  {id:'none',name:'해당없음'},
+  {id:'disabled',name:'장애인 (기본료 35% 할인)'},
+  {id:'veteran',name:'국가유공자 (기본료 35% 할인)'},
+  {id:'livelihood',name:'생계/의료급여 수급자 (최대 28,600원)'},
+  {id:'housing',name:'주거/교육급여·차상위계층 (최대 23,650원)'},
+  {id:'pension',name:'기초연금수급자 (최대 12,100원)'}
+];
+function udxComputeWelfare(id,monthlyFeeFull){
+  switch(id){
+    case 'disabled': case 'veteran': return Math.round(monthlyFeeFull*0.35);
+    case 'livelihood': return 28600;
+    case 'housing': return 23650;
+    case 'pension': return Math.min(Math.round(monthlyFeeFull*0.5),12100);
+    default: return 0;
+  }
+}
 const UD_INSTALLMENT_RATE=1.0626; // 24개월 할부 결제시 할부이자 배율
 function refreshPrice(){
   const d=ucatSel.device;
@@ -681,11 +724,36 @@ function refreshPrice(){
       document.getElementById('udbPrincipal').textContent=q.final.toLocaleString()+'원';
     }
   }
+  udxRenderControls();
+  const togetherBlocked=(ucatSel.bundleType==='together'&&monthlyFeeFull<85000);
+  const bundleDiscount=(ucatSel.bundleType!=='none'&&!togetherBlocked)?(UD_BUNDLE_RATES[ucatSel.bundleType][ucatSel.bundleSize]||0):0;
+  const welfareDiscount=udxComputeWelfare(ucatSel.welfareType,monthlyFeeFull);
+  const bundleResultEl=document.getElementById('udxBundleResult');
+  if(togetherBlocked){
+    bundleResultEl.className='udx-warn';
+    bundleResultEl.style.display='block';
+    bundleResultEl.textContent='투게더결합은 휴대폰 월정액 85,000원 이상만 가능합니다.';
+  } else if(bundleDiscount>0){
+    bundleResultEl.className='udx-result';
+    bundleResultEl.style.display='block';
+    bundleResultEl.textContent='무선 결합할인: '+bundleDiscount.toLocaleString()+'원/월';
+  } else {
+    bundleResultEl.style.display='none';
+  }
+  const welfareResultEl=document.getElementById('udxWelfareResult');
+  if(welfareDiscount>0){
+    welfareResultEl.style.display='block';
+    welfareResultEl.textContent='복지할인: '+welfareDiscount.toLocaleString()+'원/월';
+  } else {
+    welfareResultEl.style.display='none';
+  }
+  const extraDiscount=bundleDiscount+welfareDiscount;
+  monthlyFee=Math.max(0,monthlyFee-extraDiscount);
   monthlyDev=Math.round(principal*UD_INSTALLMENT_RATE/24);
   const feeOrigEl=document.getElementById('udbFeeOrig');
-  if(ucatSel.discountMethod==='commitment'){
+  if(ucatSel.discountMethod==='commitment'||extraDiscount>0){
     feeOrigEl.style.display='inline';
-    feeOrigEl.textContent=monthlyFeeFull.toLocaleString()+'원(25%↓)';
+    feeOrigEl.textContent=monthlyFeeFull.toLocaleString()+'원'+(ucatSel.discountMethod==='commitment'?'(25%↓)':'');
   } else {
     feeOrigEl.style.display='none';
   }
