@@ -35,6 +35,7 @@ a{text-decoration:none;color:inherit;}
 .uwt-cat.on{border-color:#E91E8C;background:rgba(233,30,140,.04);}
 .uwt-cat-left{display:flex;align-items:center;gap:10px;}
 .uwt-cat-ico{font-size:18px;flex-shrink:0;}
+.uwt-cat-icoimg{width:32px;height:32px;object-fit:cover;border-radius:9px;flex-shrink:0;background:#f3f3f3;}
 .uwt-cat-name{font-size:16px;font-weight:800;color:#1A1A1A;text-align:left;}
 .uwt-cat-arrow{width:18px;height:18px;flex-shrink:0;transition:transform .2s;color:#E91E8C;}
 .uwt-cat.on .uwt-cat-arrow{transform:rotate(180deg);}
@@ -136,8 +137,8 @@ a{text-decoration:none;color:inherit;}
 const UCAT_DB_URL='https://udak-c6832-default-rtdb.firebaseio.com';
 /* 요금제별 혜택 선택 - 워치/탭 드릴다운. 가격은 Firebase watchDevices에서, 없으면 '가격 등록 필요' 표시 (임의 금액 표기 안 함) */
 const UWT_CATEGORIES={
-  '95':[{id:'watch',name:'스마트워치',ico:'⌚'},{id:'dailyplus',name:'데일리플러스',ico:'🎵'}],
-  '115':[{id:'watch',name:'스마트워치',ico:'⌚'},{id:'tab',name:'스마트탭',ico:'📱'},{id:'premiumplus',name:'프리미엄플러스',ico:'✨'},{id:'dailyplus',name:'데일리플러스',ico:'🎵'}]
+  '95':[{id:'watch',name:'스마트워치',icoImg:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/cat-ico-watch.png'},{id:'dailyplus',name:'데일리플러스',icoImg:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/cat-ico-daily.png'}],
+  '115':[{id:'watch',name:'스마트워치',icoImg:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/cat-ico-watch.png'},{id:'tab',name:'스마트탭',icoImg:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/cat-ico-tab.png'},{id:'premiumplus',name:'프리미엄플러스',icoImg:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/cat-ico-premium.png'},{id:'dailyplus',name:'데일리플러스',icoImg:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/cat-ico-daily.png'}]
 };
 const UWT_PLAN_BENEFITS={
   '95':[
@@ -287,7 +288,7 @@ function uwtRenderCats(){
     return`<div>
       <div class="uwt-cat${isOpen?' on':''}" onclick="uwtToggleCat('${c.id}')">
         <span class="uwt-cat-left">
-          ${c.ico?`<span class="uwt-cat-ico">${c.ico}</span>`:''}
+          ${c.icoImg?`<img class="uwt-cat-icoimg" src="${c.icoImg}" alt="">`:(c.ico?`<span class="uwt-cat-ico">${c.ico}</span>`:'')}
           <span class="uwt-cat-name">${c.name}</span>
         </span>
         <svg class="uwt-cat-arrow" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
