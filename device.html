@@ -881,6 +881,7 @@ uwtLoadPricing();
       </div>
       <div id="drFeeDetailClone"></div>
       <div id="drSubsidyClone"></div>
+      <div id="drWatchClone"></div>
       <div style="border-top:1px dashed #ddd;padding-top:10px;margin-top:10px;display:flex;justify-content:space-between;align-items:baseline;">
         <span style="font-size:11px;color:#999;">예상 월 납부금액</span>
         <p id="drTotal" style="font-size:17px;font-weight:800;color:#E91E8C;margin:0;">-</p>
@@ -985,6 +986,19 @@ window.openDeviceReserve=function(){
   const subsidyWrapEl=document.getElementById('udSubsidyWrap');
   document.getElementById('drFeeDetailClone').innerHTML=feeDetailEl?('<p style="font-size:11px;color:#999;margin:0 0 6px;">요금 상세</p><div style="background:#fff;border-radius:10px;padding:4px 12px;font-size:12px;">'+feeDetailEl.innerHTML+'</div>'):'';
   document.getElementById('drSubsidyClone').innerHTML=(subsidyWrapEl&&subsidyWrapEl.style.display!=='none')?('<p style="font-size:11px;color:#999;margin:10px 0 6px;">지원금 상세</p><div style="background:#fff;border-radius:10px;padding:4px 12px;font-size:12px;">'+subsidyWrapEl.querySelector('.udetail-breakdown2').innerHTML+'</div>'):'';
+  const allWatchModels=uwtAllModelsFlat();
+  const pickedIds=Object.values(uwtSelectedByCat||{}).filter(Boolean);
+  const pickedModels=pickedIds.map(id=>allWatchModels.find(m=>m.id===id)).filter(Boolean);
+  const watchMonthlyText=document.getElementById('udbWatch')?document.getElementById('udbWatch').textContent:'-';
+  if(pickedModels.length){
+    const rows=pickedModels.map(m=>{
+      const info=uwtGetPriceInfo(m.id);
+      return`<div class="udb2-row"><span>${m.name}${m.size?' ('+m.size+')':''}</span><b>${info?info.selfPay.toLocaleString()+'원':'-'}</b></div>`;
+    }).join('')+`<div class="udb2-row" style="border-top:1px dashed #ddd;margin-top:4px;padding-top:10px;"><span>요금제별 혜택 할부금(24개월)</span><b>${watchMonthlyText}</b></div>`;
+    document.getElementById('drWatchClone').innerHTML='<p style="font-size:11px;color:#999;margin:10px 0 6px;">요금제별 혜택</p><div style="background:#fff;border-radius:10px;padding:4px 12px;font-size:12px;">'+rows+'</div>';
+  } else {
+    document.getElementById('drWatchClone').innerHTML='';
+  }
   document.getElementById('drTotal').textContent=total;
   document.getElementById('deviceReserveModal').classList.add('open');
   document.body.style.overflow='hidden';
@@ -1021,6 +1035,13 @@ window.submitDeviceReserve=function(){
   var colorObj=d.colors&&d.colors[ucatSel.color];
   var colorName=colorObj?colorObj.name.split('|')[1]:'';
   var storageName=d.storageList[ucatSel.storage||0].name;
+  var allWatchModelsSub=uwtAllModelsFlat();
+  var pickedIdsSub=Object.values(uwtSelectedByCat||{}).filter(Boolean);
+  var pickedModelsSub=pickedIdsSub.map(function(id){return allWatchModelsSub.find(function(m){return m.id===id;});}).filter(Boolean);
+  if(pickedModelsSub.length){
+    var watchNamesSub=pickedModelsSub.map(function(m){return m.name+(m.size?' '+m.size:'');}).join(' + ');
+    memo=(memo?memo+' / ':'')+'요금제별혜택 희망: '+watchNamesSub;
+  }
   if(typeof fbq!=='undefined')fbq('track','Lead');
   fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations',{
     method:'POST',
