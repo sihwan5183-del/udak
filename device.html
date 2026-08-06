@@ -88,6 +88,11 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
 .udx-subgroup-cond{font-size:11.5px;color:#aaa;margin:8px 0 0;line-height:1.5;}
 .udx-result{margin-top:10px;padding:10px 12px;background:rgba(46,204,113,.08);border-radius:8px;font-size:13px;color:#1a9d5c;font-weight:700;}
 .udx-warn{margin-top:10px;padding:10px 12px;background:rgba(255,152,0,.08);border-radius:8px;font-size:12px;color:#c77700;line-height:1.5;}
+.udx-welfare-ref{margin-top:12px;background:#fff;border-radius:10px;padding:4px 14px;}
+.udx-wref-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:9px 0;border-bottom:1px solid #f0f0f0;}
+.udx-wref-row:last-child{border-bottom:none;}
+.udx-wref-name{font-size:12px;font-weight:700;color:#555;flex-shrink:0;}
+.udx-wref-desc{font-size:11.5px;color:#aaa;text-align:right;line-height:1.4;}
 .uwt-picksummary{display:flex;align-items:center;gap:8px;background:rgba(233,30,140,.05);border:1.5px solid rgba(233,30,140,.25);border-radius:12px;padding:12px 14px;margin-top:8px;cursor:pointer;}
 .uwt-picksummary-check{width:18px;height:18px;border-radius:50%;background:#E91E8C;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .uwt-picksummary-name{font-size:12.5px;font-weight:700;color:#1A1A1A;flex:1;}
@@ -558,6 +563,13 @@ function renderPage(){
           <p class="udx-group-title">복지할인</p>
           <select class="udx-select" id="udxWelfare" onchange="udxSetWelfare(this.value)"></select>
           <div class="udx-result" id="udxWelfareResult" style="display:none;"></div>
+          <div class="udx-welfare-ref">
+            <div class="udx-wref-row"><span class="udx-wref-name">장애인</span><span class="udx-wref-desc">기본료 35% 할인</span></div>
+            <div class="udx-wref-row"><span class="udx-wref-name">국가유공자</span><span class="udx-wref-desc">기본료 35% 할인</span></div>
+            <div class="udx-wref-row"><span class="udx-wref-name">생계/의료급여 수급자</span><span class="udx-wref-desc">월정액 기준 최대 28,600원 할인</span></div>
+            <div class="udx-wref-row"><span class="udx-wref-name">주거/교육급여·차상위계층</span><span class="udx-wref-desc">12,100원 + 초과분 35%(최대 23,650원)</span></div>
+            <div class="udx-wref-row"><span class="udx-wref-name">기초연금수급자</span><span class="udx-wref-desc">월정액 50% 할인(최대 12,100원)</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -598,6 +610,7 @@ function renderPage(){
         <div class="udb2-row" id="udbPubRow"><span>공시지원금</span><b id="udbPubAmt" style="color:#E91E8C;">-</b></div>
         <div class="udb2-row"><span>유플러스 다이렉트 혜택</span><b id="udbExtraAmt" style="color:#E91E8C;">-</b></div>
         <div class="udb2-row" style="border-top:1px dashed #ddd;margin-top:4px;padding-top:10px;"><span>남은 할부원금</span><b id="udbPrincipal">-</b></div>
+        <div class="udb2-row"><span style="color:#999;">할부이자(24개월)</span><b id="udbInterest" style="color:#999;font-weight:600;">-</b></div>
       </div>
     </div>
     <div class="udetail-sec" id="udFeeDetailWrap">
@@ -753,6 +766,9 @@ function refreshPrice(){
   const extraDiscount=bundleDiscount+welfareDiscount;
   monthlyFee=Math.max(0,monthlyFee-extraDiscount);
   monthlyDev=Math.round(principal*UD_INSTALLMENT_RATE/24);
+  const totalInterest=Math.round(principal*(UD_INSTALLMENT_RATE-1));
+  const interestEl=document.getElementById('udbInterest');
+  if(interestEl) interestEl.textContent=totalInterest.toLocaleString()+'원';
   const feeRows=[];
   feeRows.push(`<div class="udb2-row"><span>${planObj?planObj.name:'요금제'}</span><b>${monthlyFeeFull.toLocaleString()}원</b></div>`);
   if(ucatSel.discountMethod==='commitment'){
