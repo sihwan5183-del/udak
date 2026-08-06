@@ -1043,7 +1043,42 @@ window.submitDeviceReserve=function(){
     var watchNamesSub=pickedModelsSub.map(function(m){return m.name+(m.size?' '+m.size:'');}).join(' + ');
     memo=(memo?memo+' / ':'')+'요금제별혜택 희망: '+watchNamesSub;
   }
+  var jointypeSub=ucatSel.carrier==='LG U+'?'기기변경':'번호이동';
+  var planNameSub=ucatSel.plan?ucatSel.plan.name:null;
+  var discountSub=ucatSel.discountMethod==='commitment'?'선택약정':'공시지원금';
+  var feeDetailTextSub=document.getElementById('udFeeDetailRows')?document.getElementById('udFeeDetailRows').innerText.replace(/\n/g,' ').replace(/\s+/g,' ').trim():'';
+  var subsidyWrapSub=document.getElementById('udSubsidyWrap');
+  var subsidyTextSub=(subsidyWrapSub&&subsidyWrapSub.style.display!=='none')?subsidyWrapSub.querySelector('.udetail-breakdown2').innerText.replace(/\n/g,' ').replace(/\s+/g,' ').trim():'';
+  var watchSnapshotSub=pickedModelsSub.length?pickedModelsSub.map(function(m){
+    var info=uwtGetPriceInfo(m.id);
+    return m.name+(m.size?'('+m.size+')':'')+' 자부담 '+(info?info.selfPay.toLocaleString()+'원':'-');
+  }).join(', '):'';
+  var snapshotParts=[];
+  if(feeDetailTextSub) snapshotParts.push('[요금상세] '+feeDetailTextSub);
+  if(subsidyTextSub) snapshotParts.push('[지원금상세] '+subsidyTextSub);
+  if(watchSnapshotSub) snapshotParts.push('[요금제별혜택] '+watchSnapshotSub);
+  var additionalBenefitsSub=snapshotParts.join(' / ')||null;
+  var estimatedFeeSub=parseInt((document.getElementById('udHeroAmt').textContent||'').replace(/[^0-9]/g,''))||null;
   if(typeof fbq!=='undefined')fbq('track','Lead');
+  fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/leads',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
+      'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
+      'Prefer':'return=minimal'
+    },
+    body:JSON.stringify({
+      name:name,phone:phoneF,birth:birthF,
+      current_carrier:ucatSel.carrier,jointype:jointypeSub,
+      desired_device:d.name,storage:storageName,color:colorName,
+      desired_product:planNameSub,discount:discountSub,
+      additional_benefits:additionalBenefitsSub,
+      channel:'유닥',utm_campaign:PAGE_UTM_CAMPAIGN,
+      estimated_fee:estimatedFeeSub,
+      created_at:new Date().toISOString()
+    })
+  }).catch(function(e){ console.error('leads insert error:',e); });
   fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations',{
     method:'POST',
     headers:{
