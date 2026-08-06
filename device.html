@@ -138,8 +138,8 @@ const UCAT_MDEV_FALLBACK=[
 let ucatDevices=[...UCAT_Z8_DEVICES];
 
 const UWT_CATEGORIES={
-  '95':[{id:'watch',name:'혜택1'}],
-  '115':[{id:'watch',name:'혜택1'},{id:'tab',name:'혜택2'}]
+  '95':[{id:'watch',name:'스마트워치'},{id:'dailyplus',name:'데일리플러스'}],
+  '115':[{id:'watch',name:'스마트워치'},{id:'tab',name:'혜택2'},{id:'premiumplus',name:'프리미엄플러스'},{id:'dailyplus',name:'데일리플러스'}]
 };
 const UWT_WATCH_SERIES=[
   {id:'galaxy',name:'갤럭시 워치'},
@@ -162,7 +162,15 @@ const UWT_MODELS={
   },
   tab:[
     {id:'tab-a11plus',name:'갤럭시 탭 A11+',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/tab-a11plus.png'}
-  ]
+  ],
+  dailyplus:[
+    {id:'dp-googleone',name:'구글원',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-googleone.png',desc:'구글 드라이브·포토·지메일 저장공간을 늘려주는 구글의 클라우드 저장공간 구독 서비스입니다.'},
+    {id:'dp-moazine',name:'모아진',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-moazine.png',desc:'다양한 잡지를 한 곳에서 골라볼 수 있는 잡지 정기구독 앱입니다.'},
+    {id:'dp-kyobosam',name:'교보문고 sam',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-kyobosam.png',desc:'교보문고의 eBook 월정액 서비스로, 다양한 전자책을 볼 수 있습니다.'},
+    {id:'dp-genie',name:'지니뮤직',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-genie.png',desc:'최신 음원부터 다양한 플레이리스트까지 즐길 수 있는 음악 스트리밍 서비스입니다.'},
+    {id:'dp-millie',name:'밀리의 서재',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-millie.jpg',desc:'전자책과 오디오북을 즐길 수 있는 독서 구독 플랫폼입니다.'}
+  ],
+  premiumplus:[]
 };
 function uwtFlatten(data){ return Array.isArray(data)?data:[].concat(...Object.values(data||{})); }
 function uwtAllModelsFlat(){ return [].concat(...Object.values(UWT_MODELS).map(uwtFlatten)); }
@@ -199,6 +207,12 @@ function renderUwtSection(){
     const pickedModelId=uwtSelectedByCat[c.id];
     const pickedModel=pickedModelId?allModels.find(m=>m.id===pickedModelId):null;
     const pickSummaryHtml=pickedModel?(()=>{
+      if(c.id==='dailyplus'){
+        return`<div class="uwt-picksummary" onclick="uwtToggleCat('${c.id}')">
+          <span class="uwt-picksummary-check">✓</span>
+          <span class="uwt-picksummary-name">${pickedModel.name} 선택</span>
+        </div>`;
+      }
       const info=uwtGetPriceInfo(pickedModel.id);
       return`<div class="uwt-picksummary" onclick="uwtPickModel('${pickedModel.id}')">
         <span class="uwt-picksummary-check">✓</span>
@@ -207,7 +221,15 @@ function renderUwtSection(){
       </div>`;
     })():'';
     let modelBoxHtml;
-    if(c.id==='watch'){
+    if(c.id==='dailyplus'){
+      const dpModels=uwtFlatten(UWT_MODELS.dailyplus||[]);
+      modelBoxHtml=`<p style="font-size:12px;color:#999;margin:0 0 10px;text-align:center;">5개 중 택 1</p><div class="uwt-modelgrid">
+        ${dpModels.map(m=>`<div class="uwt-model${pickedModelId===m.id?' on':''}" onclick="uwtShowDpInfo('${m.id}')">
+          ${m.img?`<img class="uwt-model-img" src="${m.img}" alt="${m.name}" style="border-radius:12px;">`:''}
+          <div class="uwt-model-name">${m.name}</div>
+        </div>`).join('')}
+      </div>`;
+    } else if(c.id==='watch'){
       modelBoxHtml=`<div class="uwt-catlist" style="padding:12px 2px 4px;">
         ${UWT_WATCH_SERIES.map(s=>{
           const seriesOpen=uwtOpenSeries===s.id;
@@ -266,6 +288,29 @@ window.uwtToggleCat=function(catId){
 window.uwtToggleSeries=function(seriesId){
   uwtOpenSeries=(uwtOpenSeries===seriesId)?null:seriesId;
   renderUwtSection();
+};
+window.uwtDpPreviewId=null;
+window.uwtShowDpInfo=function(modelId){
+  window.uwtDpPreviewId=modelId;
+  const m=uwtFlatten(UWT_MODELS.dailyplus).find(x=>x.id===modelId);
+  if(!m) return;
+  document.getElementById('uwtDpImg').src=m.img||'';
+  document.getElementById('uwtDpImg').alt=m.name;
+  document.getElementById('uwtDpName').textContent=m.name;
+  document.getElementById('uwtDpDesc').textContent=m.desc||'';
+  document.getElementById('uwtDpModalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+};
+window.uwtCloseDpModal=function(){
+  document.getElementById('uwtDpModalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+};
+window.uwtConfirmDailyPlus=function(){
+  if(!window.uwtDpPreviewId) return;
+  uwtSelectedByCat.dailyplus=window.uwtDpPreviewId;
+  window.uwtCloseDpModal();
+  refreshPrice();
+  setTimeout(()=>{ document.querySelector('.uwt-picksummary')?.scrollIntoView({behavior:'smooth',block:'center'}); },100);
 };
 
 window.uwtCloseDetail=function(){
@@ -406,6 +451,18 @@ function renderPage(){
         <div class="uwt-detail-btnrow">
           <button class="uwt-detail-back" onclick="uwtCloseDetail()" type="button">뒤로 가기</button>
           <button class="uwt-detail-confirm" onclick="uwtConfirmModel()" type="button">모델 선택하기</button>
+        </div>
+      </div>
+    </div>
+    <div class="uwt-modal-overlay" id="uwtDpModalOverlay" onclick="if(event.target===this)uwtCloseDpModal()">
+      <div class="uwt-detail-card" style="text-align:center;">
+        <button class="uwt-detail-close" onclick="uwtCloseDpModal()" type="button">×</button>
+        <img id="uwtDpImg" src="" alt="" style="width:72px;height:72px;object-fit:contain;border-radius:16px;margin:0 auto 16px;display:block;">
+        <p id="uwtDpName" style="font-size:17px;font-weight:800;color:#1A1A1A;margin:0 0 12px;"></p>
+        <p id="uwtDpDesc" style="font-size:13.5px;color:#666;line-height:1.6;margin:0 0 20px;"></p>
+        <div class="uwt-detail-btnrow">
+          <button class="uwt-detail-back" onclick="uwtCloseDpModal()" type="button">뒤로 가기</button>
+          <button class="uwt-detail-confirm" onclick="uwtConfirmDailyPlus()" type="button">선택하기</button>
         </div>
       </div>
     </div>

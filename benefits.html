@@ -124,7 +124,7 @@ const UCAT_DB_URL='https://udak-c6832-default-rtdb.firebaseio.com';
 /* 요금제별 혜택 선택 - 워치/탭 드릴다운. 가격은 Firebase watchDevices에서, 없으면 '가격 등록 필요' 표시 (임의 금액 표기 안 함) */
 const UWT_CATEGORIES={
   '95':[{id:'watch',name:'스마트워치',ico:'⌚'},{id:'dailyplus',name:'데일리플러스',ico:'🎵'}],
-  '115':[{id:'watch',name:'스마트워치',ico:'⌚'},{id:'tab',name:'혜택2',ico:'📱'},{id:'dailyplus',name:'데일리플러스',ico:'🎵'}]
+  '115':[{id:'watch',name:'스마트워치',ico:'⌚'},{id:'tab',name:'혜택2',ico:'📱'},{id:'premiumplus',name:'프리미엄플러스',ico:'✨'},{id:'dailyplus',name:'데일리플러스',ico:'🎵'}]
 };
 const UWT_WATCH_SERIES=[
   {id:'galaxy',name:'갤럭시 워치'},
@@ -151,10 +151,11 @@ const UWT_MODELS={
   dailyplus:[
     {id:'dp-googleone',name:'구글원',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-googleone.png',desc:'구글 드라이브·포토·지메일 저장공간을 늘려주는 구글의 클라우드 저장공간 구독 서비스입니다.'},
     {id:'dp-moazine',name:'모아진',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-moazine.png',desc:'다양한 잡지를 한 곳에서 골라볼 수 있는 잡지 정기구독 앱입니다.'},
-    {id:'dp-kyobosam',name:'교보문고 sam',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-kyobosam.png',desc:'교보문고의 eBook 월정액 서비스로, 다양한 전자책을 무제한으로 읽을 수 있습니다.'},
+    {id:'dp-kyobosam',name:'교보문고 sam',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-kyobosam.png',desc:'교보문고의 eBook 월정액 서비스로, 다양한 전자책을 볼 수 있습니다.'},
     {id:'dp-genie',name:'지니뮤직',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-genie.png',desc:'최신 음원부터 다양한 플레이리스트까지 즐길 수 있는 음악 스트리밍 서비스입니다.'},
-    {id:'dp-millie',name:'밀리의 서재',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-millie.jpg',desc:'전자책과 오디오북을 무제한으로 즐길 수 있는 독서 구독 플랫폼입니다.'}
-  ]
+    {id:'dp-millie',name:'밀리의 서재',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/dp-millie.jpg',desc:'전자책과 오디오북을 즐길 수 있는 독서 구독 플랫폼입니다.'}
+  ],
+  premiumplus:[]
 };
 function uwtFlatten(data){ return Array.isArray(data)?data:[].concat(...Object.values(data||{})); }
 function uwtAllModelsFlat(){ return [].concat(...Object.values(UWT_MODELS).map(uwtFlatten)); }
