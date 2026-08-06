@@ -221,8 +221,8 @@ tr.drag-over{border-top:2px solid var(--or)}
       </div>
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>통신사</th><th>요금그룹</th><th>기기 수</th><th>공시지원금(기본)</th><th>유닥 혜택(기본)</th><th>노출</th><th>관리</th></tr></thead>
-          <tbody id="polTbody"><tr class="empty-row"><td colspan="7">로딩 중...</td></tr></tbody>
+          <thead><tr><th>통신사</th><th>요금그룹</th><th>기기 수</th><th>공시지원금(기본)</th><th>유닥 혜택(기본)</th><th>선택약정 전용</th><th>노출</th><th>관리</th></tr></thead>
+          <tbody id="polTbody"><tr class="empty-row"><td colspan="8">로딩 중...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -369,6 +369,7 @@ tr.drag-over{border-top:2px solid var(--or)}
           <div class="fg"><label class="flbl">리베이트</label><input type="number" class="fi" id="bReb" placeholder="0" oninput="Object.keys(devData).forEach(k=&gt;updateRowCalc(k))"></div>
           <div class="fg"><label class="flbl">유통망</label><input type="number" class="fi" id="bDist" placeholder="0" oninput="Object.keys(devData).forEach(k=&gt;updateRowCalc(k))"></div>
           <div class="fg"><label class="flbl">추가</label><input type="number" class="fi" id="bExt" placeholder="0" oninput="Object.keys(devData).forEach(k=&gt;updateRowCalc(k))"></div>
+          <div class="fg"><label class="flbl">선택약정 전용 혜택</label><input type="number" class="fi" id="bCommit" placeholder="비워두면 위 합계와 동일"></div>
           <input type="hidden" id="bStr" value="0">
           <button class="bulk-apply-btn" onclick="applyBulk()">전체 적용 →</button>
         </div>
@@ -787,10 +788,11 @@ async function loadPolicies(){
   const s=await db.ref('policy2').once('value'); polData=s.exists()?s.val():{};
   const tbody=document.getElementById('polTbody');
   const keys=Object.keys(polData);
-  if(!keys.length){tbody.innerHTML='<tr class="empty-row"><td colspan="7">등록된 정책 없음</td></tr>';return;}
+  if(!keys.length){tbody.innerHTML='<tr class="empty-row"><td colspan="8">등록된 정책 없음</td></tr>';return;}
   tbody.innerHTML=keys.map(k=>{
     const p=polData[k];
     const extra=(p.rebate||0)+(p.distribution||0)+(p.structure||0)+(p.extraPolicy||0);
+    const commitExtra=(p.commitmentExtra!=null)?p.commitmentExtra:extra;
     const devCount=Object.keys(devData).length-(p.excludedDevs||[]).length;const totalDev=Object.keys(devData).length;
     const planName=Object.values(planData).find(pl=>(pl.plangroup||Math.floor(pl.monthlyPrice/1000).toString())===p.plangroup)?.name||p.plangroup||'-';
     return`<tr>
@@ -799,6 +801,7 @@ async function loadPolicies(){
       <td style="font-size:12px">${devCount>0?`${devCount}/${totalDev}개 기기`:'전체 공통'}</td>
       <td style="font-weight:700;color:var(--or)">${Number(p.pubSupport||0).toLocaleString()}원</td>
       <td style="font-weight:700;color:var(--or)">${extra.toLocaleString()}원</td>
+      <td style="font-weight:700;color:var(--or)">${commitExtra.toLocaleString()}원${p.commitmentExtra==null?' <span style="font-size:10px;color:var(--g400);font-weight:400">(기본값)</span>':''}</td>
       <td><span class="vis-badge ${p.visible!==false?'vis-on':'vis-off'}">${p.visible!==false?'활성':'비활성'}</span></td>
       <td><div class="acts"><button class="btn-e" onclick="editPol('${k}')">수정</button><button class="btn-d" onclick="delPol('${k}')">삭제</button></div></td>
     </tr>`;
@@ -939,7 +942,7 @@ window.openPolModal=function(){
   document.getElementById('polName').value='';
   document.querySelectorAll('#carrierChks input').forEach(c=>{c.checked=false;c.closest('.c-chk-item').classList.remove('on');});
   document.getElementById('polPlangrp').value='';
-  ['bPub','bReb','bDist','bStr','bExt'].forEach(id=>document.getElementById(id).value='');
+  ['bPub','bReb','bDist','bStr','bExt','bCommit'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('polVis').checked=true;
   renderDevPolTable();
   openModal('polModal');
@@ -961,6 +964,7 @@ window.editPol=function(k){
   document.getElementById('bDist').value=p.distribution||'';
   document.getElementById('bStr').value=p.structure||'';
   document.getElementById('bExt').value=p.extraPolicy||'';
+  document.getElementById('bCommit').value=(p.commitmentExtra!=null)?p.commitmentExtra:'';
   document.getElementById('polVis').checked=p.visible!==false;
   renderDevPolTable(p.deviceOverrides||{}, p.excludedDevs||[]);
   openModal('polModal');
@@ -975,6 +979,8 @@ window.savePol=async function(){
 
   // base values
   const base={pubSupport:Number(document.getElementById('bPub').value)||0,rebate:Number(document.getElementById('bReb').value)||0,distribution:Number(document.getElementById('bDist').value)||0,structure:0,extraPolicy:Number(document.getElementById('bExt').value)||0};
+  const commitVal=document.getElementById('bCommit').value;
+  base.commitmentExtra=(commitVal!=='')?Number(commitVal):null;
 
   // device overrides - 용량별 수집
   const overrides={};

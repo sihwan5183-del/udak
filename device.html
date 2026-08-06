@@ -551,7 +551,8 @@ function ucatQuote(device,carrierName,jointype,planObj){
   if(!pol) return null;
   const pub=pol.pubSupport||0;
   const extra=(pol.rebate||0)+(pol.distribution||0)+(pol.structure||0)+(pol.extraPolicy||0);
-  return {price:lp, pub:pub, extra:extra, final:Math.max(0,lp-pub-extra)};
+  const commitmentExtra=(pol.commitmentExtra!=null)?pol.commitmentExtra:extra;
+  return {price:lp, pub:pub, extra:extra, commitmentExtra:commitmentExtra, final:Math.max(0,lp-pub-extra)};
 }
 
 function renderPage(){
@@ -759,11 +760,11 @@ function refreshPrice(){
     monthlyFee=Math.round(monthlyFeeFull*0.75);
     if(!q){ subReady=false; principal=st.price; subsidyWrap.style.display='none'; }
     else{
-      principal=Math.max(0,st.price-q.extra);
+      principal=Math.max(0,st.price-q.commitmentExtra);
       subsidyWrap.style.display='block';
       pubRow.style.display='none';
       document.getElementById('udbListPrice').textContent=st.price.toLocaleString()+'원';
-      document.getElementById('udbExtraAmt').textContent='-'+q.extra.toLocaleString()+'원';
+      document.getElementById('udbExtraAmt').textContent='-'+q.commitmentExtra.toLocaleString()+'원';
       document.getElementById('udbPrincipal').textContent=principal.toLocaleString()+'원';
     }
   } else {
