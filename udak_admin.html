@@ -217,7 +217,10 @@ tr.drag-over{border-top:2px solid var(--or)}
     <div class="panel" id="panelPolicy">
       <div class="panel-head">
         <div class="panel-title">정책 목록</div>
-        <button class="btn-add" onclick="openPolModal()">+ 정책 추가</button>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="seed-btn" id="btnSeedZ8Pol" style="display:none" onclick="seedZ8Policies()">📱 Z8 시리즈 정책 가져오기</button>
+          <button class="btn-add" onclick="openPolModal()">+ 정책 추가</button>
+        </div>
       </div>
       <div class="tbl-wrap">
         <table>
@@ -344,6 +347,13 @@ tr.drag-over{border-top:2px solid var(--or)}
         <input type="text" class="fi" id="polName" placeholder="예) 번이 85요금제 갤럭시 정책">
       </div>
 
+      <!-- 적용대상 -->
+      <div class="sec-div">적용 대상</div>
+      <div class="carrier-chks" id="polSeriesChks" style="margin-bottom:12px">
+        <label class="c-chk-item on" id="chkSeriesGeneral"><input type="radio" name="polSeries" value="general" checked onchange="onPolSeriesChange()"> 일반 (S26·아이폰 등)</label>
+        <label class="c-chk-item" id="chkSeriesZ8"><input type="radio" name="polSeries" value="z8" onchange="onPolSeriesChange()"> 갤럭시 Z8 시리즈 (폴드8·플립8)</label>
+      </div>
+
       <!-- 통신사 -->
       <div class="sec-div">통신사 선택 (다중 선택 가능)</div>
       <div class="carrier-chks" id="carrierChks">
@@ -365,10 +375,10 @@ tr.drag-over{border-top:2px solid var(--or)}
       <div class="bulk-box">
         <div class="bulk-title">공통 지원금 입력 후 "전체 적용" 버튼을 누르세요</div>
         <div class="bulk-grid">
-          <div class="fg"><label class="flbl">공시지원금</label><input type="number" class="fi" id="bPub" placeholder="0" oninput="Object.keys(devData).forEach(k=&gt;updateRowCalc(k))"></div>
-          <div class="fg"><label class="flbl">리베이트</label><input type="number" class="fi" id="bReb" placeholder="0" oninput="Object.keys(devData).forEach(k=&gt;updateRowCalc(k))"></div>
-          <div class="fg"><label class="flbl">유통망</label><input type="number" class="fi" id="bDist" placeholder="0" oninput="Object.keys(devData).forEach(k=&gt;updateRowCalc(k))"></div>
-          <div class="fg"><label class="flbl">추가</label><input type="number" class="fi" id="bExt" placeholder="0" oninput="Object.keys(devData).forEach(k=&gt;updateRowCalc(k))"></div>
+          <div class="fg"><label class="flbl">공시지원금</label><input type="number" class="fi" id="bPub" placeholder="0" oninput="bulkRecalcAll()"></div>
+          <div class="fg"><label class="flbl">리베이트</label><input type="number" class="fi" id="bReb" placeholder="0" oninput="bulkRecalcAll()"></div>
+          <div class="fg"><label class="flbl">유통망</label><input type="number" class="fi" id="bDist" placeholder="0" oninput="bulkRecalcAll()"></div>
+          <div class="fg"><label class="flbl">추가</label><input type="number" class="fi" id="bExt" placeholder="0" oninput="bulkRecalcAll()"></div>
           <div class="fg"><label class="flbl">선택약정 전용 혜택</label><input type="number" class="fi" id="bCommit" placeholder="비워두면 위 합계와 동일"></div>
           <input type="hidden" id="bStr" value="0">
           <button class="bulk-apply-btn" onclick="applyBulk()">전체 적용 →</button>
@@ -410,6 +420,22 @@ tr.drag-over{border-top:2px solid var(--or)}
 <script>
 const PW = 'udak2024';
 let devData={}, planData={}, polData={};
+
+/* ══ Z8 시리즈(폴드8/플립8/폴드8울트라) 지원금 정책 ══
+   Z8 기기 자체(이름/이미지/색상/출고가)는 랜딩페이지(device.html)에 하드코딩되어 있어 여기서 관리하지 않지만,
+   "정책 관리"에서 시리즈를 'z8'로 등록한 지원금 정책은 랜딩페이지가 실시간으로 읽어가 계산에 사용함. */
+const Z8_DEVICE_STUBS={
+  'z-fold8':{name:'갤럭시 Z 폴드8',storageList:[{name:'256GB',price:2277000}]},
+  'z-fold8-ultra':{name:'갤럭시 Z 폴드8 울트라',storageList:[{name:'256GB',price:2577300}]},
+  'z-flip8':{name:'갤럭시 Z 플립8',storageList:[{name:'256GB',price:1683000}]}
+};
+// 랜딩페이지(device.html)에 현재 하드코딩된 값과 동일 — "Z8 시리즈 정책 가져오기" 버튼으로 최초 1회 등록
+const Z8_SEED_POLICIES=[
+  {name:'Z8 기기변경(LGU+)',series:'z8',jointype:'기기변경',carrier:'LG U+',plangroup:'all',pubSupport:500000,rebate:300000,distribution:0,structure:0,extraPolicy:0,deviceOverrides:{},excludedDevs:[],visible:true},
+  {name:'Z8 번호이동(타사)',series:'z8',jointype:'번호이동',carrier:'SKT,KT,알뜰폰',plangroup:'all',pubSupport:500000,rebate:500000,distribution:0,structure:0,extraPolicy:0,deviceOverrides:{'z-fold8':{'256GB':{structure:0,rebate:450000}}},excludedDevs:[],visible:true}
+];
+let currentPolSeries='general'; // 정책 모달에서 현재 선택된 적용대상 ('general' | 'z8')
+function getDevRecord(k){ return devData[k]||Z8_DEVICE_STUBS[k]||null; } // 기기별 지원금 테이블용 — 일반기기+Z8스텁 통합 조회
 
 // Firebase REST API - CDN 불필요
 const DB_URL='https://udak-c6832-default-rtdb.firebaseio.com';
@@ -596,7 +622,7 @@ function previewMatchPolicy(jt, ca, pg, devKey, storageName){
     p=>p.jointype==='all'&&p.carrier!=='all'&&p.carrier?.includes(ca)&&p.plangroup==='all',
     p=>p.jointype==='all'&&p.carrier==='all'&&p.plangroup==='all',
   ];
-  const list=Object.values(polData).filter(p=>p.visible!==false);
+  const list=Object.values(polData).filter(p=>p.visible!==false&&p.series!=='z8');
   for(const fn of fns){
     const f=list.find(fn);
     if(f){
@@ -738,7 +764,7 @@ async function loadPlans(){
   // 정책 모달 요금그룹 셀렉트 업데이트
   const sel=document.getElementById('polPlangrp');
   const cur=sel.value;
-  sel.innerHTML='<option value="">선택해주세요</option>';
+  sel.innerHTML='<option value="">선택해주세요</option><option value="all">전체 요금제 공통</option>';
   Object.values(planData).filter(p=>p.visible!==false).sort((a,b)=>a.monthlyPrice-b.monthlyPrice).forEach(p=>{
     const opt=document.createElement('option');
     opt.value=p.plangroup||Math.floor(p.monthlyPrice/1000).toString();
@@ -788,15 +814,19 @@ async function loadPolicies(){
   const s=await db.ref('policy2').once('value'); polData=s.exists()?s.val():{};
   const tbody=document.getElementById('polTbody');
   const keys=Object.keys(polData);
+  const seedBtn=document.getElementById('btnSeedZ8Pol');
+  if(seedBtn) seedBtn.style.display=keys.some(k=>polData[k].series==='z8')?'none':'';
   if(!keys.length){tbody.innerHTML='<tr class="empty-row"><td colspan="8">등록된 정책 없음</td></tr>';return;}
   tbody.innerHTML=keys.map(k=>{
     const p=polData[k];
+    const isZ8=p.series==='z8';
     const extra=(p.rebate||0)+(p.distribution||0)+(p.structure||0)+(p.extraPolicy||0);
     const commitExtra=(p.commitmentExtra!=null)?p.commitmentExtra:extra;
-    const devCount=Object.keys(devData).length-(p.excludedDevs||[]).length;const totalDev=Object.keys(devData).length;
-    const planName=Object.values(planData).find(pl=>(pl.plangroup||Math.floor(pl.monthlyPrice/1000).toString())===p.plangroup)?.name||p.plangroup||'-';
+    const totalDev=isZ8?Object.keys(Z8_DEVICE_STUBS).length:Object.keys(devData).length;
+    const devCount=totalDev-(p.excludedDevs||[]).length;
+    const planName=p.plangroup==='all'?'전체 요금제':(Object.values(planData).find(pl=>(pl.plangroup||Math.floor(pl.monthlyPrice/1000).toString())===p.plangroup)?.name||p.plangroup||'-');
     return`<tr>
-      <td><strong>${p.name||'-'}</strong><br><span style="font-size:11px;color:var(--g400)">${(p.carrier||'all').replace(/,/g,'·')} · ${p.jointype||''}</span></td>
+      <td>${isZ8?'<span class="vis-badge" style="background:#FCE4EC;color:#E91E8C;margin-right:5px">Z8</span>':''}<strong>${p.name||'-'}</strong><br><span style="font-size:11px;color:var(--g400)">${(p.carrier||'all').replace(/,/g,'·')} · ${p.jointype||''}</span></td>
       <td style="font-size:12px">${planName}</td>
       <td style="font-size:12px">${devCount>0?`${devCount}/${totalDev}개 기기`:'전체 공통'}</td>
       <td style="font-weight:700;color:var(--or)">${Number(p.pubSupport||0).toLocaleString()}원</td>
@@ -809,7 +839,7 @@ async function loadPolicies(){
 }
 
 function getDevBasePrice(k, storage=''){
-  const d=devData[k];
+  const d=getDevRecord(k);
   if(!d) return 0;
   if(storage){const s=d.storageList?.find(s=>s.name===storage);if(s?.price) return s.price;}
   return d.storageList?.[0]?.price||0;
@@ -838,15 +868,16 @@ function updateRowCalc(devKey, storage){
   el.style.fontWeight='700';
 }
 
-function renderDevPolTable(overrides={}, excluded=[]){
-  const keys=Object.keys(devData);
+function renderDevPolTable(overrides={}, excluded=[], isZ8Series=false){
+  const srcData=isZ8Series?Z8_DEVICE_STUBS:devData;
+  const keys=Object.keys(srcData);
   if(!keys.length){
-    document.getElementById('devPolBody').innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--g400);padding:20px">기기를 먼저 등록해주세요</td></tr>';
+    document.getElementById('devPolBody').innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--g400);padding:20px">${isZ8Series?'Z8 기기 정보를 불러올 수 없습니다':'기기를 먼저 등록해주세요'}</td></tr>`;
     return;
   }
   let rows='';
   keys.forEach(k=>{
-    const d=devData[k];
+    const d=srcData[k];
     const isChecked=!excluded.includes(k);
     const storages=d.storageList||[{name:'기본',price:0}];
     const devOv=overrides[k]||{};
@@ -886,12 +917,12 @@ function renderDevPolTable(overrides={}, excluded=[]){
   });
   document.getElementById('devPolBody').innerHTML=rows;
   setTimeout(()=>{
-    keys.forEach(k=>{(devData[k]?.storageList||[{name:'기본'}]).forEach(s=>updateRowCalc(k,s.name));});
+    keys.forEach(k=>{(srcData[k]?.storageList||[{name:'기본'}]).forEach(s=>updateRowCalc(k,s.name));});
   },50);
 }
 
 window.toggleDevRow=function(devKey, checked){
-  const storages=devData[devKey]?.storageList||[{name:'기본'}];
+  const storages=getDevRecord(devKey)?.storageList||[{name:'기본'}];
   storages.forEach(s=>{
     const rowId='row_'+devKey+'_'+s.name.replace(/\s/g,'_');
     const row=document.getElementById(rowId);
@@ -900,6 +931,13 @@ window.toggleDevRow=function(devKey, checked){
     row.querySelectorAll('input[type=number]').forEach(el=>{el.disabled=!checked;});
   });
 };
+
+function bulkRecalcAll(){
+  const srcData=currentPolSeries==='z8'?Z8_DEVICE_STUBS:devData;
+  Object.keys(srcData).forEach(k=>{
+    (srcData[k]?.storageList||[{name:'기본'}]).forEach(s=>updateRowCalc(k,s.name));
+  });
+}
 
 window.applyBulk=function(){
   const vals={pub:document.getElementById('bPub').value,reb:document.getElementById('bReb').value,dist:document.getElementById('bDist').value,ext:document.getElementById('bExt').value};
@@ -919,9 +957,7 @@ window.applyBulk=function(){
       if(overwrite||el.value==='') el.value=vals[f];
     });
   });
-  Object.keys(devData).forEach(k=>{
-    (devData[k]?.storageList||[{name:'기본'}]).forEach(s=>updateRowCalc(k,s.name));
-  });
+  bulkRecalcAll();
 };
 
 window.toggleAllDevs=function(checked){
@@ -936,15 +972,27 @@ window.updateCarrierItem=function(chk){
   item.classList.toggle('on',chk.checked);
 };
 
+window.onPolSeriesChange=function(){
+  const isZ8=document.querySelector('input[name="polSeries"]:checked')?.value==='z8';
+  currentPolSeries=isZ8?'z8':'general';
+  document.getElementById('chkSeriesGeneral').classList.toggle('on',!isZ8);
+  document.getElementById('chkSeriesZ8').classList.toggle('on',isZ8);
+  renderDevPolTable({}, [], isZ8); // 시리즈 전환 시 기기별 개별값은 초기화됨(다시 입력 필요)
+};
+
 window.openPolModal=function(){
   document.getElementById('polModalTitle').textContent='정책 추가';
   document.getElementById('polId').value='';
   document.getElementById('polName').value='';
+  currentPolSeries='general';
+  document.querySelector('input[name="polSeries"][value="general"]').checked=true;
+  document.getElementById('chkSeriesGeneral').classList.add('on');
+  document.getElementById('chkSeriesZ8').classList.remove('on');
   document.querySelectorAll('#carrierChks input').forEach(c=>{c.checked=false;c.closest('.c-chk-item').classList.remove('on');});
   document.getElementById('polPlangrp').value='';
   ['bPub','bReb','bDist','bStr','bExt','bCommit'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('polVis').checked=true;
-  renderDevPolTable();
+  renderDevPolTable({}, [], false);
   openModal('polModal');
 };
 
@@ -952,6 +1000,11 @@ window.editPol=function(k){
   const p=polData[k];
   document.getElementById('polModalTitle').textContent='정책 수정';
   document.getElementById('polId').value=k;
+  const isZ8=p.series==='z8';
+  currentPolSeries=isZ8?'z8':'general';
+  document.querySelector(`input[name="polSeries"][value="${isZ8?'z8':'general'}"]`).checked=true;
+  document.getElementById('chkSeriesGeneral').classList.toggle('on',!isZ8);
+  document.getElementById('chkSeriesZ8').classList.toggle('on',isZ8);
   // carriers
   const carriers=(p.carrier||'').split(',').map(s=>s.trim());
   document.querySelectorAll('#carrierChks input').forEach(c=>{
@@ -966,7 +1019,7 @@ window.editPol=function(k){
   document.getElementById('bExt').value=p.extraPolicy||'';
   document.getElementById('bCommit').value=(p.commitmentExtra!=null)?p.commitmentExtra:'';
   document.getElementById('polVis').checked=p.visible!==false;
-  renderDevPolTable(p.deviceOverrides||{}, p.excludedDevs||[]);
+  renderDevPolTable(p.deviceOverrides||{}, p.excludedDevs||[], isZ8);
   openModal('polModal');
 };
 
@@ -977,8 +1030,10 @@ window.savePol=async function(){
   const pg=document.getElementById('polPlangrp').value;
   if(!pg){alert('요금제 그룹을 선택해주세요');return;}
 
+  const series=document.querySelector('input[name="polSeries"]:checked')?.value==='z8'?'z8':'general';
+
   // base values
-  const base={pubSupport:Number(document.getElementById('bPub').value)||0,rebate:Number(document.getElementById('bReb').value)||0,distribution:Number(document.getElementById('bDist').value)||0,structure:0,extraPolicy:Number(document.getElementById('bExt').value)||0};
+  const base={series,pubSupport:Number(document.getElementById('bPub').value)||0,rebate:Number(document.getElementById('bReb').value)||0,distribution:Number(document.getElementById('bDist').value)||0,structure:0,extraPolicy:Number(document.getElementById('bExt').value)||0};
   const commitVal=document.getElementById('bCommit').value;
   base.commitmentExtra=(commitVal!=='')?Number(commitVal):null;
 
@@ -1024,6 +1079,15 @@ window.delPol=async function(k){
   if(!confirm('이 정책을 삭제하시겠습니까?'))return;
   await db.ref(`policy2/${k}`).remove(); delete polData[k];
   await loadPolicies(); toast('삭제 완료');
+};
+
+window.seedZ8Policies=async function(){
+  if(!confirm('현재 랜딩페이지(폴드8/플립8)에 하드코딩된 지원금 정책값을 그대로 가져와 [정책 관리]에 등록합니다.\n\n· 공시지원금 500,000원 / 리베이트 300,000원 (LGU+ 기기변경)\n· 공시지원금 500,000원 / 리베이트 500,000원 (타사 번호이동, 폴드8만 리베이트 450,000원)\n\n등록 즉시 값은 동일하게 유지되고, 이후부터는 여기서 자유롭게 수정하면 랜딩페이지에 바로 반영됩니다. 계속할까요?'))return;
+  try{
+    for(const p of Z8_SEED_POLICIES) await db.ref('policy2').push(p);
+    await loadPolicies();
+    toast('Z8 시리즈 정책 가져오기 완료');
+  }catch(e){toast('실패: '+e.message,true);}
 };
 
 /* ══ 수동 데이터 추가 (버튼용) ══ */

@@ -191,9 +191,13 @@ const UCAT_Z8_DEVICES=[
             {name:'#F0E6D2|크림',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-cream-v2.png'},
             {name:'#F2C6D6|핑크',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-pink-v2.png'}]}
 ];
-const UCAT_Z8_POLICIES=[
-  {name:'Z8 기기변경(LGU+)',jointype:'기기변경',carrier:'LG U+',plangroup:'all',pubSupport:500000,rebate:300000,distribution:0,structure:0,extraPolicy:0,deviceOverrides:{},excludedDevs:[]},
-  {name:'Z8 번호이동(타사)',jointype:'번호이동',carrier:'SKT,KT,알뜰폰',plangroup:'all',pubSupport:500000,rebate:500000,distribution:0,structure:0,extraPolicy:0,deviceOverrides:{'z-fold8':{rebate:450000}},excludedDevs:[]}
+/* Z8(폴드8/플립8/폴드8울트라) 지원금 정책의 초기값 겸 폴백.
+   실제 정상 운영시에는 어드민(udak_admin.html) [정책 관리]에서 series:'z8'로 등록한
+   Firebase(policy2) 데이터가 우선 사용됨 (아래 loadFirebaseAndRender 참고).
+   어드민에 z8 정책이 하나도 없을 때만 이 값이 사용됨 → 값 자체는 어드민 쪽 초기 시드값과 동일하게 유지할 것. */
+const UCAT_Z8_POLICIES_FALLBACK=[
+  {name:'Z8 기기변경(LGU+)',series:'z8',jointype:'기기변경',carrier:'LG U+',plangroup:'all',pubSupport:500000,rebate:300000,distribution:0,structure:0,extraPolicy:0,deviceOverrides:{},excludedDevs:[]},
+  {name:'Z8 번호이동(타사)',series:'z8',jointype:'번호이동',carrier:'SKT,KT,알뜰폰',plangroup:'all',pubSupport:500000,rebate:500000,distribution:0,structure:0,extraPolicy:0,deviceOverrides:{'z-fold8':{'256GB':{structure:0,rebate:450000}}},excludedDevs:[]}
 ];
 const UCAT_MDEV_FALLBACK=[
   {id:'s26',name:'갤럭시 S26',img:'',storageList:[{name:'256GB',price:1254000},{name:'512GB',price:1386000}],colors:[{name:'#4B5563|그라파이트',img:''},{name:'#C084FC|바이올렛',img:''},{name:'#F9A8D4|핑크골드',img:''}]},
@@ -511,7 +515,8 @@ window.uwtConfirmModel=function(){
   refreshPrice();
   setTimeout(()=>{ document.querySelector('.uwt-picksummary')?.scrollIntoView({behavior:'smooth',block:'center'}); },100);
 };
-let ucatPolicies=[...UCAT_Z8_POLICIES];
+let ucatZ8Policies=[...UCAT_Z8_POLICIES_FALLBACK]; // Z8 시리즈 정책 (어드민 series:'z8' 우선, 없으면 폴백)
+let ucatPolicies=[]; // 일반 기기(S26/아이폰 등) 정책 — 어드민 policy2에서 로드
 let ucatPlans=[{plangroup:'85',monthlyPrice:85000,name:'5G 프리미어 에센셜'}];
 let ucatSel={device:null,color:0,storage:0,carrier:'LG U+',plan:null,discountMethod:'pubSupport',planListOpen:false,bundleType:'none',bundleSize:'2',welfareType:'none'};
 
@@ -521,7 +526,7 @@ function ucatQuote(device,carrierName,jointype,planObj){
   const lp=storage?storage.price:0;
   const pg=planObj?Math.floor(planObj.monthlyPrice/1000).toString():'85';
   const isZ8=(device.id||'').startsWith('z-');
-  const searchPolicies=isZ8?UCAT_Z8_POLICIES:(ucatPolicies||[]);
+  const searchPolicies=isZ8?(ucatZ8Policies||UCAT_Z8_POLICIES_FALLBACK):(ucatPolicies||[]);
   const fns=[
     p=>p.jointype===jointype&&p.carrier!=='all'&&p.carrier&&p.carrier.includes(carrierName)&&p.plangroup===pg,
     p=>p.jointype===jointype&&p.carrier==='all'&&p.plangroup===pg,
@@ -853,9 +858,13 @@ async function loadFirebaseAndRender(){
     ]);
     const fbDevices=ds?Object.entries(ds).map(([id,v])=>({id,...v})).filter(d=>d.visible!==false&&!/폴드|플립/.test(d.name||'')):UCAT_MDEV_FALLBACK;
     const fbPolicies=pols?Object.entries(pols).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false):[];
+    const fbZ8Policies=fbPolicies.filter(p=>p.series==='z8');
+    const fbGeneralPolicies=fbPolicies.filter(p=>p.series!=='z8');
     if(ps){ const arr=Object.entries(ps).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false); if(arr.length) ucatPlans=arr; }
     ucatDevices=[...UCAT_Z8_DEVICES,...fbDevices];
-    ucatPolicies=[...UCAT_Z8_POLICIES,...fbPolicies];
+    // 어드민(정책 관리)에 series:'z8' 정책이 하나라도 등록돼 있으면 그걸 그대로 사용, 없으면 폴백 유지
+    ucatZ8Policies=fbZ8Policies.length?fbZ8Policies:UCAT_Z8_POLICIES_FALLBACK;
+    ucatPolicies=fbGeneralPolicies;
   }catch(e){
     ucatDevices=[...UCAT_Z8_DEVICES,...UCAT_MDEV_FALLBACK];
   }
