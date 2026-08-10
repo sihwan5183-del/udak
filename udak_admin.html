@@ -219,6 +219,7 @@ tr.drag-over{border-top:2px solid var(--or)}
         <div class="panel-title">정책 목록</div>
         <div style="display:flex;gap:8px;align-items:center">
           <button class="seed-btn" id="btnSeedZ8Pol" style="display:none" onclick="seedZ8Policies()">📱 Z8 시리즈 정책 가져오기</button>
+          <button class="seed-btn" id="btnSplitZ8Pol" style="display:none" onclick="splitZ8PolicyByPlan()">📊 Z8 요금제별로 나누기</button>
           <button class="btn-add" onclick="openPolModal()">+ 정책 추가</button>
         </div>
       </div>
@@ -772,6 +773,7 @@ async function loadPlans(){
     sel.appendChild(opt);
   });
   if(cur) sel.value=cur;
+  updatePolActionBtns(); // loadPolicies와 병렬로 실행되므로 planData 로드 완료 시점에도 버튼 상태 갱신
 }
 window.openPlanModal=function(){
   document.getElementById('planModalTitle').textContent='요금제 추가';
@@ -810,12 +812,21 @@ window.delPlan=async function(k){
 };
 
 /* ══ 정책 ══ */
+function updatePolActionBtns(){
+  const polKeys=Object.keys(polData);
+  const hasZ8=polKeys.some(k=>polData[k].series==='z8');
+  const hasZ8All=polKeys.some(k=>polData[k].series==='z8'&&polData[k].plangroup==='all');
+  const hasPlans=Object.values(planData).some(p=>p.visible!==false);
+  const seedBtn=document.getElementById('btnSeedZ8Pol');
+  const splitBtn=document.getElementById('btnSplitZ8Pol');
+  if(seedBtn) seedBtn.style.display=hasZ8?'none':'';
+  if(splitBtn) splitBtn.style.display=(hasZ8All&&hasPlans)?'':'none';
+}
 async function loadPolicies(){
   const s=await db.ref('policy2').once('value'); polData=s.exists()?s.val():{};
   const tbody=document.getElementById('polTbody');
   const keys=Object.keys(polData);
-  const seedBtn=document.getElementById('btnSeedZ8Pol');
-  if(seedBtn) seedBtn.style.display=keys.some(k=>polData[k].series==='z8')?'none':'';
+  updatePolActionBtns();
   if(!keys.length){tbody.innerHTML='<tr class="empty-row"><td colspan="8">등록된 정책 없음</td></tr>';return;}
   tbody.innerHTML=keys.map(k=>{
     const p=polData[k];
@@ -1088,6 +1099,27 @@ window.seedZ8Policies=async function(){
     await loadPolicies();
     toast('Z8 시리즈 정책 가져오기 완료');
   }catch(e){toast('실패: '+e.message,true);}
+};
+
+window.splitZ8PolicyByPlan=async function(){
+  const targets=Object.entries(polData).filter(([k,p])=>p.series==='z8'&&p.plangroup==='all');
+  if(!targets.length){ toast('나눌 "전체 요금제" Z8 정책이 없습니다',true); return; }
+  const plans=Object.values(planData).filter(p=>p.visible!==false).sort((a,b)=>a.monthlyPrice-b.monthlyPrice);
+  if(!plans.length){ toast('등록된 요금제가 없어 나눌 수 없습니다. [요금제 관리]에서 먼저 등록해주세요',true); return; }
+  const pgList=plans.map(p=>({pg:p.plangroup||Math.floor(p.monthlyPrice/1000).toString(),name:p.name}));
+  const pgLabel=pgList.map(x=>x.name).join(', ');
+  const newCount=targets.length*pgList.length;
+  if(!confirm(`"전체 요금제 공통"으로 설정된 Z8 정책 ${targets.length}개를 요금제별(${pgLabel})로 각각 복제해 ${newCount}개를 새로 만듭니다.\n\n· 값은 지금 그대로 복제됩니다 (지금 당장 랜딩페이지 가격은 안 바뀜)\n· 복제 후 기존 "전체 요금제" 정책 ${targets.length}개는 삭제됩니다\n· 이후 [수정]에서 요금제마다 실제 지원금을 다르게 입력해주세요\n\n계속할까요?`))return;
+  try{
+    for(const [,p] of targets){
+      for(const {pg,name} of pgList){
+        await db.ref('policy2').push({...p, plangroup:pg, name:(p.name||'')+' - '+name});
+      }
+    }
+    for(const [k] of targets){ await db.ref(`policy2/${k}`).remove(); }
+    await loadPolicies();
+    toast(`요금제별 Z8 정책 ${newCount}개로 나누기 완료 — 이제 각각 수정해서 실제 지원금을 입력해주세요`);
+  }catch(e){ toast('실패: '+e.message,true); }
 };
 
 /* ══ 수동 데이터 추가 (버튼용) ══ */
