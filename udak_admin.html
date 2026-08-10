@@ -380,7 +380,7 @@ tr.drag-over{border-top:2px solid var(--or)}
           <div class="fg"><label class="flbl">리베이트</label><input type="number" class="fi" id="bReb" placeholder="0" oninput="bulkRecalcAll()"></div>
           <div class="fg"><label class="flbl">유통망</label><input type="number" class="fi" id="bDist" placeholder="0" oninput="bulkRecalcAll()"></div>
           <div class="fg"><label class="flbl">추가</label><input type="number" class="fi" id="bExt" placeholder="0" oninput="bulkRecalcAll()"></div>
-          <div class="fg"><label class="flbl">선택약정 전용 혜택</label><input type="number" class="fi" id="bCommit" placeholder="비워두면 위 합계와 동일"></div>
+          <div class="fg"><label class="flbl">선택약정 전용 혜택</label><input type="number" class="fi" id="bCommit" placeholder="비워두면 위 합계와 동일" oninput="bulkRecalcAll()"></div>
           <input type="hidden" id="bStr" value="0">
           <button class="bulk-apply-btn" onclick="applyBulk()">전체 적용 →</button>
         </div>
@@ -400,6 +400,7 @@ tr.drag-over{border-top:2px solid var(--or)}
               <th style="text-align:right">리베이트</th>
               <th style="text-align:right">유통망</th>
               <th style="text-align:right">추가</th>
+              <th style="text-align:right;color:#E91E8C">선택약정</th>
               <th style="text-align:right;color:var(--or)">기기 실부담</th>
             </tr>
           </thead>
@@ -862,7 +863,7 @@ function calcNetPrice(devKey, storage){
   const rowId='row_'+devKey+'_'+storage.replace(/\s/g,'_');
   const row=document.getElementById(rowId);
   if(!row) return null;
-  const getV=(cls)=>{const el=row.querySelector('.'+cls);return el&&el.value!==''?Number(el.value)||0:Number(document.getElementById('b'+cls.slice(3).toUpperCase())?.value)||0;};
+  const getV=(cls)=>{const el=row.querySelector('.'+cls);const s=cls.slice(3);const bulkId='b'+s.charAt(0).toUpperCase()+s.slice(1);return el&&el.value!==''?Number(el.value)||0:Number(document.getElementById(bulkId)?.value)||0;};
   return Math.max(0,basePrice-getV('dp-pub')-getV('dp-reb')-getV('dp-dist')-getV('dp-ext'));
 }
 
@@ -883,7 +884,7 @@ function renderDevPolTable(overrides={}, excluded=[], isZ8Series=false){
   const srcData=isZ8Series?Z8_DEVICE_STUBS:devData;
   const keys=Object.keys(srcData);
   if(!keys.length){
-    document.getElementById('devPolBody').innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--g400);padding:20px">${isZ8Series?'Z8 기기 정보를 불러올 수 없습니다':'기기를 먼저 등록해주세요'}</td></tr>`;
+    document.getElementById('devPolBody').innerHTML=`<tr><td colspan="7" style="text-align:center;color:var(--g400);padding:20px">${isZ8Series?'Z8 기기 정보를 불러올 수 없습니다':'기기를 먼저 등록해주세요'}</td></tr>`;
     return;
   }
   let rows='';
@@ -893,7 +894,7 @@ function renderDevPolTable(overrides={}, excluded=[], isZ8Series=false){
     const storages=d.storageList||[{name:'기본',price:0}];
     const devOv=overrides[k]||{};
     // 기기 그룹 헤더
-    rows+=`<tr style="background:var(--g50)"><td colspan="6" style="padding:7px 10px;font-weight:700;font-size:13px">
+    rows+=`<tr style="background:var(--g50)"><td colspan="7" style="padding:7px 10px;font-weight:700;font-size:13px">
       <label style="display:flex;align-items:center;gap:7px;cursor:pointer">
         <input type="checkbox" class="fchk dev-chk-box" data-dev="${k}" ${isChecked?'checked':''}
           onchange="toggleDevRow('${k}',this.checked)"
@@ -912,11 +913,11 @@ function renderDevPolTable(overrides={}, excluded=[], isZ8Series=false){
           └ <strong style="color:var(--g800)">${stName}</strong>
           ${stPrice?`<span style="color:var(--g400);font-size:10px;margin-left:4px">${stPrice.toLocaleString()}원</span>`:''}
         </td>
-        ${[['pub','pubSupport'],['reb','rebate'],['dist','distribution'],['ext','extraPolicy']].map(([f,field])=>{
+        ${[['pub','pubSupport'],['reb','rebate'],['dist','distribution'],['ext','extraPolicy'],['commit','commitmentExtra']].map(([f,field])=>{
           const val=stOv[field]!==undefined?stOv[field]:'';
           return`<td style="text-align:right;padding:4px 6px">
             <input type="number" class="fi-sm dp-${f}" data-dev="${k}" data-storage="${stName}" data-field="${field}"
-              value="${val}" placeholder="공통" style="width:88px;text-align:right;height:32px"
+              value="${val}" placeholder="공통" style="width:88px;text-align:right;height:32px${f==='commit'?';border-color:#F7BFDD':''}"
               ${dis?'disabled':''} oninput="updateRowCalc('${k}','${stName}')">
           </td>`;
         }).join('')}
@@ -951,10 +952,10 @@ function bulkRecalcAll(){
 }
 
 window.applyBulk=function(){
-  const vals={pub:document.getElementById('bPub').value,reb:document.getElementById('bReb').value,dist:document.getElementById('bDist').value,ext:document.getElementById('bExt').value};
+  const vals={pub:document.getElementById('bPub').value,reb:document.getElementById('bReb').value,dist:document.getElementById('bDist').value,ext:document.getElementById('bExt').value,commit:document.getElementById('bCommit').value};
   // 이미 개별로 값이 입력된 행이 있는지 먼저 확인 (개별값이 공통값보다 우선이어야 함)
   let hasFilled=false;
-  ['pub','reb','dist','ext'].forEach(f=>{
+  ['pub','reb','dist','ext','commit'].forEach(f=>{
     document.querySelectorAll(`.dp-${f}:not(:disabled)`).forEach(el=>{
       if(el.value!=='') hasFilled=true;
     });
@@ -963,7 +964,7 @@ window.applyBulk=function(){
   if(hasFilled){
     overwrite=confirm('이미 개별 값이 입력된 기기가 있습니다.\n\n[확인] = 전체 덮어쓰기 (개별 입력값 포함 전부 공통값으로 교체)\n[취소] = 빈 칸만 채우기 (이미 값이 있는 행은 그대로 유지)');
   }
-  ['pub','reb','dist','ext'].forEach(f=>{
+  ['pub','reb','dist','ext','commit'].forEach(f=>{
     document.querySelectorAll(`.dp-${f}:not(:disabled)`).forEach(el=>{
       if(overwrite||el.value==='') el.value=vals[f];
     });
