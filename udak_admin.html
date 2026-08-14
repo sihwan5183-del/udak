@@ -862,6 +862,15 @@ function updatePolActionBtns(){
   if(seedBtn) seedBtn.style.display=hasZ8?'none':'';
   if(splitBtn) splitBtn.style.display=(hasZ8All&&hasPlans)?'':'none';
 }
+function hasDeviceCommitOverride(p){
+  // 기기별 지원금 표에서 선택약정(commitmentExtra)을 개별로 넣은 기기가 하나라도 있는지 확인
+  const ov=p.deviceOverrides||{};
+  return Object.values(ov).some(devOv=>{
+    if(!devOv) return false;
+    if(devOv.commitmentExtra!=null) return true; // 평면 구조(레거시)
+    return Object.values(devOv).some(stOv=>stOv&&stOv.commitmentExtra!=null); // 용량별 중첩 구조
+  });
+}
 async function loadPolicies(){
   const s=await db.ref('policy2').once('value'); polData=s.exists()?s.val():{};
   const tbody=document.getElementById('polTbody');
@@ -876,13 +885,19 @@ async function loadPolicies(){
     const totalDev=isZ8?Object.keys(Z8_DEVICE_STUBS).length:Object.keys(devData).length;
     const devCount=totalDev-(p.excludedDevs||[]).length;
     const planName=p.plangroup==='all'?'전체 요금제':(Object.values(planData).find(pl=>(pl.plangroup||Math.floor(pl.monthlyPrice/1000).toString())===p.plangroup)?.name||p.plangroup||'-');
+    const devCommitOv=hasDeviceCommitOverride(p);
+    const commitCellHtml=(p.commitmentExtra!=null)
+      ? `${commitExtra.toLocaleString()}원`
+      : devCommitOv
+        ? `<span style="color:var(--g700)">기기별 개별설정</span> <span style="font-size:10px;color:var(--g400);font-weight:400">(수정에서 확인)</span>`
+        : `${commitExtra.toLocaleString()}원 <span style="font-size:10px;color:var(--g400);font-weight:400">(기본값)</span>`;
     return`<tr>
       <td>${isZ8?'<span class="vis-badge" style="background:#FCE4EC;color:#E91E8C;margin-right:5px">Z8</span>':''}<strong>${p.name||'-'}</strong><br><span style="font-size:11px;color:var(--g400)">${(p.carrier||'all').replace(/,/g,'·')} · ${p.jointype||''}</span></td>
       <td style="font-size:12px">${planName}</td>
       <td style="font-size:12px">${devCount>0?`${devCount}/${totalDev}개 기기`:'전체 공통'}</td>
       <td style="font-weight:700;color:var(--or)">${Number(p.pubSupport||0).toLocaleString()}원</td>
       <td style="font-weight:700;color:var(--or)">${extra.toLocaleString()}원</td>
-      <td style="font-weight:700;color:var(--or)">${commitExtra.toLocaleString()}원${p.commitmentExtra==null?' <span style="font-size:10px;color:var(--g400);font-weight:400">(기본값)</span>':''}</td>
+      <td style="font-weight:700;color:var(--or)">${commitCellHtml}</td>
       <td><span class="vis-badge ${p.visible!==false?'vis-on':'vis-off'}">${p.visible!==false?'활성':'비활성'}</span></td>
       <td><div class="acts"><button class="btn-e" onclick="editPol('${k}')">수정</button><button class="btn-d" onclick="delPol('${k}')">삭제</button></div></td>
     </tr>`;
