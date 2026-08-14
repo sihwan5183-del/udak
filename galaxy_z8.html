@@ -1443,6 +1443,18 @@ let ucatPlans=[{plangroup:'85',monthlyPrice:85000,name:'5G 프리미어 에센�
 let ucatState={brand:'삼성',sub:'Z'};
 let ucatSel={device:null,color:null,storage:null,carrier:null,plan:null,discountMethod:'pubSupport',planListOpen:false};
 
+function mergeZ8Devices(hardcoded, fbZ8List){
+  // 하드코딩된 3종(z-fold8/z-fold8-ultra/z-flip8)을 베이스로, 어드민에서 같은 id로 저장한 게 있으면 그 값으로 덮어쓰고
+  // 새 id면 카드를 새로 추가함 (어드민에 1개만 등록해도 나머지 하드코딩 카드가 사라지지 않도록 전체교체 대신 병합 방식 사용)
+  const merged=hardcoded.map(d=>({...d}));
+  fbZ8List.forEach(fd=>{
+    const idx=merged.findIndex(d=>d.id===fd.id);
+    if(idx>=0) merged[idx]={...merged[idx],...fd};
+    else merged.push(fd);
+  });
+  return merged;
+}
+
 async function ucatLoadFirebase(){
   // (초기 Z8 카드 즉시 렌더는 아래 renderUcatGrid() 최초 호출에서 처리됨)
   try{
@@ -1451,12 +1463,14 @@ async function ucatLoadFirebase(){
       fetch(UCAT_DB_URL+'/plans.json').then(r=>r.json()).catch(()=>null),
       fetch(UCAT_DB_URL+'/policy2.json').then(r=>r.json()).catch(()=>null)
     ]);
-    const fbDevices=ds?Object.entries(ds).map(([id,v])=>({id,...v})).filter(d=>d.visible!==false&&!/폴드|플립/.test(d.name||'')):UCAT_MDEV_FALLBACK;
+    const allFbDevices=ds?Object.entries(ds).map(([id,v])=>({id,...v})).filter(d=>d.visible!==false):null;
+    const fbDevices=allFbDevices?allFbDevices.filter(d=>d.series!=='z8'):UCAT_MDEV_FALLBACK;
+    const fbZ8Devices=allFbDevices?allFbDevices.filter(d=>d.series==='z8'):[];
     const fbPolicies=pols?Object.entries(pols).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false):[];
     const fbZ8Policies=fbPolicies.filter(p=>p.series==='z8');
     const fbGeneralPolicies=fbPolicies.filter(p=>p.series!=='z8');
     if(ps){ const arr=Object.entries(ps).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false); if(arr.length) ucatPlans=arr; }
-    ucatDevices=[...UCAT_Z8_DEVICES,...fbDevices];
+    ucatDevices=[...mergeZ8Devices(UCAT_Z8_DEVICES,fbZ8Devices),...fbDevices];
     // 어드민(정책 관리)에 series:'z8' 정책이 하나라도 등록돼 있으면 그걸 사용, 없으면 하드코딩 폴백 유지
     ucatZ8Policies=fbZ8Policies.length?fbZ8Policies:UCAT_Z8_POLICIES;
     ucatPolicies=fbGeneralPolicies;
@@ -1478,7 +1492,7 @@ function ucatQuote(device,carrierName,jointype,planObj){
   const storage=device.storageList&&device.storageList[0];
   const lp=storage?storage.price:0;
   const pg=planObj?Math.floor(planObj.monthlyPrice/1000).toString():'85';
-  const isZ8=(device.id||'').startsWith('z-');
+  const isZ8=device.series==='z8'||(device.id||'').startsWith('z-');
   const searchPolicies=isZ8?(ucatZ8Policies||UCAT_Z8_POLICIES):(ucatPolicies||[]);
   const fns=[
     p=>p.jointype===jointype&&p.carrier!=='all'&&p.carrier&&p.carrier.includes(carrierName)&&p.plangroup===pg,

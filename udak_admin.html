@@ -281,6 +281,18 @@ tr.drag-over{border-top:2px solid var(--or)}
     </div>
     <div class="modal-bd">
       <input type="hidden" id="dId">
+
+      <!-- 적용대상 -->
+      <div class="sec-div">적용 대상</div>
+      <div class="carrier-chks" id="devSeriesChks" style="margin-bottom:12px">
+        <label class="c-chk-item on" id="chkDevSeriesGeneral"><input type="radio" name="devSeries" value="general" checked onchange="onDevSeriesChange()"> 일반 (S26·아이폰 등)</label>
+        <label class="c-chk-item" id="chkDevSeriesZ8"><input type="radio" name="devSeries" value="z8" onchange="onDevSeriesChange()"> 갤럭시 Z8 시리즈 (폴드8·플립8)</label>
+      </div>
+      <div class="fg" id="devCustomIdWrap" style="display:none">
+        <label class="flbl">고유 ID <em style="color:var(--red)">*</em></label>
+        <input type="text" class="fi" id="dCustomId" placeholder="z-fold8 / z-fold8-ultra / z-flip8 (기존 카드 덮어쓰기) 또는 새 이름(새 카드 추가)">
+        <p style="font-size:11px;color:var(--g400);margin-top:4px">기존 3종(z-fold8, z-fold8-ultra, z-flip8) 중 하나를 입력하면 그 카드 값을 덮어쓰고, 새 문자열을 입력하면 카드가 새로 추가됩니다.</p>
+      </div>
       <div class="form-row">
         <div class="fg"><label class="flbl">기기명 <em>*</em></label><input type="text" class="fi" id="dName" placeholder="갤럭시 S26"></div>
         <div class="fg"><label class="flbl">카테고리</label>
@@ -569,10 +581,11 @@ async function loadDevices(){
   const sortedDevKeys=keys.sort((a,b)=>(devData[a].order||999)-(devData[b].order||999));
   tbody.innerHTML=sortedDevKeys.map((k,i)=>{
     const d=devData[k];
+    const isZ8=d.series==='z8';
     const prices=(d.storageList||[]).map(s=>`<span style="white-space:nowrap">${s.name}: ${Number(s.price||0).toLocaleString()}원</span>`).join('<br>');
     return`<tr draggable="true" data-key="${k}" data-type="dev">
     <td><span class="drag-handle" title="드래그로 순서 변경">⠿</span></td>
-    <td><strong>${d.name}</strong></td><td><span style="font-size:12px;color:var(--g600)">${d.category||''}</span></td>
+    <td>${isZ8?'<span class="vis-badge" style="background:#FCE4EC;color:#E91E8C;margin-right:5px">Z8</span>':''}<strong>${d.name}</strong></td><td><span style="font-size:12px;color:var(--g600)">${d.category||''}</span></td>
     <td style="font-size:12px;line-height:1.8">${prices||'-'}</td>
     <td style="font-size:12px">${(d.colors||[]).length}가지</td>
     <td><span class="vis-badge ${d.visible!==false?'vis-on':'vis-off'}">${d.visible!==false?'노출':'숨김'}</span></td>
@@ -584,6 +597,12 @@ async function loadDevices(){
 window.openDevModal=function(){
   document.getElementById('devModalTitle').textContent='기기 추가';
   document.getElementById('dId').value='';
+  document.getElementById('dCustomId').value='';
+  document.getElementById('dCustomId').disabled=false;
+  document.querySelector('input[name="devSeries"][value="general"]').checked=true;
+  document.getElementById('chkDevSeriesGeneral').classList.add('on');
+  document.getElementById('chkDevSeriesZ8').classList.remove('on');
+  document.getElementById('devCustomIdWrap').style.display='none';
   document.getElementById('dName').value='';
   document.getElementById('dCat').value='삼성';
   document.getElementById('dImg').value='';
@@ -594,10 +613,25 @@ window.openDevModal=function(){
   document.getElementById('devPolicyPreview').innerHTML='<p style="font-size:12px;color:var(--g400);padding:8px 0">기기를 먼저 저장하면 예상 실부담가를 볼 수 있어요.</p>';
   openModal('devModal');
 };
+window.onDevSeriesChange=function(){
+  const isZ8=document.querySelector('input[name="devSeries"]:checked')?.value==='z8';
+  document.getElementById('chkDevSeriesGeneral').classList.toggle('on',!isZ8);
+  document.getElementById('chkDevSeriesZ8').classList.toggle('on',isZ8);
+  const idWrap=document.getElementById('devCustomIdWrap');
+  const isEditing=!!document.getElementById('dId').value;
+  idWrap.style.display=(isZ8&&!isEditing)?'':'none'; // 수정 모드는 dId가 이미 키를 갖고 있어 커스텀ID 불필요
+};
 window.editDev=function(k){
   const d=devData[k];
   document.getElementById('devModalTitle').textContent='기기 수정';
   document.getElementById('dId').value=k;
+  document.getElementById('dCustomId').value=k;
+  document.getElementById('dCustomId').disabled=true; // 기존 키는 dId로 고정, 여기선 표시만
+  const isZ8=d.series==='z8';
+  document.querySelector(`input[name="devSeries"][value="${isZ8?'z8':'general'}"]`).checked=true;
+  document.getElementById('chkDevSeriesGeneral').classList.toggle('on',!isZ8);
+  document.getElementById('chkDevSeriesZ8').classList.toggle('on',isZ8);
+  document.getElementById('devCustomIdWrap').style.display=isZ8?'':'none';
   document.getElementById('dName').value=d.name||'';
   document.getElementById('dCat').value=d.category||'삼성';
   document.getElementById('dImg').value=d.img||'';
@@ -624,7 +658,8 @@ function previewMatchPolicy(jt, ca, pg, devKey, storageName){
     p=>p.jointype==='all'&&p.carrier!=='all'&&p.carrier?.includes(ca)&&p.plangroup==='all',
     p=>p.jointype==='all'&&p.carrier==='all'&&p.plangroup==='all',
   ];
-  const list=Object.values(polData).filter(p=>p.visible!==false&&p.series!=='z8');
+  const isZ8Dev=devData[devKey]?.series==='z8';
+  const list=Object.values(polData).filter(p=>p.visible!==false&&(isZ8Dev?p.series==='z8':p.series!=='z8'));
   for(const fn of fns){
     const f=list.find(fn);
     if(f){
@@ -722,6 +757,9 @@ window.saveDev=async function(){
   const id=document.getElementById('dId').value;
   const name=document.getElementById('dName').value.trim();
   if(!name){alert('기기명을 입력해주세요');return;}
+  const isZ8=document.querySelector('input[name="devSeries"]:checked')?.value==='z8';
+  const customId=document.getElementById('dCustomId').value.trim();
+  if(isZ8&&!id&&!customId){alert('Z8 시리즈는 고유 ID를 입력해주세요 (z-fold8 / z-fold8-ultra / z-flip8 또는 새 이름)');return;}
   const storageList=[...document.querySelectorAll('#storageList .dyn-row')].map(r=>{
     const ins=[...r.querySelectorAll('input')];
     return{name:ins[0].value.trim(),price:Number(ins[1].value)||0};
@@ -732,9 +770,10 @@ window.saveDev=async function(){
     const cimg=r.querySelector('.c-img').value.trim();
     return{name:hex+'|'+cname, img:cimg};
   }).filter(c=>c.name.split('|')[1]);
-  const data={name,category:document.getElementById('dCat').value,img:document.getElementById('dImg').value.trim(),visible:document.getElementById('dVis').checked,storageList,colors};
+  const data={name,category:document.getElementById('dCat').value,img:document.getElementById('dImg').value.trim(),visible:document.getElementById('dVis').checked,storageList,colors,series:isZ8?'z8':'general'};
   try{
     if(id){await db.ref(`devices/${id}`).update(data);}
+    else if(isZ8&&customId){await db.ref(`devices/${customId}`).set(data);} // z8 카드 덮어쓰기/추가는 지정한 키로 직접 저장
     else{await db.ref('devices').push(data);}
     await loadDevices(); closeModal('devModal'); toast(id?'기기 수정 완료':'기기 추가 완료');
   }catch(e){toast('저장 실패: '+e.message,true);}
