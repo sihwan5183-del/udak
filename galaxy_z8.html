@@ -1577,7 +1577,7 @@ function renderUcatGrid(){
 window.openUcatDetail=function(id){
   const d=(ucatDevices||[]).find(x=>x.id===id);
   if(!d) return;
-  ucatSel={device:d,color:0,storage:0,carrier:'LG U+',plan:(ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0]),discountMethod:'pubSupport',planListOpen:false};
+  ucatSel={device:d,color:0,storage:0,carrier:null,plan:(ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0]),discountMethod:null,planListOpen:false};
   document.getElementById('udName').textContent=d.name;
   renderUcatDetailColors();renderUcatDetailStorage();renderUcatDetailCarrier();renderUdPlanRow();renderUdDiscount();
   refreshUcatImg();refreshUcatPrice();
@@ -1673,6 +1673,16 @@ function refreshUcatImg(){
 const UD_INSTALLMENT_RATE=1.0626; // 24개월 할부 결제시 할부이자 배율
 function refreshUcatPrice(){
   const d=ucatSel.device;
+  if(!ucatSel.carrier||!ucatSel.discountMethod){
+    document.getElementById('udHeroAmt').innerHTML='-<span>원</span>';
+    document.getElementById('udHeroSub').textContent='통신사와 할인방식을 선택해주세요';
+    document.getElementById('udbFee').textContent='-';
+    document.getElementById('udbDev').textContent='-';
+    document.getElementById('udbTotal').textContent='-';
+    const feeOrigEl0=document.getElementById('udbFeeOrig');
+    if(feeOrigEl0) feeOrigEl0.style.display='none';
+    return;
+  }
   const st=d.storageList[ucatSel.storage||0];
   const isLguplus=ucatSel.carrier==='LG U+';
   const jointype=isLguplus?'기기변경':'번호이동';
@@ -1710,6 +1720,7 @@ function refreshUcatPrice(){
   }
 }
 window.ctaUcat=function(){
+  if(!ucatSel.carrier||!ucatSel.discountMethod){ alert('통신사와 할인방식을 먼저 선택해주세요'); return; }
   mDevice=ucatSel.device.name;
   openReservationModal();
 };

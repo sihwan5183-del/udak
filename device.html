@@ -518,7 +518,7 @@ window.uwtConfirmModel=function(){
 let ucatZ8Policies=[...UCAT_Z8_POLICIES_FALLBACK]; // Z8 시리즈 정책 (어드민 series:'z8' 우선, 없으면 폴백)
 let ucatPolicies=[]; // 일반 기기(S26/아이폰 등) 정책 — 어드민 policy2에서 로드
 let ucatPlans=[{plangroup:'85',monthlyPrice:85000,name:'5G 프리미어 에센셜'}];
-let ucatSel={device:null,color:0,storage:0,carrier:'LG U+',plan:null,discountMethod:'pubSupport',planListOpen:false,bundleType:'none',bundleSize:'2',welfareType:'none'};
+let ucatSel={device:null,color:0,storage:0,carrier:null,plan:null,discountMethod:null,planListOpen:false,bundleType:'none',bundleSize:'2',welfareType:'none'};
 
 function ucatQuote(device,carrierName,jointype,planObj){
   if(!device) return null;
@@ -754,6 +754,17 @@ function udxComputeWelfare(id,monthlyFeeFull){
 const UD_INSTALLMENT_RATE=1.0626; // 24개월 할부 결제시 할부이자 배율
 function refreshPrice(){
   const d=ucatSel.device;
+  if(!ucatSel.carrier||!ucatSel.discountMethod){
+    document.getElementById('udHeroAmt').innerHTML='-<span>원</span>';
+    document.getElementById('udHeroSub').textContent='통신사와 할인방식을 선택해주세요';
+    document.getElementById('udSubsidyWrap').style.display='none';
+    document.getElementById('udFeeDetailRows').innerHTML='';
+    document.getElementById('udbFee').textContent='-';
+    document.getElementById('udbDev').textContent='-';
+    document.getElementById('udbTotal').textContent='-';
+    document.getElementById('udbWatchRow').style.display='none';
+    return;
+  }
   const st=d.storageList[ucatSel.storage||0];
   const jointype=ucatSel.carrier==='LG U+'?'기기변경':'번호이동';
   const planObj=ucatSel.plan||ucatPlans[0];
@@ -995,6 +1006,7 @@ window.drFormatPhone=function(el){
 window.openDeviceReserve=function(){
   const d=ucatSel.device;
   if(!d) return;
+  if(!ucatSel.carrier||!ucatSel.discountMethod){ alert('통신사와 할인방식을 먼저 선택해주세요'); return; }
   const colorObj=d.colors&&d.colors[ucatSel.color];
   const colorName=colorObj?colorObj.name.split('|')[1]:'';
   const storageName=d.storageList[ucatSel.storage||0].name;
