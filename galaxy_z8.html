@@ -1437,7 +1437,8 @@ const UCAT_MDEV_FALLBACK=[
 ];
 
 let ucatDevices=[...UCAT_Z8_DEVICES];
-let ucatPolicies=[...UCAT_Z8_POLICIES];
+let ucatPolicies=[]; // 일반 기기(S26/아이폰 등) 정책 — 어드민 policy2에서 로드
+let ucatZ8Policies=[...UCAT_Z8_POLICIES]; // Z8 시리즈 정책 (어드민 series:'z8' 우선, 없으면 하드코딩 폴백)
 let ucatPlans=[{plangroup:'85',monthlyPrice:85000,name:'5G 프리미어 에센셜'}];
 let ucatState={brand:'삼성',sub:'Z'};
 let ucatSel={device:null,color:null,storage:null,carrier:null,plan:null,discountMethod:'pubSupport',planListOpen:false};
@@ -1452,9 +1453,13 @@ async function ucatLoadFirebase(){
     ]);
     const fbDevices=ds?Object.entries(ds).map(([id,v])=>({id,...v})).filter(d=>d.visible!==false&&!/폴드|플립/.test(d.name||'')):UCAT_MDEV_FALLBACK;
     const fbPolicies=pols?Object.entries(pols).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false):[];
+    const fbZ8Policies=fbPolicies.filter(p=>p.series==='z8');
+    const fbGeneralPolicies=fbPolicies.filter(p=>p.series!=='z8');
     if(ps){ const arr=Object.entries(ps).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false); if(arr.length) ucatPlans=arr; }
     ucatDevices=[...UCAT_Z8_DEVICES,...fbDevices];
-    ucatPolicies=[...UCAT_Z8_POLICIES,...fbPolicies];
+    // 어드민(정책 관리)에 series:'z8' 정책이 하나라도 등록돼 있으면 그걸 사용, 없으면 하드코딩 폴백 유지
+    ucatZ8Policies=fbZ8Policies.length?fbZ8Policies:UCAT_Z8_POLICIES;
+    ucatPolicies=fbGeneralPolicies;
   }catch(e){
     ucatDevices=[...UCAT_Z8_DEVICES,...UCAT_MDEV_FALLBACK];
   }
@@ -1474,7 +1479,7 @@ function ucatQuote(device,carrierName,jointype,planObj){
   const lp=storage?storage.price:0;
   const pg=planObj?Math.floor(planObj.monthlyPrice/1000).toString():'85';
   const isZ8=(device.id||'').startsWith('z-');
-  const searchPolicies=isZ8?UCAT_Z8_POLICIES:(ucatPolicies||[]);
+  const searchPolicies=isZ8?(ucatZ8Policies||UCAT_Z8_POLICIES):(ucatPolicies||[]);
   const fns=[
     p=>p.jointype===jointype&&p.carrier!=='all'&&p.carrier&&p.carrier.includes(carrierName)&&p.plangroup===pg,
     p=>p.jointype===jointype&&p.carrier==='all'&&p.plangroup===pg,
