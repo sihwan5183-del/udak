@@ -1381,6 +1381,7 @@ function closeNavDrawer() {
         <div class="udetail-breakdown2">
           <div class="udb2-row"><span class="udb2-badge">A</span><span>월 통신요금</span><span style="margin-left:auto;text-align:right;"><span id="udbFeeOrig" style="text-decoration:line-through;color:#bbb;font-size:11px;margin-right:5px;display:none;"></span><b id="udbFee">-</b></span></div>
           <div class="udb2-row"><span class="udb2-badge">B</span><span>월 할부금(24개월)</span><b id="udbDev">-</b></div>
+          <div class="udb2-row" style="border-top:1.5px solid #eee;margin-top:4px;padding-top:14px;"><span style="font-weight:800;color:#1A1A1A;">월 청구 예상액</span><b id="udbTotal" style="color:#E91E8C;font-size:17px;">-</b></div>
         </div>
       </div>
 
@@ -1697,6 +1698,7 @@ function refreshUcatPrice(){
   }
   document.getElementById('udbFee').textContent=monthlyFee.toLocaleString()+'원';
   document.getElementById('udbDev').textContent=monthlyDev.toLocaleString()+'원';
+  document.getElementById('udbTotal').textContent=total.toLocaleString()+'원';
   const heroAmt=document.getElementById('udHeroAmt');
   const heroSub=document.getElementById('udHeroSub');
   if(!subReady){

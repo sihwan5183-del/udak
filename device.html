@@ -667,6 +667,7 @@ function renderPage(){
         <div class="udb2-row"><span class="udb2-badge">A</span><span>월 통신요금</span><b id="udbFee">-</b></div>
         <div class="udb2-row"><span class="udb2-badge">B</span><span>월 할부금(24개월)</span><b id="udbDev">-</b></div>
         <div class="udb2-row" id="udbWatchRow" style="display:none;"><span class="udb2-badge">C</span><span>요금제별 혜택 할부금(24개월)</span><b id="udbWatch">-</b></div>
+        <div class="udb2-row" style="border-top:1.5px solid #eee;margin-top:4px;padding-top:14px;"><span style="font-weight:800;color:#1A1A1A;">월 청구 예상액</span><b id="udbTotal" style="color:#E91E8C;font-size:17px;">-</b></div>
       </div>
     </div>
     <div class="udetail-sec">
@@ -841,6 +842,7 @@ function refreshPrice(){
     udbWatchRow.style.display='none';
   }
   document.getElementById('udHeroAmt').innerHTML=(monthlyFee+monthlyDev+watchMonthly).toLocaleString()+'<span>원</span>';
+  document.getElementById('udbTotal').textContent=(monthlyFee+monthlyDev+watchMonthly).toLocaleString()+'원';
   document.getElementById('udHeroSub').textContent=(planObj?planObj.name:'-')+' / 24개월 기준'+(subReady?'':' · 공시지원금 정책 준비중(할부원금 기준)');
   renderUwtSection();
 }
