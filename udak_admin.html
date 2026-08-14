@@ -1051,6 +1051,7 @@ window.editPol=function(k){
   const p=polData[k];
   document.getElementById('polModalTitle').textContent='정책 수정';
   document.getElementById('polId').value=k;
+  document.getElementById('polName').value=p.name||'';
   const isZ8=p.series==='z8';
   currentPolSeries=isZ8?'z8':'general';
   document.querySelector(`input[name="polSeries"][value="${isZ8?'z8':'general'}"]`).checked=true;
