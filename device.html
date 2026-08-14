@@ -568,7 +568,7 @@ function renderPage(){
     document.getElementById('dContent').innerHTML='<div class="dempty">기기를 찾을 수 없습니다.<br><a href="/galaxy_z8" style="color:#E91E8C;font-weight:700;">목록으로 돌아가기</a></div>';
     return;
   }
-  ucatSel={device:d,color:0,storage:0,carrier:'LG U+',plan:(ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0]),discountMethod:'pubSupport',planListOpen:false,bundleType:'none',bundleSize:'2',welfareType:'none'};
+  ucatSel={device:d,color:0,storage:0,carrier:null,plan:(ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0]),discountMethod:null,planListOpen:false,bundleType:'none',bundleSize:'2',welfareType:'none'};
   uwtOpenCat=null; uwtSelectedByCat={};
   document.title=d.name+' — 유플러스 다이렉트';
   document.getElementById('dContent').innerHTML=`

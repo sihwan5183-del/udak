@@ -1442,7 +1442,7 @@ let ucatPolicies=[]; // 일반 기기(S26/아이폰 등) 정책 — 어드민 po
 let ucatZ8Policies=[...UCAT_Z8_POLICIES]; // Z8 시리즈 정책 (어드민 series:'z8' 우선, 없으면 하드코딩 폴백)
 let ucatPlans=[{plangroup:'85',monthlyPrice:85000,name:'5G 프리미어 에센셜'}];
 let ucatState={brand:'삼성',sub:'Z'};
-let ucatSel={device:null,color:null,storage:null,carrier:null,plan:null,discountMethod:'pubSupport',planListOpen:false};
+let ucatSel={device:null,color:null,storage:null,carrier:null,plan:null,discountMethod:null,planListOpen:false};
 
 function mergeZ8Devices(hardcoded, fbZ8List){
   // 하드코딩된 3종(z-fold8/z-fold8-ultra/z-flip8)을 베이스로, 어드민에서 같은 id로 저장한 게 있으면 그 값으로 덮어쓰고
