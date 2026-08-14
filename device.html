@@ -589,7 +589,7 @@ function renderPage(){
       <div class="uwt-catlist" id="uwtCatList"></div>
     </div>
     <div class="udetail-sec"><p class="udetail-lbl">할인방식</p><div class="udetail-discount-grid" id="udDiscount"></div></div>
-    <div class="udetail-sec">
+    <div class="udetail-sec" style="display:none"><!-- 2026-08-14: 의미없다는 피드백으로 임시 비활성화. 다시 켜려면 이 style만 지우면 됨 -->
       <div class="udx-toggle" id="udxToggle" onclick="udxToggleOpen()">
         <span class="udx-toggle-name">요금제 추가 할인 조건 확인하기</span>
         <svg class="uwt-cat-arrow" id="udxArrow" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -653,7 +653,7 @@ function renderPage(){
         <div class="udb2-row" id="udbPubRow"><span>공시지원금</span><b id="udbPubAmt" style="color:#E91E8C;">-</b></div>
         <div class="udb2-row"><span>유플러스 다이렉트 혜택</span><b id="udbExtraAmt" style="color:#E91E8C;">-</b></div>
         <div class="udb2-row" style="border-top:1px dashed #ddd;margin-top:4px;padding-top:10px;"><span>기기값 원금</span><b id="udbPrincipal">-</b></div>
-        <div class="udb2-row"><span style="color:#999;">할부이자(24개월)</span><b id="udbInterest" style="color:#999;font-weight:600;">-</b></div>
+        <div class="udb2-row"><span style="color:#999;">기기값 월 청구 예정액</span><b id="udbMonthlyDev" style="color:#999;font-weight:600;">-</b></div>
         <p style="font-size:11px;color:#bbb;margin:2px 0 0;text-align:right;">할부 연 5.9%</p>
       </div>
     </div>
@@ -810,9 +810,8 @@ function refreshPrice(){
   const extraDiscount=bundleDiscount+welfareDiscount;
   monthlyFee=Math.max(0,monthlyFee-extraDiscount);
   monthlyDev=Math.round(principal*UD_INSTALLMENT_RATE/24);
-  const totalInterest=Math.round(principal*(UD_INSTALLMENT_RATE-1));
-  const interestEl=document.getElementById('udbInterest');
-  if(interestEl) interestEl.textContent=totalInterest.toLocaleString()+'원';
+  const monthlyDevEl=document.getElementById('udbMonthlyDev');
+  if(monthlyDevEl) monthlyDevEl.textContent=monthlyDev.toLocaleString()+'원';
   const feeRows=[];
   feeRows.push(`<div class="udb2-row"><span>${planObj?planObj.name:'요금제'}</span><b>${monthlyFeeFull.toLocaleString()}원</b></div>`);
   if(ucatSel.discountMethod==='commitment'){
