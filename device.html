@@ -869,7 +869,7 @@ async function loadFirebaseAndRender(){
       fetch(UCAT_DB_URL+'/policy2.json').then(r=>r.json()).catch(()=>null)
     ]);
     const allFbDevices=ds?Object.entries(ds).map(([id,v])=>({id,...v})).filter(d=>d.visible!==false):null;
-    const fbDevices=allFbDevices?allFbDevices.filter(d=>d.series!=='z8'):UCAT_MDEV_FALLBACK;
+    const fbDevices=allFbDevices?allFbDevices.filter(d=>d.series!=='z8'&&!/폴드|플립/.test(d.name||'')):UCAT_MDEV_FALLBACK;
     const fbZ8Devices=allFbDevices?allFbDevices.filter(d=>d.series==='z8'):[];
     const fbPolicies=pols?Object.entries(pols).map(([id,v])=>({id,...v})).filter(p=>p.visible!==false):[];
     const fbZ8Policies=fbPolicies.filter(p=>p.series==='z8');
