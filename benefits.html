@@ -196,7 +196,7 @@ const SH_CATEGORIES=[
     id:'doorcam', tabIcon:'doorcam', tabSub:'현관 안심', tabName:'도어캠',
     badge:'현관 안심', title:'우리집지킴이 도어캠',
     desc:'현관 앞을 실시간으로 확인하고<br>누구인지 안심하고 확인하세요.',
-    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-doorcam-v2.png',
+    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-doorcam-v2.png', // 상황연출 그래픽(슬라이드/돋보기 전용) - 자세히보기용 제품샷은 아직 없음
     features:[
       {icon:'motion', title:'AI 움직임 감지', sub:'현관 앞 움직임을 AI가 감지'},
       {icon:'delivery', title:'택배 도착 알림', sub:'택배 도착 시 알림으로 안내'},
@@ -208,7 +208,7 @@ const SH_CATEGORIES=[
     id:'easy2plus', tabIcon:'shield', tabSub:'우리집 보안', tabName:'Easy2+',
     badge:'우리집 보안', title:'우리집지킴이 Easy2+',
     desc:'움직임 감지부터 문열림 감지까지<br>우리집 보안을 든든하게 지켜드려요.',
-    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-easy2plus.png',
+    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-easy2plus.png', modalImg:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-easy2plus.png',
     features:[
       {icon:'motion', title:'움직임 감지 센서', sub:'수상한 움직임을 감지해 알림'},
       {icon:'doorsensor', title:'문열림 감지 센서', sub:'문·창문이 열리면 즉시 알림'},
@@ -220,7 +220,7 @@ const SH_CATEGORIES=[
     id:'family', tabIcon:'lamp', tabSub:'스마트 생활', tabName:'Family',
     badge:'스마트 생활', title:'우리집돌봄이 Family',
     desc:'우리집 스마트 기기를 하나로 연결하고<br>온 가족의 일상을 더 편리하게.',
-    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-family.png',
+    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-family.png', modalImg:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-family.png',
     features:[
       {icon:'hub', title:'스마트홈 허브 연결', sub:'여러 기기를 하나로 연결해 관리'},
       {icon:'clock', title:'생활 알림 · 알람', sub:'가족 일정과 알림을 안내'},
@@ -232,7 +232,7 @@ const SH_CATEGORIES=[
     id:'kids', tabIcon:'baby', tabSub:'아이 돌봄', tabName:'Kids',
     badge:'아이 돌봄', title:'우리집돌봄이 Kids',
     desc:'아이가 있는 공간을<br>언제 어디서든 실시간으로 확인하세요.',
-    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-kids.png',
+    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-kids.png', modalImg:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-kids.png',
     features:[
       {icon:'eye', title:'실시간 영상 확인', sub:'외출 중에도 스마트폰으로 확인'},
       {icon:'call', title:'양방향 음성 통화', sub:'카메라로 아이와 바로 대화'},
@@ -244,7 +244,7 @@ const SH_CATEGORIES=[
     id:'pet', tabIcon:'paw', tabSub:'반려동물 케어', tabName:'Pet',
     badge:'반려동물 케어', title:'우리집돌봄이 Pet',
     desc:'혼자 있는 반려동물도<br>더 안전하고 즐겁게 돌봐주세요.',
-    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-pet.png',
+    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-pet.png', modalImg:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-pet.png',
     features:[
       {icon:'bowl', title:'자동 급식 · 급수', sub:'정해진 시간에 사료·물 자동 공급'},
       {icon:'ball', title:'자동 놀이 기능', sub:'혼자 있을 때도 장난감으로 놀이'},
@@ -325,9 +325,9 @@ window.shCloseImageZoom=function(){
 window.shOpenDetail=function(){
   var cur=SH_CATEGORIES[shState.active];
   if(!cur.ready) return;
-  document.getElementById('shDetailImg').innerHTML=cur.img
-    ? '<img src="'+cur.img+'" alt="'+cur.title+'">'
-    : shSvg(cur.tabIcon,56);
+  document.getElementById('shDetailImg').innerHTML=cur.modalImg
+    ? '<img src="'+cur.modalImg+'" alt="'+cur.title+'">'
+    : '<div style="padding:40px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;">'+shSvg(cur.tabIcon,48)+'<span style="font-size:12px;color:#bbb;font-weight:600;">제품 사진 준비중</span></div>';
   document.getElementById('shDetailBadge').textContent=cur.badge;
   document.getElementById('shDetailTitle').textContent=cur.title;
   document.getElementById('shDetailDesc').innerHTML=cur.desc;
