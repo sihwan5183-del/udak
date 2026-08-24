@@ -2305,6 +2305,18 @@ function openReservationModal(){
     },300);
   }
 })();
+(function(){
+  // /benefits(스마트홈 5종)에서 "스마트홈 혜택 선택하기" 누르고 넘어온 경우 사전예약 모달 자동 오픈 + 전달사항에 희망 항목 메모
+  const params=new URLSearchParams(window.location.search);
+  const shInterest=params.get('smartHomeInterest');
+  if(shInterest){
+    setTimeout(()=>{
+      openReservationModal();
+      const noteEl=document.getElementById('mUserNote');
+      if(noteEl) noteEl.value='스마트홈 혜택 희망: '+shInterest;
+    },300);
+  }
+})();
 function closeReservationModal(e){
   if(!e || e.target === document.getElementById('reservationOverlay')){
     document.getElementById('reservationOverlay').classList.remove('open');

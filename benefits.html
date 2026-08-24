@@ -8,9 +8,70 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;background:#fff;color:#111;-webkit-tap-highlight-color:transparent;}
 a{text-decoration:none;color:inherit;}
+button{font-family:inherit;}
 
 .btopbar{position:sticky;top:0;background:#fff;border-bottom:1px solid #f0f0f0;padding:16px 20px;display:flex;align-items:center;gap:10px;z-index:10;}
 .btopbar-back{display:flex;align-items:center;gap:6px;font-size:14px;color:#666;font-weight:600;}
+
+.sh-wrap{max-width:560px;margin:0 auto;padding:28px 20px 56px;}
+
+.sh-badge-row{display:flex;justify-content:center;}
+.sh-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(233,30,140,.06);color:#E91E8C;font-size:12px;font-weight:700;padding:7px 14px;border-radius:100px;margin-bottom:16px;}
+.sh-title{font-size:21px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;line-height:1.45;text-align:center;margin-bottom:8px;word-break:keep-all;}
+.sh-title-pink{color:#E91E8C;}
+.sh-sub{font-size:13.5px;color:#888;text-align:center;margin-bottom:22px;}
+
+.sh-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:24px;}
+.sh-summary-card{border:1.5px solid #ececec;border-radius:14px;padding:14px 6px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.sh-summary-icon{width:30px;height:30px;border-radius:50%;background:rgba(233,30,140,.06);display:flex;align-items:center;justify-content:center;color:#E91E8C;}
+.sh-summary-text{font-size:11px;color:#666;line-height:1.5;}
+.sh-summary-text b{display:block;font-size:12px;color:#1A1A1A;font-weight:800;}
+
+.sh-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.sh-tabs::-webkit-scrollbar{display:none;}
+.sh-tab{flex:1;min-width:62px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border:1.5px solid #ececec;border-radius:14px;cursor:pointer;background:#fff;transition:border-color .15s,background .15s;}
+.sh-tab.on{border-color:#E91E8C;background:rgba(233,30,140,.05);}
+.sh-tab-icon{width:24px;height:24px;display:flex;align-items:center;justify-content:center;color:#999;}
+.sh-tab.on .sh-tab-icon{color:#E91E8C;}
+.sh-tab-sub{font-size:9px;color:#999;font-weight:600;white-space:nowrap;}
+.sh-tab.on .sh-tab-sub{color:#E91E8C;}
+.sh-tab-name{font-size:11px;font-weight:800;color:#1A1A1A;white-space:nowrap;}
+.sh-tab.on .sh-tab-name{color:#E91E8C;}
+
+.sh-slide-viewport{overflow:hidden;border:1px solid #ececec;border-radius:20px;margin-bottom:12px;}
+.sh-slide-track{display:flex;transition:transform .4s cubic-bezier(.4,0,.2,1);}
+.sh-slide{flex:0 0 100%;padding:24px 20px;min-width:0;}
+.sh-slide-badge{display:inline-block;background:rgba(233,30,140,.06);color:#E91E8C;font-size:11px;font-weight:700;padding:5px 12px;border-radius:100px;margin-bottom:10px;}
+.sh-slide-title{font-size:23px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin-bottom:10px;}
+.sh-slide-desc{font-size:13.5px;color:#666;line-height:1.7;margin-bottom:20px;}
+.sh-slide-img{width:100%;aspect-ratio:4/3;border-radius:16px;background:rgba(233,30,140,.04);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#E91E8C;margin-bottom:16px;}
+.sh-slide-img span{font-size:12px;color:#c9c9c9;font-weight:600;}
+.sh-feature-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;}
+.sh-feature-icon{width:38px;height:38px;border-radius:50%;background:rgba(233,30,140,.06);display:flex;align-items:center;justify-content:center;color:#E91E8C;flex-shrink:0;}
+.sh-feature-title{font-size:13.5px;font-weight:700;color:#1A1A1A;}
+.sh-feature-sub{font-size:11.5px;color:#999;margin-top:2px;}
+.sh-slide-empty{text-align:center;padding:44px 0;color:#bbb;font-size:13px;display:flex;flex-direction:column;align-items:center;}
+
+.sh-dots{display:flex;justify-content:center;gap:7px;margin-bottom:24px;}
+.sh-dot{width:7px;height:7px;border-radius:50%;background:#ececec;cursor:pointer;transition:all .25s;border:none;padding:0;}
+.sh-dot.on{background:#E91E8C;width:20px;border-radius:5px;}
+
+.sh-info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:22px;}
+.sh-info-card{border:1.5px solid #ececec;border-radius:14px;padding:12px 5px;text-align:center;}
+.sh-info-card.hi{border-color:#E91E8C;background:rgba(233,30,140,.04);}
+.sh-info-num{display:inline-block;width:18px;height:18px;line-height:18px;border-radius:50%;background:#1A1A1A;color:#fff;font-size:9px;font-weight:800;margin-bottom:8px;}
+.sh-info-card.hi .sh-info-num{background:#E91E8C;}
+.sh-info-icon{width:22px;height:22px;margin:0 auto 8px;color:#666;}
+.sh-info-card.hi .sh-info-icon{color:#E91E8C;}
+.sh-info-title{font-size:10px;font-weight:800;color:#1A1A1A;line-height:1.4;margin-bottom:4px;word-break:keep-all;}
+.sh-info-sub{font-size:8.5px;color:#999;line-height:1.4;word-break:keep-all;}
+
+.sh-cta{display:block;width:100%;padding:17px;background:#E91E8C;border:none;border-radius:100px;color:#fff;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:16px;}
+.sh-cta:active{background:#d4197e;}
+
+.sh-disclaimer{font-size:10.5px;color:#aaa;line-height:1.9;}
+
+@media(min-width:600px){ .sh-slide{padding:32px 36px;} }
 </style>
 </head>
 <body>
@@ -19,6 +80,163 @@ a{text-decoration:none;color:inherit;}
   <a class="btopbar-back" href="/galaxy_z8">‹ 돌아가기</a>
 </div>
 
-<!-- 스마트홈 5종 콘텐츠 예정 -->
+<section class="sh-wrap">
+  <div class="sh-badge-row"><span class="sh-badge">🏠 스마트홈 추가 혜택</span></div>
+  <p class="sh-title">우리집에 필요한 <span class="sh-title-pink">스마트홈 혜택</span>을 선택하세요</p>
+  <p class="sh-sub">85 요금제부터 스마트홈 5종 중 1종 선택</p>
+
+  <div class="sh-summary-grid">
+    <div class="sh-summary-card">
+      <div class="sh-summary-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="2.3"/><circle cx="17" cy="17" r="2.3"/><line x1="18" y1="6" x2="6" y2="18"/></svg></div>
+      <div class="sh-summary-text">36개월 이용료<b>396,000원 지원</b></div>
+    </div>
+    <div class="sh-summary-card">
+      <div class="sh-summary-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2.5"/><line x1="3" y1="10.5" x2="21" y2="10.5"/></svg></div>
+      <div class="sh-summary-text">85 요금제부터<b>선택 가능</b></div>
+    </div>
+    <div class="sh-summary-card">
+      <div class="sh-summary-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><circle cx="14" cy="7" r="2"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="8" cy="12" r="2"/><line x1="4" y1="17" x2="20" y2="17"/><circle cx="16" cy="17" r="2"/></svg></div>
+      <div class="sh-summary-text">생활 유형에 맞춰<b>5종 중 선택</b></div>
+    </div>
+  </div>
+
+  <div class="sh-tabs" id="shTabs"></div>
+
+  <div class="sh-slide-viewport">
+    <div class="sh-slide-track" id="shSlideTrack"></div>
+  </div>
+  <div class="sh-dots" id="shDots"></div>
+
+  <div class="sh-info-grid" id="shInfoGrid"></div>
+
+  <button class="sh-cta" type="button" onclick="shGoReserve()">스마트홈 혜택 선택하기 ›</button>
+
+  <div class="sh-disclaimer">
+    <p>· 스마트홈 혜택은 85 요금제 이상 가입 고객 대상 혜택입니다.</p>
+    <p>· 혜택 신청은 개통 후 최대 1년 이내 신청 가능합니다.</p>
+    <p>· 자세한 내용은 상품 상세 안내를 확인해주세요.</p>
+  </div>
+</section>
+
+<script>
+const SHI={
+  percent:'<circle cx="7" cy="7" r="2.3"/><circle cx="17" cy="17" r="2.3"/><line x1="18" y1="6" x2="6" y2="18"/>',
+  card:'<rect x="3" y="6" width="18" height="12" rx="2.5"/><line x1="3" y1="10.5" x2="21" y2="10.5"/>',
+  sliders:'<line x1="4" y1="7" x2="20" y2="7"/><circle cx="14" cy="7" r="2"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="8" cy="12" r="2"/><line x1="4" y1="17" x2="20" y2="17"/><circle cx="16" cy="17" r="2"/>',
+  doorcam:'<rect x="7.5" y="3" width="9" height="18" rx="3"/><circle cx="12" cy="9" r="2.2"/><circle cx="12" cy="16" r="0.9" fill="currentColor"/>',
+  shield:'<path d="M12 3l7 3v6c0 5-3 8-7 9-4-1-7-4-7-9V6l7-3z"/><line x1="12" y1="9" x2="12" y2="15"/><line x1="9" y1="12" x2="15" y2="12"/>',
+  lamp:'<path d="M8 3h8l3 7H5l3-7z"/><line x1="12" y1="10" x2="12" y2="18"/><line x1="8" y1="21" x2="16" y2="21"/>',
+  baby:'<circle cx="12" cy="10" r="5"/><circle cx="10" cy="9" r="0.8" fill="currentColor"/><circle cx="14" cy="9" r="0.8" fill="currentColor"/><path d="M9.5 12c1 1 4 1 5 0"/><path d="M12 15v3M9 21l3-2 3 2"/>',
+  paw:'<ellipse cx="12" cy="16.5" rx="4.2" ry="3.2"/><circle cx="6.5" cy="10" r="1.8"/><circle cx="10.5" cy="6.5" r="1.8"/><circle cx="14.5" cy="6.5" r="1.8"/><circle cx="18" cy="10" r="1.8"/>',
+  motion:'<circle cx="15" cy="4.5" r="1.8"/><path d="M9.5 21l1.8-5 2 1.8 2-.8 2.7 3.5"/><path d="M8.5 12.5l2.8-2.8 2 1 3.7-1.8"/><path d="M6 8.5l3 2"/>',
+  delivery:'<path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M3 8v9l9 5 9-5V8"/><path d="M12 13v9"/>',
+  record:'<rect x="3" y="7" width="12" height="10" rx="2.5"/><path d="M15 10.2l6-3v9.6l-6-3z"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/><path d="M8 15.5l2.3 2.3L16 12.5"/>',
+  warning:'<path d="M12 4l9 15H3L12 4z"/><line x1="12" y1="10" x2="12" y2="14"/><circle cx="12" cy="17" r="0.9" fill="currentColor"/>',
+  headset:'<path d="M4 13v-1a8 8 0 0116 0v1"/><rect x="3" y="13" width="4" height="6" rx="2"/><rect x="17" y="13" width="4" height="6" rx="2"/><path d="M20 19v1a3 3 0 01-3 3h-3"/>'
+};
+function shSvg(name,size){
+  const s=size||24;
+  return '<svg viewBox="0 0 24 24" width="'+s+'" height="'+s+'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+(SHI[name]||'')+'</svg>';
+}
+
+const SH_CATEGORIES=[
+  {
+    id:'doorcam', tabIcon:'doorcam', tabSub:'현관 안심', tabName:'도어캠',
+    badge:'현관 안심', title:'도어캠',
+    desc:'현관 앞을 실시간으로 확인하고<br>누구인지 안심하고 확인하세요.',
+    features:[
+      {icon:'motion', title:'AI 움직임 감지', sub:'현관 앞 움직임을 AI가 감지'},
+      {icon:'delivery', title:'택배 도착 알림', sub:'택배 도착 시 알림으로 안내'},
+      {icon:'record', title:'실시간·자동 녹화', sub:'실시간 확인 및 자동으로 녹화'}
+    ],
+    ready:true, monthly:11000, months:36, total:396000
+  },
+  {id:'easy2plus', tabIcon:'shield', tabSub:'우리집 보안', tabName:'Easy2+', badge:'우리집 보안', title:'Easy2+', ready:false},
+  {id:'family', tabIcon:'lamp', tabSub:'스마트 생활', tabName:'Family', badge:'스마트 생활', title:'Family', ready:false},
+  {id:'kids', tabIcon:'baby', tabSub:'아이 돌봄', tabName:'Kids', badge:'아이 돌봄', title:'Kids', ready:false},
+  {id:'pet', tabIcon:'paw', tabSub:'반려동물 케어', tabName:'Pet', badge:'반려동물 케어', title:'Pet', ready:false}
+];
+let shState={active:0};
+
+function shRenderTabs(){
+  document.getElementById('shTabs').innerHTML=SH_CATEGORIES.map((c,i)=>
+    '<div class="sh-tab'+(i===shState.active?' on':'')+'" onclick="shSelect('+i+')">'+
+      '<span class="sh-tab-icon">'+shSvg(c.tabIcon,22)+'</span>'+
+      '<span class="sh-tab-sub">'+c.tabSub+'</span>'+
+      '<span class="sh-tab-name">'+c.tabName+'</span>'+
+    '</div>'
+  ).join('');
+}
+
+function shRenderSlides(){
+  const track=document.getElementById('shSlideTrack');
+  track.innerHTML=SH_CATEGORIES.map(function(c){
+    if(!c.ready){
+      return '<div class="sh-slide"><div class="sh-slide-empty">'+shSvg(c.tabIcon,40)+'<div style="margin-top:12px;">'+c.tabName+' 혜택 준비중입니다</div></div></div>';
+    }
+    var featuresHtml=c.features.map(function(f){
+      return '<div class="sh-feature-row"><span class="sh-feature-icon">'+shSvg(f.icon,18)+'</span><div><div class="sh-feature-title">'+f.title+'</div><div class="sh-feature-sub">'+f.sub+'</div></div></div>';
+    }).join('');
+    return '<div class="sh-slide">'+
+      '<span class="sh-slide-badge">'+c.badge+'</span>'+
+      '<p class="sh-slide-title">'+c.title+'</p>'+
+      '<p class="sh-slide-desc">'+c.desc+'</p>'+
+      '<div class="sh-slide-img">'+shSvg(c.tabIcon,52)+'<span>상품 이미지 준비중</span></div>'+
+      featuresHtml+
+    '</div>';
+  }).join('');
+  track.style.transform='translateX(-'+(shState.active*100)+'%)';
+}
+
+function shRenderDots(){
+  document.getElementById('shDots').innerHTML=SH_CATEGORIES.map(function(c,i){
+    return '<button type="button" class="sh-dot'+(i===shState.active?' on':'')+'" onclick="shSelect('+i+')" aria-label="'+c.tabName+'"></button>';
+  }).join('');
+}
+
+function shRenderInfoCards(){
+  var cur=SH_CATEGORIES[shState.active];
+  var priceTitle=cur.ready?cur.total.toLocaleString()+'원 지원':'가격 준비중';
+  var priceSub=cur.ready?('월 '+cur.monthly.toLocaleString()+'원 × '+cur.months+'개월'):'';
+  document.getElementById('shInfoGrid').innerHTML=
+    '<div class="sh-info-card hi"><span class="sh-info-num">01</span><div class="sh-info-icon">'+shSvg('percent',22)+'</div><div class="sh-info-title">36개월 이용료<br>'+priceTitle+'</div><div class="sh-info-sub">'+priceSub+'</div></div>'+
+    '<div class="sh-info-card"><span class="sh-info-num">02</span><div class="sh-info-icon">'+shSvg('calendar',22)+'</div><div class="sh-info-title">36개월 약정 이용 시<br>이용료 전액 지원</div></div>'+
+    '<div class="sh-info-card"><span class="sh-info-num">03</span><div class="sh-info-icon">'+shSvg('warning',22)+'</div><div class="sh-info-title">중도 해지 시<br>위약금 발생</div><div class="sh-info-sub">약정 기간 내 해지 시 위약금 발생 가능</div></div>'+
+    '<div class="sh-info-card"><span class="sh-info-num">04</span><div class="sh-info-icon">'+shSvg('headset',22)+'</div><div class="sh-info-title">전문 설치 & A/S<br>안심 케어</div><div class="sh-info-sub">전문 기사 설치, U+ A/S 지원</div></div>';
+}
+
+window.shSelect=function(i){
+  shState.active=i;
+  shRenderTabs();
+  document.getElementById('shSlideTrack').style.transform='translateX(-'+(i*100)+'%)';
+  shRenderDots();
+  shRenderInfoCards();
+};
+
+window.shGoReserve=function(){
+  var cur=SH_CATEGORIES[shState.active];
+  window.location.href='/galaxy_z8?smartHomeInterest='+encodeURIComponent(cur.tabName);
+};
+
+(function(){
+  var viewport=document.querySelector('.sh-slide-viewport');
+  var tx=0;
+  viewport.addEventListener('touchstart',function(e){ tx=e.changedTouches[0].clientX; },{passive:true});
+  viewport.addEventListener('touchend',function(e){
+    var dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>=40){
+      var next=shState.active+(dx<0?1:-1);
+      next=Math.max(0,Math.min(SH_CATEGORIES.length-1,next));
+      if(next!==shState.active) shSelect(next);
+    }
+  },{passive:true});
+})();
+
+shRenderTabs();
+shRenderSlides();
+shRenderDots();
+shRenderInfoCards();
+</script>
 
 </body></html>
