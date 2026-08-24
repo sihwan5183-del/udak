@@ -255,13 +255,14 @@ function shRenderDots(){
 
 function shRenderInfoCards(){
   var cur=SH_CATEGORIES[shState.active];
+  var months=cur.months||36;
   var priceTitle=cur.total?cur.total.toLocaleString()+'원 지원':'가격 협의중';
-  var priceSub=cur.total?('월 '+cur.monthly.toLocaleString()+'원 × '+cur.months+'개월'):'';
+  var priceSub=cur.total?('월 '+cur.monthly.toLocaleString()+'원 × '+months+'개월'):'';
   document.getElementById('shInfoGrid').innerHTML=
-    '<div class="sh-info-card hi"><span class="sh-info-num">01</span><div class="sh-info-icon">'+shSvg('percent',22)+'</div><div class="sh-info-title">36개월 이용료<br>'+priceTitle+'</div><div class="sh-info-sub">'+priceSub+'</div></div>'+
-    '<div class="sh-info-card"><span class="sh-info-num">02</span><div class="sh-info-icon">'+shSvg('calendar',22)+'</div><div class="sh-info-title">36개월 약정 이용 시<br>이용료 전액 지원</div></div>'+
-    '<div class="sh-info-card"><span class="sh-info-num">03</span><div class="sh-info-icon">'+shSvg('warning',22)+'</div><div class="sh-info-title">중도 해지 시<br>위약금 발생</div><div class="sh-info-sub">약정 기간 내 해지 시 위약금 발생 가능</div></div>'+
-    '<div class="sh-info-card"><span class="sh-info-num">04</span><div class="sh-info-icon">'+shSvg('headset',22)+'</div><div class="sh-info-title">전문 설치 & A/S<br>안심 케어</div><div class="sh-info-sub">전문 기사 설치, U+ A/S 지원</div></div>';
+    '<div class="sh-info-card hi"><span class="sh-info-num">01</span><div class="sh-info-icon">'+shSvg('percent',22)+'</div><div class="sh-info-title">'+months+'개월 이용료<br>'+priceTitle+'</div><div class="sh-info-sub">'+priceSub+'</div></div>'+
+    '<div class="sh-info-card"><span class="sh-info-num">02</span><div class="sh-info-icon">'+shSvg('calendar',22)+'</div><div class="sh-info-title">'+months+'개월 약정 이용 시<br>'+cur.tabName+' 이용료 전액 지원</div></div>'+
+    '<div class="sh-info-card"><span class="sh-info-num">03</span><div class="sh-info-icon">'+shSvg('warning',22)+'</div><div class="sh-info-title">중도 해지 시<br>위약금 발생</div><div class="sh-info-sub">'+cur.tabName+' 약정 기간 내 해지 시 위약금 발생 가능</div></div>'+
+    '<div class="sh-info-card"><span class="sh-info-num">04</span><div class="sh-info-icon">'+shSvg('headset',22)+'</div><div class="sh-info-title">전문 설치 & A/S<br>안심 케어</div><div class="sh-info-sub">'+cur.tabName+' 전문 기사 설치, U+ A/S 지원</div></div>';
 }
 
 window.shSelect=function(i){
