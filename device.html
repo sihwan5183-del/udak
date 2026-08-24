@@ -161,6 +161,88 @@ textarea.mform-input{resize:none;height:70px;font-family:inherit;}
 .ticket-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s ease;padding:20px;overflow-y:auto;}
 .ticket-overlay.active{opacity:1;pointer-events:all;}
 @media(max-width:640px){.reservation-modal{padding:16px 14px 14px;border-radius:16px;}}
+
+/* ===== 스마트홈 5종 (benefits.html에서 이식) ===== */
+.sh-wrap{max-width:560px;margin:0 auto;padding:28px 20px 56px;}
+
+.sh-badge-row{display:flex;justify-content:center;}
+.sh-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(233,30,140,.06);color:#E91E8C;font-size:12px;font-weight:700;padding:7px 14px;border-radius:100px;margin-bottom:16px;}
+.sh-title{font-size:21px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;line-height:1.45;text-align:center;margin-bottom:8px;word-break:keep-all;}
+.sh-title-pink{color:#E91E8C;}
+.sh-sub{font-size:13.5px;color:#888;text-align:center;margin-bottom:22px;}
+
+.sh-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:24px;}
+.sh-summary-card{border:1.5px solid #ececec;border-radius:14px;padding:14px 6px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.sh-summary-icon{width:30px;height:30px;border-radius:50%;background:rgba(233,30,140,.06);display:flex;align-items:center;justify-content:center;color:#E91E8C;}
+.sh-summary-text{font-size:11px;color:#666;line-height:1.5;}
+.sh-summary-text b{display:block;font-size:12px;color:#1A1A1A;font-weight:800;}
+
+.sh-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.sh-tabs::-webkit-scrollbar{display:none;}
+.sh-tab{flex:1;min-width:62px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border:1.5px solid #ececec;border-radius:14px;cursor:pointer;background:#fff;transition:border-color .15s,background .15s;}
+.sh-tab.on{border-color:#E91E8C;background:rgba(233,30,140,.05);}
+.sh-tab-icon{width:24px;height:24px;display:flex;align-items:center;justify-content:center;color:#999;}
+.sh-tab.on .sh-tab-icon{color:#E91E8C;}
+.sh-tab-sub{font-size:9px;color:#999;font-weight:600;white-space:nowrap;}
+.sh-tab.on .sh-tab-sub{color:#E91E8C;}
+.sh-tab-name{font-size:11px;font-weight:800;color:#1A1A1A;white-space:nowrap;}
+.sh-tab.on .sh-tab-name{color:#E91E8C;}
+
+.sh-slide-viewport{overflow:hidden;border:1px solid #ececec;border-radius:20px;margin-bottom:12px;}
+.sh-slide-track{display:flex;transition:transform .4s cubic-bezier(.4,0,.2,1);}
+.sh-slide{flex:0 0 100%;padding:24px 20px;min-width:0;}
+.sh-slide-badge{display:inline-block;background:rgba(233,30,140,.06);color:#E91E8C;font-size:11px;font-weight:700;padding:5px 12px;border-radius:100px;margin-bottom:10px;}
+.sh-slide-title{font-size:23px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin-bottom:10px;}
+.sh-slide-desc{font-size:13.5px;color:#666;line-height:1.7;margin-bottom:20px;}
+.sh-slide-img{width:100%;aspect-ratio:4/3;border-radius:16px;background:rgba(233,30,140,.04);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#E91E8C;margin-bottom:16px;overflow:hidden;}
+.sh-slide-img span{font-size:12px;color:#c9c9c9;font-weight:600;}
+.sh-slide-img-real{background:#fafafa;padding:0;aspect-ratio:auto;height:auto;display:block;position:relative;cursor:pointer;}
+.sh-slide-img-real img{width:100%;height:auto;display:block;}
+.sh-slide-img-zoom{position:absolute;bottom:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;color:#fff;pointer-events:none;}
+.sh-feature-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;}
+.sh-feature-icon{width:38px;height:38px;border-radius:50%;background:rgba(233,30,140,.06);display:flex;align-items:center;justify-content:center;color:#E91E8C;flex-shrink:0;}
+.sh-feature-title{font-size:13.5px;font-weight:700;color:#1A1A1A;}
+.sh-feature-sub{font-size:11.5px;color:#999;margin-top:2px;}
+.sh-slide-empty{text-align:center;padding:44px 0;color:#bbb;font-size:13px;display:flex;flex-direction:column;align-items:center;}
+
+.sh-dots{display:flex;justify-content:center;gap:7px;margin-bottom:24px;}
+.sh-dot{width:7px;height:7px;border-radius:50%;background:#ececec;cursor:pointer;transition:all .25s;border:none;padding:0;}
+.sh-dot.on{background:#E91E8C;width:20px;border-radius:5px;}
+
+.sh-info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:22px;}
+.sh-info-card{border:1.5px solid #ececec;border-radius:14px;padding:12px 5px;text-align:center;}
+.sh-info-card.hi{border-color:#E91E8C;background:rgba(233,30,140,.04);}
+.sh-info-num{display:inline-block;width:18px;height:18px;line-height:18px;border-radius:50%;background:#1A1A1A;color:#fff;font-size:9px;font-weight:800;margin-bottom:8px;}
+.sh-info-card.hi .sh-info-num{background:#E91E8C;}
+.sh-info-icon{width:22px;height:22px;margin:0 auto 8px;color:#666;}
+.sh-info-card.hi .sh-info-icon{color:#E91E8C;}
+.sh-info-title{font-size:10px;font-weight:800;color:#1A1A1A;line-height:1.4;margin-bottom:4px;word-break:keep-all;}
+.sh-info-sub{font-size:8.5px;color:#999;line-height:1.4;word-break:keep-all;}
+
+.sh-cta{display:block;width:100%;padding:17px;background:#E91E8C;border:none;border-radius:100px;color:#fff;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:16px;}
+.sh-cta:active{background:#d4197e;}
+
+.sh-detail-link{display:block;width:100%;text-align:center;padding:13px;margin-bottom:16px;background:#fff;border:1.5px solid #ececec;border-radius:100px;color:#666;font-size:13.5px;font-weight:700;cursor:pointer;}
+.sh-detail-link:active{background:#fafafa;}
+
+.sh-img-zoom-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:4000;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;cursor:zoom-out;}
+.sh-img-zoom-overlay.open{display:flex;}
+.sh-img-zoom-overlay img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;cursor:default;}
+.sh-img-zoom-close{position:absolute;top:20px;right:20px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:22px;cursor:pointer;line-height:1;z-index:1;}
+
+.sh-detail-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:3000;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;}
+.sh-detail-overlay.open{display:flex;}
+.sh-detail-modal{position:relative;width:100%;max-width:460px;max-height:86vh;overflow-y:auto;background:#fff;border-radius:24px;padding:30px 22px 24px;box-sizing:border-box;animation:shModalIn .3s cubic-bezier(.22,1,.36,1);}
+@keyframes shModalIn{from{transform:scale(.94) translateY(16px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
+.sh-detail-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:#f3f4f6;border:none;color:#666;font-size:18px;cursor:pointer;line-height:1;}
+.sh-detail-modal-img{width:100%;aspect-ratio:auto;height:auto;border-radius:16px;background:#fafafa;overflow:hidden;margin-bottom:16px;color:#E91E8C;text-align:center;}
+.sh-detail-modal-img img{width:100%;height:auto;display:block;}
+.sh-detail-modal-badge{display:inline-block;background:rgba(233,30,140,.06);color:#E91E8C;font-size:11px;font-weight:700;padding:5px 12px;border-radius:100px;margin-bottom:10px;}
+.sh-detail-modal-title{font-size:22px;font-weight:800;color:#1A1A1A;margin-bottom:10px;}
+.sh-detail-modal-desc{font-size:13.5px;color:#666;line-height:1.7;margin-bottom:18px;}
+.sh-detail-modal-cta{display:block;width:100%;padding:16px;background:#E91E8C;border:none;border-radius:100px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;margin-top:4px;}
+
+.sh-disclaimer{font-size:10.5px;color:#aaa;line-height:1.9;}
 </style>
 </head><body>
 
@@ -170,6 +252,22 @@ textarea.mform-input{resize:none;height:70px;font-family:inherit;}
 
 <div class="dwrap" id="dContent">
   <div class="dempty">불러오는 중…</div>
+</div>
+
+<div class="sh-img-zoom-overlay" id="shImgZoomOverlay" onclick="shCloseImageZoom()">
+  <button class="sh-img-zoom-close" type="button" onclick="shCloseImageZoom()">×</button>
+  <img id="shImgZoomPic" src="" alt="">
+</div>
+
+<div class="sh-detail-overlay" id="shDetailOverlay" onclick="if(event.target===this)shCloseDetail()">
+  <div class="sh-detail-modal">
+    <button class="sh-detail-close" type="button" onclick="shCloseDetail()">×</button>
+    <div class="sh-detail-modal-img" id="shDetailImg"></div>
+    <span class="sh-detail-modal-badge" id="shDetailBadge"></span>
+    <p class="sh-detail-modal-title" id="shDetailTitle"></p>
+    <p class="sh-detail-modal-desc" id="shDetailDesc"></p>
+    <div id="shDetailFeatures"></div>
+  </div>
 </div>
 
 <script>
@@ -585,6 +683,17 @@ function renderPage(){
     <div class="udetail-sec"><p class="udetail-lbl">용량</p><div class="udetail-row" id="udStorage"></div></div>
     <div class="udetail-sec" id="udSecCarrier"><p class="udetail-lbl">현재 사용 중인 통신사</p><div class="udetail-row" id="udCarrier"></div></div>
     <div class="udetail-sec" id="udSecPlan"><p class="udetail-lbl">요금제</p><div id="udPlanWrap"></div></div>
+    <div class="udetail-sec">
+      <p class="uwt-sec-title">🏠 스마트홈 5종</p>
+      <div class="sh-tabs" id="shTabs"></div>
+      <div class="sh-slide-viewport">
+        <div class="sh-slide-track" id="shSlideTrack"></div>
+      </div>
+      <div class="sh-dots" id="shDots"></div>
+      <button class="sh-detail-link" id="shDetailBtn" type="button" onclick="shOpenDetail()">자세히보기 ›</button>
+      <div class="sh-info-grid" id="shInfoGrid"></div>
+    </div>
+
     <div class="udetail-sec" id="uwtSection" style="display:none">
       <p class="uwt-sec-title">🎁 요금제별 혜택</p>
       <div id="uwtPlanBenefits" style="margin-bottom:16px;"></div>
@@ -684,6 +793,7 @@ function renderPage(){
       <button class="udetail-btn-order" onclick="ctaGo()" type="button">주문 신청하기</button>
     </div>`;
   renderColors();renderStorage();renderCarrier();renderPlanRow();renderDiscount();udUpdateGuide();
+  shInitAll();
   refreshImg();refreshPrice();
 }
 
@@ -719,6 +829,221 @@ function renderDiscount(){
       <span class="udetail-discount-check">✓</span><p class="udetail-discount-name">선택약정</p><p class="udetail-discount-desc">요금제 25% 할인, 기기값 정상가</p>
     </div>`;
 }
+/* ===== 스마트홈 5종 (benefits.html에서 이식) ===== */
+const SHI={
+  percent:'<circle cx="7" cy="7" r="2.3"/><circle cx="17" cy="17" r="2.3"/><line x1="18" y1="6" x2="6" y2="18"/>',
+  card:'<rect x="3" y="6" width="18" height="12" rx="2.5"/><line x1="3" y1="10.5" x2="21" y2="10.5"/>',
+  sliders:'<line x1="4" y1="7" x2="20" y2="7"/><circle cx="14" cy="7" r="2"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="8" cy="12" r="2"/><line x1="4" y1="17" x2="20" y2="17"/><circle cx="16" cy="17" r="2"/>',
+  doorcam:'<rect x="7.5" y="3" width="9" height="18" rx="3"/><circle cx="12" cy="9" r="2.2"/><circle cx="12" cy="16" r="0.9" fill="currentColor"/>',
+  shield:'<path d="M12 3l7 3v6c0 5-3 8-7 9-4-1-7-4-7-9V6l7-3z"/><line x1="12" y1="9" x2="12" y2="15"/><line x1="9" y1="12" x2="15" y2="12"/>',
+  lamp:'<path d="M8 3h8l3 7H5l3-7z"/><line x1="12" y1="10" x2="12" y2="18"/><line x1="8" y1="21" x2="16" y2="21"/>',
+  baby:'<circle cx="12" cy="10" r="5"/><circle cx="10" cy="9" r="0.8" fill="currentColor"/><circle cx="14" cy="9" r="0.8" fill="currentColor"/><path d="M9.5 12c1 1 4 1 5 0"/><path d="M12 15v3M9 21l3-2 3 2"/>',
+  paw:'<ellipse cx="12" cy="16.5" rx="4.2" ry="3.2"/><circle cx="6.5" cy="10" r="1.8"/><circle cx="10.5" cy="6.5" r="1.8"/><circle cx="14.5" cy="6.5" r="1.8"/><circle cx="18" cy="10" r="1.8"/>',
+  motion:'<circle cx="15" cy="4.5" r="1.8"/><path d="M9.5 21l1.8-5 2 1.8 2-.8 2.7 3.5"/><path d="M8.5 12.5l2.8-2.8 2 1 3.7-1.8"/><path d="M6 8.5l3 2"/>',
+  delivery:'<path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M3 8v9l9 5 9-5V8"/><path d="M12 13v9"/>',
+  record:'<rect x="3" y="7" width="12" height="10" rx="2.5"/><path d="M15 10.2l6-3v9.6l-6-3z"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/><path d="M8 15.5l2.3 2.3L16 12.5"/>',
+  warning:'<path d="M12 4l9 15H3L12 4z"/><line x1="12" y1="10" x2="12" y2="14"/><circle cx="12" cy="17" r="0.9" fill="currentColor"/>',
+  headset:'<path d="M4 13v-1a8 8 0 0116 0v1"/><rect x="3" y="13" width="4" height="6" rx="2"/><rect x="17" y="13" width="4" height="6" rx="2"/><path d="M20 19v1a3 3 0 01-3 3h-3"/>',
+  zoom:'<circle cx="10" cy="10" r="6.5"/><line x1="15" y1="15" x2="20" y2="20"/><line x1="10" y1="7" x2="10" y2="13"/><line x1="7" y1="10" x2="13" y2="10"/>',
+  hub:'<circle cx="12" cy="6" r="2"/><circle cx="6" cy="17" r="2"/><circle cx="18" cy="17" r="2"/><path d="M12 8v3M12 11l-4.5 4M12 11l4.5 4"/>',
+  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3.2 2"/>',
+  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0012 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/>',
+  eye:'<path d="M2 12s3.7-6.5 10-6.5S22 12 22 12s-3.7 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  call:'<path d="M7 4h3l1.5 4-2 1.5a11 11 0 005 5l1.5-2 4 1.5v3a1.5 1.5 0 01-1.6 1.5A16 16 0 015.5 5.6 1.5 1.5 0 017 4z"/>',
+  bell:'<path d="M6.5 9a5.5 5.5 0 0111 0c0 3.2.9 5 1.4 5.9H5.1C5.6 14 6.5 12.2 6.5 9z"/><path d="M10 18.5a2 2 0 004 0"/>',
+  doorsensor:'<rect x="3" y="9" width="5.5" height="6" rx="1.2"/><rect x="15.5" y="9" width="5.5" height="6" rx="1.2"/><line x1="9" y1="12" x2="15" y2="12" stroke-dasharray="2.2 2.2"/>',
+  bowl:'<path d="M4 12h16a8 4.2 0 01-16 0z"/><ellipse cx="12" cy="12" rx="8" ry="2.3"/>',
+  ball:'<circle cx="12" cy="12" r="7.5"/><path d="M12 4.5a7.5 7.5 0 010 15M4.5 12a7.5 7.5 0 0015 0"/>'
+};
+function shSvg(name,size){
+  const s=size||24;
+  return '<svg viewBox="0 0 24 24" width="'+s+'" height="'+s+'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+(SHI[name]||'')+'</svg>';
+}
+
+const SH_CATEGORIES=[
+  {
+    id:'doorcam', tabIcon:'doorcam', tabSub:'현관 안심', tabName:'도어캠',
+    badge:'현관 안심', title:'우리집지킴이 도어캠',
+    desc:'현관 앞을 실시간으로 확인하고<br>누구인지 안심하고 확인하세요.',
+    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-doorcam-v2.png', modalImg:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-doorcam.png',
+    features:[
+      {icon:'motion', title:'AI 움직임 감지', sub:'현관 앞 움직임을 AI가 감지'},
+      {icon:'delivery', title:'택배 도착 알림', sub:'택배 도착 시 알림으로 안내'},
+      {icon:'record', title:'실시간·자동 녹화', sub:'실시간 확인 및 자동으로 녹화'}
+    ],
+    ready:true
+  },
+  {
+    id:'easy2plus', tabIcon:'shield', tabSub:'우리집 보안', tabName:'Easy2+',
+    badge:'우리집 보안', title:'우리집지킴이 Easy2+',
+    desc:'움직임 감지부터 문열림 감지까지<br>우리집 보안을 든든하게 지켜드려요.',
+    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-easy2plus-v2.png', modalImg:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-easy2plus.png',
+    features:[
+      {icon:'motion', title:'움직임 감지 센서', sub:'수상한 움직임을 감지해 알림'},
+      {icon:'doorsensor', title:'문열림 감지 센서', sub:'문·창문이 열리면 즉시 알림'},
+      {icon:'bell', title:'이상 상황 알림', sub:'위험 상황 발생 시 스마트폰으로 안내'}
+    ],
+    ready:true
+  },
+  {
+    id:'family', tabIcon:'lamp', tabSub:'스마트 생활', tabName:'Family',
+    badge:'스마트 생활', title:'우리집돌봄이 Family',
+    desc:'우리집 스마트 기기를 하나로 연결하고<br>온 가족의 일상을 더 편리하게.',
+    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-family-v2.png', modalImg:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-family.png',
+    features:[
+      {icon:'hub', title:'스마트홈 허브 연결', sub:'여러 기기를 하나로 연결해 관리'},
+      {icon:'clock', title:'생활 알림 · 알람', sub:'가족 일정과 알림을 안내'},
+      {icon:'mic', title:'간편한 음성 제어', sub:'말 한마디로 우리집 기기 제어'}
+    ],
+    ready:true
+  },
+  {
+    id:'kids', tabIcon:'baby', tabSub:'아이 돌봄', tabName:'Kids',
+    badge:'아이 돌봄', title:'우리집돌봄이 Kids',
+    desc:'아이가 있는 공간을<br>언제 어디서든 실시간으로 확인하세요.',
+    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-kids-v2.png', modalImg:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-kids.png',
+    features:[
+      {icon:'eye', title:'실시간 영상 확인', sub:'외출 중에도 스마트폰으로 확인'},
+      {icon:'call', title:'양방향 음성 통화', sub:'카메라로 아이와 바로 대화'},
+      {icon:'bell', title:'움직임 · 소리 감지 알림', sub:'특이 상황 발생 시 알림으로 안내'}
+    ],
+    ready:true
+  },
+  {
+    id:'pet', tabIcon:'paw', tabSub:'반려동물 케어', tabName:'Pet',
+    badge:'반려동물 케어', title:'우리집돌봄이 Pet',
+    desc:'혼자 있는 반려동물도<br>더 안전하고 즐겁게 돌봐주세요.<br>5종 중 2종 선택 가능',
+    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-pet-v2.png', modalImg:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-pet.jpg',
+    features:[
+      {icon:'bowl', title:'자동 급식 · 급수', sub:'정해진 시간에 사료·물 자동 공급'},
+      {icon:'ball', title:'자동 놀이 기능', sub:'혼자 있을 때도 장난감으로 놀이'},
+      {icon:'eye', title:'반려동물 상태 확인', sub:'카메라로 실시간 모습 확인'}
+    ],
+    ready:true
+  }
+];
+let shState={active:0};
+
+function shRenderTabs(){
+  document.getElementById('shTabs').innerHTML=SH_CATEGORIES.map((c,i)=>
+    '<div class="sh-tab'+(i===shState.active?' on':'')+'" onclick="shSelect('+i+')">'+
+      '<span class="sh-tab-icon">'+shSvg(c.tabIcon,22)+'</span>'+
+      '<span class="sh-tab-sub">'+c.tabSub+'</span>'+
+      '<span class="sh-tab-name">'+c.tabName+'</span>'+
+    '</div>'
+  ).join('');
+}
+
+function shRenderSlides(){
+  const track=document.getElementById('shSlideTrack');
+  track.innerHTML=SH_CATEGORIES.map(function(c){
+    if(!c.ready){
+      return '<div class="sh-slide"><div class="sh-slide-empty">'+shSvg(c.tabIcon,40)+'<div style="margin-top:12px;">'+c.tabName+' 혜택 준비중입니다</div></div></div>';
+    }
+    var featuresHtml=c.features.map(function(f){
+      return '<div class="sh-feature-row"><span class="sh-feature-icon">'+shSvg(f.icon,18)+'</span><div><div class="sh-feature-title">'+f.title+'</div><div class="sh-feature-sub">'+f.sub+'</div></div></div>';
+    }).join('');
+    return '<div class="sh-slide">'+
+      '<span class="sh-slide-badge">'+c.badge+'</span>'+
+      '<p class="sh-slide-title">'+c.title+'</p>'+
+      '<p class="sh-slide-desc">'+c.desc+'</p>'+
+      (c.img
+        ? '<div class="sh-slide-img sh-slide-img-real" onclick="shOpenImageZoom()"><img src="'+c.img+'" alt="'+c.title+'"><span class="sh-slide-img-zoom">'+shSvg('zoom',16)+'</span></div>'
+        : '<div class="sh-slide-img">'+shSvg(c.tabIcon,52)+'<span>상품 이미지 준비중</span></div>'
+      )+
+      featuresHtml+
+    '</div>';
+  }).join('');
+  track.style.transform='translateX(-'+(shState.active*100)+'%)';
+}
+
+function shRenderDots(){
+  document.getElementById('shDots').innerHTML=SH_CATEGORIES.map(function(c,i){
+    return '<button type="button" class="sh-dot'+(i===shState.active?' on':'')+'" onclick="shSelect('+i+')" aria-label="'+c.tabName+'"></button>';
+  }).join('');
+}
+
+function shRenderInfoCards(){
+  var cur=SH_CATEGORIES[shState.active];
+  document.getElementById('shInfoGrid').innerHTML=
+    '<div class="sh-info-card"><span class="sh-info-num">01</span><div class="sh-info-icon">'+shSvg('percent',22)+'</div><div class="sh-info-title">이용료<br>전액 지원</div></div>'+
+    '<div class="sh-info-card"><span class="sh-info-num">02</span><div class="sh-info-icon">'+shSvg('calendar',22)+'</div><div class="sh-info-title">36개월 약정 이용 시<br>'+cur.tabName+' 이용료 전액 지원</div></div>'+
+    '<div class="sh-info-card"><span class="sh-info-num">03</span><div class="sh-info-icon">'+shSvg('warning',22)+'</div><div class="sh-info-title">중도 해지 시<br>위약금 발생</div><div class="sh-info-sub">'+cur.tabName+' 약정 기간 내 해지 시 위약금 발생 가능</div></div>'+
+    '<div class="sh-info-card"><span class="sh-info-num">04</span><div class="sh-info-icon">'+shSvg('headset',22)+'</div><div class="sh-info-title">전문 설치 & A/S<br>안심 케어</div><div class="sh-info-sub">'+cur.tabName+' 전문 기사 설치, U+ A/S 지원</div></div>';
+}
+
+function shUpdateDetailBtn(){
+  var cur=SH_CATEGORIES[shState.active];
+  var btn=document.getElementById('shDetailBtn');
+  if(btn) btn.style.display=cur.ready?'block':'none';
+}
+
+window.shOpenImageZoom=function(){
+  var cur=SH_CATEGORIES[shState.active];
+  if(!cur.img) return;
+  document.getElementById('shImgZoomPic').src=cur.img;
+  document.getElementById('shImgZoomPic').alt=cur.title;
+  document.getElementById('shImgZoomOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+};
+window.shCloseImageZoom=function(){
+  document.getElementById('shImgZoomOverlay').classList.remove('open');
+  document.body.style.overflow='';
+};
+
+window.shOpenDetail=function(){
+  var cur=SH_CATEGORIES[shState.active];
+  if(!cur.ready) return;
+  document.getElementById('shDetailImg').innerHTML=cur.modalImg
+    ? '<img src="'+cur.modalImg+'" alt="'+cur.title+'">'
+    : '<div style="padding:40px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;">'+shSvg(cur.tabIcon,48)+'<span style="font-size:12px;color:#bbb;font-weight:600;">제품 사진 준비중</span></div>';
+  document.getElementById('shDetailBadge').textContent=cur.badge;
+  document.getElementById('shDetailTitle').textContent=cur.title;
+  document.getElementById('shDetailDesc').innerHTML=cur.desc;
+  document.getElementById('shDetailFeatures').innerHTML=cur.features.map(function(f){
+    return '<div class="sh-feature-row"><span class="sh-feature-icon">'+shSvg(f.icon,18)+'</span><div><div class="sh-feature-title">'+f.title+'</div><div class="sh-feature-sub">'+f.sub+'</div></div></div>';
+  }).join('');
+  document.getElementById('shDetailOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+};
+window.shCloseDetail=function(){
+  document.getElementById('shDetailOverlay').classList.remove('open');
+  document.body.style.overflow='';
+};
+
+window.shSelect=function(i){
+  shState.active=i;
+  shRenderTabs();
+  var st=document.getElementById('shSlideTrack');
+  if(st) st.style.transform='translateX(-'+(i*100)+'%)';
+  shRenderDots();
+  shRenderInfoCards();
+  shUpdateDetailBtn();
+};
+
+function shInitAll(){
+  shState={active:0};
+  shRenderTabs();
+  shRenderSlides();
+  shRenderDots();
+  shRenderInfoCards();
+  shUpdateDetailBtn();
+  var viewport=document.querySelector('.sh-slide-viewport');
+  if(viewport){
+    var tx=0;
+    viewport.addEventListener('touchstart',function(e){ tx=e.changedTouches[0].clientX; },{passive:true});
+    viewport.addEventListener('touchend',function(e){
+      var dx=e.changedTouches[0].clientX-tx;
+      if(Math.abs(dx)>=40){
+        var next=shState.active+(dx<0?1:-1);
+        next=Math.max(0,Math.min(SH_CATEGORIES.length-1,next));
+        if(next!==shState.active) shSelect(next);
+      }
+    },{passive:true});
+  }
+}
+
 function udUpdateGuide(){
   var secs={carrier:'udSecCarrier',plan:'udSecPlan',discount:'udSecDiscount'};
   Object.keys(secs).forEach(function(k){ var el=document.getElementById(secs[k]); if(el) el.classList.remove('ud-guide-glow'); });
