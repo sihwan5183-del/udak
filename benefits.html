@@ -71,6 +71,21 @@ button{font-family:inherit;}
 .sh-cta{display:block;width:100%;padding:17px;background:#E91E8C;border:none;border-radius:100px;color:#fff;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:16px;}
 .sh-cta:active{background:#d4197e;}
 
+.sh-detail-link{display:block;width:100%;text-align:center;padding:13px;margin-bottom:16px;background:#fff;border:1.5px solid #ececec;border-radius:100px;color:#666;font-size:13.5px;font-weight:700;cursor:pointer;}
+.sh-detail-link:active{background:#fafafa;}
+
+.sh-detail-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:3000;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;}
+.sh-detail-overlay.open{display:flex;}
+.sh-detail-modal{position:relative;width:100%;max-width:460px;max-height:86vh;overflow-y:auto;background:#fff;border-radius:24px;padding:30px 22px 24px;box-sizing:border-box;animation:shModalIn .3s cubic-bezier(.22,1,.36,1);}
+@keyframes shModalIn{from{transform:scale(.94) translateY(16px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
+.sh-detail-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:#f3f4f6;border:none;color:#666;font-size:18px;cursor:pointer;line-height:1;}
+.sh-detail-modal-img{width:100%;aspect-ratio:4/3;border-radius:16px;background:#fafafa;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:16px;color:#E91E8C;}
+.sh-detail-modal-img img{width:100%;height:100%;object-fit:contain;padding:16px;box-sizing:border-box;}
+.sh-detail-modal-badge{display:inline-block;background:rgba(233,30,140,.06);color:#E91E8C;font-size:11px;font-weight:700;padding:5px 12px;border-radius:100px;margin-bottom:10px;}
+.sh-detail-modal-title{font-size:22px;font-weight:800;color:#1A1A1A;margin-bottom:10px;}
+.sh-detail-modal-desc{font-size:13.5px;color:#666;line-height:1.7;margin-bottom:18px;}
+.sh-detail-modal-cta{display:block;width:100%;padding:16px;background:#E91E8C;border:none;border-radius:100px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;margin-top:4px;}
+
 .sh-disclaimer{font-size:10.5px;color:#aaa;line-height:1.9;}
 
 @media(min-width:600px){ .sh-slide{padding:32px 36px;} }
@@ -108,6 +123,7 @@ button{font-family:inherit;}
     <div class="sh-slide-track" id="shSlideTrack"></div>
   </div>
   <div class="sh-dots" id="shDots"></div>
+  <button class="sh-detail-link" id="shDetailBtn" type="button" onclick="shOpenDetail()">자세히보기 ›</button>
 
   <div class="sh-info-grid" id="shInfoGrid"></div>
 
@@ -119,6 +135,18 @@ button{font-family:inherit;}
     <p>· 자세한 내용은 상품 상세 안내를 확인해주세요.</p>
   </div>
 </section>
+
+<div class="sh-detail-overlay" id="shDetailOverlay" onclick="if(event.target===this)shCloseDetail()">
+  <div class="sh-detail-modal">
+    <button class="sh-detail-close" type="button" onclick="shCloseDetail()">×</button>
+    <div class="sh-detail-modal-img" id="shDetailImg"></div>
+    <span class="sh-detail-modal-badge" id="shDetailBadge"></span>
+    <p class="sh-detail-modal-title" id="shDetailTitle"></p>
+    <p class="sh-detail-modal-desc" id="shDetailDesc"></p>
+    <div id="shDetailFeatures"></div>
+    <button class="sh-detail-modal-cta" type="button" onclick="shCloseDetail();shGoReserve();">스마트홈 혜택 선택하기 ›</button>
+  </div>
+</div>
 
 <script>
 const SHI={
@@ -263,12 +291,39 @@ function shRenderInfoCards(){
     '<div class="sh-info-card"><span class="sh-info-num">04</span><div class="sh-info-icon">'+shSvg('headset',22)+'</div><div class="sh-info-title">전문 설치 & A/S<br>안심 케어</div><div class="sh-info-sub">'+cur.tabName+' 전문 기사 설치, U+ A/S 지원</div></div>';
 }
 
+function shUpdateDetailBtn(){
+  var cur=SH_CATEGORIES[shState.active];
+  var btn=document.getElementById('shDetailBtn');
+  if(btn) btn.style.display=cur.ready?'block':'none';
+}
+
+window.shOpenDetail=function(){
+  var cur=SH_CATEGORIES[shState.active];
+  if(!cur.ready) return;
+  document.getElementById('shDetailImg').innerHTML=cur.img
+    ? '<img src="'+cur.img+'" alt="'+cur.title+'">'
+    : shSvg(cur.tabIcon,56);
+  document.getElementById('shDetailBadge').textContent=cur.badge;
+  document.getElementById('shDetailTitle').textContent=cur.title;
+  document.getElementById('shDetailDesc').innerHTML=cur.desc;
+  document.getElementById('shDetailFeatures').innerHTML=cur.features.map(function(f){
+    return '<div class="sh-feature-row"><span class="sh-feature-icon">'+shSvg(f.icon,18)+'</span><div><div class="sh-feature-title">'+f.title+'</div><div class="sh-feature-sub">'+f.sub+'</div></div></div>';
+  }).join('');
+  document.getElementById('shDetailOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+};
+window.shCloseDetail=function(){
+  document.getElementById('shDetailOverlay').classList.remove('open');
+  document.body.style.overflow='';
+};
+
 window.shSelect=function(i){
   shState.active=i;
   shRenderTabs();
   document.getElementById('shSlideTrack').style.transform='translateX(-'+(i*100)+'%)';
   shRenderDots();
   shRenderInfoCards();
+  shUpdateDetailBtn();
 };
 
 window.shGoReserve=function(){
@@ -294,6 +349,7 @@ shRenderTabs();
 shRenderSlides();
 shRenderDots();
 shRenderInfoCards();
+shUpdateDetailBtn();
 </script>
 
 </body></html>
