@@ -326,22 +326,14 @@ const UWT_PLAN_BENEFITS={
     {title:'스마트기기(워치/탭) 2대 월정액 할인',sub:'최대 33,000원'}
   ]
 };
-const UWT_WATCH_SERIES=[
-  {id:'galaxy',name:'갤럭시 워치'},
-  {id:'apple',name:'애플워치'}
-];
 const UWT_MODELS={
-  watch:{
-    galaxy:[
-      {id:'watch9-40',name:'갤럭시 워치 9',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch9.png'},
-      {id:'watch9-44',name:'갤럭시 워치 9',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch9.png'},
-      {id:'watch-ultra2',name:'갤럭시 워치 울트라 2',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-ultra2.png'}
-    ],
-    apple:[
-      {id:'watch-se3-40',name:'애플워치 SE3',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-se3-midnight.png'},
-      {id:'watch-se3-44',name:'애플워치 SE3',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-se3-midnight.png'}
-    ]
-  },
+  watch:[
+    {id:'watch9-40',name:'갤럭시 워치 9',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch9.png'},
+    {id:'watch9-44',name:'갤럭시 워치 9',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch9.png'},
+    {id:'watch-ultra2',name:'갤럭시 워치 울트라 2',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-ultra2.png'},
+    {id:'watch-se3-40',name:'애플워치 SE3',size:'40mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-se3-midnight.png'},
+    {id:'watch-se3-44',name:'애플워치 SE3',size:'44mm',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/watch-se3-midnight.png'}
+  ],
   tab:[
     {id:'tab-a11plus',name:'갤럭시 탭 A11+',size:'',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/tab-a11plus.png'}
   ],
@@ -362,7 +354,7 @@ const UWT_MODELS={
 function uwtFlatten(data){ return Array.isArray(data)?data:[].concat(...Object.values(data||{})); }
 function uwtAllModelsFlat(){ return [].concat(...Object.values(UWT_MODELS).map(uwtFlatten)); }
 let uwtPricing={};
-let uwtOpenCat=null, uwtOpenSeries=null, uwtSelectedByCat={}, uwtPreviewModelId=null, uwtPreviewColorIdx=0;
+let uwtOpenCat=null, uwtSelectedByCat={}, uwtPreviewModelId=null, uwtPreviewColorIdx=0;
 function uwtFindCategoryForModel(modelId){
   for(const catId in UWT_MODELS){ if(uwtFlatten(UWT_MODELS[catId]).some(m=>m.id===modelId)) return catId; }
   return null;
@@ -430,32 +422,6 @@ function renderUwtSection(){
           <div class="uwt-model-name">${m.name}</div>
         </div>`).join('')}
       </div>`;
-    } else if(c.id==='watch'){
-      modelBoxHtml=`<div class="uwt-catlist" style="padding:12px 2px 4px;">
-        ${UWT_WATCH_SERIES.map(s=>{
-          const seriesOpen=uwtOpenSeries===s.id;
-          const seriesModels=(UWT_MODELS.watch[s.id]||[]).filter(m=>(uwtPricing[m.id]?.visible)!==false);
-          return`<div>
-            <div class="uwt-cat${seriesOpen?' on':''}" style="padding:14px;" onclick="uwtToggleSeries('${s.id}')">
-              <span class="uwt-cat-name" style="font-size:14px;">${s.name}</span>
-              <svg class="uwt-cat-arrow" style="width:15px;height:15px;" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <div class="uwt-modelbox${seriesOpen?' open':''}">
-              ${seriesModels.length?`<div class="uwt-modelgrid">
-                ${seriesModels.map(m=>{
-                  const fbColors=uwtPricing[m.id]?.colors;
-                  const cardImg=(fbColors&&fbColors[0]&&fbColors[0].img)||m.img;
-                  return`<div class="uwt-model${pickedModelId===m.id?' on':''}" onclick="uwtPickModel('${m.id}',event)">
-                    ${cardImg?`<img class="uwt-model-img" src="${cardImg}" alt="${m.name}">`:''}
-                    <div class="uwt-model-name">${m.name}</div>
-                    ${m.size?`<div class="uwt-model-size">${m.size}</div>`:''}
-                  </div>`;
-                }).join('')}
-              </div>`:`<div class="uwt-empty">모델 목록 준비중입니다</div>`}
-            </div>
-          </div>`;
-        }).join('')}
-      </div>`;
     } else {
       const models=uwtFlatten(UWT_MODELS[c.id]||[]).filter(m=>(uwtPricing[m.id]?.visible)!==false);
       modelBoxHtml=`${models.length?`<div class="uwt-modelgrid">
@@ -487,12 +453,7 @@ function renderUwtSection(){
 }
 window.uwtToggleCat=function(catId){
   uwtOpenCat=(uwtOpenCat===catId)?null:catId;
-  uwtOpenSeries=null;
   uwtCloseDetail();
-  renderUwtSection();
-};
-window.uwtToggleSeries=function(seriesId){
-  uwtOpenSeries=(uwtOpenSeries===seriesId)?null:seriesId;
   renderUwtSection();
 };
 window.udxToggleOpen=function(){
