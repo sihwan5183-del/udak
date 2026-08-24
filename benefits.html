@@ -75,6 +75,11 @@ button{font-family:inherit;}
 .sh-detail-link{display:block;width:100%;text-align:center;padding:13px;margin-bottom:16px;background:#fff;border:1.5px solid #ececec;border-radius:100px;color:#666;font-size:13.5px;font-weight:700;cursor:pointer;}
 .sh-detail-link:active{background:#fafafa;}
 
+.sh-img-zoom-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:4000;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;cursor:zoom-out;}
+.sh-img-zoom-overlay.open{display:flex;}
+.sh-img-zoom-overlay img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;cursor:default;}
+.sh-img-zoom-close{position:absolute;top:20px;right:20px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:22px;cursor:pointer;line-height:1;z-index:1;}
+
 .sh-detail-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:3000;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;}
 .sh-detail-overlay.open{display:flex;}
 .sh-detail-modal{position:relative;width:100%;max-width:460px;max-height:86vh;overflow-y:auto;background:#fff;border-radius:24px;padding:30px 22px 24px;box-sizing:border-box;animation:shModalIn .3s cubic-bezier(.22,1,.36,1);}
@@ -136,6 +141,11 @@ button{font-family:inherit;}
     <p>· 자세한 내용은 상품 상세 안내를 확인해주세요.</p>
   </div>
 </section>
+
+<div class="sh-img-zoom-overlay" id="shImgZoomOverlay" onclick="shCloseImageZoom()">
+  <button class="sh-img-zoom-close" type="button" onclick="shCloseImageZoom()">×</button>
+  <img id="shImgZoomPic" src="" alt="">
+</div>
 
 <div class="sh-detail-overlay" id="shDetailOverlay" onclick="if(event.target===this)shCloseDetail()">
   <div class="sh-detail-modal">
@@ -269,7 +279,7 @@ function shRenderSlides(){
       '<p class="sh-slide-title">'+c.title+'</p>'+
       '<p class="sh-slide-desc">'+c.desc+'</p>'+
       (c.img
-        ? '<div class="sh-slide-img sh-slide-img-real" onclick="shOpenDetail()"><img src="'+c.img+'" alt="'+c.title+'"><span class="sh-slide-img-zoom">'+shSvg('zoom',16)+'</span></div>'
+        ? '<div class="sh-slide-img sh-slide-img-real" onclick="shOpenImageZoom()"><img src="'+c.img+'" alt="'+c.title+'"><span class="sh-slide-img-zoom">'+shSvg('zoom',16)+'</span></div>'
         : '<div class="sh-slide-img">'+shSvg(c.tabIcon,52)+'<span>상품 이미지 준비중</span></div>'
       )+
       featuresHtml+
@@ -298,6 +308,19 @@ function shUpdateDetailBtn(){
   var btn=document.getElementById('shDetailBtn');
   if(btn) btn.style.display=cur.ready?'block':'none';
 }
+
+window.shOpenImageZoom=function(){
+  var cur=SH_CATEGORIES[shState.active];
+  if(!cur.img) return;
+  document.getElementById('shImgZoomPic').src=cur.img;
+  document.getElementById('shImgZoomPic').alt=cur.title;
+  document.getElementById('shImgZoomOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+};
+window.shCloseImageZoom=function(){
+  document.getElementById('shImgZoomOverlay').classList.remove('open');
+  document.body.style.overflow='';
+};
 
 window.shOpenDetail=function(){
   var cur=SH_CATEGORIES[shState.active];
