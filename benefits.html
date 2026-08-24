@@ -134,8 +134,6 @@ button{font-family:inherit;}
 
   <div class="sh-info-grid" id="shInfoGrid"></div>
 
-  <button class="sh-cta onsite-hide" type="button" onclick="shGoReserve()">스마트홈 혜택 선택하기 ›</button>
-
   <div class="sh-disclaimer">
     <p>· 스마트홈 혜택은 85 요금제 이상 가입 고객 대상 혜택입니다.</p>
     <p>· 혜택 신청은 개통 후 최대 1년 이내 신청 가능합니다.</p>
@@ -156,10 +154,8 @@ button{font-family:inherit;}
     <p class="sh-detail-modal-title" id="shDetailTitle"></p>
     <p class="sh-detail-modal-desc" id="shDetailDesc"></p>
     <div id="shDetailFeatures"></div>
-    <button class="sh-detail-modal-cta onsite-hide" type="button" onclick="shCloseDetail();shGoReserve();">스마트홈 혜택 선택하기 ›</button>
   </div>
 </div>
-<script>if(new URLSearchParams(location.search).get('onsite')==='1'){document.querySelectorAll('.onsite-hide').forEach(function(el){el.style.display='none';});}</script>
 
 <script>
 const SHI={
