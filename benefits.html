@@ -44,8 +44,10 @@ button{font-family:inherit;}
 .sh-slide-badge{display:inline-block;background:rgba(233,30,140,.06);color:#E91E8C;font-size:11px;font-weight:700;padding:5px 12px;border-radius:100px;margin-bottom:10px;}
 .sh-slide-title{font-size:23px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin-bottom:10px;}
 .sh-slide-desc{font-size:13.5px;color:#666;line-height:1.7;margin-bottom:20px;}
-.sh-slide-img{width:100%;aspect-ratio:4/3;border-radius:16px;background:rgba(233,30,140,.04);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#E91E8C;margin-bottom:16px;}
+.sh-slide-img{width:100%;aspect-ratio:4/3;border-radius:16px;background:rgba(233,30,140,.04);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#E91E8C;margin-bottom:16px;overflow:hidden;}
 .sh-slide-img span{font-size:12px;color:#c9c9c9;font-weight:600;}
+.sh-slide-img-real{background:#fafafa;padding:16px;}
+.sh-slide-img-real img{width:100%;height:100%;object-fit:contain;}
 .sh-feature-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;}
 .sh-feature-icon{width:38px;height:38px;border-radius:50%;background:rgba(233,30,140,.06);display:flex;align-items:center;justify-content:center;color:#E91E8C;flex-shrink:0;}
 .sh-feature-title{font-size:13.5px;font-weight:700;color:#1A1A1A;}
@@ -133,7 +135,16 @@ const SHI={
   record:'<rect x="3" y="7" width="12" height="10" rx="2.5"/><path d="M15 10.2l6-3v9.6l-6-3z"/>',
   calendar:'<rect x="3" y="5" width="18" height="16" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/><path d="M8 15.5l2.3 2.3L16 12.5"/>',
   warning:'<path d="M12 4l9 15H3L12 4z"/><line x1="12" y1="10" x2="12" y2="14"/><circle cx="12" cy="17" r="0.9" fill="currentColor"/>',
-  headset:'<path d="M4 13v-1a8 8 0 0116 0v1"/><rect x="3" y="13" width="4" height="6" rx="2"/><rect x="17" y="13" width="4" height="6" rx="2"/><path d="M20 19v1a3 3 0 01-3 3h-3"/>'
+  headset:'<path d="M4 13v-1a8 8 0 0116 0v1"/><rect x="3" y="13" width="4" height="6" rx="2"/><rect x="17" y="13" width="4" height="6" rx="2"/><path d="M20 19v1a3 3 0 01-3 3h-3"/>',
+  hub:'<circle cx="12" cy="6" r="2"/><circle cx="6" cy="17" r="2"/><circle cx="18" cy="17" r="2"/><path d="M12 8v3M12 11l-4.5 4M12 11l4.5 4"/>',
+  clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3.2 2"/>',
+  mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0012 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="21" x2="15" y2="21"/>',
+  eye:'<path d="M2 12s3.7-6.5 10-6.5S22 12 22 12s-3.7 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  call:'<path d="M7 4h3l1.5 4-2 1.5a11 11 0 005 5l1.5-2 4 1.5v3a1.5 1.5 0 01-1.6 1.5A16 16 0 015.5 5.6 1.5 1.5 0 017 4z"/>',
+  bell:'<path d="M6.5 9a5.5 5.5 0 0111 0c0 3.2.9 5 1.4 5.9H5.1C5.6 14 6.5 12.2 6.5 9z"/><path d="M10 18.5a2 2 0 004 0"/>',
+  doorsensor:'<rect x="3" y="9" width="5.5" height="6" rx="1.2"/><rect x="15.5" y="9" width="5.5" height="6" rx="1.2"/><line x1="9" y1="12" x2="15" y2="12" stroke-dasharray="2.2 2.2"/>',
+  bowl:'<path d="M4 12h16a8 4.2 0 01-16 0z"/><ellipse cx="12" cy="12" rx="8" ry="2.3"/>',
+  ball:'<circle cx="12" cy="12" r="7.5"/><path d="M12 4.5a7.5 7.5 0 010 15M4.5 12a7.5 7.5 0 0015 0"/>'
 };
 function shSvg(name,size){
   const s=size||24;
@@ -152,10 +163,54 @@ const SH_CATEGORIES=[
     ],
     ready:true, monthly:11000, months:36, total:396000
   },
-  {id:'easy2plus', tabIcon:'shield', tabSub:'우리집 보안', tabName:'Easy2+', badge:'우리집 보안', title:'Easy2+', ready:false},
-  {id:'family', tabIcon:'lamp', tabSub:'스마트 생활', tabName:'Family', badge:'스마트 생활', title:'Family', ready:false},
-  {id:'kids', tabIcon:'baby', tabSub:'아이 돌봄', tabName:'Kids', badge:'아이 돌봄', title:'Kids', ready:false},
-  {id:'pet', tabIcon:'paw', tabSub:'반려동물 케어', tabName:'Pet', badge:'반려동물 케어', title:'Pet', ready:false}
+  {
+    id:'easy2plus', tabIcon:'shield', tabSub:'우리집 보안', tabName:'Easy2+',
+    badge:'우리집 보안', title:'Easy2+',
+    desc:'움직임 감지부터 문열림 감지까지<br>우리집 보안을 든든하게 지켜드려요.',
+    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-easy2plus.png',
+    features:[
+      {icon:'motion', title:'움직임 감지 센서', sub:'수상한 움직임을 감지해 알림'},
+      {icon:'doorsensor', title:'문열림 감지 센서', sub:'문·창문이 열리면 즉시 알림'},
+      {icon:'bell', title:'이상 상황 알림', sub:'위험 상황 발생 시 스마트폰으로 안내'}
+    ],
+    ready:true
+  },
+  {
+    id:'family', tabIcon:'lamp', tabSub:'스마트 생활', tabName:'Family',
+    badge:'스마트 생활', title:'Family',
+    desc:'우리집 스마트 기기를 하나로 연결하고<br>온 가족의 일상을 더 편리하게.',
+    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-family.png',
+    features:[
+      {icon:'hub', title:'스마트홈 허브 연결', sub:'여러 기기를 하나로 연결해 관리'},
+      {icon:'clock', title:'생활 알림 · 알람', sub:'가족 일정과 알림을 안내'},
+      {icon:'mic', title:'간편한 음성 제어', sub:'말 한마디로 우리집 기기 제어'}
+    ],
+    ready:true
+  },
+  {
+    id:'kids', tabIcon:'baby', tabSub:'아이 돌봄', tabName:'Kids',
+    badge:'아이 돌봄', title:'Kids',
+    desc:'아이가 있는 공간을<br>언제 어디서든 실시간으로 확인하세요.',
+    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-kids.png',
+    features:[
+      {icon:'eye', title:'실시간 영상 확인', sub:'외출 중에도 스마트폰으로 확인'},
+      {icon:'call', title:'양방향 음성 통화', sub:'카메라로 아이와 바로 대화'},
+      {icon:'bell', title:'움직임 · 소리 감지 알림', sub:'특이 상황 발생 시 알림으로 안내'}
+    ],
+    ready:true
+  },
+  {
+    id:'pet', tabIcon:'paw', tabSub:'반려동물 케어', tabName:'Pet',
+    badge:'반려동물 케어', title:'Pet',
+    desc:'혼자 있는 반려동물도<br>더 안전하고 즐겁게 돌봐주세요.',
+    img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/sh-pet.png',
+    features:[
+      {icon:'bowl', title:'자동 급식 · 급수', sub:'정해진 시간에 사료·물 자동 공급'},
+      {icon:'ball', title:'자동 놀이 기능', sub:'혼자 있을 때도 장난감으로 놀이'},
+      {icon:'eye', title:'반려동물 상태 확인', sub:'카메라로 실시간 모습 확인'}
+    ],
+    ready:true
+  }
 ];
 let shState={active:0};
 
@@ -182,7 +237,10 @@ function shRenderSlides(){
       '<span class="sh-slide-badge">'+c.badge+'</span>'+
       '<p class="sh-slide-title">'+c.title+'</p>'+
       '<p class="sh-slide-desc">'+c.desc+'</p>'+
-      '<div class="sh-slide-img">'+shSvg(c.tabIcon,52)+'<span>상품 이미지 준비중</span></div>'+
+      (c.img
+        ? '<div class="sh-slide-img sh-slide-img-real"><img src="'+c.img+'" alt="'+c.title+'"></div>'
+        : '<div class="sh-slide-img">'+shSvg(c.tabIcon,52)+'<span>상품 이미지 준비중</span></div>'
+      )+
       featuresHtml+
     '</div>';
   }).join('');
@@ -197,8 +255,8 @@ function shRenderDots(){
 
 function shRenderInfoCards(){
   var cur=SH_CATEGORIES[shState.active];
-  var priceTitle=cur.ready?cur.total.toLocaleString()+'원 지원':'가격 준비중';
-  var priceSub=cur.ready?('월 '+cur.monthly.toLocaleString()+'원 × '+cur.months+'개월'):'';
+  var priceTitle=cur.total?cur.total.toLocaleString()+'원 지원':'가격 협의중';
+  var priceSub=cur.total?('월 '+cur.monthly.toLocaleString()+'원 × '+cur.months+'개월'):'';
   document.getElementById('shInfoGrid').innerHTML=
     '<div class="sh-info-card hi"><span class="sh-info-num">01</span><div class="sh-info-icon">'+shSvg('percent',22)+'</div><div class="sh-info-title">36개월 이용료<br>'+priceTitle+'</div><div class="sh-info-sub">'+priceSub+'</div></div>'+
     '<div class="sh-info-card"><span class="sh-info-num">02</span><div class="sh-info-icon">'+shSvg('calendar',22)+'</div><div class="sh-info-title">36개월 약정 이용 시<br>이용료 전액 지원</div></div>'+
