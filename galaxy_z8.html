@@ -1163,13 +1163,13 @@ textarea.mform-input{resize:none;height:80px;}
     </button>
   </div>
   <div class="top-nav-sub">
-    <div class="top-nav-sub-item" onclick="window.location.href='/about'">
+    <div class="top-nav-sub-item onsite-hide" onclick="window.location.href='/about'">
       유플러스 다이렉트란
     </div>
     <div class="top-nav-sub-item" onclick="uwtNavGoto('.ucat-wrap')">
       핸드폰
     </div>
-    <div class="top-nav-sub-item" onclick="window.location.href='/benefits'">
+    <div class="top-nav-sub-item onsite-hide" onclick="window.location.href='/benefits'">
       스마트홈 5종
     </div>
     <div class="top-nav-sub-item" onclick="uwtNavPlaceholder('인터넷')">
@@ -1188,13 +1188,13 @@ textarea.mform-input{resize:none;height:80px;}
     <button class="nav-drawer-close" onclick="closeNavDrawer()">✕</button>
   </div>
   <div class="nav-drawer-body">
-    <div class="nav-drawer-item" onclick="window.location.href='/about'">
+    <div class="nav-drawer-item onsite-hide" onclick="window.location.href='/about'">
       유플러스 다이렉트란
     </div>
     <div class="nav-drawer-item" onclick="uwtNavGoto('.ucat-wrap'); closeNavDrawer();">
       핸드폰
     </div>
-    <div class="nav-drawer-item" onclick="window.location.href='/benefits'">
+    <div class="nav-drawer-item onsite-hide" onclick="window.location.href='/benefits'">
       스마트홈 5종
     </div>
     <div class="nav-drawer-item" onclick="uwtNavPlaceholder('인터넷'); closeNavDrawer();">
@@ -1208,6 +1208,7 @@ textarea.mform-input{resize:none;height:80px;}
     </div>
   </div>
 </div>
+<script>if(new URLSearchParams(location.search).get('onsite')==='1'){document.querySelectorAll('.onsite-hide').forEach(function(el){el.style.display='none';});}</script>
 
 <script>
 function uwtNavPlaceholder(label){

@@ -354,7 +354,8 @@ window.shSelect=function(i){
 
 window.shGoReserve=function(){
   var cur=SH_CATEGORIES[shState.active];
-  window.location.href='/galaxy_z8?smartHomeInterest='+encodeURIComponent(cur.title);
+  var onsiteQs=new URLSearchParams(location.search).get('onsite')==='1'?'&onsite=1':'';
+  window.location.href='/galaxy_z8?smartHomeInterest='+encodeURIComponent(cur.title)+onsiteQs;
 };
 
 (function(){
