@@ -26,6 +26,8 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
 .udetail-img img{max-width:92%;max-height:92%;object-fit:contain;}
 .udetail-name{font-size:22px;font-weight:800;color:#1A1A1A;margin:0 0 22px;text-align:center;}
 .udetail-sec{margin-bottom:22px;}
+@keyframes udGuidePulse{0%,100%{box-shadow:0 0 0 0 rgba(233,30,140,0);}50%{box-shadow:0 0 0 6px rgba(233,30,140,.28);}}
+.ud-guide-glow{border-radius:16px;animation:udGuidePulse 1.3s ease-in-out infinite;}
 .udetail-lbl{font-size:13px;color:#888;font-weight:700;margin:0 0 10px;}
 .udetail-row{display:flex;gap:10px;flex-wrap:wrap;}
 .ud-color{width:40px;height:40px;border-radius:50%;cursor:pointer;border:2px solid transparent;box-shadow:0 0 0 1px #ececec inset;}
@@ -568,7 +570,7 @@ function renderPage(){
     document.getElementById('dContent').innerHTML='<div class="dempty">기기를 찾을 수 없습니다.<br><a href="/galaxy_z8" style="color:#E91E8C;font-weight:700;">목록으로 돌아가기</a></div>';
     return;
   }
-  ucatSel={device:d,color:0,storage:0,carrier:null,plan:(ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0]),discountMethod:null,planListOpen:false,bundleType:'none',bundleSize:'2',welfareType:'none'};
+  ucatSel={device:d,color:0,storage:0,carrier:null,plan:(ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0]),discountMethod:null,planListOpen:false,planTouched:false,bundleType:'none',bundleSize:'2',welfareType:'none'};
   uwtOpenCat=null; uwtSelectedByCat={};
   document.title=d.name+' — 유플러스 다이렉트';
   document.getElementById('dContent').innerHTML=`
@@ -581,14 +583,14 @@ function renderPage(){
     </div>
     <div class="udetail-sec"><p class="udetail-lbl">컬러</p><div class="udetail-row" id="udColors"></div></div>
     <div class="udetail-sec"><p class="udetail-lbl">용량</p><div class="udetail-row" id="udStorage"></div></div>
-    <div class="udetail-sec"><p class="udetail-lbl">현재 사용 중인 통신사</p><div class="udetail-row" id="udCarrier"></div></div>
-    <div class="udetail-sec"><p class="udetail-lbl">요금제</p><div id="udPlanWrap"></div></div>
+    <div class="udetail-sec" id="udSecCarrier"><p class="udetail-lbl">현재 사용 중인 통신사</p><div class="udetail-row" id="udCarrier"></div></div>
+    <div class="udetail-sec" id="udSecPlan"><p class="udetail-lbl">요금제</p><div id="udPlanWrap"></div></div>
     <div class="udetail-sec" id="uwtSection" style="display:none">
       <p class="uwt-sec-title">🎁 요금제별 혜택</p>
       <div id="uwtPlanBenefits" style="margin-bottom:16px;"></div>
       <div class="uwt-catlist" id="uwtCatList"></div>
     </div>
-    <div class="udetail-sec"><p class="udetail-lbl">할인방식</p><div class="udetail-discount-grid" id="udDiscount"></div></div>
+    <div class="udetail-sec" id="udSecDiscount"><p class="udetail-lbl">할인방식</p><div class="udetail-discount-grid" id="udDiscount"></div></div>
     <div class="udetail-sec" style="display:none"><!-- 2026-08-14: 의미없다는 피드백으로 임시 비활성화. 다시 켜려면 이 style만 지우면 됨 -->
       <div class="udx-toggle" id="udxToggle" onclick="udxToggleOpen()">
         <span class="udx-toggle-name">요금제 추가 할인 조건 확인하기</span>
@@ -681,7 +683,7 @@ function renderPage(){
       <button class="udetail-btn-consult" onclick="ctaGo()" type="button">상담 문의</button>
       <button class="udetail-btn-order" onclick="ctaGo()" type="button">주문 신청하기</button>
     </div>`;
-  renderColors();renderStorage();renderCarrier();renderPlanRow();renderDiscount();
+  renderColors();renderStorage();renderCarrier();renderPlanRow();renderDiscount();udUpdateGuide();
   refreshImg();refreshPrice();
 }
 
@@ -717,12 +719,21 @@ function renderDiscount(){
       <span class="udetail-discount-check">✓</span><p class="udetail-discount-name">선택약정</p><p class="udetail-discount-desc">요금제 25% 할인, 기기값 정상가</p>
     </div>`;
 }
+function udUpdateGuide(){
+  var secs={carrier:'udSecCarrier',plan:'udSecPlan',discount:'udSecDiscount'};
+  Object.keys(secs).forEach(function(k){ var el=document.getElementById(secs[k]); if(el) el.classList.remove('ud-guide-glow'); });
+  var targetId=null;
+  if(!ucatSel.carrier) targetId=secs.carrier;
+  else if(!ucatSel.planTouched) targetId=secs.plan;
+  else if(!ucatSel.discountMethod) targetId=secs.discount;
+  if(targetId){ var t=document.getElementById(targetId); if(t) t.classList.add('ud-guide-glow'); }
+}
 window.pickColor=function(i){ucatSel.color=i;renderColors();refreshImg();};
 window.pickStorage=function(i){ucatSel.storage=i;renderStorage();refreshPrice();};
-window.pickCarrier=function(n){ucatSel.carrier=n;renderCarrier();refreshPrice();};
-window.togglePlanList=function(){ucatSel.planListOpen=!ucatSel.planListOpen;renderPlanRow();};
-window.pickPlan=function(i){ucatSel.plan=ucatPlans[i];ucatSel.planListOpen=false;renderPlanRow();refreshPrice();};
-window.pickDiscount=function(m){ucatSel.discountMethod=m;renderDiscount();refreshPrice();};
+window.pickCarrier=function(n){ucatSel.carrier=n;renderCarrier();refreshPrice();udUpdateGuide();};
+window.togglePlanList=function(){ucatSel.planListOpen=!ucatSel.planListOpen;ucatSel.planTouched=true;renderPlanRow();udUpdateGuide();};
+window.pickPlan=function(i){ucatSel.plan=ucatPlans[i];ucatSel.planListOpen=false;ucatSel.planTouched=true;renderPlanRow();refreshPrice();udUpdateGuide();};
+window.pickDiscount=function(m){ucatSel.discountMethod=m;renderDiscount();refreshPrice();udUpdateGuide();};
 
 function refreshImg(){
   const c=ucatSel.device.colors&&ucatSel.device.colors[ucatSel.color];
