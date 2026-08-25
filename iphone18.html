@@ -48,6 +48,11 @@
     overflow:hidden;
     text-align:center;
   }
+  #colors{
+    min-height:auto;
+    padding-top:clamp(32px,5vh,56px);
+    padding-bottom:clamp(40px,6vh,64px);
+  }
 
   .glow{
     position:absolute;
@@ -234,6 +239,16 @@
     transform:translateY(10px);
     transition:opacity .8s ease, transform .8s ease;
   }
+  .b-lineup-img{
+    display:block;
+    width:100%;
+    max-width:480px;
+    margin:0 auto clamp(28px,4.5vh,44px);
+    border-radius:16px;
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity .9s ease .03s, transform .9s ease .03s;
+  }
   .b-title{
     font-size:clamp(28px,6vw,44px);
     font-weight:300;
@@ -351,6 +366,7 @@
   .cta-note-dark{ color:rgba(10,10,12,.45); }
 
   .benefits.in-view .b-eyebrow,
+  .benefits.in-view .b-lineup-img,
   .benefits.in-view .b-title,
   .benefits.in-view .b-sub,
   .benefits.in-view .b-closing,
@@ -437,7 +453,6 @@
 
   <section class="section" id="colors">
     <div class="glow"></div>
-    <h2>아이폰 18 예상 라인업</h2>
     <div class="stage stage-wide">
       <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/colors.jpg" alt="iPhone 18 컬러 라인업" width="1400" height="768">
     </div>
@@ -446,6 +461,7 @@
   <section class="benefits">
     <div class="benefits-inner">
       <span class="b-eyebrow">PRE-RESERVATION BENEFITS</span>
+      <img class="b-lineup-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/lineup_promo.jpg" alt="New 아이폰 예상 라인업" loading="lazy">
       <h2 class="b-title">오직 유플러스 다이렉트에서만</h2>
       <p class="b-sub">아이폰 18 사전예약하고 특별한 혜택을 모두 받아보세요</p>
 
