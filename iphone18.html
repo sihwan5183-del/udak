@@ -436,6 +436,133 @@
   .sh-feature-title{ font-size:13.5px;font-weight:700;color:#0a0a0c; }
   .sh-feature-sub{ font-size:11.5px;color:#999;margin-top:2px; }
 
+
+  .reserve{
+    position:relative;
+    background:#ffffff;
+    color:#0a0a0c;
+    padding:clamp(64px,10vh,100px) 24px clamp(80px,12vh,120px);
+  }
+  .rf-inner{ max-width:480px; margin:0 auto; }
+  .rf-title{
+    font-size:clamp(24px,5.6vw,32px);
+    font-weight:800;
+    letter-spacing:-.01em;
+    text-align:center;
+    line-height:1.3;
+  }
+  .rf-sub{
+    margin-top:8px;
+    font-size:14px;
+    color:#777;
+    text-align:center;
+    margin-bottom:clamp(32px,5vh,48px);
+  }
+  .rf-field{ margin-bottom:20px; }
+  .rf-field label{
+    display:block;
+    font-size:13.5px;
+    font-weight:700;
+    color:#0a0a0c;
+    margin-bottom:9px;
+  }
+  .rf-field .req{ color:#e0293e; margin-left:2px; }
+  .rf-field input[type="text"],
+  .rf-field input[type="tel"],
+  .rf-field select,
+  .rf-field textarea{
+    width:100%;
+    padding:14px 16px;
+    border:1.5px solid #e4e4e6;
+    border-radius:12px;
+    font-size:15px;
+    font-family:inherit;
+    color:#0a0a0c;
+    background:#fff;
+    box-sizing:border-box;
+    -webkit-appearance:none;
+    appearance:none;
+  }
+  .rf-field input::placeholder,
+  .rf-field textarea::placeholder{ color:#b7b7bb; }
+  .rf-field input:focus,
+  .rf-field select:focus,
+  .rf-field textarea:focus{
+    outline:none;
+    border-color:#0a0a0c;
+  }
+  .rf-field select{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23777' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 14px center;
+    background-size:18px;
+    padding-right:40px;
+  }
+  .rf-field textarea{ resize:vertical; min-height:80px; }
+  .rf-phone-group{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .rf-phone-group input{ text-align:center; }
+  .rf-phone-group input:first-child{ flex:0 0 68px; color:#999; background:#fafafa; }
+  .rf-phone-group span{ color:#c4c4c8; font-size:14px; }
+  .rf-toggle-group{ display:flex; gap:10px; }
+  .rf-toggle{
+    flex:1;
+    padding:14px 8px;
+    border:1.5px solid #e4e4e6;
+    border-radius:12px;
+    background:#fff;
+    color:#666;
+    font-family:inherit;
+    font-size:14.5px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .rf-toggle.on{ border-color:#0a0a0c; background:#0a0a0c; color:#fff; }
+  .rf-privacy{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 2px;
+    cursor:pointer;
+    font-size:13.5px;
+    color:#333;
+  }
+  .rf-privacy input{ width:18px;height:18px;accent-color:#0a0a0c;flex-shrink:0; }
+  .rf-privacy em{ color:#e0293e; font-style:normal; }
+  .rf-privacy-detail{
+    font-size:11.5px;
+    color:#999;
+    line-height:1.6;
+    padding:0 2px 20px;
+  }
+  .rf-submit{
+    width:100%;
+    padding:17px;
+    border:none;
+    border-radius:100px;
+    background:#0a0a0c;
+    color:#fff;
+    font-family:inherit;
+    font-size:15.5px;
+    font-weight:800;
+    cursor:pointer;
+    margin-top:4px;
+  }
+  .rf-submit:active{ opacity:.85; }
+  .rf-submit:disabled{ opacity:.5; cursor:not-allowed; }
+  .rf-status{
+    text-align:center;
+    font-size:13px;
+    margin-top:14px;
+    min-height:18px;
+    color:#666;
+  }
+  .rf-status.err{ color:#e0293e; }
+  .rf-status.ok{ color:#0a8a4a; font-weight:700; }
+
 </style>
 </head>
 <body>
@@ -453,7 +580,7 @@
     <h1>iPhone 18</h1>
     <p class="sub">아이폰 18 사전예약 정보를<br>가장 먼저 누구보다, 빠르고, 정확하게 알려드립니다.</p>
     <button class="cta" id="ctaBtn">사전예약 신청하기</button>
-    <div class="cta-note" id="ctaNote">사전예약 페이지 준비 중입니다</div>
+
     <div class="scroll-cue"></div>
   </section>
 
@@ -490,7 +617,84 @@
 
       <p class="b-closing">전부 혜택을 받아보세요!</p>
       <button class="cta cta-dark" id="ctaBtn2">사전예약 신청하기</button>
-      <div class="cta-note cta-note-dark" id="ctaNote2">사전예약 페이지 준비 중입니다</div>
+
+    </div>
+  </section>
+
+
+  <section class="reserve" id="reserveForm">
+    <div class="rf-inner">
+      <h2 class="rf-title">새로운 아이폰 사전예약 알림</h2>
+      <p class="rf-sub">사전예약 신청 페이지입니다.</p>
+
+      <form id="reservationForm">
+        <div class="rf-field">
+          <label>이름 <span class="req">*</span></label>
+          <input type="text" id="rfName" placeholder="이름을 입력해 주세요">
+        </div>
+
+        <div class="rf-field">
+          <label>연락처 <span class="req">*</span></label>
+          <div class="rf-phone-group">
+            <input type="text" id="rfPhone1" value="010" readonly>
+            <span>-</span>
+            <input type="tel" id="rfPhone2" placeholder="0000" maxlength="4" inputmode="numeric">
+            <span>-</span>
+            <input type="tel" id="rfPhone3" placeholder="0000" maxlength="4" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="rf-field">
+          <label>생년월일 <span class="req">*</span></label>
+          <input type="text" id="rfBirth" placeholder="예: 1994-01-01" inputmode="numeric">
+        </div>
+
+        <div class="rf-field">
+          <label>통신사 <span class="req">*</span></label>
+          <select id="rfCarrier">
+            <option value="" disabled selected>통신사를 선택해 주세요</option>
+            <option value="SKT">SKT</option>
+            <option value="KT">KT</option>
+            <option value="LG U+">LG U+</option>
+            <option value="알뜰폰">알뜰폰</option>
+          </select>
+        </div>
+
+        <div class="rf-field">
+          <label>가입조건 <span class="req">*</span></label>
+          <div class="rf-toggle-group" id="rfJoinTypeGroup">
+            <button type="button" class="rf-toggle on" data-value="번호이동" onclick="rfSelectJoinType(this)">번호이동</button>
+            <button type="button" class="rf-toggle" data-value="기기변경" onclick="rfSelectJoinType(this)">기기변경</button>
+          </div>
+        </div>
+
+        <div class="rf-field">
+          <label>구매상품 <span class="req">*</span></label>
+          <select id="rfProduct">
+            <option value="" disabled selected>구매하실 상품을 선택해 주세요</option>
+            <option value="아이폰 18">아이폰 18</option>
+            <option value="아이폰 18 프로">아이폰 18 프로</option>
+            <option value="아이폰 18 프로맥스">아이폰 18 프로맥스</option>
+            <option value="아이폰 울트라">아이폰 울트라</option>
+          </select>
+        </div>
+
+        <div class="rf-field">
+          <label>전달사항</label>
+          <textarea id="rfMemo" placeholder="요청하실 사항을 자유롭게 적어주세요." rows="3"></textarea>
+        </div>
+
+        <label class="rf-privacy">
+          <input type="checkbox" id="rfPrivacy">
+          <span>개인정보 수집 및 이용 동의 <em>(필수)</em></span>
+        </label>
+        <div class="rf-privacy-detail">
+          수집 항목: 이름, 연락처, 생년월일 · 수집 목적: 아이폰 18 사전예약 상담 및 안내 · 보유 기간: 상담 완료 후 파기
+        </div>
+
+        <button type="submit" class="rf-submit" id="rfSubmitBtn">🔔 알림 신청하기</button>
+        <p class="rf-status" id="rfStatus"></p>
+      </form>
     </div>
   </section>
 
@@ -503,19 +707,16 @@
   },{ threshold:.2 });
   document.querySelectorAll('.section, .benefits, .b-group').forEach(s=>io.observe(s));
 
-  function wireCta(btnId, noteId){
+  function wireCta(btnId){
     const btn = document.getElementById(btnId);
-    const note = document.getElementById(noteId);
-    if(!btn || !note) return;
-    let t;
+    if(!btn) return;
     btn.addEventListener('click', ()=>{
-      note.classList.add('show');
-      clearTimeout(t);
-      t = setTimeout(()=>note.classList.remove('show'), 2200);
+      const target = document.getElementById('reserveForm');
+      if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
     });
   }
-  wireCta('ctaBtn','ctaNote');
-  wireCta('ctaBtn2','ctaNote2');
+  wireCta('ctaBtn');
+  wireCta('ctaBtn2');
 </script>
 
 <div class="sh-modal-overlay" id="shModalOverlay" onclick="if(event.target===this)closeShModal()">
@@ -619,6 +820,104 @@ window.closeShModal=function(){
   document.getElementById('shModalOverlay').classList.remove('open');
   document.body.style.overflow='';
 };
+</script>
+
+
+<script>
+window.rfSelectJoinType=function(el){
+  document.querySelectorAll('#rfJoinTypeGroup .rf-toggle').forEach(function(b){b.classList.remove('on');});
+  el.classList.add('on');
+};
+
+function rfGetJoinType(){
+  var on=document.querySelector('#rfJoinTypeGroup .rf-toggle.on');
+  return on?on.dataset.value:'';
+}
+
+document.getElementById('reservationForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var statusEl=document.getElementById('rfStatus');
+  statusEl.className='rf-status';
+  statusEl.textContent='';
+
+  var name=document.getElementById('rfName').value.trim();
+  var p2=document.getElementById('rfPhone2').value.replace(/\D/g,'');
+  var p3=document.getElementById('rfPhone3').value.replace(/\D/g,'');
+  var phone='010'+p2+p3;
+  var birth=document.getElementById('rfBirth').value.trim();
+  var carrier=document.getElementById('rfCarrier').value;
+  var joinType=rfGetJoinType();
+  var product=document.getElementById('rfProduct').value;
+  var memo=document.getElementById('rfMemo').value.trim();
+  var privacy=document.getElementById('rfPrivacy').checked;
+
+  function fail(msg){ statusEl.textContent=msg; statusEl.className='rf-status err'; }
+
+  if(!name){ fail('이름을 입력해 주세요.'); return; }
+  if(phone.length!==11){ fail('연락처를 정확히 입력해 주세요.'); return; }
+  var bm=birth.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(!bm){ fail('생년월일을 YYYY-MM-DD 형식으로 입력해 주세요. (예: 1994-01-01)'); return; }
+  var by=parseInt(bm[1],10), bmo=parseInt(bm[2],10), bd=parseInt(bm[3],10);
+  var bDate=new Date(by,bmo-1,bd);
+  if(bDate.getFullYear()!==by || bDate.getMonth()!==bmo-1 || bDate.getDate()!==bd){
+    fail('생년월일을 다시 확인해 주세요.'); return;
+  }
+  var today=new Date();
+  var age=today.getFullYear()-by;
+  if(today.getMonth()+1<bmo || (today.getMonth()+1===bmo && today.getDate()<bd)) age--;
+  if(age<19){
+    alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 신청해 주세요.');
+    return;
+  }
+  if(!carrier){ fail('통신사를 선택해 주세요.'); return; }
+  if(!joinType){ fail('가입조건을 선택해 주세요.'); return; }
+  if(!product){ fail('구매하실 상품을 선택해 주세요.'); return; }
+  if(!privacy){ fail('개인정보 수집 및 이용 동의가 필요합니다.'); return; }
+
+  var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
+  var fullMemo='가입조건: '+joinType+(memo?(' / '+memo):'');
+
+  var btn=document.getElementById('rfSubmitBtn');
+  btn.disabled=true;
+  btn.textContent='신청 중...';
+
+  if(typeof fbq!=='undefined') fbq('track','Lead');
+
+  fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
+      'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
+      'Prefer':'return=minimal'
+    },
+    body:JSON.stringify({
+      name:name, phone:phoneF, carrier:carrier,
+      channel:'iphone18_landing', utm_campaign:'iphone18',
+      device_interest:product, capacity:'', product_color:'',
+      birth_date:birth, memo:fullMemo, status:'신규'
+    })
+  }).then(function(res){
+    if(res.ok){
+      statusEl.textContent='신청이 완료되었습니다. 빠르게 연락드리겠습니다.';
+      statusEl.className='rf-status ok';
+      document.getElementById('reservationForm').reset();
+      document.querySelectorAll('#rfJoinTypeGroup .rf-toggle').forEach(function(b,i){b.classList.toggle('on', i===0);});
+      btn.disabled=false;
+      btn.textContent='🔔 알림 신청하기';
+    } else {
+      res.text().then(function(t){ console.error('Supabase:', t); });
+      fail('신청 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      btn.disabled=false;
+      btn.textContent='🔔 알림 신청하기';
+    }
+  }).catch(function(err){
+    console.error(err);
+    fail('네트워크 오류가 발생했습니다. 다시 시도해 주세요.');
+    btn.disabled=false;
+    btn.textContent='🔔 알림 신청하기';
+  });
+});
 </script>
 
 </body>
