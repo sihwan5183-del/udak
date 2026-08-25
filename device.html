@@ -640,6 +640,12 @@ function renderPage(){
     <div class="udetail-sec"><p class="udetail-lbl">용량</p><div class="udetail-row" id="udStorage"></div></div>
     <div class="udetail-sec" id="udSecCarrier"><p class="udetail-lbl">현재 사용 중인 통신사</p><div class="udetail-row" id="udCarrier"></div></div>
     <div class="udetail-sec" id="udSecPlan"><p class="udetail-lbl">요금제</p><div id="udPlanWrap"></div></div>
+    <div class="udetail-sec" id="uwtSection" style="display:none">
+      <p class="uwt-sec-title">🎁 요금제별 혜택</p>
+      <div id="uwtPlanBenefits" style="margin-bottom:16px;"></div>
+      <div class="uwt-catlist" id="uwtCatList"></div>
+    </div>
+    <div class="udetail-sec" id="udSecDiscount"><p class="udetail-lbl">할인방식</p><div class="udetail-discount-grid" id="udDiscount"></div></div>
     <div class="udetail-sec">
       <p class="uwt-sec-title">🏠 스마트홈 5종</p>
       <div class="sh-tabs" id="shTabs"></div>
@@ -650,13 +656,6 @@ function renderPage(){
       <button class="sh-detail-link" id="shDetailBtn" type="button" onclick="shOpenDetail()">자세히보기 ›</button>
       <div class="sh-info-grid" id="shInfoGrid"></div>
     </div>
-
-    <div class="udetail-sec" id="uwtSection" style="display:none">
-      <p class="uwt-sec-title">🎁 요금제별 혜택</p>
-      <div id="uwtPlanBenefits" style="margin-bottom:16px;"></div>
-      <div class="uwt-catlist" id="uwtCatList"></div>
-    </div>
-    <div class="udetail-sec" id="udSecDiscount"><p class="udetail-lbl">할인방식</p><div class="udetail-discount-grid" id="udDiscount"></div></div>
     <div class="udetail-sec" style="display:none"><!-- 2026-08-14: 의미없다는 피드백으로 임시 비활성화. 다시 켜려면 이 style만 지우면 됨 -->
       <div class="udx-toggle" id="udxToggle" onclick="udxToggleOpen()">
         <span class="udx-toggle-name">요금제 추가 할인 조건 확인하기</span>
@@ -884,7 +883,7 @@ let shState={active:0};
 
 function shRenderTabs(){
   document.getElementById('shTabs').innerHTML=SH_CATEGORIES.map((c,i)=>
-    '<div class="sh-tab'+(i===shState.active?' on':'')+'" onclick="shSelect('+i+')">'+
+    '<div class="sh-tab ud-guide-glow'+(i===shState.active?' on':'')+'" onclick="shSelect('+i+')">'+
       '<span class="sh-tab-icon">'+shSvg(c.tabIcon,22)+'</span>'+
       '<span class="sh-tab-sub">'+c.tabSub+'</span>'+
       '<span class="sh-tab-name">'+c.tabName+'</span>'+
