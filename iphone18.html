@@ -521,22 +521,26 @@
     cursor:pointer;
   }
   .rf-toggle.on{ border-color:#0a0a0c; background:#0a0a0c; color:#fff; }
+  .rf-privacy-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:2px 2px 20px;
+  }
   .rf-privacy{
     display:flex;
     align-items:center;
     gap:10px;
-    padding:14px 2px;
     cursor:pointer;
     font-size:13.5px;
     color:#333;
   }
   .rf-privacy input{ width:18px;height:18px;accent-color:#0a0a0c;flex-shrink:0; }
   .rf-privacy em{ color:#e0293e; font-style:normal; }
-  .rf-privacy-detail{
-    font-size:11.5px;
-    color:#999;
-    line-height:1.6;
-    padding:0 2px 20px;
+  .rf-privacy-more{
+    background:none;border:none;padding:6px;
+    color:#999;cursor:pointer;
+    display:flex;align-items:center;
   }
   .rf-submit{
     width:100%;
@@ -562,6 +566,84 @@
   }
   .rf-status.err{ color:#e0293e; }
   .rf-status.ok{ color:#0a8a4a; font-weight:700; }
+
+
+  .pv-modal-overlay{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.68);
+    z-index:3100;
+    align-items:center;justify-content:center;
+    padding:20px;
+    box-sizing:border-box;
+  }
+  .pv-modal-overlay.open{ display:flex; }
+  .pv-modal{
+    position:relative;
+    width:100%;max-width:460px;max-height:86vh;
+    overflow-y:auto;
+    background:#fff;color:#0a0a0c;
+    border-radius:20px;
+    padding:26px 22px 22px;
+    box-sizing:border-box;
+    font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;
+    animation:pvModalIn .3s cubic-bezier(.22,1,.36,1);
+  }
+  @keyframes pvModalIn{
+    from{ opacity:0; transform:translateY(16px) scale(.98); }
+    to{ opacity:1; transform:none; }
+  }
+  .pv-close{
+    position:absolute;top:14px;right:14px;
+    width:32px;height:32px;border-radius:50%;
+    background:#f2f2f3;border:none;color:#0a0a0c;
+    font-size:18px;cursor:pointer;line-height:1;
+  }
+  .pv-title{ font-size:19px;font-weight:800;margin-bottom:14px;padding-right:30px; }
+  .pv-intro{ font-size:13px;color:#666;line-height:1.65;margin-bottom:18px; }
+  .pv-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12px;
+    margin-bottom:18px;
+    table-layout:fixed;
+  }
+  .pv-table th{
+    background:#f5f5f6;
+    color:#666;
+    font-weight:700;
+    padding:10px 8px;
+    text-align:left;
+    border-bottom:1px solid #eee;
+  }
+  .pv-table td{
+    padding:12px 8px;
+    color:#333;
+    line-height:1.55;
+    vertical-align:top;
+    border-bottom:1px solid #f0f0f0;
+  }
+  .pv-notice{
+    background:#f7f7f8;
+    border-radius:12px;
+    padding:14px 16px;
+    margin-bottom:16px;
+  }
+  .pv-notice-title{ font-size:12.5px;font-weight:700;margin-bottom:8px; }
+  .pv-notice ul{ margin:0;padding:0;list-style:none; }
+  .pv-notice li{
+    font-size:11.5px;color:#666;line-height:1.7;
+    padding-left:10px;position:relative;
+  }
+  .pv-notice li::before{ content:'·';position:absolute;left:0; }
+  .pv-contact{
+    text-align:center;font-size:11.5px;color:#999;margin-bottom:18px;
+  }
+  .pv-confirm{
+    display:block;width:100%;padding:15px;
+    background:#0a0a0c;color:#fff;border:none;border-radius:100px;
+    font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;
+  }
 
 </style>
 </head>
@@ -675,12 +757,14 @@
           <textarea id="rfMemo" placeholder="요청하실 사항을 자유롭게 적어주세요." rows="3"></textarea>
         </div>
 
-        <label class="rf-privacy">
-          <input type="checkbox" id="rfPrivacy">
-          <span>개인정보 수집 및 이용 동의 <em>(필수)</em></span>
-        </label>
-        <div class="rf-privacy-detail">
-          수집 항목: 이름, 연락처, 생년월일 · 수집 목적: 아이폰 18 사전예약 상담 및 안내 · 보유 기간: 상담 완료 후 파기
+        <div class="rf-privacy-row">
+          <label class="rf-privacy">
+            <input type="checkbox" id="rfPrivacy">
+            <span>개인정보 수집 및 이용 동의 <em>(필수)</em></span>
+          </label>
+          <button type="button" class="rf-privacy-more" onclick="openPrivacyModal()" aria-label="개인정보 수집 및 이용 동의 자세히 보기">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
         </div>
 
         <button type="submit" class="rf-submit" id="rfSubmitBtn">🔔 알림 신청하기</button>
@@ -815,6 +899,15 @@ window.closeShModal=function(){
 
 
 <script>
+window.openPrivacyModal=function(){
+  document.getElementById('pvModalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+};
+window.closePrivacyModal=function(){
+  document.getElementById('pvModalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+};
+
 document.getElementById('reservationForm').addEventListener('submit', function(e){
   e.preventDefault();
   var statusEl=document.getElementById('rfStatus');
@@ -897,6 +990,38 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
   });
 });
 </script>
+
+
+<div class="pv-modal-overlay" id="pvModalOverlay" onclick="if(event.target===this)closePrivacyModal()">
+  <div class="pv-modal">
+    <button type="button" class="pv-close" onclick="closePrivacyModal()">&times;</button>
+    <p class="pv-title">개인정보 수집 및 이용 동의</p>
+    <p class="pv-intro">유플러스 다이렉트(이하 "회사")는 상담 신청 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.</p>
+    <table class="pv-table">
+      <thead>
+        <tr><th>항목</th><th>수집 목적</th><th>보유 기간</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>이름, 전화번호,<br>생년월일, 희망기종,<br>현재 통신사</td>
+          <td>상품 상담 및<br>주문 신청 안내</td>
+          <td>수집일로부터<br>6개월</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pv-notice">
+      <p class="pv-notice-title">◈ 고지사항</p>
+      <ul>
+        <li>위의 개인정보 수집·이용에 대한 동의를 거부할 권리가 있습니다.</li>
+        <li>동의를 거부하실 경우 상담 신청 서비스 이용이 제한될 수 있습니다.</li>
+        <li>수집된 개인정보는 제3자에게 제공되지 않습니다.</li>
+        <li>보유 기간 종료 후 해당 정보는 즉시 파기됩니다.</li>
+      </ul>
+    </div>
+    <p class="pv-contact">문의: 유플러스 다이렉트 고객센터</p>
+    <button type="button" class="pv-confirm" onclick="closePrivacyModal()">확인</button>
+  </div>
+</div>
 
 </body>
 </html>
