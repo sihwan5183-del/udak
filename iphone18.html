@@ -75,23 +75,23 @@
   }
   .eyebrow-badge{
     position:relative;z-index:1;
-    margin-bottom:24px;
+    margin-bottom:clamp(28px,5vh,40px);
     opacity:0;
     transform:translateY(10px);
     transition:opacity .8s ease, transform .8s ease;
   }
   .badge-desc{
     display:block;
-    font-size:11px;
+    font-size:clamp(19px,5vw,33px);
     font-weight:600;
-    letter-spacing:.24em;
+    letter-spacing:.10em;
     text-transform:uppercase;
-    color:var(--mist);
-    margin-bottom:7px;
+    color:var(--white);
+    margin-bottom:10px;
   }
   .badge-name{
     display:block;
-    font-size:16px;
+    font-size:clamp(26px,7vw,48px);
     font-weight:600;
     letter-spacing:.01em;
     color:var(--white);
