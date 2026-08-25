@@ -370,8 +370,14 @@
     transition:opacity .8s ease, transform .8s ease;
   }
   .sh-img-wrap{ position:relative; width:100%; }
-  .sh-hotspot{
+  .sh-hotspot-grid{
     position:absolute;
+    inset:0;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:34% 31% 35%;
+  }
+  .sh-hotspot-grid button{
     background:transparent;
     border:none;
     padding:0;
@@ -379,7 +385,8 @@
     cursor:pointer;
     -webkit-tap-highlight-color:rgba(0,0,0,.06);
   }
-  .sh-hotspot:active{ background:rgba(0,0,0,.04); border-radius:10px; }
+  .sh-hotspot-grid button:active{ background:rgba(0,0,0,.04); }
+  .sh-hotspot-pet{ grid-column:1 / -1; }
   .b-group.in-view .b-label{ opacity:1; transform:none; }
   .b-group.in-view .b-card{ opacity:1; transform:none; }
   .b-group.in-view .b-full-img{ opacity:1; transform:none; }
@@ -728,11 +735,13 @@
         </div>
         <div class="sh-img-wrap">
           <img class="b-full-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/smarthome_full.jpg" alt="아이폰 18 사전 예약 구매시 스마트홈 이용료 396,000원 전액 페이백" loading="lazy">
-          <button type="button" class="sh-hotspot" style="left:1%;top:4%;width:46%;height:30%" onclick="openShModal(0)" aria-label="우리집지킴이 도어캠 자세히 보기"></button>
-          <button type="button" class="sh-hotspot" style="left:52%;top:4%;width:46%;height:30%" onclick="openShModal(1)" aria-label="우리집돌봄이 Family 자세히 보기"></button>
-          <button type="button" class="sh-hotspot" style="left:1%;top:35%;width:46%;height:28%" onclick="openShModal(2)" aria-label="우리집돌봄이 Kids 자세히 보기"></button>
-          <button type="button" class="sh-hotspot" style="left:52%;top:35%;width:46%;height:28%" onclick="openShModal(3)" aria-label="우리집지킴이 Easy2+ 자세히 보기"></button>
-          <button type="button" class="sh-hotspot" style="left:1%;top:67%;width:97%;height:30%" onclick="openShModal(4)" aria-label="우리집돌봄이 Pet 자세히 보기"></button>
+          <div class="sh-hotspot-grid">
+            <button type="button" onclick="openShModal(0)" aria-label="우리집지킴이 도어캠 자세히 보기"></button>
+            <button type="button" onclick="openShModal(1)" aria-label="우리집돌봄이 Family 자세히 보기"></button>
+            <button type="button" onclick="openShModal(2)" aria-label="우리집돌봄이 Kids 자세히 보기"></button>
+            <button type="button" onclick="openShModal(3)" aria-label="우리집지킴이 Easy2+ 자세히 보기"></button>
+            <button type="button" class="sh-hotspot-pet" onclick="openShModal(4)" aria-label="우리집돌봄이 Pet 자세히 보기"></button>
+          </div>
         </div>
       </div>
 
