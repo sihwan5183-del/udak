@@ -699,6 +699,38 @@
     font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;
   }
 
+
+  .about-sec{
+    background:#f7f7f8;
+    padding:clamp(56px,9vh,90px) 24px clamp(56px,9vh,90px);
+  }
+  .about-inner{ max-width:480px; margin:0 auto; }
+  .about-hero{ text-align:center; margin-bottom:32px; }
+  .about-cert{
+    width:132px;height:132px;border-radius:50%;
+    display:block;margin:0 auto 18px;
+  }
+  .about-label{ font-size:13px;font-weight:700;color:#666;letter-spacing:.02em;margin-bottom:6px; }
+  .about-title{ font-size:23px;font-weight:800;letter-spacing:-.02em;color:#0a0a0c; }
+
+  .about-card{
+    background:#fff;
+    border:1px solid rgba(10,10,12,.08);
+    border-radius:18px;
+    padding:24px 20px;
+    margin-bottom:24px;
+  }
+  .about-card-eyebrow{ font-size:11px;font-weight:800;color:#666;letter-spacing:.1em;text-align:center;margin-bottom:8px; }
+  .about-card-title{ font-size:16px;font-weight:800;color:#0a0a0c;text-align:center;margin-bottom:18px;line-height:1.45; }
+  .about-biz{
+    display:grid;grid-template-columns:auto 1fr;gap:9px 16px;
+    font-size:13px;padding:18px 2px 2px;border-top:1px solid #f0f0f0;
+  }
+  .about-biz dt{ color:#999;font-weight:700; }
+  .about-biz dd{ color:#0a0a0c;font-weight:600; }
+
+  .about-img{ width:100%;display:block;border-radius:14px;margin-bottom:16px; }
+
 </style>
 </head>
 <body>
@@ -768,6 +800,33 @@
     <div class="glow"></div>
     <div class="stage stage-wide">
       <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/accessories.jpg" alt="고객님의 새 휴대폰, 더 안심하고 사용하실 수 있도록 - 클리어 케이스, 강화필름, 고속충전 어댑터">
+    </div>
+  </section>
+
+  <section class="about-sec">
+    <div class="about-inner">
+      <div class="about-hero">
+        <img class="about-cert" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/about-official-badge.jpg" alt="LG유플러스 공식인증대리점 (주)신세계정보통신">
+        <p class="about-label">유플러스 공식파트너사</p>
+        <p class="about-title">유플러스 다이렉트</p>
+      </div>
+
+      <div class="about-card">
+        <p class="about-card-eyebrow">ABOUT US</p>
+        <p class="about-card-title">유플러스 다이렉트는<br>신세계정보통신이 운영하는<br>온라인 상담 채널입니다</p>
+        <dl class="about-biz">
+          <dt>운영사</dt><dd>신세계정보통신</dd>
+          <dt>파트너십</dt><dd>LG U+ 공식 파트너사</dd>
+          <dt>직영매장</dt><dd>서울·경기 30개 운영</dd>
+          <dt>서비스</dt><dd>온라인 상담 · 개통 · 사후관리 일괄 진행</dd>
+        </dl>
+      </div>
+
+      <img class="about-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/about-stores.png" alt="유플러스 다이렉트란? 서울·경기 직영매장 30개 운영">
+      <img class="about-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/about-fast.png" alt="서울·경기 1위, 빠르게 받아보실 수 있습니다">
+      <img class="about-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/about-directcare.png" alt="U+ DIRECT CARE, 개통으로 끝내지 않습니다">
+      <img class="about-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/about-whyudak.png" alt="왜 유닭인가요">
+      <img class="about-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/about-purchase-steps.png" alt="온라인 구매 절차, 이렇게 진행됩니다" style="margin-bottom:0;">
     </div>
   </section>
 
