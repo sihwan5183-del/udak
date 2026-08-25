@@ -76,6 +76,17 @@
     z-index:0;
   }
 
+  .hero-tag{
+    position:relative;z-index:1;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:.08em;
+    color:var(--mist);
+    margin-bottom:14px;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
   .eyebrow{
     position:relative;z-index:1;
     font-size:11px;
@@ -228,6 +239,7 @@
 
   .in-view .eyebrow,
   .in-view .eyebrow-badge,
+  .in-view .hero-tag,
   .in-view .stage,
   .in-view h1,
   .in-view h2,
@@ -792,6 +804,7 @@
 
   <section class="section" id="hero">
     <div class="glow"></div>
+    <p class="hero-tag">아이폰 18 사전예약</p>
     <div class="eyebrow-badge">
       <span class="badge-desc">유플러스 공식파트너사</span>
       <span class="badge-name">유플러스 다이렉트</span>
