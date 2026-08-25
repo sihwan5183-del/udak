@@ -706,9 +706,7 @@
   }
   .about-inner{ max-width:480px; margin:0 auto; }
   .about-trigger{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
+    display:block;
     width:100%;
     padding:20px 22px;
     background:#fff;
@@ -720,8 +718,9 @@
     -webkit-tap-highlight-color:rgba(0,0,0,.06);
   }
   .about-trigger:active{ background:#f5f5f6; }
-  .about-trigger-title{ font-size:16px;font-weight:800;color:#0a0a0c; }
-  .about-trigger-hint{ font-size:12.5px;font-weight:600;color:#999;white-space:nowrap; }
+  .about-trigger-desc{ display:block;font-size:12px;font-weight:700;color:#999;letter-spacing:.02em;margin-bottom:4px; }
+  .about-trigger-title{ display:block;font-size:18px;font-weight:800;color:#0a0a0c; }
+  .about-trigger-hint{ display:block;font-size:12.5px;font-weight:600;color:#999;margin-top:10px; }
 
   .about-modal-overlay{
     display:none;
@@ -852,7 +851,8 @@
   <section class="about-sec">
     <div class="about-inner">
       <button type="button" class="about-trigger" onclick="openAboutModal()">
-        <span class="about-trigger-title">유플러스 다이렉트란?</span>
+        <span class="about-trigger-desc">유플러스 공식파트너사</span>
+        <span class="about-trigger-title">유플러스 다이렉트</span>
         <span class="about-trigger-hint">클릭해서 자세히보기 ›</span>
       </button>
     </div>
