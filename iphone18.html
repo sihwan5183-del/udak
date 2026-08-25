@@ -661,18 +661,9 @@
         </div>
 
         <div class="rf-field">
-          <label>가입조건 <span class="req">*</span></label>
-          <div class="rf-toggle-group" id="rfJoinTypeGroup">
-            <button type="button" class="rf-toggle on" data-value="번호이동" onclick="rfSelectJoinType(this)">번호이동</button>
-            <button type="button" class="rf-toggle" data-value="기기변경" onclick="rfSelectJoinType(this)">기기변경</button>
-          </div>
-        </div>
-
-        <div class="rf-field">
-          <label>구매상품 <span class="req">*</span></label>
+          <label>예약 상품 <span class="req">*</span></label>
           <select id="rfProduct">
-            <option value="" disabled selected>구매하실 상품을 선택해 주세요</option>
-            <option value="아이폰 18">아이폰 18</option>
+            <option value="" disabled selected>예약하실 상품을 선택해 주세요</option>
             <option value="아이폰 18 프로">아이폰 18 프로</option>
             <option value="아이폰 18 프로맥스">아이폰 18 프로맥스</option>
             <option value="아이폰 울트라">아이폰 울트라</option>
@@ -824,16 +815,6 @@ window.closeShModal=function(){
 
 
 <script>
-window.rfSelectJoinType=function(el){
-  document.querySelectorAll('#rfJoinTypeGroup .rf-toggle').forEach(function(b){b.classList.remove('on');});
-  el.classList.add('on');
-};
-
-function rfGetJoinType(){
-  var on=document.querySelector('#rfJoinTypeGroup .rf-toggle.on');
-  return on?on.dataset.value:'';
-}
-
 document.getElementById('reservationForm').addEventListener('submit', function(e){
   e.preventDefault();
   var statusEl=document.getElementById('rfStatus');
@@ -846,7 +827,6 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
   var phone='010'+p2+p3;
   var birth=document.getElementById('rfBirth').value.trim();
   var carrier=document.getElementById('rfCarrier').value;
-  var joinType=rfGetJoinType();
   var product=document.getElementById('rfProduct').value;
   var memo=document.getElementById('rfMemo').value.trim();
   var privacy=document.getElementById('rfPrivacy').checked;
@@ -870,12 +850,11 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
     return;
   }
   if(!carrier){ fail('통신사를 선택해 주세요.'); return; }
-  if(!joinType){ fail('가입조건을 선택해 주세요.'); return; }
-  if(!product){ fail('구매하실 상품을 선택해 주세요.'); return; }
+  if(!product){ fail('예약하실 상품을 선택해 주세요.'); return; }
   if(!privacy){ fail('개인정보 수집 및 이용 동의가 필요합니다.'); return; }
 
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
-  var fullMemo='가입조건: '+joinType+(memo?(' / '+memo):'');
+  var fullMemo=memo;
 
   var btn=document.getElementById('rfSubmitBtn');
   btn.disabled=true;
@@ -902,7 +881,6 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
       statusEl.textContent='신청이 완료되었습니다. 빠르게 연락드리겠습니다.';
       statusEl.className='rf-status ok';
       document.getElementById('reservationForm').reset();
-      document.querySelectorAll('#rfJoinTypeGroup .rf-toggle').forEach(function(b,i){b.classList.toggle('on', i===0);});
       btn.disabled=false;
       btn.textContent='🔔 알림 신청하기';
     } else {
