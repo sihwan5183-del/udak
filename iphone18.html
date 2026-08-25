@@ -728,7 +728,7 @@
 
         <div class="rf-field">
           <label>생년월일 <span class="req">*</span></label>
-          <input type="text" id="rfBirth" placeholder="예: 1994-01-01" inputmode="numeric">
+          <input type="text" id="rfBirth" placeholder="예: 1994-01-01" inputmode="numeric" maxlength="10" oninput="rfFormatBirth(this)">
         </div>
 
         <div class="rf-field">
@@ -899,6 +899,14 @@ window.closeShModal=function(){
 
 
 <script>
+window.rfFormatBirth=function(el){
+  var v=el.value.replace(/\D/g,'');
+  if(v.length>8) v=v.slice(0,8);
+  if(v.length<=4) el.value=v;
+  else if(v.length<=6) el.value=v.slice(0,4)+'-'+v.slice(4);
+  else el.value=v.slice(0,4)+'-'+v.slice(4,6)+'-'+v.slice(6);
+};
+
 window.openPrivacyModal=function(){
   document.getElementById('pvModalOverlay').classList.add('open');
   document.body.style.overflow='hidden';
