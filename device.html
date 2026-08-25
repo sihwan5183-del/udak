@@ -31,6 +31,7 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
 #shTabs.sh-tabs-guide .sh-tab{animation:udGuidePulse 1.3s ease-in-out infinite;}
 .udetail-lbl{font-size:13px;color:#888;font-weight:700;margin:0 0 10px;}
 .udetail-row{display:flex;gap:10px;flex-wrap:wrap;}
+#udColors{width:fit-content;}
 .ud-color{width:40px;height:40px;border-radius:50%;cursor:pointer;border:2px solid transparent;box-shadow:0 0 0 1px #ececec inset;}
 .ud-color.on{border-color:#E91E8C;box-shadow:0 0 0 1px #E91E8C inset;}
 .ud-chip{padding:12px 14px;border:1.5px solid #ddd;border-radius:10px;font-size:13.5px;font-weight:700;color:#555;cursor:pointer;background:#fff;text-align:center;flex:1;min-width:80px;}
@@ -637,16 +638,16 @@ function renderPage(){
       <p class="udetail-hero-amt" id="udHeroAmt">-<span>원</span></p>
       <p class="udetail-hero-sub" id="udHeroSub">-</p>
     </div>
-    <div class="udetail-sec" id="udSecColor"><p class="udetail-lbl">컬러</p><div class="udetail-row" id="udColors"></div></div>
+    <div class="udetail-sec"><p class="udetail-lbl">컬러</p><div class="udetail-row" id="udColors"></div></div>
     <div class="udetail-sec"><p class="udetail-lbl">용량</p><div class="udetail-row" id="udStorage"></div></div>
-    <div class="udetail-sec" id="udSecCarrier"><p class="udetail-lbl">현재 사용 중인 통신사</p><div class="udetail-row" id="udCarrier"></div></div>
-    <div class="udetail-sec" id="udSecPlan"><p class="udetail-lbl">요금제</p><div id="udPlanWrap"></div></div>
+    <div class="udetail-sec"><p class="udetail-lbl">현재 사용 중인 통신사</p><div class="udetail-row" id="udCarrier"></div></div>
+    <div class="udetail-sec"><p class="udetail-lbl">요금제</p><div id="udPlanWrap"></div></div>
     <div class="udetail-sec" id="uwtSection" style="display:none">
       <p class="uwt-sec-title">🎁 요금제별 혜택</p>
       <div id="uwtPlanBenefits" style="margin-bottom:16px;"></div>
       <div class="uwt-catlist" id="uwtCatList"></div>
     </div>
-    <div class="udetail-sec" id="udSecDiscount"><p class="udetail-lbl">할인방식</p><div class="udetail-discount-grid" id="udDiscount"></div></div>
+    <div class="udetail-sec"><p class="udetail-lbl">할인방식</p><div class="udetail-discount-grid" id="udDiscount"></div></div>
     <div class="udetail-sec">
       <p class="uwt-sec-title">🏠 스마트홈 5종</p>
       <div class="sh-tabs" id="shTabs"></div>
@@ -1002,7 +1003,7 @@ function shInitAll(){
 }
 
 function udUpdateGuide(){
-  var secs={color:'udSecColor',carrier:'udSecCarrier',plan:'udSecPlan',discount:'udSecDiscount'};
+  var secs={color:'udColors',carrier:'udCarrier',plan:'udPlanWrap',discount:'udDiscount'};
   Object.keys(secs).forEach(function(k){ var el=document.getElementById(secs[k]); if(el) el.classList.remove('ud-guide-glow'); });
   var shTabsEl=document.getElementById('shTabs');
   if(shTabsEl) shTabsEl.classList.remove('sh-tabs-guide');
