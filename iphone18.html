@@ -296,6 +296,30 @@
     vertical-align:middle;
   }
 
+  .sh-header{ text-align:left; }
+  .sh-header .b-label{ margin-bottom:10px; }
+  .sh-header-main{
+    font-size:clamp(16px,4vw,19px);
+    font-weight:800;
+    line-height:1.45;
+    color:#0a0a0c;
+    margin-bottom:8px;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .7s ease .05s, transform .7s ease .05s;
+  }
+  .sh-header-note{
+    font-size:11.5px;
+    color:#999;
+    line-height:1.5;
+    margin-bottom:20px;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .7s ease .1s, transform .7s ease .1s;
+  }
+  .b-group.in-view .sh-header-main,
+  .b-group.in-view .sh-header-note{ opacity:1; transform:none; }
+
   .b-grid{
     display:grid;
     grid-template-columns:1fr;
@@ -686,9 +710,13 @@
       </div>
 
       <div class="b-group">
-        <span class="b-label">아이폰 18 사전 예약 구매시 스마트홈 이용료 396,000원 전액 지원!</span>
+        <div class="sh-header">
+          <span class="b-label">아이폰 18 사전 예약 구매시</span>
+          <p class="sh-header-main">스마트 홈 월 이용료 11,000원 × 36개월 = 396,000원 전액 페이백!<br>「스마트 홈」을 무료로 이용 가능!</p>
+          <p class="sh-header-note">*도어캠의 경우 월 3,300원 추가 요금이 발생합니다.</p>
+        </div>
         <div class="sh-img-wrap">
-          <img class="b-full-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/smarthome_full.jpg" alt="아이폰 18 사전 예약 구매시 스마트홈 이용료 396,000원 전액 지원" loading="lazy">
+          <img class="b-full-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/smarthome_full.jpg" alt="아이폰 18 사전 예약 구매시 스마트홈 이용료 396,000원 전액 페이백" loading="lazy">
           <button type="button" class="sh-hotspot" style="left:3.1%;top:3.9%;width:43.7%;height:27.8%" onclick="openShModal(0)" aria-label="우리집지킴이 도어캠 자세히 보기"></button>
           <button type="button" class="sh-hotspot" style="left:50.4%;top:3.9%;width:46.3%;height:27.8%" onclick="openShModal(1)" aria-label="우리집돌봄이 Family 자세히 보기"></button>
           <button type="button" class="sh-hotspot" style="left:3.1%;top:33.2%;width:43.7%;height:27.5%" onclick="openShModal(2)" aria-label="우리집돌봄이 Kids 자세히 보기"></button>
