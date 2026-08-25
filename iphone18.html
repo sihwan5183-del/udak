@@ -304,8 +304,18 @@
     height:auto;
     display:block;
   }
+  .b-full-img{
+    display:block;
+    width:100%;
+    height:auto;
+    border-radius:14px;
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
   .b-group.in-view .b-label{ opacity:1; transform:none; }
   .b-group.in-view .b-card{ opacity:1; transform:none; }
+  .b-group.in-view .b-full-img{ opacity:1; transform:none; }
   .b-group.in-view .b-card:nth-child(2){ transition-delay:.06s; }
   .b-group.in-view .b-card:nth-child(3){ transition-delay:.12s; }
   .b-group.in-view .b-card:nth-child(4){ transition-delay:.18s; }
@@ -376,24 +386,12 @@
 
       <div class="b-group">
         <span class="b-label">스마트홈 5종</span>
-        <div class="b-grid">
-          <figure class="b-card"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/sh_doorcam.jpg" alt="우리집지킴이 도어캠" loading="lazy"></figure>
-          <figure class="b-card"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/sh_family.jpg" alt="우리집돌봄이 Family" loading="lazy"></figure>
-          <figure class="b-card"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/sh_kids.jpg" alt="우리집돌봄이 Kids" loading="lazy"></figure>
-          <figure class="b-card"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/sh_easy2plus.jpg" alt="우리집지킴이 Easy2+" loading="lazy"></figure>
-          <figure class="b-card b-card-wide"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/sh_pet.jpg" alt="우리집돌봄이 Pet" loading="lazy"></figure>
-        </div>
+        <img class="b-full-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/smarthome_full.jpg" alt="스마트홈 5종 혜택" loading="lazy">
       </div>
 
       <div class="b-group">
         <span class="b-label">결합 혜택 아이템</span>
-        <div class="b-grid b-grid-5">
-          <figure class="b-card"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/wt_watch.jpg" alt="애플워치 SE3" loading="lazy"></figure>
-          <figure class="b-card"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/wt_airpodsmax.jpg" alt="에어팟 맥스" loading="lazy"></figure>
-          <figure class="b-card"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/wt_airpods.jpg" alt="에어팟 시리즈" loading="lazy"></figure>
-          <figure class="b-card"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/wt_galaxytab.jpg" alt="갤럭시 탭 A11+" loading="lazy"></figure>
-          <figure class="b-card"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/wt_ipad.jpg" alt="아이패드 A16" loading="lazy"></figure>
-        </div>
+        <img class="b-full-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/companions_full.jpg" alt="결합 혜택 아이템" loading="lazy">
       </div>
 
       <p class="b-closing">전부 혜택을 받아보세요!</p>
