@@ -2420,7 +2420,6 @@ function mSubmitForm(){
     memo=(memo?memo+' / ':'')+'요금제별혜택 희망: '+urlWatchParam;
   }
   // 팝업 먼저 표시
-  if(typeof fbq!=='undefined')fbq('track','Lead');
   showTicket(name,phoneF,mDevice);
   // DB 저장 (백그라운드)
   fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations',{
@@ -2535,7 +2534,6 @@ function fSubmit(){
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
   var birthF='19'+birth.slice(0,2)+'-'+birth.slice(2,4)+'-'+birth.slice(4,6);
   // 팝업 먼저 표시
-  if(typeof fbq!=='undefined')fbq('track','Lead');
   showTicket(name,phoneF,fDevice);
   // DB 저장 (백그라운드)
   fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations',{
@@ -2547,11 +2545,12 @@ function fSubmit(){
       'Prefer':'return=minimal'
     },
     body:JSON.stringify({name:name,phone:phoneF,carrier:fCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:fDevice,capacity:fSelectedCapacity(),product_color:fSelectedColor(),birth_date:birthF,memo:memo||null,status:'신규'})
-  }).then(function(){
-    if(typeof fbq!=='undefined')fbq('track','Lead');
+  }).then(function(res){
+    if(res.ok){
+      if(typeof fbq!=='undefined')fbq('track','Lead');
+    }
     showTicket(name,phoneF,fDevice);
   }).catch(function(){
-    if(typeof fbq!=='undefined')fbq('track','Lead');
     showTicket(name,phoneF,fDevice);
   });
 }
