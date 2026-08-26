@@ -1406,7 +1406,6 @@ window.submitDeviceReserve=function(){
   if(watchSnapshotSub) snapshotParts.push('[요금제별혜택] '+watchSnapshotSub);
   var additionalBenefitsSub=snapshotParts.join(' / ')||null;
   var estimatedFeeSub=parseInt((document.getElementById('udHeroAmt').textContent||'').replace(/[^0-9]/g,''))||null;
-  if(typeof fbq!=='undefined')fbq('track','Lead');
   fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/leads',{
     method:'POST',
     headers:{
