@@ -1182,8 +1182,6 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
   btn.disabled=true;
   btn.textContent='신청 중...';
 
-  if(typeof fbq!=='undefined') fbq('track','Lead');
-
   fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations',{
     method:'POST',
     headers:{
@@ -1200,6 +1198,7 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
     })
   }).then(function(res){
     if(res.ok){
+      if(typeof fbq!=='undefined') fbq('track','Lead');
       statusEl.textContent='신청이 완료되었습니다. 빠르게 연락드리겠습니다.';
       statusEl.className='rf-status ok';
       document.getElementById('reservationForm').reset();
