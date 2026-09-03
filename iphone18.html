@@ -22,6 +22,9 @@ try {
   PAGE_UTM_CAMPAIGN = _p.get('utm_campaign') || null;
   PAGE_UTM_SOURCE = _p.get('utm_source') || null;
 } catch(e) {}
+// ssgadmin 기존 채널탭 이름과 맞춰주는 매핑 (URL 파라미터는 짧게, 저장값은 어드민 채널명 그대로)
+var CHANNEL_MAP = { naver: '네이버 검색광고' };
+var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_SOURCE) : null;
 </script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css">
@@ -1069,7 +1072,7 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
     },
     body:JSON.stringify({
       name:name, phone:phoneF, carrier:carrier,
-      channel:(PAGE_UTM_SOURCE||'iphone18_landing'), utm_campaign:(PAGE_UTM_CAMPAIGN||'iphone18'),
+      channel:(PAGE_CHANNEL||'iphone18_landing'), utm_campaign:(PAGE_UTM_CAMPAIGN||'iphone18'),
       device_interest:product, capacity:'', product_color:'',
       birth_date:birth, memo:fullMemo, status:'신규'
     })
