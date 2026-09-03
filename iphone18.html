@@ -710,10 +710,105 @@ try {
 
   .about-img{ width:100%;display:block;border-radius:14px;margin-bottom:16px; }
 
+  /* ══ 사이드 퀵 메뉴 ══ */
+  .side-quick{
+    position:fixed;
+    right:16px;top:50%;transform:translateY(-50%);
+    z-index:2500;
+    display:flex;flex-direction:column;
+    width:64px;
+    border-radius:32px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.35);
+    box-shadow:0 8px 28px rgba(0,0,0,.35);
+  }
+  .side-quick-btn{
+    position:relative;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    gap:4px;
+    padding:16px 4px;
+    background:radial-gradient(120% 140% at 30% 20%, #3a3a3d 0%, #1c1c1e 45%, #050506 100%);
+    border:none;outline:none;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .side-quick-btn + .side-quick-btn{ border-top:1px solid rgba(255,255,255,.16); }
+  .side-quick-btn svg{ width:26px;height:26px;flex-shrink:0;position:relative;z-index:1; }
+  .side-quick-dot{
+    position:absolute;top:14px;right:14px;
+    width:9px;height:9px;border-radius:50%;
+  }
+  .side-quick-btn.is-call .side-quick-dot{ background:#ff2d8c; box-shadow:0 0 8px 2px rgba(255,45,140,.75); }
+  .side-quick-btn.is-kakao .side-quick-dot{ background:#ffd400; box-shadow:0 0 8px 2px rgba(255,212,0,.75); }
+  .side-quick-label{
+    font-size:10.5px;font-weight:700;color:#fff;
+    letter-spacing:-.02em;line-height:1.25;text-align:center;
+  }
+  @media(max-width:640px){
+    .side-quick{ right:12px; top:auto; bottom:24px; transform:none; width:56px; border-radius:28px; }
+    .side-quick-btn{ padding:13px 4px; }
+    .side-quick-btn svg{ width:22px;height:22px; }
+  }
+
+  /* 전화/카톡 팝업 — 기존 모달과 톤 통일 (흰 카드) */
+  .qm-popup-overlay{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:2600;
+    align-items:center;justify-content:center;
+    padding:20px;box-sizing:border-box;
+  }
+  .qm-popup-overlay.open{ display:flex; }
+  .qm-popup{
+    position:relative;
+    width:100%;max-width:320px;
+    background:#fff;color:#0a0a0c;
+    border-radius:20px;
+    padding:26px 22px 22px;
+    box-sizing:border-box;
+    text-align:center;
+    font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;
+    animation:pvModalIn .3s cubic-bezier(.22,1,.36,1);
+  }
+  .qm-popup-close{
+    position:absolute;top:12px;right:12px;
+    width:30px;height:30px;border-radius:50%;
+    background:#f2f2f3;border:none;color:#0a0a0c;
+    font-size:17px;cursor:pointer;line-height:1;
+  }
+  .qm-popup-title{ font-size:13px;color:#999;font-weight:600;margin-bottom:10px; }
+  .qm-popup-main{ font-size:22px;font-weight:800;letter-spacing:-.01em;margin-bottom:20px; }
+  .qm-popup-btn{
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    width:100%;padding:14px;border:none;border-radius:100px;
+    font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;
+    text-decoration:none;
+  }
+  .qm-popup-btn.call{ background:#0a0a0c;color:#fff; }
+  .qm-popup-btn.kakao{ background:#FEE500;color:#3A1D1D; }
+
 </style>
 </head>
 <body>
 <div class="grain"></div>
+
+<div class="side-quick">
+  <button type="button" class="side-quick-btn is-call" onclick="toggleQmPopup('call')">
+    <span class="side-quick-dot"></span>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.55.57 1 1 0 011 1V20a1 1 0 01-1 1C9.61 21 3 14.39 3 6a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.55a1 1 0 01-.25 1.01l-2.2 2.23z" fill="#fff"/>
+    </svg>
+    <span class="side-quick-label">전화<br>상담</span>
+  </button>
+  <button type="button" class="side-quick-btn is-kakao" onclick="toggleQmPopup('kakao')">
+    <span class="side-quick-dot"></span>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 3C7.03 3 3 6.36 3 10.5c0 2.7 1.7 5.07 4.27 6.43l-.9 3.32a.3.3 0 00.45.33l3.9-2.57c.41.05.84.08 1.28.08 4.97 0 9-3.36 9-7.5S16.97 3 12 3z" fill="#fff"/>
+    </svg>
+    <span class="side-quick-label">카톡<br>문의</span>
+  </button>
+</div>
 
   <section class="section" id="hero">
     <div class="glow"></div>
@@ -1032,6 +1127,36 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
     <button type="button" class="pv-confirm" onclick="closePrivacyModal()">확인</button>
   </div>
 </div>
+
+<div class="qm-popup-overlay" id="qmPhoneOverlay" onclick="if(event.target===this)closeQmPopup('call')">
+  <div class="qm-popup">
+    <button type="button" class="qm-popup-close" onclick="closeQmPopup('call')">&times;</button>
+    <p class="qm-popup-title">전화 상담하기</p>
+    <p class="qm-popup-main">1660-1412</p>
+    <a href="tel:16601412" class="qm-popup-btn call">📞 전화 연결하기</a>
+  </div>
+</div>
+
+<div class="qm-popup-overlay" id="qmKakaoOverlay" onclick="if(event.target===this)closeQmPopup('kakao')">
+  <div class="qm-popup">
+    <button type="button" class="qm-popup-close" onclick="closeQmPopup('kakao')">&times;</button>
+    <p class="qm-popup-title">카카오톡 문의하기</p>
+    <p class="qm-popup-main">유플러스 다이렉트</p>
+    <a href="http://pf.kakao.com/_HxfVxcn/chat" target="_blank" class="qm-popup-btn kakao">💬 카카오톡 문의</a>
+  </div>
+</div>
+
+<script>
+window.toggleQmPopup=function(kind){
+  var callOv=document.getElementById('qmPhoneOverlay');
+  var kakaoOv=document.getElementById('qmKakaoOverlay');
+  if(kind==='call'){ callOv.classList.toggle('open'); kakaoOv.classList.remove('open'); }
+  else { kakaoOv.classList.toggle('open'); callOv.classList.remove('open'); }
+};
+window.closeQmPopup=function(kind){
+  (kind==='call'?document.getElementById('qmPhoneOverlay'):document.getElementById('qmKakaoOverlay')).classList.remove('open');
+};
+</script>
 
 </body>
 </html>
