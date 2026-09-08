@@ -305,14 +305,14 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   }
   .b-phone-grid{
     display:grid;
-    grid-template-columns:1fr;
-    gap:24px;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
     max-width:420px;
     margin:0 auto clamp(28px,4.5vh,44px);
   }
   .b-phone-grid > div{ min-width:0; }
   @media(min-width:640px){
-    .b-phone-grid{ grid-template-columns:1fr 1fr; max-width:640px; }
+    .b-phone-grid{ gap:24px; max-width:640px; }
   }
   .b-phone-tile{
     aspect-ratio:1/1;
