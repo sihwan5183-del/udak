@@ -415,12 +415,24 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   }
   .cta-note-dark{ color:rgba(10,10,12,.45); }
 
+  .b-mnp-img{
+    display:block;
+    width:100%;
+    max-width:480px;
+    margin:clamp(40px,6vh,64px) auto 0;
+    border-radius:16px;
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity .9s ease, transform .9s ease;
+  }
+
   .benefits.in-view .b-eyebrow,
   .benefits.in-view .b-lineup-img,
   .benefits.in-view .b-title,
   .benefits.in-view .b-sub,
   .benefits.in-view .b-closing,
-  .benefits.in-view .cta-dark{
+  .benefits.in-view .cta-dark,
+  .benefits.in-view .b-mnp-img{
     opacity:1;
     transform:none;
   }
@@ -932,6 +944,8 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
 
       <p class="b-closing">전부 혜택을 받아보세요!</p>
       <button class="cta cta-dark" id="ctaBtn2">사전예약 신청하기</button>
+
+      <img class="b-mnp-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/benefit_mnp.jpg" alt="U+ 이동 고객 혜택 - 가족 이동 1인당 최대 30만원 지원 인터넷TV 함께 이동 최대 80만원 4인가족 이동시 최대 170만원 혜택 아이폰18 사전예약" loading="lazy">
 
     </div>
   </section>
