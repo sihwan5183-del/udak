@@ -310,6 +310,7 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     max-width:420px;
     margin:0 auto clamp(28px,4.5vh,44px);
   }
+  .b-phone-grid > div{ min-width:0; }
   @media(min-width:640px){
     .b-phone-grid{ grid-template-columns:1fr 1fr; max-width:640px; }
   }
@@ -420,14 +421,11 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   .b-color-select.is-open svg{ transform:rotate(180deg); }
   .b-color-dropdown{
     display:none;
-    position:absolute;
-    left:0; right:0; top:calc(100% + 6px);
+    margin-top:8px;
     background:#fff;
     border:1px solid #e4e4e6;
     border-radius:10px;
-    box-shadow:0 8px 24px rgba(10,10,12,.08);
     overflow:hidden;
-    z-index:5;
   }
   .b-color-dropdown.is-open{ display:block; }
   .b-color-option{
