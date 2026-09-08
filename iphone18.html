@@ -339,6 +339,102 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     font-weight:700;
     letter-spacing:-.01em;
   }
+  .b-phone-toggle{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    margin:6px auto 0;
+    font-size:12.5px;
+    font-weight:600;
+    color:rgba(10,10,12,.45);
+    background:none;
+    border:none;
+    font-family:inherit;
+    cursor:pointer;
+    padding:4px;
+  }
+  .b-phone-toggle svg{
+    width:11px;height:11px;
+    transition:transform .3s ease;
+  }
+  .b-phone-toggle.is-open svg{ transform:rotate(180deg); }
+  .b-phone-detail{
+    display:grid;
+    grid-template-rows:0fr;
+    transition:grid-template-rows .4s ease;
+  }
+  .b-phone-detail.is-open{ grid-template-rows:1fr; }
+  .b-phone-detail-inner{ overflow:hidden; }
+  .b-phone-detail-pad{ padding-top:16px; text-align:left; }
+  .b-storage-row{ display:flex; gap:8px; }
+  .b-storage-badge{
+    flex:1;
+    padding:10px 6px;
+    border:1.5px solid #e4e4e6;
+    border-radius:10px;
+    background:#fff;
+    color:#666;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .b-storage-badge.is-active{ border-color:#0a0a0c; background:#0a0a0c; color:#fff; }
+  .b-price-display{
+    margin-top:14px;
+    padding:14px;
+    background:#f7f7f8;
+    border-radius:12px;
+  }
+  .b-price-value{
+    display:block;
+    font-size:19px;
+    font-weight:800;
+    letter-spacing:-.01em;
+  }
+  .b-price-note{
+    display:block;
+    margin-top:6px;
+    font-size:11.5px;
+    line-height:1.5;
+    color:rgba(10,10,12,.45);
+  }
+  .b-color-row{ margin-top:12px; position:relative; }
+  .b-color-select{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    width:100%;
+    padding:12px 14px;
+    border:1.5px solid #e4e4e6;
+    border-radius:10px;
+    background:#fff;
+    color:#0a0a0c;
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .b-color-select svg{ width:12px;height:12px; transition:transform .3s ease; }
+  .b-color-select.is-open svg{ transform:rotate(180deg); }
+  .b-color-dropdown{
+    display:none;
+    position:absolute;
+    left:0; right:0; top:calc(100% + 6px);
+    background:#fff;
+    border:1px solid #e4e4e6;
+    border-radius:10px;
+    box-shadow:0 8px 24px rgba(10,10,12,.08);
+    overflow:hidden;
+    z-index:5;
+  }
+  .b-color-dropdown.is-open{ display:block; }
+  .b-color-option{
+    padding:12px 14px;
+    font-size:13px;
+    color:rgba(10,10,12,.55);
+  }
   .b-title{
     font-size:clamp(28px,6vw,44px);
     font-weight:300;
@@ -971,10 +1067,66 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
         <div>
           <div class="b-phone-tile"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/iphone18_pro.png" alt="아이폰 18 프로 예상 디자인 - 아이폰18프로 색상 아이폰18프로디자인" loading="lazy"></div>
           <span class="b-phone-name">아이폰 18 프로</span>
+          <button type="button" class="b-phone-toggle" id="toggleBtn-pro" onclick="togglePhoneDetail('pro')">
+            가격 · 컬러 보기
+            <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="b-phone-detail" id="detail-pro">
+            <div class="b-phone-detail-inner">
+              <div class="b-phone-detail-pad">
+                <div class="b-storage-row">
+                  <button type="button" class="b-storage-badge is-active" onclick="selectStorage('pro',this,1890000)">256GB</button>
+                  <button type="button" class="b-storage-badge" onclick="selectStorage('pro',this,2190000)">512GB</button>
+                  <button type="button" class="b-storage-badge" onclick="selectStorage('pro',this,2490000)">1TB</button>
+                </div>
+                <div class="b-price-display">
+                  <span class="b-price-value" id="priceVal-pro">1,890,000원</span>
+                  <span class="b-price-note">※ 예상 금액입니다. 자세한 금액은 9.10 언팩 이후에 확정됩니다.</span>
+                </div>
+                <div class="b-color-row">
+                  <button type="button" class="b-color-select" id="colorBtn-pro" onclick="toggleColorDropdown('pro')">
+                    <span>컬러 : 미정</span>
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                  <div class="b-color-dropdown" id="colorDrop-pro">
+                    <div class="b-color-option">미정 (9.10 언팩 이후 공개)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div>
           <div class="b-phone-tile"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/iphone18_promax.png" alt="아이폰 18 프로맥스 예상 디자인 - 아이폰18프로맥스 색상 아이폰18프로맥스디자인" loading="lazy"></div>
           <span class="b-phone-name">아이폰 18 프로맥스</span>
+          <button type="button" class="b-phone-toggle" id="toggleBtn-promax" onclick="togglePhoneDetail('promax')">
+            가격 · 컬러 보기
+            <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="b-phone-detail" id="detail-promax">
+            <div class="b-phone-detail-inner">
+              <div class="b-phone-detail-pad">
+                <div class="b-storage-row">
+                  <button type="button" class="b-storage-badge is-active" onclick="selectStorage('promax',this,2090000)">256GB</button>
+                  <button type="button" class="b-storage-badge" onclick="selectStorage('promax',this,2390000)">512GB</button>
+                  <button type="button" class="b-storage-badge" onclick="selectStorage('promax',this,2690000)">1TB</button>
+                </div>
+                <div class="b-price-display">
+                  <span class="b-price-value" id="priceVal-promax">2,090,000원</span>
+                  <span class="b-price-note">※ 예상 금액입니다. 자세한 금액은 9.10 언팩 이후에 확정됩니다.</span>
+                </div>
+                <div class="b-color-row">
+                  <button type="button" class="b-color-select" id="colorBtn-promax" onclick="toggleColorDropdown('promax')">
+                    <span>컬러 : 미정</span>
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                  <div class="b-color-dropdown" id="colorDrop-promax">
+                    <div class="b-color-option">미정 (9.10 언팩 이후 공개)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1339,6 +1491,21 @@ window.toggleQmPopup=function(kind){
 };
 window.closeQmPopup=function(kind){
   (kind==='call'?document.getElementById('qmPhoneOverlay'):document.getElementById('qmKakaoOverlay')).classList.remove('open');
+};
+window.togglePhoneDetail=function(id){
+  document.getElementById('detail-'+id).classList.toggle('is-open');
+  document.getElementById('toggleBtn-'+id).classList.toggle('is-open');
+};
+window.selectStorage=function(id,btn,price){
+  var row=btn.parentElement;
+  var badges=row.querySelectorAll('.b-storage-badge');
+  for(var i=0;i<badges.length;i++){ badges[i].classList.remove('is-active'); }
+  btn.classList.add('is-active');
+  document.getElementById('priceVal-'+id).textContent=price.toLocaleString('ko-KR')+'원';
+};
+window.toggleColorDropdown=function(id){
+  document.getElementById('colorDrop-'+id).classList.toggle('is-open');
+  document.getElementById('colorBtn-'+id).classList.toggle('is-open');
 };
 </script>
 
