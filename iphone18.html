@@ -353,100 +353,80 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     font-weight:700;
     letter-spacing:-.01em;
   }
-  .b-phone-toggle{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-    margin:6px auto 0;
-    font-size:12.5px;
+  .b-phone-item{ cursor:pointer; }
+  .b-phone-hint{
+    display:block;
+    margin-top:6px;
+    text-align:center;
+    font-size:12px;
     font-weight:600;
-    color:rgba(10,10,12,.45);
-    background:none;
-    border:none;
-    font-family:inherit;
-    cursor:pointer;
-    padding:4px;
+    color:#999;
   }
-  .b-phone-toggle svg{
-    width:11px;height:11px;
-    transition:transform .3s ease;
-  }
-  .b-phone-toggle.is-open svg{ transform:rotate(180deg); }
-  .b-phone-detail{
-    display:grid;
-    grid-template-rows:0fr;
-    transition:grid-template-rows .4s ease;
-  }
-  .b-phone-detail.is-open{ grid-template-rows:1fr; }
-  .b-phone-detail-inner{ overflow:hidden; }
-  .b-phone-detail-pad{ padding-top:16px; text-align:left; }
   .b-storage-row{ display:flex; gap:8px; }
   .b-storage-badge{
     flex:1;
-    padding:10px 6px;
+    padding:13px 6px;
     border:1.5px solid #e4e4e6;
-    border-radius:10px;
+    border-radius:12px;
     background:#fff;
     color:#666;
     font-family:inherit;
-    font-size:13px;
+    font-size:14px;
     font-weight:700;
     cursor:pointer;
   }
   .b-storage-badge.is-active{ border-color:#0a0a0c; background:#0a0a0c; color:#fff; }
-  .b-price-display{
-    margin-top:14px;
-    padding:14px;
-    background:#f7f7f8;
-    border-radius:12px;
-  }
-  .b-price-value{
+  .b-modal-label{
     display:block;
-    font-size:19px;
-    font-weight:800;
-    letter-spacing:-.01em;
+    margin-bottom:10px;
+    font-size:13px;
+    font-weight:600;
+    color:#999;
+  }
+  .b-divider{ height:1px; background:#eee; margin:22px 0; }
+  .b-price-display{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:16px;
+    background:#fcf0f7;
+    border-radius:14px;
+  }
+  .b-price-display svg{ width:19px;height:19px;flex-shrink:0;color:#e2067a; }
+  .b-price-value{
+    font-size:14.5px;
+    font-weight:700;
+    letter-spacing:-.005em;
     color:#0a0a0c;
   }
-  .b-price-note{
-    display:block;
-    margin-top:6px;
-    font-size:11.5px;
-    line-height:1.5;
-    color:rgba(10,10,12,.45);
-  }
-  .b-color-row{ margin-top:12px; position:relative; }
+  .b-price-value b{ color:#e2067a; font-weight:800; }
+  .b-color-row{ margin-top:22px; }
   .b-color-select{
     display:flex;
     align-items:center;
     justify-content:space-between;
     width:100%;
-    padding:12px 14px;
+    padding:14px;
     border:1.5px solid #e4e4e6;
-    border-radius:10px;
+    border-radius:12px;
     background:#fff;
     color:#0a0a0c;
     font-family:inherit;
-    font-size:13.5px;
+    font-size:15px;
     font-weight:700;
-    cursor:pointer;
   }
-  .b-color-select svg{ width:12px;height:12px; transition:transform .3s ease; }
-  .b-color-select.is-open svg{ transform:rotate(180deg); }
-  .b-color-dropdown{
-    display:none;
+  .b-color-select svg{ width:14px;height:14px;color:#999; }
+  .b-color-info{
+    display:flex;
+    align-items:center;
+    gap:8px;
     margin-top:8px;
-    background:#fff;
-    border:1px solid #e4e4e6;
-    border-radius:10px;
-    overflow:hidden;
+    padding:14px;
+    background:#f7f7f8;
+    border-radius:12px;
   }
-  .b-color-dropdown.is-open{ display:block; }
-  .b-color-option{
-    padding:12px 14px;
-    font-size:13px;
-    color:rgba(10,10,12,.55);
-  }
+  .b-color-info svg{ width:17px;height:17px;flex-shrink:0;color:#999; }
+  .b-color-info span{ font-size:13px;color:rgba(10,10,12,.55); }
   .phone-modal-overlay{
     display:none;
     position:fixed;inset:0;
@@ -1108,21 +1088,15 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     <div class="benefits-inner">
       <span class="b-eyebrow">PRE-RESERVATION BENEFITS</span>
       <div class="b-phone-grid">
-        <div>
+        <div class="b-phone-item" onclick="openPhoneModal('pro')">
           <div class="b-phone-tile"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/iphone18_pro.png" alt="아이폰 18 프로 예상 디자인 - 아이폰18프로 색상 아이폰18프로디자인" loading="lazy"></div>
           <span class="b-phone-name">아이폰 18 프로</span>
-          <button type="button" class="b-phone-toggle" onclick="openPhoneModal('pro')">
-            가격 · 컬러 보기
-            <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
+          <span class="b-phone-hint">탭하여 용량 · 컬러 보기 ›</span>
         </div>
-        <div>
+        <div class="b-phone-item" onclick="openPhoneModal('promax')">
           <div class="b-phone-tile"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/iphone18_promax.png" alt="아이폰 18 프로맥스 예상 디자인 - 아이폰18프로맥스 색상 아이폰18프로맥스디자인" loading="lazy"></div>
           <span class="b-phone-name">아이폰 18 프로맥스</span>
-          <button type="button" class="b-phone-toggle" onclick="openPhoneModal('promax')">
-            가격 · 컬러 보기
-            <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
+          <span class="b-phone-hint">탭하여 용량 · 컬러 보기 ›</span>
         </div>
       </div>
 
@@ -1156,21 +1130,26 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     <div class="phone-modal">
       <button type="button" class="phone-modal-close" onclick="closePhoneModal('pro')">&times;</button>
       <p class="phone-modal-title">아이폰 18 프로</p>
+      <span class="b-modal-label">저장 용량 선택</span>
       <div class="b-storage-row">
         <button type="button" class="b-storage-badge is-active" onclick="selectStorage(this)">256GB</button>
         <button type="button" class="b-storage-badge" onclick="selectStorage(this)">512GB</button>
         <button type="button" class="b-storage-badge" onclick="selectStorage(this)">1TB</button>
       </div>
+      <div class="b-divider"></div>
       <div class="b-price-display">
-        <span class="b-price-value">9.10 언팩 이후 공개 예정</span>
+        <svg viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.6 3.24L3.83 9A2 2 0 0 0 3.24 10.4l9.58 9.6a2 2 0 0 0 2.83 0l4.94-4.94a2 2 0 0 0 0-2.65z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor"/></svg>
+        <span class="b-price-value"><b>가격:</b> 언팩 이후 공개 예정</span>
       </div>
       <div class="b-color-row">
-        <button type="button" class="b-color-select" id="colorBtn-pro" onclick="toggleColorDropdown('pro')">
-          <span>컬러 : 미정</span>
+        <span class="b-modal-label">컬러</span>
+        <div class="b-color-select">
+          <span>미정</span>
           <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <div class="b-color-dropdown" id="colorDrop-pro">
-          <div class="b-color-option">미정 (9.10 언팩 이후 공개)</div>
+        </div>
+        <div class="b-color-info">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><line x1="12" y1="16" x2="12" y2="11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="8" r="1" fill="currentColor"/></svg>
+          <span>미정 (9.10 언팩 이후 공개)</span>
         </div>
       </div>
     </div>
@@ -1180,21 +1159,26 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     <div class="phone-modal">
       <button type="button" class="phone-modal-close" onclick="closePhoneModal('promax')">&times;</button>
       <p class="phone-modal-title">아이폰 18 프로맥스</p>
+      <span class="b-modal-label">저장 용량 선택</span>
       <div class="b-storage-row">
         <button type="button" class="b-storage-badge is-active" onclick="selectStorage(this)">256GB</button>
         <button type="button" class="b-storage-badge" onclick="selectStorage(this)">512GB</button>
         <button type="button" class="b-storage-badge" onclick="selectStorage(this)">1TB</button>
       </div>
+      <div class="b-divider"></div>
       <div class="b-price-display">
-        <span class="b-price-value">9.10 언팩 이후 공개 예정</span>
+        <svg viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.6 3.24L3.83 9A2 2 0 0 0 3.24 10.4l9.58 9.6a2 2 0 0 0 2.83 0l4.94-4.94a2 2 0 0 0 0-2.65z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor"/></svg>
+        <span class="b-price-value"><b>가격:</b> 언팩 이후 공개 예정</span>
       </div>
       <div class="b-color-row">
-        <button type="button" class="b-color-select" id="colorBtn-promax" onclick="toggleColorDropdown('promax')">
-          <span>컬러 : 미정</span>
+        <span class="b-modal-label">컬러</span>
+        <div class="b-color-select">
+          <span>미정</span>
           <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <div class="b-color-dropdown" id="colorDrop-promax">
-          <div class="b-color-option">미정 (9.10 언팩 이후 공개)</div>
+        </div>
+        <div class="b-color-info">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><line x1="12" y1="16" x2="12" y2="11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="8" r="1" fill="currentColor"/></svg>
+          <span>미정 (9.10 언팩 이후 공개)</span>
         </div>
       </div>
     </div>
