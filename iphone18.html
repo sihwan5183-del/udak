@@ -393,6 +393,7 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     font-size:19px;
     font-weight:800;
     letter-spacing:-.01em;
+    color:#0a0a0c;
   }
   .b-price-note{
     display:block;
@@ -432,6 +433,41 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     padding:12px 14px;
     font-size:13px;
     color:rgba(10,10,12,.55);
+  }
+  .phone-modal-overlay{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.68);
+    z-index:3200;
+    align-items:center;justify-content:center;
+    padding:20px;
+    box-sizing:border-box;
+  }
+  .phone-modal-overlay.open{ display:flex; }
+  .phone-modal{
+    position:relative;
+    width:100%;max-width:420px;max-height:88vh;
+    overflow-y:auto;
+    background:#fff;
+    border-radius:22px;
+    padding:32px 22px 26px;
+    box-sizing:border-box;
+    text-align:left;
+    animation:pvModalIn .3s cubic-bezier(.22,1,.36,1);
+  }
+  .phone-modal-close{
+    position:absolute;top:14px;right:14px;
+    width:32px;height:32px;border-radius:50%;
+    background:#f2f2f3;border:none;color:#0a0a0c;
+    font-size:18px;cursor:pointer;line-height:1;
+    z-index:1;
+  }
+  .phone-modal-title{
+    font-size:20px;
+    font-weight:800;
+    letter-spacing:-.01em;
+    color:#0a0a0c;
+    margin-bottom:20px;
   }
   .b-title{
     font-size:clamp(28px,6vw,44px);
@@ -1065,66 +1101,18 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
         <div>
           <div class="b-phone-tile"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/iphone18_pro.png" alt="아이폰 18 프로 예상 디자인 - 아이폰18프로 색상 아이폰18프로디자인" loading="lazy"></div>
           <span class="b-phone-name">아이폰 18 프로</span>
-          <button type="button" class="b-phone-toggle" id="toggleBtn-pro" onclick="togglePhoneDetail('pro')">
+          <button type="button" class="b-phone-toggle" onclick="openPhoneModal('pro')">
             가격 · 컬러 보기
             <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
-          <div class="b-phone-detail" id="detail-pro">
-            <div class="b-phone-detail-inner">
-              <div class="b-phone-detail-pad">
-                <div class="b-storage-row">
-                  <button type="button" class="b-storage-badge is-active" onclick="selectStorage('pro',this,1890000)">256GB</button>
-                  <button type="button" class="b-storage-badge" onclick="selectStorage('pro',this,2190000)">512GB</button>
-                  <button type="button" class="b-storage-badge" onclick="selectStorage('pro',this,2490000)">1TB</button>
-                </div>
-                <div class="b-price-display">
-                  <span class="b-price-value" id="priceVal-pro">1,890,000원</span>
-                  <span class="b-price-note">※ 예상 금액입니다. 자세한 금액은 9.10 언팩 이후에 확정됩니다.</span>
-                </div>
-                <div class="b-color-row">
-                  <button type="button" class="b-color-select" id="colorBtn-pro" onclick="toggleColorDropdown('pro')">
-                    <span>컬러 : 미정</span>
-                    <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </button>
-                  <div class="b-color-dropdown" id="colorDrop-pro">
-                    <div class="b-color-option">미정 (9.10 언팩 이후 공개)</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
         <div>
           <div class="b-phone-tile"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/iphone18_promax.png" alt="아이폰 18 프로맥스 예상 디자인 - 아이폰18프로맥스 색상 아이폰18프로맥스디자인" loading="lazy"></div>
           <span class="b-phone-name">아이폰 18 프로맥스</span>
-          <button type="button" class="b-phone-toggle" id="toggleBtn-promax" onclick="togglePhoneDetail('promax')">
+          <button type="button" class="b-phone-toggle" onclick="openPhoneModal('promax')">
             가격 · 컬러 보기
             <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
-          <div class="b-phone-detail" id="detail-promax">
-            <div class="b-phone-detail-inner">
-              <div class="b-phone-detail-pad">
-                <div class="b-storage-row">
-                  <button type="button" class="b-storage-badge is-active" onclick="selectStorage('promax',this,2090000)">256GB</button>
-                  <button type="button" class="b-storage-badge" onclick="selectStorage('promax',this,2390000)">512GB</button>
-                  <button type="button" class="b-storage-badge" onclick="selectStorage('promax',this,2690000)">1TB</button>
-                </div>
-                <div class="b-price-display">
-                  <span class="b-price-value" id="priceVal-promax">2,090,000원</span>
-                  <span class="b-price-note">※ 예상 금액입니다. 자세한 금액은 9.10 언팩 이후에 확정됩니다.</span>
-                </div>
-                <div class="b-color-row">
-                  <button type="button" class="b-color-select" id="colorBtn-promax" onclick="toggleColorDropdown('promax')">
-                    <span>컬러 : 미정</span>
-                    <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </button>
-                  <div class="b-color-dropdown" id="colorDrop-promax">
-                    <div class="b-color-option">미정 (9.10 언팩 이후 공개)</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -1153,6 +1141,54 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
       <img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/accessories.jpg" alt="고객님의 새 휴대폰, 더 안심하고 사용하실 수 있도록 - 클리어 케이스, 강화필름, 고속충전 어댑터">
     </div>
   </section>
+
+  <div class="phone-modal-overlay" id="phoneModalOverlay-pro" onclick="if(event.target===this)closePhoneModal('pro')">
+    <div class="phone-modal">
+      <button type="button" class="phone-modal-close" onclick="closePhoneModal('pro')">&times;</button>
+      <p class="phone-modal-title">아이폰 18 프로</p>
+      <div class="b-storage-row">
+        <button type="button" class="b-storage-badge is-active" onclick="selectStorage(this)">256GB</button>
+        <button type="button" class="b-storage-badge" onclick="selectStorage(this)">512GB</button>
+        <button type="button" class="b-storage-badge" onclick="selectStorage(this)">1TB</button>
+      </div>
+      <div class="b-price-display">
+        <span class="b-price-value">9.10 언팩 이후 공개 예정</span>
+      </div>
+      <div class="b-color-row">
+        <button type="button" class="b-color-select" id="colorBtn-pro" onclick="toggleColorDropdown('pro')">
+          <span>컬러 : 미정</span>
+          <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="b-color-dropdown" id="colorDrop-pro">
+          <div class="b-color-option">미정 (9.10 언팩 이후 공개)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phone-modal-overlay" id="phoneModalOverlay-promax" onclick="if(event.target===this)closePhoneModal('promax')">
+    <div class="phone-modal">
+      <button type="button" class="phone-modal-close" onclick="closePhoneModal('promax')">&times;</button>
+      <p class="phone-modal-title">아이폰 18 프로맥스</p>
+      <div class="b-storage-row">
+        <button type="button" class="b-storage-badge is-active" onclick="selectStorage(this)">256GB</button>
+        <button type="button" class="b-storage-badge" onclick="selectStorage(this)">512GB</button>
+        <button type="button" class="b-storage-badge" onclick="selectStorage(this)">1TB</button>
+      </div>
+      <div class="b-price-display">
+        <span class="b-price-value">9.10 언팩 이후 공개 예정</span>
+      </div>
+      <div class="b-color-row">
+        <button type="button" class="b-color-select" id="colorBtn-promax" onclick="toggleColorDropdown('promax')">
+          <span>컬러 : 미정</span>
+          <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="b-color-dropdown" id="colorDrop-promax">
+          <div class="b-color-option">미정 (9.10 언팩 이후 공개)</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="about-modal-overlay" id="aboutModalOverlay" onclick="if(event.target===this)closeAboutModal()">
     <div class="about-modal">
@@ -1490,16 +1526,17 @@ window.toggleQmPopup=function(kind){
 window.closeQmPopup=function(kind){
   (kind==='call'?document.getElementById('qmPhoneOverlay'):document.getElementById('qmKakaoOverlay')).classList.remove('open');
 };
-window.togglePhoneDetail=function(id){
-  document.getElementById('detail-'+id).classList.toggle('is-open');
-  document.getElementById('toggleBtn-'+id).classList.toggle('is-open');
+window.openPhoneModal=function(id){
+  document.getElementById('phoneModalOverlay-'+id).classList.add('open');
 };
-window.selectStorage=function(id,btn,price){
+window.closePhoneModal=function(id){
+  document.getElementById('phoneModalOverlay-'+id).classList.remove('open');
+};
+window.selectStorage=function(btn){
   var row=btn.parentElement;
   var badges=row.querySelectorAll('.b-storage-badge');
   for(var i=0;i<badges.length;i++){ badges[i].classList.remove('is-active'); }
   btn.classList.add('is-active');
-  document.getElementById('priceVal-'+id).textContent=price.toLocaleString('ko-KR')+'원';
 };
 window.toggleColorDropdown=function(id){
   document.getElementById('colorDrop-'+id).classList.toggle('is-open');
