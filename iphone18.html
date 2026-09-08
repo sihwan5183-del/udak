@@ -303,6 +303,42 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     transform:translateY(16px);
     transition:opacity .9s ease .03s, transform .9s ease .03s;
   }
+  .b-phone-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:24px;
+    max-width:420px;
+    margin:0 auto clamp(28px,4.5vh,44px);
+  }
+  @media(min-width:640px){
+    .b-phone-grid{ grid-template-columns:1fr 1fr; max-width:640px; }
+  }
+  .b-phone-tile{
+    aspect-ratio:1/1;
+    background:linear-gradient(180deg,#f7f7f8,#eeeef0);
+    border-radius:20px;
+    border:1px solid rgba(10,10,12,.06);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity .9s ease, transform .9s ease;
+  }
+  .b-phone-tile img{
+    height:80%;
+    width:auto;
+    object-fit:contain;
+  }
+  .b-phone-name{
+    display:block;
+    margin-top:14px;
+    text-align:center;
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
   .b-title{
     font-size:clamp(28px,6vw,44px);
     font-weight:300;
@@ -396,6 +432,7 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   .b-group.in-view .b-card:nth-child(3){ transition-delay:.12s; }
   .b-group.in-view .b-card:nth-child(4){ transition-delay:.18s; }
   .b-group.in-view .b-card:nth-child(5){ transition-delay:.24s; }
+  .benefits.in-view .b-phone-grid > div:nth-child(2) .b-phone-tile{ transition-delay:.08s; }
 
   .b-closing{
     margin-top:clamp(56px,9vh,90px);
@@ -427,7 +464,7 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   }
 
   .benefits.in-view .b-eyebrow,
-  .benefits.in-view .b-lineup-img,
+  .benefits.in-view .b-phone-tile,
   .benefits.in-view .b-title,
   .benefits.in-view .b-sub,
   .benefits.in-view .b-closing,
@@ -930,7 +967,16 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   <section class="benefits">
     <div class="benefits-inner">
       <span class="b-eyebrow">PRE-RESERVATION BENEFITS</span>
-      <img class="b-lineup-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/lineup_promo.jpg" alt="아이폰 18 프로 아이폰 18 프로맥스 아이폰 울트라 아이폰 폴드 예상 라인업 - 아이폰18프로 아이폰18프로맥스 아이폰18출시일 아이폰18프로가격 아이폰18프로가격예상 아이폰18프로맥스가격 아이폰18프로맥스가격예상 아이폰18프로맥스사전예약" loading="lazy">
+      <div class="b-phone-grid">
+        <div>
+          <div class="b-phone-tile"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/iphone18_pro.png" alt="아이폰 18 프로 예상 디자인 - 아이폰18프로 색상 아이폰18프로디자인" loading="lazy"></div>
+          <span class="b-phone-name">아이폰 18 프로</span>
+        </div>
+        <div>
+          <div class="b-phone-tile"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/iphone18_promax.png" alt="아이폰 18 프로맥스 예상 디자인 - 아이폰18프로맥스 색상 아이폰18프로맥스디자인" loading="lazy"></div>
+          <span class="b-phone-name">아이폰 18 프로맥스</span>
+        </div>
+      </div>
 
       <div class="b-group">
         <span class="b-label">아이폰 18 사전 예약 혜택 (복수 선택 가능)</span>
