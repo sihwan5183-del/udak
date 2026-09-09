@@ -275,7 +275,7 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   #preorderInfo{
     background:#fff;
     min-height:auto;
-    padding-top:clamp(16px,3vh,28px);
+    padding-top:clamp(4px,1vh,12px);
     padding-bottom:clamp(20px,3vh,32px);
   }
   #preorderInfo .glow{ display:none; }
@@ -361,21 +361,6 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     transition:opacity .4s ease;
   }
   .cta-note.show{ opacity:1; }
-
-  .scroll-cue{
-    position:absolute;
-    bottom:30px;
-    left:50%;
-    transform:translateX(-50%);
-    width:1px;
-    height:38px;
-    background:linear-gradient(to bottom, transparent, rgba(10,10,12,.28));
-    animation:cueFall 2.2s ease-in-out infinite;
-  }
-  @keyframes cueFall{
-    0%,100%{opacity:0;transform:translate(-50%,-4px);}
-    50%{opacity:1;transform:translate(-50%,4px);}
-  }
 
   .in-view .eyebrow,
   .in-view .eyebrow-badge,
@@ -1015,7 +1000,7 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     width:100%;
     max-width:480px;
     display:block;
-    margin:0 auto clamp(20px,3vh,32px);
+    margin:0 auto clamp(8px,1.5vh,16px);
     border-radius:16px;
     opacity:0;
     transform:translateY(16px);
@@ -1345,7 +1330,6 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
       <span class="about-trigger-hint">클릭해서 자세히보기 ›</span>
     </button>
     <img class="subsidy-info-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/subsidy_4020.webp" alt="사전예약 고객님 대상 기기값 지원금 - 번호이동 40만원, 기기변경 20만원">
-    <div class="scroll-cue"></div>
   </section>
 
   <section class="section" id="preorderInfo">
