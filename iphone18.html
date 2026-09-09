@@ -1092,6 +1092,54 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
 
   .about-img{ width:100%;display:block;border-radius:14px;margin-bottom:16px; }
 
+  .about-faq{ margin-top:8px; }
+  .about-faq-heading{
+    font-size:13px;
+    font-weight:700;
+    color:#e2067a;
+    letter-spacing:.02em;
+    margin-bottom:10px;
+  }
+  .faq-item{
+    border-bottom:1px solid #eee;
+  }
+  .faq-item:first-of-type{ border-top:1px solid #eee; }
+  .faq-q{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:14px 2px;
+    background:none;
+    border:none;
+    text-align:left;
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:700;
+    color:#0a0a0c;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .faq-q svg{
+    flex-shrink:0;
+    color:#b0b0b5;
+    transition:transform .25s ease;
+  }
+  .faq-item.open .faq-q svg{ transform:rotate(180deg); color:#e2067a; }
+  .faq-a{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .3s ease;
+  }
+  .faq-item.open .faq-a{ max-height:200px; }
+  .faq-a p{
+    padding:0 2px 16px;
+    font-size:13px;
+    line-height:1.6;
+    color:#666;
+  }
+
   /* ══ 사이드 퀵 메뉴 ══ */
   .side-quick{
     position:fixed;
@@ -1415,6 +1463,90 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
       <img class="about-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/about-directcare.png" alt="U+ DIRECT CARE, 개통으로 끝내지 않습니다">
       <img class="about-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/about-whyudak.png" alt="왜 유닭인가요">
       <img class="about-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/about-purchase-steps.png" alt="온라인 구매 절차, 이렇게 진행됩니다" style="margin-bottom:0;">
+
+      <div class="about-faq">
+        <p class="about-faq-heading">자주 묻는 질문</p>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>아이폰 18은 어떻게 받아볼 수 있나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>개통 완료 후 고객님이 입력하신 주소로 택배 배송해드립니다. 재고 및 개통 상황에 따라 순차적으로 발송됩니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>지금 신청하면 사전예약 등록이 완료된 건가요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>현재 신청은 사전예약 상담 접수 단계입니다. 9월 11일 사전예약 시작 이후 상담을 통해 공식 사전예약 등록을 도와드립니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>개통은 어떻게 진행되나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>상담을 통해 단말 가격, 요금제, 지원금, 혜택 및 이용조건을 먼저 확인하신 후 고객님이 최종 결정하시면 온라인 개통 절차를 진행합니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>언제쯤 제품을 받을 수 있나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>제품은 구매 완료 고객 순으로 순차 배송됩니다. 선택하신 모델·색상·용량의 재고 상황에 따라 실제 수령일은 달라질 수 있습니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>원하는 색상과 용량을 선택할 수 있나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>네. 원하시는 모델·색상·용량을 선택하실 수 있습니다. 단, 공식 출시 이후 재고 상황에 따라 일부 옵션은 조기 품절될 수 있습니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>사전예약 신청하면 반드시 구매해야 하나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>아닙니다. 먼저 상담을 통해 가격과 혜택, 이용조건을 확인한 뒤 구매 여부를 결정하실 수 있습니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>번호이동 고객만 신청할 수 있나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>아닙니다. 번호이동 고객과 기존 U+ 고객 모두 신청 가능합니다. 다만 가입 유형에 따라 적용되는 지원금과 혜택은 달라질 수 있습니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>애플워치·에어팟·iPad 혜택은 누구나 받을 수 있나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>혜택별로 요금제 유지기간, 인터넷·TV 이용 여부 등 적용 조건이 다릅니다. 상담 시 고객님 조건에 맞는 혜택을 정확하게 안내드립니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>인터넷·TV 가입도 꼭 해야 하나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>아이폰 18 사전예약을 위해 인터넷·TV 가입이 필수는 아닙니다. 다만 U+ 인터넷·TV 가입 또는 이용 조건을 충족할 경우 추가 혜택을 받을 수 있습니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>개통 후 문제가 생기면 어디에 문의하나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>개통으로 끝나지 않습니다. 제품 수령 후 개통·요금제·결합·이용 관련 문의가 있을 경우 유플러스 다이렉트 상담팀에서 계속 안내해드립니다.</p></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1811,6 +1943,9 @@ window.selectStorage=function(btn){
 window.toggleColorDropdown=function(id){
   document.getElementById('colorDrop-'+id).classList.toggle('is-open');
   document.getElementById('colorBtn-'+id).classList.toggle('is-open');
+};
+window.toggleFaq=function(btn){
+  btn.parentElement.classList.toggle('open');
 };
 </script>
 
