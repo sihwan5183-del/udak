@@ -99,6 +99,21 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   }
   .top-nav-item:hover{ color:#e2067a; }
 
+  .top-nav-item-highlight{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    color:#e2067a;
+    font-weight:700;
+    padding:7px 14px;
+    border:1.5px solid #e2067a;
+    border-radius:999px;
+    box-shadow:0 0 14px rgba(226,6,122,.25);
+    white-space:nowrap;
+  }
+  .top-nav-item-highlight:hover{ color:#e2067a; background:#fdf0f7; }
+  .top-nav-item-highlight svg{ flex-shrink:0; }
+
   .bottom-cta-bar{
     position:fixed;
     left:0;right:0;bottom:0;
@@ -1387,7 +1402,9 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     <span class="top-nav-logo"><span class="top-nav-logo-accent">U+</span> 다이렉트</span>
     <div class="top-nav-items">
       <button type="button" class="top-nav-item" onclick="openFaqModal()">궁금해요</button>
-      <button type="button" class="top-nav-item" onclick="openPriorityModal()">사전예약 우선배송 관련</button>
+      <button type="button" class="top-nav-item top-nav-item-highlight" onclick="openPriorityModal()">사전예약 우선배송 관련
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
     </div>
   </div>
 </nav>
