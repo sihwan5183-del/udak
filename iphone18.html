@@ -674,7 +674,15 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   }
 
 
-  .rf-inner{ max-width:480px; margin:0 auto; }
+  .rf-inner{
+    max-width:480px;
+    margin:0 auto;
+    border:1.5px solid #e4e4e6;
+    border-radius:20px;
+    padding:32px 20px 28px;
+    background:#fff;
+    box-sizing:border-box;
+  }
   .rf-badge{
     display:flex;
     width:fit-content;
@@ -719,9 +727,6 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     margin:0 auto clamp(28px,4.5vh,40px);
   }
   #reservationForm{
-    border:1.5px solid #e4e4e6;
-    border-radius:20px;
-    padding:28px 20px;
     background:#fff;
   }
   .rf-field{ margin-bottom:20px; }
