@@ -395,7 +395,7 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     position:relative;
     background:#fff;
     color:#0a0a0c;
-    padding:clamp(28px,4vh,44px) 24px clamp(80px,12vh,130px);
+    padding:clamp(28px,4vh,44px) 24px clamp(32px,5vh,48px);
   }
   .benefits-inner{
     max-width:900px;
@@ -742,7 +742,7 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     position:relative;
     background:#fff;
     color:#0a0a0c;
-    padding:clamp(56px,9vh,90px) 24px clamp(80px,12vh,120px);
+    padding:clamp(24px,4vh,36px) 24px clamp(80px,12vh,120px);
     scroll-margin-top:52px;
   }
   .rf-title{
@@ -1326,7 +1326,6 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
       </div>
 
       <p class="b-closing">전부 혜택을 받아보세요!</p>
-      <button class="cta cta-dark" id="ctaBtn2">사전예약 신청하기</button>
 
     </div>
   </section>
@@ -1598,13 +1597,6 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     });
   },{ threshold:.01, rootMargin:'0px 0px 350px 0px' });
   document.querySelectorAll('.section, .benefits, .b-group').forEach(s=>io.observe(s));
-
-  function wireCta(btnId){
-    const btn = document.getElementById(btnId);
-    if(!btn) return;
-    btn.addEventListener('click', ()=>{ scrollToReserveForm(); });
-  }
-  wireCta('ctaBtn2');
 </script>
 
 <script>
