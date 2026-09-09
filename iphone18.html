@@ -387,7 +387,8 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   .in-view h2,
   .in-view .sub,
   .in-view .cta,
-  .in-view .about-trigger{
+  .in-view .about-trigger,
+  .in-view .subsidy-info-img{
     opacity:1;
     transform:none;
   }
@@ -1009,6 +1010,18 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   .about-trigger-title{ font-size:13px;font-weight:800;color:#0a0a0c;white-space:nowrap; }
   .about-trigger-hint{ font-size:11px;font-weight:600;color:#999;white-space:nowrap; }
 
+  .subsidy-info-img{
+    position:relative;z-index:1;
+    width:100%;
+    max-width:480px;
+    display:block;
+    margin:0 auto clamp(20px,3vh,32px);
+    border-radius:16px;
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity .9s ease, transform .9s ease;
+  }
+
   .about-modal-overlay{
     display:none;
     position:fixed;inset:0;
@@ -1336,6 +1349,7 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
       <span class="about-trigger-title">유플러스 다이렉트란?</span>
       <span class="about-trigger-hint">클릭해서 자세히보기 ›</span>
     </button>
+    <img class="subsidy-info-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/subsidy_4020.webp" alt="사전예약 고객님 대상 기기값 지원금 - 번호이동 40만원, 기기변경 20만원">
     <div class="scroll-cue"></div>
   </section>
 
