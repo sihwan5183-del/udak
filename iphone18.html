@@ -1291,7 +1291,7 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   <div class="top-nav-inner">
     <span class="top-nav-logo"><span class="top-nav-logo-accent">U+</span> 다이렉트</span>
     <div class="top-nav-items">
-      <button type="button" class="top-nav-item" onclick="openAboutModal()">궁금해요</button>
+      <button type="button" class="top-nav-item" onclick="openFaqModal()">궁금해요</button>
       <button type="button" class="top-nav-item" onclick="scrollToReserveForm()">사전예약관련</button>
     </div>
   </div>
@@ -1463,8 +1463,14 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
       <img class="about-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/about-directcare.png" alt="U+ DIRECT CARE, 개통으로 끝내지 않습니다">
       <img class="about-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/about-whyudak.png" alt="왜 유닭인가요">
       <img class="about-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/about-purchase-steps.png" alt="온라인 구매 절차, 이렇게 진행됩니다" style="margin-bottom:0;">
+    </div>
+  </div>
 
-      <div class="about-faq">
+  <div class="about-modal-overlay" id="faqModalOverlay" onclick="if(event.target===this)closeFaqModal()">
+    <div class="about-modal">
+      <button type="button" class="about-modal-close" onclick="closeFaqModal()">&times;</button>
+
+      <div class="about-faq" style="margin-top:8px;">
         <p class="about-faq-heading">자주 묻는 질문</p>
 
         <div class="faq-item">
@@ -1748,6 +1754,17 @@ window.openAboutModal=function(){
 };
 window.closeAboutModal=function(){
   document.getElementById('aboutModalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+  document.querySelector('.bottom-cta-bar').style.display='';
+};
+
+window.openFaqModal=function(){
+  document.getElementById('faqModalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.querySelector('.bottom-cta-bar').style.display='none';
+};
+window.closeFaqModal=function(){
+  document.getElementById('faqModalOverlay').classList.remove('open');
   document.body.style.overflow='';
   document.querySelector('.bottom-cta-bar').style.display='';
 };
