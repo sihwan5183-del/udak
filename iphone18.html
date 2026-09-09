@@ -172,6 +172,47 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     padding-bottom:clamp(24px,4vh,40px);
   }
   #hero .glow{ display:none; }
+  .countdown-bar{
+    position:relative;z-index:1;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    margin:0 auto 22px;
+    padding:9px 16px;
+    background:#fcf0f7;
+    border-radius:999px;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  .countdown-label{
+    font-size:12px;
+    font-weight:700;
+    color:#e2067a;
+    white-space:nowrap;
+  }
+  .countdown-nums{
+    display:flex;
+    align-items:baseline;
+    gap:7px;
+  }
+  .cd-unit{
+    display:flex;
+    align-items:baseline;
+    gap:1px;
+  }
+  .cd-unit b{
+    font-size:14px;
+    font-weight:800;
+    color:#0a0a0c;
+    font-variant-numeric:tabular-nums;
+  }
+  .cd-unit i{
+    font-style:normal;
+    font-size:11px;
+    color:#999;
+    margin-left:1px;
+  }
   .hero-tag{
     position:relative;z-index:1;
     font-size:clamp(24px,6vw,36px);
@@ -338,6 +379,7 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   .in-view .eyebrow,
   .in-view .eyebrow-badge,
   .in-view .hero-tag,
+  .in-view .countdown-bar,
   .in-view .stage,
   .in-view .hero-poster,
   .in-view h1,
@@ -1226,6 +1268,15 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
 
   <section class="section" id="hero">
     <div class="glow"></div>
+    <div class="countdown-bar" id="countdownBar">
+      <span class="countdown-label">사전예약 마감까지</span>
+      <div class="countdown-nums">
+        <span class="cd-unit"><b id="cdD">00</b><i>일</i></span>
+        <span class="cd-unit"><b id="cdH">00</b><i>시</i></span>
+        <span class="cd-unit"><b id="cdM">00</b><i>분</i></span>
+        <span class="cd-unit"><b id="cdS">00</b><i>초</i></span>
+      </div>
+    </div>
     <p class="hero-tag">아이폰 18 사전예약</p>
     <div class="eyebrow-badge">
       <span class="badge-desc">유플러스 공식파트너사</span>
@@ -1511,6 +1562,36 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   </footer>
 
 <script>
+  (function(){
+    var deadline = new Date('2026-09-17T19:00:00+09:00').getTime();
+    var elD = document.getElementById('cdD');
+    var elH = document.getElementById('cdH');
+    var elM = document.getElementById('cdM');
+    var elS = document.getElementById('cdS');
+    var bar = document.getElementById('countdownBar');
+    if(!elD || !bar) return;
+    function pad(n){ return n<10 ? '0'+n : ''+n; }
+    function tick(){
+      var diff = deadline - Date.now();
+      if(diff <= 0){
+        bar.querySelector('.countdown-label').textContent='사전예약이 마감되었습니다';
+        bar.querySelector('.countdown-nums').style.display='none';
+        clearInterval(timer);
+        return;
+      }
+      var d = Math.floor(diff/86400000);
+      var h = Math.floor(diff%86400000/3600000);
+      var m = Math.floor(diff%3600000/60000);
+      var s = Math.floor(diff%60000/1000);
+      elD.textContent = pad(d);
+      elH.textContent = pad(h);
+      elM.textContent = pad(m);
+      elS.textContent = pad(s);
+    }
+    tick();
+    var timer = setInterval(tick, 1000);
+  })();
+
   const io = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
       if(e.isIntersecting){ e.target.classList.add('in-view'); }
