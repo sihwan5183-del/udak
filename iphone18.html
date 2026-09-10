@@ -513,49 +513,85 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     color:#999;
   }
   .b-divider{ height:1px; background:#eee; margin:22px 0; }
-  .b-price-display{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:16px;
-    background:#fcf0f7;
-    border-radius:14px;
-  }
-  .b-price-display svg{ width:19px;height:19px;flex-shrink:0;color:#e2067a; }
-  .b-price-value{
-    font-size:14.5px;
-    font-weight:700;
-    letter-spacing:-.005em;
-    color:#0a0a0c;
-  }
-  .b-price-value b{ color:#e2067a; font-weight:800; }
-  .b-color-row{ margin-top:22px; }
-  .b-color-select{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    width:100%;
-    padding:14px;
+  .b-modal-label-tight{ margin-top:18px; }
+  .b-modal-label small{ font-weight:500; color:#b0b0b5; font-size:11.5px; }
+  .b-type-row{ display:flex; gap:8px; margin-bottom:18px; }
+  .b-type-badge{
+    flex:1;
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    padding:11px 6px;
     border:1.5px solid #e4e4e6;
     border-radius:12px;
     background:#fff;
-    color:#0a0a0c;
+    color:#666;
     font-family:inherit;
-    font-size:15px;
+    font-size:14px;
     font-weight:700;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
   }
-  .b-color-select svg{ width:14px;height:14px;color:#999; }
-  .b-color-info{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    margin-top:8px;
-    padding:14px;
-    background:#f7f7f8;
+  .b-type-badge em{ font-style:normal; font-size:11px; font-weight:600; color:#b0b0b5; }
+  .b-type-badge.is-active{ border-color:#e2067a; background:#fcf0f7; color:#e2067a; }
+  .b-type-badge.is-active em{ color:#e2067a; }
+  .b-storage-row{ margin-bottom:18px; }
+  .b-color-chips{ display:flex; gap:8px; flex-wrap:wrap; }
+  .b-color-chip{
+    display:flex; align-items:center; gap:6px;
+    padding:9px 12px;
+    border:1.5px solid #e4e4e6;
+    border-radius:999px;
+    background:#fff;
+    color:#666;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .b-color-chip i{ width:14px; height:14px; border-radius:50%; border:1px solid rgba(0,0,0,.12); display:inline-block; }
+  .b-color-chip.is-active{ border-color:#0a0a0c; color:#0a0a0c; background:#f7f7f8; }
+  .b-price-box{
+    background:#fafafa;
+    border-radius:14px;
+    padding:14px 16px;
+  }
+  .b-price-line{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:6px 0;
+    font-size:13.5px;
+    color:#666;
+  }
+  .b-price-line b{ font-weight:700; color:#0a0a0c; font-variant-numeric:tabular-nums; }
+  .b-price-line b.minus{ color:#e2067a; }
+  .b-price-line em{ font-style:normal; font-size:11.5px; color:#b0b0b5; margin-left:4px; }
+  .b-price-final{
+    margin-top:6px; padding-top:12px;
+    border-top:1px dashed #e4e4e6;
+    font-size:14.5px; font-weight:700; color:#0a0a0c;
+  }
+  .b-price-final b{ font-size:18px; font-weight:800; color:#e2067a; }
+  .b-monthly-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .b-monthly{
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    padding:12px 6px;
+    background:#fcf0f7;
     border-radius:12px;
   }
-  .b-color-info svg{ width:17px;height:17px;flex-shrink:0;color:#999; }
-  .b-color-info span{ font-size:13px;color:rgba(10,10,12,.55); }
+  .b-monthly span{ font-size:11.5px; font-weight:600; color:#999; }
+  .b-monthly b{ font-size:15px; font-weight:800; color:#e2067a; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .b-price-note{ margin-top:12px; font-size:11px; line-height:1.55; color:#b0b0b5; }
+  .b-modal-cta{
+    display:block; width:100%;
+    margin-top:18px; padding:15px;
+    border:none; border-radius:14px;
+    background:linear-gradient(135deg,#ff2f92,#e2067a);
+    box-shadow:0 10px 24px -8px rgba(226,6,122,.5);
+    color:#fff;
+    font-family:inherit; font-size:15px; font-weight:800;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .b-modal-cta:active{ opacity:.85; }
   .phone-modal-overlay{
     display:none;
     position:fixed;inset:0;
@@ -1458,12 +1494,12 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
         <div class="b-phone-item" onclick="openPhoneModal('pro')">
           <div class="b-phone-tile"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/iphone18_pro.webp" alt="아이폰 18 프로 예상 디자인 - 아이폰18프로 색상 아이폰18프로디자인" loading="lazy"></div>
           <span class="b-phone-name">아이폰 18 프로</span>
-          <span class="b-phone-hint">탭하여 용량 · 컬러 보기 ›</span>
+          <span class="b-phone-hint">탭하여 가격 · 용량 · 컬러 보기 ›</span>
         </div>
         <div class="b-phone-item" onclick="openPhoneModal('promax')">
           <div class="b-phone-tile"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/iphone18_promax.webp" alt="아이폰 18 프로맥스 예상 디자인 - 아이폰18프로맥스 색상 아이폰18프로맥스디자인" loading="lazy"></div>
           <span class="b-phone-name">아이폰 18 프로맥스</span>
-          <span class="b-phone-hint">탭하여 용량 · 컬러 보기 ›</span>
+          <span class="b-phone-hint">탭하여 가격 · 용량 · 컬러 보기 ›</span>
         </div>
       </div>
 
@@ -1490,28 +1526,45 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     <div class="phone-modal">
       <button type="button" class="phone-modal-close" onclick="closePhoneModal('pro')">&times;</button>
       <p class="phone-modal-title">아이폰 18 프로</p>
-      <span class="b-modal-label">저장 용량 선택</span>
+
+      <span class="b-modal-label">가입 유형</span>
+      <div class="b-type-row">
+        <button type="button" class="b-type-badge is-active" data-type="mnp" onclick="selectJoinType('pro',this)">번호이동 <em>지원금 -40만원</em></button>
+        <button type="button" class="b-type-badge" data-type="chg" onclick="selectJoinType('pro',this)">기기변경 <em>지원금 -20만원</em></button>
+      </div>
+
+      <span class="b-modal-label">저장 용량</span>
       <div class="b-storage-row">
-        <button type="button" class="b-storage-badge is-active" onclick="selectStorage(this)">256GB</button>
-        <button type="button" class="b-storage-badge" onclick="selectStorage(this)">512GB</button>
-        <button type="button" class="b-storage-badge" onclick="selectStorage(this)">1TB</button>
+        <button type="button" class="b-storage-badge is-active" data-cap="256GB" onclick="selectStorage('pro',this)">256GB</button>
+        <button type="button" class="b-storage-badge" data-cap="512GB" onclick="selectStorage('pro',this)">512GB</button>
+        <button type="button" class="b-storage-badge" data-cap="1TB" onclick="selectStorage('pro',this)">1TB</button>
       </div>
+
+      <span class="b-modal-label">컬러</span>
+      <div class="b-color-chips">
+        <button type="button" class="b-color-chip is-active" data-color="블랙" onclick="selectColor('pro',this)"><i style="background:#1c1c1e"></i>블랙</button>
+        <button type="button" class="b-color-chip" data-color="실버" onclick="selectColor('pro',this)"><i style="background:#d9d9dd"></i>실버</button>
+        <button type="button" class="b-color-chip" data-color="글레이셔" onclick="selectColor('pro',this)"><i style="background:#c6d7e5"></i>글레이셔</button>
+        <button type="button" class="b-color-chip" data-color="버건디" onclick="selectColor('pro',this)"><i style="background:#6b1f2f"></i>버건디</button>
+      </div>
+
       <div class="b-divider"></div>
-      <div class="b-price-display">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.6 3.24L3.83 9A2 2 0 0 0 3.24 10.4l9.58 9.6a2 2 0 0 0 2.83 0l4.94-4.94a2 2 0 0 0 0-2.65z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor"/></svg>
-        <span class="b-price-value"><b>가격:</b> 언팩 이후 공개 예정</span>
+
+      <div class="b-price-box">
+        <div class="b-price-line"><span>출고가</span><b id="pro-list">-</b></div>
+        <div class="b-price-line"><span>사전예약 지원금 <em id="pro-typeLabel">번호이동</em></span><b class="minus" id="pro-subsidy">-</b></div>
+        <div class="b-price-line b-price-final"><span>지원 후 금액</span><b id="pro-after">-</b></div>
       </div>
-      <div class="b-color-row">
-        <span class="b-modal-label">컬러</span>
-        <div class="b-color-select">
-          <span>미정</span>
-          <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="b-color-info">
-          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><line x1="12" y1="16" x2="12" y2="11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="8" r="1" fill="currentColor"/></svg>
-          <span>미정 (9.10 언팩 이후 공개)</span>
-        </div>
+
+      <span class="b-modal-label b-modal-label-tight">월 납부 예상금액 <small>(할부이자 포함)</small></span>
+      <div class="b-monthly-grid">
+        <div class="b-monthly"><span>24개월</span><b id="pro-m24">-</b></div>
+        <div class="b-monthly"><span>30개월</span><b id="pro-m30">-</b></div>
+        <div class="b-monthly"><span>36개월</span><b id="pro-m36">-</b></div>
       </div>
+      <p class="b-price-note">※ 월 청구액은 기기값 기준이며 할부이자가 포함된 금액입니다. 요금제·공급 상황에 따라 달라질 수 있습니다.</p>
+
+      <button type="button" class="b-modal-cta" onclick="reserveFromPhone('pro')">이 조건으로 사전예약 신청하기 ›</button>
     </div>
   </div>
 
@@ -1519,28 +1572,45 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     <div class="phone-modal">
       <button type="button" class="phone-modal-close" onclick="closePhoneModal('promax')">&times;</button>
       <p class="phone-modal-title">아이폰 18 프로맥스</p>
-      <span class="b-modal-label">저장 용량 선택</span>
+
+      <span class="b-modal-label">가입 유형</span>
+      <div class="b-type-row">
+        <button type="button" class="b-type-badge is-active" data-type="mnp" onclick="selectJoinType('promax',this)">번호이동 <em>지원금 -40만원</em></button>
+        <button type="button" class="b-type-badge" data-type="chg" onclick="selectJoinType('promax',this)">기기변경 <em>지원금 -20만원</em></button>
+      </div>
+
+      <span class="b-modal-label">저장 용량</span>
       <div class="b-storage-row">
-        <button type="button" class="b-storage-badge is-active" onclick="selectStorage(this)">256GB</button>
-        <button type="button" class="b-storage-badge" onclick="selectStorage(this)">512GB</button>
-        <button type="button" class="b-storage-badge" onclick="selectStorage(this)">1TB</button>
+        <button type="button" class="b-storage-badge is-active" data-cap="256GB" onclick="selectStorage('promax',this)">256GB</button>
+        <button type="button" class="b-storage-badge" data-cap="512GB" onclick="selectStorage('promax',this)">512GB</button>
+        <button type="button" class="b-storage-badge" data-cap="1TB" onclick="selectStorage('promax',this)">1TB</button>
       </div>
+
+      <span class="b-modal-label">컬러</span>
+      <div class="b-color-chips">
+        <button type="button" class="b-color-chip is-active" data-color="블랙" onclick="selectColor('promax',this)"><i style="background:#1c1c1e"></i>블랙</button>
+        <button type="button" class="b-color-chip" data-color="실버" onclick="selectColor('promax',this)"><i style="background:#d9d9dd"></i>실버</button>
+        <button type="button" class="b-color-chip" data-color="글레이셔" onclick="selectColor('promax',this)"><i style="background:#c6d7e5"></i>글레이셔</button>
+        <button type="button" class="b-color-chip" data-color="버건디" onclick="selectColor('promax',this)"><i style="background:#6b1f2f"></i>버건디</button>
+      </div>
+
       <div class="b-divider"></div>
-      <div class="b-price-display">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.6 3.24L3.83 9A2 2 0 0 0 3.24 10.4l9.58 9.6a2 2 0 0 0 2.83 0l4.94-4.94a2 2 0 0 0 0-2.65z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor"/></svg>
-        <span class="b-price-value"><b>가격:</b> 언팩 이후 공개 예정</span>
+
+      <div class="b-price-box">
+        <div class="b-price-line"><span>출고가</span><b id="promax-list">-</b></div>
+        <div class="b-price-line"><span>사전예약 지원금 <em id="promax-typeLabel">번호이동</em></span><b class="minus" id="promax-subsidy">-</b></div>
+        <div class="b-price-line b-price-final"><span>지원 후 금액</span><b id="promax-after">-</b></div>
       </div>
-      <div class="b-color-row">
-        <span class="b-modal-label">컬러</span>
-        <div class="b-color-select">
-          <span>미정</span>
-          <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="b-color-info">
-          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><line x1="12" y1="16" x2="12" y2="11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="8" r="1" fill="currentColor"/></svg>
-          <span>미정 (9.10 언팩 이후 공개)</span>
-        </div>
+
+      <span class="b-modal-label b-modal-label-tight">월 납부 예상금액 <small>(할부이자 포함)</small></span>
+      <div class="b-monthly-grid">
+        <div class="b-monthly"><span>24개월</span><b id="promax-m24">-</b></div>
+        <div class="b-monthly"><span>30개월</span><b id="promax-m30">-</b></div>
+        <div class="b-monthly"><span>36개월</span><b id="promax-m36">-</b></div>
       </div>
+      <p class="b-price-note">※ 월 청구액은 기기값 기준이며 할부이자가 포함된 금액입니다. 요금제·공급 상황에 따라 달라질 수 있습니다.</p>
+
+      <button type="button" class="b-modal-cta" onclick="reserveFromPhone('promax')">이 조건으로 사전예약 신청하기 ›</button>
     </div>
   </div>
 
@@ -2130,23 +2200,69 @@ window.toggleQmPopup=function(kind){
 window.closeQmPopup=function(kind){
   (kind==='call'?document.getElementById('qmPhoneOverlay'):document.getElementById('qmKakaoOverlay')).classList.remove('open');
 };
+// 아이폰18 프로/프로맥스 가격표 (2026-09-10 언팩 기준 안내 이미지 값 그대로 — 계산식 대신 표 값을 사용해 1원 단위까지 안내 이미지와 동일)
+var PHONE_DATA={
+  pro:{
+    list:{'256GB':1990000,'512GB':2290000,'1TB':2590000},
+    monthly:{
+      mnp:{'256GB':[70390,57140,48290],'512GB':[83680,67920,57410],'1TB':[96960,78700,66520]},
+      chg:{'256GB':[79250,64320,54370],'512GB':[92530,75110,63480],'1TB':[105810,85890,72590]}
+    }
+  },
+  promax:{
+    list:{'256GB':2190000,'512GB':2490000,'1TB':2790000},
+    monthly:{
+      mnp:{'256GB':[79250,64320,54370],'512GB':[92530,75110,63480],'1TB':[105810,85890,72590]},
+      chg:{'256GB':[88100,71510,60440],'512GB':[101390,82290,69560],'1TB':[114670,93070,78670]}
+    }
+  }
+};
+var PHONE_SUBSIDY={mnp:400000,chg:200000};
+var PHONE_TYPE_LABEL={mnp:'번호이동',chg:'기기변경'};
+var PHONE_PRODUCT_NAME={pro:'아이폰 18 프로',promax:'아이폰 18 프로맥스'};
+var phoneSel={pro:{type:'mnp',cap:'256GB',color:'블랙'},promax:{type:'mnp',cap:'256GB',color:'블랙'}};
+
+function won(n){ return n.toLocaleString('ko-KR')+'원'; }
+function updatePhonePrice(id){
+  var s=phoneSel[id], d=PHONE_DATA[id];
+  var list=d.list[s.cap], sub=PHONE_SUBSIDY[s.type], after=list-sub, m=d.monthly[s.type][s.cap];
+  document.getElementById(id+'-list').textContent=won(list);
+  document.getElementById(id+'-typeLabel').textContent=PHONE_TYPE_LABEL[s.type];
+  document.getElementById(id+'-subsidy').textContent='-'+won(sub);
+  document.getElementById(id+'-after').textContent=won(after);
+  document.getElementById(id+'-m24').textContent=won(m[0]);
+  document.getElementById(id+'-m30').textContent=won(m[1]);
+  document.getElementById(id+'-m36').textContent=won(m[2]);
+}
+function setActive(btn,cls){
+  var sib=btn.parentElement.querySelectorAll('.'+cls);
+  for(var i=0;i<sib.length;i++){ sib[i].classList.remove('is-active'); }
+  btn.classList.add('is-active');
+}
+window.selectJoinType=function(id,btn){ setActive(btn,'b-type-badge'); phoneSel[id].type=btn.getAttribute('data-type'); updatePhonePrice(id); };
+window.selectStorage=function(id,btn){ setActive(btn,'b-storage-badge'); phoneSel[id].cap=btn.getAttribute('data-cap'); updatePhonePrice(id); };
+window.selectColor=function(id,btn){ setActive(btn,'b-color-chip'); phoneSel[id].color=btn.getAttribute('data-color'); };
+
 window.openPhoneModal=function(id){
+  updatePhonePrice(id);
   document.getElementById('phoneModalOverlay-'+id).classList.add('open');
+  document.body.style.overflow='hidden';
   document.querySelector('.bottom-cta-bar').style.display='none';
 };
 window.closePhoneModal=function(id){
   document.getElementById('phoneModalOverlay-'+id).classList.remove('open');
+  document.body.style.overflow='';
   document.querySelector('.bottom-cta-bar').style.display='';
 };
-window.selectStorage=function(btn){
-  var row=btn.parentElement;
-  var badges=row.querySelectorAll('.b-storage-badge');
-  for(var i=0;i<badges.length;i++){ badges[i].classList.remove('is-active'); }
-  btn.classList.add('is-active');
-};
-window.toggleColorDropdown=function(id){
-  document.getElementById('colorDrop-'+id).classList.toggle('is-open');
-  document.getElementById('colorBtn-'+id).classList.toggle('is-open');
+// 모달에서 고른 기종/용량/컬러를 신청폼에 미리 채워서 예약 모달로 넘김
+window.reserveFromPhone=function(id){
+  var s=phoneSel[id];
+  var p=document.getElementById('rfProduct'), c=document.getElementById('rfCapacity'), col=document.getElementById('rfColor');
+  if(p) p.value=PHONE_PRODUCT_NAME[id];
+  if(c) c.value=s.cap;
+  if(col) col.value=s.color;
+  closePhoneModal(id);
+  openReserveModal();
 };
 window.toggleFaq=function(btn){
   btn.parentElement.classList.toggle('open');
