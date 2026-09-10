@@ -426,50 +426,109 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     transform:translateY(16px);
     transition:opacity .9s ease .03s, transform .9s ease .03s;
   }
+  .b-select-title{
+    display:block;
+    text-align:center;
+    font-size:clamp(24px,5.6vw,34px);
+    font-weight:800;
+    letter-spacing:-.02em;
+    color:#0a0a0c;
+    margin:-6px 0 10px;
+    opacity:0; transform:translateY(10px);
+    transition:opacity .8s ease .05s, transform .8s ease .05s;
+  }
+  .b-select-sub{
+    display:block;
+    text-align:center;
+    font-size:clamp(13px,3.4vw,15px);
+    color:#777;
+    line-height:1.55;
+    margin-bottom:14px;
+    opacity:0; transform:translateY(10px);
+    transition:opacity .8s ease .1s, transform .8s ease .1s;
+  }
+  .b-select-hint{
+    display:inline-flex; align-items:center; gap:6px;
+    margin:0 auto clamp(20px,3.5vh,30px);
+    padding:8px 14px;
+    background:#fcf0f7; color:#e2067a;
+    border-radius:999px;
+    font-size:12.5px; font-weight:700;
+    opacity:0; transform:translateY(10px);
+    transition:opacity .8s ease .15s, transform .8s ease .15s;
+  }
+  .b-select-hint svg{ width:15px;height:15px; }
   .b-phone-grid{
     display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:14px;
-    max-width:420px;
+    grid-template-columns:1fr;
+    gap:16px;
+    max-width:440px;
     margin:0 auto clamp(28px,4.5vh,44px);
   }
   .b-phone-grid > div{ min-width:0; }
   @media(min-width:640px){
-    .b-phone-grid{ gap:24px; max-width:640px; }
+    .b-phone-grid{ grid-template-columns:1fr 1fr; gap:24px; max-width:760px; }
   }
-  .b-phone-tile{
+  .b-phone-item{
     position:relative;
-    aspect-ratio:1/1;
-    background:linear-gradient(180deg,#f7f7f8,#eeeef0);
-    border-radius:20px;
-    border:1px solid rgba(10,10,12,.06);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-    opacity:0;
-    transform:translateY(16px);
-    transition:opacity .9s ease, transform .9s ease;
+    display:flex; flex-direction:column; align-items:center;
+    padding:22px 18px 20px;
+    background:#fafafa;
+    border:1.5px solid #ececef;
+    border-radius:22px;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    opacity:0; transform:translateY(16px);
+    transition:opacity .9s ease, transform .9s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
   }
-  .benefits.in-view .b-phone-tile{
-    animation:tilePulse 2.6s ease-in-out .9s infinite;
-  }
-  .benefits.in-view .b-phone-grid > div:nth-child(2) .b-phone-tile{
-    animation-delay:1.25s;
-  }
+  .benefits.in-view .b-phone-item{ opacity:1; transform:none; animation:tilePulse 2.6s ease-in-out .9s infinite; }
+  .benefits.in-view .b-phone-grid > div:nth-child(2){ transition-delay:.08s; animation-delay:1.25s; }
+  .b-phone-item:hover, .b-phone-item:active{ border-color:#e2067a; background:#fdf2f8; box-shadow:0 14px 34px -18px rgba(226,6,122,.35); }
   @keyframes tilePulse{
     0%,100%{ box-shadow:0 0 0 0 rgba(226,6,122,.16); }
     50%{ box-shadow:0 0 0 12px rgba(226,6,122,0); }
   }
+  .b-tag-benefit{
+    display:inline-block;
+    padding:6px 14px;
+    background:#fcf0f7; color:#e2067a;
+    border-radius:999px;
+    font-size:12.5px; font-weight:800;
+  }
+  .b-tag-cap{
+    display:inline-block;
+    margin-top:8px;
+    padding:5px 14px;
+    background:#eeeef0; color:#555;
+    border-radius:999px;
+    font-size:12.5px; font-weight:700;
+  }
+  .b-phone-tile{
+    width:100%;
+    display:flex; align-items:center; justify-content:center;
+    margin:12px 0 6px;
+  }
   .b-phone-tile img{
-    width:90%;
+    width:100%;
+    max-width:340px;
     height:auto;
-    max-height:82%;
     object-fit:contain;
     animation:phoneFloat 3.2s ease-in-out infinite;
   }
-  .b-phone-grid > div:nth-child(2) .b-phone-tile img{
-    animation-delay:.5s;
+  .b-phone-grid > div:nth-child(2) .b-phone-tile img{ animation-delay:.5s; }
+  .b-phone-cta{
+    width:100%;
+    margin-top:14px;
+    padding:13px;
+    border:1.5px solid #e2067a;
+    border-radius:999px;
+    background:#fff; color:#e2067a;
+    font-family:inherit; font-size:15px; font-weight:800;
+    cursor:pointer;
+    transition:background .2s ease, color .2s ease;
+  }
+  .b-phone-item:hover .b-phone-cta, .b-phone-item:active .b-phone-cta{
+    background:linear-gradient(135deg,#ff2f92,#e2067a); color:#fff; border-color:transparent;
   }
   @keyframes phoneFloat{
     0%,100%{ transform:translateY(0); }
@@ -477,13 +536,12 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   }
   .b-phone-name{
     display:block;
-    margin-top:14px;
+    margin-top:10px;
     text-align:center;
-    font-size:15px;
+    font-size:clamp(18px,4.8vw,22px);
     font-weight:700;
     letter-spacing:-.01em;
   }
-  .b-phone-item{ cursor:pointer; }
   .b-phone-hint{
     display:block;
     margin-top:6px;
@@ -722,7 +780,6 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   .b-group.in-view .b-card:nth-child(6){ transition-delay:.30s; }
   .b-group.in-view .b-card:nth-child(7){ transition-delay:.36s; }
   .b-group.in-view .b-card:nth-child(8){ transition-delay:.42s; }
-  .benefits.in-view .b-phone-grid > div:nth-child(2) .b-phone-tile{ transition-delay:.08s; }
 
   .b-closing{
     margin-top:clamp(56px,9vh,90px);
@@ -743,6 +800,9 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   .cta-note-dark{ color:rgba(10,10,12,.45); }
 
   .benefits.in-view .b-eyebrow,
+  .benefits.in-view .b-select-title,
+  .benefits.in-view .b-select-sub,
+  .benefits.in-view .b-select-hint,
   .benefits.in-view .b-phone-tile,
   .benefits.in-view .b-title,
   .benefits.in-view .b-sub,
@@ -1489,16 +1549,25 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   <section class="benefits">
     <div class="benefits-inner">
       <span class="b-eyebrow">PRE-RESERVATION BENEFITS</span>
+      <span class="b-select-title">원하시는 모델을 선택하세요</span>
+      <span class="b-select-sub">선택한 모델의 가격 · 용량 · 컬러 · 사전예약 혜택을 확인할 수 있습니다.</span>
+      <span class="b-select-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5a2 2 0 0 1 4 0v6"/><path d="M13 10.5V9a2 2 0 0 1 4 0v2"/><path d="M17 11a2 2 0 0 1 4 0v3a7 7 0 0 1-7 7h-1.5a7 7 0 0 1-5.9-3.2L4.2 14a2 2 0 0 1 3.3-2.2L9 13.5"/></svg>모델 선택 시 상세 혜택이 열립니다</span>
       <div class="b-phone-grid">
         <div class="b-phone-item" onclick="openPhoneModal('pro')">
+          <span class="b-tag-benefit">사전예약 혜택</span>
+          <span class="b-tag-cap">256GB</span>
           <div class="b-phone-tile"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/iphone18_lineup.webp" alt="아이폰 18 프로 블랙 실버 글레이셔 버건디 4가지 컬러" loading="lazy"></div>
           <span class="b-phone-name">아이폰 18 프로</span>
           <span class="b-phone-hint">탭하여 가격 · 용량 · 컬러 보기 ›</span>
+          <button type="button" class="b-phone-cta">혜택 확인하기 ›</button>
         </div>
         <div class="b-phone-item" onclick="openPhoneModal('promax')">
+          <span class="b-tag-benefit">사전예약 혜택</span>
+          <span class="b-tag-cap">256GB</span>
           <div class="b-phone-tile"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/iphone18_lineup.webp" alt="아이폰 18 프로맥스 블랙 실버 글레이셔 버건디 4가지 컬러" loading="lazy"></div>
           <span class="b-phone-name">아이폰 18 프로맥스</span>
           <span class="b-phone-hint">탭하여 가격 · 용량 · 컬러 보기 ›</span>
+          <button type="button" class="b-phone-cta">혜택 확인하기 ›</button>
         </div>
       </div>
 
