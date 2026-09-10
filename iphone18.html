@@ -706,25 +706,36 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   .b-group{ margin-top:clamp(48px,8vh,80px); }
   .b-label{
     display:block;
-    font-size:13px;
-    font-weight:700;
-    letter-spacing:.08em;
-    color:#0a0a0c;
-    margin-bottom:20px;
-    text-align:left;
+    text-align:center;
+    margin:clamp(8px,1.5vh,16px) 0 clamp(22px,3.5vh,30px);
     opacity:0;
     transform:translateY(10px);
     transition:opacity .7s ease, transform .7s ease;
   }
-  .b-label::before{
-    content:'';
-    display:inline-block;
-    width:14px;height:1px;
-    background:#0a0a0c;
-    margin-right:8px;
-    vertical-align:middle;
+  .b-label-title{
+    display:block;
+    font-size:clamp(24px,5.6vw,34px);
+    font-weight:800;
+    letter-spacing:-.02em;
+    line-height:1.25;
+    color:#0a0a0c;
   }
-
+  .b-label-title em{ font-style:normal; color:#e2067a; }
+  .b-label-bar{
+    display:block;
+    width:36px;height:3px;
+    margin:12px auto 12px;
+    background:#e2067a;
+    border-radius:2px;
+  }
+  .b-label-sub{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:7px 14px;
+    background:#fcf0f7; color:#e2067a;
+    border-radius:999px;
+    font-size:12.5px; font-weight:700;
+  }
+  .b-label-sub svg{ width:14px;height:14px; }
   .b-grid{
     display:grid;
     grid-template-columns:1fr;
@@ -1572,7 +1583,11 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
       </div>
 
       <div class="b-group">
-        <span class="b-label">아이폰 18 사전 예약 혜택 (복수 선택 가능)</span>
+        <div class="b-label">
+          <span class="b-label-title">아이폰 18 <em>사전예약 혜택</em></span>
+          <span class="b-label-bar"></span>
+          <span class="b-label-sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>원하시는 혜택을 복수로 선택하실 수 있어요</span>
+        </div>
         <div class="b-stack">
           <div class="b-card"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/benefit_intro.webp" alt="아이폰 18 사전예약 고객님 한정 요금제별 혜택 대기중" loading="lazy"></div>
           <div class="b-card"><img src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/benefit_watch.webp" alt="애플워치 SE3 40mm 44mm 기기값 무료 제공 - 아이폰18 사전예약 혜택 애플워치" loading="lazy"></div>
