@@ -1968,6 +1968,20 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
         </div>
 
         <div class="rf-field">
+          <label>할부 개월</label>
+          <div class="rf-input-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <select id="rfInstallment">
+              <option value="" selected>선택 안함 (상담 시 결정)</option>
+              <option value="일시납">일시납</option>
+              <option value="24개월">24개월</option>
+              <option value="30개월">30개월</option>
+              <option value="36개월">36개월</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="rf-field">
           <label>전달사항</label>
           <div class="rf-input-icon rf-textarea-wrap">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
@@ -2164,6 +2178,7 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
   var product=document.getElementById('rfProduct').value;
   var color=document.getElementById('rfColor').value;
   var capacity=document.getElementById('rfCapacity').value;
+  var installment=document.getElementById('rfInstallment').value;
   var memo=document.getElementById('rfMemo').value.trim();
   var privacy=document.getElementById('rfPrivacy').checked;
 
@@ -2207,7 +2222,7 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
     body:JSON.stringify({
       name:name, phone:phoneF, carrier:carrier,
       channel:(PAGE_CHANNEL||'iphone18_landing'), utm_campaign:(PAGE_UTM_CAMPAIGN||'iphone18'),
-      device_interest:product, capacity:capacity, product_color:color,
+      device_interest:product, capacity:capacity, product_color:color, installment_months:installment||null,
       birth_date:birth, memo:fullMemo, status:'신규'
     })
   }).then(function(res){
@@ -2405,6 +2420,8 @@ window.reserveFromPhone=function(id){
   if(c) c.value=s.cap;
   if(col) col.value=s.color;
   if(car && s.carrier) car.value=s.carrier;
+  var inst=document.getElementById('rfInstallment');
+  if(inst && s.months!==null) inst.value = s.months===0 ? '일시납' : s.months+'개월';
   closePhoneModal(id);
   setTimeout(openReserveModal, 60);
 };
