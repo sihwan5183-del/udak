@@ -587,31 +587,38 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   .phone-modal-overlay{
     display:none;
     position:fixed;inset:0;
-    background:rgba(0,0,0,.68);
-    z-index:3200;
-    align-items:center;justify-content:center;
-    padding:20px;
-    box-sizing:border-box;
-  }
-  .phone-modal-overlay.open{ display:flex; }
-  .phone-modal{
-    position:relative;
-    width:100%;max-width:420px;max-height:88vh;
-    overflow-y:auto;
     background:#fff;
-    border-radius:22px;
-    padding:32px 22px 26px;
+    z-index:3200;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .phone-modal-overlay.open{ display:block; animation:pmPageIn .28s cubic-bezier(.22,1,.36,1); }
+  @keyframes pmPageIn{ from{opacity:0;transform:translateX(28px);} to{opacity:1;transform:none;} }
+  .pm-topbar{
+    position:sticky;top:0;z-index:2;
+    display:flex;align-items:center;
+    height:52px;padding:0 6px;
+    background:#fff;border-bottom:1px solid #f0f0f0;
+  }
+  .pm-back{
+    width:44px;height:44px;border:none;background:none;
+    display:flex;align-items:center;justify-content:center;
+    color:#0a0a0c;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  }
+  .pm-back svg{ width:22px;height:22px; }
+  .pm-topbar-logo{
+    position:absolute;left:50%;transform:translateX(-50%);
+    font-size:15px;font-weight:800;letter-spacing:-.01em;color:#0a0a0c;white-space:nowrap;
+  }
+  .pm-topbar-logo b{ color:#e2067a;font-weight:800;margin-right:4px; }
+  .phone-modal{
+    max-width:520px;
+    margin:0 auto;
+    padding:18px 20px 44px;
     box-sizing:border-box;
     text-align:left;
-    animation:pvModalIn .3s cubic-bezier(.22,1,.36,1);
   }
-  .phone-modal-close{
-    position:absolute;top:14px;right:14px;
-    width:32px;height:32px;border-radius:50%;
-    background:#f2f2f3;border:none;color:#0a0a0c;
-    font-size:18px;cursor:pointer;line-height:1;
-    z-index:1;
-  }
+  body.pm-open .side-quick{ display:none; }
   .phone-modal-title{
     font-size:20px;
     font-weight:800;
@@ -1514,9 +1521,14 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     </div>
   </section>
 
-  <div class="phone-modal-overlay" id="phoneModalOverlay-pro" onclick="if(event.target===this)closePhoneModal('pro')">
+  <div class="phone-modal-overlay" id="phoneModalOverlay-pro">
+    <div class="pm-topbar">
+      <button type="button" class="pm-back" onclick="closePhoneModal('pro')" aria-label="뒤로">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <span class="pm-topbar-logo"><b>U+</b>다이렉트</span>
+    </div>
     <div class="phone-modal">
-      <button type="button" class="phone-modal-close" onclick="closePhoneModal('pro')">&times;</button>
 
       <div class="pm-img-card"><img id="pro-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/color_black.webp" alt="아이폰 18 프로 블랙"></div>
       <p class="phone-modal-title pm-title-center">아이폰 18 프로</p>
@@ -1568,9 +1580,14 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     </div>
   </div>
 
-  <div class="phone-modal-overlay" id="phoneModalOverlay-promax" onclick="if(event.target===this)closePhoneModal('promax')">
+  <div class="phone-modal-overlay" id="phoneModalOverlay-promax">
+    <div class="pm-topbar">
+      <button type="button" class="pm-back" onclick="closePhoneModal('promax')" aria-label="뒤로">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <span class="pm-topbar-logo"><b>U+</b>다이렉트</span>
+    </div>
     <div class="phone-modal">
-      <button type="button" class="phone-modal-close" onclick="closePhoneModal('promax')">&times;</button>
 
       <div class="pm-img-card"><img id="promax-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/color_black.webp" alt="아이폰 18 프로맥스 블랙"></div>
       <p class="phone-modal-title pm-title-center">아이폰 18 프로맥스</p>
@@ -2286,17 +2303,31 @@ window.selectColor=function(id,btn){
   document.getElementById(id+'-colorName').textContent=c;
 };
 
+var phoneOpenId=null;
 window.openPhoneModal=function(id){
   updatePhonePrice(id);
-  document.getElementById('phoneModalOverlay-'+id).classList.add('open');
+  var ov=document.getElementById('phoneModalOverlay-'+id);
+  ov.classList.add('open'); ov.scrollTop=0;
   document.body.style.overflow='hidden';
+  document.body.classList.add('pm-open');
   document.querySelector('.bottom-cta-bar').style.display='none';
+  phoneOpenId=id;
+  try{ history.pushState({phone:id},''); }catch(e){}   // 폰 뒤로가기로 닫히게
 };
-window.closePhoneModal=function(id){
+function hidePhonePage(id){
   document.getElementById('phoneModalOverlay-'+id).classList.remove('open');
   document.body.style.overflow='';
+  document.body.classList.remove('pm-open');
   document.querySelector('.bottom-cta-bar').style.display='';
+  if(phoneOpenId===id) phoneOpenId=null;
+}
+window.closePhoneModal=function(id){
+  hidePhonePage(id);
+  if(history.state && history.state.phone===id){ try{ history.back(); }catch(e){} }
 };
+window.addEventListener('popstate',function(){
+  if(phoneOpenId){ hidePhonePage(phoneOpenId); }
+});
 // 모달에서 고른 기종/용량/컬러/통신사를 신청폼에 미리 채워서 예약 모달로 넘김
 window.reserveFromPhone=function(id){
   var s=phoneSel[id];
@@ -2306,7 +2337,7 @@ window.reserveFromPhone=function(id){
   if(col) col.value=s.color;
   if(car && s.carrier) car.value=s.carrier;
   closePhoneModal(id);
-  openReserveModal();
+  setTimeout(openReserveModal, 60);
 };
 window.toggleFaq=function(btn){
   btn.parentElement.classList.toggle('open');
