@@ -1772,7 +1772,19 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
               <option value="" disabled selected>예약하실 상품을 선택해 주세요</option>
               <option value="아이폰 18 프로">아이폰 18 프로</option>
               <option value="아이폰 18 프로맥스">아이폰 18 프로맥스</option>
-              <option value="아이폰 울트라">아이폰 울트라</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="rf-field">
+          <label>용량</label>
+          <div class="rf-input-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+            <select id="rfCapacity">
+              <option value="" selected>선택 안함 (미정)</option>
+              <option value="256GB">256GB</option>
+              <option value="512GB">512GB</option>
+              <option value="1TB">1TB</option>
             </select>
           </div>
         </div>
@@ -1987,6 +1999,7 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
   var carrier=document.getElementById('rfCarrier').value;
   var product=document.getElementById('rfProduct').value;
   var color=document.getElementById('rfColor').value;
+  var capacity=document.getElementById('rfCapacity').value;
   var memo=document.getElementById('rfMemo').value.trim();
   var privacy=document.getElementById('rfPrivacy').checked;
 
@@ -2030,7 +2043,7 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
     body:JSON.stringify({
       name:name, phone:phoneF, carrier:carrier,
       channel:(PAGE_CHANNEL||'iphone18_landing'), utm_campaign:(PAGE_UTM_CAMPAIGN||'iphone18'),
-      device_interest:product, capacity:'', product_color:color,
+      device_interest:product, capacity:capacity, product_color:color,
       birth_date:birth, memo:fullMemo, status:'신규'
     })
   }).then(function(res){
