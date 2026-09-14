@@ -2340,14 +2340,19 @@ var PHONE_DATA={
     }
   }
 };
-var PHONE_SUBSIDY={mnp:400000,chg:200000};
+// v20260914: 번호이동 지원금 최대 55만원으로 고정. 요금제(85/95/115)에 따른 금액 차이는
+// 랜딩에서 분기 안 하고 상담 단계에서 안내. 월 할부금은 할부이자 계수로 실시간 계산해서
+// 지원금이 또 바뀌어도(예: 20만→40만→55만) 이 값 하나만 고치면 되게 함.
+var PHONE_SUBSIDY_MNP=550000;
+var PHONE_SUBSIDY_CHG=200000;
 var PHONE_TYPE_LABEL={mnp:'(번호이동)',chg:'(기기변경)'};
 var PHONE_PRODUCT_NAME={pro:'아이폰 18 프로',promax:'아이폰 18 프로맥스'};
 var PHONE_IMG_BASE='https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/';
 var PHONE_COLOR_IMG={'블랙':'color_black.webp','실버':'color_silver.webp','글레이셔':'color_glacier.webp','버건디':'color_burgundy.webp'};
-var PHONE_MONTH_IDX={24:0,30:1,36:2};
-// SKT/KT/알뜰폰 고객 = 번호이동(40만), LG U+ 고객 = 기기변경(20만)
+var PHONE_MONTH_RATE={24:1.0626,30:1.0781,36:1.0935}; // 할부이자 포함 계수(연 5.9% 기준)
+// SKT/KT/알뜰폰 고객 = 번호이동, LG U+ 고객 = 기기변경
 function carrierType(c){ return c==='LG U+' ? 'chg' : 'mnp'; }
+function getSubsidy(carrier){ return carrierType(carrier)==='chg' ? PHONE_SUBSIDY_CHG : PHONE_SUBSIDY_MNP; }
 var phoneSel={
   pro:{cap:'256GB',color:'블랙',carrier:null,months:null},
   promax:{cap:'256GB',color:'블랙',carrier:null,months:null}
@@ -2367,7 +2372,7 @@ function updatePhonePrice(id){
     $('resultHint').textContent='통신사와 할부 방식을 선택해주세요';
     return;
   }
-  var type=carrierType(s.carrier), sub=PHONE_SUBSIDY[type], after=list-sub;
+  var type=carrierType(s.carrier), sub=getSubsidy(s.carrier), after=list-sub;
   $('typeLabel').textContent=PHONE_TYPE_LABEL[type];
   $('subsidy').textContent='-'+won(sub);
   $('after').textContent=won(after);
@@ -2378,7 +2383,8 @@ function updatePhonePrice(id){
     $('result').textContent=won(after);
     $('resultHint').textContent='일시납 · 지원 후 금액 (할부이자 없음)';
   } else {
-    var m=d.monthly[type][s.cap][PHONE_MONTH_IDX[s.months]];
+    var raw=after*PHONE_MONTH_RATE[s.months]/s.months;
+    var m=Math.round(raw/10)*10;
     $('result').textContent=won(m)+' / 월';
     $('resultHint').textContent=s.months+'개월 할부 · 기기값 기준, 할부이자 포함';
   }
