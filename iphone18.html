@@ -1128,6 +1128,140 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     transition:opacity .9s ease, transform .9s ease;
   }
 
+  /* ── 지원금 안내 카드 (subsidy-info-img 내부) ── */
+  .sc-row{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .sc-row-top{ margin-bottom:8px; }
+  .sc-row-tier{ margin-bottom:10px; align-items:stretch; }
+  .sc-box{
+    padding:clamp(14px,3.6vw,18px) 10px 14px;
+    border-radius:18px;
+    text-align:center;
+  }
+  .sc-box--mnp{ background:linear-gradient(180deg,#ffedf5,#fff8fb); border:1.5px solid #f8cee1; }
+  .sc-box--chg{ background:linear-gradient(180deg,#eaf1fc,#f6f9fe); border:1.5px solid #cddef5; }
+  .sc-box-title{
+    font-size:clamp(12px,3.3vw,14px);
+    font-weight:800;
+    color:#0a0a0c;
+    letter-spacing:-.01em;
+    margin-bottom:6px;
+    white-space:nowrap;
+  }
+  .sc-amount{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+  }
+  .sc-max-tag{
+    align-self:flex-start;
+    margin-top:4px;
+    padding:3px 7px;
+    border-radius:8px 8px 8px 2px;
+    background:#e2067a;
+    color:#fff;
+    font-size:10px;
+    font-weight:800;
+    white-space:nowrap;
+  }
+  .sc-num{
+    font-size:clamp(34px,10.2vw,50px);
+    font-weight:900;
+    letter-spacing:-.03em;
+    line-height:.9;
+    color:#e2067a;
+    background:linear-gradient(135deg,#ff2f92,#e2067a);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .sc-suffix{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    line-height:1.2;
+    margin-left:1px;
+  }
+  .sc-unit{
+    font-size:clamp(12.5px,3.3vw,15px);
+    font-weight:800;
+    color:#0a0a0c;
+  }
+  .sc-label{
+    font-size:clamp(12px,3.1vw,14px);
+    font-weight:800;
+    color:#0a0a0c;
+  }
+  .sc-tier-group{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    padding:12px 8px;
+    border-radius:16px;
+  }
+  .sc-tier-group--mnp{ background:#fdf2f7; border:1px solid #f8dbe8; }
+  .sc-tier-group--chg{ grid-template-columns:1fr; background:#f1f5fc; border:1px solid #d9e5f7; }
+  .sc-tier{ text-align:center; }
+  .sc-tier-plan{
+    font-size:clamp(10.5px,2.9vw,13px);
+    font-weight:700;
+    color:#333;
+    white-space:nowrap;
+  }
+  .sc-tier-plan b{ color:#e2067a; font-weight:800; }
+  .sc-tier-group--chg .sc-tier-plan b{ color:#3a6fd8; }
+  .sc-tier-cond{
+    margin-top:2px;
+    font-size:clamp(9.5px,2.5vw,11.5px);
+    color:#999;
+    white-space:nowrap;
+  }
+  .sc-tier-pill{
+    display:inline-block;
+    margin-top:8px;
+    padding:6px 10px;
+    border-radius:999px;
+    background:#fce0ec;
+    color:#e2067a;
+    font-size:clamp(10.5px,2.8vw,12.5px);
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .sc-tier-pill b{ font-weight:800; }
+  .sc-tier-pill--blue{ background:#dde9fb; color:#2f5cc4; }
+  .sc-exclude{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:13px 8px;
+    background:#fafafa;
+    border-radius:14px;
+    flex-wrap:wrap;
+  }
+  .sc-exclude-item{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    color:#555;
+  }
+  .sc-exclude-item svg{ flex-shrink:0; color:#e2067a; }
+  .sc-exclude-text{
+    font-size:clamp(10.5px,2.8vw,13px);
+    font-weight:700;
+    color:#333;
+    white-space:nowrap;
+  }
+  .sc-exclude-x{
+    font-size:14px;
+    font-weight:900;
+    color:#e0293e;
+  }
+  .sc-exclude-divider{ width:1px; height:16px; background:#ddd; flex-shrink:0; }
+  @media(max-width:360px){
+    .sc-exclude{ gap:5px 6px; }
+  }
+
   .about-modal-overlay{
     display:none;
     position:fixed;inset:0;
@@ -1549,7 +1683,59 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
       <span class="about-trigger-title">유플러스 다이렉트란?</span>
       <span class="about-trigger-hint">클릭해서 자세히보기 ›</span>
     </button>
-    <img class="subsidy-info-img" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/subsidy_5520.webp" alt="사전예약 고객님 대상 기기값 지원금 - 번호이동 고객님 최대 55만원 지원금, 기기변경 고객님 20만원 지원금">
+    <div class="subsidy-info-img" role="img" aria-label="사전예약 고객님 대상 기기값 지원금 - 번호이동 고객님 최대 55만원 지원금, 기기변경 고객님 20만원 지원금">
+      <div class="sc-row sc-row-top">
+        <div class="sc-box sc-box--mnp">
+          <p class="sc-box-title">번호이동 고객님</p>
+          <div class="sc-amount">
+            <span class="sc-max-tag">최대</span>
+            <span class="sc-num">55</span>
+            <span class="sc-suffix"><span class="sc-unit">만원</span><span class="sc-label">지원금</span></span>
+          </div>
+        </div>
+        <div class="sc-box sc-box--chg">
+          <p class="sc-box-title">기기변경 고객님</p>
+          <div class="sc-amount">
+            <span class="sc-num">20</span>
+            <span class="sc-suffix"><span class="sc-unit">만원</span><span class="sc-label">지원금</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="sc-row sc-row-tier">
+        <div class="sc-tier-group sc-tier-group--mnp">
+          <div class="sc-tier">
+            <p class="sc-tier-plan"><b>85,000</b> 요금제</p>
+            <p class="sc-tier-cond">6개월 사용 조건</p>
+            <span class="sc-tier-pill">지원금 <b>50</b>만원</span>
+          </div>
+          <div class="sc-tier">
+            <p class="sc-tier-plan"><b>115,000</b> 요금제</p>
+            <p class="sc-tier-cond">6개월 사용 조건</p>
+            <span class="sc-tier-pill">지원금 <b>55</b>만원</span>
+          </div>
+        </div>
+        <div class="sc-tier-group sc-tier-group--chg">
+          <div class="sc-tier">
+            <p class="sc-tier-plan"><b>85,000</b> 요금제</p>
+            <p class="sc-tier-cond">6개월 사용 조건</p>
+            <span class="sc-tier-pill sc-tier-pill--blue">혜택 동일</span>
+          </div>
+        </div>
+      </div>
+      <div class="sc-exclude">
+        <div class="sc-exclude-item">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2.4"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="15" x2="10" y2="15"/></svg>
+          <span class="sc-exclude-text">제휴카드 의무가입</span>
+          <span class="sc-exclude-x">X</span>
+        </div>
+        <div class="sc-exclude-divider"></div>
+        <div class="sc-exclude-item">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/></svg>
+          <span class="sc-exclude-text">기타 부가서비스 의무가입</span>
+          <span class="sc-exclude-x">X</span>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="section" id="preorderInfo">
