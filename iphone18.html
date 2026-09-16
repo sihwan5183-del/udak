@@ -290,13 +290,26 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
 
   /* ── D-1 마감임박 히어로 배너 (hero-poster 내부, hero_poster1 대체) ── */
   .d1-banner{
+    position:relative;
     text-align:left;
     padding:22px 20px 20px;
     border-radius:20px;
     background:linear-gradient(180deg,#ffffff,#fdfafb);
-    border:1px solid rgba(10,10,12,.07);
+    border:1px solid rgba(10,10,12,.09);
+    box-shadow:0 2px 24px -6px rgba(10,10,12,.12), 0 1px 4px rgba(10,10,12,.05);
     overflow:hidden;
   }
+  .d1-banner::before{
+    content:'';
+    position:absolute;
+    top:-6px; left:50%;
+    transform:translateX(-50%);
+    width:260px; height:190px;
+    background:radial-gradient(ellipse at center, rgba(226,6,122,.14), transparent 72%);
+    pointer-events:none;
+    z-index:0;
+  }
+  .d1-top, .d1-title-row, .d1-subtitle, .d1-stage-row, .d1-timeline{ position:relative; z-index:1; }
   .d1-top{
     display:flex;
     align-items:flex-start;
@@ -351,11 +364,12 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   }
   .d1-platform{
     position:absolute;
-    left:50%; bottom:0;
+    left:50%; bottom:-3px;
     transform:translateX(-50%);
-    width:88%; height:14px;
+    width:96%; height:22px;
     border-radius:50%;
-    background:radial-gradient(ellipse at center, rgba(20,10,15,.17), transparent 72%);
+    background:radial-gradient(ellipse at 50% 38%, #f5f5f6 0%, #e6e6e8 52%, #d8d8db 72%, transparent 82%);
+    box-shadow:0 9px 12px -5px rgba(90,10,35,.30);
   }
   .d1-phone{
     position:relative; z-index:1;
