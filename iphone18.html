@@ -287,6 +287,140 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     transition:opacity 1.15s cubic-bezier(.16,1,.3,1), transform 1.15s cubic-bezier(.16,1,.3,1);
   }
   .hero-poster + .hero-poster{ margin-top:16px; }
+
+  /* ── D-1 마감임박 히어로 배너 (hero-poster 내부, hero_poster1 대체) ── */
+  .d1-banner{
+    text-align:left;
+    padding:22px 20px 20px;
+    border-radius:20px;
+    background:linear-gradient(180deg,#ffffff,#fdfafb);
+    border:1px solid rgba(10,10,12,.07);
+    overflow:hidden;
+  }
+  .d1-top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .d1-brand{ display:flex; flex-direction:column; gap:2px; }
+  .d1-brand-eyebrow{ font-size:11px; font-weight:600; color:#8a8a8a; }
+  .d1-brand-name{ font-size:clamp(14px,3.7vw,16px); font-weight:800; color:#e2067a; letter-spacing:-.01em; }
+  .d1-logo{ font-size:22px; font-weight:900; color:#e2067a; letter-spacing:-.03em; line-height:1; }
+  .d1-title-row{ display:flex; align-items:center; gap:7px; line-height:1.16; }
+  .d1-title-row + .d1-title-row{ margin-top:2px; }
+  .d1-title-dark{ font-size:clamp(28px,8.2vw,38px); font-weight:900; color:#0a0a0c; letter-spacing:-.02em; }
+  .d1-title-pink{ font-size:clamp(26px,7.6vw,36px); font-weight:900; color:#e2067a; letter-spacing:-.02em; }
+  .d1-bell{ color:#e2067a; flex-shrink:0; }
+  .d1-dtag{
+    padding:5px 12px;
+    border-radius:10px;
+    background:linear-gradient(135deg,#ff2f92,#e2067a);
+    color:#fff;
+    font-size:clamp(15px,4.2vw,20px);
+    font-weight:900;
+    letter-spacing:-.02em;
+    box-shadow:0 4px 10px rgba(226,6,122,.35);
+  }
+  .d1-subtitle{
+    position:relative;
+    display:inline-block;
+    margin-top:12px;
+    font-size:clamp(14px,3.8vw,16px);
+    font-weight:700;
+    color:#333;
+  }
+  .d1-subtitle::after{
+    content:'';
+    position:absolute; left:1px; right:1px; bottom:-5px;
+    height:3px; border-radius:2px;
+    background:#e2067a;
+  }
+  .d1-stage-row{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    margin:22px 0 20px;
+  }
+  .d1-stage{
+    position:relative;
+    flex:0 0 50%;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    min-height:150px;
+  }
+  .d1-platform{
+    position:absolute;
+    left:50%; bottom:4px;
+    transform:translateX(-50%);
+    width:82%; height:18px;
+    border-radius:50%;
+    background:radial-gradient(ellipse at center, rgba(20,10,15,.13), transparent 72%);
+  }
+  .d1-phone{
+    position:relative; z-index:1;
+    width:100%;
+    max-width:145px;
+    height:auto;
+    display:block;
+    filter:drop-shadow(0 16px 16px rgba(90,10,35,.22));
+  }
+  .d1-info{ flex:1; min-width:0; padding-left:8px; }
+  .d1-info-line1{ font-size:clamp(12.5px,3.4vw,14.5px); font-weight:800; color:#0a0a0c; white-space:nowrap; }
+  .d1-info-line2{ font-size:clamp(14px,3.8vw,17px); font-weight:900; color:#e2067a; letter-spacing:-.01em; margin-bottom:10px; white-space:nowrap; }
+  .d1-info-divider{ width:26px; height:2px; background:#e8e8ea; margin-bottom:10px; }
+  .d1-info-truck{ display:flex; align-items:flex-start; gap:6px; }
+  .d1-info-truck svg{ flex-shrink:0; color:#e2067a; margin-top:1px; }
+  .d1-info-truck p{ font-size:clamp(10px,2.7vw,11.5px); font-weight:600; color:#999; line-height:1.55; }
+  .d1-timeline{ display:flex; align-items:center; gap:6px; }
+  .d1-tl-box{
+    position:relative;
+    flex:1; min-width:0;
+    display:flex; flex-direction:column; align-items:center;
+    padding:16px 6px 14px;
+    border-radius:18px;
+    background:#fdf0f6;
+    border:1.5px solid #f8d4e6;
+    text-align:center;
+  }
+  .d1-tl-box--dark{ background:#0a0a0c; border-color:#0a0a0c; }
+  .d1-tl-icon-wrap{
+    width:28px;height:28px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:#fff; color:#e2067a;
+    margin-bottom:8px;
+  }
+  .d1-tl-icon-wrap--dark{ background:rgba(255,255,255,.14); color:#fff; }
+  .d1-tl-date{
+    font-size:clamp(24px,7vw,32px);
+    font-weight:900;
+    letter-spacing:-.02em;
+    line-height:1;
+    margin-bottom:6px;
+    color:#e2067a;
+    background:linear-gradient(135deg,#ff2f92,#e2067a);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .d1-tl-box--dark .d1-tl-date{ background:none; -webkit-text-fill-color:#fff; color:#fff; }
+  .d1-tl-label{ font-size:clamp(10.5px,2.8vw,12.5px); font-weight:800; color:#0a0a0c; white-space:nowrap; }
+  .d1-tl-box--dark .d1-tl-label{ color:#fff; }
+  .d1-tl-sub{ margin-top:1px; font-size:clamp(10.5px,2.8vw,12.5px); font-weight:800; color:#0a0a0c; white-space:nowrap; }
+  .d1-tl-arrow{ flex-shrink:0; color:#e2067a; }
+  .d1-tl-badge{
+    position:absolute; top:-9px; right:-6px;
+    padding:4px 9px; border-radius:999px;
+    background:linear-gradient(135deg,#ff2f92,#e2067a);
+    color:#fff;
+    font-size:11px; font-weight:900;
+    box-shadow:0 3px 8px rgba(226,6,122,.4);
+  }
+  @media(max-width:360px){
+    .d1-info-line1, .d1-info-line2{ white-space:normal; }
+  }
+
   #preorderInfo{
     background:#fff;
     min-height:auto;
@@ -1739,7 +1873,62 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   </section>
 
   <section class="section" id="preorderInfo">
-    <img class="hero-poster" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/hero_poster1.webp" alt="아이폰 18 사전예약 시작 - 구매 완료순 순차 배송, 9.10 언팩 9.11 사전예약시작 9.17 마감 9.18 개통" loading="lazy">
+    <div class="hero-poster d1-banner" role="img" aria-label="아이폰 18 사전예약 마감 D-1 - 오늘 놓치면 늦습니다, 구매 완료 순 재고 우선 배정, 9.17 영업시간 오후 8시까지 마감, 9.18 제품 당일 출고">
+      <div class="d1-top">
+        <div class="d1-brand">
+          <span class="d1-brand-eyebrow">유플러스 공식 파트너사</span>
+          <span class="d1-brand-name">유플러스 다이렉트</span>
+        </div>
+        <span class="d1-logo">U+</span>
+      </div>
+
+      <div class="d1-title-row">
+        <span class="d1-title-dark">아이폰 18</span>
+        <svg class="d1-bell" viewBox="0 0 32 24" width="26" height="20" fill="none">
+          <path d="M6 10c1.6-1.1 2-1.6 2-3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M26 10c-1.6-1.1-2-1.6-2-3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M16 2a5 5 0 0 0-5 5v2.6c0 2-.8 3.3-1.6 4.2-.5.6-.1 1.5.7 1.5h11.8c.8 0 1.2-.9.7-1.5-.8-.9-1.6-2.2-1.6-4.2V7a5 5 0 0 0-5-5z" fill="currentColor"/>
+          <path d="M13.5 17.4a2.5 2.5 0 0 0 5 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <div class="d1-title-row">
+        <span class="d1-title-pink">사전예약 마감</span>
+        <span class="d1-dtag">D-1</span>
+      </div>
+      <p class="d1-subtitle">오늘 놓치면 늦습니다</p>
+
+      <div class="d1-stage-row">
+        <div class="d1-stage">
+          <div class="d1-platform"></div>
+          <img class="d1-phone" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/phone_burgundy_hero.webp" alt="아이폰 18 프로 버건디" loading="lazy">
+        </div>
+        <div class="d1-info">
+          <p class="d1-info-line1">구매 완료 순,</p>
+          <p class="d1-info-line2">재고 우선 배정</p>
+          <div class="d1-info-divider"></div>
+          <div class="d1-info-truck">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 7h11v9H1z"/><path d="M12 10h4l4 3v3h-8z"/><circle cx="5.5" cy="18" r="1.6"/><circle cx="16.5" cy="18" r="1.6"/></svg>
+            <p>지금 접수할수록<br>더 빠르게 받아보실 수 있습니다.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="d1-timeline">
+        <div class="d1-tl-box">
+          <div class="d1-tl-icon-wrap"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+          <b class="d1-tl-date">9.17</b>
+          <span class="d1-tl-label">영업시간</span>
+          <span class="d1-tl-sub">오후 8시까지 마감</span>
+        </div>
+        <svg class="d1-tl-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5l6 7-6 7"/><path d="M13 5l6 7-6 7"/></svg>
+        <div class="d1-tl-box d1-tl-box--dark">
+          <span class="d1-tl-badge">D-1</span>
+          <div class="d1-tl-icon-wrap d1-tl-icon-wrap--dark"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8z"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+          <b class="d1-tl-date">9.18</b>
+          <span class="d1-tl-label">제품 당일 출고</span>
+        </div>
+      </div>
+    </div>
     <img class="hero-poster" src="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/iphone18/hero_poster2.webp" alt="사전예약 진행 절차 - 희망제품선택 사전예약접수 요금제혜택안내 전화상담 택배수령 개통후이용관리" loading="lazy">
   </section>
 
