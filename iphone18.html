@@ -2161,7 +2161,9 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
   btn.disabled=true;
   btn.textContent='신청 중...';
 
-  fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations',{
+  // v20261002: 아이폰 듀오 신청 건은 ssgadmin 사전예약 목록의 '아이폰 울트라' 시트(reservations_iphone_ultra)로 바로 저장.
+  // (기존 reservations 테이블로 보내면 DB 트리거가 '아이폰' 포함 건을 아이폰18 시트로 옮김. 울트라 테이블은 비로그인 등록(anon insert) 허용돼 있음)
+  fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations_iphone_ultra',{
     method:'POST',
     headers:{
       'Content-Type':'application/json',
