@@ -1170,6 +1170,41 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     z-index:1;
   }
   .reserve-modal .rf-inner{ max-width:none; border:none; padding:0; }
+  /* v20261002: 사전예약 완료 안내 포스터 오버레이 */
+  .done-overlay{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.72);
+    z-index:3600;
+    align-items:center;justify-content:center;
+    padding:16px;
+    box-sizing:border-box;
+  }
+  .done-overlay.open{ display:flex; }
+  .done-box{
+    position:relative;
+    width:100%;max-width:440px;max-height:92vh;
+    overflow-y:auto;
+    background:#fff;
+    border-radius:20px;
+    padding:0 0 16px;
+    box-sizing:border-box;
+    animation:pvModalIn .3s cubic-bezier(.22,1,.36,1);
+  }
+  .done-box img{ display:block;width:100%;height:auto;border-radius:20px 20px 0 0; }
+  .done-close{
+    position:absolute;top:12px;right:12px;
+    width:34px;height:34px;border-radius:50%;
+    background:rgba(255,255,255,.92);border:1px solid #e9e9ec;color:#0a0a0c;
+    font-size:20px;cursor:pointer;line-height:1;
+    z-index:1;
+  }
+  .done-btn{
+    display:block;width:calc(100% - 32px);margin:12px auto 0;
+    height:52px;border:none;border-radius:14px;
+    background:#e6007e;color:#fff;font-size:17px;font-weight:800;
+    cursor:pointer;
+  }
   .about-modal{
     position:relative;
     width:100%;max-width:480px;max-height:88vh;
@@ -1832,6 +1867,15 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     </div>
   </div>
 
+  <!-- v20261002: 사전예약 완료 안내 (신청 성공 시 표시) -->
+  <div class="done-overlay" id="doneOverlay" role="dialog" aria-modal="true" aria-label="사전예약 완료 안내" onclick="if(event.target===this)closeDoneOverlay()">
+    <div class="done-box">
+      <button type="button" class="done-close" onclick="closeDoneOverlay()" aria-label="닫기">&times;</button>
+      <img src="/assets/iphone18/reservation_done.webp" alt="정상적으로 사전예약이 완료되었습니다. 영업일 오전 9시 30분~오후 8시 이내에 영업사원이 010 번호로 연락드립니다. 영업시간 외 상담을 원하시면 카카오톡 또는 별도의 메모를 남겨주세요.">
+      <button type="button" class="done-btn" onclick="closeDoneOverlay()">확인</button>
+    </div>
+  </div>
+
   <section class="reserve" id="reserveForm">
     <div class="rf-inner">
       <h2 class="rf-title"><span class="rf-title-accent">사전예약</span> 신청서</h2>
@@ -2103,6 +2147,18 @@ window.closeReserveModal=function(){
   document.body.style.overflow='';
   document.querySelector('.bottom-cta-bar').style.display='';
 };
+window.openDoneOverlay=function(){
+  var ov=document.getElementById('doneOverlay');
+  ov.classList.add('open');
+  ov.querySelector('.done-box').scrollTop=0;
+  document.body.style.overflow='hidden';
+  document.querySelector('.bottom-cta-bar').style.display='none';
+};
+window.closeDoneOverlay=function(){
+  document.getElementById('doneOverlay').classList.remove('open');
+  document.body.style.overflow='';
+  document.querySelector('.bottom-cta-bar').style.display='';
+};
 
 window.openPrivacyModal=function(){
   document.getElementById('pvModalOverlay').classList.add('open');
@@ -2158,6 +2214,7 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
   var fullMemo=memo;
 
   var btn=document.getElementById('rfSubmitBtn');
+  var btnHTML=btn.innerHTML;
   btn.disabled=true;
   btn.textContent='신청 중...';
 
@@ -2184,19 +2241,21 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
       statusEl.className='rf-status ok';
       document.getElementById('reservationForm').reset();
       btn.disabled=false;
-      btn.textContent='🔔 알림 신청하기';
-      setTimeout(function(){ closeReserveModal(); }, 1800);
+      btn.innerHTML=btnHTML;
+      // 예약 모달은 닫고, 완료 안내 포스터를 전체 화면으로 띄움 (고객이 접수 사실을 확실히 알 수 있도록)
+      closeReserveModal();
+      openDoneOverlay();
     } else {
       res.text().then(function(t){ console.error('Supabase:', t); });
       fail('신청 중 오류가 발생했습니다. 다시 시도해 주세요.');
       btn.disabled=false;
-      btn.textContent='🔔 알림 신청하기';
+      btn.innerHTML=btnHTML;
     }
   }).catch(function(err){
     console.error(err);
     fail('네트워크 오류가 발생했습니다. 다시 시도해 주세요.');
     btn.disabled=false;
-    btn.textContent='🔔 알림 신청하기';
+    btn.innerHTML=btnHTML;
   });
 });
 </script>
