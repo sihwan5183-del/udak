@@ -1081,7 +1081,12 @@ textarea.mform-input{resize:none;height:80px;}
   cursor: pointer;
   border-bottom: 2px solid transparent;
   transition: all 0.2s;
-  white-space: nowrap;
+  white-space: normal;
+  line-height: 1.25;
+  text-align: center;
+}
+@media (max-width: 520px) {
+  .top-nav-sub-item { font-size: 10.5px; padding: 9px 5px; gap: 3px; }
 }
 .top-nav-sub-item:not(:last-child) {
   border-right: 1px solid #f0f0f0;
@@ -1157,12 +1162,15 @@ textarea.mform-input{resize:none;height:80px;}
       <span></span><span></span><span></span>
     </button>
   </div>
-  <div class="top-nav-sub">
-    <div class="top-nav-sub-item onsite-hide" onclick="window.location.href='/about'">
-      유플러스 다이렉트란
+  <div class="top-nav-sub onsite-hide">
+    <div class="top-nav-sub-item" onclick="window.location.href='/about'">
+      유플러스 다이렉트란?
     </div>
-    <div class="top-nav-sub-item" onclick="uwtNavGoto('.ucat-wrap')">
-      핸드폰
+    <div class="top-nav-sub-item" onclick="window.location.href='/about#steps'">
+      온라인 구매 절차가 궁금해요.
+    </div>
+    <div class="top-nav-sub-item" onclick="window.location.href='/about#delivery'">
+      제품은 어떻게 받는거에요?
     </div>
   </div>
 </nav>
@@ -1178,7 +1186,13 @@ textarea.mform-input{resize:none;height:80px;}
   </div>
   <div class="nav-drawer-body">
     <div class="nav-drawer-item onsite-hide" onclick="window.location.href='/about'">
-      유플러스 다이렉트란
+      유플러스 다이렉트란?
+    </div>
+    <div class="nav-drawer-item onsite-hide" onclick="window.location.href='/about#steps'">
+      온라인 구매 절차가 궁금해요.
+    </div>
+    <div class="nav-drawer-item onsite-hide" onclick="window.location.href='/about#delivery'">
+      제품은 어떻게 받는거에요?
     </div>
     <div class="nav-drawer-item" onclick="uwtNavGoto('.ucat-wrap'); closeNavDrawer();">
       핸드폰
@@ -1223,7 +1237,7 @@ function closeNavDrawer() {
 }
 </style>
 <section class="intro-hero">
-  <img class="intro-hero-poster" src="/assets/udak-friday-hero.webp" width="1122" height="1402" alt="유닥 프라이데이 — 올해 마지막 특가, 10.03 ~ 재고 소진 시까지" fetchpriority="high" decoding="async">
+  <img class="intro-hero-poster" src="/assets/udak-friday-hero.webp" width="1122" height="1402" alt="2026 마지막 특가 — 유닥 블랙프라이데이, 10.03 ~ 재고 소진 시" fetchpriority="high" decoding="async">
   <img class="intro-hero-nocard" src="/assets/no-card-no-addon.webp" width="1774" height="887" alt="제휴카드 No! 부가서비스 의무가입 No!" decoding="async">
 </section>
 
