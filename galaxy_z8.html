@@ -969,6 +969,9 @@ textarea.mform-input{resize:none;height:80px;}
   padding: 20px;
 }
 .nav-modal-overlay.open { display: flex; }
+.imgmodal-card { position: relative; background: #fff; border-radius: 16px; width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.25); animation: modalSlideUp 0.3s ease; }
+.imgmodal-card img { width: 100%; display: block; border-radius: 16px; }
+.imgmodal-close { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(0,0,0,0.5); color: #fff; font-size: 20px; line-height: 1; cursor: pointer; z-index: 2; }
 .nav-modal {
   background: #fff;
   border-radius: 20px;
@@ -1166,13 +1169,13 @@ textarea.mform-input{resize:none;height:80px;}
     <div class="top-nav-sub-item" onclick="window.location.href='/about'">
       유플러스 다이렉트란?
     </div>
-    <div class="top-nav-sub-item" onclick="window.location.href='/about#steps'">
+    <div class="top-nav-sub-item" onclick="openNavModal('modalBuySteps')">
       온라인 구매 절차가 궁금해요.
     </div>
-    <div class="top-nav-sub-item" onclick="window.location.href='/about#delivery'">
+    <div class="top-nav-sub-item" onclick="openNavModal('modalDelivery')">
       제품은 어떻게 받는거에요?
     </div>
-    <div class="top-nav-sub-item" onclick="window.location.href='/about#steps'">
+    <div class="top-nav-sub-item" onclick="openNavModal('modalBuySteps')">
       온라인 구매 처음이라 어렵고 걱정되요.
     </div>
   </div>
@@ -1191,13 +1194,13 @@ textarea.mform-input{resize:none;height:80px;}
     <div class="nav-drawer-item onsite-hide" onclick="window.location.href='/about'">
       유플러스 다이렉트란?
     </div>
-    <div class="nav-drawer-item onsite-hide" onclick="window.location.href='/about#steps'">
+    <div class="nav-drawer-item" onclick="openNavModal('modalBuySteps')">
       온라인 구매 절차가 궁금해요.
     </div>
-    <div class="nav-drawer-item onsite-hide" onclick="window.location.href='/about#delivery'">
+    <div class="nav-drawer-item" onclick="openNavModal('modalDelivery')">
       제품은 어떻게 받는거에요?
     </div>
-    <div class="nav-drawer-item onsite-hide" onclick="window.location.href='/about#steps'">
+    <div class="nav-drawer-item" onclick="openNavModal('modalBuySteps')">
       온라인 구매 처음이라 어렵고 걱정되요.
     </div>
     <div class="nav-drawer-item" onclick="uwtNavGoto('.ucat-wrap'); closeNavDrawer();">
@@ -2944,6 +2947,20 @@ function fSubmit(){
         </a>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ══ 온라인 구매 절차 / 배송·개통 이미지 모달 ══ -->
+<div class="nav-modal-overlay" id="modalBuySteps" onclick="if(event.target===this)closeNavModal('modalBuySteps')">
+  <div class="imgmodal-card">
+    <button class="imgmodal-close" type="button" onclick="closeNavModal('modalBuySteps')" aria-label="닫기">×</button>
+    <img src="/assets/about-online-steps.webp" width="1122" height="1402" alt="온라인 구매, 이렇게 진행됩니다 — 희망 제품 선택, 온라인 상담 신청, 전화 상담 및 조건 확인, 구매 결정 후 배송, 개통 및 이용 관리" decoding="async">
+  </div>
+</div>
+<div class="nav-modal-overlay" id="modalDelivery" onclick="if(event.target===this)closeNavModal('modalDelivery')">
+  <div class="imgmodal-card">
+    <button class="imgmodal-close" type="button" onclick="closeNavModal('modalDelivery')" aria-label="닫기">×</button>
+    <img src="/assets/about-delivery-activation.webp" width="1312" height="1199" alt="제품은 어떻게 받는거에요? 전화 상담 후 구매 확정 시 당일 오후 4시 로젠택배로 자택까지 배송, 수령 후 상담원과 통화 후 개통" decoding="async">
   </div>
 </div>
 
