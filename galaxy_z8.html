@@ -1175,8 +1175,8 @@ textarea.mform-input{resize:none;height:80px;}
     <div class="top-nav-sub-item" onclick="openNavModal('modalDelivery')">
       제품은 어떻게 받는거에요?
     </div>
-    <div class="top-nav-sub-item" onclick="openNavModal('modalBuySteps')">
-      온라인 구매 처음이라 어렵고 걱정되요.
+    <div class="top-nav-sub-item" onclick="openNavModal('modalFirstTime')">
+      온라인 구매 처음이라 어렵고 걱정돼요.
     </div>
   </div>
 </nav>
@@ -1200,8 +1200,8 @@ textarea.mform-input{resize:none;height:80px;}
     <div class="nav-drawer-item" onclick="openNavModal('modalDelivery')">
       제품은 어떻게 받는거에요?
     </div>
-    <div class="nav-drawer-item" onclick="openNavModal('modalBuySteps')">
-      온라인 구매 처음이라 어렵고 걱정되요.
+    <div class="nav-drawer-item" onclick="openNavModal('modalFirstTime')">
+      온라인 구매 처음이라 어렵고 걱정돼요.
     </div>
     <div class="nav-drawer-item" onclick="uwtNavGoto('.ucat-wrap'); closeNavDrawer();">
       핸드폰
@@ -2961,6 +2961,12 @@ function fSubmit(){
   <div class="imgmodal-card">
     <button class="imgmodal-close" type="button" onclick="closeNavModal('modalDelivery')" aria-label="닫기">×</button>
     <img src="/assets/about-delivery-activation.webp" width="1312" height="1199" alt="제품은 어떻게 받는거에요? 전화 상담 후 구매 확정 시 당일 오후 4시 로젠택배로 자택까지 배송, 수령 후 상담원과 통화 후 개통" decoding="async">
+  </div>
+</div>
+<div class="nav-modal-overlay" id="modalFirstTime" onclick="if(event.target===this)closeNavModal('modalFirstTime')">
+  <div class="imgmodal-card">
+    <button class="imgmodal-close" type="button" onclick="closeNavModal('modalFirstTime')" aria-label="닫기">×</button>
+    <img src="/assets/about-first-time.webp" width="1536" height="1024" alt="온라인 구매 처음이라 어렵고 걱정돼요? 걱정마세요 — 쉽고 간편하게 5분 통화로, 정확한 안내·전문 상담·추가 비용 없음·빠른 배송·개통까지 지원" decoding="async">
   </div>
 </div>
 
