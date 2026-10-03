@@ -1226,8 +1226,8 @@ textarea.mform-input{resize:none;height:80px;}
     <a class="nav-drawer-item" href="https://pf.kakao.com/_HxfVxcn/chat" target="_blank">
       카카오톡 상담
     </a>
-    <div class="nav-drawer-item" onclick="uwtNavGoto('.ucat-wrap'); closeNavDrawer();">
-      제품 상담 신청하기
+    <div class="nav-drawer-item" onclick="closeNavDrawer(); openConsultForm();">
+      상담 신청하기
     </div>
   </div>
 </div>
@@ -2313,9 +2313,40 @@ function closePrivacyModal(e){
 var mDevice = '', mCarrier = '';
 
 function openReservationModal(){
+  mFillDeviceSelect();
   document.getElementById('reservationOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+// v20261003: 하단 '상담 신청하기' / 햄버거 '상담 신청하기' → 상담 신청폼
+window.openConsultForm=function(){
+  var g=document.getElementById('mSelectorGrid'); if(g) g.style.display='';
+  openReservationModal();
+};
+// 관심 기기 드롭다운 — 현재 상품 목록(카탈로그)에 보이는 기기 그대로 + '아직 정하지 않았어요'
+function mFillDeviceSelect(){
+  var sel=document.getElementById('mDeviceSelect'); if(!sel) return;
+  var esc=function(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');};
+  var list=(typeof ucatDevices!=='undefined'&&ucatDevices)?ucatDevices:[];
+  var groups=[['삼성',[]],['애플',[]]];
+  ['Z','S',null].forEach(function(sub){
+    list.forEach(function(d){
+      var c=ucatCategorize(d); if(c.sub!==sub||!d.name) return;
+      var gr=groups.find(function(x){return x[0]===c.brand;}); if(gr&&gr[1].indexOf(d.name)<0) gr[1].push(d.name);
+    });
+  });
+  var html='<option value="">기기를 선택해주세요</option>';
+  groups.forEach(function(gr){ if(gr[1].length) html+='<optgroup label="'+gr[0]+'">'+gr[1].map(function(n){return '<option value="'+esc(n)+'">'+esc(n)+'</option>';}).join('')+'</optgroup>'; });
+  html+='<option value="미정">아직 정하지 않았어요</option>';
+  sel.innerHTML=html;
+  if(mDevice){
+    if(!Array.prototype.some.call(sel.options,function(o){return o.value===mDevice;})) sel.insertAdjacentHTML('beforeend','<option value="'+esc(mDevice)+'">'+esc(mDevice)+'</option>');
+    sel.value=mDevice;
+  }
+}
+// v20261003: 8/4 카탈로그 개편 때 이 두 함수 정의가 빠져서 신청 버튼이 저장 전에 멈추던 버그 수정
+// (상세페이지에서 넘어온 경우만 URL에 용량/컬러가 있음)
+function mSelectedCapacity(){ return new URLSearchParams(location.search).get('oStorage')||null; }
+function mSelectedColor(){ return new URLSearchParams(location.search).get('oColor')||null; }
 (function(){
   // device.html에서 상담문의/주문신청하기 누르고 넘어온 경우 자동으로 신청폼(실제 라이브 모달) 오픈 + 주문요약 카드 채움
   const params=new URLSearchParams(window.location.search);
@@ -2432,7 +2463,7 @@ function mSubmitForm(){
   var phone = document.getElementById('mUserPhone').value.replace(/[^0-9]/g,'');
   var birth = document.getElementById('mUserBirth').value.trim();
   var ok    = document.getElementById('mPrivacyCheck').checked;
-  if(!mDevice)  { alert('원하는 상품을 선택해주세요.'); return; }
+  if(!mDevice)  { alert('관심 기기를 선택해주세요.'); return; }
   if(!mCarrier) { alert('현재 통신사를 선택해주세요.'); return; }
   if(!name)     { alert('이름을 입력해주세요.'); return; }
   if(!phone || phone.length !== 11 || !phone.startsWith('010')){ alert('010으로 시작하는 11자리 전화번호를 입력해주세요.'); return; }
@@ -2461,9 +2492,11 @@ function mSubmitForm(){
   } else if(urlWatchParam){
     memo=(memo?memo+' / ':'')+'요금제별혜택 희망: '+urlWatchParam;
   }
-  // 팝업 먼저 표시
-  showTicket(name,phoneF,mDevice);
-  // DB 저장 (백그라운드)
+  memo=['[상담 신청]',memo].filter(Boolean).join(' ');
+  var mBtn=document.getElementById('mSubmitBtn'), mBtnTxt=mBtn?mBtn.textContent:'';
+  if(mBtn){ if(mBtn.disabled) return; mBtn.disabled=true; mBtn.textContent='신청 중...'; }
+  var mBtnReset=function(){ if(mBtn){ mBtn.disabled=false; mBtn.textContent=mBtnTxt; } };
+  // DB 저장 → 성공했을 때만 완료 화면 + 메타 Lead
   fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations_udak',{
     method:'POST',
     headers:{
@@ -2476,13 +2509,16 @@ function mSubmitForm(){
   }).then(function(res){
     if(res.ok){
       if(typeof fbq!=='undefined') fbq('track','Lead');
+      mBtnReset();
       closeReservationModal();
       showTicket(name, phoneF, mDevice);
     } else {
+      mBtnReset();
       res.text().then(function(t){ console.error('Supabase:', t); alert('신청 오류가 발생했습니다. 다시 시도해주세요.'); });
     }
   }).catch(function(e){
     console.error(e);
+    mBtnReset();
     alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
   });
 }
@@ -2648,16 +2684,16 @@ function fSubmit(){
 <!-- ══ Sticky CTA ══ -->
 <div class="sticky-cta">
   <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;">
-    <button class="sticky-cta-btn" onclick="uwtNavGoto('.ucat-wrap')">제품 상담 신청하기</button>
+    <button class="sticky-cta-btn" onclick="openConsultForm()">상담 신청하기</button>
   </div>
 </div>
 
-<!-- ══ 사전예약 모달 ══ -->
+<!-- ══ 상담 신청 모달 ══ -->
 <div class="reservation-overlay" id="reservationOverlay" onclick="closeReservationModal(event)">
   <div class="reservation-modal">
     <button class="modal-close" onclick="closeReservationModal()">×</button>
-    <div class="modal-title">사전예약 신청하기</div>
-    <div class="modal-sub">언팩 후 혜택 정보를 가장 먼저 받아보세요.<br>곧 공개될 유플러스 다이렉트 사전예약 지원금을 확인해보세요.</div>
+    <div class="modal-title">상담 신청하기</div>
+    <div class="modal-sub">연락처를 남겨주시면 상담원이 빠르게 연락드리겠습니다.</div>
 
     <div id="mOrderSummaryBox" style="display:none;background:#f7f7f9;border-radius:14px;padding:16px;margin-bottom:18px;">
       <p style="font-size:11px;font-weight:700;color:#999;margin-bottom:10px;">주문 상품</p>
@@ -2681,36 +2717,9 @@ function fSubmit(){
       </div>
     </div>
 
-    <div id="mSelectorGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
-      <div class="mform-group" style="margin-bottom:0;">
-        <div class="mform-label" style="font-size:14px;margin-bottom:8px;">원하는 상품</div>
-        <div style="display:flex;flex-direction:column;gap:6px;">
-          <div class="mdevice-card" style="padding:10px 6px;" onclick="mSelectDevice(this,'갤럭시 Z 플립8')">
-            <div class="mdevice-card-name">갤럭시 Z 플립8</div>
-          </div>
-          <div class="mdevice-card" style="padding:10px 6px;" onclick="mSelectDevice(this,'갤럭시 Z 폴드8 울트라')">
-            <div class="mdevice-card-name">갤럭시 Z 폴드8 울트라</div>
-          </div>
-          <div class="mdevice-card" style="padding:10px 6px;" onclick="mSelectDevice(this,'갤럭시 Z 폴드8')">
-            <div class="mdevice-card-name">갤럭시 Z 폴드8</div>
-          </div>
-        </div>
-      </div>
-      <div class="mform-group" style="margin-bottom:0;">
-        <div class="mform-label" style="font-size:14px;margin-bottom:8px;">요금제별 혜택 <span style="font-size:10px;color:#bbb;font-weight:400;">(선택)</span></div>
-        <div style="display:flex;gap:6px;margin-bottom:6px;">
-          <button type="button" onclick="mPickSecondPlan('95')" id="mSecPlan95" class="f-secplan-btn on">PLAN 95</button>
-          <button type="button" onclick="mPickSecondPlan('115')" id="mSecPlan115" class="f-secplan-btn">PLAN 115</button>
-        </div>
-        <div id="mSecondModelList" style="display:flex;flex-wrap:wrap;gap:5px;"></div>
-      </div>
-    </div>
-
-    <div class="mform-group" id="mColorCapGroup" style="display:none;">
-      <div class="mform-label">컬러</div>
-      <div class="pcard-colors" id="mColorGrid" style="margin-bottom:16px;"></div>
-      <div class="mform-label">용량</div>
-      <div class="pcard-cap" id="mCapGrid"></div>
+    <div class="mform-group" id="mSelectorGrid">
+      <div class="mform-label">관심 기기</div>
+      <select class="mform-input" id="mDeviceSelect" onchange="mDevice=this.value;"></select>
     </div>
 
     <div class="mform-group">
@@ -2753,7 +2762,7 @@ function fSubmit(){
       </div>
     </div>
 
-    <button class="modal-submit" onclick="mSubmitForm()">사전예약 신청하기</button>
+    <button class="modal-submit" id="mSubmitBtn" onclick="mSubmitForm()">상담 신청하기</button>
   </div>
 </div>
 
