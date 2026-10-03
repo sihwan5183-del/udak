@@ -13,14 +13,31 @@ fbq('track', 'PageView');
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=921171610476690&ev=PageView&noscript=1"/></noscript>
 <!-- End Meta Pixel -->
 <script>
-// UTM 기반 채널 분기 (기본: 메타광고)
-var PAGE_CHANNEL = '메타광고';
-var PAGE_UTM_CAMPAIGN = null;
-try {
-  var _us = new URLSearchParams(location.search).get('utm_source');
-  if (_us === 'x' || _us === 'twitter') PAGE_CHANNEL = '기타';
-  PAGE_UTM_CAMPAIGN = new URLSearchParams(location.search).get('utm_campaign') || null;
-} catch(e) {}
+// v20261003: 신청은 ssgadmin 영업관리 > 유닥 시트(reservations_udak)로 저장
+// 광고 URL의 utm_* 를 이 탭 세션에 보관 → 랜딩에서 상세(/device)로 넘어가도 캠페인 정보 유지
+var UDAK_UTM = {};
+(function(){
+  try {
+    var q = new URLSearchParams(location.search), keys = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'], got = {}, has = false;
+    keys.forEach(function(k){ var v = q.get(k); if (v) { got[k] = v; has = true; } });
+    if (has) { UDAK_UTM = got; sessionStorage.setItem('udak_utm', JSON.stringify(got)); }
+    else { UDAK_UTM = JSON.parse(sessionStorage.getItem('udak_utm') || '{}') || {}; }
+  } catch(e) { UDAK_UTM = {}; }
+})();
+var PAGE_UTM_CAMPAIGN = UDAK_UTM.utm_campaign || null;
+// 유닥 시트 채널값 (ssgadmin UDAK_CHANNEL_OPTIONS: 메타/네이버/SNS/세그/기존고객/기타). utm 없으면 메타광고 랜딩 기준 '메타'
+var UDAK_CHANNEL = (function(){
+  var s = String(UDAK_UTM.utm_source || '').toLowerCase();
+  if (!s || /^(fb|facebook|ig|instagram|meta|an|msg|messenger|audience_network)$/.test(s)) return '메타';
+  if (s.indexOf('naver') > -1) return '네이버';
+  if (/^(x|twitter|threads|kakao|youtube|tiktok|blog|band|sns)$/.test(s)) return 'SNS';
+  if (/(seg|sms|lms|mms)/.test(s)) return '세그';
+  return '기타';
+})();
+var PAGE_CHANNEL = UDAK_CHANNEL;
+function udakUtmQuery(){ var p = new URLSearchParams(); Object.keys(UDAK_UTM).forEach(function(k){ p.set(k, UDAK_UTM[k]); }); var s = p.toString(); return s ? ('&' + s) : ''; }
+// 생년월일 6자리 → 8자리(YYYYMMDD, 유닥 시트 형식). 00~현재연도 끝2자리는 2000년대로
+function udakBirth8(b6){ var yy = parseInt(b6.slice(0,2), 10), cy = new Date().getFullYear() % 100; return (yy <= cy ? '20' : '19') + b6; }
 var BLOCKED_PHONES = ['01044713759'];
 </script>
 <style>
@@ -1388,7 +1405,7 @@ window.submitDeviceReserve=function(){
   if(watchSnapshotSub) snapshotParts.push('[요금제별혜택] '+watchSnapshotSub);
   var additionalBenefitsSub=snapshotParts.join(' / ')||null;
   var estimatedFeeSub=parseInt((document.getElementById('udHeroAmt').textContent||'').replace(/[^0-9]/g,''))||null;
-  fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/leads',{
+  fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations_udak',{
     method:'POST',
     headers:{
       'Content-Type':'application/json',
@@ -1397,14 +1414,15 @@ window.submitDeviceReserve=function(){
       'Prefer':'return=minimal'
     },
     body:JSON.stringify({
-      name:name,phone:phoneF,birth:birthF,
-      current_carrier:ucatSel.carrier,jointype:jointypeSub,
-      desired_device:d.name,storage:storageName,color:colorName,
-      desired_product:planNameSub,discount:discountSub,
-      additional_benefits:additionalBenefitsSub,
-      channel:'유닥',utm_campaign:PAGE_UTM_CAMPAIGN,
-      estimated_fee:estimatedFeeSub,
-      created_at:new Date().toISOString()
+      name:name,phone:phoneF,carrier:ucatSel.carrier,
+      channel:UDAK_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,
+      device_interest:d.name,capacity:storageName,product_color:colorName||null,
+      installment_months:'24개월',
+      birth_date:udakBirth8(birth),
+      memo:[memo,
+            '[주문] '+jointypeSub+'('+(ucatSel.carrier||'-')+')'+(planNameSub?' · '+planNameSub:'')+' · '+discountSub+(estimatedFeeSub?' · 예상 월 '+estimatedFeeSub.toLocaleString('ko-KR')+'원':''),
+            additionalBenefitsSub].filter(Boolean).join(' / ')||null,
+      status:'신규'
     })
   }).then(function(res){
     if(res.ok){
