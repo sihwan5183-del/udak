@@ -1271,13 +1271,28 @@ function closeNavDrawer() {
 .ucard-name{font-size:16px;font-weight:800;color:#1A1A1A;margin:0 0 6px;line-height:1.3;}
 .ucard-storage{display:inline-block;background:#f3f4f6;color:#666;font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:100px;margin-bottom:10px;}
 .ucard-img{width:100%;aspect-ratio:1/1;object-fit:contain;border-radius:10px;background:#fff;border:1.5px solid #ececec;margin-bottom:12px;display:block;box-sizing:border-box;}
-.ucard-pricebox{background:rgba(233,30,140,.05);border-radius:10px;padding:10px 10px 8px;text-align:left;}
-.ucard-pricebox-lbl{font-size:11px;font-weight:700;color:#888;margin:0 0 8px;}
-.ucard-prow{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 0;}
-.ucard-prow+.ucard-prow{border-top:1px solid rgba(0,0,0,.06);}
-.ucard-typetag{display:inline-block;padding:2.5px 6px;border:1.2px solid #ddd;border-radius:6px;font-size:9.5px;font-weight:700;color:#666;background:#fff;white-space:nowrap;flex-shrink:0;}
-.ucard-pval{font-size:13.5px;font-weight:800;color:#1A1A1A;white-space:nowrap;}
-.ucard-pval.pink{color:#E91E8C;}
+.ucard-pricebox{background:#fff;border:1.5px solid #ececec;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.04);padding:10px 12px 12px;text-align:left;}
+.ucard-types{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:4px;}
+.ucard-type{display:inline-block;padding:4px 8px;border:1.2px solid #ddd;border-radius:6px;font-size:10.5px;font-weight:700;line-height:1.2;color:#888;background:#fff;white-space:nowrap;cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;}
+.ucard-type.on{border-color:#E91E8C;color:#E91E8C;background:rgba(233,30,140,.06);}
+.ucard-type:focus-visible{outline:2px solid #E91E8C;outline-offset:1px;}
+.ucard-calc[hidden]{display:none;}
+.ucard-crow{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;column-gap:6px;padding:7px 0;}
+.ucard-crow>span{font-size:12px;font-weight:600;color:#555;white-space:nowrap;}
+.ucard-crow>b{margin-left:auto;font-size:13px;font-weight:700;color:#1A1A1A;white-space:nowrap;letter-spacing:-.01em;}
+.ucard-crow small{font-size:.78em;font-weight:600;margin-left:1px;}
+.ucard-crow+.ucard-crow{border-top:1px solid #ededed;}
+.ucard-calc .ucard-crow.buy{border-top:1px solid #6b6b6b;margin-top:2px;padding:9px 0 0;}
+.ucard-crow.buy>span{font-size:12.5px;font-weight:800;color:#E91E8C;}
+.ucard-crow.buy>b{font-size:19px;font-weight:900;color:#E91E8C;letter-spacing:-.02em;}
+@media(max-width:500px){
+  .ucard{padding:12px 8px 14px;}
+  .ucard-pricebox{padding:9px 8px 10px;}
+  .ucard-crow>span{font-size:11px;}
+  .ucard-crow>b{font-size:12px;}
+  .ucard-crow.buy>span{font-size:11.5px;flex-basis:100%;}
+  .ucard-crow.buy>b{font-size:18px;}
+}
 .ucat-empty{grid-column:1/-1;text-align:center;padding:36px 0;color:#999;font-size:13px;}
 
 #ucatDetail{position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:1500;overflow-y:auto;transform:translateX(100%);transition:transform .28s ease;}
@@ -1544,6 +1559,37 @@ window.setUcatSub=function(s){
   renderUcatGrid();
 };
 
+/* 카드 가격 박스: 번호이동/기기변경 뱃지 선택 → 출고가격 / 지원금 / 구매가격 */
+function ucardWon(n){return Number(n||0).toLocaleString('ko-KR')+'<small>원</small>';}
+function ucardCalcHtml(t,q,hidden){
+  const sup=Math.max(0,(q.price||0)-(q.final||0));
+  return `<div class="ucard-calc" data-t="${t}"${hidden?' hidden':''}>
+          <div class="ucard-crow"><span>출고가격</span><b>${ucardWon(q.price)}</b></div>
+          <div class="ucard-crow"><span>지원금</span><b>${sup?'-':''}${ucardWon(sup)}</b></div>
+          <div class="ucard-crow buy"><span>구매가격</span><b>${ucardWon(q.final)}</b></div>
+        </div>`;
+}
+function ucardPriceBox(d,mnp,chg){
+  const types=[['mnp','번호이동',mnp],['chg','기기변경',chg]].filter(x=>x[2]);
+  if(!types.length){
+    const lp=(d.storageList&&d.storageList[0])?d.storageList[0].price:0;
+    return lp?`<div class="ucard-pricebox"><div class="ucard-calc"><div class="ucard-crow"><span>출고가격</span><b>${ucardWon(lp)}</b></div></div></div>`:'';
+  }
+  const first=types[0][0];
+  const badges=types.map(([t,lbl])=>`<span class="ucard-type${t===first?' on':''}" role="button" tabindex="0" aria-pressed="${t===first}" data-t="${t}" onclick="ucardSetType(event,this)" onkeydown="if(event.key==='Enter'||event.key===' ')ucardSetType(event,this)">${lbl}</span>`).join('');
+  return `<div class="ucard-pricebox">
+        <div class="ucard-types">${badges}</div>
+        ${types.map(([t,,q])=>ucardCalcHtml(t,q,t!==first)).join('')}
+      </div>`;
+}
+window.ucardSetType=function(ev,el){
+  ev.preventDefault();ev.stopPropagation(); // 카드 링크(상세 이동) 대신 뱃지 전환만
+  const box=el.closest('.ucard-pricebox');if(!box)return;
+  const t=el.dataset.t;
+  box.querySelectorAll('.ucard-type').forEach(b=>{const on=b.dataset.t===t;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');});
+  box.querySelectorAll('.ucard-calc').forEach(c=>{c.hidden=c.dataset.t!==t;});
+};
+
 function renderUcatGrid(){
   const wrap=document.getElementById('ucatGrid');
   if(!wrap) return;
@@ -1566,11 +1612,7 @@ function renderUcatGrid(){
       <p class="ucard-name">${d.name}</p>
       ${storageTxt?`<span class="ucard-storage">${storageTxt}</span>`:''}
       ${d.img?`<img class="ucard-img" src="${d.img}" alt="${d.name}">`:`<div class="ucard-img"></div>`}
-      <div class="ucard-pricebox">
-        <p class="ucard-pricebox-lbl">예상 혜택가</p>
-        ${mnp?`<div class="ucard-prow"><span class="ucard-typetag">번호이동</span><b class="ucard-pval pink">${mnp.final.toLocaleString()}원</b></div>`:''}
-        ${chg?`<div class="ucard-prow"><span class="ucard-typetag">기기변경</span><b class="ucard-pval">${chg.final.toLocaleString()}원</b></div>`:''}
-      </div>
+      ${ucardPriceBox(d,mnp,chg)}
     </a>`;
   }).join('');
 }
