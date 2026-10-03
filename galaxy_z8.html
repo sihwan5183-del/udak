@@ -1164,12 +1164,6 @@ textarea.mform-input{resize:none;height:80px;}
     <div class="top-nav-sub-item" onclick="uwtNavGoto('.ucat-wrap')">
       핸드폰
     </div>
-    <div class="top-nav-sub-item onsite-hide" onclick="window.location.href='/benefits'">
-      스마트홈 5종
-    </div>
-    <div class="top-nav-sub-item" onclick="uwtNavPlaceholder('인터넷')">
-      인터넷
-    </div>
   </div>
 </nav>
 
@@ -1189,12 +1183,6 @@ textarea.mform-input{resize:none;height:80px;}
     <div class="nav-drawer-item" onclick="uwtNavGoto('.ucat-wrap'); closeNavDrawer();">
       핸드폰
     </div>
-    <div class="nav-drawer-item onsite-hide" onclick="window.location.href='/benefits'">
-      스마트홈 5종
-    </div>
-    <div class="nav-drawer-item" onclick="uwtNavPlaceholder('인터넷'); closeNavDrawer();">
-      인터넷
-    </div>
     <a class="nav-drawer-item" href="https://pf.kakao.com/_HxfVxcn/chat" target="_blank">
       카카오톡 상담
     </a>
@@ -1206,9 +1194,6 @@ textarea.mform-input{resize:none;height:80px;}
 <script>if(new URLSearchParams(location.search).get('onsite')==='1'){document.querySelectorAll('.onsite-hide').forEach(function(el){el.style.display='none';});}</script>
 
 <script>
-function uwtNavPlaceholder(label){
-  alert(label+' 페이지는 곧 오픈 예정입니다. 조금만 기다려주세요!');
-}
 function uwtNavGoto(selector){
   document.querySelector(selector)?.scrollIntoView({behavior:'smooth',block:'start'});
 }
