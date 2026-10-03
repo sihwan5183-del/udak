@@ -969,9 +969,9 @@ textarea.mform-input{resize:none;height:80px;}
   padding: 20px;
 }
 .nav-modal-overlay.open { display: flex; }
-.imgmodal-card { position: relative; background: #fff; border-radius: 16px; width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.25); animation: modalSlideUp 0.3s ease; }
-.imgmodal-card img { width: 100%; display: block; border-radius: 16px; }
-.imgmodal-close { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(0,0,0,0.5); color: #fff; font-size: 20px; line-height: 1; cursor: pointer; z-index: 2; }
+.imgmodal-card { position: relative; width: fit-content; max-width: calc(100vw - 40px); max-height: calc(100vh - 40px); background: transparent; animation: modalSlideUp 0.3s ease; }
+.imgmodal-card img { display: block; width: auto; height: auto; max-width: calc(100vw - 48px); max-height: calc(100vh - 48px); border-radius: 12px; box-shadow: 0 16px 50px rgba(0,0,0,0.4); }
+.imgmodal-close { position: absolute; top: 8px; right: 8px; width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(0,0,0,0.55); color: #fff; font-size: 20px; line-height: 1; cursor: pointer; z-index: 2; }
 .nav-modal {
   background: #fff;
   border-radius: 20px;
