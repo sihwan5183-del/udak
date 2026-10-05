@@ -1344,7 +1344,8 @@ function closeNavDrawer() {
 
 <div class="spotlight-overlay"></div>
 
-<!-- ══ 인트로: 영상 2개 좌우 배치 (왼쪽 '유플러스 다이렉트란?' | 오른쪽 '갤럭시 폴드8') → 제휴카드·부가서비스 NO ══ -->
+<!-- ══ 인트로: 갤럭시 폴드8 영상 하나만 크게 (v20261005b) → 제휴카드·부가서비스 NO ══
+     '유플러스 다이렉트란?' 영상은 위 카테고리(헤더 탭·PC 메뉴·햄버거 메뉴)를 누르면 팝업으로 나옴 -->
 <style>
 .intro-hero{max-width:520px;margin:0 auto;background:#fff;}
 .intro-hero img{display:block;width:100%;height:auto;}
@@ -1365,6 +1366,10 @@ function closeNavDrawer() {
 .hero-vseek::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:#E91E8C;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);}
 .hero-vseek::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#E91E8C;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);}
 @media(min-width:521px){ .intro-hero{padding-top:12px;} .hero-duo{gap:14px;padding:14px 0 6px;} .hero-col+.hero-col::before{left:-7.5px;} }
+/* v20261005b: 영상 하나만 — 폭은 화면 높이에 맞춰 자동 (첫 화면에 영상 위쪽 80%가 보이게, 폭 62~100%) */
+.hero-duo.hero-solo{display:block;}
+.hero-solo .hero-col{width:clamp(62%,calc((100vh - min(100vw,520px) * .4586 - 97px) * .703),100%);margin:0 auto;}
+@supports (height:100svh){ .hero-solo .hero-col{width:clamp(62%,calc((100svh - min(100vw,520px) * .4586 - 97px) * .703),100%);} }
 /* 크게 보기 팝업 — '유플러스 다이렉트란?' 탭·메뉴를 누르거나 상단 영상을 누르면 열림 */
 .vpop{position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.86);display:none;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) 16px max(16px,env(safe-area-inset-bottom,0px));box-sizing:border-box;}
 .vpop.open{display:flex;}
@@ -1378,21 +1383,8 @@ function closeNavDrawer() {
 .vpop-time{flex:0 0 auto;min-width:72px;text-align:right;font-size:12px;color:#ddd;font-variant-numeric:tabular-nums;}
 </style>
 <section class="intro-hero">
-  <div class="hero-duo">
-    <div class="hero-col" data-vkey="direct">
-      <p class="hero-label">유플러스 다이렉트란?</p>
-      <div class="hero-vwrap">
-        <video class="intro-hero-video" src="/assets/udak-direct-intro.mp4" poster="/assets/udak-direct-intro-poster.webp" width="720" height="1280" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture aria-label="유플러스 다이렉트란? 소개 영상"></video>
-        <div class="hero-vplay" aria-hidden="true"><span><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13l10.5-6.5z"/></svg></span></div>
-        <div class="hero-vexpand" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
-      </div>
-      <div class="hero-vctrl">
-        <button type="button" class="hero-vbtn" aria-label="일시정지"></button>
-        <input type="range" class="hero-vseek" min="0" max="1000" step="1" value="0" aria-label="재생 위치">
-      </div>
-    </div>
+  <div class="hero-duo hero-solo">
     <div class="hero-col" data-vkey="fold">
-      <p class="hero-label">갤럭시 폴드8</p>
       <div class="hero-vwrap">
         <video class="intro-hero-video" src="/assets/foldwide-promo-v4.mp4" poster="/assets/foldwide-promo-v4-poster.webp" width="1080" height="1920" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture aria-label="갤럭시 폴드8 홍보 영상"></video>
         <div class="hero-vplay" aria-hidden="true"><span><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13l10.5-6.5z"/></svg></span></div>
@@ -2111,7 +2103,8 @@ window.ctaUcat=function(){
 
 renderUcatGrid();
 ucatLoadFirebase();
-// v20261005: 상단 영상 2개(유플러스 다이렉트란? | 갤럭시 폴드8) — 자동재생·반복, 버튼으로 멈춤·재생, 바로 구간 이동, 영상을 누르면 크게 보기
+// v20261005: 상단 영상(v20261005b부터 갤럭시 폴드8 하나) — 자동재생·반복, 버튼으로 멈춤·재생, 바로 구간 이동, 영상을 누르면 크게 보기
+// '유플러스 다이렉트란?' 영상은 상단에서 빠졌고, 카테고리(헤더 탭·PC 메뉴·햄버거 메뉴)를 누르면 아래 팝업으로 재생
 (function(){
   var ICON_PAUSE='<svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><rect x="5" y="4" width="5" height="16" rx="1.2"/><rect x="14" y="4" width="5" height="16" rx="1.2"/></svg>';
   var ICON_PLAY='<svg width="13" height="13" viewBox="0 0 24 24" fill="#fff" style="margin-left:2px"><path d="M7 4.5v15l12.5-7.5z"/></svg>';
