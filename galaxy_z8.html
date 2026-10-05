@@ -1270,13 +1270,15 @@ function closeNavDrawer() {
 <style>
 .intro-hero{max-width:520px;margin:0 auto;background:#fff;}
 .intro-hero img{display:block;width:100%;height:auto;}
+.intro-hero-video{display:block;width:100%;height:auto;aspect-ratio:9/16;object-fit:cover;background:#fff;}
 @media(min-width:521px){
   .intro-hero{padding-top:20px;}
   .intro-hero-poster{border-radius:16px;}
 }
 </style>
 <section class="intro-hero">
-  <img class="intro-hero-poster" src="/assets/udak-friday-hero.webp" width="1122" height="1402" alt="2026 마지막 특가 — 유닥 블랙프라이데이, 10.03 ~ 재고 소진 시" fetchpriority="high" decoding="async">
+  <!-- v20261005: 상단 포스터(유닥 블랙프라이데이) → 폴드 와이드 홍보 영상 (자동재생·무음·반복) -->
+  <video class="intro-hero-poster intro-hero-video" src="/assets/foldwide-promo.mp4" poster="/assets/foldwide-promo-poster.webp" width="1080" height="1920" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture aria-label="U+ 다이렉트 폴드 와이드 — 제휴카드 NO, 부가서비스 의무가입 NO"></video>
   <img class="intro-hero-nocard" src="/assets/no-card-no-addon.webp" width="1774" height="887" alt="제휴카드 No! 부가서비스 의무가입 No!" decoding="async">
 </section>
 
@@ -1800,6 +1802,13 @@ window.ctaUcat=function(){
 (function(){ try{ var b=(new URLSearchParams(location.search).get('brand')||'').toLowerCase(); if(b==='apple'||b==='iphone'||b==='애플') setUcatBrand('애플'); }catch(e){} })();
 renderUcatGrid();
 ucatLoadFirebase();
+// v20261005: 상단 홍보 영상 — 자동재생이 막힌 환경(저전력 모드 등)이면 화면에 보일 때·첫 터치 때 다시 재생 시도
+(function(){
+  var v=document.querySelector('.intro-hero-video'); if(!v) return;
+  var tryPlay=function(){ try{ var p=v.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} };
+  if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting) tryPlay(); else v.pause(); }); },{threshold:0.25}).observe(v); }
+  document.addEventListener('touchstart',tryPlay,{once:true,passive:true});
+})();
 </script>
 
 
