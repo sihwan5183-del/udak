@@ -67,6 +67,7 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
 .udetail-hero-amt{font-size:30px;font-weight:800;color:#E91E8C;letter-spacing:-.02em;}
 .udetail-hero-amt span{font-size:17px;font-weight:700;margin-left:2px;}
 .udetail-hero-sub{font-size:12px;color:#999;margin:4px 0 0;}
+.udetail-hero-inst{display:inline-block;margin:8px 0 0;padding:3px 10px;border:1px solid rgba(233,30,140,.35);border-radius:100px;background:#fff;color:#E91E8C;font-size:11.5px;font-weight:700;line-height:1.5;}
 .udetail-plan-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:1.5px solid #ececec;border-radius:12px;cursor:pointer;}
 .udetail-plan-row.open{border-radius:12px 12px 0 0;}
 .udetail-plan-row.sel{border-color:#E91E8C;background:rgba(233,30,140,.04);} /* v20261005: 자동 선택된 85 요금제 표시 */
@@ -684,6 +685,7 @@ function renderPage(){
       <p class="udetail-hero-lbl">예상 월 납부금액</p>
       <p class="udetail-hero-amt" id="udHeroAmt">-<span>원</span></p>
       <p class="udetail-hero-sub" id="udHeroSub">-</p>
+      <p class="udetail-hero-inst">최대 36개월 / 일시납 가능</p>
     </div>
     <div class="udetail-sec"><p class="udetail-lbl">컬러</p><div class="udetail-row" id="udColors"></div></div>
     <div class="udetail-sec"><p class="udetail-lbl">용량</p><div class="udetail-row" id="udStorage"></div></div>
@@ -1181,7 +1183,7 @@ function refreshPrice(){
   }
   document.getElementById('udHeroAmt').innerHTML=(monthlyFee+monthlyDev+watchMonthly).toLocaleString()+'<span>원</span>';
   document.getElementById('udbTotal').textContent=(monthlyFee+monthlyDev+watchMonthly).toLocaleString()+'원';
-  document.getElementById('udHeroSub').textContent=(planObj?planObj.name:'-')+' / 24개월 기준'+(subReady?'':' · 공시지원금 정책 준비중(할부원금 기준)');
+  document.getElementById('udHeroSub').textContent=(planObj?planObj.name:'-')+' / 24개월 할부 기준'+(subReady?'':' · 공시지원금 정책 준비중(할부원금 기준)');
   renderUwtSection();
 }
 window.ctaGo=function(){

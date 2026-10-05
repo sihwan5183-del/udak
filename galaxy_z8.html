@@ -574,6 +574,8 @@ textarea.mform-input{resize:none;height:80px;}
 .mcalc .ucard-crow>b{font-size:13.5px;}
 .mcalc .ucard-crow>b.pink{color:#E91E8C;}
 .mcalc-basis{font-size:.78em;font-weight:400;color:#999;margin-left:4px;}
+/* v20261006: '24개월 할부 기준' 아래에 할부 선택 안내 — 최대 36개월 / 일시납 가능 */
+.mcalc-inst{display:block;width:fit-content;margin-top:7px;padding:3px 10px;border:1px solid rgba(233,30,140,.35);border-radius:100px;background:rgba(233,30,140,.05);color:#E91E8C;font-size:11.5px;font-weight:700;line-height:1.5;}
 /* v20261006: 예상 납부액 위계 정리 — '기기값 + 요금제 = 매달 내는 금액'을 먼저 크게, 그 아래 기기값(·요금제) 계산 과정을 작게 */
 .rf-inner .mcalc.mcalc-v2{padding:12px 12px 12px;}
 .mc-sum{background:#fff;border:1.5px solid rgba(233,30,140,.35);border-radius:12px;padding:8px 12px 10px;margin-bottom:12px;}
@@ -1775,7 +1777,7 @@ function closeNavDrawer() {
     </div>
 
     <div class="rf-field" id="mCalcBox" style="display:none;">
-      <label>예상 납부 금액 <span class="mcalc-basis" id="mCalcBasis"></span></label>
+      <label>예상 납부 금액 <span class="mcalc-basis" id="mCalcBasis"></span><span class="mcalc-inst">최대 36개월 / 일시납 가능</span></label>
       <div class="mcalc ucard-calc" id="mCalcRows"></div>
     </div>
 
@@ -2256,10 +2258,10 @@ function refreshUcatPrice(){
   const heroSub=document.getElementById('udHeroSub');
   if(!subReady){
     heroAmt.innerHTML=total.toLocaleString()+'<span>원</span>';
-    heroSub.textContent=(planObj?planObj.name:'-')+' / 24개월 기준 · 공시지원금 정책 준비중(할부원금 기준)';
+    heroSub.textContent=(planObj?planObj.name:'-')+' / 24개월 할부 기준 · 공시지원금 정책 준비중(할부원금 기준)';
   } else {
     heroAmt.innerHTML=total.toLocaleString()+'<span>원</span>';
-    heroSub.textContent=(planObj?planObj.name:'-')+' / 24개월 기준';
+    heroSub.textContent=(planObj?planObj.name:'-')+' / 24개월 할부 기준';
   }
 }
 window.ctaUcat=function(){
@@ -2983,7 +2985,7 @@ function mRefreshCalc(){
       +row('월 요금',mWon(c.fee),'sub')+'</div>';
   }
   var el=document.getElementById('mCalcRows'); el.classList.add('mcalc-v2'); el.innerHTML=h;
-  document.getElementById('mCalcBasis').textContent=(c.plan?c.plan.name:'')+' · 24개월 기준'+(c.ready?'':' · 지원금 정책 준비중(출고가 기준)');
+  document.getElementById('mCalcBasis').textContent=(c.plan?c.plan.name:'')+' · 24개월 할부 기준'+(c.ready?'':' · 지원금 정책 준비중(출고가 기준)');
 }
 (function(){
   // device.html에서 상담문의/주문신청하기 누르고 넘어온 경우 자동으로 신청폼(실제 라이브 모달) 오픈 + 주문요약 카드 채움
