@@ -78,7 +78,7 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
 .udetail-plan-list{border:1.5px solid #ececec;border-top:none;border-radius:0 0 12px 12px;overflow:hidden;}
 .udetail-plan-item{display:flex;justify-content:space-between;padding:12px 16px;font-size:13px;color:#666;cursor:pointer;border-top:1px solid #f2f2f2;}
 .udetail-plan-item.on{background:rgba(233,30,140,.05);color:#E91E8C;font-weight:700;}
-.udetail-discount-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.udetail-discount-grid{display:grid;grid-template-columns:1fr;gap:8px;} /* v20261005: 공시지원금 하나만 → 한 줄 전체 */
 .udetail-discount-card{border:1.5px solid #ececec;border-radius:12px;padding:12px 14px;cursor:pointer;position:relative;}
 .udetail-discount-card.on{border-color:#E91E8C;background:rgba(233,30,140,.04);}
 .udetail-discount-name{font-size:13.5px;font-weight:800;color:#1A1A1A;margin:0 0 4px;}
@@ -666,9 +666,10 @@ function renderPage(){
     document.getElementById('dContent').innerHTML='<div class="dempty">기기를 찾을 수 없습니다.<br><a href="/galaxy_z8" style="color:#E91E8C;font-weight:700;">목록으로 돌아가기</a></div>';
     return;
   }
-  // v20261005: 요금제는 85 자동 선택 (지금 요금제가 하나뿐) — 고객이 따로 누르지 않아도 선택된 걸로 보고, 안내 순서도 통신사 → 할인방식으로 바로 넘어감
+  // v20261005: 요금제는 85 자동 선택 (지금 요금제가 하나뿐) — 고객이 따로 누르지 않아도 선택된 걸로 봄
+  // v20261005: 할인방식은 선택약정을 빼고 공시지원금 자동 선택 → 컬러·통신사만 고르면 바로 예상 월 납부금액이 나옴
   const ud85Plan=ucatPlans.find(p=>p.plangroup==='85')||null;
-  ucatSel={device:d,color:0,colorTouched:false,storage:0,carrier:null,plan:(ud85Plan||ucatPlans[0]),discountMethod:null,planListOpen:false,planTouched:!!ud85Plan||ucatPlans.length<=1,bundleType:'none',bundleSize:'2',welfareType:'none'};
+  ucatSel={device:d,color:0,colorTouched:false,storage:0,carrier:null,plan:(ud85Plan||ucatPlans[0]),discountMethod:'pubSupport',planListOpen:false,planTouched:!!ud85Plan||ucatPlans.length<=1,bundleType:'none',bundleSize:'2',welfareType:'none'};
   uwtOpenCat=null; uwtSelectedByCat={};
   document.title=d.name+' — 유플러스 다이렉트';
   document.getElementById('dContent').innerHTML=`
@@ -806,9 +807,7 @@ function renderDiscount(){
     <div class="udetail-discount-card${ucatSel.discountMethod==='pubSupport'?' on':''}" onclick="pickDiscount('pubSupport')">
       <span class="udetail-discount-check">✓</span><p class="udetail-discount-name">공시지원금</p><p class="udetail-discount-desc">기기값 할인, 요금제 정상가</p>
     </div>
-    <div class="udetail-discount-card${ucatSel.discountMethod==='commitment'?' on':''}" onclick="pickDiscount('commitment')">
-      <span class="udetail-discount-check">✓</span><p class="udetail-discount-name">선택약정</p><p class="udetail-discount-desc">요금제 25% 할인, 기기값 정상가</p>
-    </div>`;
+`; // v20261005: 선택약정 카드 뺌 — 공시지원금만
 }
 /* ===== 스마트홈 5종 (benefits.html에서 이식) ===== */
 const SHI={
@@ -1077,7 +1076,7 @@ function refreshPrice(){
   const d=ucatSel.device;
   if(!ucatSel.carrier||!ucatSel.discountMethod){
     document.getElementById('udHeroAmt').innerHTML='-<span>원</span>';
-    document.getElementById('udHeroSub').textContent='통신사와 할인방식을 선택해주세요';
+    document.getElementById('udHeroSub').textContent='현재 사용 중인 통신사를 선택해주세요';
     document.getElementById('udSubsidyWrap').style.display='none';
     document.getElementById('udFeeDetailRows').innerHTML='';
     document.getElementById('udbFee').textContent='-';
@@ -1327,7 +1326,7 @@ window.drFormatPhone=function(el){
 window.openDeviceReserve=function(){
   const d=ucatSel.device;
   if(!d) return;
-  if(!ucatSel.carrier||!ucatSel.discountMethod){ alert('통신사와 할인방식을 먼저 선택해주세요'); return; }
+  if(!ucatSel.carrier||!ucatSel.discountMethod){ alert('현재 사용 중인 통신사를 먼저 선택해주세요'); return; }
   const colorObj=d.colors&&d.colors[ucatSel.color];
   const colorName=colorObj?colorObj.name.split('|')[1]:'';
   const storageName=d.storageList[ucatSel.storage||0].name;
