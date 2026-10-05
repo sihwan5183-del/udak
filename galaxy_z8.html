@@ -1761,17 +1761,17 @@ const UCAT_Z8_DEVICES=[
     storageList:[{name:'256GB',price:2278100}],
     colors:[{name:'#C9BFE0|라벤더',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-lavender-v2.png'},
             {name:'#3A3A3C|그라파이트',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black-v2.png'},
-            {name:'#F0E6D2|크림',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-cream-v2.png'}]},
+            {name:'#F7F4EC|크림',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-cream-v2.png'}]},
   {id:'z-fold8-ultra',name:'갤럭시 Z 폴드8 울트라',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-violet-v2.png',
     storageList:[{name:'256GB',price:2577300}],
     colors:[{name:'#5C4E77|바이올렛 쉐도우',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-violet-v2.png'},
             {name:'#3A3A3C|그라파이트',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-graphite-v2.png'},
-            {name:'#F0E6D2|크림',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-cream-v2.png'}]},
+            {name:'#F7F4EC|크림',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-ultra-cream-v2.png'}]},
   {id:'z-flip8',name:'갤럭시 Z 플립8',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-pink-v2.png',
     storageList:[{name:'256GB',price:1683000}],
     colors:[{name:'#F2C6D6|핑크',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-pink-v2.png'},
             {name:'#3A3A3C|그라파이트',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-graphite-v2.png'},
-            {name:'#F0E6D2|크림',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-cream-v2.png'}]}
+            {name:'#F7F4EC|크림',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-flip-cream-v2.png'}]}
 ];
 const UCAT_Z8_POLICIES=[
   {name:'Z8 기기변경(LGU+)',jointype:'기기변경',carrier:'LG U+',plangroup:'all',pubSupport:500000,rebate:300000,distribution:0,structure:0,extraPolicy:0,deviceOverrides:{},excludedDevs:[]},
@@ -1802,7 +1802,9 @@ function mergeZ8Devices(hardcoded, fbZ8List){
     if(idx>=0) merged[idx]={...merged[idx],...fd};
     else merged.push(fd);
   });
-  return merged;
+  // v20261005: '크림' 견본 동그라미 색을 실제 제품 사진(아이보리 화이트)에 맞춤 — 어드민에 예전 베이지 값(#F0E6D2)이 남아 있어도 맞춰서 표시
+  const fixCream=c=>(c&&typeof c.name==='string'&&/^#F0E6D2\|/i.test(c.name))?{...c,name:c.name.replace(/^#F0E6D2/i,'#F7F4EC')}:c;
+  return merged.map(d=>Array.isArray(d.colors)?{...d,colors:d.colors.map(fixCream)}:d);
 }
 
 async function ucatLoadFirebase(){
@@ -2486,7 +2488,7 @@ const PRODUCT_SPECS = {
     colors: [
       {name:'바이올렛 쉐도우', hex:'#5C4E77'},
       {name:'그라파이트', hex:'#3A3A3C'},
-      {name:'크림', hex:'#F0E6D2'}
+      {name:'크림', hex:'#F7F4EC'}
     ],
     capacity: [
       {label:'256GB → 512GB', price:'2,577,300원'},
@@ -2499,7 +2501,7 @@ const PRODUCT_SPECS = {
     colors: [
       {name:'라벤더', hex:'#C3B6DE'},
       {name:'그라파이트', hex:'#3A3A3C'},
-      {name:'크림', hex:'#F0E6D2'}
+      {name:'크림', hex:'#F7F4EC'}
     ],
     capacity: [
       {label:'256GB → 512GB', price:'2,278,100원'},
@@ -2512,7 +2514,7 @@ const PRODUCT_SPECS = {
     colors: [
       {name:'핑크', hex:'#F2C6D6'},
       {name:'그라파이트', hex:'#3A3A3C'},
-      {name:'크림', hex:'#F0E6D2'}
+      {name:'크림', hex:'#F7F4EC'}
     ],
     capacity: [
       {label:'256GB → 512GB', price:'1,683,000원'},
