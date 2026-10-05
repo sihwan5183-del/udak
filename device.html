@@ -271,6 +271,19 @@ textarea.mform-input{resize:none;height:70px;font-family:inherit;}
 
 .sh-disclaimer{font-size:10.5px;color:#aaa;line-height:1.9;}
 </style>
+<script>
+/* v20261005: 메타 '메이드' 신호용 — 신청 때 메타 광고 클릭 정보(fbc/fbp)·브라우저·페이지 주소를 같이 저장
+   (전화번호 같은 개인정보는 메타로 보내지 않음. 고객이 예약완료·상담성공·확정이 되면 서버가 이 클릭 정보로 메타에 '메이드' 신호 1회 전송) */
+(function(){try{var q=new URLSearchParams(location.search).get('fbclid');if(q){sessionStorage.setItem('udak_fbclid',q);sessionStorage.setItem('udak_fbclid_ts',String(Date.now()));}}catch(e){}})();
+function udakMetaIds(){
+  try{
+    var ck=function(n){var m=document.cookie.match(new RegExp('(?:^|;\\s*)'+n+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;};
+    var fbc=ck('_fbc'), fbp=ck('_fbp');
+    if(!fbc){var id=sessionStorage.getItem('udak_fbclid');if(id)fbc='fb.1.'+(sessionStorage.getItem('udak_fbclid_ts')||Date.now())+'.'+id;}
+    return {meta_fbc:fbc||null, meta_fbp:fbp||null, meta_ua:(navigator.userAgent||'').slice(0,400)||null, meta_page_url:(location.origin+location.pathname+location.search).slice(0,500)};
+  }catch(e){return {};}
+}
+</script>
 </head><body>
 
 <div class="dtopbar">
@@ -1417,7 +1430,7 @@ window.submitDeviceReserve=function(){
       'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
       'Prefer':'return=minimal'
     },
-    body:JSON.stringify({
+    body:JSON.stringify(Object.assign({
       name:name,phone:phoneF,carrier:ucatSel.carrier,
       channel:UDAK_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,
       device_interest:d.name,capacity:storageName,product_color:colorName||null,
@@ -1426,7 +1439,7 @@ window.submitDeviceReserve=function(){
       memo:memo||null,
       snapshot:snapshotObj,
       status:'신규'
-    })
+    }, udakMetaIds()))
   }).then(function(res){
     if(res.ok){
       if(typeof fbq!=='undefined')fbq('track','Lead');
