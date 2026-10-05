@@ -64,9 +64,10 @@
                ['.udetail-btn-order','order_btn'],['.modal-submit','submit_click'],['.dtopbar-back','back'],['.side-quick-btn','quick',txt]]
       },
       iphone18:{
-        see:[['preorder_info','#preorderInfo'],['models','.benefits'],['benefit_imgs','.b-stack'],['form','#reserveForm']],
-        click:[['.b-phone-item','model_open',function(el){ return (el.getAttribute('onclick')||'').replace(/^.*openPhoneModal\(|\).*$/g,'').replace(/'/g,''); }],
-               ['.b-modal-cta','model_cta'],['.bottom-cta-btn','cta_bottom'],['#rfSubmitBtn','submit_click'],['.about-trigger','about_video'],
+        see:[['preorder_info','#preorderInfo'],['models','#duoInline'],['benefit_imgs','.b-stack'],['form','#reserveForm']],
+        click:[['.pm-swatch','pick_color',function(el){ return el.getAttribute('data-color'); }],['.b-storage-badge','pick_cap',txt],
+               ['.pm-badge[data-carrier]','pick_carrier',txt],['.pm-badge[data-months]','pick_months',txt],
+               ['.b-modal-cta','card_cta'],['.bottom-cta-btn','cta_bottom',function(el){ return el.classList.contains('scta-on')?'이 조건으로':null; }],['#rfSubmitBtn','submit_click'],['.about-trigger','about_video'],
                ['.m-hdr-hit','hdr',lbl],['.top-nav-item','topnav',txt],['.nav-drawer-item','menu',txt],['.side-quick-btn','quick',txt]]
       }
     };

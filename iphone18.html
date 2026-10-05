@@ -735,6 +735,23 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     text-align:left;
   }
   body.pm-open .side-quick{ display:none; }
+  /* v20261006: 카드 안에서 바로 고르기 (갤럭시 랜딩과 같은 방식) */
+  .phone-modal.b-inline{ background:#fafafa; border:1.5px solid #ececef; border-radius:22px; padding:20px 16px 22px; margin:0 auto clamp(28px,4.5vh,44px); }
+  .b-inline-tags{ text-align:center; margin-bottom:12px; }
+  .b-inline .pm-img-card img{ animation:phoneFloat 3.2s ease-in-out infinite; }
+  .b-inline .pm-result{ margin-bottom:16px; }
+  .b-inline .b-price-note{ margin-top:0; }
+  /* 하단 버튼: 고르면 '이 조건으로 사전예약 신청하기' + 고른 내용으로 바뀌고 한 번 톡 튐, 카드 안 버튼이 보이는 동안엔 잠깐 내려감 */
+  .bottom-cta-bar{ transition:transform .25s ease, opacity .25s ease; }
+  .bottom-cta-bar.scta-hide{ transform:translateY(110%); opacity:0; pointer-events:none; }
+  .bottom-cta-btn .scta-main{ display:block; }
+  .bottom-cta-btn .scta-sub{ display:block; margin-top:2px; font-size:11.5px; font-weight:600; opacity:.92; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .bottom-cta-btn.scta-on{ padding-top:10px; padding-bottom:10px; }
+  @keyframes sctaPop{ 0%{transform:scale(1)} 35%{transform:scale(1.05)} 70%{transform:scale(.98)} 100%{transform:scale(1)} }
+  .bottom-cta-btn.scta-pop{ animation:sctaPop .45s ease-out; }
+  /* 휴대폰: 오른쪽 아래 전화·카톡 버튼이 카드의 선택 버튼(알뜰폰·2TB 등)을 가릴 때만 잠깐 숨김 */
+  .side-quick{ transition:opacity .2s ease; }
+  .side-quick.sq-hide{ opacity:0; pointer-events:none; }
   .phone-modal-title{
     font-size:20px;
     font-weight:800;
@@ -1715,26 +1732,59 @@ function closeNavModal(id){
   <section class="benefits">
     <div class="benefits-inner">
       <span class="b-eyebrow">PRE-RESERVATION BENEFITS</span>
-      <span class="b-select-title">원하시는 모델을 선택하세요</span>
-      <span class="b-select-sub">선택한 모델의 가격 · 용량 · 컬러 · 사전예약 혜택을 확인할 수 있습니다.</span>
-      <span class="b-select-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5a2 2 0 0 1 4 0v6"/><path d="M13 10.5V9a2 2 0 0 1 4 0v2"/><path d="M17 11a2 2 0 0 1 4 0v3a7 7 0 0 1-7 7h-1.5a7 7 0 0 1-5.9-3.2L4.2 14a2 2 0 0 1 3.3-2.2L9 13.5"/></svg>모델 선택 시 상세 혜택이 열립니다</span>
-      <div class="b-phone-grid">
-        <div class="b-phone-item" onclick="openPhoneModal('duo','스타 화이트')">
-          <span class="b-tag-benefit">사전예약 혜택</span>
-          <span class="b-tag-cap">256GB</span>
-          <div class="b-phone-tile is-single"><img src="/assets/iphone18/duo_starwhite.webp" alt="아이폰 듀오 스타 화이트" loading="lazy"></div>
-          <span class="b-phone-name">아이폰 듀오 스타 화이트</span>
-          <span class="b-phone-hint">탭하여 가격 · 용량 · 컬러 보기 ›</span>
-          <button type="button" class="b-phone-cta">혜택 확인하기 ›</button>
+      <span class="b-select-title">원하시는 조건을 선택하세요</span>
+      <span class="b-select-sub">컬러 · 용량 · 통신사 · 할부를 고르면 바로 계산돼요.</span>
+      <span class="b-select-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5a2 2 0 0 1 4 0v6"/><path d="M13 10.5V9a2 2 0 0 1 4 0v2"/><path d="M17 11a2 2 0 0 1 4 0v3a7 7 0 0 1-7 7h-1.5a7 7 0 0 1-5.9-3.2L4.2 14a2 2 0 0 1 3.3-2.2L9 13.5"/></svg>고른 조건 그대로 사전예약 신청서에 들어가요</span>
+      <!-- v20261006: 갤럭시 랜딩처럼 카드 안에서 바로 고르기 — 컬러·용량·통신사·할부를 고르면 바로 계산되고,
+           고른 그대로 사전예약 신청서에 들어감. 카드는 눌러도 다른 화면으로 안 바뀜 (예전 상세 화면 없앰) -->
+      <div class="phone-modal b-inline" id="duoInline">
+        <div class="b-inline-tags"><span class="b-tag-benefit">사전예약 혜택</span></div>
+        <div class="pm-img-card"><img id="duo-img" src="/assets/iphone18/duo_starwhite.webp" alt="아이폰 듀오 스타 화이트"></div>
+        <p class="phone-modal-title pm-title-center">아이폰 듀오</p>
+
+        <span class="b-modal-label">컬러 <em class="pm-picked" id="duo-colorName">스타 화이트</em></span>
+        <div class="pm-swatches">
+          <button type="button" class="pm-swatch is-active" data-color="스타 화이트" style="--c:#e6e5e1" onclick="selectColor('duo',this)" aria-label="스타 화이트"></button>
+          <button type="button" class="pm-swatch" data-color="나이트 스카이" style="--c:#2b3340" onclick="selectColor('duo',this)" aria-label="나이트 스카이"></button>
         </div>
-        <div class="b-phone-item" onclick="openPhoneModal('duo','나이트 스카이')">
-          <span class="b-tag-benefit">사전예약 혜택</span>
-          <span class="b-tag-cap">256GB</span>
-          <div class="b-phone-tile is-single"><img src="/assets/iphone18/duo_nightsky.webp" alt="아이폰 듀오 나이트 스카이" loading="lazy"></div>
-          <span class="b-phone-name">아이폰 듀오 나이트 스카이</span>
-          <span class="b-phone-hint">탭하여 가격 · 용량 · 컬러 보기 ›</span>
-          <button type="button" class="b-phone-cta">혜택 확인하기 ›</button>
+
+        <span class="b-modal-label">용량</span>
+        <div class="b-storage-row">
+          <button type="button" class="b-storage-badge is-active" data-cap="256GB" onclick="selectStorage('duo',this)">256GB</button>
+          <button type="button" class="b-storage-badge" data-cap="512GB" onclick="selectStorage('duo',this)">512GB</button>
+          <button type="button" class="b-storage-badge" data-cap="1TB" onclick="selectStorage('duo',this)">1TB</button>
+          <button type="button" class="b-storage-badge" data-cap="2TB" onclick="selectStorage('duo',this)">2TB</button>
         </div>
+
+        <span class="b-modal-label">현재 사용 중인 통신사</span>
+        <div class="pm-badge-row">
+          <button type="button" class="pm-badge" data-carrier="SKT" onclick="selectCarrier('duo',this)">SKT</button>
+          <button type="button" class="pm-badge" data-carrier="KT" onclick="selectCarrier('duo',this)">KT</button>
+          <button type="button" class="pm-badge" data-carrier="LG U+" onclick="selectCarrier('duo',this)">LG U+</button>
+          <button type="button" class="pm-badge" data-carrier="알뜰폰" onclick="selectCarrier('duo',this)">알뜰폰</button>
+        </div>
+
+        <span class="b-modal-label">할부 개월</span>
+        <div class="pm-badge-row">
+          <button type="button" class="pm-badge" data-months="0" onclick="selectMonths('duo',this)">일시납</button>
+          <button type="button" class="pm-badge" data-months="24" onclick="selectMonths('duo',this)">24개월</button>
+          <button type="button" class="pm-badge" data-months="30" onclick="selectMonths('duo',this)">30개월</button>
+          <button type="button" class="pm-badge" data-months="36" onclick="selectMonths('duo',this)">36개월</button>
+        </div>
+
+        <div class="pm-result">
+          <span class="pm-result-label">예상 월 납부금액</span>
+          <b class="pm-result-value" id="duo-result">— 원</b>
+          <span class="pm-result-hint" id="duo-resultHint">통신사와 할부 방식을 선택해주세요</span>
+          <div class="pm-breakdown">
+            <div><span>출고가</span><b id="duo-list">-</b></div>
+            <div><span>사전예약 지원금 <em id="duo-typeLabel"></em></span><b class="minus" id="duo-subsidy">통신사 선택</b></div>
+            <div class="pm-after"><span>지원 후 금액</span><b id="duo-after">—</b></div>
+          </div>
+        </div>
+
+        <p class="b-price-note">* 자세한 내용은 상담 시에 확정됩니다.</p>
+        <button type="button" class="b-modal-cta" onclick="reserveFromPhone('duo')">이 조건으로 사전예약 신청하기 ›</button>
       </div>
 
       <div class="b-group">
@@ -1752,64 +1802,6 @@ function closeNavModal(id){
 
     </div>
   </section>
-
-  <div class="phone-modal-overlay" id="phoneModalOverlay-duo">
-    <div class="pm-topbar">
-      <button type="button" class="pm-back" onclick="closePhoneModal('duo')" aria-label="뒤로">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <span class="pm-topbar-logo"><b>U+</b>다이렉트</span>
-    </div>
-    <div class="phone-modal">
-
-      <div class="pm-img-card"><img id="duo-img" src="/assets/iphone18/duo_starwhite.webp" alt="아이폰 듀오 스타 화이트"></div>
-      <p class="phone-modal-title pm-title-center">아이폰 듀오</p>
-
-      <div class="pm-result">
-        <span class="pm-result-label">예상 월 납부금액</span>
-        <b class="pm-result-value" id="duo-result">— 원</b>
-        <span class="pm-result-hint" id="duo-resultHint">통신사와 할부 방식을 선택해주세요</span>
-        <div class="pm-breakdown">
-          <div><span>출고가</span><b id="duo-list">-</b></div>
-          <div><span>사전예약 지원금 <em id="duo-typeLabel"></em></span><b class="minus" id="duo-subsidy">통신사 선택</b></div>
-          <div class="pm-after"><span>지원 후 금액</span><b id="duo-after">—</b></div>
-        </div>
-      </div>
-
-      <span class="b-modal-label">컬러 <em class="pm-picked" id="duo-colorName">스타 화이트</em></span>
-      <div class="pm-swatches">
-        <button type="button" class="pm-swatch is-active" data-color="스타 화이트" style="--c:#e6e5e1" onclick="selectColor('duo',this)" aria-label="스타 화이트"></button>
-        <button type="button" class="pm-swatch" data-color="나이트 스카이" style="--c:#2b3340" onclick="selectColor('duo',this)" aria-label="나이트 스카이"></button>
-      </div>
-
-      <span class="b-modal-label">용량</span>
-      <div class="b-storage-row">
-        <button type="button" class="b-storage-badge is-active" data-cap="256GB" onclick="selectStorage('duo',this)">256GB</button>
-        <button type="button" class="b-storage-badge" data-cap="512GB" onclick="selectStorage('duo',this)">512GB</button>
-        <button type="button" class="b-storage-badge" data-cap="1TB" onclick="selectStorage('duo',this)">1TB</button>
-        <button type="button" class="b-storage-badge" data-cap="2TB" onclick="selectStorage('duo',this)">2TB</button>
-      </div>
-
-      <span class="b-modal-label">현재 사용 중인 통신사</span>
-      <div class="pm-badge-row">
-        <button type="button" class="pm-badge" data-carrier="SKT" onclick="selectCarrier('duo',this)">SKT</button>
-        <button type="button" class="pm-badge" data-carrier="KT" onclick="selectCarrier('duo',this)">KT</button>
-        <button type="button" class="pm-badge" data-carrier="LG U+" onclick="selectCarrier('duo',this)">LG U+</button>
-        <button type="button" class="pm-badge" data-carrier="알뜰폰" onclick="selectCarrier('duo',this)">알뜰폰</button>
-      </div>
-
-      <span class="b-modal-label">할부 개월</span>
-      <div class="pm-badge-row">
-        <button type="button" class="pm-badge" data-months="0" onclick="selectMonths('duo',this)">일시납</button>
-        <button type="button" class="pm-badge" data-months="24" onclick="selectMonths('duo',this)">24개월</button>
-        <button type="button" class="pm-badge" data-months="30" onclick="selectMonths('duo',this)">30개월</button>
-        <button type="button" class="pm-badge" data-months="36" onclick="selectMonths('duo',this)">36개월</button>
-      </div>
-
-      <p class="b-price-note">* 자세한 내용은 상담 시에 확정됩니다.</p>
-      <button type="button" class="b-modal-cta" onclick="reserveFromPhone('duo')">이 조건으로 사전예약 신청하기 ›</button>
-    </div>
-  </div>
 
   <div class="about-modal-overlay" id="aboutModalOverlay" onclick="if(event.target===this)closeAboutModal()">
     <div class="about-modal">
@@ -2459,6 +2451,8 @@ var phoneSel={
 };
 
 function won(n){ return n.toLocaleString('ko-KR')+'원'; }
+// v20261006: 원 단위 정리 규칙 — 1원 자리가 8·9면 10원 올림, 1~7이면 버림(절삭) (갤럭시 랜딩과 같은 규칙)
+function udakWon10(n){ n=Math.round(Number(n)||0); var r=((n%10)+10)%10; return r>=8?n+(10-r):n-r; }
 function updatePhonePrice(id){
   var s=phoneSel[id], d=PHONE_DATA[id];
   var list=d.list[s.cap];
@@ -2484,7 +2478,7 @@ function updatePhonePrice(id){
     $('resultHint').textContent='일시납 · 지원 후 금액 (할부이자 없음)';
   } else {
     var raw=after*PHONE_MONTH_RATE[s.months]/s.months;
-    var m=Math.round(raw/10)*10;
+    var m=udakWon10(raw);
     $('result').textContent=won(m)+' / 월';
     $('resultHint').textContent=s.months+'개월 할부 · 기기값 기준, 할부이자 포함';
   }
@@ -2494,9 +2488,9 @@ function setActive(btn,cls){
   for(var i=0;i<sib.length;i++){ sib[i].classList.remove('is-active'); }
   btn.classList.add('is-active');
 }
-window.selectStorage=function(id,btn){ setActive(btn,'b-storage-badge'); phoneSel[id].cap=btn.getAttribute('data-cap'); updatePhonePrice(id); };
-window.selectCarrier=function(id,btn){ setActive(btn,'pm-badge'); phoneSel[id].carrier=btn.getAttribute('data-carrier'); updatePhonePrice(id); };
-window.selectMonths=function(id,btn){ setActive(btn,'pm-badge'); phoneSel[id].months=parseInt(btn.getAttribute('data-months'),10); updatePhonePrice(id); };
+window.selectStorage=function(id,btn){ setActive(btn,'b-storage-badge'); phoneSel[id].cap=btn.getAttribute('data-cap'); updatePhonePrice(id); phoneTouched(id); };
+window.selectCarrier=function(id,btn){ setActive(btn,'pm-badge'); phoneSel[id].carrier=btn.getAttribute('data-carrier'); updatePhonePrice(id); phoneTouched(id); };
+window.selectMonths=function(id,btn){ setActive(btn,'pm-badge'); phoneSel[id].months=parseInt(btn.getAttribute('data-months'),10); updatePhonePrice(id); phoneTouched(id); };
 window.selectColor=function(id,btn){
   setActive(btn,'pm-swatch');
   var c=btn.getAttribute('data-color');
@@ -2505,39 +2499,44 @@ window.selectColor=function(id,btn){
   img.src=PHONE_IMG_BASE+PHONE_COLOR_IMG[c];
   img.alt=PHONE_PRODUCT_NAME[id]+' '+c;
   document.getElementById(id+'-colorName').textContent=c;
+  phoneTouched(id);
 };
 
 var phoneOpenId=null;
-// 카드에서 고른 컬러로 상세 화면을 열어줌 (스타 화이트 카드 → 스타 화이트, 나이트 스카이 카드 → 나이트 스카이)
+// v20261006: 상세 화면은 없앰 — 혹시 남은 호출이 있으면 카드로 스크롤하고 컬러만 맞춤
 window.openPhoneModal=function(id,color){
-  if(color){
-    var sw=document.querySelector('#phoneModalOverlay-'+id+' .pm-swatch[data-color="'+color+'"]');
-    if(sw) selectColor(id,sw);
-  }
-  updatePhonePrice(id);
-  var ov=document.getElementById('phoneModalOverlay-'+id);
-  ov.classList.add('open'); ov.scrollTop=0;
-  document.body.style.overflow='hidden';
-  document.body.classList.add('pm-open');
-  document.querySelector('.bottom-cta-bar').style.display='none';
-  phoneOpenId=id;
-  try{ history.pushState({phone:id},''); }catch(e){}   // 폰 뒤로가기로 닫히게
+  if(color){ var sw=document.querySelector('#'+id+'Inline .pm-swatch[data-color="'+color+'"]'); if(sw) selectColor(id,sw); }
+  var card=document.getElementById(id+'Inline'); if(card) card.scrollIntoView({behavior:'smooth',block:'start'});
 };
-function hidePhonePage(id){
-  document.getElementById('phoneModalOverlay-'+id).classList.remove('open');
-  document.body.style.overflow='';
-  document.body.classList.remove('pm-open');
-  document.querySelector('.bottom-cta-bar').style.display='';
-  if(phoneOpenId===id) phoneOpenId=null;
+window.closePhoneModal=function(){};
+// 고른 값 → 사전예약 신청서에 바로 채움 (아래 신청서와 '사전예약 신청하기' 팝업은 같은 신청서)
+function phoneSyncForm(id){
+  var s=phoneSel[id];
+  var p=document.getElementById('rfProduct'), c=document.getElementById('rfCapacity'), col=document.getElementById('rfColor'), car=document.getElementById('rfCarrier'), inst=document.getElementById('rfInstallment');
+  if(p) p.value=PHONE_PRODUCT_NAME[id];
+  if(c) c.value=s.cap;
+  if(col) col.value=s.color;
+  if(car && s.carrier) car.value=s.carrier;
+  if(inst && s.months!==null) inst.value = s.months===0 ? '일시납' : s.months+'개월';
 }
-window.closePhoneModal=function(id){
-  hidePhonePage(id);
-  if(history.state && history.state.phone===id){ try{ history.back(); }catch(e){} }
-};
-window.addEventListener('popstate',function(){
-  if(phoneOpenId){ hidePhonePage(phoneOpenId); }
-});
-// 모달에서 고른 기종/용량/컬러/통신사를 신청폼에 미리 채워서 예약 모달로 넘김
+// 하단 '사전예약 신청하기' → '이 조건으로 사전예약 신청하기' + 고른 내용 한 줄, 고를 때마다 한 번 톡 튐
+function phoneCtaUpdate(id,pop){
+  var btn=document.getElementById('ctaBtnFixed'); if(!btn) return;
+  var s=phoneSel[id];
+  var sub=[PHONE_PRODUCT_NAME[id], s.color, s.cap, s.carrier, (s.months===null?null:(s.months===0?'일시납':s.months+'개월'))].filter(Boolean).join(' · ');
+  btn.innerHTML='<span class="scta-main">이 조건으로 사전예약 신청하기</span><span class="scta-sub">'+sub+'</span>';
+  btn.classList.add('scta-on');
+  if(pop){ btn.classList.remove('scta-pop'); void btn.offsetWidth; btn.classList.add('scta-pop'); }
+}
+function phoneTouched(id){ phoneSyncForm(id); phoneCtaUpdate(id,true); }
+// 카드 안 '이 조건으로…' 버튼이 화면에 보이는 동안엔 하단 버튼을 잠깐 내림 (같은 버튼 두 개 겹쳐 보이지 않게)
+(function(){
+  if(!('IntersectionObserver' in window)) return;
+  var cta=document.querySelector('#duoInline .b-modal-cta'); if(!cta) return;
+  new IntersectionObserver(function(es){
+    var bar=document.querySelector('.bottom-cta-bar'); if(bar) bar.classList.toggle('scta-hide', es[0].isIntersecting);
+  },{threshold:0.6}).observe(cta);
+})();
 window.reserveFromPhone=function(id){
   var s=phoneSel[id];
   var p=document.getElementById('rfProduct'), c=document.getElementById('rfCapacity'), col=document.getElementById('rfColor'), car=document.getElementById('rfCarrier');
@@ -2547,9 +2546,21 @@ window.reserveFromPhone=function(id){
   if(car && s.carrier) car.value=s.carrier;
   var inst=document.getElementById('rfInstallment');
   if(inst && s.months!==null) inst.value = s.months===0 ? '일시납' : s.months+'개월';
-  closePhoneModal(id);
-  setTimeout(openReserveModal, 60);
+  phoneCtaUpdate(id,false);
+  openReserveModal();
 };
+updatePhonePrice('duo');   // 카드 처음 그릴 때 출고가부터 보이게
+// 휴대폰(640px 이하)에서 카드의 선택 줄이 오른쪽 아래 전화·카톡 버튼 자리(화면 아래쪽 띠)를 지날 때만 그 버튼을 잠깐 숨김
+(function(){
+  if(!('IntersectionObserver' in window) || !window.matchMedia('(max-width:640px)').matches) return;
+  var sq=document.querySelector('.side-quick'); if(!sq) return;
+  var vis=new Set();
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting) vis.add(e.target); else vis.delete(e.target); });
+    sq.classList.toggle('sq-hide', vis.size>0);
+  },{rootMargin:'-62% 0px -6% 0px', threshold:0});
+  document.querySelectorAll('#duoInline .pm-swatches, #duoInline .b-storage-row, #duoInline .pm-badge-row').forEach(function(r){ io.observe(r); });
+})();
 window.toggleFaq=function(btn){
   btn.parentElement.classList.toggle('open');
 };
@@ -2635,6 +2646,6 @@ window.toggleFaq=function(btn){
 })();
 </script>
 <!-- v20261005: 이탈 분석(익명, 개인정보 없음) — 어디까지 보고 어디서 나갔는지 기록 -->
-<script src="/assets/udak-funnel.js?v=20261006b" data-page="iphone18" defer></script>
+<script src="/assets/udak-funnel.js?v=20261006c" data-page="iphone18" defer></script>
 </body>
 </html>
