@@ -2567,9 +2567,18 @@ function mSubmitForm(){
   }
   var c=mCalc();
   var discountSub=c.discount==='commitment'?'선택약정':'공시지원금';
-  var feeDetail=[(c.plan?c.plan.name:'요금제')+' '+mWon(c.full), c.discount==='commitment'?'선택약정 할인(25%) -'+mWon(c.full-c.fee):'', '월 통신요금 '+mWon(c.fee)].filter(Boolean).join(' ');
-  var subsidyDetail=['출고가 '+mWon(c.st.price), (c.q&&c.discount==='pubSupport')?'공시지원금 -'+mWon(c.q.pub):'', c.q?'유플러스 다이렉트 혜택 -'+mWon(c.extra):'', '기기값 원금 '+mWon(c.principal), '기기값 월 청구 예정액 '+mWon(c.dev), c.ready?'':'(지원금 정책 준비중·출고가 기준)'].filter(Boolean).join(' ');
-  memo=[memo, '[상담 신청] '+c.jointype+'('+mCarrier+') · '+(c.plan?c.plan.name:'')+' · '+discountSub+' · 예상 월 '+mWon(c.total), '[요금상세] '+feeDetail, '[지원금상세] '+subsidyDetail].filter(Boolean).join(' / ');
+  // v20261005: 계산 내용은 메모가 아니라 구조화 스냅샷(snapshot 컬럼)으로 저장 → ssgadmin 유닥 상세 카드로 표시
+  var feeRows=[{label:(c.plan?c.plan.name:'요금제'), amount:c.full}];
+  if(c.discount==='commitment') feeRows.push({label:'선택약정 할인(25%)', amount:-(c.full-c.fee)});
+  feeRows.push({label:'월 통신요금', amount:c.fee});
+  var subRows=[{label:'출고가', amount:c.st.price}];
+  if(c.q&&c.discount==='pubSupport') subRows.push({label:'공시지원금', amount:-c.q.pub});
+  if(c.q) subRows.push({label:'유플러스 다이렉트 혜택', amount:-c.extra});
+  subRows.push({label:'기기값 원금', amount:c.principal},{label:'기기값 월 청구 예정액', amount:c.dev});
+  var snapshotObj={v:1, source:'랜딩 상담', jointype:c.jointype, carrier:mCarrier, device:mDevice, storage:c.st.name||null, color:c.colorName||null,
+    plan:c.plan?{name:c.plan.name, price:c.plan.monthlyPrice||null, group:c.plan.plangroup||null}:null,
+    discount:discountSub, fee:feeRows, feeNote:null, subsidy:subRows, subsidyNote:c.ready?'할부 연 5.9%':'지원금 정책 준비중 · 출고가 기준',
+    benefits:[], estimatedMonthly:c.total, installmentMonths:24};
   var mBtn=document.getElementById('mSubmitBtn'), mBtnTxt=mBtn?mBtn.textContent:'';
   if(mBtn){ if(mBtn.disabled) return; mBtn.disabled=true; mBtn.textContent='신청 중...'; }
   var mBtnReset=function(){ if(mBtn){ mBtn.disabled=false; mBtn.textContent=mBtnTxt; } };
@@ -2582,7 +2591,7 @@ function mSubmitForm(){
       'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
       'Prefer':'return=minimal'
     },
-    body:JSON.stringify({name:name,phone:phoneF,carrier:mCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:mDevice,capacity:c.st.name||null,product_color:c.colorName||null,installment_months:'24개월',birth_date:udakBirth8(birth),memo:memo||null,status:'신규'})
+    body:JSON.stringify({name:name,phone:phoneF,carrier:mCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:mDevice,capacity:c.st.name||null,product_color:c.colorName||null,installment_months:'24개월',birth_date:udakBirth8(birth),memo:memo||null,snapshot:snapshotObj,status:'신규'})
   }).then(function(res){
     if(res.ok){
       if(typeof fbq!=='undefined') fbq('track','Lead');

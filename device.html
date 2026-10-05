@@ -1351,6 +1351,12 @@ window.closeDeviceReserve=function(e){
     document.body.style.overflow='';
   }
 };
+// v20261005: 요금/지원금 상세를 메모 텍스트가 아니라 구조화 스냅샷(snapshot 컬럼)으로 저장
+function udakRowsFromText(t){
+  var amounts=(t||'').match(/-?[\d,]+원/g)||[], segs=(t||'').split(/-?[\d,]+원/), rows=[];
+  for(var i=0;i<amounts.length;i++){ var l=(segs[i]||'').trim(); if(l) rows.push({label:l, amount:parseInt(amounts[i].replace(/[^0-9-]/g,''),10)}); }
+  return {rows:rows, note:(segs[segs.length-1]||'').trim()||null};
+}
 window.submitDeviceReserve=function(){
   const d=ucatSel.device;
   if(!d) return;
@@ -1384,10 +1390,6 @@ window.submitDeviceReserve=function(){
     var m=allWatchModelsSub.find(function(mm){return mm.id===e[1];});
     return m?{cat:e[0],model:m}:null;
   }).filter(Boolean);
-  if(pickedModelsSub.length){
-    var watchNamesSub=pickedModelsSub.map(function(p){return (udxCatLabelsSub[p.cat]||p.cat)+':'+p.model.name+(p.model.size?' '+p.model.size:'');}).join(' + ');
-    memo=(memo?memo+' / ':'')+'요금제별혜택 희망: '+watchNamesSub;
-  }
   var jointypeSub=ucatSel.carrier==='LG U+'?'기기변경':'번호이동';
   var planNameSub=ucatSel.plan?ucatSel.plan.name:null;
   var discountSub=ucatSel.discountMethod==='commitment'?'선택약정':'공시지원금';
@@ -1399,12 +1401,14 @@ window.submitDeviceReserve=function(){
     var label=udxCatLabelsSub[p.cat]||p.cat;
     return label+':'+p.model.name+(p.model.size?'('+p.model.size+')':'')+' 자부담'+(info?info.selfPay.toLocaleString()+'원':'-');
   }).join(' | '):'';
-  var snapshotParts=[];
-  if(feeDetailTextSub) snapshotParts.push('[요금상세] '+feeDetailTextSub);
-  if(subsidyTextSub) snapshotParts.push('[지원금상세] '+subsidyTextSub);
-  if(watchSnapshotSub) snapshotParts.push('[요금제별혜택] '+watchSnapshotSub);
-  var additionalBenefitsSub=snapshotParts.join(' / ')||null;
   var estimatedFeeSub=parseInt((document.getElementById('udHeroAmt').textContent||'').replace(/[^0-9]/g,''))||null;
+  var feeP=udakRowsFromText(feeDetailTextSub), subP=udakRowsFromText(subsidyTextSub);
+  var snapshotObj={v:1, source:'상세 주문', jointype:jointypeSub, carrier:ucatSel.carrier||null,
+    device:d.name, storage:storageName, color:colorName||null,
+    plan:ucatSel.plan?{name:ucatSel.plan.name, price:ucatSel.plan.monthlyPrice||null, group:ucatSel.plan.plangroup||null}:null,
+    discount:discountSub, fee:feeP.rows, feeNote:feeP.note, subsidy:subP.rows, subsidyNote:subP.note,
+    benefits:watchSnapshotSub?watchSnapshotSub.split(' | '):[],
+    estimatedMonthly:estimatedFeeSub, installmentMonths:24};
   fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations_udak',{
     method:'POST',
     headers:{
@@ -1419,9 +1423,8 @@ window.submitDeviceReserve=function(){
       device_interest:d.name,capacity:storageName,product_color:colorName||null,
       installment_months:'24개월',
       birth_date:udakBirth8(birth),
-      memo:[memo,
-            '[주문] '+jointypeSub+'('+(ucatSel.carrier||'-')+')'+(planNameSub?' · '+planNameSub:'')+' · '+discountSub+(estimatedFeeSub?' · 예상 월 '+estimatedFeeSub.toLocaleString('ko-KR')+'원':''),
-            additionalBenefitsSub].filter(Boolean).join(' / ')||null,
+      memo:memo||null,
+      snapshot:snapshotObj,
       status:'신규'
     })
   }).then(function(res){
