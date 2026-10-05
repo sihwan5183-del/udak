@@ -72,7 +72,10 @@
 
     // 1) 들어옴
     var ref=''; try{ ref=document.referrer?new URL(document.referrer).hostname:''; }catch(e){}
-    ev('view', PAGE==='device'?(qs.get('id')||ref):ref);
+    // 어떤 앱·OS에서 열었는지 (예: 'IG iOS 27.0.1') — 특정 앱·기종에서만 신청이 막히는지 확인용
+    var ua=navigator.userAgent||'', app=/Instagram/.test(ua)?'IG':/FBAN|FBAV|FB_IAB/.test(ua)?'FB':/KAKAOTALK/i.test(ua)?'KAKAO':/NAVER/.test(ua)?'NAVER':/SamsungBrowser/.test(ua)?'Samsung':/CriOS|Chrome\//.test(ua)?'Chrome':/Safari\//.test(ua)?'Safari':'기타';
+    var os=(ua.match(/OS (\d+)_(\d+)(?:_(\d+))? like Mac/)||[]).slice(1).filter(Boolean).join('.'); os=os?('iOS '+os):((ua.match(/Android ([\d.]+)/)||[])[1]?('Android '+ua.match(/Android ([\d.]+)/)[1]):(/Windows/.test(ua)?'Windows':/Mac OS X/.test(ua)?'Mac':''));
+    ev('view', (PAGE==='device'?(qs.get('id')||'')+' | ':'')+(ref||'-')+' | '+app+(os?' '+os:''));
 
     // 2) 스크롤 깊이 25/50/75/100
     function onScroll(){
@@ -129,7 +132,7 @@
         if(method==='POST' && /\/rest\/v1\/reservations/.test(url)){
           ev('submit_send', url.split('/').pop().split('?')[0]);
           p.then(function(r){ ev(r.ok?'lead':'submit_fail', r.ok?null:('HTTP '+r.status)); flush(false); },
-                 function(){ ev('submit_fail','network'); flush(false); });
+                 function(err){ ev('submit_fail','network: '+((err&&err.message)||err)); flush(false); });
         }
       }catch(e){}
       return p;
