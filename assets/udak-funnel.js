@@ -51,7 +51,9 @@
       galaxy_z8:{
         see:[['video','.hero-col'],['nocard','.intro-hero-nocard'],['plan_info','.intro-hero-plan'],['storage_info','.intro-hero-storage'],
              ['catalog','.ucat-wrap'],['trust','.acc-kit'],['form','#consultForm']],
-        click:[['a.ucard','card',function(el){ var n=el.querySelector('.ucard-name'); return n?txt(n):el.getAttribute('href'); }],
+        click:[['.ucard-dot','card_color',function(el){ var c=el.closest('.ucard'), n=c&&c.querySelector('.ucard-name'); return (n?txt(n)+' · ':'')+(el.getAttribute('aria-label')||''); }],
+               ['.ucard .ucard-type','card_carrier',function(el){ var c=el.closest('.ucard'), n=c&&c.querySelector('.ucard-name'); return (n?txt(n)+' · ':'')+txt(el); }],
+               ['a.ucard','card',function(el){ var n=el.querySelector('.ucard-name'); return n?txt(n):el.getAttribute('href'); }],
                ['#ucatSubZ','tab_z'],['#ucatSubS','tab_s'],['.sticky-cta-btn','cta_bottom'],['#mSubmitBtn','submit_click'],
                ['.hero-col','video_tap'],['.m-hdr-hit','hdr',lbl],['.top-nav-sub-item,.top-nav-item','topnav',txt],
                ['.nav-drawer-item','menu',txt],['.side-quick-btn','quick',txt]]
