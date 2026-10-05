@@ -1270,7 +1270,17 @@ function closeNavDrawer() {
 <style>
 .intro-hero{max-width:520px;margin:0 auto;background:#fff;}
 .intro-hero img{display:block;width:100%;height:auto;}
-.intro-hero-video{display:block;width:100%;height:auto;aspect-ratio:9/16;object-fit:cover;background:#fff;}
+.intro-hero-video{display:block;width:100%;height:auto;aspect-ratio:9/16;object-fit:cover;background:#fff;cursor:pointer;}
+.hero-vwrap{position:relative;}
+.hero-vplay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .2s;}
+.hero-vwrap.paused .hero-vplay{opacity:1;}
+.hero-vplay span{width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding-left:3px;}
+.hero-vctrl{display:flex;align-items:center;gap:10px;padding:8px 14px 12px;background:#fff;}
+.hero-vbtn{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:none;background:#E91E8C;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent;}
+.hero-vseek{flex:1;min-width:0;height:4px;margin:0;border-radius:2px;-webkit-appearance:none;appearance:none;outline:none;cursor:pointer;background:linear-gradient(to right,#E91E8C var(--p,0%),#e5e5ea var(--p,0%));}
+.hero-vseek::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:#E91E8C;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.hero-vseek::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#E91E8C;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.hero-vtime{flex:0 0 auto;min-width:72px;text-align:right;font-size:12px;color:#666;font-variant-numeric:tabular-nums;}
 @media(min-width:521px){
   .intro-hero{padding-top:20px;}
   .intro-hero-poster{border-radius:16px;}
@@ -1278,7 +1288,16 @@ function closeNavDrawer() {
 </style>
 <section class="intro-hero">
   <!-- v20261005: 상단 포스터(유닥 블랙프라이데이) → 폴드 와이드 홍보 영상 (자동재생·무음·반복) -->
-  <video class="intro-hero-poster intro-hero-video" src="/assets/foldwide-promo.mp4" poster="/assets/foldwide-promo-poster.webp" width="1080" height="1920" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture aria-label="U+ 다이렉트 폴드 와이드 — 제휴카드 NO, 부가서비스 의무가입 NO"></video>
+  <div class="hero-vwrap" id="heroVwrap">
+    <video class="intro-hero-poster intro-hero-video" src="/assets/foldwide-promo.mp4" poster="/assets/foldwide-promo-poster.webp" width="1080" height="1920" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture aria-label="U+ 다이렉트 폴드 와이드 — 제휴카드 NO, 부가서비스 의무가입 NO"></video>
+    <div class="hero-vplay" aria-hidden="true"><span><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13l10.5-6.5z"/></svg></span></div>
+  </div>
+  <!-- v20261005: 고객이 영상을 멈추고, 원하는 구간으로 옮겨 다시 볼 수 있는 컨트롤 -->
+  <div class="hero-vctrl">
+    <button type="button" class="hero-vbtn" id="heroVbtn" aria-label="일시정지"></button>
+    <input type="range" class="hero-vseek" id="heroVseek" min="0" max="1000" step="1" value="0" aria-label="재생 위치">
+    <span class="hero-vtime" id="heroVtime">0:00 / 0:30</span>
+  </div>
   <img class="intro-hero-nocard" src="/assets/no-card-no-addon.webp" width="1774" height="887" alt="제휴카드 No! 부가서비스 의무가입 No!" decoding="async">
 </section>
 
@@ -1802,12 +1821,31 @@ window.ctaUcat=function(){
 (function(){ try{ var b=(new URLSearchParams(location.search).get('brand')||'').toLowerCase(); if(b==='apple'||b==='iphone'||b==='애플') setUcatBrand('애플'); }catch(e){} })();
 renderUcatGrid();
 ucatLoadFirebase();
-// v20261005: 상단 홍보 영상 — 자동재생이 막힌 환경(저전력 모드 등)이면 화면에 보일 때·첫 터치 때 다시 재생 시도
+// v20261005: 상단 홍보 영상 — 자동재생·반복 + 고객 조작(탭/버튼으로 멈춤·재생, 바를 끌어 원하는 구간으로 이동)
 (function(){
   var v=document.querySelector('.intro-hero-video'); if(!v) return;
-  var tryPlay=function(){ try{ var p=v.play(); if(p&&p.catch) p.catch(function(){}); }catch(e){} };
-  if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting) tryPlay(); else v.pause(); }); },{threshold:0.25}).observe(v); }
-  document.addEventListener('touchstart',tryPlay,{once:true,passive:true});
+  var wrap=document.getElementById('heroVwrap'), btn=document.getElementById('heroVbtn'), seek=document.getElementById('heroVseek'), tm=document.getElementById('heroVtime');
+  var userPaused=false, dragging=false;
+  var ICON_PAUSE='<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><rect x="5" y="4" width="5" height="16" rx="1.2"/><rect x="14" y="4" width="5" height="16" rx="1.2"/></svg>';
+  var ICON_PLAY='<svg width="15" height="15" viewBox="0 0 24 24" fill="#fff" style="margin-left:2px"><path d="M7 4.5v15l12.5-7.5z"/></svg>';
+  var fmt=function(x){ x=Math.max(0,Math.floor(x||0)); return Math.floor(x/60)+':'+String(x%60).padStart(2,'0'); };
+  function showTime(){ if(v.duration) tm.textContent=fmt(v.currentTime)+' / '+fmt(v.duration); }
+  function setBar(p){ seek.value=Math.round(p*10); seek.style.setProperty('--p',p+'%'); }
+  function sync(){ var paused=v.paused; btn.innerHTML=paused?ICON_PLAY:ICON_PAUSE; btn.setAttribute('aria-label',paused?'재생':'일시정지'); wrap.classList.toggle('paused',paused&&userPaused); }
+  function tryPlay(){ try{ var pr=v.play(); if(pr&&pr.catch) pr.catch(function(){ sync(); }); }catch(e){} }
+  function toggle(){ if(v.paused){ userPaused=false; tryPlay(); } else { userPaused=true; v.pause(); } sync(); }
+  btn.addEventListener('click',toggle);
+  v.addEventListener('click',toggle);
+  v.addEventListener('play',sync); v.addEventListener('pause',sync);
+  v.addEventListener('loadedmetadata',showTime);
+  v.addEventListener('timeupdate',function(){ if(dragging||!v.duration) return; setBar(v.currentTime/v.duration*100); showTime(); });
+  seek.addEventListener('input',function(){ dragging=true; if(!v.duration) return; var p=seek.value/10; setBar(p); v.currentTime=v.duration*p/100; showTime(); });
+  ['change','pointerup','touchend','mouseup'].forEach(function(ev){ seek.addEventListener(ev,function(){ dragging=false; }); });
+  // 화면에 보이면 재생(고객이 직접 멈춘 경우는 그대로 둠), 화면 밖이면 멈춤
+  if('IntersectionObserver' in window){ new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ if(!userPaused) tryPlay(); } else if(!v.paused){ v.pause(); } }); },{threshold:0.25}).observe(v); }
+  // 자동재생이 막힌 환경(저전력 모드 등)은 첫 터치 때 재생 시도
+  document.addEventListener('touchstart',function(){ if(!userPaused&&v.paused) tryPlay(); },{once:true,passive:true});
+  sync();
 })();
 </script>
 
