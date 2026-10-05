@@ -2617,8 +2617,10 @@ window.toggleFaq=function(btn){
     var it=VIDS[key]||VIDS.direct;
     pTitle.textContent=it.title;
     if(pv.getAttribute('src')!==it.src){ pv.setAttribute('poster',it.poster); pv.setAttribute('src',it.src); setBar(0); tm.textContent='0:00 / 0:00'; }
-    var go=function(){ try{ pv.currentTime=0; }catch(e){} tryPlay(); };
-    if(pv.readyState>=1) go(); else pv.addEventListener('loadedmetadata',go,{once:true});
+    // v20261005: 누른 그 순간에 바로 재생 시작 (미리 받아두지 않는 영상이라, 재생을 뒤로 미루면 시작이 안 되고 재생 버튼을 다시 눌러야 했음)
+    pv.muted=true;
+    if(pv.readyState>=1){ try{ pv.currentTime=0; }catch(e){} }
+    tryPlay();
     open=true; pop.classList.add('open'); pop.setAttribute('aria-hidden','false');
     document.body.style.overflow='hidden';
     var bar=document.querySelector('.bottom-cta-bar'); if(bar) bar.style.display='none';

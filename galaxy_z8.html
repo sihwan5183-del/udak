@@ -2170,8 +2170,12 @@ ucatLoadFirebase();
     pTitle.textContent=it.title;
     if(pv.getAttribute('src')!==it.src){ pv.setAttribute('src',it.src); pv.setAttribute('poster',it.poster); pctl.setBar(0); document.getElementById('vpopTime').textContent='0:00 / 0:00'; }
     var t=+startAt||0;
-    var go=function(){ try{ pv.currentTime=t; }catch(e){} tryPlay(pv); };
-    if(pv.readyState>=1) go(); else pv.addEventListener('loadedmetadata',go,{once:true});
+    // v20261005: 누른 그 순간에 바로 재생 시작 — 영상 정보가 다 받아진 뒤로 미루면 아이폰 저전력 모드·인스타/페북 앱 안 브라우저에서
+    // '사용자가 누른 동작'으로 인정이 안 돼 재생이 막히고 재생 버튼을 다시 눌러야 했음
+    pv.muted=true;
+    if(pv.readyState>=1){ try{ pv.currentTime=t; }catch(e){} }
+    else if(t>0){ pv.addEventListener('loadedmetadata',function(){ try{ pv.currentTime=t; }catch(e){} },{once:true}); }
+    tryPlay(pv);
     pop.classList.add('open'); pop.setAttribute('aria-hidden','false');
     document.body.style.overflow='hidden';
   };
