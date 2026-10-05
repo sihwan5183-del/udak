@@ -594,8 +594,9 @@ textarea.mform-input{resize:none;height:80px;}
 .mc-row b.pink{color:#E91E8C;}
 .mc-row.sub{border-top:1px solid #e2e2e4;margin-top:3px;padding-top:7px;}
 .mc-row.sub span,.mc-row.sub b{color:#222;font-weight:800;}
-.mc-arrow{font-size:12px;color:#777;line-height:1.55;margin:5px 0 0;word-break:keep-all;}
-.mc-arrow b{color:#1A1A1A;font-weight:800;white-space:nowrap;}
+.mc-row .mc-dim{font-size:11px;font-weight:500;color:#999;}
+.mc-row.mon span{color:#444;font-weight:700;}
+.mc-row.mon b{color:#1A1A1A;font-weight:800;}
 .mform-hint{font-size:13px;color:#555555;margin-top:6px;}
 
 /* 개인정보 */
@@ -2974,7 +2975,7 @@ function mRefreshCalc(){
     h+=row('유플러스 다이렉트 혜택','-'+mWon(c.extra),'','pink');
   }
   h+=row('할부원금',mWon(c.principal),'sub')
-    +'<p class="mc-arrow">할부원금을 24개월로 나눠 내면 (할부이자 연 5.9% 포함) → 월 <b>'+mWon(c.dev)+'</b></p></div>';
+    +row('월 할부금 <small class="mc-dim">(할부 이자 포함)</small>',mWon(c.dev),'mon')+'</div>';
   if(commit){
     h+='<div class="mc-sec"><p class="mc-sec-t">요금제 계산</p>'
       +row(planName,mWon(c.full))
