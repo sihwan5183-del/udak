@@ -69,6 +69,7 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,sans-serif;bac
 .udetail-hero-sub{font-size:12px;color:#999;margin:4px 0 0;}
 .udetail-plan-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:1.5px solid #ececec;border-radius:12px;cursor:pointer;}
 .udetail-plan-row.open{border-radius:12px 12px 0 0;}
+.udetail-plan-row.sel{border-color:#E91E8C;background:rgba(233,30,140,.04);} /* v20261005: 자동 선택된 85 요금제 표시 */
 .udetail-plan-mid{font-size:14px;color:#1A1A1A;font-weight:800;margin-left:8px;}
 .udetail-plan-right{display:flex;align-items:center;gap:6px;}
 .udetail-plan-price{color:#E91E8C;font-weight:800;font-size:14px;}
@@ -665,7 +666,9 @@ function renderPage(){
     document.getElementById('dContent').innerHTML='<div class="dempty">기기를 찾을 수 없습니다.<br><a href="/galaxy_z8" style="color:#E91E8C;font-weight:700;">목록으로 돌아가기</a></div>';
     return;
   }
-  ucatSel={device:d,color:0,colorTouched:false,storage:0,carrier:null,plan:(ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0]),discountMethod:null,planListOpen:false,planTouched:false,bundleType:'none',bundleSize:'2',welfareType:'none'};
+  // v20261005: 요금제는 85 자동 선택 (지금 요금제가 하나뿐) — 고객이 따로 누르지 않아도 선택된 걸로 보고, 안내 순서도 통신사 → 할인방식으로 바로 넘어감
+  const ud85Plan=ucatPlans.find(p=>p.plangroup==='85')||null;
+  ucatSel={device:d,color:0,colorTouched:false,storage:0,carrier:null,plan:(ud85Plan||ucatPlans[0]),discountMethod:null,planListOpen:false,planTouched:!!ud85Plan||ucatPlans.length<=1,bundleType:'none',bundleSize:'2',welfareType:'none'};
   uwtOpenCat=null; uwtSelectedByCat={};
   document.title=d.name+' — 유플러스 다이렉트';
   document.getElementById('dContent').innerHTML=`
@@ -792,7 +795,7 @@ function renderCarrier(){
 }
 function renderPlanRow(){
   const open=ucatSel.planListOpen;
-  document.getElementById('udPlanWrap').innerHTML=`<div class="udetail-plan-row${open?' open':''}" onclick="togglePlanList()">
+  document.getElementById('udPlanWrap').innerHTML=`<div class="udetail-plan-row${open?' open':''}${ucatSel.plan&&ucatSel.planTouched?' sel':''}" onclick="togglePlanList()">
     <div><span class="udetail-plan-mid">${ucatSel.plan?ucatSel.plan.name:'-'}</span></div>
     <div class="udetail-plan-right"><span class="udetail-plan-price">월 ${(ucatSel.plan?ucatSel.plan.monthlyPrice:0).toLocaleString()}원</span><span class="udetail-plan-arrow">▾</span></div>
   </div>
