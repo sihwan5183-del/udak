@@ -1394,7 +1394,7 @@ function closeNavDrawer() {
     <div class="hero-col" data-vkey="fold">
       <p class="hero-label">갤럭시 폴드8</p>
       <div class="hero-vwrap">
-        <video class="intro-hero-video" src="/assets/foldwide-promo-v3.mp4" poster="/assets/foldwide-promo-v3-poster.webp" width="1080" height="1920" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture aria-label="갤럭시 폴드8 홍보 영상"></video>
+        <video class="intro-hero-video" src="/assets/foldwide-promo-v4.mp4" poster="/assets/foldwide-promo-v4-poster.webp" width="1080" height="1920" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture aria-label="갤럭시 폴드8 홍보 영상"></video>
         <div class="hero-vplay" aria-hidden="true"><span><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13l10.5-6.5z"/></svg></span></div>
         <div class="hero-vexpand" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
       </div>
@@ -1822,6 +1822,14 @@ async function ucatLoadFirebase(){
   }catch(e){}
 }
 
+// v20261005: 갤럭시 S시리즈 순서 — S26(맨 위 크게) → S26+ → S26 울트라 → 그 외
+function ucatSRank(name){
+  const n=String(name||'').replace(/\s+/g,'').toLowerCase();
+  if(/s26$/.test(n)) return 0;
+  if(/s26(\+|플러스|plus)$/.test(n)) return 1;
+  if(/s26(울트라|ultra)$/.test(n)) return 2;
+  return 3;
+}
 function ucatCategorize(d){
   const nm=d.name||'';
   if(nm.includes('폴드')||nm.includes('플립')) return{brand:'삼성',sub:'Z'};
@@ -1922,9 +1930,16 @@ function renderUcatGrid(){
     return c.brand==='삼성'&&c.sub===ucatState.sub;
   });
   // 갤럭시 Z시리즈: 와이드(폴드8, id z-fold8)를 맨 앞 한 줄 전체로 크게 → 울트라·플립은 그 아래 나란히
+  // v20261005: 갤럭시 S시리즈도 같은 모양 — S26을 맨 앞 한 줄 전체로 크게 → S26+ · S26 울트라는 그 아래 나란히
   const UCAT_HERO_ID='z-fold8';
   const isZTab=ucatState.brand==='삼성'&&ucatState.sub==='Z';
-  if(isZTab){ const hi=list.findIndex(d=>d.id===UCAT_HERO_ID); if(hi>0) list=[list[hi],...list.filter((_,i)=>i!==hi)]; }
+  const isSTab=ucatState.brand==='삼성'&&ucatState.sub==='S';
+  let heroId=null;
+  if(isZTab){ const hi=list.findIndex(d=>d.id===UCAT_HERO_ID); if(hi>0) list=[list[hi],...list.filter((_,i)=>i!==hi)]; if(hi>=0) heroId=UCAT_HERO_ID; }
+  if(isSTab){
+    list=list.map((d,i)=>({d,i})).sort((a,b)=>(ucatSRank(a.d.name)-ucatSRank(b.d.name))||(a.i-b.i)).map(x=>x.d);
+    if(list.length&&ucatSRank(list[0].name)===0) heroId=list[0].id;
+  }
   if(!list.length){
     wrap.innerHTML='<div class="ucat-empty">'+(ucatState.brand==='삼성'&&ucatState.sub==='S'?'갤럭시 S시리즈 준비중입니다':'표시할 기기가 없습니다')+'</div>';
     return;
@@ -1933,7 +1948,7 @@ function renderUcatGrid(){
     const chg=ucatQuote(d,'LG U+','기기변경',planObj);
     const mnp=ucatQuote(d,'SKT','번호이동',planObj);
     const storageTxt=(d.storageList&&d.storageList[0])?d.storageList[0].name:'';
-    return`<a class="ucard${isZTab&&d.id===UCAT_HERO_ID?' ucard--hero':''}" href="/device?id=${encodeURIComponent(d.id)}${udakUtmQuery()}">
+    return`<a class="ucard${heroId&&d.id===heroId?' ucard--hero':''}" href="/device?id=${encodeURIComponent(d.id)}${udakUtmQuery()}">
       <span class="ucard-badge">85 요금제 기준</span>
       <p class="ucard-name">${d.name}</p>
       ${storageTxt?`<span class="ucard-storage">${storageTxt}</span>`:''}
@@ -2103,7 +2118,7 @@ ucatLoadFirebase();
   var fmt=function(x){ x=Math.max(0,Math.floor(x||0)); return Math.floor(x/60)+':'+String(x%60).padStart(2,'0'); };
   var VIDS={
     direct:{src:'/assets/udak-direct-intro.mp4',poster:'/assets/udak-direct-intro-poster.webp',title:'유플러스 다이렉트란?'},
-    fold:{src:'/assets/foldwide-promo-v3.mp4',poster:'/assets/foldwide-promo-v3-poster.webp',title:'갤럭시 폴드8'}
+    fold:{src:'/assets/foldwide-promo-v4.mp4',poster:'/assets/foldwide-promo-v4-poster.webp',title:'갤럭시 폴드8'}
   };
   var heroes=[]; var popOpen=false;
   function tryPlay(v,onFail){ try{ var pr=v.play(); if(pr&&pr.catch) pr.catch(function(){ if(onFail) onFail(); }); }catch(e){} }
@@ -2716,6 +2731,7 @@ function mFillDeviceSelect(){
     var c=ucatCategorize(d); if(c.brand!=='삼성'||!d.name) return;
     var gr=groups[c.sub==='Z'?0:1]; if(gr[1].indexOf(d.name)<0) gr[1].push(d.name);
   });
+  groups[1][1]=groups[1][1].map(function(n,i){return {n:n,i:i};}).sort(function(a,b){return (ucatSRank(a.n)-ucatSRank(b.n))||(a.i-b.i);}).map(function(x){return x.n;});
   var html='<option value="" disabled selected>관심 기기를 선택해 주세요</option>';
   groups.forEach(function(gr){ if(gr[1].length) html+='<optgroup label="'+gr[0]+'">'+gr[1].map(function(n){return '<option value="'+esc(n)+'">'+esc(n)+'</option>';}).join('')+'</optgroup>'; });
   sel.innerHTML=html;
