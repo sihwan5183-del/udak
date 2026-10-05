@@ -113,6 +113,34 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   }
   .top-nav-item-highlight:hover{ color:#e2067a; background:#fdf0f7; }
   .top-nav-item-highlight svg{ flex-shrink:0; }
+  /* v20261005: 상단 메뉴 글자가 두 줄로 꺾이지 않게 + 작은 폰(폭 380px 이하)에서는 간격만 살짝 줄임 */
+  .top-nav-logo,.top-nav-item{ white-space:nowrap; }
+  @media (max-width:380px){
+    .top-nav-inner{ padding:0 14px; }
+    .top-nav-items{ gap:12px; }
+    .top-nav-item-highlight{ padding:7px 11px; }
+  }
+  @media (max-width:340px){
+    .top-nav-inner{ padding:0 10px; }
+    .top-nav-logo{ font-size:14px; }
+    .top-nav-items{ gap:9px; }
+    .top-nav-item{ font-size:12px; }
+    .top-nav-item-highlight{ padding:6px 9px; gap:2px; }
+  }
+
+  /* v20261005: '유플러스 다이렉트란?' 소개 영상 팝업 — 바깥·✕·Esc로 닫기 */
+  .vpop{position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.86);display:none;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) 16px max(16px,env(safe-area-inset-bottom,0px));box-sizing:border-box;}
+  .vpop.open{display:flex;}
+  .vpop-box{position:relative;width:min(420px,100%,calc((100vh - 150px) * .5625));}
+  .vpop-title{margin:0 40px 10px;color:#fff;font-size:15px;font-weight:800;text-align:center;}
+  .vpop-close{position:absolute;top:-8px;right:-6px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.18);color:#fff;font-size:18px;line-height:36px;cursor:pointer;padding:0;}
+  .vpop-video{display:block;width:100%;aspect-ratio:9/16;border-radius:14px;background:#fff;object-fit:cover;cursor:pointer;}
+  .vpop-ctrl{display:flex;align-items:center;gap:10px;padding:12px 2px 0;}
+  .vpop-btn{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:none;background:#e2067a;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent;}
+  .vpop-seek{flex:1;min-width:0;height:4px;margin:0;border-radius:2px;-webkit-appearance:none;appearance:none;outline:none;cursor:pointer;background:linear-gradient(to right,#e2067a var(--p,0%),rgba(255,255,255,.3) var(--p,0%));}
+  .vpop-seek::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:#e2067a;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+  .vpop-seek::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#e2067a;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+  .vpop-time{flex:0 0 auto;min-width:72px;text-align:right;font-size:12px;color:#ddd;font-variant-numeric:tabular-nums;}
 
   .bottom-cta-bar{
     position:fixed;
@@ -1558,10 +1586,11 @@ function udakMetaIds(){
   <div class="top-nav-inner">
     <span class="top-nav-logo"><span class="top-nav-logo-accent">U+</span> 다이렉트</span>
     <div class="top-nav-items">
-      <button type="button" class="top-nav-item" onclick="openFaqModal()">궁금해요</button>
-      <button type="button" class="top-nav-item top-nav-item-highlight" onclick="openPriorityModal()">사전예약 우선배송 관련
+      <!-- v20261005: '궁금해요 / 사전예약 우선배송 관련' → '유플러스 다이렉트란?(소개 영상) / 궁금해요' -->
+      <button type="button" class="top-nav-item top-nav-item-highlight" onclick="openVideoPop('direct')">유플러스 다이렉트란?
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
       </button>
+      <button type="button" class="top-nav-item" onclick="openFaqModal()">궁금해요</button>
     </div>
   </div>
 </nav>
@@ -1595,7 +1624,7 @@ function udakMetaIds(){
         <span class="cd-unit"><b id="cdS">00</b><i>초</i></span>
       </div>
     </div>
-    <button type="button" class="about-trigger" onclick="openAboutModal()">
+    <button type="button" class="about-trigger" onclick="openVideoPop('direct')">
       <img class="about-trigger-badge" src="/assets/about-official-badge.webp" alt="LG유플러스 공식인증대리점">
       <span class="about-trigger-title">유플러스 다이렉트란?</span>
       <span class="about-trigger-hint">클릭해서 자세히보기 ›</span>
@@ -2458,5 +2487,62 @@ window.toggleFaq=function(btn){
   </div>
 </div>
 
+
+<!-- v20261005: '유플러스 다이렉트란?' 소개 영상 팝업 (상단 메뉴 · 카운트다운 아래 버튼) -->
+<div class="vpop" id="vpop" aria-hidden="true" onclick="if(event.target===this)closeVideoPop()">
+  <div class="vpop-box" role="dialog" aria-modal="true" aria-labelledby="vpopTitle">
+    <button type="button" class="vpop-close" onclick="closeVideoPop()" aria-label="닫기">✕</button>
+    <p class="vpop-title" id="vpopTitle">유플러스 다이렉트란?</p>
+    <video class="vpop-video" id="vpopVideo" muted playsinline webkit-playsinline preload="none" disablepictureinpicture></video>
+    <div class="vpop-ctrl">
+      <button type="button" class="vpop-btn" id="vpopBtn" aria-label="일시정지"></button>
+      <input type="range" class="vpop-seek" id="vpopSeek" min="0" max="1000" step="1" value="0" aria-label="재생 위치">
+      <span class="vpop-time" id="vpopTime">0:00 / 0:00</span>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var ICON_PAUSE='<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><rect x="5" y="4" width="5" height="16" rx="1.2"/><rect x="14" y="4" width="5" height="16" rx="1.2"/></svg>';
+  var ICON_PLAY='<svg width="15" height="15" viewBox="0 0 24 24" fill="#fff" style="margin-left:2px"><path d="M7 4.5v15l12.5-7.5z"/></svg>';
+  var VIDS={ direct:{src:'/assets/udak-direct-intro.mp4',poster:'/assets/udak-direct-intro-poster.webp',title:'유플러스 다이렉트란?'} };
+  var pop=document.getElementById('vpop'), pv=document.getElementById('vpopVideo'), btn=document.getElementById('vpopBtn'),
+      seek=document.getElementById('vpopSeek'), tm=document.getElementById('vpopTime'), pTitle=document.getElementById('vpopTitle');
+  if(!pop||!pv) return;
+  var open=false, dragging=false;
+  var fmt=function(x){ x=Math.max(0,Math.floor(x||0)); return Math.floor(x/60)+':'+String(x%60).padStart(2,'0'); };
+  function tryPlay(){ try{ var pr=pv.play(); if(pr&&pr.catch) pr.catch(function(){}); }catch(e){} }
+  function setBar(p){ seek.value=Math.round(p*10); seek.style.setProperty('--p',p+'%'); }
+  function showTime(){ if(pv.duration) tm.textContent=fmt(pv.currentTime)+' / '+fmt(pv.duration); }
+  function sync(){ var p=pv.paused; btn.innerHTML=p?ICON_PLAY:ICON_PAUSE; btn.setAttribute('aria-label',p?'재생':'일시정지'); }
+  function toggle(){ if(pv.paused) tryPlay(); else pv.pause(); }
+  btn.addEventListener('click',function(e){ e.stopPropagation(); toggle(); });
+  pv.addEventListener('click',toggle);
+  pv.addEventListener('play',sync); pv.addEventListener('pause',sync);
+  pv.addEventListener('loadedmetadata',showTime);
+  pv.addEventListener('ended',function(){ try{ pv.currentTime=0; }catch(e){} tryPlay(); });
+  pv.addEventListener('timeupdate',function(){ if(dragging||!pv.duration) return; setBar(pv.currentTime/pv.duration*100); showTime(); });
+  seek.addEventListener('input',function(){ dragging=true; if(!pv.duration) return; var p=seek.value/10; setBar(p); pv.currentTime=pv.duration*p/100; showTime(); });
+  ['change','pointerup','touchend','mouseup'].forEach(function(ev){ seek.addEventListener(ev,function(){ dragging=false; }); });
+  sync();
+  window.openVideoPop=function(key){
+    var it=VIDS[key]||VIDS.direct;
+    pTitle.textContent=it.title;
+    if(pv.getAttribute('src')!==it.src){ pv.setAttribute('poster',it.poster); pv.setAttribute('src',it.src); setBar(0); tm.textContent='0:00 / 0:00'; }
+    var go=function(){ try{ pv.currentTime=0; }catch(e){} tryPlay(); };
+    if(pv.readyState>=1) go(); else pv.addEventListener('loadedmetadata',go,{once:true});
+    open=true; pop.classList.add('open'); pop.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+    var bar=document.querySelector('.bottom-cta-bar'); if(bar) bar.style.display='none';
+  };
+  window.closeVideoPop=function(){
+    pv.pause(); open=false;
+    pop.classList.remove('open'); pop.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+    var bar=document.querySelector('.bottom-cta-bar'); if(bar) bar.style.display='';
+  };
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&open) closeVideoPop(); });
+})();
+</script>
 </body>
 </html>
