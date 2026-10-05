@@ -553,6 +553,10 @@ textarea.mform-input{resize:none;height:80px;}
 .rf-inner .rf-submit:disabled{opacity:.5;cursor:not-allowed;}
 .rf-inner .mcalc{background:#fafafa;border:1.5px solid #e4e4e6;border-radius:12px;padding:4px 14px 10px;}
 /* 페이지 맨 아래 신청서 카드 (아이폰 듀오 랜딩 .reserve / .rf-inner 와 동일) */
+/* v20261005: 필수 액세서리 안내 이미지 (아이폰 듀오 랜딩과 같은 이미지·같은 카드 모양) — 상담 신청서 바로 위 */
+.acc-kit{background:#fff;padding:0 24px;}
+.acc-kit-card{max-width:480px;margin:0 auto;border-radius:14px;overflow:hidden;border:1px solid rgba(10,10,12,.06);background:#fff;}
+.acc-kit-card img{display:block;width:100%;height:auto;}
 .reserve{position:relative;background:#fff;color:#0a0a0c;padding:clamp(24px,4vh,36px) 24px clamp(110px,14vh,140px);scroll-margin-top:52px;}
 .rf-inner{max-width:480px;margin:0 auto;border:1.5px solid #e4e4e6;border-radius:20px;padding:32px 20px 28px;background:#fff;box-sizing:border-box;color:#0a0a0c;}
 #reservationOverlay .rf-inner{max-width:none;border:none;padding:0;}
@@ -1585,6 +1589,13 @@ function closeNavDrawer() {
       </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ══ 필수 액세서리 안내 (클리어 케이스 · 강화 필름 · 고속 충전 어댑터) — 아이폰 듀오 랜딩과 같은 이미지 (v20261005) ══ -->
+<section class="acc-kit">
+  <div class="acc-kit-card">
+    <img src="/assets/accessories-kit.webp" width="1122" height="1402" alt="고객님의 새 휴대폰, 더 안심하고 사용하실 수 있도록 - 클리어 케이스, 강화필름, 고속충전 어댑터" loading="lazy" decoding="async">
   </div>
 </section>
 
