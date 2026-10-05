@@ -1077,6 +1077,8 @@ function udxComputeWelfare(id,monthlyFeeFull){
   }
 }
 const UD_INSTALLMENT_RATE=1.0626; // 24개월 할부 결제시 할부이자 배율
+// v20261006: 원 단위 정리 규칙 — 1원 자리가 8·9면 10원 올림, 1~7이면 버림(절삭), 0이면 그대로 (예: 47,733→47,730 / 80,939→80,940)
+function udakWon10(n){ n=Math.round(Number(n)||0); var r=((n%10)+10)%10; return r>=8?n+(10-r):n-r; }
 function refreshPrice(){
   const d=ucatSel.device;
   if(!ucatSel.carrier||!ucatSel.discountMethod){
@@ -1099,7 +1101,7 @@ function refreshPrice(){
   const subsidyWrap=document.getElementById('udSubsidyWrap');
   const pubRow=document.getElementById('udbPubRow');
   if(ucatSel.discountMethod==='commitment'){
-    monthlyFee=Math.round(monthlyFeeFull*0.75);
+    monthlyFee=udakWon10(monthlyFeeFull*0.75);
     if(!q){ subReady=false; principal=st.price; subsidyWrap.style.display='none'; }
     else{
       principal=Math.max(0,st.price-q.commitmentExtra);
@@ -1123,8 +1125,8 @@ function refreshPrice(){
   }
   udxRenderControls();
   const togetherBlocked=(ucatSel.bundleType==='together'&&monthlyFeeFull<85000);
-  const bundleDiscount=(ucatSel.bundleType!=='none'&&!togetherBlocked)?(UD_BUNDLE_RATES[ucatSel.bundleType][ucatSel.bundleSize]||0):0;
-  const welfareDiscount=udxComputeWelfare(ucatSel.welfareType,monthlyFeeFull);
+  const bundleDiscount=udakWon10((ucatSel.bundleType!=='none'&&!togetherBlocked)?(UD_BUNDLE_RATES[ucatSel.bundleType][ucatSel.bundleSize]||0):0);
+  const welfareDiscount=udakWon10(udxComputeWelfare(ucatSel.welfareType,monthlyFeeFull));
   const bundleResultEl=document.getElementById('udxBundleResult');
   if(togetherBlocked){
     bundleResultEl.className='udx-warn';
@@ -1146,13 +1148,13 @@ function refreshPrice(){
   }
   const extraDiscount=bundleDiscount+welfareDiscount;
   monthlyFee=Math.max(0,monthlyFee-extraDiscount);
-  monthlyDev=Math.round(principal*UD_INSTALLMENT_RATE/24);
+  monthlyDev=udakWon10(principal*UD_INSTALLMENT_RATE/24);
   const monthlyDevEl=document.getElementById('udbMonthlyDev');
   if(monthlyDevEl) monthlyDevEl.textContent=monthlyDev.toLocaleString()+'원';
   const feeRows=[];
   feeRows.push(`<div class="udb2-row"><span>${planObj?planObj.name:'요금제'}</span><b>${monthlyFeeFull.toLocaleString()}원</b></div>`);
   if(ucatSel.discountMethod==='commitment'){
-    const commitAmt=monthlyFeeFull-Math.round(monthlyFeeFull*0.75);
+    const commitAmt=monthlyFeeFull-udakWon10(monthlyFeeFull*0.75);
     feeRows.push(`<div class="udb2-row"><span>선택약정 할인(25%)</span><b style="color:#E91E8C;">-${commitAmt.toLocaleString()}원</b></div>`);
   }
   if(bundleDiscount>0){
@@ -1169,7 +1171,7 @@ function refreshPrice(){
   document.getElementById('udbFee').textContent=monthlyFee.toLocaleString()+'원';
   document.getElementById('udbDev').textContent=monthlyDev.toLocaleString()+'원';
   const watchSelfPaySum=Object.values(uwtSelectedByCat||{}).filter(Boolean).reduce((sum,id)=>{ const info=uwtGetPriceInfo(id); return sum+(info?info.selfPay:0); },0);
-  const watchMonthly=watchSelfPaySum>0?Math.round(watchSelfPaySum*UD_INSTALLMENT_RATE/24):0;
+  const watchMonthly=watchSelfPaySum>0?udakWon10(watchSelfPaySum*UD_INSTALLMENT_RATE/24):0;
   const udbWatchRow=document.getElementById('udbWatchRow');
   if(watchMonthly>0){
     udbWatchRow.style.display='flex';

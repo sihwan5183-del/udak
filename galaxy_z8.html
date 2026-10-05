@@ -2211,6 +2211,8 @@ function refreshUcatImg(){
   wrap.innerHTML=src?`<img src="${src}" alt="${ucatSel.device.name}">`:'';
 }
 const UD_INSTALLMENT_RATE=1.0626; // 24개월 할부 결제시 할부이자 배율
+// v20261006: 원 단위 정리 규칙 — 1원 자리가 8·9면 10원 올림, 1~7이면 버림(절삭), 0이면 그대로 (예: 47,733→47,730 / 80,939→80,940)
+function udakWon10(n){ n=Math.round(Number(n)||0); var r=((n%10)+10)%10; return r>=8?n+(10-r):n-r; }
 function refreshUcatPrice(){
   const d=ucatSel.device;
   if(!ucatSel.carrier||!ucatSel.discountMethod){
@@ -2231,13 +2233,13 @@ function refreshUcatPrice(){
   const monthlyFeeFull=planObj?planObj.monthlyPrice:0;
   let monthlyFee, monthlyDev, subReady=true, principal;
   if(ucatSel.discountMethod==='commitment'){
-    monthlyFee=Math.round(monthlyFeeFull*0.75);
+    monthlyFee=udakWon10(monthlyFeeFull*0.75);
     principal=st.price;
   } else {
     if(!q){ subReady=false; monthlyFee=monthlyFeeFull; principal=st.price; }
     else { monthlyFee=monthlyFeeFull; principal=q.final; }
   }
-  monthlyDev=Math.round(principal*UD_INSTALLMENT_RATE/24);
+  monthlyDev=udakWon10(principal*UD_INSTALLMENT_RATE/24);
   const total=monthlyFee+monthlyDev;
   const feeOrigEl=document.getElementById('udbFeeOrig');
   if(ucatSel.discountMethod==='commitment'){
@@ -2946,9 +2948,9 @@ function mCalc(){
   var planObj=(ucatPlans.find(function(p){return p.plangroup==='85';})||ucatPlans[0])||null;
   var q=ucatQuote(Object.assign({},d,{storageList:[st]}),mCarrier,jointype,planObj);
   var full=planObj?planObj.monthlyPrice:0, fee, principal;
-  if(mSel.discount==='commitment'){ fee=Math.round(full*0.75); principal=q?Math.max(0,st.price-q.commitmentExtra):st.price; }
+  if(mSel.discount==='commitment'){ fee=udakWon10(full*0.75); principal=q?Math.max(0,st.price-q.commitmentExtra):st.price; }
   else { fee=full; principal=q?q.final:st.price; }
-  var dev=Math.round(principal*UD_INSTALLMENT_RATE/24);
+  var dev=udakWon10(principal*UD_INSTALLMENT_RATE/24);
   var colorObj=(d.colors||[])[mSel.color];
   return {st:st,jointype:jointype,plan:planObj,q:q,full:full,fee:fee,principal:principal,dev:dev,total:fee+dev,ready:!!q,discount:mSel.discount,
           colorName:colorObj?(colorObj.name.split('|')[1]||''):'', extra:q?(mSel.discount==='commitment'?q.commitmentExtra:q.extra):0};
