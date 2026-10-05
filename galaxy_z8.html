@@ -1435,8 +1435,7 @@ function closeNavDrawer() {
 .ucat-sub{font-size:13.5px;font-weight:600;color:#999;padding-bottom:8px;cursor:pointer;border-bottom:2px solid transparent;}
 .ucat-sub.on{color:#1A1A1A;border-bottom-color:#1A1A1A;}
 .ucat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.ucard{display:block;padding:12px 12px 16px;border:1.5px solid #ececec;border-radius:16px;background:#fff;cursor:pointer;text-align:center;min-width:0;transition:border-color .15s;text-decoration:none;color:inherit;}
-.ucard:active{background:#fafafa;}
+.ucard{display:block;padding:12px 12px 16px;border:1.5px solid #ececec;border-radius:16px;background:#fff;cursor:default;text-align:center;min-width:0;transition:border-color .15s;text-decoration:none;color:inherit;}
 .ucard-badge{display:inline-block;background:rgba(233,30,140,.06);color:#E91E8C;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;margin-bottom:8px;}
 .ucard-name{font-size:16px;font-weight:800;color:#1A1A1A;margin:0 0 6px;line-height:1.3;word-break:keep-all;}
 .ucard-storage{display:inline-block;background:#f3f4f6;color:#666;font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:100px;margin-bottom:10px;}
@@ -1495,6 +1494,18 @@ function closeNavDrawer() {
 .ucard--hero .ucard-pricebox .ucard-type{font-size:12.5px;padding:7px 2px;}
 .ucard--hero .ucard-chead>span{font-size:12.5px;}
 .ucard--hero .ucard-chead>em{font-size:12px;}
+/* v20261006: 카드 안 '이 조건으로 상담 신청하기' 버튼 (카드는 눌러도 화면 안 바뀜) */
+.ucard-cta{display:block;width:100%;margin-top:10px;padding:12px 6px;border:0;border-radius:12px;background:#E91E8C;color:#fff;font-family:inherit;font-size:13px;font-weight:800;letter-spacing:-.02em;line-height:1.25;cursor:pointer;-webkit-tap-highlight-color:transparent;word-break:keep-all;}
+.ucard-cta:active{opacity:.85;}
+.ucard--hero .ucard-cta{margin-top:14px;padding:16px 10px;border-radius:14px;font-size:16.5px;}
+/* 하단 버튼: 카드에서 고르면 '이 조건으로 상담 신청하기' + 고른 내용으로 바뀌고 한 번 톡 튐 */
+.sticky-cta-btn .scta-main{display:block;}
+.sticky-cta-btn .scta-sub{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-size:11.5px;font-weight:600;letter-spacing:0;opacity:.92;}
+.sticky-cta-btn.scta-on{max-width:100%;padding-top:9px !important;padding-bottom:9px !important;}
+@keyframes sctaPop{0%{transform:scale(1)}35%{transform:scale(1.07)}70%{transform:scale(.98)}100%{transform:scale(1)}}
+.sticky-cta-btn.scta-pop{animation:sctaPop .45s ease-out;}
+.sticky-cta{transition:transform .25s ease,opacity .25s ease;}
+.sticky-cta.scta-hide{transform:translateY(110%);opacity:0;pointer-events:none;}
 .ucat-empty{grid-column:1/-1;text-align:center;padding:36px 0;color:#999;font-size:13px;}
 
 #ucatDetail{position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:1500;overflow-y:auto;transform:translateX(100%);transition:transform .28s ease;}
@@ -1967,12 +1978,6 @@ function ucardPriceBox(d,planObj){
         ${calcs}
       </div>`;
 }
-function ucardHref(d){
-  let h='/device?id='+encodeURIComponent(d.id);
-  if(ucardColorPick[d.id]!=null) h+='&c='+ucardColorPick[d.id];
-  if(ucardCarrier) h+='&carrier='+encodeURIComponent(ucardCarrier);
-  return h+udakUtmQuery();
-}
 function ucardDevById(id){ return (ucatDevices||[]).find(x=>x.id===id)||null; }
 // 통신사: 모든 카드에 같이 적용
 window.ucardApplyCarrier=function(c){
@@ -1982,14 +1987,14 @@ window.ucardApplyCarrier=function(c){
     card.querySelectorAll('.ucard-type').forEach(b=>{const on=b.dataset.c===ucardCarrier;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');});
     card.querySelectorAll('.ucard-calc').forEach(k=>{if(k.dataset.t) k.hidden=k.dataset.t!==shown;});
     const jt=card.querySelector('.ucard-jt'); if(jt) jt.textContent=ucardJt(shown)+' 기준';
-    const d=ucardDevById(card.dataset.id); if(d) card.setAttribute('href',ucardHref(d));
   });
+  if(ucardLast) ucardCtaUpdate(false);
 };
 window.ucardPickCarrier=function(ev,el){
   ev.preventDefault();ev.stopPropagation(); // 카드 링크(상세 이동) 대신 선택만
   const card=el.closest('.ucard'); if(card) ucardLast=card.dataset.id;
   ucardApplyCarrier(el.dataset.c);
-  ucardSync();
+  ucardSync(); ucardCtaUpdate(true);
 };
 window.ucardPickColor=function(ev,el){
   ev.preventDefault();ev.stopPropagation();
@@ -2000,9 +2005,39 @@ window.ucardPickColor=function(ev,el){
   card.querySelectorAll('.ucard-dot').forEach(x=>{const on=x===el;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on?'true':'false');});
   const img=card.querySelector('img.ucard-img'); if(img&&c&&c.img) img.src=c.img;
   const nm=card.querySelector('.ucard-cname'); if(nm) nm.textContent=ucardCname(c);
-  card.setAttribute('href',ucardHref(d));
-  ucardSync();
+  ucardSync(); ucardCtaUpdate(true);
 };
+// 카드 안 '이 조건으로 상담 신청하기' → 이 카드에 보이는 그대로(기기·컬러·통신사) 신청서 채우고 바로 열기
+window.ucardApply=function(ev,el){
+  ev.preventDefault();ev.stopPropagation();
+  const card=el.closest('.ucard'); if(!card) return;
+  ucardLast=card.dataset.id;
+  ucardSync(); ucardCtaUpdate(false);
+  openConsultForm();
+};
+// 카드 안 '이 조건으로…' 버튼이 화면에 보이는 동안엔 하단 버튼을 잠깐 내림 (같은 버튼 두 개 겹쳐 보이지 않게)
+(function(){
+  if(!('IntersectionObserver' in window)) return;
+  const vis=new Set();
+  const io=new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting) vis.add(e.target); else vis.delete(e.target); });
+    const bar=document.querySelector('.sticky-cta'); if(bar) bar.classList.toggle('scta-hide', vis.size>0);
+  },{threshold:0.6});
+  window.ucardObserveCtas=function(){
+    vis.clear(); io.disconnect();
+    document.querySelectorAll('#ucatGrid .ucard-cta').forEach(b=>io.observe(b));
+    const bar=document.querySelector('.sticky-cta'); if(bar) bar.classList.remove('scta-hide');
+  };
+})();
+// 하단 '상담 신청하기' → '이 조건으로 상담 신청하기' + 고른 내용 한 줄, 고를 때마다 한 번 톡 튐
+function ucardCtaUpdate(pop){
+  const btn=document.querySelector('.sticky-cta-btn'), d=ucardDevById(ucardLast); if(!btn||!d) return;
+  const ci=ucardColorPick[d.id]!=null?ucardColorPick[d.id]:0;
+  const sub=[d.name.replace(/^갤럭시\s*/,''), ucardCname(d.colors&&d.colors[ci]), ucardCarrier].filter(Boolean).join(' · ');
+  btn.innerHTML='<span class="scta-main">이 조건으로 상담 신청하기</span><span class="scta-sub">'+sub+'</span>';
+  btn.classList.add('scta-on');
+  if(pop){ btn.classList.remove('scta-pop'); void btn.offsetWidth; btn.classList.add('scta-pop'); }
+}
 // 고른 값 → 상담 신청서(아래 신청서와 '상담 신청하기' 팝업은 같은 신청서)에 미리 채움
 function ucardSync(){
   try{
@@ -2043,15 +2078,18 @@ function renderUcatGrid(){
     const storageTxt=(d.storageList&&d.storageList[0])?d.storageList[0].name:'';
     const nC=(d.colors||[]).length, ci=Math.min(ucardColorPick[d.id]||0,Math.max(0,nC-1));
     const imgSrc=(d.colors&&d.colors[ci]&&d.colors[ci].img)||d.img;
-    return`<a class="ucard${heroId&&d.id===heroId?' ucard--hero':''}" data-id="${d.id}" href="${ucardHref(d)}">
+    const isHero=!!(heroId&&d.id===heroId);
+    return`<div class="ucard${isHero?' ucard--hero':''}" data-id="${d.id}">
       <span class="ucard-badge">85 요금제 기준</span>
       <p class="ucard-name">${d.name}</p>
       ${storageTxt?`<span class="ucard-storage">${storageTxt}</span>`:''}
       ${imgSrc?`<img class="ucard-img" src="${imgSrc}" alt="${d.name}">`:`<div class="ucard-img"></div>`}
       ${ucardColorsHtml(d,ci)}
       ${ucardPriceBox(d,planObj)}
-    </a>`;
+      <button type="button" class="ucard-cta" onclick="ucardApply(event,this)">${isHero?'이 조건으로 상담 신청하기':'이 조건으로 신청하기'}</button>
+    </div>`;
   }).join('');
+  if(window.ucardObserveCtas) ucardObserveCtas();
 }
 
 window.openUcatDetail=function(id){
@@ -3523,6 +3561,6 @@ function closeNavModal(id) {
 </script>
 
 <!-- v20261005: 이탈 분석(익명, 개인정보 없음) — 어디까지 보고 어디서 나갔는지 기록 -->
-<script src="/assets/udak-funnel.js?v=20261006" data-page="galaxy_z8" defer></script>
+<script src="/assets/udak-funnel.js?v=20261006b" data-page="galaxy_z8" defer></script>
 </body>
 </html>
