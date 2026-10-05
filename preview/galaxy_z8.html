@@ -1278,7 +1278,7 @@ textarea.mform-input{resize:none;height:80px;}
   html:not(.onsite) .top-nav{display:none;}
 }
 
-/* v20261006 신청서 줄이기: 카드에서 고르고 들어오면 고른 조건을 맨 위 한 장으로 접고, 칸은 이름·연락처·생년월일만 */
+/* v20261006 신청서 줄이기: 고른 조건(안 골랐으면 이 페이지 대표 기기)을 맨 위 한 장으로 접고, 칸은 이름·연락처·생년월일만 */
 .mfs{border:1.5px solid rgba(233,30,140,.35);border-radius:16px;background:#fff7fb;padding:14px 14px 12px;margin-bottom:22px;}
 .mfs-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
 .mfs-head>span{font-size:12.5px;font-weight:800;color:#E91E8C;}
@@ -1287,6 +1287,13 @@ textarea.mform-input{resize:none;height:80px;}
 .mfs-prod img{width:58px;height:58px;object-fit:contain;background:#fff;border:1px solid #eee;border-radius:10px;flex-shrink:0;}
 .mfs-title{font-size:14.5px;font-weight:800;color:#1A1A1A;margin:0 0 3px;line-height:1.35;word-break:keep-all;}
 .mfs-sub{font-size:12px;color:#777;margin:0;line-height:1.45;word-break:keep-all;}
+.mfs-car{margin-top:13px;}
+.mfs-car-t{font-size:12.5px;font-weight:800;color:#1A1A1A;margin:0 0 8px;}
+.mfs-car-t .req{color:#e0293e;margin-left:2px;}
+.mfs-car-t em{font-style:normal;font-weight:600;color:#9a9aa0;font-size:11.5px;margin-left:6px;}
+.mfs-car-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.mfs-car-row button{padding:11px 0;border:1.5px solid #e2e2e6;border-radius:10px;background:#fff;font-family:inherit;font-size:13.5px;font-weight:800;color:#333;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.mfs-car-row button.on{border-color:#E91E8C;background:#E91E8C;color:#fff;}
 .mf-note{display:none !important;}
 .mf-note.mf-open{display:block !important;}
 .mf-note-add{display:block;margin:-6px 0 18px;padding:2px 0;border:0;background:none;color:#8e8e93;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;}
@@ -1294,6 +1301,7 @@ textarea.mform-input{resize:none;height:80px;}
 .mf-disc{display:none !important;}
 #consultFormInner.mf-compact .mf-pick{display:none !important;}
 #consultFormInner.mf-compact.mf-edit .mf-pick{display:block !important;}
+#consultFormInner.mf-compact.mf-edit.mf-carrow .mf-pick-car{display:none !important;}
 .mfs #mCalcBox{margin:12px 0 0;}
 .mfs #mCalcBox>label{font-size:12px;color:#555;margin-bottom:6px;}
 .mfs .mcalc.mcalc-v2{background:transparent !important;border:0 !important;padding:0 !important;}
@@ -1713,10 +1721,14 @@ function closeNavDrawer() {
     <h2 class="rf-title"><span class="rf-title-accent">상담</span> 신청서</h2>
     <p class="rf-subtitle">필수 정보만 입력하시면 빠르게 안내드립니다.</p>
     <div class="rf-divider"></div>
-    <!-- v20261006 신청서 줄이기: 카드에서 고르고 들어오면 고른 조건을 여기 한 장으로 보여주고, 아래 칸은 이름·연락처·생년월일만 -->
+    <!-- v20261006 신청서 줄이기: 고른 조건(안 골랐으면 폴드8)을 여기 한 장으로 보여주고, 아래 칸은 이름·연락처·생년월일만 -->
     <div class="mfs" id="mFormSummary" hidden>
-      <div class="mfs-head"><span>선택한 조건</span><button type="button" class="mfs-edit" id="mfsEdit" onclick="mfsToggleEdit()">변경</button></div>
+      <div class="mfs-head"><span id="mfsLabel">선택한 조건</span><button type="button" class="mfs-edit" id="mfsEdit" onclick="mfsToggleEdit()">변경</button></div>
       <div class="mfs-prod"><img id="mfsImg" src="" alt=""><div><p class="mfs-title" id="mfsTitle"></p><p class="mfs-sub" id="mfsSub"></p></div></div>
+      <div class="mfs-car" id="mfsCar" hidden>
+        <p class="mfs-car-t">지금 쓰는 통신사<span class="req">*</span><em>통신사마다 지원금이 달라요</em></p>
+        <div class="mfs-car-row"><button type="button" data-car="SKT" onclick="mfsPickCar(this)">SKT</button><button type="button" data-car="KT" onclick="mfsPickCar(this)">KT</button><button type="button" data-car="LG U+" onclick="mfsPickCar(this)">LG U+</button><button type="button" data-car="알뜰폰" onclick="mfsPickCar(this)">알뜰폰</button></div>
+      </div>
       <div id="mfsCalcSlot"></div>
       <button type="button" class="mfs-more-btn" id="mfsMoreBtn" onclick="mfsToggleMore(this)">기기값 계산 자세히 보기 ›</button>
     </div>
@@ -1770,7 +1782,7 @@ function closeNavDrawer() {
       </div>
     </div>
 
-    <div class="rf-field mf-pick">
+    <div class="rf-field mf-pick mf-pick-car">
       <label>통신사 <span class="req">*</span></label>
       <div class="rf-input-icon">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 20V4"/></svg>
@@ -2117,7 +2129,7 @@ function ucardSync(){
     if(ucardCarrier){ const cs=document.getElementById('mCarrierSel'); if(cs) cs.value=ucardCarrier; mCarrier=ucardCarrier; }
     if(!mSel.discount){ const ds=document.getElementById('mDiscountSel'); if(ds) ds.value='pubSupport'; mSel.discount='pubSupport'; }
     mRefreshCalc();
-    if(window.mfsApplyMode) mfsApplyMode();
+    window.mfsDefault=false; window.mfsColorUnset=false; if(window.mfsApplyMode) mfsApplyMode();
   }catch(e){ console.error(e); }
 }
 
@@ -2972,7 +2984,7 @@ function mRenderSpec(){
 
 }
 window.mPickStorage=function(i){ mSel.storage=Math.max(0,i); mRefreshCalc(); };
-window.mPickColor=function(i){ mSel.color=Math.max(0,i); if(window.mfsRender) mfsRender(); };
+window.mPickColor=function(i){ mSel.color=Math.max(0,i); window.mfsColorUnset=false; if(window.mfsRender) mfsRender(); };
 window.mPickDiscount=function(m){ mSel.discount=m||null; mRefreshCalc(); };
 window.mPickCarrier=function(v){ mCarrier=v||''; mRefreshCalc(); if(v&&window.ucardApplyCarrier&&v!==ucardCarrier) ucardApplyCarrier(v); };
 // 페이지 열릴 때 맨 아래 신청서의 기기 목록 채우기
@@ -2984,7 +2996,7 @@ window.mResetConsultForm=function(){
   var pc=document.getElementById('mPrivacyCheck'); if(pc) pc.checked=false;
   var mc=document.getElementById('mMemoCount'); if(mc) mc.textContent='0';
   ['mCarrierSel','mDiscountSel'].forEach(function(id){ var el=document.getElementById(id); if(el) el.selectedIndex=0; });
-  mCarrier=''; mDevice=''; mSel={device:null,storage:0,color:0,discount:'pubSupport'};
+  mCarrier=''; mDevice=''; mSel={device:null,storage:0,color:0,discount:'pubSupport'}; window.mfsDefault=false; window.mfsColorUnset=false;
   mFillDeviceSelect(); mRenderSpec(); mRefreshCalc();
   var ds=document.getElementById('mDiscountSel'); if(ds) ds.value='pubSupport';
   if(window.mfsApplyMode) mfsApplyMode();
@@ -2994,30 +3006,51 @@ window.mPhonePart=function(el,nextId){ el.value=el.value.replace(/\D/g,'').slice
 // 생년월일 YYYY-MM-DD 자동 하이픈 (아이폰 듀오 신청서와 동일)
 window.mFormatBirth=function(el){ var v=el.value.replace(/\D/g,'').slice(0,8); el.value=v.length<=4?v:(v.length<=6?v.slice(0,4)+'-'+v.slice(4):v.slice(0,4)+'-'+v.slice(4,6)+'-'+v.slice(6)); };
 
-// v20261006 신청서 줄이기 — 카드에서 고른 조건(기기·통신사)이 있으면 맨 위 '선택한 조건' 한 장으로 접고,
-// 기기·용량·컬러·통신사 칸은 숨김('변경'으로 펼침). 할인 방식은 공시지원금 고정(칸 없음). 전달사항은 '＋ 요청사항 추가'로 접음.
-var mfsCalcHome=null;
+// v20261006 신청서 줄이기
+//  · 카드에서 고르고 들어오면: 맨 위 '선택한 조건' 한 장(기기·용량·컬러·통신사 + 매달 내는 금액), 칸은 이름·연락처·생년월일만
+//  · 안 고르고 '신청하기'부터 누르면: 이 페이지 대표 기기(폴드8)를 미리 넣은 '신청 조건' 한 장 + 통신사 4개 버튼(한 번 누르면 금액 계산), 컬러는 비워둠(상담 때)
+//  · 기기·용량·컬러 칸은 숨김('변경'으로 펼침). 할인 방식은 공시지원금 고정(칸 없음). 전달사항은 '＋ 요청사항 추가'로 접음
+var mfsCalcHome=null; window.mfsDefault=false; window.mfsColorUnset=false;
+function mfsSetDefaultDevice(){
+  var list=(typeof ucatDevices!=='undefined'&&ucatDevices)||[];
+  var d=list.find(function(x){return x.id==='z-fold8';})||list.find(function(x){return x.name==='갤럭시 Z 폴드8';});
+  if(!d) return false;
+  mDevice=d.name; mSel.device=d; mSel.storage=0; mSel.color=0;
+  window.mfsDefault=true; window.mfsColorUnset=true;
+  mFillDeviceSelect(); mRenderSpec(); mRefreshCalc();
+  return true;
+}
 window.mfsApplyMode=function(){
   var inner=document.getElementById('consultFormInner'), box=document.getElementById('mFormSummary'),
       calc=document.getElementById('mCalcBox'), slot=document.getElementById('mfsCalcSlot');
   if(!inner||!box) return;
-  var compact=!!(mSel.device&&mCarrier);
-  inner.classList.toggle('mf-compact',compact);
-  box.hidden=!compact;
-  if(calc&&slot){
-    if(compact&&calc.parentNode!==slot){ if(!mfsCalcHome) mfsCalcHome={p:calc.parentNode,n:calc.nextSibling}; slot.appendChild(calc); }
-    if(!compact&&mfsCalcHome&&calc.parentNode===slot){ mfsCalcHome.p.insertBefore(calc,mfsCalcHome.n); }
-  }
-  if(compact) mfsRender();
+  if(!mSel.device&&!mfsSetDefaultDevice()) return;   // 기기 목록이 아직 안 왔으면 다음에
+  inner.classList.add('mf-compact');
+  box.hidden=false;
+  if(calc&&slot&&calc.parentNode!==slot){ if(!mfsCalcHome) mfsCalcHome={p:calc.parentNode,n:calc.nextSibling}; slot.appendChild(calc); }
+  mfsRender();
 };
 window.mfsRender=function(){
-  var d=mSel.device, box=document.getElementById('mFormSummary'); if(!d||!box) return;
+  var d=mSel.device, box=document.getElementById('mFormSummary'), inner=document.getElementById('consultFormInner'); if(!d||!box) return;
+  var def=!!window.mfsDefault, unset=!!window.mfsColorUnset;
   var st=(d.storageList||[])[mSel.storage||0]||{}, c=(d.colors||[])[mSel.color||0];
-  var cname=c?(c.name.split('|')[1]||''):'';
-  var img=document.getElementById('mfsImg'); img.src=(c&&c.img)||d.img||''; img.alt=d.name;
+  var cname=(!unset&&c)?(c.name.split('|')[1]||''):'';
+  var img=document.getElementById('mfsImg'); img.src=(!unset&&c&&c.img)||d.img||(c&&c.img)||''; img.alt=d.name;
+  document.getElementById('mfsLabel').textContent=def?'신청 조건':'선택한 조건';
   document.getElementById('mfsTitle').textContent=[d.name,st.name,cname].filter(Boolean).join(' · ');
-  document.getElementById('mfsSub').textContent='지금 쓰는 통신사 '+mCarrier+' · '+(mCarrier==='LG U+'?'기기변경':'번호이동')+' · 공시지원금';
+  var sub=[];
+  if(mCarrier) sub.push((def?'':'지금 쓰는 통신사 '+mCarrier+' · ')+(mCarrier==='LG U+'?'기기변경':'번호이동')+' · 공시지원금');
+  if(unset) sub.push('컬러는 상담 때 골라도 돼요');
+  document.getElementById('mfsSub').textContent=sub.join(' · ');
+  // 통신사 버튼: 안 고르고 들어왔거나 통신사가 비어 있으면 보임
+  var carRow=document.getElementById('mfsCar'), showCar=def||!mCarrier;
+  carRow.hidden=!showCar; inner.classList.toggle('mf-carrow',showCar);
+  carRow.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on',b.getAttribute('data-car')===mCarrier); });
   var calc=document.getElementById('mCalcBox'); box.classList.toggle('mfs-hascalc', !!(calc&&calc.style.display!=='none'));
+};
+window.mfsPickCar=function(btn){
+  var v=btn.getAttribute('data-car'), sel=document.getElementById('mCarrierSel'); if(sel) sel.value=v;
+  mPickCarrier(v); mfsRender();
 };
 window.mfsToggleEdit=function(){
   var inner=document.getElementById('consultFormInner'); var on=!inner.classList.contains('mf-edit');
@@ -3031,6 +3064,10 @@ window.mfsShowNote=function(btn){
   var f=document.querySelector('#consultFormInner .mf-note'); if(f){ f.classList.add('mf-open'); var t=f.querySelector('textarea'); if(t) t.focus(); }
   if(btn) btn.style.display='none';
 };
+// 페이지 맨 아래 신청서도 처음부터 짧게 — 기기 목록이 오면 적용
+(function(){ var n=0, t=setInterval(function(){ n++;
+  if(typeof ucatDevices!=='undefined'&&ucatDevices&&ucatDevices.length){ clearInterval(t); try{ mfsApplyMode(); }catch(e){} }
+  else if(n>60) clearInterval(t); },250); })();
 function mCalc(){
   var d=mSel.device; if(!d||!mCarrier||!mSel.discount) return null;
   var st=(d.storageList||[])[mSel.storage||0]||{name:'',price:0};
@@ -3072,7 +3109,7 @@ function mRefreshCalc(){
       +row('월 요금',mWon(c.fee),'sub')+'</div>';
   }
   var el=document.getElementById('mCalcRows'); el.classList.add('mcalc-v2'); el.innerHTML=h;
-  if(window.mfsRender&&document.getElementById('consultFormInner').classList.contains('mf-compact')) setTimeout(mfsRender,0);
+  if(window.mfsRender) setTimeout(mfsRender,0);
   document.getElementById('mCalcBasis').textContent=(c.plan?c.plan.name:'')+' · 24개월 할부 기준'+(c.ready?'':' · 지원금 정책 준비중(출고가 기준)');
 }
 (function(){
@@ -3228,7 +3265,7 @@ function mSubmitForm(){
   if(c.q&&c.discount==='pubSupport') subRows.push({label:'공시지원금', amount:-c.q.pub});
   if(c.q) subRows.push({label:'유플러스 다이렉트 혜택', amount:-c.extra});
   subRows.push({label:'기기값 원금', amount:c.principal},{label:'기기값 월 청구 예정액', amount:c.dev});
-  var snapshotObj={v:1, source:'랜딩 상담', jointype:c.jointype, carrier:mCarrier, device:mDevice, storage:c.st.name||null, color:c.colorName||null,
+  var snapshotObj={v:1, source:'랜딩 상담', jointype:c.jointype, carrier:mCarrier, device:mDevice, storage:c.st.name||null, color:(window.mfsColorUnset?null:(c.colorName||null)),
     plan:c.plan?{name:c.plan.name, price:c.plan.monthlyPrice||null, group:c.plan.plangroup||null}:null,
     discount:discountSub, fee:feeRows, feeNote:null, subsidy:subRows, subsidyNote:c.ready?'할부 연 5.9%':'지원금 정책 준비중 · 출고가 기준',
     benefits:[], estimatedMonthly:c.total, installmentMonths:24};
@@ -3244,7 +3281,7 @@ function mSubmitForm(){
       'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
       'Prefer':'return=minimal'
     },
-    body:JSON.stringify(Object.assign({name:name,phone:phoneF,carrier:mCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:mDevice,capacity:c.st.name||null,product_color:c.colorName||null,installment_months:'24개월',birth_date:birth,memo:memo||null,snapshot:snapshotObj,status:'신규'}, udakMetaIds()))
+    body:JSON.stringify(Object.assign({name:name,phone:phoneF,carrier:mCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:mDevice,capacity:c.st.name||null,product_color:(window.mfsColorUnset?null:(c.colorName||null)),installment_months:'24개월',birth_date:birth,memo:memo||null,snapshot:snapshotObj,status:'신규'}, udakMetaIds()))
   }).then(function(res){
     if(res.ok){
       if(typeof fbq!=='undefined') fbq('track','Lead');
