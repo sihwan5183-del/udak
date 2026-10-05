@@ -574,6 +574,28 @@ textarea.mform-input{resize:none;height:80px;}
 .mcalc .ucard-crow>b{font-size:13.5px;}
 .mcalc .ucard-crow>b.pink{color:#E91E8C;}
 .mcalc-basis{font-size:.78em;font-weight:400;color:#999;margin-left:4px;}
+/* v20261006: 예상 납부액 위계 정리 — '기기값 + 요금제 = 매달 내는 금액'을 먼저 크게, 그 아래 기기값(·요금제) 계산 과정을 작게 */
+.rf-inner .mcalc.mcalc-v2{padding:12px 12px 12px;}
+.mc-sum{background:#fff;border:1.5px solid rgba(233,30,140,.35);border-radius:12px;padding:8px 12px 10px;margin-bottom:12px;}
+.mc-line{display:flex;align-items:center;gap:8px;padding:6px 0;}
+.mc-op{flex:0 0 16px;text-align:center;font-size:19px;font-weight:800;color:#8e8e93;line-height:1;}
+.mc-l{font-size:14px;font-weight:700;color:#333;line-height:1.25;}
+.mc-l small{display:block;font-size:11px;font-weight:500;color:#999;margin-top:2px;}
+.mc-line>b{margin-left:auto;font-size:15.5px;font-weight:800;color:#1A1A1A;white-space:nowrap;}
+.mc-line.total{border-top:1.5px solid #333;margin-top:4px;padding-top:11px;}
+.mc-line.total .mc-op,.mc-line.total .mc-l{color:#E91E8C;}
+.mc-line.total>b{font-size:23px;font-weight:900;color:#E91E8C;letter-spacing:-.02em;}
+.mc-sec{padding:0 2px;}
+.mc-sec+.mc-sec{margin-top:12px;padding-top:10px;border-top:1px dashed #ddd;}
+.mc-sec-t{font-size:12px;font-weight:800;color:#666;margin:0 0 4px;}
+.mc-sec-t em{font-style:normal;font-weight:600;color:#aaa;margin-left:4px;}
+.mc-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:4px 0;font-size:12.5px;color:#777;}
+.mc-row b{font-weight:700;color:#444;white-space:nowrap;}
+.mc-row b.pink{color:#E91E8C;}
+.mc-row.sub{border-top:1px solid #e2e2e4;margin-top:3px;padding-top:7px;}
+.mc-row.sub span,.mc-row.sub b{color:#222;font-weight:800;}
+.mc-arrow{font-size:12px;color:#777;line-height:1.55;margin:5px 0 0;word-break:keep-all;}
+.mc-arrow b{color:#1A1A1A;font-weight:800;white-space:nowrap;}
 .mform-hint{font-size:13px;color:#555555;margin-top:6px;}
 
 /* 개인정보 */
@@ -2935,19 +2957,29 @@ function mRefreshCalc(){
   var box=document.getElementById('mCalcBox'); if(!box) return;
   var c=mCalc(); if(!c){ box.style.display='none'; return; }
   box.style.display='';
-  var row=function(l,v,pink){return '<div class="ucard-crow"><span>'+l+'</span><b'+(pink?' class="pink"':'')+'>'+v+'</b></div>';};
-  var rows=[row('가입유형',c.jointype+'('+mEsc(mCarrier)+')'), row('출고가',mWon(c.st.price))];
+  // v20261006: 위계 정리 — ① 기기값 + ② 요금제 = 매달 내는 금액 을 먼저 크게 보여주고, 그 아래에 기기값(선택약정이면 요금제도) 계산 과정을 작게
+  var commit=c.discount==='commitment', planName=c.plan?mEsc(c.plan.name):'요금제';
+  var line=function(op,l,sub,v,cls){return '<div class="mc-line'+(cls?' '+cls:'')+'"><span class="mc-op">'+op+'</span><span class="mc-l">'+l+(sub?'<small>'+sub+'</small>':'')+'</span><b>'+v+'</b></div>';};
+  var row=function(l,v,cls,bcls){return '<div class="mc-row'+(cls?' '+cls:'')+'"><span>'+l+'</span><b'+(bcls?' class="'+bcls+'"':'')+'>'+v+'</b></div>';};
+  var h='<div class="mc-sum">'
+    +line('','기기값','24개월 할부',mWon(c.dev))
+    +line('+','요금제',planName+(commit?' · 선택약정 25% 할인':''),mWon(c.fee))
+    +line('=','매달 내는 금액','',mWon(c.total),'total')
+    +'</div>';
+  h+='<div class="mc-sec"><p class="mc-sec-t">기기값 계산<em>'+c.jointype+' · '+mEsc(mCarrier)+'</em></p>'+row('출고가',mWon(c.st.price));
   if(c.q){
-    if(c.discount==='pubSupport') rows.push(row('공시지원금','-'+mWon(c.q.pub),true));
-    rows.push(row('유플러스 다이렉트 혜택','-'+mWon(c.extra),true));
+    if(!commit) h+=row('공시지원금','-'+mWon(c.q.pub),'','pink');
+    h+=row('유플러스 다이렉트 혜택','-'+mWon(c.extra),'','pink');
   }
-  rows.push(row('기기값 원금',mWon(c.principal)));
-  rows.push(row('기기값 월 청구 예정액(24개월)',mWon(c.dev)));
-  rows.push(row(c.plan?mEsc(c.plan.name):'요금제',mWon(c.full)));
-  if(c.discount==='commitment') rows.push(row('선택약정 할인(25%)','-'+mWon(c.full-c.fee),true));
-  rows.push(row('월 통신요금',mWon(c.fee)));
-  rows.push('<div class="ucard-crow buy"><span>예상 월 납부액</span><b>'+mWon(c.total)+'</b></div>');
-  document.getElementById('mCalcRows').innerHTML=rows.join('');
+  h+=row('할부원금',mWon(c.principal),'sub')
+    +'<p class="mc-arrow">할부원금을 24개월로 나눠 내면 (할부이자 연 5.9% 포함) → 월 <b>'+mWon(c.dev)+'</b></p></div>';
+  if(commit){
+    h+='<div class="mc-sec"><p class="mc-sec-t">요금제 계산</p>'
+      +row(planName,mWon(c.full))
+      +row('선택약정 할인 (25%)','-'+mWon(c.full-c.fee),'','pink')
+      +row('월 요금',mWon(c.fee),'sub')+'</div>';
+  }
+  var el=document.getElementById('mCalcRows'); el.classList.add('mcalc-v2'); el.innerHTML=h;
   document.getElementById('mCalcBasis').textContent=(c.plan?c.plan.name:'')+' · 24개월 기준'+(c.ready?'':' · 지원금 정책 준비중(출고가 기준)');
 }
 (function(){
