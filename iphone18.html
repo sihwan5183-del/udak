@@ -1611,6 +1611,55 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     .sf-row-bottom{ align-items:flex-start; gap:14px; }
   }
 
+
+/* v20261006 신청서 줄이기 — 카드에서 고르고 들어오면 맨 위 '선택한 조건' 한 장(줄마다 한 줄로 딱 떨어지게) */
+.mfs{border:1.5px solid rgba(233,30,140,.35);border-radius:16px;background:#fff7fb;padding:14px 14px 13px;margin-bottom:22px;}
+.mfs[hidden]{display:none;}
+.mfs-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;}
+.mfs-head>span{font-size:12.5px;font-weight:800;color:#e2067a;letter-spacing:-.01em;}
+.mfs-edit{flex-shrink:0;border:1px solid #d9d9de;background:#fff;border-radius:100px;padding:5px 13px;font-family:inherit;font-size:12px;font-weight:700;color:#555;cursor:pointer;}
+.mfs-prod{display:flex;align-items:center;gap:12px;}
+.mfs-prod img{width:56px;height:56px;object-fit:contain;background:#fff;border:1px solid #eee;border-radius:10px;flex-shrink:0;}
+.mfs-txt{flex:1;min-width:0;}
+.mfs-txt p{margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em;}
+.mfs-title{font-size:16px;font-weight:800;color:#1A1A1A;line-height:1.3;}
+.mfs-spec{font-size:13.5px;font-weight:700;color:#333;line-height:1.4;margin-top:3px !important;}
+.mfs-sub{font-size:12.5px;font-weight:600;color:#8a8a90;line-height:1.4;margin-top:2px !important;}
+.mfs-sub:empty{display:none;}
+.mfs-car{margin-top:13px;}
+.mfs-car[hidden]{display:none;}
+.mfs-car-t{display:flex;align-items:baseline;gap:6px;font-size:12.5px;font-weight:800;color:#1A1A1A;margin:0 0 8px;white-space:nowrap;}
+.mfs-car-t .req{color:#e0293e;margin-left:-4px;}
+.mfs-car-t em{font-style:normal;font-weight:600;color:#9a9aa0;font-size:11.5px;overflow:hidden;text-overflow:ellipsis;}
+.mfs-car-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.mfs-car-row button{padding:11px 0;border:1.5px solid #e2e2e6;border-radius:10px;background:#fff;font-family:inherit;font-size:13.5px;font-weight:800;color:#333;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
+.mfs-car-row button.on{border-color:#e2067a;background:#e2067a;color:#fff;}
+.mf-note{display:none !important;}
+.mf-note.mf-open{display:block !important;}
+.mf-note-add{display:block;margin:-6px 0 18px;padding:2px 0;border:0;background:none;color:#8e8e93;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;}
+/* 좁은 화면(폴드 접은 화면 등)에서도 한 줄 유지 */
+@media (max-width:360px){
+  .mfs{padding:13px 12px 12px;}
+  .mfs-prod{gap:10px;} .mfs-prod img{width:50px;height:50px;}
+  .mfs-title{font-size:15px;} .mfs-spec{font-size:13px;} .mfs-sub{font-size:12px;}
+  .mfs-car-row button{font-size:13px;}
+}
+@media (max-width:340px){
+  .mfs-prod img{width:44px;height:44px;}
+  .mfs-title{font-size:14.5px;} .mfs-spec{font-size:12.5px;} .mfs-sub{font-size:11.5px;letter-spacing:-.02em;}
+}
+
+  #rfInner.rf-compact .rf-pick{display:none !important;}
+  #rfInner.rf-compact.mf-edit .rf-pick{display:block !important;}
+  #rfInner.rf-compact.mf-edit.rf-carrow .rf-pick-car{display:none !important;}
+  .mfs-price{margin-top:14px;border-top:1px dashed #f0c3da;padding-top:12px;}
+  .mfs-price[hidden]{display:none;}
+  .mfs-price-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;white-space:nowrap;}
+  .mfs-price-top>span{font-size:12.5px;font-weight:800;color:#333;}
+  .mfs-price-top>b{font-size:21px;font-weight:900;color:#e2067a;letter-spacing:-.02em;}
+  .mfs-price-top>b small{font-size:13px;font-weight:800;margin-left:2px;}
+  .mfs-price>em{display:block;margin-top:3px;font-style:normal;font-size:11.5px;color:#9a9aa0;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  @media (max-width:360px){ .mfs-price-top>b{font-size:19px;} }
 </style>
 <script>
 /* v20261005: 메타 '메이드' 신호용 — 신청 때 메타 광고 클릭 정보(fbc/fbp)·브라우저·페이지 주소를 같이 저장
@@ -1985,10 +2034,20 @@ function closeNavModal(id){
   </div>
 
   <section class="reserve" id="reserveForm">
-    <div class="rf-inner">
+    <div class="rf-inner" id="rfInner">
       <h2 class="rf-title"><span class="rf-title-accent">사전예약</span> 신청서</h2>
       <p class="rf-subtitle">필수 정보만 입력하시면 빠르게 안내드립니다.</p>
       <div class="rf-divider"></div>
+      <!-- v20261006 신청서 줄이기: 카드에서 고르고 들어오면 고른 조건을 여기 한 장으로 (그냥 신청하기부터 누르면 안 보이고 기존처럼 칸이 다 보임) -->
+      <div class="mfs" id="rfSummary" hidden>
+        <div class="mfs-head"><span>선택한 조건</span><button type="button" class="mfs-edit" id="rfsEdit" onclick="rfsToggleEdit()">변경</button></div>
+        <div class="mfs-prod"><img id="rfsImg" src="" alt=""><div class="mfs-txt"><p class="mfs-title" id="rfsTitle"></p><p class="mfs-spec" id="rfsSpec"></p><p class="mfs-sub" id="rfsSub"></p></div></div>
+      <div class="mfs-car" id="rfsCar" hidden>
+        <p class="mfs-car-t">지금 쓰는 통신사<span class="req">*</span></p>
+        <div class="mfs-car-row"><button type="button" data-car="SKT" onclick="rfsPickCar(this)">SKT</button><button type="button" data-car="KT" onclick="rfsPickCar(this)">KT</button><button type="button" data-car="LG U+" onclick="rfsPickCar(this)">LG U+</button><button type="button" data-car="알뜰폰" onclick="rfsPickCar(this)">알뜰폰</button></div>
+      </div>
+        <div class="mfs-price" id="rfsPriceRow" hidden><div class="mfs-price-top"><span>예상 월 납부금액</span><b id="rfsPrice"></b></div><em id="rfsHint"></em></div>
+      </div>
 
       <form id="reservationForm">
         <div class="rf-field">
@@ -2018,7 +2077,7 @@ function closeNavModal(id){
           </div>
         </div>
 
-        <div class="rf-field">
+        <div class="rf-field rf-pick rf-pick-car">
           <label>통신사 <span class="req">*</span></label>
           <div class="rf-input-icon">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 20V4"/></svg>
@@ -2032,7 +2091,7 @@ function closeNavModal(id){
           </div>
         </div>
 
-        <div class="rf-field">
+        <div class="rf-field rf-pick">
           <label>예약 상품 <span class="req">*</span></label>
           <div class="rf-input-icon">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg>
@@ -2043,7 +2102,7 @@ function closeNavModal(id){
           </div>
         </div>
 
-        <div class="rf-field">
+        <div class="rf-field rf-pick">
           <label>용량</label>
           <div class="rf-input-icon">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
@@ -2057,7 +2116,7 @@ function closeNavModal(id){
           </div>
         </div>
 
-        <div class="rf-field">
+        <div class="rf-field rf-pick">
           <label>희망 컬러</label>
           <div class="rf-input-icon">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".6" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".6" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".6" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".6" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
@@ -2069,7 +2128,7 @@ function closeNavModal(id){
           </div>
         </div>
 
-        <div class="rf-field">
+        <div class="rf-field rf-pick">
           <label>할부 개월</label>
           <div class="rf-input-icon">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -2083,7 +2142,8 @@ function closeNavModal(id){
           </div>
         </div>
 
-        <div class="rf-field">
+        <button type="button" class="mf-note-add" onclick="rfsShowNote(this)">＋ 요청사항 추가</button>
+        <div class="rf-field mf-note">
           <label>전달사항</label>
           <div class="rf-input-icon rf-textarea-wrap">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
@@ -2240,6 +2300,7 @@ window.closePriorityModal=function(){
 };
 
 window.openReserveModal=function(){
+  if(window.rfsApplyMode) rfsApplyMode();
   var inner = document.querySelector('#reserveForm .rf-inner');
   var slot = document.getElementById('reserveModalSlot');
   if(inner && slot) slot.appendChild(inner);
@@ -2348,6 +2409,7 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
       statusEl.textContent='신청이 완료되었습니다. 빠르게 연락드리겠습니다.';
       statusEl.className='rf-status ok';
       document.getElementById('reservationForm').reset();
+      window.rfPicked=false; if(window.rfsApplyMode) rfsApplyMode();   // v20261006: 신청 끝나면 처음 상태로
       btn.disabled=false;
       btn.innerHTML=btnHTML;
       // 예약 모달은 닫고, 완료 안내 포스터를 전체 화면으로 띄움 (고객이 접수 사실을 확실히 알 수 있도록)
@@ -2528,7 +2590,7 @@ function phoneCtaUpdate(id,pop){
   btn.classList.add('scta-on');
   if(pop){ btn.classList.remove('scta-pop'); void btn.offsetWidth; btn.classList.add('scta-pop'); }
 }
-function phoneTouched(id){ phoneSyncForm(id); phoneCtaUpdate(id,true); }
+function phoneTouched(id){ phoneSyncForm(id); phoneCtaUpdate(id,true); window.rfPicked=true; if(window.rfsApplyMode) rfsApplyMode(); }
 // 카드 안 '이 조건으로…' 버튼이 화면에 보이는 동안엔 하단 버튼을 잠깐 내림 (같은 버튼 두 개 겹쳐 보이지 않게)
 (function(){
   if(!('IntersectionObserver' in window)) return;
@@ -2547,8 +2609,58 @@ window.reserveFromPhone=function(id){
   var inst=document.getElementById('rfInstallment');
   if(inst && s.months!==null) inst.value = s.months===0 ? '일시납' : s.months+'개월';
   phoneCtaUpdate(id,false);
+  window.rfPicked=true; if(window.rfsApplyMode) rfsApplyMode();
   openReserveModal();
 };
+
+// v20261006 신청서 줄이기
+//  · 카드에서 고르고(컬러·용량·통신사·할부 또는 카드 안 '이 조건으로') 들어오면: 맨 위 '선택한 조건' 한 장 — 아이폰 듀오 / 컬러·용량 / 통신사·번호이동·할부, 그 아래 예상 월 납부금액
+//    상품·용량·컬러·할부·통신사 칸은 숨김('변경'으로 펼침). 카드에서 통신사를 안 골랐으면 요약 안에 통신사 버튼 4개
+//  · 그냥 신청하기부터 누르면: 기존처럼 칸이 다 보임
+//  · 공통: 전달사항은 '＋ 요청사항 추가'로 접음
+window.rfPicked=false;
+function rfsVal(id){ var e=document.getElementById(id); return e?e.value:''; }
+window.rfsApplyMode=function(){
+  var inner=document.getElementById('rfInner'), box=document.getElementById('rfSummary'); if(!inner||!box) return;
+  var on=!!window.rfPicked;
+  inner.classList.toggle('rf-compact',on); box.hidden=!on;
+  if(!on){ inner.classList.remove('mf-edit','rf-carrow'); var eb=document.getElementById('rfsEdit'); if(eb) eb.textContent='변경'; return; }
+  rfsRender();
+};
+window.rfsRender=function(){
+  var inner=document.getElementById('rfInner'), box=document.getElementById('rfSummary'); if(!box||box.hidden) return;
+  var capV=rfsVal('rfCapacity'), colV=rfsVal('rfColor'), car=rfsVal('rfCarrier'), inst=rfsVal('rfInstallment');
+  var colSet=!!(colV&&colV!=='미정'), cap=capV||'256GB';
+  var img=document.getElementById('rfsImg'); img.src=PHONE_IMG_BASE+(PHONE_COLOR_IMG[colSet?colV:'스타 화이트']||PHONE_COLOR_IMG['스타 화이트']); img.alt='아이폰 듀오';
+  document.getElementById('rfsTitle').textContent='아이폰 듀오';
+  document.getElementById('rfsSpec').textContent=[colSet?colV:'', capV].filter(Boolean).join(' · ')||'컬러·용량은 상담 때 정해도 돼요';
+  var sub=[]; if(car) sub.push(car+' '+(car==='LG U+'?'기기변경':'번호이동')); if(inst) sub.push(inst==='일시납'?'일시납':inst+' 할부');
+  document.getElementById('rfsSub').textContent=sub.join(' · ');
+  var carRow=document.getElementById('rfsCar'), showCar=!car;
+  carRow.hidden=!showCar; inner.classList.toggle('rf-carrow',showCar);
+  carRow.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on',b.getAttribute('data-car')===car); });
+  var row=document.getElementById('rfsPriceRow'), price=document.getElementById('rfsPrice'), hint=document.getElementById('rfsHint');
+  if(!car){ row.hidden=true; return; }
+  row.hidden=false;
+  var after=((PHONE_DATA.duo.list||{})[cap]||0)-getSubsidy(car);
+  var m=inst==='일시납'?0:(parseInt(inst,10)||24);
+  if(m===0){ price.textContent=won(after); hint.textContent='일시납 · 지원 후 금액'; }
+  else { price.innerHTML=won(udakWon10(after*PHONE_MONTH_RATE[m]/m))+'<small>/월</small>'; hint.textContent=m+'개월 할부'+(inst?'':' 기준')+' · 기기값, 할부 이자 포함'; }
+};
+window.rfsPickCar=function(btn){
+  var sel=document.getElementById('rfCarrier'); if(sel){ sel.value=btn.getAttribute('data-car'); }
+  rfsRender();
+};
+window.rfsToggleEdit=function(){
+  var inner=document.getElementById('rfInner'); var on=!inner.classList.contains('mf-edit');
+  inner.classList.toggle('mf-edit',on); document.getElementById('rfsEdit').textContent=on?'접기':'변경';
+};
+window.rfsShowNote=function(btn){
+  var f=document.querySelector('#rfInner .mf-note'); if(f){ f.classList.add('mf-open'); var t=f.querySelector('textarea'); if(t) t.focus(); }
+  if(btn) btn.style.display='none';
+};
+['rfCarrier','rfCapacity','rfColor','rfInstallment'].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener('change',function(){ rfsRender(); }); });
+
 updatePhonePrice('duo');   // 카드 처음 그릴 때 출고가부터 보이게
 // 휴대폰(640px 이하)에서 카드의 선택 줄이 오른쪽 아래 전화·카톡 버튼 자리(화면 아래쪽 띠)를 지날 때만 그 버튼을 잠깐 숨김
 (function(){
@@ -2652,6 +2764,6 @@ window.toggleFaq=function(btn){
 })();
 </script>
 <!-- v20261005: 이탈 분석(익명, 개인정보 없음) — 어디까지 보고 어디서 나갔는지 기록 -->
-<script src="/assets/udak-funnel.js?v=20261006c" data-page="iphone18" defer></script>
+<script src="/assets/udak-funnel.js?v=20261006d" data-page="iphone18" defer></script>
 </body>
 </html>

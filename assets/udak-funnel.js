@@ -1,4 +1,4 @@
-/* udak 랜딩 이탈 분석 (v20261005) — 개인정보 없이 '어디까지 봤고 어디서 나갔는지'만 익명으로 기록
+/* udak 랜딩 이탈 분석 (v20261006d — 신청서 요약 카드 버튼 기록 추가) — 개인정보 없이 '어디까지 봤고 어디서 나갔는지'만 익명으로 기록
    기록처: Supabase landing_events (랜딩은 쓰기만 가능, 읽기 불가)
    직원·내부 확인 방문 표시: 주소 뒤에 ?internal=1 로 한 번 열면 그 브라우저는 내부 방문으로 표시됨 (?internal=0 으로 해제) */
 (function(){
@@ -56,7 +56,8 @@
                ['.ucard-cta','card_cta',function(el){ var c=el.closest('.ucard'), n=c&&c.querySelector('.ucard-name'); return n?txt(n):null; }],
                ['#ucatSubZ','tab_z'],['#ucatSubS','tab_s'],['.sticky-cta-btn','cta_bottom',function(el){ return el.classList.contains('scta-on')?'이 조건으로':null; }],['#mSubmitBtn','submit_click'],
                ['.hero-col','video_tap'],['.m-hdr-hit','hdr',lbl],['.top-nav-sub-item,.top-nav-item','topnav',txt],
-               ['.nav-drawer-item','menu',txt],['.side-quick-btn','quick',txt]]
+               ['.nav-drawer-item','menu',txt],['.side-quick-btn','quick',txt],
+               ['.mfs-edit','form_edit',txt],['.mfs-car-row button','form_carrier',function(el){ return el.getAttribute('data-car'); }],['.mfs-more-btn','calc_more'],['.mf-note-add','note_add']]
       },
       device:{
         see:[['carrier','#udCarrier'],['discount','#udDiscount'],['price_detail','#udSubsidyWrap'],['buttons','.udetail-btn-order']],
@@ -68,7 +69,8 @@
         click:[['.pm-swatch','pick_color',function(el){ return el.getAttribute('data-color'); }],['.b-storage-badge','pick_cap',txt],
                ['.pm-badge[data-carrier]','pick_carrier',txt],['.pm-badge[data-months]','pick_months',txt],
                ['.b-modal-cta','card_cta'],['.bottom-cta-btn','cta_bottom',function(el){ return el.classList.contains('scta-on')?'이 조건으로':null; }],['#rfSubmitBtn','submit_click'],['.about-trigger','about_video'],
-               ['.m-hdr-hit','hdr',lbl],['.top-nav-item','topnav',txt],['.nav-drawer-item','menu',txt],['.side-quick-btn','quick',txt]]
+               ['.m-hdr-hit','hdr',lbl],['.top-nav-item','topnav',txt],['.nav-drawer-item','menu',txt],['.side-quick-btn','quick',txt],
+               ['.mfs-edit','form_edit',txt],['.mfs-car-row button','form_carrier',function(el){ return el.getAttribute('data-car'); }],['.mf-note-add','note_add']]
       }
     };
     var cfg=CFG[PAGE]||{see:[],click:[]};

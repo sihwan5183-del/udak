@@ -1265,6 +1265,61 @@ textarea.mform-input{resize:none;height:80px;}
   html:not(.onsite) .m-hdr{display:block;}
   html:not(.onsite) .top-nav{display:none;}
 }
+
+/* v20261006 신청서 줄이기 — 카드에서 고르고 들어오면 맨 위 '선택한 조건' 한 장(줄마다 한 줄로 딱 떨어지게) */
+.mfs{border:1.5px solid rgba(233,30,140,.35);border-radius:16px;background:#fff7fb;padding:14px 14px 13px;margin-bottom:22px;}
+.mfs[hidden]{display:none;}
+.mfs-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;}
+.mfs-head>span{font-size:12.5px;font-weight:800;color:#E91E8C;letter-spacing:-.01em;}
+.mfs-edit{flex-shrink:0;border:1px solid #d9d9de;background:#fff;border-radius:100px;padding:5px 13px;font-family:inherit;font-size:12px;font-weight:700;color:#555;cursor:pointer;}
+.mfs-prod{display:flex;align-items:center;gap:12px;}
+.mfs-prod img{width:56px;height:56px;object-fit:contain;background:#fff;border:1px solid #eee;border-radius:10px;flex-shrink:0;}
+.mfs-txt{flex:1;min-width:0;}
+.mfs-txt p{margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em;}
+.mfs-title{font-size:16px;font-weight:800;color:#1A1A1A;line-height:1.3;}
+.mfs-spec{font-size:13.5px;font-weight:700;color:#333;line-height:1.4;margin-top:3px !important;}
+.mfs-sub{font-size:12.5px;font-weight:600;color:#8a8a90;line-height:1.4;margin-top:2px !important;}
+.mfs-sub:empty{display:none;}
+.mfs-car{margin-top:13px;}
+.mfs-car[hidden]{display:none;}
+.mfs-car-t{display:flex;align-items:baseline;gap:6px;font-size:12.5px;font-weight:800;color:#1A1A1A;margin:0 0 8px;white-space:nowrap;}
+.mfs-car-t .req{color:#e0293e;margin-left:-4px;}
+.mfs-car-t em{font-style:normal;font-weight:600;color:#9a9aa0;font-size:11.5px;overflow:hidden;text-overflow:ellipsis;}
+.mfs-car-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.mfs-car-row button{padding:11px 0;border:1.5px solid #e2e2e6;border-radius:10px;background:#fff;font-family:inherit;font-size:13.5px;font-weight:800;color:#333;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
+.mfs-car-row button.on{border-color:#E91E8C;background:#E91E8C;color:#fff;}
+.mf-note{display:none !important;}
+.mf-note.mf-open{display:block !important;}
+.mf-note-add{display:block;margin:-6px 0 18px;padding:2px 0;border:0;background:none;color:#8e8e93;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;}
+/* 좁은 화면(폴드 접은 화면 등)에서도 한 줄 유지 */
+@media (max-width:360px){
+  .mfs{padding:13px 12px 12px;}
+  .mfs-prod{gap:10px;} .mfs-prod img{width:50px;height:50px;}
+  .mfs-title{font-size:15px;} .mfs-spec{font-size:13px;} .mfs-sub{font-size:12px;}
+  .mfs-car-row button{font-size:13px;}
+}
+@media (max-width:340px){
+  .mfs-prod img{width:44px;height:44px;}
+  .mfs-title{font-size:14.5px;} .mfs-spec{font-size:12.5px;} .mfs-sub{font-size:11.5px;letter-spacing:-.02em;}
+}
+
+.mf-disc{display:none !important;}
+#consultFormInner.mf-compact .mf-pick{display:none !important;}
+#consultFormInner.mf-compact.mf-edit .mf-pick{display:block !important;}
+#consultFormInner.mf-compact.mf-edit.mf-carrow .mf-pick-car{display:none !important;}
+/* 요약 안의 금액: '예상 납부 금액'만 남기고(기준 문구는 아래 칸에 이미 있음), 회색 상자는 빼고, 기기값 계산은 접어둠 */
+.mfs #mCalcBox{margin:14px 0 0;padding-top:12px;border-top:1px dashed #f0c3da;}
+.mfs #mCalcBox>label{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px 8px;font-size:12.5px;font-weight:800;color:#333;margin-bottom:0;white-space:nowrap;}
+.mfs .mcalc-basis{display:none;}
+.mfs .mcalc-inst{margin-top:0;}
+.mfs .mcalc.mcalc-v2{background:transparent !important;border:0 !important;padding:0 !important;margin-top:9px;}
+.mfs .mc-sum{margin-bottom:4px;}
+.mfs .mc-sec{display:none;}
+.mfs.mfs-more .mc-sec{display:block;margin-top:8px;}
+.mfs-more-btn{display:block;width:100%;margin-top:6px;padding:6px 0 0;border:0;background:none;color:#8e8e93;font-family:inherit;font-size:12px;font-weight:700;text-align:center;cursor:pointer;}
+#mFormSummary:not(.mfs-hascalc) .mfs-more-btn{display:none;}
+/* 기존 계산 상자 제목줄: 기준 문구가 중간에서 끊기지 않게 통째로 */
+.mcalc-basis{white-space:nowrap;}
 </style>
 <script>if(new URLSearchParams(location.search).get('onsite')==='1')document.documentElement.classList.add('onsite');</script>
 <script>
@@ -1676,6 +1731,17 @@ function closeNavDrawer() {
     <h2 class="rf-title"><span class="rf-title-accent">상담</span> 신청서</h2>
     <p class="rf-subtitle">필수 정보만 입력하시면 빠르게 안내드립니다.</p>
     <div class="rf-divider"></div>
+    <!-- v20261006 신청서 줄이기: 카드에서 고르고 들어오면 고른 조건을 여기 한 장으로 (그냥 신청하기부터 누르면 안 보이고 기존처럼 칸이 다 보임) -->
+      <div class="mfs" id="mFormSummary" hidden>
+        <div class="mfs-head"><span>선택한 조건</span><button type="button" class="mfs-edit" id="mfsEdit" onclick="mfsToggleEdit()">변경</button></div>
+        <div class="mfs-prod"><img id="mfsImg" src="" alt=""><div class="mfs-txt"><p class="mfs-title" id="mfsTitle"></p><p class="mfs-spec" id="mfsSpec"></p><p class="mfs-sub" id="mfsSub"></p></div></div>
+      <div class="mfs-car" id="mfsCar" hidden>
+        <p class="mfs-car-t">지금 쓰는 통신사<span class="req">*</span></p>
+        <div class="mfs-car-row"><button type="button" data-car="SKT" onclick="mfsPickCar(this)">SKT</button><button type="button" data-car="KT" onclick="mfsPickCar(this)">KT</button><button type="button" data-car="LG U+" onclick="mfsPickCar(this)">LG U+</button><button type="button" data-car="알뜰폰" onclick="mfsPickCar(this)">알뜰폰</button></div>
+      </div>
+        <div id="mfsCalcSlot"></div>
+        <button type="button" class="mfs-more-btn" id="mfsMoreBtn" onclick="mfsToggleMore(this)">기기값 계산 자세히 보기 ›</button>
+      </div>
 
     <div id="mOrderSummaryBox" style="display:none;background:#f7f7f9;border-radius:14px;padding:16px;margin-bottom:18px;">
       <p style="font-size:11px;font-weight:700;color:#999;margin-bottom:10px;">주문 상품</p>
@@ -1726,7 +1792,7 @@ function closeNavDrawer() {
       </div>
     </div>
 
-    <div class="rf-field">
+    <div class="rf-field mf-pick mf-pick-car">
       <label>통신사 <span class="req">*</span></label>
       <div class="rf-input-icon">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 20V4"/></svg>
@@ -1740,7 +1806,7 @@ function closeNavDrawer() {
       </div>
     </div>
 
-    <div class="rf-field" id="mSelectorGrid">
+    <div class="rf-field mf-pick" id="mSelectorGrid">
       <label>관심 기기 <span class="req">*</span></label>
       <div class="rf-input-icon">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg>
@@ -1748,7 +1814,7 @@ function closeNavDrawer() {
       </div>
     </div>
 
-    <div class="rf-field">
+    <div class="rf-field mf-pick">
       <label>용량 <span class="req">*</span></label>
       <div class="rf-input-icon">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
@@ -1756,7 +1822,7 @@ function closeNavDrawer() {
       </div>
     </div>
 
-    <div class="rf-field">
+    <div class="rf-field mf-pick">
       <label>희망 컬러 <span class="req">*</span></label>
       <div class="rf-input-icon">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".6" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".6" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".6" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".6" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
@@ -1764,13 +1830,13 @@ function closeNavDrawer() {
       </div>
     </div>
 
-    <div class="rf-field">
+    <div class="rf-field mf-disc">
       <label>할인 방식 <span class="req">*</span></label>
       <div class="rf-input-icon">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.2" fill="currentColor"/></svg>
         <select id="mDiscountSel" onchange="mPickDiscount(this.value)">
           <option value="" disabled selected>할인 방식을 선택해 주세요</option>
-          <option value="pubSupport">공시지원금 (통신사 지원금)</option>
+          <option value="pubSupport" selected>공시지원금 (통신사 지원금)</option>
           <option value="commitment">선택약정 (내가 이용하는 요금제의 25% 혜택)</option>
         </select>
       </div>
@@ -1781,7 +1847,8 @@ function closeNavDrawer() {
       <div class="mcalc ucard-calc" id="mCalcRows"></div>
     </div>
 
-    <div class="rf-field">
+    <button type="button" class="mf-note-add" onclick="mfsShowNote(this)">＋ 요청사항 추가</button>
+    <div class="rf-field mf-note">
       <label>전달사항</label>
       <div class="rf-input-icon rf-textarea-wrap">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
@@ -2072,6 +2139,7 @@ function ucardSync(){
     if(ucardCarrier){ const cs=document.getElementById('mCarrierSel'); if(cs) cs.value=ucardCarrier; mCarrier=ucardCarrier; }
     if(!mSel.discount){ const ds=document.getElementById('mDiscountSel'); if(ds) ds.value='pubSupport'; mSel.discount='pubSupport'; }
     mRefreshCalc();
+    window.mfsPicked=true; if(window.mfsApplyMode) mfsApplyMode();   // 카드에서 골랐음 → 요약 한 장
   }catch(e){ console.error(e); }
 }
 
@@ -2878,6 +2946,7 @@ function openReservationModal(){
   var inner=document.getElementById('consultFormInner'), slot=document.getElementById('consultModalSlot');
   if(inner&&slot&&inner.parentNode!==slot) slot.appendChild(inner);
   mFillDeviceSelect();
+  if(window.mfsApplyMode) mfsApplyMode();
   document.getElementById('reservationOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -2908,7 +2977,7 @@ function mFillDeviceSelect(){
   }
 }
 // ── 상담 신청폼 선택값 + 계산 (상세 페이지 device.html 과 같은 식: 85 요금제·24개월 기준) ──
-var mSel={device:null,storage:0,color:0,discount:null};
+var mSel={device:null,storage:0,color:0,discount:'pubSupport'}; // v20261006: 할인 방식 칸 없앰 — 공시지원금 고정
 function mEsc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
 function mWon(n){return Number(n||0).toLocaleString('ko-KR')+'원';}
 window.mPickDevice=function(name){
@@ -2925,7 +2994,7 @@ function mRenderSpec(){
 
 }
 window.mPickStorage=function(i){ mSel.storage=Math.max(0,i); mRefreshCalc(); };
-window.mPickColor=function(i){ mSel.color=Math.max(0,i); };
+window.mPickColor=function(i){ mSel.color=Math.max(0,i); if(window.mfsRender) mfsRender(); };
 window.mPickDiscount=function(m){ mSel.discount=m||null; mRefreshCalc(); };
 window.mPickCarrier=function(v){ mCarrier=v||''; mRefreshCalc(); if(v&&window.ucardApplyCarrier&&v!==ucardCarrier) ucardApplyCarrier(v); };
 // 페이지 열릴 때 맨 아래 신청서의 기기 목록 채우기
@@ -2937,13 +3006,66 @@ window.mResetConsultForm=function(){
   var pc=document.getElementById('mPrivacyCheck'); if(pc) pc.checked=false;
   var mc=document.getElementById('mMemoCount'); if(mc) mc.textContent='0';
   ['mCarrierSel','mDiscountSel'].forEach(function(id){ var el=document.getElementById(id); if(el) el.selectedIndex=0; });
-  mCarrier=''; mDevice=''; mSel={device:null,storage:0,color:0,discount:null};
+  mCarrier=''; mDevice=''; mSel={device:null,storage:0,color:0,discount:'pubSupport'}; window.mfsPicked=false;
   mFillDeviceSelect(); mRenderSpec(); mRefreshCalc();
+  var ds=document.getElementById('mDiscountSel'); if(ds) ds.value='pubSupport';
+  if(window.mfsApplyMode) mfsApplyMode();
 };
 // 연락처 4자리씩 — 숫자만, 4자리 채우면 다음 칸으로
 window.mPhonePart=function(el,nextId){ el.value=el.value.replace(/\D/g,'').slice(0,4); if(nextId&&el.value.length===4){ var n=document.getElementById(nextId); if(n) n.focus(); } };
 // 생년월일 YYYY-MM-DD 자동 하이픈 (아이폰 듀오 신청서와 동일)
 window.mFormatBirth=function(el){ var v=el.value.replace(/\D/g,'').slice(0,8); el.value=v.length<=4?v:(v.length<=6?v.slice(0,4)+'-'+v.slice(4):v.slice(0,4)+'-'+v.slice(4,6)+'-'+v.slice(6)); };
+
+// v20261006 신청서 줄이기
+//  · 카드에서 고르고(컬러·통신사·'이 조건으로') 들어오면: 맨 위 '선택한 조건' 한 장 — 기기 / 용량·컬러 / 통신사·번호이동, 그 아래 매달 내는 금액
+//    기기·용량·컬러·통신사 칸은 숨김('변경'으로 펼침). 카드에서 통신사를 안 골랐으면 요약 안에 통신사 버튼 4개
+//  · 그냥 신청하기부터 누르면: 기존처럼 칸이 다 보임
+//  · 공통: 할인 방식 칸 없음(공시지원금 고정), 전달사항은 '＋ 요청사항 추가'로 접음
+var mfsCalcHome=null; window.mfsPicked=false;
+window.mfsApplyMode=function(){
+  var inner=document.getElementById('consultFormInner'), box=document.getElementById('mFormSummary'),
+      calc=document.getElementById('mCalcBox'), slot=document.getElementById('mfsCalcSlot');
+  if(!inner||!box) return;
+  var compact=!!(window.mfsPicked&&mSel.device);
+  inner.classList.toggle('mf-compact',compact);
+  box.hidden=!compact;
+  if(calc&&slot){
+    if(compact&&calc.parentNode!==slot){ if(!mfsCalcHome) mfsCalcHome={p:calc.parentNode,n:calc.nextSibling}; slot.appendChild(calc); }
+    if(!compact&&mfsCalcHome&&calc.parentNode===slot){ mfsCalcHome.p.insertBefore(calc,mfsCalcHome.n); }
+  }
+  if(!compact){ inner.classList.remove('mf-edit','mf-carrow'); var eb=document.getElementById('mfsEdit'); if(eb) eb.textContent='변경'; return; }
+  mfsRender();
+};
+window.mfsRender=function(){
+  var d=mSel.device, box=document.getElementById('mFormSummary'), inner=document.getElementById('consultFormInner');
+  if(!d||!box||box.hidden) return;
+  var st=(d.storageList||[])[mSel.storage||0]||{}, c=(d.colors||[])[mSel.color||0];
+  var cname=c?(c.name.split('|')[1]||''):'';
+  var img=document.getElementById('mfsImg'); img.src=(c&&c.img)||d.img||''; img.alt=d.name;
+  document.getElementById('mfsTitle').textContent=d.name;
+  document.getElementById('mfsSpec').textContent=[st.name,cname].filter(Boolean).join(' · ');
+  document.getElementById('mfsSub').textContent=mCarrier?(mCarrier+' '+(mCarrier==='LG U+'?'기기변경':'번호이동')+' · 공시지원금'):'';
+  var carRow=document.getElementById('mfsCar'), showCar=!mCarrier;
+  carRow.hidden=!showCar; inner.classList.toggle('mf-carrow',showCar);
+  carRow.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on',b.getAttribute('data-car')===mCarrier); });
+  var calc=document.getElementById('mCalcBox'); box.classList.toggle('mfs-hascalc', !!(calc&&calc.style.display!=='none'));
+};
+window.mfsPickCar=function(btn){
+  var v=btn.getAttribute('data-car'), sel=document.getElementById('mCarrierSel'); if(sel) sel.value=v;
+  mPickCarrier(v); mfsRender();
+};
+window.mfsToggleEdit=function(){
+  var inner=document.getElementById('consultFormInner'); var on=!inner.classList.contains('mf-edit');
+  inner.classList.toggle('mf-edit',on); document.getElementById('mfsEdit').textContent=on?'접기':'변경';
+};
+window.mfsToggleMore=function(btn){
+  var b=document.getElementById('mFormSummary'); var on=!b.classList.contains('mfs-more');
+  b.classList.toggle('mfs-more',on); btn.textContent=on?'기기값 계산 접기 ‹':'기기값 계산 자세히 보기 ›';
+};
+window.mfsShowNote=function(btn){
+  var f=document.querySelector('#consultFormInner .mf-note'); if(f){ f.classList.add('mf-open'); var t=f.querySelector('textarea'); if(t) t.focus(); }
+  if(btn) btn.style.display='none';
+};
 function mCalc(){
   var d=mSel.device; if(!d||!mCarrier||!mSel.discount) return null;
   var st=(d.storageList||[])[mSel.storage||0]||{name:'',price:0};
@@ -2985,6 +3107,7 @@ function mRefreshCalc(){
       +row('월 요금',mWon(c.fee),'sub')+'</div>';
   }
   var el=document.getElementById('mCalcRows'); el.classList.add('mcalc-v2'); el.innerHTML=h;
+  if(window.mfsRender) setTimeout(mfsRender,0);
   document.getElementById('mCalcBasis').textContent=(c.plan?c.plan.name:'')+' · 24개월 할부 기준'+(c.ready?'':' · 지원금 정책 준비중(출고가 기준)');
 }
 (function(){
@@ -3598,6 +3721,6 @@ function closeNavModal(id) {
 </script>
 
 <!-- v20261005: 이탈 분석(익명, 개인정보 없음) — 어디까지 보고 어디서 나갔는지 기록 -->
-<script src="/assets/udak-funnel.js?v=20261006c" data-page="galaxy_z8" defer></script>
+<script src="/assets/udak-funnel.js?v=20261006d" data-page="galaxy_z8" defer></script>
 </body>
 </html>
