@@ -1426,8 +1426,8 @@ function closeNavDrawer() {
 .ucat-wrap{max-width:520px;margin:0 auto;padding:0 20px;}
 .ucat-title{font-size:24px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin:0 0 6px;text-align:center;}
 .ucat-sub-lbl{font-size:14px;color:#888;margin:0 0 24px;text-align:center;}
-.ucat-tabs{display:flex;gap:6px;margin-bottom:12px;}
-.ucat-tab{flex:1;text-align:center;padding:12px;border:1.5px solid #ececec;border-radius:10px;background:#fff;font-size:14px;font-weight:700;color:#666;cursor:pointer;font-family:inherit;}
+.ucat-tabs{display:flex;gap:6px;margin-bottom:14px;}
+.ucat-tab{flex:1;text-align:center;padding:12px;border:1.5px solid #ececec;border-radius:10px;background:#fff;font-size:14px;font-weight:700;color:#666;cursor:pointer;font-family:inherit;white-space:nowrap;word-break:keep-all;}
 .ucat-tab.on{border-color:#E91E8C;color:#E91E8C;background:rgba(233,30,140,.06);}
 .ucat-subtabs{display:flex;gap:18px;margin-bottom:14px;padding:0 2px;}
 .ucat-sub{font-size:13.5px;font-weight:600;color:#999;padding-bottom:8px;cursor:pointer;border-bottom:2px solid transparent;}
@@ -1533,13 +1533,10 @@ function closeNavDrawer() {
 
 <section style="width:100%;background:#ffffff;padding:56px 0 64px;">
   <div class="ucat-wrap">
+    <!-- v20261005: 애플 노출 중단 — 맨 위 탭을 '삼성/애플' 대신 '갤럭시 Z 시리즈 / 갤럭시 S 시리즈'로 -->
     <div class="ucat-tabs">
-      <button class="ucat-tab on" id="ucatBrandSamsung" onclick="setUcatBrand('삼성')" type="button">삼성</button>
-      <button class="ucat-tab" id="ucatBrandApple" onclick="setUcatBrand('애플')" type="button">애플</button>
-    </div>
-    <div class="ucat-subtabs" id="ucatSubtabs">
-      <span class="ucat-sub on" id="ucatSubZ" onclick="setUcatSub('Z')">갤럭시 Z시리즈</span>
-      <span class="ucat-sub" id="ucatSubS" onclick="setUcatSub('S')">갤럭시 S시리즈</span>
+      <button class="ucat-tab on" id="ucatSubZ" onclick="setUcatSub('Z')" type="button">갤럭시 Z 시리즈</button>
+      <button class="ucat-tab" id="ucatSubS" onclick="setUcatSub('S')" type="button">갤럭시 S 시리즈</button>
     </div>
 
     <div id="ucatGrid" class="ucat-grid"></div>
@@ -1874,17 +1871,13 @@ function ucatQuote(device,carrierName,jointype,planObj){
   return {price:lp, pub:pub, extra:extra, commitmentExtra:commitmentExtra, final:Math.max(0,lp-pub-extra)};
 }
 
-window.setUcatBrand=function(b){
-  ucatState.brand=b;
-  document.getElementById('ucatBrandSamsung').className='ucat-tab'+(b==='삼성'?' on':'');
-  document.getElementById('ucatBrandApple').className='ucat-tab'+(b==='애플'?' on':'');
-  document.getElementById('ucatSubtabs').style.display=b==='삼성'?'flex':'none';
-  renderUcatGrid();
-};
+// v20261005: 애플 노출 중단 — 삼성만 보임. 맨 위 탭 = 갤럭시 Z 시리즈 / 갤럭시 S 시리즈
+window.setUcatBrand=function(){ ucatState.brand='삼성'; renderUcatGrid(); };
 window.setUcatSub=function(s){
+  ucatState.brand='삼성';
   ucatState.sub=s;
-  document.getElementById('ucatSubZ').className='ucat-sub'+(s==='Z'?' on':'');
-  document.getElementById('ucatSubS').className='ucat-sub'+(s==='S'?' on':'');
+  document.getElementById('ucatSubZ').className='ucat-tab'+(s==='Z'?' on':'');
+  document.getElementById('ucatSubS').className='ucat-tab'+(s==='S'?' on':'');
   renderUcatGrid();
 };
 
@@ -2101,8 +2094,6 @@ window.ctaUcat=function(){
   openReservationModal();
 };
 
-// v20261003: 애플 광고 랜딩 — ?brand=apple 이면 삼성 대신 애플 탭이 먼저 보이게
-(function(){ try{ var b=(new URLSearchParams(location.search).get('brand')||'').toLowerCase(); if(b==='apple'||b==='iphone'||b==='애플') setUcatBrand('애플'); }catch(e){} })();
 renderUcatGrid();
 ucatLoadFirebase();
 // v20261005: 상단 영상 2개(유플러스 다이렉트란? | 갤럭시 폴드8) — 자동재생·반복, 버튼으로 멈춤·재생, 바로 구간 이동, 영상을 누르면 크게 보기
@@ -2719,14 +2710,12 @@ function mFillDeviceSelect(){
   var sel=document.getElementById('mDeviceSelect'); if(!sel) return;
   var esc=function(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');};
   var list=(typeof ucatDevices!=='undefined'&&ucatDevices)?ucatDevices:[];
-  var groups=[['삼성',[]],['애플',[]]];
-  ['Z','S',null].forEach(function(sub){
-    list.forEach(function(d){
-      var c=ucatCategorize(d); if(c.sub!==sub||!d.name) return;
-      var gr=groups.find(function(x){return x[0]===c.brand;}); if(gr&&gr[1].indexOf(d.name)<0) gr[1].push(d.name);
-    });
+  // v20261005: 애플 노출 중단 — 삼성만, 상품 목록 탭과 같은 이름으로 묶음
+  var groups=[['갤럭시 Z 시리즈',[]],['갤럭시 S 시리즈',[]]];
+  list.forEach(function(d){
+    var c=ucatCategorize(d); if(c.brand!=='삼성'||!d.name) return;
+    var gr=groups[c.sub==='Z'?0:1]; if(gr[1].indexOf(d.name)<0) gr[1].push(d.name);
   });
-  if(typeof ucatState!=='undefined'&&ucatState.brand==='애플') groups.reverse(); // 애플 탭(애플 광고)이면 애플부터
   var html='<option value="" disabled selected>관심 기기를 선택해 주세요</option>';
   groups.forEach(function(gr){ if(gr[1].length) html+='<optgroup label="'+gr[0]+'">'+gr[1].map(function(n){return '<option value="'+esc(n)+'">'+esc(n)+'</option>';}).join('')+'</optgroup>'; });
   sel.innerHTML=html;
