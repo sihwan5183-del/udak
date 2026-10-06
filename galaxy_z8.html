@@ -555,7 +555,7 @@ textarea.mform-input{resize:none;height:80px;}
 /* 페이지 맨 아래 신청서 카드 (아이폰 듀오 랜딩 .reserve / .rf-inner 와 동일) */
 /* v20261005: 필수 액세서리 안내 이미지 (아이폰 듀오 랜딩과 같은 이미지·같은 카드 모양) — 상담 신청서 바로 위 */
 .acc-kit{background:#fff;padding:0 24px;display:flex;flex-direction:column;gap:16px;}
-.acc-kit-card{max-width:480px;margin:0 auto;border-radius:14px;overflow:hidden;border:1px solid rgba(10,10,12,.06);background:#fff;}
+.acc-kit-card{width:85%;max-width:408px;margin:0 auto;border-radius:14px;overflow:hidden;border:1px solid rgba(10,10,12,.06);background:#fff;} /* v20261006: 이미지 15% 작게 (max 480→408) */
 .acc-kit-card img{display:block;width:100%;height:auto;}
 .reserve{position:relative;background:#fff;color:#0a0a0c;padding:clamp(24px,4vh,36px) 24px clamp(110px,14vh,140px);scroll-margin-top:52px;}
 .rf-inner{max-width:480px;margin:0 auto;border:1.5px solid #e4e4e6;border-radius:20px;padding:32px 20px 28px;background:#fff;box-sizing:border-box;color:#0a0a0c;}
@@ -1430,7 +1430,8 @@ function closeNavDrawer() {
 <style>
 .intro-hero{max-width:520px;margin:0 auto;background:#fff;}
 .intro-hero img{display:block;width:100%;height:auto;}
-.intro-hero .intro-hero-storage{width:75%;margin:0 auto -7%;} /* v20261006: 요금제 안내 이미지 삭제 — 위 NO 이미지(연회색 배경)를 흰 여백이 덮어 네모 자국이 생기지 않게 위로 겹치지 않음 */ /* v20261005: 25% 작게(가운데) — 위아래 흰 여백 겹침만 줄임, 내용은 그대로 */ /* v20261005: 위아래 이미지 흰 여백이 겹쳐 생기는 빈 공간만 줄임 (내용은 그대로) */ /* v20261005: 위 NO 이미지 아래 여백과 겹치는 빈 공간만 살짝 줄임 */
+.intro-hero .intro-hero-nocard{width:85%;margin:0 auto;} /* v20261006: 이미지 15% 작게 — 여백 */
+.intro-hero .intro-hero-storage{width:63.75%;margin:0 auto -5.95%;} /* v20261006: 이미지 15% 작게(75%→63.75%), 아래 흰 여백 겹침도 같은 비율(-7%→-5.95%) */ /* v20261006: 요금제 안내 이미지 삭제 — 위 NO 이미지(연회색 배경)를 흰 여백이 덮어 네모 자국이 생기지 않게 위로 겹치지 않음 */ /* v20261005: 25% 작게(가운데) — 위아래 흰 여백 겹침만 줄임, 내용은 그대로 */ /* v20261005: 위아래 이미지 흰 여백이 겹쳐 생기는 빈 공간만 줄임 (내용은 그대로) */ /* v20261005: 위 NO 이미지 아래 여백과 겹치는 빈 공간만 살짝 줄임 */
 /* v20261005: 상단 영상 2개를 좌우로 — 각각 자동재생·무음·반복, 누르면 크게 보기 */
 .hero-duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 12px 6px;}
 .hero-col{position:relative;min-width:0;}
