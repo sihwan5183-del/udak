@@ -1,0 +1,2640 @@
+<!DOCTYPE html>
+<!-- build: 2026-08-25T02:41:16Z -->
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>iPhone Duo 사전예약</title>
+<meta name="description" content="iPhone Duo 사전예약, 가장 먼저 만나보세요.">
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '921171610476690');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=921171610476690&ev=PageView&noscript=1"/></noscript>
+<!-- End Meta Pixel -->
+<script>
+// UTM 캡처 (광고별 캠페인 구분용)
+var PAGE_UTM_CAMPAIGN = null, PAGE_UTM_SOURCE = null;
+try {
+  var _p = new URLSearchParams(location.search);
+  PAGE_UTM_CAMPAIGN = _p.get('utm_campaign') || null;
+  PAGE_UTM_SOURCE = _p.get('utm_source') || null;
+} catch(e) {}
+// ssgadmin 기존 채널탭 이름과 맞춰주는 매핑 (URL 파라미터는 짧게, 저장값은 어드민 채널명 그대로)
+var CHANNEL_MAP = { naver: '네이버 검색광고' };
+var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_SOURCE) : null;
+</script>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css">
+<style>
+  :root{
+    --void:#050506;
+    --white:#ffffff;
+    --mist:rgba(255,255,255,.58);
+    --mist-dim:rgba(255,255,255,.34);
+    --hairline:rgba(255,255,255,.14);
+    --glow:rgba(255,255,255,.09);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{background:var(--void);}
+  body{
+    color:var(--white);
+    font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+    padding-bottom:76px;
+  }
+
+  .grain{
+    position:fixed;inset:0;
+    pointer-events:none;
+    z-index:50;
+    opacity:.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;
+  }
+
+  .top-nav{
+    position:sticky;
+    top:0;
+    z-index:900;
+    width:100%;
+    background:#fff;
+    border-bottom:1px solid #f0f0f0;
+  }
+  .top-nav-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    max-width:480px;
+    margin:0 auto;
+    padding:0 20px;
+    height:52px;
+  }
+  .top-nav-logo{
+    font-size:15px;
+    font-weight:800;
+    letter-spacing:-.02em;
+    color:#0a0a0c;
+  }
+  .top-nav-logo-accent{ color:#e2067a; }
+  .top-nav-items{
+    display:flex;
+    align-items:center;
+    gap:18px;
+  }
+  .top-nav-item{
+    background:none;
+    border:none;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:600;
+    color:#555;
+    cursor:pointer;
+    padding:6px 0;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .top-nav-item:hover{ color:#e2067a; }
+
+  .top-nav-item-highlight{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    color:#e2067a;
+    font-weight:700;
+    padding:7px 14px;
+    border:1.5px solid #e2067a;
+    border-radius:999px;
+    box-shadow:0 0 14px rgba(226,6,122,.25);
+    white-space:nowrap;
+  }
+  .top-nav-item-highlight:hover{ color:#e2067a; background:#fdf0f7; }
+  .top-nav-item-highlight svg{ flex-shrink:0; }
+  /* v20261005: 상단 메뉴 글자가 두 줄로 꺾이지 않게 + 작은 폰(폭 380px 이하)에서는 간격만 살짝 줄임 */
+  .top-nav-logo,.top-nav-item{ white-space:nowrap; }
+  @media (max-width:380px){
+    .top-nav-inner{ padding:0 14px; }
+    .top-nav-items{ gap:12px; }
+    .top-nav-item-highlight{ padding:7px 11px; }
+  }
+  @media (max-width:340px){
+    .top-nav-inner{ padding:0 10px; }
+    .top-nav-logo{ font-size:14px; }
+    .top-nav-items{ gap:9px; }
+    .top-nav-item{ font-size:12px; }
+    .top-nav-item-highlight{ padding:6px 9px; gap:2px; }
+  }
+
+
+  /* ══ v20261005: 모바일 상단 헤더 — galaxy_z8 과 같은 디자인 이미지, 같은 자리 투명 버튼
+     (PC 768px 이상은 기존 상단바 '유플러스 다이렉트란? / 궁금해요' 그대로) ══ */
+  .m-hdr{display:none;position:relative;max-width:520px;margin:0 auto;background:#fff;}
+  .m-hdr-img{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;}
+  .m-hdr-hit{position:absolute;display:block;background:transparent;border:0;padding:0;margin:0;cursor:pointer;border-radius:10px;-webkit-tap-highlight-color:transparent;font-size:0;color:transparent;}
+  .m-hdr-hit:active{background:rgba(0,0,0,.05);}
+  .m-hdr-hit:focus-visible{outline:2px solid #E2173D;outline-offset:-2px;}
+  @media (max-width:767px){ .m-hdr{display:block;} .top-nav{display:none;} }
+  /* 메뉴(드로어) — galaxy_z8 과 같은 모양 */
+  .nav-drawer{position:fixed;top:0;right:-100%;width:260px;height:100%;background:#fff;z-index:9999;box-shadow:-4px 0 20px rgba(0,0,0,.15);transition:right .3s ease;display:flex;flex-direction:column;}
+  .nav-drawer.open{right:0;}
+  .nav-drawer-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #f0f0f0;}
+  .nav-drawer-header .logo{font-size:15px;font-weight:800;color:#1a1a1a;}
+  .nav-drawer-close{background:none;border:none;cursor:pointer;font-size:22px;color:#666;line-height:1;}
+  .nav-drawer-body{padding:12px 0;flex:1;overflow-y:auto;}
+  .nav-drawer-item{display:flex;align-items:center;gap:10px;padding:14px 24px;font-size:15px;color:#1a1a1a;text-decoration:none;border-bottom:1px solid #f8f8f8;cursor:pointer;}
+  .nav-drawer-item:hover{background:#fff5f7;color:#E2173D;}
+  .nav-drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:9998;display:none;}
+  .nav-drawer-overlay.open{display:block;}
+  /* 안내 이미지 팝업 (온라인 구매 절차 / 온라인 구매 처음이신가요?) */
+  .nav-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px;}
+  .nav-modal-overlay.open{display:flex;}
+  .imgmodal-card{position:relative;width:fit-content;max-width:calc(100vw - 40px);max-height:calc(100vh - 40px);background:transparent;animation:navModalUp .3s ease;}
+  .imgmodal-card img{display:block;width:auto;height:auto;max-width:calc(100vw - 48px);max-height:calc(100vh - 48px);border-radius:12px;box-shadow:0 16px 50px rgba(0,0,0,.4);}
+  .imgmodal-close{position:absolute;top:8px;right:8px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(0,0,0,.55);color:#fff;font-size:20px;line-height:1;cursor:pointer;z-index:2;}
+  @keyframes navModalUp{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+
+  /* v20261005: '유플러스 다이렉트란?' 소개 영상 팝업 — 바깥·✕·Esc로 닫기 */
+  .vpop{position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.86);display:none;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) 16px max(16px,env(safe-area-inset-bottom,0px));box-sizing:border-box;}
+  .vpop.open{display:flex;}
+  .vpop-box{position:relative;width:min(420px,100%,calc((100vh - 150px) * .5625));}
+  .vpop-title{margin:0 40px 10px;color:#fff;font-size:15px;font-weight:800;text-align:center;}
+  .vpop-close{position:absolute;top:-8px;right:-6px;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.18);color:#fff;font-size:18px;line-height:36px;cursor:pointer;padding:0;}
+  .vpop-video{display:block;width:100%;aspect-ratio:9/16;border-radius:14px;background:#fff;object-fit:cover;cursor:pointer;}
+  .vpop-ctrl{display:flex;align-items:center;gap:10px;padding:12px 2px 0;}
+  .vpop-btn{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:none;background:#e2067a;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent;}
+  .vpop-seek{flex:1;min-width:0;height:4px;margin:0;border-radius:2px;-webkit-appearance:none;appearance:none;outline:none;cursor:pointer;background:linear-gradient(to right,#e2067a var(--p,0%),rgba(255,255,255,.3) var(--p,0%));}
+  .vpop-seek::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:#e2067a;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+  .vpop-seek::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#e2067a;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+  .vpop-time{flex:0 0 auto;min-width:72px;text-align:right;font-size:12px;color:#ddd;font-variant-numeric:tabular-nums;}
+
+  .bottom-cta-bar{
+    position:fixed;
+    left:0;right:0;bottom:0;
+    z-index:800;
+    background:#fff;
+    border-top:1px solid #eee;
+    box-shadow:0 -4px 16px rgba(0,0,0,.06);
+    padding:12px 20px calc(12px + env(safe-area-inset-bottom));
+  }
+  .bottom-cta-bar-inner{
+    max-width:480px;
+    margin:0 auto;
+  }
+  .bottom-cta-btn{
+    display:block;
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#ff2f92,#e2067a);
+    box-shadow:0 8px 20px -6px rgba(226,6,122,.5);
+    color:#fff;
+    font-family:inherit;
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:-.01em;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .bottom-cta-btn:active{ opacity:.85; }
+
+  .section{
+    position:relative;
+    min-height:100vh;
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:clamp(72px,12vh,120px) 24px clamp(56px,8vh,96px);
+    overflow:hidden;
+    text-align:center;
+  }
+  #colors{
+    min-height:auto;
+    padding-top:clamp(32px,5vh,56px);
+    padding-bottom:clamp(40px,6vh,64px);
+  }
+  @media(max-width:640px){
+    #colors{
+      padding-left:0;
+      padding-right:0;
+    }
+  }
+
+  .glow{
+    position:absolute;
+    top:-8%;
+    left:50%;
+    transform:translateX(-50%);
+    width:min(920px,150vw);
+    height:min(760px,120vw);
+    background:radial-gradient(ellipse at center, var(--glow) 0%, transparent 68%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  #hero{
+    background:#fff;
+    min-height:auto;
+    padding-top:clamp(28px,5vh,48px);
+    padding-bottom:clamp(24px,4vh,40px);
+  }
+  #hero .glow{ display:none; }
+  .countdown-bar{
+    position:relative;z-index:1;
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    margin:0 auto 22px;
+    padding:11px 20px;
+    background:#fcf0f7;
+    border-radius:999px;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  .countdown-label{
+    font-size:15px;
+    font-weight:700;
+    color:#e2067a;
+    white-space:nowrap;
+  }
+  .countdown-nums{
+    display:flex;
+    align-items:baseline;
+    gap:9px;
+  }
+  .cd-unit{
+    display:flex;
+    align-items:baseline;
+    gap:1px;
+  }
+  .cd-unit b{
+    font-size:17.5px;
+    font-weight:800;
+    color:#0a0a0c;
+    font-variant-numeric:tabular-nums;
+  }
+  .cd-unit i{
+    font-style:normal;
+    font-size:13.75px;
+    color:#999;
+    margin-left:1px;
+  }
+  .hero-tag{
+    position:relative;z-index:1;
+    font-size:clamp(24px,6vw,36px);
+    font-weight:800;
+    letter-spacing:-.01em;
+    color:#0a0a0c;
+    margin-bottom:20px;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  .eyebrow{
+    position:relative;z-index:1;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.34em;
+    text-transform:uppercase;
+    color:var(--mist);
+    margin-bottom:22px;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  .eyebrow-badge{
+    position:relative;z-index:1;
+    margin-bottom:clamp(28px,5vh,40px);
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  .badge-desc{
+    display:block;
+    font-size:clamp(14px,3.75vw,25px);
+    font-weight:600;
+    letter-spacing:.10em;
+    text-transform:uppercase;
+    color:#0a0a0c;
+    margin-bottom:10px;
+  }
+  .badge-name{
+    display:block;
+    font-size:clamp(20px,5.25vw,36px);
+    font-weight:600;
+    letter-spacing:.01em;
+    color:#0a0a0c;
+  }
+
+  .hero-poster{
+    position:relative;z-index:1;
+    width:100%;
+    max-width:480px;
+    border-radius:18px;
+    display:block;
+    opacity:0;
+    transform:translateY(26px) scale(.965);
+    transition:opacity 1.15s cubic-bezier(.16,1,.3,1), transform 1.15s cubic-bezier(.16,1,.3,1);
+  }
+  .hero-poster + .hero-poster{ margin-top:16px; }
+
+  #preorderInfo{
+    background:#fff;
+    min-height:auto;
+    padding-top:clamp(4px,1vh,12px);
+    padding-bottom:clamp(20px,3vh,32px);
+  }
+  #preorderInfo .glow{ display:none; }
+
+  h1{
+    position:relative;z-index:1;
+    font-size:clamp(42px,10vw,76px);
+    font-weight:200;
+    letter-spacing:-.02em;
+    line-height:1.04;
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity .9s ease .08s, transform .9s ease .08s;
+  }
+  h2{
+    position:relative;z-index:1;
+    font-size:clamp(27px,5.8vw,42px);
+    font-weight:300;
+    letter-spacing:-.01em;
+    line-height:1.28;
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity .9s ease .08s, transform .9s ease .08s;
+  }
+
+  .sub{
+    position:relative;z-index:1;
+    margin-top:16px;
+    font-size:clamp(15px,3.7vw,18px);
+    font-weight:400;
+    color:var(--mist);
+    max-width:400px;
+    line-height:1.55;
+    opacity:0;
+    transform:translateY(12px);
+    transition:opacity .9s ease .18s, transform .9s ease .18s;
+  }
+  .acc-caption{
+    position:relative;z-index:1;
+    margin-top:-8px;
+    font-size:13px;
+    letter-spacing:.02em;
+    color:var(--mist-dim);
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .8s ease .1s, transform .8s ease .1s;
+  }
+  .in-view .acc-caption{ opacity:1; transform:none; }
+
+  .cta{
+    position:relative;z-index:1;
+    margin-top:clamp(34px,5.5vh,46px);
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:16px 38px;
+    border:1px solid var(--white);
+    border-radius:100px;
+    background:transparent;
+    color:var(--white);
+    font-family:inherit;
+    font-size:15px;
+    font-weight:500;
+    letter-spacing:.01em;
+    cursor:pointer;
+    transition:background .3s ease, color .3s ease, transform .15s ease;
+    opacity:0;
+    transform:translateY(12px);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .cta:active{ transform:scale(.96); }
+  @media(hover:hover){
+    .cta:hover{ background:var(--white); color:#050506; }
+  }
+
+  .cta-note{
+    position:relative;z-index:1;
+    margin-top:14px;
+    font-size:12px;
+    color:var(--mist-dim);
+    height:16px;
+    opacity:0;
+    transition:opacity .4s ease;
+  }
+  .cta-note.show{ opacity:1; }
+
+  .in-view .eyebrow,
+  .in-view .eyebrow-badge,
+  .in-view .hero-tag,
+  .in-view .countdown-bar,
+  .in-view .stage,
+  .in-view .hero-poster,
+  .in-view h1,
+  .in-view h2,
+  .in-view .sub,
+  .in-view .cta,
+  .in-view .about-trigger,
+  .in-view .subsidy-info-img{
+    opacity:1;
+    transform:none;
+  }
+
+  .benefits{
+    position:relative;
+    background:#fff;
+    color:#0a0a0c;
+    padding:clamp(28px,4vh,44px) 24px clamp(32px,5vh,48px);
+  }
+  .benefits-inner{
+    max-width:900px;
+    margin:0 auto;
+    text-align:center;
+  }
+  .b-eyebrow{
+    display:inline-block;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.34em;
+    text-transform:uppercase;
+    color:rgba(10,10,12,.45);
+    margin-bottom:18px;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  .b-lineup-img{
+    display:block;
+    width:100%;
+    max-width:640px;
+    margin:0 auto clamp(28px,4.5vh,44px);
+    border-radius:16px;
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity .9s ease .03s, transform .9s ease .03s;
+  }
+  .b-select-title{
+    display:block;
+    text-align:center;
+    font-size:clamp(24px,5.6vw,34px);
+    font-weight:800;
+    letter-spacing:-.02em;
+    color:#0a0a0c;
+    margin:-6px 0 10px;
+    opacity:0; transform:translateY(10px);
+    transition:opacity .8s ease .05s, transform .8s ease .05s;
+  }
+  .b-select-sub{
+    display:block;
+    text-align:center;
+    font-size:clamp(13px,3.4vw,15px);
+    color:#777;
+    line-height:1.55;
+    margin-bottom:14px;
+    opacity:0; transform:translateY(10px);
+    transition:opacity .8s ease .1s, transform .8s ease .1s;
+  }
+  .b-select-hint{
+    display:inline-flex; align-items:center; gap:6px;
+    margin:0 auto clamp(20px,3.5vh,30px);
+    padding:8px 14px;
+    background:#fcf0f7; color:#e2067a;
+    border-radius:999px;
+    font-size:12.5px; font-weight:700;
+    opacity:0; transform:translateY(10px);
+    transition:opacity .8s ease .15s, transform .8s ease .15s;
+  }
+  .b-select-hint svg{ width:15px;height:15px; }
+  .b-phone-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:16px;
+    max-width:440px;
+    margin:0 auto clamp(28px,4.5vh,44px);
+  }
+  .b-phone-grid > div{ min-width:0; }
+  @media(min-width:640px){
+    .b-phone-grid{ grid-template-columns:1fr 1fr; gap:24px; max-width:760px; }
+  }
+  .b-phone-item{
+    position:relative;
+    display:flex; flex-direction:column; align-items:center;
+    padding:22px 18px 20px;
+    background:#fafafa;
+    border:1.5px solid #ececef;
+    border-radius:22px;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    opacity:0; transform:translateY(16px);
+    transition:opacity .9s ease, transform .9s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
+  }
+  .benefits.in-view .b-phone-item{ opacity:1; transform:none; animation:tilePulse 2.6s ease-in-out .9s infinite; }
+  .benefits.in-view .b-phone-grid > div:nth-child(2){ transition-delay:.08s; animation-delay:1.25s; }
+  .b-phone-item:hover, .b-phone-item:active{ border-color:#e2067a; background:#fdf2f8; box-shadow:0 14px 34px -18px rgba(226,6,122,.35); }
+  @keyframes tilePulse{
+    0%,100%{ box-shadow:0 0 0 0 rgba(226,6,122,.16); }
+    50%{ box-shadow:0 0 0 12px rgba(226,6,122,0); }
+  }
+  .b-tag-benefit{
+    display:inline-block;
+    padding:6px 14px;
+    background:#fcf0f7; color:#e2067a;
+    border-radius:999px;
+    font-size:12.5px; font-weight:800;
+  }
+  .b-tag-cap{
+    display:inline-block;
+    margin-top:8px;
+    padding:5px 14px;
+    background:#eeeef0; color:#555;
+    border-radius:999px;
+    font-size:12.5px; font-weight:700;
+  }
+  .b-phone-tile{
+    width:100%;
+    display:flex; align-items:center; justify-content:center;
+    margin:12px 0 6px;
+  }
+  .b-phone-tile img{
+    width:100%;
+    max-width:340px;
+    height:auto;
+    object-fit:contain;
+    animation:phoneFloat 3.2s ease-in-out infinite;
+  }
+  .b-phone-grid > div:nth-child(2) .b-phone-tile img{ animation-delay:.5s; }
+  .b-phone-tile.is-single img{ width:auto; height:220px; max-width:100%; }
+  .b-phone-cta{
+    width:100%;
+    margin-top:14px;
+    padding:13px;
+    border:1.5px solid #e2067a;
+    border-radius:999px;
+    background:#fff; color:#e2067a;
+    font-family:inherit; font-size:15px; font-weight:800;
+    cursor:pointer;
+    transition:background .2s ease, color .2s ease;
+  }
+  .b-phone-item:hover .b-phone-cta, .b-phone-item:active .b-phone-cta{
+    background:linear-gradient(135deg,#ff2f92,#e2067a); color:#fff; border-color:transparent;
+  }
+  @keyframes phoneFloat{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(-7px); }
+  }
+  .b-phone-name{
+    display:block;
+    margin-top:10px;
+    text-align:center;
+    font-size:clamp(18px,4.8vw,22px);
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+  .b-phone-hint{
+    display:block;
+    margin-top:6px;
+    text-align:center;
+    font-size:12px;
+    font-weight:600;
+    color:#999;
+  }
+  .b-storage-row{ display:flex; gap:8px; }
+  .b-storage-badge{
+    flex:1;
+    padding:13px 6px;
+    border:1.5px solid #e4e4e6;
+    border-radius:12px;
+    background:#fff;
+    color:#666;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .b-storage-badge.is-active{ border-color:#0a0a0c; background:#0a0a0c; color:#fff; }
+  .b-modal-label{
+    display:block;
+    margin-bottom:10px;
+    font-size:13px;
+    font-weight:600;
+    color:#999;
+  }
+  .b-divider{ height:1px; background:#eee; margin:22px 0; }
+  .b-modal-label em.pm-picked{ font-style:normal; color:#0a0a0c; font-weight:700; margin-left:4px; }
+  .pm-img-card{
+    background:#fff;
+    border:1px solid #ececef;
+    border-radius:18px;
+    padding:18px;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:14px;
+  }
+  .pm-img-card img{ width:70%; max-width:230px; height:auto; display:block; }
+  .pm-title-center{ text-align:center; margin-bottom:14px; }
+  .pm-result{
+    background:#fcf0f7;
+    border:1px solid #f7d3e6;
+    border-radius:14px;
+    padding:16px;
+    margin-bottom:22px;
+  }
+  .pm-result-label{ display:block; font-size:12.5px; font-weight:700; color:#0a0a0c; margin-bottom:6px; }
+  .pm-result-value{ display:block; font-size:24px; font-weight:800; color:#e2067a; letter-spacing:-.01em; font-variant-numeric:tabular-nums; }
+  .pm-result-hint{ display:block; margin-top:4px; font-size:12px; color:#b0b0b5; }
+  .pm-breakdown{ margin-top:12px; padding-top:12px; border-top:1px dashed #f0c3da; }
+  .pm-breakdown > div{ display:flex; justify-content:space-between; align-items:center; padding:4px 0; font-size:13px; color:#777; }
+  .pm-breakdown b{ font-weight:700; color:#0a0a0c; font-variant-numeric:tabular-nums; }
+  .pm-breakdown b.minus{ color:#e2067a; }
+  .pm-breakdown em{ font-style:normal; font-size:11.5px; color:#b0b0b5; margin-left:4px; }
+  .pm-breakdown .pm-after{ font-weight:700; color:#0a0a0c; }
+  .pm-breakdown .pm-after b{ font-size:15px; font-weight:800; }
+  .pm-swatches{ display:flex; gap:12px; margin-bottom:22px; }
+  .pm-swatch{
+    width:40px; height:40px; border-radius:50%;
+    background:var(--c);
+    border:2px solid #fff;
+    box-shadow:0 0 0 1.5px #e4e4e6;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    transition:box-shadow .15s ease, transform .15s ease;
+  }
+  .pm-swatch.is-active{ box-shadow:0 0 0 2.5px #e2067a; transform:scale(1.06); }
+  .b-storage-row{ margin-bottom:22px; }
+  .b-storage-badge.is-active{ border-color:#e2067a; background:#fcf0f7; color:#e2067a; }
+  .pm-badge-row{ display:flex; gap:8px; margin-bottom:22px; }
+  .pm-badge{
+    flex:1;
+    padding:13px 4px;
+    border:1.5px solid #e4e4e6;
+    border-radius:12px;
+    background:#fff;
+    color:#666;
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:700;
+    cursor:pointer;
+    white-space:nowrap;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .pm-badge.is-active{ border-color:#e2067a; background:#fcf0f7; color:#e2067a; }
+  .b-price-note{ margin-top:-6px; font-size:11.5px; line-height:1.55; color:#999; }
+  .b-modal-cta{
+    display:block; width:100%;
+    margin-top:18px; padding:15px;
+    border:none; border-radius:14px;
+    background:linear-gradient(135deg,#ff2f92,#e2067a);
+    box-shadow:0 10px 24px -8px rgba(226,6,122,.5);
+    color:#fff;
+    font-family:inherit; font-size:15px; font-weight:800;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .b-modal-cta:active{ opacity:.85; }
+  .phone-modal-overlay{
+    display:none;
+    position:fixed;inset:0;
+    background:#fff;
+    z-index:3200;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .phone-modal-overlay.open{ display:block; animation:pmPageIn .28s cubic-bezier(.22,1,.36,1); }
+  @keyframes pmPageIn{ from{opacity:0;transform:translateX(28px);} to{opacity:1;transform:none;} }
+  .pm-topbar{
+    position:sticky;top:0;z-index:2;
+    display:flex;align-items:center;
+    height:52px;padding:0 6px;
+    background:#fff;border-bottom:1px solid #f0f0f0;
+  }
+  .pm-back{
+    width:44px;height:44px;border:none;background:none;
+    display:flex;align-items:center;justify-content:center;
+    color:#0a0a0c;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  }
+  .pm-back svg{ width:22px;height:22px; }
+  .pm-topbar-logo{
+    position:absolute;left:50%;transform:translateX(-50%);
+    font-size:15px;font-weight:800;letter-spacing:-.01em;color:#0a0a0c;white-space:nowrap;
+  }
+  .pm-topbar-logo b{ color:#e2067a;font-weight:800;margin-right:4px; }
+  .phone-modal{
+    max-width:520px;
+    margin:0 auto;
+    padding:18px 20px 44px;
+    box-sizing:border-box;
+    text-align:left;
+  }
+  body.pm-open .side-quick{ display:none; }
+  .phone-modal-title{
+    font-size:20px;
+    font-weight:800;
+    letter-spacing:-.01em;
+    color:#0a0a0c;
+    margin-bottom:20px;
+  }
+  .b-title{
+    font-size:clamp(28px,6vw,44px);
+    font-weight:300;
+    letter-spacing:-.01em;
+    line-height:1.2;
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity .9s ease .06s, transform .9s ease .06s;
+  }
+  .b-sub{
+    margin-top:12px;
+    font-size:clamp(14px,3.4vw,16px);
+    color:rgba(10,10,12,.6);
+    line-height:1.55;
+    opacity:0;
+    transform:translateY(12px);
+    transition:opacity .9s ease .12s, transform .9s ease .12s;
+  }
+
+  .b-group{ margin-top:clamp(48px,8vh,80px); }
+  .b-label{
+    display:block;
+    text-align:center;
+    margin:clamp(8px,1.5vh,16px) 0 clamp(22px,3.5vh,30px);
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  .b-label-title{
+    display:block;
+    font-size:clamp(24px,5.6vw,34px);
+    font-weight:800;
+    letter-spacing:-.02em;
+    line-height:1.25;
+    color:#0a0a0c;
+  }
+  .b-label-title em{ font-style:normal; color:#e2067a; }
+  .b-label-bar{
+    display:block;
+    width:36px;height:3px;
+    margin:12px auto 12px;
+    background:#e2067a;
+    border-radius:2px;
+  }
+  .b-label-sub{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:7px 14px;
+    background:#fcf0f7; color:#e2067a;
+    border-radius:999px;
+    font-size:12.5px; font-weight:700;
+  }
+  .b-label-sub svg{ width:14px;height:14px; }
+  .b-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+  .b-grid-5{ grid-template-columns:1fr; }
+  @media(min-width:640px){
+    .b-grid{ grid-template-columns:1fr 1fr; }
+    .b-grid-5{ grid-template-columns:1fr 1fr; }
+    .b-card-wide{ grid-column:1 / -1; }
+  }
+  @media(min-width:900px){
+    .b-grid-5{ grid-template-columns:repeat(5,1fr); }
+  }
+  .b-stack{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    max-width:480px;
+    margin:0 auto;
+  }
+
+  .b-card{
+    background:#ffffff;
+    border-radius:14px;
+    overflow:hidden;
+    border:1px solid rgba(10,10,12,.06);
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  .b-card img{
+    width:100%;
+    height:auto;
+    display:block;
+  }
+  .b-full-img{
+    display:block;
+    width:100%;
+    height:auto;
+    border-radius:14px;
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+
+  .b-group.in-view .b-label{ opacity:1; transform:none; }
+  .b-group.in-view .b-card{ opacity:1; transform:none; }
+  .b-group.in-view .b-full-img{ opacity:1; transform:none; }
+  .b-group.in-view .b-card:nth-child(2){ transition-delay:.06s; }
+  .b-group.in-view .b-card:nth-child(3){ transition-delay:.12s; }
+  .b-group.in-view .b-card:nth-child(4){ transition-delay:.18s; }
+  .b-group.in-view .b-card:nth-child(5){ transition-delay:.24s; }
+  .b-group.in-view .b-card:nth-child(6){ transition-delay:.30s; }
+  .b-group.in-view .b-card:nth-child(7){ transition-delay:.36s; }
+  .b-group.in-view .b-card:nth-child(8){ transition-delay:.42s; }
+
+  .b-closing{
+    margin-top:clamp(56px,9vh,90px);
+    font-size:clamp(22px,4.6vw,30px);
+    font-weight:600;
+    letter-spacing:-.01em;
+    opacity:0;
+    transform:translateY(12px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  .cta-dark{
+    border-color:#0a0a0c;
+    color:#0a0a0c;
+  }
+  @media(hover:hover){
+    .cta-dark:hover{ background:#0a0a0c; color:#fff; }
+  }
+  .cta-note-dark{ color:rgba(10,10,12,.45); }
+
+  .benefits.in-view .b-eyebrow,
+  .benefits.in-view .b-select-title,
+  .benefits.in-view .b-select-sub,
+  .benefits.in-view .b-select-hint,
+  .benefits.in-view .b-phone-tile,
+  .benefits.in-view .b-title,
+  .benefits.in-view .b-sub,
+  .benefits.in-view .b-closing,
+  .benefits.in-view .cta-dark{
+    opacity:1;
+    transform:none;
+  }
+
+
+  .rf-inner{
+    max-width:480px;
+    margin:0 auto;
+    border:1.5px solid #e4e4e6;
+    border-radius:20px;
+    padding:32px 20px 28px;
+    background:#fff;
+    box-sizing:border-box;
+  }
+  .rf-badge{
+    display:flex;
+    width:fit-content;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    margin:0 auto 20px;
+    padding:12px 26px;
+    background:#0a0a0c;
+    border-radius:999px;
+  }
+  .rf-badge-line1{ font-size:12px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.02em; }
+  .rf-badge-line2{ font-size:15px;font-weight:800;color:#fff;letter-spacing:-.01em; }
+  .reserve{
+    position:relative;
+    background:#fff;
+    color:#0a0a0c;
+    padding:clamp(24px,4vh,36px) 24px clamp(80px,12vh,120px);
+    scroll-margin-top:52px;
+  }
+  .rf-title{
+    font-size:clamp(26px,6vw,34px);
+    font-weight:800;
+    letter-spacing:-.01em;
+    text-align:center;
+    line-height:1.3;
+    margin-bottom:10px;
+    opacity:1;
+    transform:none;
+  }
+  .rf-title-accent{ color:#e2067a; }
+  .rf-subtitle{
+    text-align:center;
+    font-size:14px;
+    color:#8a8a90;
+    margin-bottom:18px;
+  }
+  .rf-divider{
+    width:36px;height:3px;
+    background:#e2067a;
+    border-radius:2px;
+    margin:0 auto clamp(28px,4.5vh,40px);
+  }
+  #reservationForm{
+    background:#fff;
+  }
+  .rf-field{ margin-bottom:20px; }
+  .rf-field label{
+    display:block;
+    font-size:13.5px;
+    font-weight:700;
+    color:#0a0a0c;
+    margin-bottom:9px;
+  }
+  .rf-field .req{ color:#e0293e; margin-left:2px; }
+  .rf-input-icon{ position:relative; }
+  .rf-input-icon > svg{
+    position:absolute;
+    left:14px;top:50%;
+    transform:translateY(-50%);
+    color:#9a9aa0;
+    pointer-events:none;
+  }
+  .rf-input-icon input,
+  .rf-input-icon select{ padding-left:42px !important; }
+  .rf-textarea-wrap > svg{ top:16px; transform:none; }
+  .rf-textarea-wrap textarea{ padding-left:42px !important; }
+  .rf-counter{
+    display:block;
+    text-align:right;
+    font-size:11.5px;
+    color:#b7b7bb;
+    margin-top:5px;
+  }
+  .rf-field input[type="text"],
+  .rf-field input[type="tel"],
+  .rf-field select,
+  .rf-field textarea{
+    width:100%;
+    padding:14px 16px;
+    border:1.5px solid #c5c5cb;
+    border-radius:12px;
+    font-size:15px;
+    font-family:inherit;
+    color:#0a0a0c;
+    background:#fafafa;
+    box-sizing:border-box;
+    -webkit-appearance:none;
+    appearance:none;
+  }
+  .rf-field input::placeholder,
+  .rf-field textarea::placeholder{ color:#b7b7bb; }
+  .rf-field input:focus,
+  .rf-field select:focus,
+  .rf-field textarea:focus{
+    outline:none;
+    border-color:#0a0a0c;
+    background:#fff;
+  }
+  .rf-field select{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23777' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 14px center;
+    background-size:18px;
+    padding-right:40px;
+  }
+  .rf-field textarea{ resize:vertical; min-height:80px; }
+  .rf-phone-group{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .rf-phone-group input{ text-align:center; }
+  .rf-phone-group input:first-child{ flex:0 0 68px; color:#999; background:#fafafa; }
+  .rf-phone-group span{ color:#c4c4c8; font-size:14px; }
+  .rf-toggle-group{ display:flex; gap:10px; }
+  .rf-toggle{
+    flex:1;
+    padding:14px 8px;
+    border:1.5px solid #e4e4e6;
+    border-radius:12px;
+    background:#fff;
+    color:#666;
+    font-family:inherit;
+    font-size:14.5px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .rf-toggle.on{ border-color:#0a0a0c; background:#0a0a0c; color:#fff; }
+  .rf-privacy-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:2px 2px 20px;
+  }
+  .rf-privacy{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+    font-size:13.5px;
+    color:#333;
+  }
+  .rf-privacy input{ width:18px;height:18px;accent-color:#0a0a0c;flex-shrink:0; }
+  .rf-privacy em{ color:#e0293e; font-style:normal; }
+  .rf-privacy-more{
+    background:none;border:none;padding:6px;
+    color:#999;cursor:pointer;
+    display:flex;align-items:center;
+  }
+  .rf-submit{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    width:100%;
+    padding:17px;
+    border:none;
+    border-radius:100px;
+    background:linear-gradient(135deg,#ff2f92,#e2067a);
+    box-shadow:0 12px 28px -8px rgba(226,6,122,.55);
+    color:#fff;
+    font-family:inherit;
+    font-size:15.5px;
+    font-weight:800;
+    cursor:pointer;
+    margin-top:4px;
+  }
+  .rf-submit:active{ opacity:.85; }
+  .rf-submit:disabled{ opacity:.5; cursor:not-allowed; }
+  .rf-status{
+    text-align:center;
+    font-size:13px;
+    margin-top:14px;
+    min-height:18px;
+    color:#666;
+  }
+  .rf-status.err{ color:#e0293e; }
+  .rf-status.ok{ color:#0a8a4a; font-weight:700; }
+
+
+  .pv-modal-overlay{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.68);
+    z-index:3100;
+    align-items:center;justify-content:center;
+    padding:20px;
+    box-sizing:border-box;
+  }
+  .pv-modal-overlay.open{ display:flex; }
+  .pv-modal{
+    position:relative;
+    width:100%;max-width:460px;max-height:86vh;
+    overflow-y:auto;
+    background:#fff;color:#0a0a0c;
+    border-radius:20px;
+    padding:26px 22px 22px;
+    box-sizing:border-box;
+    font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;
+    animation:pvModalIn .3s cubic-bezier(.22,1,.36,1);
+  }
+  @keyframes pvModalIn{
+    from{ opacity:0; transform:translateY(16px) scale(.98); }
+    to{ opacity:1; transform:none; }
+  }
+  .pv-close{
+    position:absolute;top:14px;right:14px;
+    width:32px;height:32px;border-radius:50%;
+    background:#f2f2f3;border:none;color:#0a0a0c;
+    font-size:18px;cursor:pointer;line-height:1;
+  }
+  .pv-title{ font-size:19px;font-weight:800;margin-bottom:14px;padding-right:30px; }
+  .pv-intro{ font-size:13px;color:#666;line-height:1.65;margin-bottom:18px; }
+  .pv-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12px;
+    margin-bottom:18px;
+    table-layout:fixed;
+  }
+  .pv-table th{
+    background:#f5f5f6;
+    color:#666;
+    font-weight:700;
+    padding:10px 8px;
+    text-align:left;
+    border-bottom:1px solid #eee;
+  }
+  .pv-table td{
+    padding:12px 8px;
+    color:#333;
+    line-height:1.55;
+    vertical-align:top;
+    border-bottom:1px solid #f0f0f0;
+  }
+  .pv-notice{
+    background:#f7f7f8;
+    border-radius:12px;
+    padding:14px 16px;
+    margin-bottom:16px;
+  }
+  .pv-notice-title{ font-size:12.5px;font-weight:700;margin-bottom:8px; }
+  .pv-notice ul{ margin:0;padding:0;list-style:none; }
+  .pv-notice li{
+    font-size:11.5px;color:#666;line-height:1.7;
+    padding-left:10px;position:relative;
+  }
+  .pv-notice li::before{ content:'·';position:absolute;left:0; }
+  .pv-contact{
+    text-align:center;font-size:11.5px;color:#999;margin-bottom:18px;
+  }
+  .pv-confirm{
+    display:block;width:100%;padding:15px;
+    background:#0a0a0c;color:#fff;border:none;border-radius:100px;
+    font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;
+  }
+
+
+  .about-trigger{
+    position:relative;z-index:1;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    width:fit-content;
+    max-width:100%;
+    margin:0 auto clamp(24px,4vh,36px);
+    padding:8px 16px 8px 8px;
+    background:#fff;
+    border:1px solid rgba(10,10,12,.10);
+    border-radius:999px;
+    cursor:pointer;
+    font-family:inherit;
+    -webkit-tap-highlight-color:rgba(0,0,0,.06);
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  .about-trigger:active{ background:#f0f0f1; }
+  .about-trigger-badge{ display:block;width:24px;height:24px;border-radius:50%;flex-shrink:0; }
+  .about-trigger-title{ font-size:13px;font-weight:800;color:#0a0a0c;white-space:nowrap; }
+  .about-trigger-hint{ font-size:11px;font-weight:600;color:#999;white-space:nowrap; }
+
+  .subsidy-info-img{
+    position:relative;z-index:1;
+    width:100%;
+    max-width:480px;
+    display:block;
+    margin:0 auto clamp(8px,1.5vh,16px);
+    border-radius:16px;
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity .9s ease, transform .9s ease;
+  }
+
+  .about-modal-overlay{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.68);
+    z-index:3200;
+    align-items:center;justify-content:center;
+    padding:20px;
+    box-sizing:border-box;
+  }
+  .about-modal-overlay.open{ display:flex; }
+
+  .reserve-modal-overlay{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.68);
+    z-index:3400;
+    align-items:center;justify-content:center;
+    padding:20px;
+    box-sizing:border-box;
+  }
+  .reserve-modal-overlay.open{ display:flex; }
+  .reserve-modal{
+    position:relative;
+    width:100%;max-width:480px;max-height:88vh;
+    overflow-y:auto;
+    background:#fff;
+    border-radius:22px;
+    padding:32px 20px 24px;
+    box-sizing:border-box;
+    animation:pvModalIn .3s cubic-bezier(.22,1,.36,1);
+  }
+  .reserve-modal-close{
+    position:absolute;top:14px;right:14px;
+    width:32px;height:32px;border-radius:50%;
+    background:#f2f2f3;border:none;color:#0a0a0c;
+    font-size:18px;cursor:pointer;line-height:1;
+    z-index:1;
+  }
+  .reserve-modal .rf-inner{ max-width:none; border:none; padding:0; }
+  /* v20261002: 사전예약 완료 안내 포스터 오버레이 */
+  .done-overlay{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.72);
+    z-index:3600;
+    align-items:center;justify-content:center;
+    padding:16px;
+    box-sizing:border-box;
+  }
+  .done-overlay.open{ display:flex; }
+  .done-box{
+    position:relative;
+    width:100%;max-width:440px;max-height:92vh;
+    overflow-y:auto;
+    background:#fff;
+    border-radius:20px;
+    padding:0 0 16px;
+    box-sizing:border-box;
+    animation:pvModalIn .3s cubic-bezier(.22,1,.36,1);
+  }
+  .done-box img{ display:block;width:100%;height:auto;border-radius:20px 20px 0 0; }
+  .done-close{
+    position:absolute;top:12px;right:12px;
+    width:34px;height:34px;border-radius:50%;
+    background:rgba(255,255,255,.92);border:1px solid #e9e9ec;color:#0a0a0c;
+    font-size:20px;cursor:pointer;line-height:1;
+    z-index:1;
+  }
+  .done-btn{
+    display:block;width:calc(100% - 32px);margin:12px auto 0;
+    height:52px;border:none;border-radius:14px;
+    background:#e6007e;color:#fff;font-size:17px;font-weight:800;
+    cursor:pointer;
+  }
+  .about-modal{
+    position:relative;
+    width:100%;max-width:480px;max-height:88vh;
+    overflow-y:auto;
+    background:#fff;
+    border-radius:22px;
+    padding:32px 20px 24px;
+    box-sizing:border-box;
+    font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;
+    animation:pvModalIn .3s cubic-bezier(.22,1,.36,1);
+  }
+  .about-modal-close{
+    position:absolute;top:14px;right:14px;
+    width:32px;height:32px;border-radius:50%;
+    background:#f2f2f3;border:none;color:#0a0a0c;
+    font-size:18px;cursor:pointer;line-height:1;
+    z-index:1;
+  }
+  .about-hero{ text-align:center; margin-bottom:32px; }
+  .about-cert{
+    width:132px;height:132px;border-radius:50%;
+    display:block;margin:0 auto 18px;
+  }
+  .about-label{ font-size:13px;font-weight:700;color:#666;letter-spacing:.02em;margin-bottom:6px; }
+  .about-title{ font-size:23px;font-weight:800;letter-spacing:-.02em;color:#0a0a0c; }
+
+  .about-card{
+    background:#fff;
+    border:1px solid rgba(10,10,12,.08);
+    border-radius:18px;
+    padding:24px 20px;
+    margin-bottom:24px;
+  }
+  .about-card-eyebrow{ font-size:11px;font-weight:800;color:#666;letter-spacing:.1em;text-align:center;margin-bottom:8px; }
+  .about-card-title{ font-size:16px;font-weight:800;color:#0a0a0c;text-align:center;margin-bottom:18px;line-height:1.45; }
+  .about-biz{
+    display:grid;grid-template-columns:auto 1fr;gap:9px 16px;
+    font-size:13px;padding:18px 2px 2px;border-top:1px solid #f0f0f0;
+  }
+  .about-biz dt{ color:#999;font-weight:700; }
+  .about-biz dd{ color:#0a0a0c;font-weight:600; }
+
+  .about-img{ width:100%;display:block;border-radius:14px;margin-bottom:16px; }
+
+  .about-faq{ margin-top:8px; }
+
+  .pr-badge{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    width:fit-content;
+    max-width:100%;
+    margin:0 auto 20px;
+    padding:8px 16px;
+    background:#fcf0f7;
+    border-radius:999px;
+    color:#e2067a;
+    font-size:12.5px;
+    font-weight:700;
+  }
+  .pr-badge svg{ flex-shrink:0; }
+  .pr-title{
+    opacity:1;
+    transform:none;
+    text-align:center;
+    font-size:clamp(22px,5.5vw,28px);
+    font-weight:800;
+    letter-spacing:-.02em;
+    color:#0a0a0c;
+    margin-bottom:14px;
+  }
+  .pr-title-accent{ color:#e2067a; }
+  .pr-sub{
+    text-align:center;
+    font-size:13px;
+    line-height:1.6;
+    color:#777;
+    margin-bottom:24px;
+  }
+  .pr-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px;
+    margin-bottom:20px;
+  }
+  .pr-card{
+    text-align:center;
+    padding:24px 16px;
+    background:#fafafa;
+    border-radius:16px;
+  }
+  .pr-icon-circle{
+    width:56px;height:56px;
+    margin:0 auto 14px;
+    border-radius:50%;
+    background:#fcf0f7;
+    display:flex;align-items:center;justify-content:center;
+    color:#e2067a;
+  }
+  .pr-card-title{
+    font-size:15px;
+    font-weight:800;
+    color:#0a0a0c;
+    margin-bottom:8px;
+  }
+  .pr-card-desc{
+    font-size:12.5px;
+    line-height:1.55;
+    color:#8a8a8a;
+  }
+  .pr-highlight{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap;
+    padding:16px 14px;
+    background:#fcf0f7;
+    border-radius:14px;
+    text-align:center;
+    font-size:13.5px;
+    color:#0a0a0c;
+    margin-bottom:16px;
+    font-weight:600;
+  }
+  .pr-highlight strong{ color:#e2067a; font-weight:800; }
+  .pr-highlight svg{ color:#e2067a; flex-shrink:0; }
+  .pr-notice{
+    display:flex;
+    gap:10px;
+    padding:16px;
+    background:#f6f6f7;
+    border-radius:14px;
+  }
+  .pr-notice svg{ flex-shrink:0; color:#aaa; margin-top:1px; }
+  .pr-notice p{
+    font-size:11.5px;
+    line-height:1.6;
+    color:#8a8a8a;
+  }
+  .pr-notice-small{ margin-top:6px; color:#b0b0b0!important; }
+  .about-faq-heading{
+    font-size:13px;
+    font-weight:700;
+    color:#e2067a;
+    letter-spacing:.02em;
+    margin-bottom:10px;
+  }
+  .faq-item{
+    border-bottom:1px solid #eee;
+  }
+  .faq-item:first-of-type{ border-top:1px solid #eee; }
+  .faq-q{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:14px 2px;
+    background:none;
+    border:none;
+    text-align:left;
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:700;
+    color:#0a0a0c;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .faq-q svg{
+    flex-shrink:0;
+    color:#b0b0b5;
+    transition:transform .25s ease;
+  }
+  .faq-item.open .faq-q svg{ transform:rotate(180deg); color:#e2067a; }
+  .faq-a{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .3s ease;
+  }
+  .faq-item.open .faq-a{ max-height:200px; }
+  .faq-a p{
+    padding:0 2px 16px;
+    font-size:13px;
+    line-height:1.6;
+    color:#666;
+  }
+
+  /* ══ 사이드 퀵 메뉴 ══ */
+  .side-quick{
+    position:fixed;
+    right:16px;top:50%;transform:translateY(-50%);
+    z-index:2500;
+    display:flex;flex-direction:column;
+    width:64px;
+    border-radius:32px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.35);
+    box-shadow:0 8px 28px rgba(0,0,0,.35);
+  }
+  .side-quick-btn{
+    position:relative;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    gap:4px;
+    padding:16px 4px;
+    background:radial-gradient(120% 140% at 30% 20%, #3a3a3d 0%, #1c1c1e 45%, #050506 100%);
+    border:none;outline:none;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .side-quick-btn + .side-quick-btn{ border-top:1px solid rgba(255,255,255,.16); }
+  .side-quick-btn svg{ width:26px;height:26px;flex-shrink:0;position:relative;z-index:1; }
+  .side-quick-dot{
+    position:absolute;top:14px;right:14px;
+    width:9px;height:9px;border-radius:50%;
+  }
+  .side-quick-btn.is-call .side-quick-dot{ background:#ff2d8c; box-shadow:0 0 8px 2px rgba(255,45,140,.75); }
+  .side-quick-btn.is-kakao .side-quick-dot{ background:#ffd400; box-shadow:0 0 8px 2px rgba(255,212,0,.75); }
+  .side-quick-label{
+    font-size:10.5px;font-weight:700;color:#fff;
+    letter-spacing:-.02em;line-height:1.25;text-align:center;
+  }
+  @media(max-width:640px){
+    .side-quick{ right:12px; top:auto; bottom:88px; transform:none; width:56px; border-radius:28px; }
+    .side-quick-btn{ padding:13px 4px; }
+    .side-quick-btn svg{ width:22px;height:22px; }
+  }
+
+  /* 전화/카톡 팝업 — 기존 모달과 톤 통일 (흰 카드) */
+  .qm-popup-overlay{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:2600;
+    align-items:center;justify-content:center;
+    padding:20px;box-sizing:border-box;
+  }
+  .qm-popup-overlay.open{ display:flex; }
+  .qm-popup{
+    position:relative;
+    width:100%;max-width:320px;
+    background:#fff;color:#0a0a0c;
+    border-radius:20px;
+    padding:26px 22px 22px;
+    box-sizing:border-box;
+    text-align:center;
+    font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;
+    animation:pvModalIn .3s cubic-bezier(.22,1,.36,1);
+  }
+  .qm-popup-close{
+    position:absolute;top:12px;right:12px;
+    width:30px;height:30px;border-radius:50%;
+    background:#f2f2f3;border:none;color:#0a0a0c;
+    font-size:17px;cursor:pointer;line-height:1;
+  }
+  .qm-popup-title{ font-size:13px;color:#999;font-weight:600;margin-bottom:10px; }
+  .qm-popup-main{ font-size:22px;font-weight:800;letter-spacing:-.01em;margin-bottom:20px; }
+  .qm-popup-btn{
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    width:100%;padding:14px;border:none;border-radius:100px;
+    font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;
+    text-decoration:none;
+  }
+  .qm-popup-btn.call{ background:#0a0a0c;color:#fff; }
+  .qm-popup-btn.kakao{ background:#FEE500;color:#3A1D1D; }
+
+  /* ===== site footer ===== */
+  .site-footer{
+    position:relative;
+    background:var(--void);
+    border-top:1px solid var(--hairline);
+    padding:44px 24px 30px;
+  }
+  .sf-inner{ max-width:900px; margin:0 auto; }
+  .sf-row{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:20px 28px;
+    flex-wrap:wrap;
+  }
+  .sf-row-top{ align-items:center; margin-bottom:20px; }
+  .sf-links{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    font-size:12px;
+    font-weight:600;
+    color:var(--mist);
+  }
+  .sf-links span{ cursor:default; user-select:none; }
+  .sf-cert{ display:flex; align-items:center; gap:10px; }
+  .sf-cert-badge{
+    width:50px;height:50px;
+    border-radius:50%;
+    object-fit:cover;
+    flex-shrink:0;
+  }
+  .sf-cert-phone{ display:flex; flex-direction:column; align-items:flex-end; line-height:1.3; }
+  .sf-cert-phone-label{ font-size:11px; color:var(--mist-dim); font-weight:600; }
+  .sf-cert-phone-num{ font-size:19px; font-weight:800; color:var(--white); letter-spacing:-.01em; }
+  .sf-row-info{
+    padding-top:18px;
+    border-top:1px solid var(--hairline);
+    margin-bottom:18px;
+    font-size:12.5px;
+    line-height:1.9;
+    color:var(--mist);
+  }
+  .sf-biz p, .sf-hours p{ margin:0; }
+  .sf-hours{ text-align:right; flex-shrink:0; }
+  .sf-k{ color:var(--mist-dim); }
+  .sf-sep{ margin:0 8px; color:var(--mist-dim); }
+  .sf-hairline2{ height:1px; background:var(--hairline); margin:20px 0 18px; }
+  .sf-row-bottom{ align-items:center; font-size:12px; }
+  .sf-copy{ color:var(--mist-dim); }
+  .sf-partners{ display:flex; align-items:center; gap:18px; }
+  .sf-partner{
+    display:flex; align-items:center; gap:6px;
+    color:var(--mist); font-weight:600; text-decoration:none;
+  }
+  .sf-partner svg{ width:16px; height:16px; }
+  .sf-partner:hover{ color:var(--white); }
+  @media(max-width:640px){
+    .sf-row{ flex-direction:column; align-items:flex-start; }
+    .sf-row-top{ align-items:flex-start; }
+    .sf-cert{ align-self:stretch; }
+    .sf-cert-phone{ align-items:flex-start; }
+    .sf-hours{ text-align:left; }
+    .sf-row-bottom{ align-items:flex-start; gap:14px; }
+  }
+
+</style>
+<script>
+/* v20261005: 메타 '메이드' 신호용 — 신청 때 메타 광고 클릭 정보(fbc/fbp)·브라우저·페이지 주소를 같이 저장
+   (전화번호 같은 개인정보는 메타로 보내지 않음. 고객이 예약완료·상담성공·확정이 되면 서버가 이 클릭 정보로 메타에 '메이드' 신호 1회 전송) */
+(function(){try{var q=new URLSearchParams(location.search).get('fbclid');if(q){sessionStorage.setItem('udak_fbclid',q);sessionStorage.setItem('udak_fbclid_ts',String(Date.now()));}}catch(e){}})();
+function udakMetaIds(){
+  try{
+    var ck=function(n){var m=document.cookie.match(new RegExp('(?:^|;\\s*)'+n+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;};
+    var fbc=ck('_fbc'), fbp=ck('_fbp');
+    if(!fbc){var id=sessionStorage.getItem('udak_fbclid');if(id)fbc='fb.1.'+(sessionStorage.getItem('udak_fbclid_ts')||Date.now())+'.'+id;}
+    return {meta_fbc:fbc||null, meta_fbp:fbp||null, meta_ua:(navigator.userAgent||'').slice(0,400)||null, meta_page_url:(location.origin+location.pathname+location.search).slice(0,500)};
+  }catch(e){return {};}
+}
+</script>
+</head>
+<body>
+<!-- ══ v20261005: 모바일 상단 헤더 (galaxy_z8 과 같은 디자인 이미지 · 같은 자리 투명 버튼) — PC는 아래 기존 상단바 ══
+     '제품은 어떻게 받나요?'는 사전예약이라 폴드8용 '당일 출고' 안내 대신 이 페이지의 사전예약 배송 안내(선착순 우선 진행)로 연결 -->
+<header class="m-hdr" id="mHdr">
+  <img class="m-hdr-img" src="/assets/udak-mobile-header-v3.webp" width="1448" height="664" alt="유플러스 공식파트너사 U+ 다이렉트" fetchpriority="high" draggable="false">
+  <a class="m-hdr-hit" href="#" style="left:7.60%;top:12.50%;width:27.62%;height:22.59%" aria-label="U+ 다이렉트 맨 위로"></a>
+  <button type="button" class="m-hdr-hit" style="left:73.20%;top:16.27%;width:10.08%;height:18.07%" onclick="uwtNavGoto('.benefits')" aria-label="상품 찾기"></button>
+  <button type="button" class="m-hdr-hit" style="left:84.19%;top:16.27%;width:10.84%;height:18.07%" onclick="openNavDrawer()" aria-label="메뉴"></button>
+  <button type="button" class="m-hdr-hit" style="left:5.46%;top:42.47%;width:22.31%;height:43.83%" onclick="openVideoPop('direct')" aria-label="유플러스 다이렉트란?"></button>
+  <button type="button" class="m-hdr-hit" style="left:27.83%;top:42.47%;width:22.03%;height:43.83%" onclick="openNavModal('modalBuySteps')" aria-label="온라인 구매 절차"></button>
+  <button type="button" class="m-hdr-hit" style="left:49.93%;top:42.47%;width:22.38%;height:43.83%" onclick="openPriorityModal()" aria-label="제품은 어떻게 받나요?"></button>
+  <button type="button" class="m-hdr-hit" style="left:72.38%;top:42.47%;width:22.24%;height:43.83%" onclick="openNavModal('modalFirstTime')" aria-label="온라인 구매 처음이신가요?"></button>
+</header>
+<!-- 메뉴(드로어) -->
+<div class="nav-drawer-overlay" id="navOverlay" onclick="closeNavDrawer()"></div>
+<div class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-header">
+    <span class="logo"><span style="color:#E2173D;">U+</span> 다이렉트</span>
+    <button class="nav-drawer-close" onclick="closeNavDrawer()" aria-label="닫기">✕</button>
+  </div>
+  <div class="nav-drawer-body">
+    <div class="nav-drawer-item" onclick="closeNavDrawer(); openVideoPop('direct')">유플러스 다이렉트란?</div>
+    <div class="nav-drawer-item" onclick="openNavModal('modalBuySteps')">온라인 구매 절차가 궁금해요.</div>
+    <div class="nav-drawer-item" onclick="closeNavDrawer(); openPriorityModal()">제품은 어떻게 받는거에요?</div>
+    <div class="nav-drawer-item" onclick="openNavModal('modalFirstTime')">온라인 구매 처음이라 어렵고 걱정돼요.</div>
+    <div class="nav-drawer-item" onclick="closeNavDrawer(); openFaqModal()">궁금해요</div>
+    <div class="nav-drawer-item" onclick="uwtNavGoto('.benefits'); closeNavDrawer();">핸드폰</div>
+    <a class="nav-drawer-item" href="https://pf.kakao.com/_HxfVxcn/chat" target="_blank">카카오톡 상담</a>
+    <div class="nav-drawer-item" onclick="closeNavDrawer(); openReserveModal();">사전예약 신청하기</div>
+  </div>
+</div>
+<script>
+function uwtNavGoto(selector){ var el=document.querySelector(selector); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }
+function openNavDrawer(){ document.getElementById('navDrawer').classList.add('open'); document.getElementById('navOverlay').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeNavDrawer(){ document.getElementById('navDrawer').classList.remove('open'); document.getElementById('navOverlay').classList.remove('open'); document.body.style.overflow=''; }
+function openNavModal(id){
+  closeNavDrawer();
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow='hidden';
+  var bar=document.querySelector('.bottom-cta-bar'); if(bar) bar.style.display='none';
+}
+function closeNavModal(id){
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow='';
+  var bar=document.querySelector('.bottom-cta-bar'); if(bar) bar.style.display='';
+}
+</script>
+<nav class="top-nav">
+  <div class="top-nav-inner">
+    <span class="top-nav-logo"><span class="top-nav-logo-accent">U+</span> 다이렉트</span>
+    <div class="top-nav-items">
+      <!-- v20261005: '궁금해요 / 사전예약 우선배송 관련' → '유플러스 다이렉트란?(소개 영상) / 궁금해요' -->
+      <button type="button" class="top-nav-item top-nav-item-highlight" onclick="openVideoPop('direct')">유플러스 다이렉트란?
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+      <button type="button" class="top-nav-item" onclick="openFaqModal()">궁금해요</button>
+    </div>
+  </div>
+</nav>
+<div class="grain"></div>
+
+<div class="side-quick">
+  <button type="button" class="side-quick-btn is-call" onclick="toggleQmPopup('call')">
+    <span class="side-quick-dot"></span>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.36 11.36 0 003.55.57 1 1 0 011 1V20a1 1 0 01-1 1C9.61 21 3 14.39 3 6a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.55a1 1 0 01-.25 1.01l-2.2 2.23z" fill="#fff"/>
+    </svg>
+    <span class="side-quick-label">전화<br>상담</span>
+  </button>
+  <button type="button" class="side-quick-btn is-kakao" onclick="toggleQmPopup('kakao')">
+    <span class="side-quick-dot"></span>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 3C7.03 3 3 6.36 3 10.5c0 2.7 1.7 5.07 4.27 6.43l-.9 3.32a.3.3 0 00.45.33l3.9-2.57c.41.05.84.08 1.28.08 4.97 0 9-3.36 9-7.5S16.97 3 12 3z" fill="#fff"/>
+    </svg>
+    <span class="side-quick-label">카톡<br>문의</span>
+  </button>
+</div>
+
+  <section class="section" id="hero">
+    <div class="glow"></div>
+    <div class="countdown-bar" id="countdownBar">
+      <span class="countdown-label">사전예약 마감까지</span>
+      <div class="countdown-nums">
+        <span class="cd-unit"><b id="cdD">00</b><i>일</i></span>
+        <span class="cd-unit"><b id="cdH">00</b><i>시</i></span>
+        <span class="cd-unit"><b id="cdM">00</b><i>분</i></span>
+        <span class="cd-unit"><b id="cdS">00</b><i>초</i></span>
+      </div>
+    </div>
+    <button type="button" class="about-trigger" onclick="openVideoPop('direct')">
+      <img class="about-trigger-badge" src="/assets/about-official-badge.webp" alt="LG유플러스 공식인증대리점">
+      <span class="about-trigger-title">유플러스 다이렉트란?</span>
+      <span class="about-trigger-hint">클릭해서 자세히보기 ›</span>
+    </button>
+    <img class="subsidy-info-img" src="/assets/iphone18/subsidy_info_v3.webp" alt="유플러스 다이렉트 지원금 - 번호이동 고객님 30만원 지원(SKT·KT·알뜰폰에서 U+로 이동), 기기변경 고객님 20만원 지원(기존 U+ 고객님), 지원금 조건 85,000원 요금제 6개월 이상 유지">
+    <img class="subsidy-info-img" src="/assets/iphone18/no_card_no_addon.webp" alt="제휴카드 No! 부가서비스 의무가입 No! - 제휴카드·부가서비스 가입 조건 없음">
+  </section>
+
+  <section class="section" id="preorderInfo">
+    <img class="hero-poster" src="/assets/iphone18/hero_poster1_duo.webp" alt="아이폰 듀오 사전예약 - 번호이동 고객 30만원 지원, 기기변경 고객 20만원 지원, 예약신청 전화상담 개통 절차 10.23, 혜택 애플워치 SE3 기기값 무료 제공, 아이패드 A16 128G 기기값 무료 제공(U+ 인터넷·TV 가입 이용시)" loading="lazy">
+    <img class="hero-poster" src="/assets/iphone18/hero_poster2_v2.webp" alt="사전예약 이렇게 진행됩니다 - 희망 제품 선택, 사전예약 접수, 요금제·결합·혜택 안내, 전화 상담 후 조건 확인, 택배 수령 가능, 개통 후 이용관리" loading="lazy">
+  </section>
+
+  <section class="benefits">
+    <div class="benefits-inner">
+      <span class="b-eyebrow">PRE-RESERVATION BENEFITS</span>
+      <span class="b-select-title">원하시는 모델을 선택하세요</span>
+      <span class="b-select-sub">선택한 모델의 가격 · 용량 · 컬러 · 사전예약 혜택을 확인할 수 있습니다.</span>
+      <span class="b-select-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5a2 2 0 0 1 4 0v6"/><path d="M13 10.5V9a2 2 0 0 1 4 0v2"/><path d="M17 11a2 2 0 0 1 4 0v3a7 7 0 0 1-7 7h-1.5a7 7 0 0 1-5.9-3.2L4.2 14a2 2 0 0 1 3.3-2.2L9 13.5"/></svg>모델 선택 시 상세 혜택이 열립니다</span>
+      <div class="b-phone-grid">
+        <div class="b-phone-item" onclick="openPhoneModal('duo','스타 화이트')">
+          <span class="b-tag-benefit">사전예약 혜택</span>
+          <span class="b-tag-cap">256GB</span>
+          <div class="b-phone-tile is-single"><img src="/assets/iphone18/duo_starwhite.webp" alt="아이폰 듀오 스타 화이트" loading="lazy"></div>
+          <span class="b-phone-name">아이폰 듀오 스타 화이트</span>
+          <span class="b-phone-hint">탭하여 가격 · 용량 · 컬러 보기 ›</span>
+          <button type="button" class="b-phone-cta">혜택 확인하기 ›</button>
+        </div>
+        <div class="b-phone-item" onclick="openPhoneModal('duo','나이트 스카이')">
+          <span class="b-tag-benefit">사전예약 혜택</span>
+          <span class="b-tag-cap">256GB</span>
+          <div class="b-phone-tile is-single"><img src="/assets/iphone18/duo_nightsky.webp" alt="아이폰 듀오 나이트 스카이" loading="lazy"></div>
+          <span class="b-phone-name">아이폰 듀오 나이트 스카이</span>
+          <span class="b-phone-hint">탭하여 가격 · 용량 · 컬러 보기 ›</span>
+          <button type="button" class="b-phone-cta">혜택 확인하기 ›</button>
+        </div>
+      </div>
+
+      <div class="b-group">
+        <div class="b-stack">
+          <!-- v20261005: 요금제별 혜택 이미지(benefit_duo_main) 뺌 — 바로 아래 애플워치 기기값 무료 이미지와 겹쳐서 -->
+          <div class="b-card"><img src="/assets/iphone18/benefit_watch_duo.webp" alt="애플워치 SE3 40mm / 44mm 기기값 무료 제공 - 셀룰러 제품, 아이폰 듀오 사전예약 구매시 SE3 워치 기기값 무료증정, 40mm 429,000원 44mm 473,000원, 디자인·디스플레이, 피트니스, 안전 기능, 성능·편의 주요 기능" loading="lazy"></div>
+          <div class="b-card"><img src="/assets/iphone18/benefit_ipad_condition.webp" alt="유플러스 다이렉트 혜택 안내 - 아이패드 A16 128G 기기값 무료 조건: 번호이동 고객님 U+ 인터넷·TV 신규가입 시, 기기변경 고객님 U+ 기존 인터넷·TV 1년 이상 2년 미만 유지 중인 고객님(인터넷 500MB 이상 요금제 사용 고객님), 상담 시 적용 가능 여부를 확인해 주세요" loading="lazy"></div>
+          <div class="b-card"><img src="/assets/iphone18/accessories.webp" alt="고객님의 새 휴대폰, 더 안심하고 사용하실 수 있도록 - 클리어 케이스, 강화필름, 고속충전 어댑터" loading="lazy"></div>
+          <div class="b-card"><img src="/assets/iphone18/benefit_whyudak.webp" alt="왜 유닥인가요 - 믿을 수 있는 공식 파트너사, 빠른 배송과 확실한 사후관리, 실속 있는 요금제별 혜택, 강요 없는 투명 상담" loading="lazy"></div>
+          <div class="b-card"><img src="/assets/iphone18/benefit_care.webp" alt="U+ DIRECT CARE 사전예약 고객 전용 안심관리 - 개통으로 끝내지 않습니다, 첫 청구금액 확인 결합할인 적용 확인 요금제 변경일 안내 개통 후 전담 상담" loading="lazy"></div>
+        </div>
+      </div>
+
+      <p class="b-closing">애플의 첫 폴더블을 경험해 보세요.</p>
+
+    </div>
+  </section>
+
+  <div class="phone-modal-overlay" id="phoneModalOverlay-duo">
+    <div class="pm-topbar">
+      <button type="button" class="pm-back" onclick="closePhoneModal('duo')" aria-label="뒤로">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <span class="pm-topbar-logo"><b>U+</b>다이렉트</span>
+    </div>
+    <div class="phone-modal">
+
+      <div class="pm-img-card"><img id="duo-img" src="/assets/iphone18/duo_starwhite.webp" alt="아이폰 듀오 스타 화이트"></div>
+      <p class="phone-modal-title pm-title-center">아이폰 듀오</p>
+
+      <div class="pm-result">
+        <span class="pm-result-label">예상 월 납부금액</span>
+        <b class="pm-result-value" id="duo-result">— 원</b>
+        <span class="pm-result-hint" id="duo-resultHint">통신사와 할부 방식을 선택해주세요</span>
+        <div class="pm-breakdown">
+          <div><span>출고가</span><b id="duo-list">-</b></div>
+          <div><span>사전예약 지원금 <em id="duo-typeLabel"></em></span><b class="minus" id="duo-subsidy">통신사 선택</b></div>
+          <div class="pm-after"><span>지원 후 금액</span><b id="duo-after">—</b></div>
+        </div>
+      </div>
+
+      <span class="b-modal-label">컬러 <em class="pm-picked" id="duo-colorName">스타 화이트</em></span>
+      <div class="pm-swatches">
+        <button type="button" class="pm-swatch is-active" data-color="스타 화이트" style="--c:#e6e5e1" onclick="selectColor('duo',this)" aria-label="스타 화이트"></button>
+        <button type="button" class="pm-swatch" data-color="나이트 스카이" style="--c:#2b3340" onclick="selectColor('duo',this)" aria-label="나이트 스카이"></button>
+      </div>
+
+      <span class="b-modal-label">용량</span>
+      <div class="b-storage-row">
+        <button type="button" class="b-storage-badge is-active" data-cap="256GB" onclick="selectStorage('duo',this)">256GB</button>
+        <button type="button" class="b-storage-badge" data-cap="512GB" onclick="selectStorage('duo',this)">512GB</button>
+        <button type="button" class="b-storage-badge" data-cap="1TB" onclick="selectStorage('duo',this)">1TB</button>
+        <button type="button" class="b-storage-badge" data-cap="2TB" onclick="selectStorage('duo',this)">2TB</button>
+      </div>
+
+      <span class="b-modal-label">현재 사용 중인 통신사</span>
+      <div class="pm-badge-row">
+        <button type="button" class="pm-badge" data-carrier="SKT" onclick="selectCarrier('duo',this)">SKT</button>
+        <button type="button" class="pm-badge" data-carrier="KT" onclick="selectCarrier('duo',this)">KT</button>
+        <button type="button" class="pm-badge" data-carrier="LG U+" onclick="selectCarrier('duo',this)">LG U+</button>
+        <button type="button" class="pm-badge" data-carrier="알뜰폰" onclick="selectCarrier('duo',this)">알뜰폰</button>
+      </div>
+
+      <span class="b-modal-label">할부 개월</span>
+      <div class="pm-badge-row">
+        <button type="button" class="pm-badge" data-months="0" onclick="selectMonths('duo',this)">일시납</button>
+        <button type="button" class="pm-badge" data-months="24" onclick="selectMonths('duo',this)">24개월</button>
+        <button type="button" class="pm-badge" data-months="30" onclick="selectMonths('duo',this)">30개월</button>
+        <button type="button" class="pm-badge" data-months="36" onclick="selectMonths('duo',this)">36개월</button>
+      </div>
+
+      <p class="b-price-note">* 자세한 내용은 상담 시에 확정됩니다.</p>
+      <button type="button" class="b-modal-cta" onclick="reserveFromPhone('duo')">이 조건으로 사전예약 신청하기 ›</button>
+    </div>
+  </div>
+
+  <div class="about-modal-overlay" id="aboutModalOverlay" onclick="if(event.target===this)closeAboutModal()">
+    <div class="about-modal">
+      <button type="button" class="about-modal-close" onclick="closeAboutModal()">&times;</button>
+
+      <div class="about-hero">
+        <img class="about-cert" src="/assets/about-official-badge.webp" alt="LG유플러스 공식인증대리점 (주)신세계정보통신">
+        <p class="about-label">유플러스 공식파트너사</p>
+        <p class="about-title">유플러스 다이렉트</p>
+      </div>
+
+      <div class="about-card">
+        <p class="about-card-eyebrow">ABOUT US</p>
+        <p class="about-card-title">유플러스 다이렉트는<br>신세계정보통신이 운영하는<br>온라인 상담 채널입니다</p>
+        <dl class="about-biz">
+          <dt>운영사</dt><dd>신세계정보통신</dd>
+          <dt>파트너십</dt><dd>LG U+ 공식 파트너사</dd>
+          <dt>직영매장</dt><dd>서울·경기 30개 운영</dd>
+          <dt>서비스</dt><dd>온라인 상담 · 개통 · 사후관리 일괄 진행</dd>
+        </dl>
+      </div>
+
+      <img class="about-img" src="/assets/about-stores.png" alt="유플러스 다이렉트란? 서울·경기 직영매장 30개 운영">
+      <img class="about-img" src="/assets/about-fast.png" alt="서울·경기 1위, 빠르게 받아보실 수 있습니다">
+      <img class="about-img" src="/assets/about-directcare.png" alt="U+ DIRECT CARE, 개통으로 끝내지 않습니다">
+      <img class="about-img" src="/assets/about-whyudak.png" alt="왜 유닭인가요">
+      <img class="about-img" src="/assets/about-purchase-steps.png" alt="온라인 구매 절차, 이렇게 진행됩니다" style="margin-bottom:0;">
+    </div>
+  </div>
+
+  <div class="about-modal-overlay" id="faqModalOverlay" onclick="if(event.target===this)closeFaqModal()">
+    <div class="about-modal">
+      <button type="button" class="about-modal-close" onclick="closeFaqModal()">&times;</button>
+
+      <div class="about-faq" style="margin-top:8px;">
+        <p class="about-faq-heading">자주 묻는 질문</p>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>아이폰 듀오는 어떻게 받아볼 수 있나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>개통 완료 후 고객님이 입력하신 주소로 택배 배송해드립니다. 재고 및 개통 상황에 따라 순차적으로 발송됩니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>지금 신청하면 사전예약 등록이 완료된 건가요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>현재 신청은 사전예약 상담 접수 단계입니다. 9월 11일 사전예약 시작 이후 상담을 통해 공식 사전예약 등록을 도와드립니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>개통은 어떻게 진행되나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>상담을 통해 단말 가격, 요금제, 지원금, 혜택 및 이용조건을 먼저 확인하신 후 고객님이 최종 결정하시면 온라인 개통 절차를 진행합니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>언제쯤 제품을 받을 수 있나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>제품은 구매 완료 고객 순으로 순차 배송됩니다. 선택하신 모델·색상·용량의 재고 상황에 따라 실제 수령일은 달라질 수 있습니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>원하는 색상과 용량을 선택할 수 있나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>네. 원하시는 모델·색상·용량을 선택하실 수 있습니다. 단, 공식 출시 이후 재고 상황에 따라 일부 옵션은 조기 품절될 수 있습니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>사전예약 신청하면 반드시 구매해야 하나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>아닙니다. 먼저 상담을 통해 가격과 혜택, 이용조건을 확인한 뒤 구매 여부를 결정하실 수 있습니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>번호이동 고객만 신청할 수 있나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>아닙니다. 번호이동 고객과 기존 U+ 고객 모두 신청 가능합니다. 다만 가입 유형에 따라 적용되는 지원금과 혜택은 달라질 수 있습니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>애플워치 혜택은 누구나 받을 수 있나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>혜택별로 요금제 유지기간, 인터넷·TV 이용 여부 등 적용 조건이 다릅니다. 상담 시 고객님 조건에 맞는 혜택을 정확하게 안내드립니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>인터넷·TV 가입도 꼭 해야 하나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>아이폰 듀오 사전예약을 위해 인터넷·TV 가입이 필수는 아닙니다. 다만 U+ 인터넷·TV 가입 또는 이용 조건을 충족할 경우 추가 혜택을 받을 수 있습니다.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            <span>개통 후 문제가 생기면 어디에 문의하나요?</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>개통으로 끝나지 않습니다. 제품 수령 후 개통·요금제·결합·이용 관련 문의가 있을 경우 유플러스 다이렉트 상담팀에서 계속 안내해드립니다.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-modal-overlay" id="priorityModalOverlay" onclick="if(event.target===this)closePriorityModal()">
+    <div class="about-modal">
+      <button type="button" class="about-modal-close" onclick="closePriorityModal()">&times;</button>
+
+      <div class="pr-badge">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>사전예약 선착순 우선 진행 안내</span>
+      </div>
+
+      <h2 class="pr-title"><span class="pr-title-accent">사전예약</span> 우선 구매 안내</h2>
+      <p class="pr-sub">9.11 사전예약 시작 이후 먼저 접수해주신 고객님부터<br>순차적으로 재고 배정·발송·개통을 도와드리고 있습니다.</p>
+
+      <div class="pr-grid">
+        <div class="pr-card">
+          <div class="pr-icon-circle"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 16l2 2 4-4"/></svg></div>
+          <p class="pr-card-title">우선 재고 배정</p>
+          <p class="pr-card-desc">먼저 구매를 완료해주신 고객님께<br>우선적으로 재고를 배정합니다.</p>
+        </div>
+        <div class="pr-card">
+          <div class="pr-icon-circle"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8z"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+          <p class="pr-card-title">순차 발송</p>
+          <p class="pr-card-desc">구매 순서에 따라<br>안전하고 빠르게 발송해드립니다.</p>
+        </div>
+        <div class="pr-card">
+          <div class="pr-icon-circle"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M9 15l2 2 4-4"/></svg></div>
+          <p class="pr-card-title">개통 우선 지원</p>
+          <p class="pr-card-desc">빠른 개통을 위해<br>우선적으로 지원해드립니다.</p>
+        </div>
+      </div>
+
+      <div class="pr-highlight">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2l1.5 6.5L20 10l-6.5 1.5L12 18l-1.5-6.5L4 10l6.5-1.5L12 2z"/></svg>
+        <span><strong>빠른 접수 고객님일수록</strong> 우선 진행 가능성이 높습니다</span>
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M12 2l1.5 6.5L20 10l-6.5 1.5L12 18l-1.5-6.5L4 10l6.5-1.5L12 2z"/></svg>
+      </div>
+
+      <div class="pr-notice">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div>
+          <p>아이폰 듀오는 반도체 및 공급 이슈로 재고 수급이 원활하지 않을 수 있습니다.<br>불편을 드릴 수 있는 점 양해 부탁드리며, 최대한 빠르게 안내드리겠습니다.</p>
+          <p class="pr-notice-small">※ 공급 상황에 따라 일정은 변동될 수 있습니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reserve-modal-overlay" id="reserveModalOverlay" onclick="if(event.target===this)closeReserveModal()">
+    <div class="reserve-modal">
+      <button type="button" class="reserve-modal-close" onclick="closeReserveModal()">&times;</button>
+      <div id="reserveModalSlot"></div>
+    </div>
+  </div>
+
+  <!-- v20261002: 사전예약 완료 안내 (신청 성공 시 표시) -->
+  <div class="done-overlay" id="doneOverlay" role="dialog" aria-modal="true" aria-label="사전예약 완료 안내" onclick="if(event.target===this)closeDoneOverlay()">
+    <div class="done-box">
+      <button type="button" class="done-close" onclick="closeDoneOverlay()" aria-label="닫기">&times;</button>
+      <img src="/assets/iphone18/reservation_done.webp" alt="정상적으로 사전예약이 완료되었습니다. 영업일 오전 9시 30분~오후 8시 이내에 영업사원이 010 번호로 연락드립니다. 영업시간 외 상담을 원하시면 카카오톡 또는 별도의 메모를 남겨주세요.">
+      <button type="button" class="done-btn" onclick="closeDoneOverlay()">확인</button>
+    </div>
+  </div>
+
+  <section class="reserve" id="reserveForm">
+    <div class="rf-inner">
+      <h2 class="rf-title"><span class="rf-title-accent">사전예약</span> 신청서</h2>
+      <p class="rf-subtitle">필수 정보만 입력하시면 빠르게 안내드립니다.</p>
+      <div class="rf-divider"></div>
+
+      <form id="reservationForm">
+        <div class="rf-field">
+          <label>이름 <span class="req">*</span></label>
+          <div class="rf-input-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
+            <input type="text" id="rfName" placeholder="이름을 입력해 주세요">
+          </div>
+        </div>
+
+        <div class="rf-field">
+          <label>연락처 <span class="req">*</span></label>
+          <div class="rf-phone-group">
+            <input type="text" id="rfPhone1" value="010" readonly>
+            <span>-</span>
+            <input type="tel" id="rfPhone2" placeholder="0000" maxlength="4" inputmode="numeric">
+            <span>-</span>
+            <input type="tel" id="rfPhone3" placeholder="0000" maxlength="4" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="rf-field">
+          <label>생년월일 <span class="req">*</span></label>
+          <div class="rf-input-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <input type="text" id="rfBirth" placeholder="예: 1994-01-01" inputmode="numeric" maxlength="10" oninput="rfFormatBirth(this)">
+          </div>
+        </div>
+
+        <div class="rf-field">
+          <label>통신사 <span class="req">*</span></label>
+          <div class="rf-input-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 20V4"/></svg>
+            <select id="rfCarrier">
+              <option value="" disabled selected>통신사를 선택해 주세요</option>
+              <option value="SKT">SKT</option>
+              <option value="KT">KT</option>
+              <option value="LG U+">LG U+</option>
+              <option value="알뜰폰">알뜰폰</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="rf-field">
+          <label>예약 상품 <span class="req">*</span></label>
+          <div class="rf-input-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></svg>
+            <select id="rfProduct">
+              <option value="" disabled>예약하실 상품을 선택해 주세요</option>
+              <option value="아이폰 듀오" selected>아이폰 듀오</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="rf-field">
+          <label>용량</label>
+          <div class="rf-input-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+            <select id="rfCapacity">
+              <option value="" selected>선택 안함 (미정)</option>
+              <option value="256GB">256GB</option>
+              <option value="512GB">512GB</option>
+              <option value="1TB">1TB</option>
+              <option value="2TB">2TB</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="rf-field">
+          <label>희망 컬러</label>
+          <div class="rf-input-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".6" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".6" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".6" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".6" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+            <select id="rfColor">
+              <option value="미정" selected>선택 안함 (미정)</option>
+              <option value="스타 화이트">스타 화이트</option>
+              <option value="나이트 스카이">나이트 스카이</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="rf-field">
+          <label>할부 개월</label>
+          <div class="rf-input-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <select id="rfInstallment">
+              <option value="" selected>선택 안함 (상담 시 결정)</option>
+              <option value="일시납">일시납</option>
+              <option value="24개월">24개월</option>
+              <option value="30개월">30개월</option>
+              <option value="36개월">36개월</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="rf-field">
+          <label>전달사항</label>
+          <div class="rf-input-icon rf-textarea-wrap">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+            <textarea id="rfMemo" placeholder="요청하실 사항을 자유롭게 적어주세요." rows="3" maxlength="500" oninput="document.getElementById('rfMemoCount').textContent=this.value.length"></textarea>
+          </div>
+          <span class="rf-counter"><span id="rfMemoCount">0</span>/500</span>
+        </div>
+
+        <div class="rf-privacy-row">
+          <label class="rf-privacy">
+            <input type="checkbox" id="rfPrivacy">
+            <span>개인정보 수집 및 이용 동의 <em>(필수)</em></span>
+          </label>
+          <button type="button" class="rf-privacy-more" onclick="openPrivacyModal()" aria-label="개인정보 수집 및 이용 동의 자세히 보기">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+        </div>
+
+        <button type="submit" class="rf-submit" id="rfSubmitBtn">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+          <span>사전 예약 신청하기</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <p class="rf-status" id="rfStatus"></p>
+      </form>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="sf-inner">
+      <div class="sf-row sf-row-top">
+        <div class="sf-links">
+          <span>이용약관</span>
+          <span>개인정보처리방침</span>
+          <span>이메일무단수집거부</span>
+        </div>
+        <div class="sf-cert">
+          <img class="sf-cert-badge" src="/assets/about-official-badge.webp" alt="LG유플러스 공식인증대리점 (주)신세계정보통신" loading="lazy">
+          <div class="sf-cert-phone">
+            <span class="sf-cert-phone-label">대표 전화번호</span>
+            <span class="sf-cert-phone-num">1660-1412</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sf-row sf-row-info">
+        <div class="sf-biz">
+          <p><span class="sf-k">상호명</span> : U+ Direct 유닥 :) <span class="sf-sep">·</span> <span class="sf-k">대표자</span> : 이승환 <span class="sf-sep">·</span> <span class="sf-k">사업장 주소</span> : 경기 구리시 갈매동 552-4스칸센 제알토 현대 클러스터동 제 7층 5호</p>
+          <p><span class="sf-k">사업자등록번호</span> : 804-81-00167 <span class="sf-sep">·</span> <span class="sf-k">전화번호</span> : 1660-1412 <span class="sf-sep">·</span> <span class="sf-k">이메일</span> : udak@daum.net</p>
+        </div>
+        <div class="sf-hours">
+          <p>상담시간 : 월~토요일 09:30~20:00 (주말 및 공휴일 휴무)</p>
+          <p>이메일 문의 : udak@daum.net</p>
+        </div>
+      </div>
+
+      <div class="sf-hairline2"></div>
+
+      <div class="sf-row sf-row-bottom">
+        <p class="sf-copy">Copyright(C) 2025 U+ 다이렉트. All rights reserved.</p>
+        <div class="sf-partners">
+          <a class="sf-partner" href="http://pf.kakao.com/_HxfVxcn/chat" target="_blank">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3C7.03 3 3 6.36 3 10.5c0 2.7 1.7 5.07 4.27 6.43l-.9 3.32a.3.3 0 00.45.33l3.9-2.57c.41.05.84.08 1.28.08 4.97 0 9-3.36 9-7.5S16.97 3 12 3z" fill="currentColor"/></svg>
+            Kakao
+          </a>
+          <a class="sf-partner" href="#" onclick="openVideoPop('direct');return false;"><!-- v20261005: 회사 소개는 이미지 페이지(about.html) 대신 소개 영상 -->
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 11.5L12 4l9 7.5M5.5 10v9a1 1 0 001 1h4v-6h3v6h4a1 1 0 001-1v-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            (주)신세계정보통신
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+<script>
+  (function(){
+    var deadline = new Date('2026-10-22T20:00:00+09:00').getTime(); // v20261002: 아이폰 듀오 사전예약 마감 10/22(목) 20:00
+    var elD = document.getElementById('cdD');
+    var elH = document.getElementById('cdH');
+    var elM = document.getElementById('cdM');
+    var elS = document.getElementById('cdS');
+    var bar = document.getElementById('countdownBar');
+    if(!elD || !bar) return;
+    function pad(n){ return n<10 ? '0'+n : ''+n; }
+    function tick(){
+      var diff = deadline - Date.now();
+      if(diff <= 0){
+        bar.querySelector('.countdown-label').textContent='사전예약이 마감되었습니다';
+        bar.querySelector('.countdown-nums').style.display='none';
+        clearInterval(timer);
+        return;
+      }
+      var d = Math.floor(diff/86400000);
+      var h = Math.floor(diff%86400000/3600000);
+      var m = Math.floor(diff%3600000/60000);
+      var s = Math.floor(diff%60000/1000);
+      elD.textContent = pad(d);
+      elH.textContent = pad(h);
+      elM.textContent = pad(m);
+      elS.textContent = pad(s);
+    }
+    tick();
+    var timer = setInterval(tick, 1000);
+  })();
+
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in-view'); }
+    });
+  },{ threshold:.01, rootMargin:'0px 0px 350px 0px' });
+  document.querySelectorAll('.section, .benefits, .b-group').forEach(s=>io.observe(s));
+</script>
+
+<script>
+window.rfFormatBirth=function(el){
+  var v=el.value.replace(/\D/g,'');
+  if(v.length>8) v=v.slice(0,8);
+  if(v.length<=4) el.value=v;
+  else if(v.length<=6) el.value=v.slice(0,4)+'-'+v.slice(4);
+  else el.value=v.slice(0,4)+'-'+v.slice(4,6)+'-'+v.slice(6);
+};
+
+window.openAboutModal=function(){
+  document.getElementById('aboutModalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.querySelector('.bottom-cta-bar').style.display='none';
+};
+window.closeAboutModal=function(){
+  document.getElementById('aboutModalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+  document.querySelector('.bottom-cta-bar').style.display='';
+};
+
+window.openFaqModal=function(){
+  document.getElementById('faqModalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.querySelector('.bottom-cta-bar').style.display='none';
+};
+window.closeFaqModal=function(){
+  document.getElementById('faqModalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+  document.querySelector('.bottom-cta-bar').style.display='';
+};
+
+window.openPriorityModal=function(){
+  document.getElementById('priorityModalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.querySelector('.bottom-cta-bar').style.display='none';
+};
+window.closePriorityModal=function(){
+  document.getElementById('priorityModalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+  document.querySelector('.bottom-cta-bar').style.display='';
+};
+
+window.openReserveModal=function(){
+  var inner = document.querySelector('#reserveForm .rf-inner');
+  var slot = document.getElementById('reserveModalSlot');
+  if(inner && slot) slot.appendChild(inner);
+  document.getElementById('reserveModalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.querySelector('.bottom-cta-bar').style.display='none';
+};
+window.closeReserveModal=function(){
+  var inner = document.querySelector('#reserveModalSlot .rf-inner');
+  var home = document.getElementById('reserveForm');
+  if(inner && home) home.appendChild(inner);
+  document.getElementById('reserveModalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+  document.querySelector('.bottom-cta-bar').style.display='';
+};
+window.openDoneOverlay=function(){
+  var ov=document.getElementById('doneOverlay');
+  ov.classList.add('open');
+  ov.querySelector('.done-box').scrollTop=0;
+  document.body.style.overflow='hidden';
+  document.querySelector('.bottom-cta-bar').style.display='none';
+};
+window.closeDoneOverlay=function(){
+  document.getElementById('doneOverlay').classList.remove('open');
+  document.body.style.overflow='';
+  document.querySelector('.bottom-cta-bar').style.display='';
+};
+
+window.openPrivacyModal=function(){
+  document.getElementById('pvModalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+};
+window.closePrivacyModal=function(){
+  document.getElementById('pvModalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+};
+
+document.getElementById('reservationForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var statusEl=document.getElementById('rfStatus');
+  statusEl.className='rf-status';
+  statusEl.textContent='';
+
+  var name=document.getElementById('rfName').value.trim();
+  var p2=document.getElementById('rfPhone2').value.replace(/\D/g,'');
+  var p3=document.getElementById('rfPhone3').value.replace(/\D/g,'');
+  var phone='010'+p2+p3;
+  var birth=document.getElementById('rfBirth').value.trim();
+  var carrier=document.getElementById('rfCarrier').value;
+  var product=document.getElementById('rfProduct').value;
+  var color=document.getElementById('rfColor').value;
+  var capacity=document.getElementById('rfCapacity').value;
+  var installment=document.getElementById('rfInstallment').value;
+  var memo=document.getElementById('rfMemo').value.trim();
+  var privacy=document.getElementById('rfPrivacy').checked;
+
+  function fail(msg){ statusEl.textContent=msg; statusEl.className='rf-status err'; }
+
+  if(!name){ fail('이름을 입력해 주세요.'); return; }
+  if(phone.length!==11){ fail('연락처를 정확히 입력해 주세요.'); return; }
+  var bm=birth.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(!bm){ fail('생년월일을 YYYY-MM-DD 형식으로 입력해 주세요. (예: 1994-01-01)'); return; }
+  var by=parseInt(bm[1],10), bmo=parseInt(bm[2],10), bd=parseInt(bm[3],10);
+  var bDate=new Date(by,bmo-1,bd);
+  if(bDate.getFullYear()!==by || bDate.getMonth()!==bmo-1 || bDate.getDate()!==bd){
+    fail('생년월일을 다시 확인해 주세요.'); return;
+  }
+  var today=new Date();
+  var age=today.getFullYear()-by;
+  if(today.getMonth()+1<bmo || (today.getMonth()+1===bmo && today.getDate()<bd)) age--;
+  if(age<19){
+    alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 신청해 주세요.');
+    return;
+  }
+  if(!carrier){ fail('통신사를 선택해 주세요.'); return; }
+  if(!product){ fail('예약하실 상품을 선택해 주세요.'); return; }
+  if(!privacy){ fail('개인정보 수집 및 이용 동의가 필요합니다.'); return; }
+
+  var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
+  var fullMemo=memo;
+
+  var btn=document.getElementById('rfSubmitBtn');
+  var btnHTML=btn.innerHTML;
+  btn.disabled=true;
+  btn.textContent='신청 중...';
+
+  // v20261002: reservations로 보내면 DB 트리거(fn_route_iphone_reservations)가 관심기기에 '듀오'·'울트라'가 들어간 건을
+  // ssgadmin '아이폰 울트라' 시트(reservations_iphone_ultra)로, 그 외 '아이폰' 건은 아이폰18 시트로 보냄 (캠페인 라벨 치환 포함)
+  fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
+      'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q',
+      'Prefer':'return=minimal'
+    },
+    body:JSON.stringify(Object.assign({
+      name:name, phone:phoneF, carrier:carrier,
+      channel:(PAGE_CHANNEL||'iphone18_landing'), utm_campaign:(PAGE_UTM_CAMPAIGN||'iphone18'),
+      device_interest:product, capacity:capacity, product_color:color, installment_months:installment||null,
+      birth_date:birth, memo:fullMemo, status:'신규'
+    }, udakMetaIds()))
+  }).then(function(res){
+    if(res.ok){
+      if(typeof fbq!=='undefined') fbq('track','Lead');
+      statusEl.textContent='신청이 완료되었습니다. 빠르게 연락드리겠습니다.';
+      statusEl.className='rf-status ok';
+      document.getElementById('reservationForm').reset();
+      btn.disabled=false;
+      btn.innerHTML=btnHTML;
+      // 예약 모달은 닫고, 완료 안내 포스터를 전체 화면으로 띄움 (고객이 접수 사실을 확실히 알 수 있도록)
+      closeReserveModal();
+      openDoneOverlay();
+    } else {
+      res.text().then(function(t){ console.error('Supabase:', t); });
+      fail('신청 중 오류가 발생했습니다. 다시 시도해 주세요.');
+      btn.disabled=false;
+      btn.innerHTML=btnHTML;
+    }
+  }).catch(function(err){
+    console.error(err);
+    fail('네트워크 오류가 발생했습니다. 다시 시도해 주세요.');
+    btn.disabled=false;
+    btn.innerHTML=btnHTML;
+  });
+});
+</script>
+
+
+<div class="pv-modal-overlay" id="pvModalOverlay" onclick="if(event.target===this)closePrivacyModal()">
+  <div class="pv-modal">
+    <button type="button" class="pv-close" onclick="closePrivacyModal()">&times;</button>
+    <p class="pv-title">개인정보 수집 및 이용 동의</p>
+    <p class="pv-intro">유플러스 다이렉트(이하 "회사")는 상담 신청 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.</p>
+    <table class="pv-table">
+      <thead>
+        <tr><th>항목</th><th>수집 목적</th><th>보유 기간</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>이름, 전화번호,<br>생년월일, 희망기종,<br>현재 통신사</td>
+          <td>상품 상담 및<br>주문 신청 안내</td>
+          <td>수집일로부터<br>6개월</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pv-notice">
+      <p class="pv-notice-title">◈ 고지사항</p>
+      <ul>
+        <li>위의 개인정보 수집·이용에 대한 동의를 거부할 권리가 있습니다.</li>
+        <li>동의를 거부하실 경우 상담 신청 서비스 이용이 제한될 수 있습니다.</li>
+        <li>수집된 개인정보는 제3자에게 제공되지 않습니다.</li>
+        <li>보유 기간 종료 후 해당 정보는 즉시 파기됩니다.</li>
+      </ul>
+    </div>
+    <p class="pv-contact">문의: 유플러스 다이렉트 고객센터</p>
+    <button type="button" class="pv-confirm" onclick="closePrivacyModal()">확인</button>
+  </div>
+</div>
+
+<div class="qm-popup-overlay" id="qmPhoneOverlay" onclick="if(event.target===this)closeQmPopup('call')">
+  <div class="qm-popup">
+    <button type="button" class="qm-popup-close" onclick="closeQmPopup('call')">&times;</button>
+    <p class="qm-popup-title">전화 상담하기</p>
+    <p class="qm-popup-main">1660-1412</p>
+    <a href="tel:16601412" class="qm-popup-btn call">📞 전화 연결하기</a>
+  </div>
+</div>
+
+<div class="qm-popup-overlay" id="qmKakaoOverlay" onclick="if(event.target===this)closeQmPopup('kakao')">
+  <div class="qm-popup">
+    <button type="button" class="qm-popup-close" onclick="closeQmPopup('kakao')">&times;</button>
+    <p class="qm-popup-title">카카오톡 문의하기</p>
+    <p class="qm-popup-main">유플러스 다이렉트</p>
+    <a href="http://pf.kakao.com/_HxfVxcn/chat" target="_blank" class="qm-popup-btn kakao">💬 카카오톡 문의</a>
+  </div>
+</div>
+
+<script>
+window.toggleQmPopup=function(kind){
+  var callOv=document.getElementById('qmPhoneOverlay');
+  var kakaoOv=document.getElementById('qmKakaoOverlay');
+  if(kind==='call'){ callOv.classList.toggle('open'); kakaoOv.classList.remove('open'); }
+  else { kakaoOv.classList.toggle('open'); callOv.classList.remove('open'); }
+};
+window.closeQmPopup=function(kind){
+  (kind==='call'?document.getElementById('qmPhoneOverlay'):document.getElementById('qmKakaoOverlay')).classList.remove('open');
+};
+// v20261002: 아이폰 듀오 출고가 — 애플 공식 국내 가격 기준(256GB 3,290,000원부터). U+ 출고가가 다르면 이 표 숫자만 바꾸면 됨.
+// 월 할부금은 아래 updatePhonePrice에서 (출고가-지원금)×할부이자 계수/개월로 실시간 계산.
+var PHONE_DATA={
+  duo:{ list:{'256GB':3290000,'512GB':3590000,'1TB':4190000,'2TB':5090000} }
+};
+// v20261002: 번호이동 지원금 30만원 / 기기변경 20만원 (지원금 조건: 85,000원 요금제 6개월 이상 유지 — 배너 이미지에 표기).
+// v20260914: 요금제에 따른 금액 차이는 랜딩에서 분기 안 하고 상담 단계에서 안내. 월 할부금은 할부이자 계수로
+// 실시간 계산해서 지원금이 또 바뀌어도(예: 20만→40만→55만→30만) 이 값 하나만 고치면 되게 함.
+var PHONE_SUBSIDY_MNP=300000;
+var PHONE_SUBSIDY_CHG=200000;
+var PHONE_TYPE_LABEL={mnp:'(번호이동)',chg:'(기기변경)'};
+var PHONE_PRODUCT_NAME={duo:'아이폰 듀오'};
+var PHONE_IMG_BASE='/assets/iphone18/';
+var PHONE_COLOR_IMG={'스타 화이트':'duo_starwhite.webp','나이트 스카이':'duo_nightsky.webp'};
+var PHONE_MONTH_RATE={24:1.0626,30:1.0781,36:1.0935}; // 할부이자 포함 계수(연 5.9% 기준)
+// SKT/KT/알뜰폰 고객 = 번호이동, LG U+ 고객 = 기기변경
+function carrierType(c){ return c==='LG U+' ? 'chg' : 'mnp'; }
+function getSubsidy(carrier){ return carrierType(carrier)==='chg' ? PHONE_SUBSIDY_CHG : PHONE_SUBSIDY_MNP; }
+var phoneSel={
+  duo:{cap:'256GB',color:'스타 화이트',carrier:null,months:null}
+};
+
+function won(n){ return n.toLocaleString('ko-KR')+'원'; }
+function updatePhonePrice(id){
+  var s=phoneSel[id], d=PHONE_DATA[id];
+  var list=d.list[s.cap];
+  var $=function(k){ return document.getElementById(id+'-'+k); };
+  $('list').textContent=won(list);
+  if(!s.carrier){
+    $('typeLabel').textContent='';
+    $('subsidy').textContent='통신사 선택';
+    $('after').textContent='—';
+    $('result').textContent='— 원';
+    $('resultHint').textContent='통신사와 할부 방식을 선택해주세요';
+    return;
+  }
+  var type=carrierType(s.carrier), sub=getSubsidy(s.carrier), after=list-sub;
+  $('typeLabel').textContent=PHONE_TYPE_LABEL[type];
+  $('subsidy').textContent='-'+won(sub);
+  $('after').textContent=won(after);
+  if(s.months===null){
+    $('result').textContent='— 원';
+    $('resultHint').textContent='할부 방식을 선택해주세요';
+  } else if(s.months===0){
+    $('result').textContent=won(after);
+    $('resultHint').textContent='일시납 · 지원 후 금액 (할부이자 없음)';
+  } else {
+    var raw=after*PHONE_MONTH_RATE[s.months]/s.months;
+    var m=Math.round(raw/10)*10;
+    $('result').textContent=won(m)+' / 월';
+    $('resultHint').textContent=s.months+'개월 할부 · 기기값 기준, 할부이자 포함';
+  }
+}
+function setActive(btn,cls){
+  var sib=btn.parentElement.querySelectorAll('.'+cls);
+  for(var i=0;i<sib.length;i++){ sib[i].classList.remove('is-active'); }
+  btn.classList.add('is-active');
+}
+window.selectStorage=function(id,btn){ setActive(btn,'b-storage-badge'); phoneSel[id].cap=btn.getAttribute('data-cap'); updatePhonePrice(id); };
+window.selectCarrier=function(id,btn){ setActive(btn,'pm-badge'); phoneSel[id].carrier=btn.getAttribute('data-carrier'); updatePhonePrice(id); };
+window.selectMonths=function(id,btn){ setActive(btn,'pm-badge'); phoneSel[id].months=parseInt(btn.getAttribute('data-months'),10); updatePhonePrice(id); };
+window.selectColor=function(id,btn){
+  setActive(btn,'pm-swatch');
+  var c=btn.getAttribute('data-color');
+  phoneSel[id].color=c;
+  var img=document.getElementById(id+'-img');
+  img.src=PHONE_IMG_BASE+PHONE_COLOR_IMG[c];
+  img.alt=PHONE_PRODUCT_NAME[id]+' '+c;
+  document.getElementById(id+'-colorName').textContent=c;
+};
+
+var phoneOpenId=null;
+// 카드에서 고른 컬러로 상세 화면을 열어줌 (스타 화이트 카드 → 스타 화이트, 나이트 스카이 카드 → 나이트 스카이)
+window.openPhoneModal=function(id,color){
+  if(color){
+    var sw=document.querySelector('#phoneModalOverlay-'+id+' .pm-swatch[data-color="'+color+'"]');
+    if(sw) selectColor(id,sw);
+  }
+  updatePhonePrice(id);
+  var ov=document.getElementById('phoneModalOverlay-'+id);
+  ov.classList.add('open'); ov.scrollTop=0;
+  document.body.style.overflow='hidden';
+  document.body.classList.add('pm-open');
+  document.querySelector('.bottom-cta-bar').style.display='none';
+  phoneOpenId=id;
+  try{ history.pushState({phone:id},''); }catch(e){}   // 폰 뒤로가기로 닫히게
+};
+function hidePhonePage(id){
+  document.getElementById('phoneModalOverlay-'+id).classList.remove('open');
+  document.body.style.overflow='';
+  document.body.classList.remove('pm-open');
+  document.querySelector('.bottom-cta-bar').style.display='';
+  if(phoneOpenId===id) phoneOpenId=null;
+}
+window.closePhoneModal=function(id){
+  hidePhonePage(id);
+  if(history.state && history.state.phone===id){ try{ history.back(); }catch(e){} }
+};
+window.addEventListener('popstate',function(){
+  if(phoneOpenId){ hidePhonePage(phoneOpenId); }
+});
+// 모달에서 고른 기종/용량/컬러/통신사를 신청폼에 미리 채워서 예약 모달로 넘김
+window.reserveFromPhone=function(id){
+  var s=phoneSel[id];
+  var p=document.getElementById('rfProduct'), c=document.getElementById('rfCapacity'), col=document.getElementById('rfColor'), car=document.getElementById('rfCarrier');
+  if(p) p.value=PHONE_PRODUCT_NAME[id];
+  if(c) c.value=s.cap;
+  if(col) col.value=s.color;
+  if(car && s.carrier) car.value=s.carrier;
+  var inst=document.getElementById('rfInstallment');
+  if(inst && s.months!==null) inst.value = s.months===0 ? '일시납' : s.months+'개월';
+  closePhoneModal(id);
+  setTimeout(openReserveModal, 60);
+};
+window.toggleFaq=function(btn){
+  btn.parentElement.classList.toggle('open');
+};
+</script>
+
+<div class="bottom-cta-bar">
+  <div class="bottom-cta-bar-inner">
+    <button type="button" class="bottom-cta-btn" id="ctaBtnFixed" onclick="openReserveModal()">사전예약 신청하기</button>
+  </div>
+</div>
+
+
+<!-- v20261005: 모바일 헤더 탭용 안내 이미지 팝업 (galaxy_z8 과 같은 이미지) -->
+<div class="nav-modal-overlay" id="modalBuySteps" onclick="if(event.target===this)closeNavModal('modalBuySteps')">
+  <div class="imgmodal-card">
+    <button class="imgmodal-close" type="button" onclick="closeNavModal('modalBuySteps')" aria-label="닫기">×</button>
+    <img src="/assets/about-online-steps.webp" width="1122" height="1402" alt="온라인 구매, 이렇게 진행됩니다 — 희망 제품 선택, 온라인 상담 신청, 전화 상담 및 조건 확인, 구매 결정 후 배송, 개통 및 이용 관리" decoding="async" loading="lazy">
+  </div>
+</div>
+<div class="nav-modal-overlay" id="modalFirstTime" onclick="if(event.target===this)closeNavModal('modalFirstTime')">
+  <div class="imgmodal-card">
+    <button class="imgmodal-close" type="button" onclick="closeNavModal('modalFirstTime')" aria-label="닫기">×</button>
+    <img src="/assets/about-first-time.webp" width="1536" height="1024" alt="온라인 구매 처음이라 어렵고 걱정돼요? 걱정마세요 — 쉽고 간편하게 5분 통화로, 정확한 안내·전문 상담·추가 비용 없음·빠른 배송·개통까지 지원" decoding="async" loading="lazy">
+  </div>
+</div>
+
+<!-- v20261005: '유플러스 다이렉트란?' 소개 영상 팝업 (상단 메뉴 · 카운트다운 아래 버튼) -->
+<div class="vpop" id="vpop" aria-hidden="true" onclick="if(event.target===this)closeVideoPop()">
+  <div class="vpop-box" role="dialog" aria-modal="true" aria-labelledby="vpopTitle">
+    <button type="button" class="vpop-close" onclick="closeVideoPop()" aria-label="닫기">✕</button>
+    <p class="vpop-title" id="vpopTitle">유플러스 다이렉트란?</p>
+    <video class="vpop-video" id="vpopVideo" muted playsinline webkit-playsinline preload="none" disablepictureinpicture></video>
+    <div class="vpop-ctrl">
+      <button type="button" class="vpop-btn" id="vpopBtn" aria-label="일시정지"></button>
+      <input type="range" class="vpop-seek" id="vpopSeek" min="0" max="1000" step="1" value="0" aria-label="재생 위치">
+      <span class="vpop-time" id="vpopTime">0:00 / 0:00</span>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var ICON_PAUSE='<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><rect x="5" y="4" width="5" height="16" rx="1.2"/><rect x="14" y="4" width="5" height="16" rx="1.2"/></svg>';
+  var ICON_PLAY='<svg width="15" height="15" viewBox="0 0 24 24" fill="#fff" style="margin-left:2px"><path d="M7 4.5v15l12.5-7.5z"/></svg>';
+  var VIDS={ direct:{src:'/assets/udak-direct-intro.mp4',poster:'/assets/udak-direct-intro-poster.webp',title:'유플러스 다이렉트란?'} };
+  var pop=document.getElementById('vpop'), pv=document.getElementById('vpopVideo'), btn=document.getElementById('vpopBtn'),
+      seek=document.getElementById('vpopSeek'), tm=document.getElementById('vpopTime'), pTitle=document.getElementById('vpopTitle');
+  if(!pop||!pv) return;
+  var open=false, dragging=false;
+  var fmt=function(x){ x=Math.max(0,Math.floor(x||0)); return Math.floor(x/60)+':'+String(x%60).padStart(2,'0'); };
+  function tryPlay(){ try{ var pr=pv.play(); if(pr&&pr.catch) pr.catch(function(){}); }catch(e){} }
+  function setBar(p){ seek.value=Math.round(p*10); seek.style.setProperty('--p',p+'%'); }
+  function showTime(){ if(pv.duration) tm.textContent=fmt(pv.currentTime)+' / '+fmt(pv.duration); }
+  function sync(){ var p=pv.paused; btn.innerHTML=p?ICON_PLAY:ICON_PAUSE; btn.setAttribute('aria-label',p?'재생':'일시정지'); }
+  function toggle(){ if(pv.paused) tryPlay(); else pv.pause(); }
+  btn.addEventListener('click',function(e){ e.stopPropagation(); toggle(); });
+  pv.addEventListener('click',toggle);
+  pv.addEventListener('play',sync); pv.addEventListener('pause',sync);
+  pv.addEventListener('loadedmetadata',showTime);
+  pv.addEventListener('ended',function(){ try{ pv.currentTime=0; }catch(e){} tryPlay(); });
+  pv.addEventListener('timeupdate',function(){ if(dragging||!pv.duration) return; setBar(pv.currentTime/pv.duration*100); showTime(); });
+  seek.addEventListener('input',function(){ dragging=true; if(!pv.duration) return; var p=seek.value/10; setBar(p); pv.currentTime=pv.duration*p/100; showTime(); });
+  ['change','pointerup','touchend','mouseup'].forEach(function(ev){ seek.addEventListener(ev,function(){ dragging=false; }); });
+  sync();
+  window.openVideoPop=function(key){
+    var it=VIDS[key]||VIDS.direct;
+    pTitle.textContent=it.title;
+    if(pv.getAttribute('src')!==it.src){ pv.setAttribute('poster',it.poster); pv.setAttribute('src',it.src); setBar(0); tm.textContent='0:00 / 0:00'; }
+    // v20261005: 누른 그 순간에 바로 재생 시작 (미리 받아두지 않는 영상이라, 재생을 뒤로 미루면 시작이 안 되고 재생 버튼을 다시 눌러야 했음)
+    pv.muted=true;
+    if(pv.readyState>=1){ try{ pv.currentTime=0; }catch(e){} }
+    tryPlay();
+    open=true; pop.classList.add('open'); pop.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+    var bar=document.querySelector('.bottom-cta-bar'); if(bar) bar.style.display='none';
+  };
+  window.closeVideoPop=function(){
+    pv.pause(); open=false;
+    pop.classList.remove('open'); pop.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+    var bar=document.querySelector('.bottom-cta-bar'); if(bar) bar.style.display='';
+  };
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&open) closeVideoPop(); });
+})();
+</script>
+<!-- v20261005: 이탈 분석(익명, 개인정보 없음) — 어디까지 보고 어디서 나갔는지 기록 -->
+<script src="/assets/udak-funnel.js?v=20261006g" data-page="iphone18" defer></script>
+</body>
+</html>

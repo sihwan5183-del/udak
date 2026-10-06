@@ -1,3 +1,6 @@
+# 10/6 17시~ 아이폰 듀오 A/B(시간대 비교): 어제 23:34 화면(iphone18_prev.html)으로 임시 전환 — 원래대로 하려면 아래 2줄 삭제 + /iphone 줄 대상을 /iphone18.html 로
+/iphone18  /iphone18_prev.html  200
+/iphone18.html  /iphone18_prev.html  200
 /ipad  /threads_ipad.html  200
 /phone  /phone_landing.html  200
 /galaxy  /galaxy_z8.html  200
@@ -5,6 +8,6 @@
 /z8-onsite  /galaxy_z8.html?onsite=1&utm_source=onsite&utm_medium=field  302
 /smarthome-onsite  /benefits.html?onsite=1&utm_source=onsite&utm_medium=field  302
 /      /udak_landing.html  200
-/iphone  /iphone18.html  200
+/iphone  /iphone18_prev.html  200
 /i18  /iphone18.html?utm_source=x&utm_medium=organic  302
 /i18-onsite  /iphone18.html?onsite=1&utm_source=onsite&utm_medium=field  302

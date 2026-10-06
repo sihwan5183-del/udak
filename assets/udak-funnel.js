@@ -1,4 +1,4 @@
-/* udak 랜딩 이탈 분석 (v20261006f — 메타 리타겟팅용 단계 신호 추가) — 개인정보 없이 '어디까지 봤고 어디서 나갔는지'만 익명으로 기록
+/* udak 랜딩 이탈 분석 (v20261006g — 아이폰 예전 화면(iphone18_prev) 비교용 model_open 기록 복구) — 개인정보 없이 '어디까지 봤고 어디서 나갔는지'만 익명으로 기록
    기록처: Supabase landing_events (랜딩은 쓰기만 가능, 읽기 불가)
    메타 픽셀 단계 신호(9번): 가격 확인 → PriceCheck, 신청서 열기 → FormOpen (페이지마다 한 번씩, 내부 방문은 안 보냄)
    직원·내부 확인 방문 표시: 주소 뒤에 ?internal=1 로 한 번 열면 그 브라우저는 내부 방문으로 표시됨 (?internal=0 으로 해제) */
@@ -89,7 +89,8 @@
       },
       iphone18:{
         see:[['preorder_info','#preorderInfo'],['models','#duoInline'],['benefit_imgs','.b-stack'],['form','#reserveForm']],
-        click:[['.pm-swatch','pick_color',function(el){ return el.getAttribute('data-color'); }],['.b-storage-badge','pick_cap',txt],
+        click:[['.b-phone-item','model_open',function(el){ return (el.getAttribute('onclick')||'').replace(/^.*openPhoneModal\(|\).*$/g,'').replace(/'/g,''); }],   // 예전 화면(상세 열기)에만 있음
+               ['.pm-swatch','pick_color',function(el){ return el.getAttribute('data-color'); }],['.b-storage-badge','pick_cap',txt],
                ['.pm-badge[data-carrier]','pick_carrier',txt],['.pm-badge[data-months]','pick_months',txt],
                ['.b-modal-cta','card_cta'],['.bottom-cta-btn','cta_bottom',function(el){ return el.classList.contains('scta-on')?'이 조건으로':null; }],['#rfSubmitBtn','submit_click'],['.about-trigger','about_video'],
                ['.m-hdr-hit','hdr',lbl],['.top-nav-item','topnav',txt],['.nav-drawer-item','menu',txt],['.side-quick-btn','quick',txt],
