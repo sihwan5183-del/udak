@@ -1505,6 +1505,7 @@ function closeNavDrawer() {
 <!-- ══ 통합 카탈로그 (삼성/애플 · 실시간 연동) ══ -->
 <style>
 .ucat-wrap{max-width:520px;margin:0 auto;padding:0 20px;}
+@supports (zoom:1){ .ucat-wrap{zoom:.75;width:75%;} } /* v20261006: 카드 영역(탭 + 카드) 전체 25% 작게 — 모양·비율은 그대로 */
 .ucat-title{font-size:24px;font-weight:800;color:#1A1A1A;letter-spacing:-.02em;margin:0 0 6px;text-align:center;}
 .ucat-sub-lbl{font-size:14px;color:#888;margin:0 0 24px;text-align:center;}
 .ucat-tabs{display:flex;gap:6px;margin-bottom:14px;}
