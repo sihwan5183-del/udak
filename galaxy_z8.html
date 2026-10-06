@@ -1399,7 +1399,7 @@ function udakMetaIds(){
       카카오톡 상담
     </a>
     <div class="nav-drawer-item" onclick="closeNavDrawer(); openConsultForm();">
-      상담 신청하기
+      온라인 상담 신청하기
     </div>
   </div>
 </div>
@@ -1756,7 +1756,7 @@ function closeNavDrawer() {
 <section class="reserve" id="consultForm">
   <div class="rf-inner" id="consultFormInner">
     <!-- v20261005: 아이폰 듀오 사전예약 신청서와 같은 디자인·순서 -->
-    <h2 class="rf-title"><span class="rf-title-accent">온라인</span> 상담 신청</h2>
+    <h2 class="rf-title"><span class="rf-title-accent">온라인</span> 상담 신청하기</h2>
     <p class="rf-subtitle">필수 정보만 입력하시면 빠르게 안내드립니다.</p>
     <div class="rf-divider"></div>
     <!-- v20261006 신청서 줄이기: 카드에서 고르고 들어오면 고른 조건을 여기 한 장으로 (그냥 신청하기부터 누르면 안 보이고 기존처럼 칸이 다 보임) -->
@@ -1896,7 +1896,7 @@ function closeNavDrawer() {
 
     <button type="button" class="rf-submit" id="mSubmitBtn" onclick="mSubmitForm()">
       <svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-      <span class="rf-submit-label">상담 신청하기</span>
+      <span class="rf-submit-label">온라인 상담 신청하기</span>
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
     </button>
   </div>
@@ -2153,7 +2153,7 @@ function ucardCtaUpdate(pop){
   const btn=document.querySelector('.sticky-cta-btn'), d=ucardDevById(ucardLast); if(!btn||!d) return;
   const ci=ucardColorPick[d.id]!=null?ucardColorPick[d.id]:0;
   const sub=[d.name.replace(/^갤럭시\s*/,''), ucardCname(d.colors&&d.colors[ci]), ucardCarrier].filter(Boolean).join(' · ');
-  btn.innerHTML='<span class="scta-main">이 조건으로 상담 신청하기</span><span class="scta-sub">'+sub+'</span>';
+  btn.innerHTML='<span class="scta-main">온라인 상담 접수하기</span><span class="scta-sub">'+sub+'</span>';
   btn.classList.add('scta-on');
   if(pop){ btn.classList.remove('scta-pop'); void btn.offsetWidth; btn.classList.add('scta-pop'); }
 }
@@ -2206,7 +2206,7 @@ function renderUcatGrid(){
       ${imgSrc?`<img class="ucard-img" src="${imgSrc}" alt="${d.name}">`:`<div class="ucard-img"></div>`}
       ${ucardColorsHtml(d,ci)}
       ${ucardPriceBox(d,planObj)}
-      <button type="button" class="ucard-cta" onclick="ucardApply(event,this)">${isHero?'이 조건으로 상담 신청하기':'이 조건으로 신청하기'}</button>
+      <button type="button" class="ucard-cta" onclick="ucardApply(event,this)">온라인 상담 접수하기</button>
     </div>`;
   }).join('');
   if(window.ucardObserveCtas) ucardObserveCtas();
@@ -3482,7 +3482,7 @@ function fSubmit(){
 <!-- ══ Sticky CTA ══ -->
 <div class="sticky-cta">
   <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;">
-    <button class="sticky-cta-btn" onclick="openConsultForm()">상담 신청하기</button>
+    <button class="sticky-cta-btn" onclick="openConsultForm()">온라인 상담 신청하기</button>
   </div>
 </div>
 
