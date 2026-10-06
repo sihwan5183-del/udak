@@ -1604,11 +1604,14 @@ function closeNavDrawer() {
 .ucard--hero .ucard-pricebox .ucard-type{padding:6px 2px;}
 .ucard--hero .ucard-crow.buy>b{font-size:24px;}
 .ucard--hero .ucard-cta{margin-top:12px;padding:14px 10px;}
-/* v20261006: 용량 고르기(폴드8 256GB / 512GB) — 이름 옆 알약 두 개, 고른 쪽 파란 테두리 */
-.ucard .ucard-stors{display:inline-flex;gap:5px;vertical-align:middle;margin:0 0 8px;}
-.ucard--hero .ucard-stors{margin:0 0 0 6px;}
-.ucard .ucard-stors .ucard-storage{margin:0;border:1.5px solid transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.ucard .ucard-stors .ucard-storage.on{background:rgba(0,104,248,.08);border-color:#0068f8;color:#0068f8;font-weight:700;}
+/* v20261006b: 사진 아래 고르는 순서 — 원하시는 용량 → 원하시는 컬러 → 이용 중인 통신사 (한 상자 안 같은 모양), 그 아래 가격 */
+.ucard-opts{border-bottom:1px solid #ededed;padding-bottom:8px;margin-bottom:2px;}
+.ucard-opt+.ucard-opt{margin-top:9px;}
+.ucard-pricebox .ucard-types{margin-bottom:0;}
+.ucard .ucard-pricebox .ucard-types--stor{grid-template-columns:repeat(2,1fr);}
+.ucard-pricebox .ucard-dots{justify-content:flex-start;margin:-5px 0 -4px -5px;}
+.ucard--hero .ucard-pricebox .ucard-dots{margin-left:-6px;}
+.ucard-chead>em.ucard-cname{color:#1A1A1A;}
 /* 하단 버튼: 카드에서 고르면 '이 조건으로 상담 신청하기' + 고른 내용으로 바뀌고 한 번 톡 튐 */
 .sticky-cta-btn .scta-main{display:block;}
 .sticky-cta-btn .scta-sub{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-size:11.5px;font-weight:600;letter-spacing:0;opacity:.92;}
@@ -2089,20 +2092,32 @@ function ucardColorsHtml(d,ci){
   const dots=cs.map((c,i)=>`<span class="ucard-dot${i===ci?' on':''}" role="button" tabindex="0" aria-label="${ucardCname(c)}" aria-pressed="${i===ci}" data-i="${i}" style="--c:${(c.name||'').split('|')[0]||'#ddd'}" onclick="ucardPickColor(event,this)" onkeydown="if(event.key==='Enter'||event.key===' ')ucardPickColor(event,this)"></span>`).join('');
   return `<div class="ucard-colors"><span class="ucard-dots">${dots}</span><span class="ucard-cname">${ucardCname(cs[ci])}</span></div>`;
 }
-function ucardPriceBox(d,planObj){
-  const pst=(d.storageList||[])[ucardStorIdx(d)]; if(pst) d={...d,storageList:[pst]}; // v20261006: 고른 용량 기준
-  const lp=(d.storageList&&d.storageList[0])?d.storageList[0].price:0;
+// v20261006b: 사진 아래 고르는 순서 — 원하시는 용량 → 원하시는 컬러 → 이용 중인 통신사 (한 상자 안에 같은 모양으로), 그 아래 가격
+function ucardOptsHtml(d,shown){
+  const kd=(fn)=>`onkeydown="if(event.key==='Enter'||event.key===' ')${fn}(event,this)"`;
+  const sl=d.storageList||[], si=ucardStorIdx(d);
+  const stor=sl.length?`<div class="ucard-opt"><div class="ucard-chead"><span>원하시는 용량</span></div>
+          <div class="ucard-types ucard-types--stor">${sl.map((st,i)=>`<span class="ucard-type ucard-stor${i===si?' on':''}" role="button" tabindex="0" aria-pressed="${i===si}" data-i="${i}" onclick="ucardPickStorage(event,this)" ${kd('ucardPickStorage')}>${st.name}</span>`).join('')}</div></div>`:'';
+  const cs=d.colors||[], ci=Math.min(ucardColorPick[d.id]||0,Math.max(0,cs.length-1));
+  const col=cs.length?`<div class="ucard-opt"><div class="ucard-chead"><span>원하시는 컬러</span><em class="ucard-cname">${ucardCname(cs[ci])}</em></div>
+          <div class="ucard-dots">${cs.map((c,i)=>`<span class="ucard-dot${i===ci?' on':''}" role="button" tabindex="0" aria-label="${ucardCname(c)}" aria-pressed="${i===ci}" data-i="${i}" style="--c:${(c.name||'').split('|')[0]||'#ddd'}" onclick="ucardPickColor(event,this)" ${kd('ucardPickColor')}></span>`).join('')}</div></div>`:'';
+  const car=`<div class="ucard-opt"><div class="ucard-chead"><span>이용 중인 통신사</span><em class="ucard-jt">${ucardJt(shown)} 기준</em></div>
+          <div class="ucard-types">${UCARD_CARRIERS.map(c=>`<span class="ucard-type${c===ucardCarrier?' on':''}" role="button" tabindex="0" aria-pressed="${c===ucardCarrier}" data-c="${c}" onclick="ucardPickCarrier(event,this)" ${kd('ucardPickCarrier')}>${c}</span>`).join('')}</div></div>`;
+  return `<div class="ucard-opts">${stor}${col}${car}</div>`;
+}
+function ucardPriceBox(d0,planObj){
+  const pst=(d0.storageList||[])[ucardStorIdx(d0)];
+  const d=pst?{...d0,storageList:[pst]}:d0; // 고른 용량 기준
+  const lp=pst?pst.price:0;
   const quotes=UCARD_CARRIERS.map(c=>[c,ucatQuote(d,c,ucardJt(c),planObj)]);
-  if(!quotes.some(x=>x[1])){
-    return lp?`<div class="ucard-pricebox"><div class="ucard-calc"><div class="ucard-crow"><span>출고가격</span><b>${ucardWon(lp)}</b></div></div></div>`:'';
-  }
   const shown=ucardCarrier||'SKT';
-  const chips=UCARD_CARRIERS.map(c=>`<span class="ucard-type${c===ucardCarrier?' on':''}" role="button" tabindex="0" aria-pressed="${c===ucardCarrier}" data-c="${c}" onclick="ucardPickCarrier(event,this)" onkeydown="if(event.key==='Enter'||event.key===' ')ucardPickCarrier(event,this)">${c}</span>`).join('');
+  if(!quotes.some(x=>x[1])){
+    return `<div class="ucard-pricebox">${ucardOptsHtml(d0,shown)}${lp?`<div class="ucard-calc"><div class="ucard-crow"><span>출고가격</span><b>${ucardWon(lp)}</b></div></div>`:''}</div>`;
+  }
   const calcs=quotes.map(([c,q])=>q?ucardCalcHtml(c,q,c!==shown)
     :`<div class="ucard-calc" data-t="${c}"${c!==shown?' hidden':''}><div class="ucard-crow"><span>출고가격</span><b>${ucardWon(lp)}</b></div></div>`).join('');
   return `<div class="ucard-pricebox">
-        <div class="ucard-chead"><span>지금 쓰는 통신사</span><em class="ucard-jt">${ucardJt(shown)} 기준</em></div>
-        <div class="ucard-types">${chips}</div>
+        ${ucardOptsHtml(d0,shown)}
         ${calcs}
       </div>`;
 }
@@ -2110,15 +2125,7 @@ function ucardDevById(id){ return (ucatDevices||[]).find(x=>x.id===id)||null; }
 // v20261006: 용량 고르기 (폴드8 256GB / 512GB) — 이름 옆 알약, 고르면 가격 박스가 그 용량 가격으로
 var ucardStorPick={};
 function ucardStorIdx(d){ const n=(d.storageList||[]).length; return Math.min(ucardStorPick[d.id]||0,Math.max(0,n-1)); }
-function ucardStorHtml(d){
-  const sl=d.storageList||[]; if(!sl.length) return '';
-  if(sl.length<2) return `<span class="ucard-storage">${sl[0].name}</span>`;
-  const si=ucardStorIdx(d);
-  return `<span class="ucard-stors" role="group" aria-label="용량">${sl.map((st,i)=>`<span class="ucard-storage${i===si?' on':''}" role="button" tabindex="0" aria-pressed="${i===si}" data-i="${i}" onclick="ucardPickStorage(event,this)" onkeydown="if(event.key==='Enter'||event.key===' ')ucardPickStorage(event,this)">${st.name}</span>`).join('')}</span>`;
-}
 function ucardRefreshStorage(card,d){
-  const si=ucardStorIdx(d);
-  card.querySelectorAll('.ucard-stors .ucard-storage').forEach(x=>{const on=(parseInt(x.dataset.i,10)||0)===si;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on?'true':'false');});
   const pb=card.querySelector('.ucard-pricebox'); if(!pb) return;
   const tmp=document.createElement('div'); tmp.innerHTML=ucardPriceBox(d,ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0]);
   if(tmp.firstElementChild) pb.replaceWith(tmp.firstElementChild);
@@ -2143,7 +2150,7 @@ window.ucardApplyCarrier=function(c){
   ucardCarrier=c||null;
   const shown=ucardCarrier||'SKT';
   document.querySelectorAll('#ucatGrid .ucard').forEach(card=>{
-    card.querySelectorAll('.ucard-type').forEach(b=>{const on=b.dataset.c===ucardCarrier;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');});
+    card.querySelectorAll('.ucard-type[data-c]').forEach(b=>{const on=b.dataset.c===ucardCarrier;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');});
     card.querySelectorAll('.ucard-calc').forEach(k=>{if(k.dataset.t) k.hidden=k.dataset.t!==shown;});
     const jt=card.querySelector('.ucard-jt'); if(jt) jt.textContent=ucardJt(shown)+' 기준';
   });
@@ -2243,9 +2250,7 @@ function renderUcatGrid(){
     return`<div class="ucard${isHero?' ucard--hero':''}" data-id="${d.id}">
       <span class="ucard-badge">85 요금제 기준</span>
       <p class="ucard-name">${d.name}</p>
-      ${ucardStorHtml(d)}
       ${imgSrc?`<img class="ucard-img" src="${imgSrc}" alt="${d.name}">`:`<div class="ucard-img"></div>`}
-      ${ucardColorsHtml(d,ci)}
       ${ucardPriceBox(d,planObj)}
       <button type="button" class="ucard-cta" onclick="ucardApply(event,this)">온라인 상담 신청하기</button>
     </div>`;
