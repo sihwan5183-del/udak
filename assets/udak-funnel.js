@@ -1,5 +1,6 @@
-/* udak 랜딩 이탈 분석 (v20261006e — 신청서 요약 카드 버튼 기록) — 개인정보 없이 '어디까지 봤고 어디서 나갔는지'만 익명으로 기록
+/* udak 랜딩 이탈 분석 (v20261006f — 메타 리타겟팅용 단계 신호 추가) — 개인정보 없이 '어디까지 봤고 어디서 나갔는지'만 익명으로 기록
    기록처: Supabase landing_events (랜딩은 쓰기만 가능, 읽기 불가)
+   메타 픽셀 단계 신호(9번): 가격 확인 → PriceCheck, 신청서 열기 → FormOpen (페이지마다 한 번씩, 내부 방문은 안 보냄)
    직원·내부 확인 방문 표시: 주소 뒤에 ?internal=1 로 한 번 열면 그 브라우저는 내부 방문으로 표시됨 (?internal=0 으로 해제) */
 (function(){
   try{
@@ -23,10 +24,32 @@
     if(src.s||src.c||src.a||src.f){ sset('udak_src',JSON.stringify(src)); }
     else { try{ src=JSON.parse(sget('udak_src')||'{}')||{}; }catch(e){ src={}; } }
 
+    // 9) 메타 리타겟팅용 단계 신호 — '가격까지 본 사람'과 '신청서 열고 나간 사람'을 메타 맞춤 타겟으로 나누기 위함
+    //    PriceCheck: 할인 가격이 보인 순간 (아이폰 듀오는 통신사 선택 후에만 할인가가 보이고, 갤럭시 카드·상세는 처음부터 SKT 기준 할인가가 보임)
+    //    FormOpen:   신청서를 연 순간 (신청하기 버튼 또는 신청서 칸 첫 터치). 신청 완료(Lead)는 원래대로 페이지에서 보냄
+    var STAGE={
+      iphone18:{ price:{pick_carrier:1, form_carrier:1}, form:{cta_bottom:1, card_cta:1, form_start:1, form_edit:1, form_carrier:1} },
+      galaxy_z8:{ price:{'see:catalog':1, card_carrier:1, card_color:1, card_cta:1, form_carrier:1, calc_more:1}, form:{cta_bottom:1, card_cta:1, form_start:1, form_edit:1, form_carrier:1} },
+      device:{ price:{'see:price_detail':1, carrier:1, color:1}, form:{consult_btn:1, order_btn:1, form_start:1} }
+    };
+    var stageSent={};
+    function metaStage(name, detail){
+      try{
+        var m=STAGE[PAGE]; if(!m || internal) return;
+        var key=(name==='see')?('see:'+detail):name;
+        [['price','PriceCheck'],['form','FormOpen']].forEach(function(p){
+          if(!m[p[0]][key] || stageSent[p[1]] || typeof window.fbq!=='function') return;
+          stageSent[p[1]]=1;
+          window.fbq('trackCustom', p[1], { landing:PAGE });
+        });
+      }catch(e){}
+    }
+
     var q=[], t0=Date.now(), maxS=0, done={};
     function ev(name, detail, onceKey){
       try{
         if(onceKey!==undefined){ var k=name+'|'+onceKey; if(done[k]) return; done[k]=1; }
+        metaStage(name, detail);
         q.push({ sid:sid, page:PAGE, event:String(name).slice(0,40), detail:(detail==null?null:String(detail).slice(0,300)),
           sec:Math.round((Date.now()-t0)/1000), vw:(window.innerWidth||null),
           utm_source:src.s||null, utm_campaign:src.c||null, utm_content:src.a||null, fbclid:!!src.f, internal:internal });
@@ -118,10 +141,12 @@
     }, true);
 
     // 5) 신청서 칸을 처음 건드림 (칸마다 한 번) — 어느 칸에서 멈추는지 보기 위함
+    //    신청서 칸만 신청서 시작으로 셈 (아이폰 rf*, 갤럭시 m*, 상세 dr*) — 소개 영상 진행바·상세 계산기 칸은 제외
     document.addEventListener('focusin', function(e){
       var el=e.target; if(!el||!/^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName)) return;
       var id=el.id||el.name; if(!id) return;
-      ev('form_start', id, 'x'); ev('field', id, id);
+      if(/^(rf|dr|m[A-Z])/.test(id)) ev('form_start', id, 'x');
+      ev('field', id, id);
     }, true);
 
     // 6) 막힘(안내창) — 입력 확인에 걸린 문구
