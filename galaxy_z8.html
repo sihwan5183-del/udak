@@ -1477,7 +1477,7 @@ function closeNavDrawer() {
   <div class="hero-duo hero-solo">
     <div class="hero-col" data-vkey="fold">
       <div class="hero-vwrap">
-        <video class="intro-hero-video" src="/assets/foldwide-promo-v4.mp4" poster="/assets/foldwide-promo-v4-poster.webp" width="1080" height="1920" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture aria-label="갤럭시 폴드8 홍보 영상"></video>
+        <video class="intro-hero-video" src="/assets/fold8-halfprice-v1.mp4" poster="/assets/fold8-halfprice-v1-poster.webp" width="1080" height="1920" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture aria-label="갤럭시 폴드8 홍보 영상"></video>
         <div class="hero-vplay" aria-hidden="true"><span><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13l10.5-6.5z"/></svg></span></div>
         <div class="hero-vexpand" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
       </div>
@@ -2448,7 +2448,7 @@ ucatLoadFirebase();
   var fmt=function(x){ x=Math.max(0,Math.floor(x||0)); return Math.floor(x/60)+':'+String(x%60).padStart(2,'0'); };
   var VIDS={
     direct:{src:'/assets/udak-direct-intro-v2.mp4',poster:'/assets/udak-direct-intro-v2-poster.webp',title:'유플러스 다이렉트란?'},
-    fold:{src:'/assets/foldwide-promo-v4.mp4',poster:'/assets/foldwide-promo-v4-poster.webp',title:'갤럭시 폴드8'}
+    fold:{src:'/assets/fold8-halfprice-v1.mp4',poster:'/assets/fold8-halfprice-v1-poster.webp',title:'갤럭시 폴드8'}
   };
   var heroes=[]; var popOpen=false;
   function tryPlay(v,onFail){ try{ var pr=v.play(); if(pr&&pr.catch) pr.catch(function(){ if(onFail) onFail(); }); }catch(e){} }
