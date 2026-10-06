@@ -1308,6 +1308,10 @@ textarea.mform-input{resize:none;height:80px;}
 .mfs #mCalcBox{margin:14px 0 0;padding-top:12px;border-top:1px dashed #c3d6f0;}
 .mfs #mCalcBox>label{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px 8px;font-size:12.5px;font-weight:800;color:#333;margin-bottom:0;white-space:nowrap;}
 .mfs .mcalc-basis{display:none;}
+/* v20261006: 요약 안 금액 제목 밑에 '24개월 할부 기준' — 옆 '최대 36개월' 때문에 36개월 금액으로 오해하지 않게 */
+.mcalc-24{display:none;}
+.mfs .mcalc-24{display:block;margin-top:2px;font-size:11.5px;font-weight:800;color:#0068f8;}
+@media (max-width:350px){ .mfs .mcalc-inst{font-size:10.5px;padding:3px 8px;} .mfs .mcalc-24{font-size:11px;} } /* 아주 좁은 폰(폴드 커버 화면 등)에서도 한 줄 */
 .mfs .mcalc-inst{margin-top:0;}
 .mfs .mcalc.mcalc-v2{background:transparent !important;border:0 !important;padding:0 !important;margin-top:9px;}
 .mfs .mc-sum{margin-bottom:4px;}
@@ -1882,7 +1886,7 @@ function closeNavDrawer() {
     </div>
 
     <div class="rf-field" id="mCalcBox" style="display:none;">
-      <label>예상 납부 금액 <span class="mcalc-basis" id="mCalcBasis"></span><span class="mcalc-inst">최대 36개월 / 일시납 가능</span></label>
+      <label><span class="mcalc-ttl">예상 납부 금액 <span class="mcalc-basis" id="mCalcBasis"></span><small class="mcalc-24">24개월 할부 기준</small></span><span class="mcalc-inst">최대 36개월 / 일시납 가능</span></label>
       <div class="mcalc ucard-calc" id="mCalcRows"></div>
     </div>
 
