@@ -1835,7 +1835,6 @@ function closeNavModal(id){
           <button type="button" class="b-storage-badge is-active" data-cap="256GB" onclick="selectStorage('duo',this)">256GB</button>
           <button type="button" class="b-storage-badge" data-cap="512GB" onclick="selectStorage('duo',this)">512GB</button>
           <button type="button" class="b-storage-badge" data-cap="1TB" onclick="selectStorage('duo',this)">1TB</button>
-          <button type="button" class="b-storage-badge" data-cap="2TB" onclick="selectStorage('duo',this)">2TB</button>
         </div>
 
         <span class="b-modal-label">현재 사용 중인 통신사</span>
@@ -2144,7 +2143,6 @@ function closeNavModal(id){
               <option value="256GB">256GB</option>
               <option value="512GB">512GB</option>
               <option value="1TB">1TB</option>
-              <option value="2TB">2TB</option>
             </select>
           </div>
         </div>
@@ -2525,7 +2523,7 @@ window.closeQmPopup=function(kind){
 // v20261002: 아이폰 듀오 출고가 — 애플 공식 국내 가격 기준(256GB 3,290,000원부터). U+ 출고가가 다르면 이 표 숫자만 바꾸면 됨.
 // 월 할부금은 아래 updatePhonePrice에서 (출고가-지원금)×할부이자 계수/개월로 실시간 계산.
 var PHONE_DATA={
-  duo:{ list:{'256GB':3290000,'512GB':3590000,'1TB':4190000,'2TB':5090000} }
+  duo:{ list:{'256GB':3290000,'512GB':3590000,'1TB':4190000} } // v20261006: 2TB 뺌
 };
 // v20261002: 번호이동 지원금 30만원 / 기기변경 20만원 (지원금 조건: 85,000원 요금제 6개월 이상 유지 — 배너 이미지에 표기).
 // v20260914: 요금제에 따른 금액 차이는 랜딩에서 분기 안 하고 상담 단계에서 안내. 월 할부금은 할부이자 계수로
