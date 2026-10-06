@@ -557,6 +557,7 @@ textarea.mform-input{resize:none;height:80px;}
 .acc-kit{background:#fff;padding:0 24px;display:flex;flex-direction:column;gap:16px;}
 .acc-kit-card{width:97.75%;max-width:469px;margin:0 auto;border-radius:14px;overflow:hidden;border:1px solid rgba(10,10,12,.06);background:#fff;} /* v20261006: 이미지 15% 작게 (max 480→408) → 다시 15% 크게 (85%→97.75%, max 408→469) */
 .acc-kit-card img{display:block;width:100%;height:auto;}
+.gift-watch{padding:0 24px;margin-top:clamp(22px,3.5vh,32px);} /* v20261006: 폴드8 카드 밑 워치9 무료 제공 이미지 */
 .reserve{position:relative;background:#fff;color:#0a0a0c;padding:clamp(24px,4vh,36px) 24px clamp(110px,14vh,140px);scroll-margin-top:52px;}
 .rf-inner{max-width:480px;margin:0 auto;border:1.5px solid #e4e4e6;border-radius:20px;padding:32px 20px 28px;background:#fff;box-sizing:border-box;color:#0a0a0c;}
 #reservationOverlay .rf-inner{max-width:none;border:none;padding:0;}
@@ -1753,6 +1754,10 @@ function closeNavDrawer() {
       </div>
     </div>
   </div>
+  <!-- v20261006: 폴드8 카드 바로 밑 — 유플러스 다이렉트 혜택 갤럭시 워치9 무료 제공 (셀룰러). 폭은 아래 안내 이미지와 같게 -->
+  <div class="gift-watch"><div class="acc-kit-card">
+    <img src="/assets/gift-galaxy-watch9-blue.webp" width="1122" height="1402" alt="유플러스 다이렉트 혜택 갤럭시 워치 9 무료 제공 (셀룰러 제품) — 제품 주요 사양: 디스플레이 34mm(약 1.3인치), 해상도 438x438, 본체 42.7x40.4x8.6mm, 무게 31.5g, 배터리 390mAh, 사용 시간 AOD 끔 최대 40시간 / 켬 최대 30시간. 주요 건강 및 AI 기능: 생체 징후 및 심장 건강, 1일 유산소 부하, 청력 관리, 구글 제미나이" loading="lazy" decoding="async">
+  </div></div>
 </section>
 
 <!-- ══ 상담 신청서 위 안내 이미지 3장 — 아이폰 듀오 랜딩과 같은 이미지·같은 순서 (v20261005)
