@@ -1604,6 +1604,11 @@ function closeNavDrawer() {
 .ucard--hero .ucard-pricebox .ucard-type{padding:6px 2px;}
 .ucard--hero .ucard-crow.buy>b{font-size:24px;}
 .ucard--hero .ucard-cta{margin-top:12px;padding:14px 10px;}
+/* v20261006: 용량 고르기(폴드8 256GB / 512GB) — 이름 옆 알약 두 개, 고른 쪽 파란 테두리 */
+.ucard .ucard-stors{display:inline-flex;gap:5px;vertical-align:middle;margin:0 0 8px;}
+.ucard--hero .ucard-stors{margin:0 0 0 6px;}
+.ucard .ucard-stors .ucard-storage{margin:0;border:1.5px solid transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.ucard .ucard-stors .ucard-storage.on{background:rgba(0,104,248,.08);border-color:#0068f8;color:#0068f8;font-weight:700;}
 /* 하단 버튼: 카드에서 고르면 '이 조건으로 상담 신청하기' + 고른 내용으로 바뀌고 한 번 톡 튐 */
 .sticky-cta-btn .scta-main{display:block;}
 .sticky-cta-btn .scta-sub{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-size:11.5px;font-weight:600;letter-spacing:0;opacity:.92;}
@@ -1906,7 +1911,7 @@ const UCAT_DB_URL='https://udak-c6832-default-rtdb.firebaseio.com';
 
 const UCAT_Z8_DEVICES=[
   {id:'z-fold8',name:'갤럭시 Z 폴드8',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-lavender-v2.png',
-    storageList:[{name:'256GB',price:2278100}],
+    storageList:[{name:'256GB',price:2278100},{name:'512GB',price:2531100}], // v20261006: 512GB 추가
     colors:[{name:'#C9BFE0|라벤더',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-lavender-v2.png'},
             {name:'#3A3A3C|그라파이트',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-black-v2.png'},
             {name:'#F7F4EC|크림',img:'https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/product-wide-cream-v2.png'}]},
@@ -1925,6 +1930,9 @@ const UCAT_Z8_POLICIES=[
   {name:'Z8 기기변경(LGU+)',jointype:'기기변경',carrier:'LG U+',plangroup:'all',pubSupport:500000,rebate:300000,distribution:0,structure:0,extraPolicy:0,deviceOverrides:{},excludedDevs:[]},
   {name:'Z8 번호이동(타사)',jointype:'번호이동',carrier:'SKT,KT,알뜰폰',plangroup:'all',pubSupport:500000,rebate:500000,distribution:0,structure:0,extraPolicy:0,deviceOverrides:{'z-fold8':{rebate:450000}},excludedDevs:[]}
 ];
+// v20261006: 폴드8 512GB 지원금은 256GB와 다름 — 공시지원금 50만 + 추가 지원금 번호이동 50만 / 기기변경 20만 (총 100만 / 70만)
+// 어드민 정책(deviceOverrides > z-fold8 > '512GB')에 값을 넣으면 그 값이 우선
+const UCAT_STORAGE_OV_FALLBACK={'z-fold8':{'512GB':{'번호이동':{pubSupport:500000,rebate:500000,structure:0},'기기변경':{pubSupport:500000,rebate:200000,structure:0}}}};
 const UCAT_MDEV_FALLBACK=[
   {id:'s26',name:'갤럭시 S26',img:'',storageList:[{name:'256GB',price:1254000},{name:'512GB',price:1386000}],colors:[{name:'#4B5563|그라파이트',img:''},{name:'#C084FC|바이올렛',img:''},{name:'#F9A8D4|핑크골드',img:''}]},
   {id:'s26p',name:'갤럭시 S26+',img:'',storageList:[{name:'256GB',price:1452000},{name:'512GB',price:1584000}],colors:[{name:'#1E3A5F|네이비',img:''},{name:'#F5F5F5|화이트실버',img:''}]},
@@ -2028,15 +2036,15 @@ function ucatQuote(device,carrierName,jointype,planObj){
     if(f){
       if((f.excludedDevs||[]).includes(device.id)) continue;
       const rawOv=f.deviceOverrides&&f.deviceOverrides[device.id];
-      if(rawOv){
-        // 실제 어드민에서 생성되는 override는 용량(예: '256GB') 하위에 중첩되어 있음.
-        // 중첩 구조를 못 찾으면 과거 형식(평면 구조)도 폴백으로 지원.
-        const storageName=storage?storage.name:null;
-        const nested=storageName?rawOv[storageName]:null;
-        const flat=(rawOv.pubSupport!=null||rawOv.rebate!=null)?rawOv:null;
-        const ov=nested||flat;
-        pol=ov?{...f,...ov}:f;
-      } else pol=f;
+      // 실제 어드민에서 생성되는 override는 용량(예: '256GB') 하위에 중첩되어 있음.
+      // 중첩 구조를 못 찾으면 과거 형식(평면 구조)도 폴백으로 지원.
+      const storageName=storage?storage.name:null;
+      const nested=(rawOv&&storageName)?rawOv[storageName]:null;
+      const flat=(rawOv&&(rawOv.pubSupport!=null||rawOv.rebate!=null))?rawOv:null;
+      // v20261006: 어드민에 그 용량 값이 없으면 용량별 기본값(폴드8 512GB) 사용
+      const sFb=(!nested&&storageName&&UCAT_STORAGE_OV_FALLBACK[device.id])?UCAT_STORAGE_OV_FALLBACK[device.id][storageName]:null;
+      const ov=nested||(sFb&&sFb[jointype])||flat;
+      pol=ov?{...f,...ov}:f;
       break;
     }
   }
@@ -2082,6 +2090,7 @@ function ucardColorsHtml(d,ci){
   return `<div class="ucard-colors"><span class="ucard-dots">${dots}</span><span class="ucard-cname">${ucardCname(cs[ci])}</span></div>`;
 }
 function ucardPriceBox(d,planObj){
+  const pst=(d.storageList||[])[ucardStorIdx(d)]; if(pst) d={...d,storageList:[pst]}; // v20261006: 고른 용량 기준
   const lp=(d.storageList&&d.storageList[0])?d.storageList[0].price:0;
   const quotes=UCARD_CARRIERS.map(c=>[c,ucatQuote(d,c,ucardJt(c),planObj)]);
   if(!quotes.some(x=>x[1])){
@@ -2098,6 +2107,37 @@ function ucardPriceBox(d,planObj){
       </div>`;
 }
 function ucardDevById(id){ return (ucatDevices||[]).find(x=>x.id===id)||null; }
+// v20261006: 용량 고르기 (폴드8 256GB / 512GB) — 이름 옆 알약, 고르면 가격 박스가 그 용량 가격으로
+var ucardStorPick={};
+function ucardStorIdx(d){ const n=(d.storageList||[]).length; return Math.min(ucardStorPick[d.id]||0,Math.max(0,n-1)); }
+function ucardStorHtml(d){
+  const sl=d.storageList||[]; if(!sl.length) return '';
+  if(sl.length<2) return `<span class="ucard-storage">${sl[0].name}</span>`;
+  const si=ucardStorIdx(d);
+  return `<span class="ucard-stors" role="group" aria-label="용량">${sl.map((st,i)=>`<span class="ucard-storage${i===si?' on':''}" role="button" tabindex="0" aria-pressed="${i===si}" data-i="${i}" onclick="ucardPickStorage(event,this)" onkeydown="if(event.key==='Enter'||event.key===' ')ucardPickStorage(event,this)">${st.name}</span>`).join('')}</span>`;
+}
+function ucardRefreshStorage(card,d){
+  const si=ucardStorIdx(d);
+  card.querySelectorAll('.ucard-stors .ucard-storage').forEach(x=>{const on=(parseInt(x.dataset.i,10)||0)===si;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on?'true':'false');});
+  const pb=card.querySelector('.ucard-pricebox'); if(!pb) return;
+  const tmp=document.createElement('div'); tmp.innerHTML=ucardPriceBox(d,ucatPlans.find(p=>p.plangroup==='85')||ucatPlans[0]);
+  if(tmp.firstElementChild) pb.replaceWith(tmp.firstElementChild);
+}
+window.ucardPickStorage=function(ev,el){
+  ev.preventDefault();ev.stopPropagation();
+  const card=el.closest('.ucard'); if(!card) return;
+  const d=ucardDevById(card.dataset.id); if(!d) return;
+  ucardStorPick[d.id]=parseInt(el.dataset.i,10)||0; ucardLast=d.id;
+  ucardRefreshStorage(card,d);
+  ucardSync(); ucardCtaUpdate(true);
+};
+// 신청서에서 용량을 바꾸면 카드도 같이
+window.ucardSetStorage=function(id,i){
+  const d=ucardDevById(id); if(!d||(d.storageList||[]).length<2) return;
+  ucardStorPick[id]=i;
+  const card=document.querySelector('#ucatGrid .ucard[data-id="'+id+'"]'); if(card) ucardRefreshStorage(card,d);
+  if(ucardLast===id) ucardCtaUpdate(false);
+};
 // 통신사: 모든 카드에 같이 적용
 window.ucardApplyCarrier=function(c){
   ucardCarrier=c||null;
@@ -2152,7 +2192,8 @@ window.ucardApply=function(ev,el){
 function ucardCtaUpdate(pop){
   const btn=document.querySelector('.sticky-cta-btn'), d=ucardDevById(ucardLast); if(!btn||!d) return;
   const ci=ucardColorPick[d.id]!=null?ucardColorPick[d.id]:0;
-  const sub=[d.name.replace(/^갤럭시\s*/,''), ucardCname(d.colors&&d.colors[ci]), ucardCarrier].filter(Boolean).join(' · ');
+  const sl=d.storageList||[], stN=sl.length>1?(sl[ucardStorIdx(d)]||{}).name:''; // v20261006: 용량이 여러 개면 고른 용량도
+  const sub=[d.name.replace(/^갤럭시\s*/,''), stN, ucardCname(d.colors&&d.colors[ci]), ucardCarrier].filter(Boolean).join(' · ');
   btn.innerHTML='<span class="scta-main">온라인 상담 신청하기</span><span class="scta-sub">'+sub+'</span>';
   btn.classList.add('scta-on');
   if(pop){ btn.classList.remove('scta-pop'); void btn.offsetWidth; btn.classList.add('scta-pop'); }
@@ -2161,7 +2202,7 @@ function ucardCtaUpdate(pop){
 function ucardSync(){
   try{
     const d=ucardDevById(ucardLast); if(!d) return;
-    mDevice=d.name; mSel.device=d; mSel.storage=0; mSel.color=ucardColorPick[d.id]||0;
+    mDevice=d.name; mSel.device=d; mSel.storage=ucardStorIdx(d); mSel.color=ucardColorPick[d.id]||0;
     mFillDeviceSelect(); mRenderSpec();
     if(ucardCarrier){ const cs=document.getElementById('mCarrierSel'); if(cs) cs.value=ucardCarrier; mCarrier=ucardCarrier; }
     if(!mSel.discount){ const ds=document.getElementById('mDiscountSel'); if(ds) ds.value='pubSupport'; mSel.discount='pubSupport'; }
@@ -2196,14 +2237,13 @@ function renderUcatGrid(){
     return;
   }
   wrap.innerHTML=list.map(d=>{
-    const storageTxt=(d.storageList&&d.storageList[0])?d.storageList[0].name:'';
     const nC=(d.colors||[]).length, ci=Math.min(ucardColorPick[d.id]||0,Math.max(0,nC-1));
     const imgSrc=(d.colors&&d.colors[ci]&&d.colors[ci].img)||d.img;
     const isHero=!!(heroId&&d.id===heroId);
     return`<div class="ucard${isHero?' ucard--hero':''}" data-id="${d.id}">
       <span class="ucard-badge">85 요금제 기준</span>
       <p class="ucard-name">${d.name}</p>
-      ${storageTxt?`<span class="ucard-storage">${storageTxt}</span>`:''}
+      ${ucardStorHtml(d)}
       ${imgSrc?`<img class="ucard-img" src="${imgSrc}" alt="${d.name}">`:`<div class="ucard-img"></div>`}
       ${ucardColorsHtml(d,ci)}
       ${ucardPriceBox(d,planObj)}
@@ -3022,7 +3062,7 @@ function mRenderSpec(){
   cs.innerHTML=(d.colors||[]).map(function(c){return '<option>'+mEsc(c.name.split('|')[1]||'')+'</option>';}).join(''); cs.disabled=!(d.colors||[]).length; cs.selectedIndex=mSel.color||0;
 
 }
-window.mPickStorage=function(i){ mSel.storage=Math.max(0,i); mRefreshCalc(); };
+window.mPickStorage=function(i){ mSel.storage=Math.max(0,i); mRefreshCalc(); if(mSel.device&&window.ucardSetStorage) ucardSetStorage(mSel.device.id,mSel.storage); };
 window.mPickColor=function(i){ mSel.color=Math.max(0,i); if(window.mfsRender) mfsRender(); };
 window.mPickDiscount=function(m){ mSel.discount=m||null; mRefreshCalc(); };
 window.mPickCarrier=function(v){ mCarrier=v||''; mRefreshCalc(); if(v&&window.ucardApplyCarrier&&v!==ucardCarrier) ucardApplyCarrier(v); };
