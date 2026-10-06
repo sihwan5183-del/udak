@@ -1288,9 +1288,6 @@ textarea.mform-input{resize:none;height:80px;}
 .mfs-car-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
 .mfs-car-row button{padding:11px 0;border:1.5px solid #e2e2e6;border-radius:10px;background:#fff;font-family:inherit;font-size:13.5px;font-weight:800;color:#333;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
 .mfs-car-row button.on{border-color:#E91E8C;background:#E91E8C;color:#fff;}
-.mf-note{display:none !important;}
-.mf-note.mf-open{display:block !important;}
-.mf-note-add{display:block;margin:-6px 0 18px;padding:2px 0;border:0;background:none;color:#8e8e93;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;}
 /* 좁은 화면(폴드 접은 화면 등)에서도 한 줄 유지 */
 @media (max-width:360px){
   .mfs{padding:13px 12px 12px;}
@@ -1847,8 +1844,7 @@ function closeNavDrawer() {
       <div class="mcalc ucard-calc" id="mCalcRows"></div>
     </div>
 
-    <button type="button" class="mf-note-add" onclick="mfsShowNote(this)">＋ 요청사항 추가</button>
-    <div class="rf-field mf-note">
+    <div class="rf-field">
       <label>전달사항</label>
       <div class="rf-input-icon rf-textarea-wrap">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
@@ -3020,7 +3016,7 @@ window.mFormatBirth=function(el){ var v=el.value.replace(/\D/g,'').slice(0,8); e
 //  · 카드에서 고르고(컬러·통신사·'이 조건으로') 들어오면: 맨 위 '선택한 조건' 한 장 — 기기 / 용량·컬러 / 통신사·번호이동, 그 아래 매달 내는 금액
 //    기기·용량·컬러·통신사 칸은 숨김('변경'으로 펼침). 카드에서 통신사를 안 골랐으면 요약 안에 통신사 버튼 4개
 //  · 그냥 신청하기부터 누르면: 기존처럼 칸이 다 보임
-//  · 공통: 할인 방식 칸 없음(공시지원금 고정), 전달사항은 '＋ 요청사항 추가'로 접음
+//  · 공통: 할인 방식 칸 없음(공시지원금 고정). 전달사항 칸은 처음부터 보임
 var mfsCalcHome=null; window.mfsPicked=false;
 window.mfsApplyMode=function(){
   var inner=document.getElementById('consultFormInner'), box=document.getElementById('mFormSummary'),
@@ -3061,10 +3057,6 @@ window.mfsToggleEdit=function(){
 window.mfsToggleMore=function(btn){
   var b=document.getElementById('mFormSummary'); var on=!b.classList.contains('mfs-more');
   b.classList.toggle('mfs-more',on); btn.textContent=on?'기기값 계산 접기 ‹':'기기값 계산 자세히 보기 ›';
-};
-window.mfsShowNote=function(btn){
-  var f=document.querySelector('#consultFormInner .mf-note'); if(f){ f.classList.add('mf-open'); var t=f.querySelector('textarea'); if(t) t.focus(); }
-  if(btn) btn.style.display='none';
 };
 function mCalc(){
   var d=mSel.device; if(!d||!mCarrier||!mSel.discount) return null;
@@ -3721,6 +3713,6 @@ function closeNavModal(id) {
 </script>
 
 <!-- v20261005: 이탈 분석(익명, 개인정보 없음) — 어디까지 보고 어디서 나갔는지 기록 -->
-<script src="/assets/udak-funnel.js?v=20261006d" data-page="galaxy_z8" defer></script>
+<script src="/assets/udak-funnel.js?v=20261006e" data-page="galaxy_z8" defer></script>
 </body>
 </html>
