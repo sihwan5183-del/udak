@@ -1657,6 +1657,38 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   .mfs-price-top>b small{font-size:13px;font-weight:800;margin-left:2px;}
   .mfs-price>em{display:block;margin-top:3px;font-style:normal;font-size:11.5px;color:#9a9aa0;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   @media (max-width:360px){ .mfs-price-top>b{font-size:19px;} }
+
+  /* ═══ v20261006: 한 화면에 다음 내용이 살짝 보이게 (폴드8 랜딩과 같은 기준) ═══
+     - 이미지는 15% 작게(가로 100% → 85%), 첫 화면 위아래 여백을 줄여 아래 포스터 윗부분이 하단 버튼 위로 보이게
+     - 상품 카드: 사진 왼쪽 + 이름·컬러 오른쪽, 고르는 버튼·계산 상자 여백을 줄여 카드 + 다음 이미지 윗부분이 한 화면에 */
+  #hero{ padding-top:clamp(14px,2.5vh,24px); padding-bottom:clamp(8px,1.5vh,14px); }
+  .countdown-bar{ margin-bottom:14px; }
+  .about-trigger{ margin-bottom:clamp(14px,2.5vh,22px); }
+  .subsidy-info-img{ width:85%; max-width:408px; }
+  .hero-poster{ width:85%; max-width:408px; }
+  .b-stack > .b-card{ width:85%; max-width:408px; align-self:center; }
+  .phone-modal.b-inline{ padding:16px 14px 16px; margin-bottom:0; }
+  #duoInline + .b-group{ margin-top:clamp(24px,3.5vh,32px); }
+  .pm-top{ display:flex; align-items:center; gap:14px; margin-bottom:16px; }
+  .pm-top .pm-img-card{ flex:0 0 40%; aspect-ratio:1/1; margin:0; padding:10px; border-radius:14px; box-sizing:border-box; }
+  .pm-top .pm-img-card img{ width:auto; max-width:100%; max-height:100%; }
+  .pm-side{ flex:1; min-width:0; text-align:left; }
+  .pm-side .b-inline-tags{ text-align:left; margin-bottom:8px; }
+  .pm-side .b-tag-benefit{ padding:5px 12px; font-size:12px; }
+  .pm-side .phone-modal-title{ text-align:left; margin:0 0 10px; font-size:20px; }
+  .pm-side .b-modal-label{ margin-bottom:8px; }
+  .pm-side .pm-swatches{ margin-bottom:0; }
+  .pm-side .pm-swatch{ width:36px; height:36px; }
+  .b-inline .b-modal-label{ margin-bottom:7px; }
+  .b-inline .b-storage-badge, .b-inline .pm-badge{ padding:9px 4px; }
+  .b-inline .b-storage-row, .b-inline .pm-badge-row{ margin-bottom:14px; }
+  .b-inline .pm-result{ padding:12px 14px; margin-bottom:10px; }
+  .b-inline .pm-result-label{ margin-bottom:4px; }
+  .b-inline .pm-result-value{ font-size:22px; }
+  .b-inline .pm-result-hint{ margin-top:2px; }
+  .b-inline .pm-breakdown{ margin-top:8px; padding-top:8px; }
+  .b-inline .pm-breakdown > div{ padding:2px 0; }
+  .b-inline .b-modal-cta{ margin-top:10px; padding:14px; }
 </style>
 <script>
 /* v20261005: 메타 '메이드' 신호용 — 신청 때 메타 광고 클릭 정보(fbc/fbp)·브라우저·페이지 주소를 같이 저장
@@ -1784,14 +1816,18 @@ function closeNavModal(id){
       <!-- v20261006: 갤럭시 랜딩처럼 카드 안에서 바로 고르기 — 컬러·용량·통신사·할부를 고르면 바로 계산되고,
            고른 그대로 사전예약 신청서에 들어감. 카드는 눌러도 다른 화면으로 안 바뀜 (예전 상세 화면 없앰) -->
       <div class="phone-modal b-inline" id="duoInline">
-        <div class="b-inline-tags"><span class="b-tag-benefit">사전예약 혜택</span></div>
-        <div class="pm-img-card"><img id="duo-img" src="/assets/iphone18/duo_starwhite.webp" alt="아이폰 듀오 스타 화이트"></div>
-        <p class="phone-modal-title pm-title-center">아이폰 듀오</p>
-
-        <span class="b-modal-label">컬러 <em class="pm-picked" id="duo-colorName">스타 화이트</em></span>
-        <div class="pm-swatches">
-          <button type="button" class="pm-swatch is-active" data-color="스타 화이트" style="--c:#e6e5e1" onclick="selectColor('duo',this)" aria-label="스타 화이트"></button>
-          <button type="button" class="pm-swatch" data-color="나이트 스카이" style="--c:#2b3340" onclick="selectColor('duo',this)" aria-label="나이트 스카이"></button>
+        <!-- v20261006: 카드가 한 화면을 다 차지하지 않게 — 사진은 왼쪽, 혜택 표시·이름·컬러는 오른쪽 한 줄로 -->
+        <div class="pm-top">
+          <div class="pm-img-card"><img id="duo-img" src="/assets/iphone18/duo_starwhite.webp" alt="아이폰 듀오 스타 화이트"></div>
+          <div class="pm-side">
+            <div class="b-inline-tags"><span class="b-tag-benefit">사전예약 혜택</span></div>
+            <p class="phone-modal-title pm-title-center">아이폰 듀오</p>
+            <span class="b-modal-label">컬러 <em class="pm-picked" id="duo-colorName">스타 화이트</em></span>
+            <div class="pm-swatches">
+              <button type="button" class="pm-swatch is-active" data-color="스타 화이트" style="--c:#e6e5e1" onclick="selectColor('duo',this)" aria-label="스타 화이트"></button>
+              <button type="button" class="pm-swatch" data-color="나이트 스카이" style="--c:#2b3340" onclick="selectColor('duo',this)" aria-label="나이트 스카이"></button>
+            </div>
+          </div>
         </div>
 
         <span class="b-modal-label">용량</span>
@@ -2663,7 +2699,8 @@ updatePhonePrice('duo');   // 카드 처음 그릴 때 출고가부터 보이게
     es.forEach(function(e){ if(e.isIntersecting) vis.add(e.target); else vis.delete(e.target); });
     sq.classList.toggle('sq-hide', vis.size>0);
   },{rootMargin:'-62% 0px -6% 0px', threshold:0});
-  document.querySelectorAll('#duoInline .pm-swatches, #duoInline .b-storage-row, #duoInline .pm-badge-row').forEach(function(r){ io.observe(r); });
+  // v20261006: 카드가 작아져서 계산 상자·신청 버튼도 그 자리를 지나감 → 같이 지켜봄 (금액이 버튼에 가려지지 않게)
+  document.querySelectorAll('#duoInline .pm-swatches, #duoInline .b-storage-row, #duoInline .pm-badge-row, #duoInline .pm-result, #duoInline .b-modal-cta').forEach(function(r){ io.observe(r); });
 })();
 window.toggleFaq=function(btn){
   btn.parentElement.classList.toggle('open');
