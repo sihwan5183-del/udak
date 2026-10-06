@@ -1611,7 +1611,9 @@ function closeNavDrawer() {
 .ucard .ucard-pricebox .ucard-types--stor{grid-template-columns:repeat(2,1fr);}
 .ucard-pricebox .ucard-dots{justify-content:flex-start;margin:-5px 0 -4px -5px;}
 .ucard--hero .ucard-pricebox .ucard-dots{margin-left:-6px;}
-.ucard-chead>em.ucard-cname{color:#1A1A1A;}
+.ucard-pricebox .ucard-dots{align-items:center;}
+.ucard-pricebox .ucard-dots .ucard-cname{margin-left:6px;font-size:12.5px;font-weight:700;color:#1A1A1A;white-space:nowrap;}
+.ucard .ucard-crow.buy>span small.ucard-jtsub{display:block;margin:2px 0 0;font-size:11px;font-weight:700;color:#5b9bff;letter-spacing:0;}
 /* v20261006: 통신사 고르기 전 — 금액 칸은 '—', 구매가격 자리에 안내 */
 .ucard .ucard-crow>b.ucard-dash{color:#b0b0b5;font-weight:700;}
 .ucard .ucard-crow.buy>b.ucard-wait{font-size:13.5px;font-weight:700;color:#9aa0a6;letter-spacing:0;}
@@ -2079,7 +2081,7 @@ function ucardCalcHtml(t,q,hidden){
           <div class="ucard-crow"><span>출고가격</span><b>${ucardWon(q.price)}</b></div>
           <div class="ucard-crow"><span>공시지원금</span><b>${q.pub?'-':''}${ucardWon(q.pub)}</b></div>
           <div class="ucard-crow"><span>유플러스 다이렉트 지원금</span><b>${q.extra?'-':''}${ucardWon(q.extra)}</b></div>
-          <div class="ucard-crow buy"><span>구매가격</span><b>${ucardWon(q.final)}</b></div>
+          <div class="ucard-crow buy"><span>구매가격<small class="ucard-jtsub">${ucardJt(t)} 기준</small></span><b>${ucardWon(q.final)}</b></div>
         </div>`;
 }
 // v20261006: 통신사 고르기 전에는 계산 안 함 — 출고가격만, 나머지는 '—' + 통신사 선택 안내
@@ -2109,12 +2111,12 @@ function ucardColorsHtml(d,ci){
 function ucardOptsHtml(d,shown){
   const kd=(fn)=>`onkeydown="if(event.key==='Enter'||event.key===' ')${fn}(event,this)"`;
   const sl=d.storageList||[], si=ucardStorIdx(d);
-  const stor=sl.length?`<div class="ucard-opt"><div class="ucard-chead"><span>원하시는 용량</span></div>
+  const stor=sl.length?`<div class="ucard-opt"><div class="ucard-chead"><span>원하시는 용량을 선택해 주세요.</span></div>
           <div class="ucard-types ucard-types--stor">${sl.map((st,i)=>`<span class="ucard-type ucard-stor${i===si?' on':''}" role="button" tabindex="0" aria-pressed="${i===si}" data-i="${i}" onclick="ucardPickStorage(event,this)" ${kd('ucardPickStorage')}>${st.name}</span>`).join('')}</div></div>`:'';
   const cs=d.colors||[], ci=Math.min(ucardColorPick[d.id]||0,Math.max(0,cs.length-1));
-  const col=cs.length?`<div class="ucard-opt"><div class="ucard-chead"><span>원하시는 컬러</span><em class="ucard-cname">${ucardCname(cs[ci])}</em></div>
-          <div class="ucard-dots">${cs.map((c,i)=>`<span class="ucard-dot${i===ci?' on':''}" role="button" tabindex="0" aria-label="${ucardCname(c)}" aria-pressed="${i===ci}" data-i="${i}" style="--c:${(c.name||'').split('|')[0]||'#ddd'}" onclick="ucardPickColor(event,this)" ${kd('ucardPickColor')}></span>`).join('')}</div></div>`:'';
-  const car=`<div class="ucard-opt"><div class="ucard-chead"><span>이용 중인 통신사</span><em class="ucard-jt">${shown?ucardJt(shown)+' 기준':''}</em></div>
+  const col=cs.length?`<div class="ucard-opt"><div class="ucard-chead"><span>원하시는 컬러를 선택해 주세요.</span></div>
+          <div class="ucard-dots">${cs.map((c,i)=>`<span class="ucard-dot${i===ci?' on':''}" role="button" tabindex="0" aria-label="${ucardCname(c)}" aria-pressed="${i===ci}" data-i="${i}" style="--c:${(c.name||'').split('|')[0]||'#ddd'}" onclick="ucardPickColor(event,this)" ${kd('ucardPickColor')}></span>`).join('')}<span class="ucard-cname">${ucardCname(cs[ci])}</span></div></div>`:'';
+  const car=`<div class="ucard-opt"><div class="ucard-chead"><span>이용 중인 통신사를 선택해 주세요.</span></div>
           <div class="ucard-types">${UCARD_CARRIERS.map(c=>`<span class="ucard-type${c===ucardCarrier?' on':''}" role="button" tabindex="0" aria-pressed="${c===ucardCarrier}" data-c="${c}" onclick="ucardPickCarrier(event,this)" ${kd('ucardPickCarrier')}>${c}</span>`).join('')}</div></div>`;
   return `<div class="ucard-opts">${stor}${col}${car}</div>`;
 }
