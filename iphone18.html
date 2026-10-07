@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<script src="/assets/udak-block.js?v=20261007"></script>
 <title>iPhone Duo 사전예약</title>
 <meta name="description" content="iPhone Duo 사전예약, 가장 먼저 만나보세요.">
 <!-- Meta Pixel -->
@@ -2441,7 +2442,7 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
   if(!name){ fail('이름을 입력해 주세요.'); return; }
   if(phone.length!==11){ fail('연락처를 정확히 입력해 주세요.'); return; }
   // v20261007: 신청 차단 번호 (갤럭시·상세 화면과 같은 목록)
-  if(['01044713759','01083706646'].indexOf(phone)>-1){ fail('현재 해당 번호로는 신청이 제한되어 있습니다. 문의사항은 고객센터로 연락해 주세요.'); return; }
+  if(window.udakBlocked&&udakBlocked(phone)){ fail('현재 해당 번호로는 신청이 제한되어 있습니다. 문의사항은 고객센터로 연락해 주세요.'); return; }
   var bm=birth.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if(!bm){ fail('생년월일을 정확히 입력해 주세요. (예: 940101 또는 1994-01-01)'); return; }
   var by=parseInt(bm[1],10), bmo=parseInt(bm[2],10), bd=parseInt(bm[3],10);
