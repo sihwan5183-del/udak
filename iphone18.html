@@ -1267,6 +1267,34 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     animation:pvModalIn .3s cubic-bezier(.22,1,.36,1);
   }
   .done-box img{ display:block;width:100%;height:auto;border-radius:20px 20px 0 0; }
+  /* v20261007: 완료 안내 이미지 위에 고객별 예약번호 + 복사 버튼을 얹음 (위치는 이미지의 빈 번호 칸·복사 아이콘에 맞춘 % 값) */
+  .done-poster{ position:relative; container-type:inline-size; }
+  .done-no{
+    position:absolute; left:15.1%; top:47.25%; width:58.4%; height:6.58%;
+    display:flex; align-items:center; justify-content:center;
+    padding-left:2%; box-sizing:border-box;
+    font-family:inherit; font-weight:800; letter-spacing:-.005em; line-height:1; white-space:nowrap;
+    color:#14141a; cursor:pointer;
+    font-size:min(4.6vw,21.5px); font-size:4.95cqw;
+    -webkit-user-select:all; user-select:all; -webkit-tap-highlight-color:transparent;
+  }
+  .done-no-u{ color:#e6007e; }
+  .done-no.is-empty{ font-weight:600; color:#8a8a90; cursor:default; font-size:min(3.6vw,16px); font-size:3.7cqw; -webkit-user-select:none; user-select:none; }
+  .done-no.is-empty .done-no-u{ display:none; }
+  .done-copy{
+    position:absolute; left:72.1%; top:47.46%; width:11%; aspect-ratio:1/1;
+    background:transparent; border:0; padding:0; margin:0; border-radius:12px;
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+  }
+  .done-copy:active{ background:rgba(230,0,126,.10); }
+  .done-copy[disabled]{ cursor:default; }
+  .done-copied{
+    position:absolute; left:50%; top:55.3%; transform:translate(-50%,4px);
+    padding:7px 14px; border-radius:999px; background:#14141a; color:#fff;
+    font-size:13px; font-weight:700; line-height:1.2; white-space:nowrap;
+    opacity:0; pointer-events:none; transition:opacity .18s ease, transform .18s ease;
+  }
+  .done-copied.show{ opacity:1; transform:translate(-50%,0); }
   .done-close{
     position:absolute;top:12px;right:12px;
     width:34px;height:34px;border-radius:50%;
@@ -2071,7 +2099,12 @@ function closeNavModal(id){
   <div class="done-overlay" id="doneOverlay" role="dialog" aria-modal="true" aria-label="사전예약 완료 안내" onclick="if(event.target===this)closeDoneOverlay()">
     <div class="done-box">
       <button type="button" class="done-close" onclick="closeDoneOverlay()" aria-label="닫기">&times;</button>
-      <img src="/assets/iphone18/reservation_done.webp" alt="정상적으로 사전예약이 완료되었습니다. 영업일 오전 9시 30분~오후 8시 이내에 영업사원이 010 번호로 연락드립니다. 영업시간 외 상담을 원하시면 카카오톡 또는 별도의 메모를 남겨주세요.">
+      <div class="done-poster">
+        <img src="/assets/iphone18/reservation_done_no.webp" width="941" height="1672" alt="온라인 사전예약이 정상적으로 접수되었습니다. 신청해주셔서 감사합니다. 전문 상담원이 빠르게 연락드리겠습니다. 영업일 오전 9시 30분~오후 8시 내 입력하신 내용을 확인 후 010 번호로 전화드립니다. 문의사항은 카카오톡 또는 전화로 편하게 남겨주세요.">
+        <div class="done-no is-empty" id="doneNo" role="button" tabindex="0" aria-label="고객님의 예약번호" onclick="doneCopyNo()"><span class="done-no-u">U+</span><span id="doneNoRest"></span></div>
+        <button type="button" class="done-copy" id="doneCopy" onclick="doneCopyNo()" aria-label="예약번호 복사" disabled></button>
+        <span class="done-copied" id="doneCopied" role="status" aria-live="polite"></span>
+      </div>
       <p class="done-again" id="doneAgain" hidden>이미 사전예약 신청이 접수되어 있어요.<br>바꾸실 내용은 상담 때 편하게 말씀해 주세요.</p>
       <button type="button" class="done-btn" onclick="closeDoneOverlay()">확인</button>
     </div>
@@ -2355,6 +2388,75 @@ window.closePriorityModal=function(){
 var RF_DONE_KEY='udak_done_iphone18', RF_DONE_MS=30*60*1000;
 function rfDoneGet(){ try{ var v=JSON.parse(localStorage.getItem(RF_DONE_KEY)||'null'); if(v&&v.p&&Date.now()-v.t<RF_DONE_MS) return v; }catch(e){} var w=window.__rfDone; return (w&&Date.now()-w.t<RF_DONE_MS)?w:null; }
 function rfDoneSet(p){ var v={p:p,t:Date.now()}; window.__rfDone=v; try{ localStorage.setItem(RF_DONE_KEY,JSON.stringify(v)); }catch(e){} }
+// v20261007: 예약번호 — 접수하면 DB가 U+312017_SDUO0011 같은 번호를 발급하고(ssgadmin 아이폰 듀오 시트에 같은 번호로 보임),
+//  완료 안내에 그 번호를 보여준다. 30분 안에 완료 안내를 다시 열어도 같은 번호가 나오도록 완료 기록에 함께 저장.
+function rfDoneSetNo(no){ if(!no) return; window.__doneNo=no; var v=window.__rfDone; if(v){ v.n=no; try{ localStorage.setItem(RF_DONE_KEY,JSON.stringify(v)); }catch(e){} } }
+// 접수할 때 이 화면에서 만든 id — 저장 직후 이 id로 방금 발급된 번호만 조회한다 (랜딩은 DB를 읽을 권한이 없어 번호 조회 전용 함수 사용)
+function rfUuid(){
+  try{ if(window.crypto&&crypto.randomUUID) return crypto.randomUUID(); }catch(e){}
+  var b=new Uint8Array(16), i;
+  try{ crypto.getRandomValues(b); }catch(e){ for(i=0;i<16;i++) b[i]=Math.floor(Math.random()*256); }
+  b[6]=(b[6]&0x0f)|0x40; b[8]=(b[8]&0x3f)|0x80;
+  var h=[]; for(i=0;i<16;i++) h.push((b[i]+256).toString(16).slice(1));
+  return h.slice(0,4).join('')+'-'+h.slice(4,6).join('')+'-'+h.slice(6,8).join('')+'-'+h.slice(8,10).join('')+'-'+h.slice(10).join('');
+}
+var RF_SB_URL='https://ebggtghzqtxfylbhqfoh.supabase.co';
+var RF_SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q';
+// 항상 끝나는 약속: 번호(문자열) 또는 null. 못 받아도 접수는 이미 끝난 것이므로 완료 안내는 그대로 띄운다.
+function rfFetchNo(id){
+  var once=function(){
+    return fetch(RF_SB_URL+'/rest/v1/rpc/get_reservation_no',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':RF_SB_KEY,'Authorization':'Bearer '+RF_SB_KEY},
+      body:JSON.stringify({p_id:id})
+    }).then(function(r){ return r.ok?r.json():null; })
+      .then(function(v){ return (typeof v==='string'&&v)?v:null; })
+      .catch(function(){ return null; });
+  };
+  var tried=once().then(function(v){
+    if(v) return v;
+    return new Promise(function(res){ setTimeout(function(){ once().then(res); },600); });
+  });
+  var giveUp=new Promise(function(res){ setTimeout(function(){ res(null); },4000); });
+  return Promise.race([tried,giveUp]);
+}
+window.doneSetNo=function(no){
+  var el=document.getElementById('doneNo'), rest=document.getElementById('doneNoRest'), cp=document.getElementById('doneCopy');
+  if(!el||!rest) return;
+  window.__doneNo=no||null;
+  if(no){
+    el.classList.remove('is-empty');
+    rest.textContent=(no.indexOf('U+')===0)?no.slice(2):no;
+    el.querySelector('.done-no-u').style.display=(no.indexOf('U+')===0)?'':'none';
+    el.setAttribute('aria-label','고객님의 예약번호 '+no+' (누르면 복사)');
+    if(cp) cp.disabled=false;
+  } else {
+    el.classList.add('is-empty');
+    rest.textContent='상담 시 안내드립니다';
+    el.setAttribute('aria-label','예약번호는 상담 시 안내드립니다');
+    if(cp) cp.disabled=true;
+  }
+};
+window.doneCopyNo=function(){
+  var no=window.__doneNo; if(!no) return;
+  var tip=document.getElementById('doneCopied');
+  var say=function(msg){ if(!tip) return; tip.textContent=msg; tip.classList.add('show'); clearTimeout(window.__doneTipT); window.__doneTipT=setTimeout(function(){ tip.classList.remove('show'); },1800); };
+  var ok=function(){ say('예약번호가 복사되었습니다'); };
+  // 인스타그램·페이스북 앱 안 브라우저처럼 새 복사 방식이 막힌 곳을 위한 예전 방식
+  var legacy=function(){
+    try{
+      var ta=document.createElement('textarea');
+      ta.value=no; ta.setAttribute('readonly','');
+      ta.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;font-size:16px;';
+      document.body.appendChild(ta); ta.focus(); ta.select(); ta.setSelectionRange(0,no.length);
+      var done=document.execCommand('copy');
+      document.body.removeChild(ta);
+      if(done) ok(); else say('번호를 길게 눌러 복사해 주세요');
+    }catch(e){ say('번호를 길게 눌러 복사해 주세요'); }
+  };
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(no).then(ok,legacy); }
+  else legacy();
+};
 window.rfIsDone=function(){ return document.documentElement.classList.contains('rf-done'); };
 window.rfShowDoneState=function(on){
   document.documentElement.classList.toggle('rf-done',!!on);
@@ -2394,6 +2496,7 @@ window.closeReserveModal=function(){
 window.openDoneOverlay=function(again){
   var ov=document.getElementById('doneOverlay');
   var ag=document.getElementById('doneAgain'); if(ag) ag.hidden=(again!==true);
+  var dn=rfDoneGet(); doneSetNo((dn&&dn.n)||window.__doneNo||null);   // v20261007: 예약번호 표시
   ov.classList.add('open');
   ov.querySelector('.done-box').scrollTop=0;
   document.body.style.overflow='hidden';
@@ -2477,6 +2580,7 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
   var btnHTML=btn.innerHTML;
   btn.disabled=true;
   btn.textContent='신청 중...';
+  var rfId=rfUuid();   // v20261007: 예약번호 조회용 — 이 접수 건의 id
 
   // v20261002: reservations로 보내면 DB 트리거(fn_route_iphone_reservations)가 관심기기에 '듀오'·'울트라'가 들어간 건을
   // ssgadmin '아이폰 울트라' 시트(reservations_iphone_ultra)로, 그 외 '아이폰' 건은 아이폰18 시트로 보냄 (캠페인 라벨 치환 포함)
@@ -2489,6 +2593,7 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
       'Prefer':'return=minimal'
     },
     body:JSON.stringify(Object.assign({
+      id:rfId,
       name:name, phone:phoneF, carrier:carrier,
       channel:(PAGE_CHANNEL||'iphone18_landing'), utm_campaign:(PAGE_UTM_CAMPAIGN||'iphone18'),
       device_interest:product, capacity:capacity, product_color:color, installment_months:installment||null,
@@ -2498,16 +2603,21 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
     if(res.ok){
       rfDoneSet(phoneF);   // v20261007: 완료 기록(같은 번호 30분 중복 방지) — 아래 어느 줄에서 오류가 나도 '네트워크 오류'로 다시 누르게 하지 않도록 맨 먼저
       try{ if(typeof fbq!=='undefined') fbq('track','Lead'); }catch(e){}
-      statusEl.textContent='신청이 완료되었습니다. 빠르게 연락드리겠습니다.';
-      statusEl.className='rf-status ok';
-      document.getElementById('reservationForm').reset();
-      window.rfPicked=false; if(window.rfsApplyMode) rfsApplyMode();   // v20261006: 신청 끝나면 처음 상태로
-      btn.disabled=false;
-      btn.innerHTML=btnHTML;
-      rfShowDoneState(true);   // v20261007: 신청서 자리·하단·카드 버튼 모두 '신청 완료'로
-      // 예약 모달은 닫고, 완료 안내 포스터를 전체 화면으로 띄움 (고객이 접수 사실을 확실히 알 수 있도록)
-      closeReserveModal();
-      openDoneOverlay();
+      // v20261007: 방금 발급된 예약번호를 받아 온 뒤 완료 안내를 띄움 (번호를 못 받아도 4초 안에 반드시 완료 안내로 넘어감)
+      var rfFinish=function(no){
+        try{ rfDoneSetNo(no); }catch(e){}
+        statusEl.textContent='신청이 완료되었습니다. 빠르게 연락드리겠습니다.';
+        statusEl.className='rf-status ok';
+        document.getElementById('reservationForm').reset();
+        window.rfPicked=false; if(window.rfsApplyMode) rfsApplyMode();   // v20261006: 신청 끝나면 처음 상태로
+        btn.disabled=false;
+        btn.innerHTML=btnHTML;
+        rfShowDoneState(true);   // v20261007: 신청서 자리·하단·카드 버튼 모두 '신청 완료'로
+        // 예약 모달은 닫고, 완료 안내 포스터를 전체 화면으로 띄움 (고객이 접수 사실을 확실히 알 수 있도록)
+        closeReserveModal();
+        openDoneOverlay();
+      };
+      rfFetchNo(rfId).then(rfFinish,function(){ rfFinish(null); });
     } else {
       res.text().then(function(t){ console.error('Supabase:', t); });
       fail('신청 중 오류가 발생했습니다. 다시 시도해 주세요.');
