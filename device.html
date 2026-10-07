@@ -38,7 +38,7 @@ var PAGE_CHANNEL = UDAK_CHANNEL;
 function udakUtmQuery(){ var p = new URLSearchParams(); Object.keys(UDAK_UTM).forEach(function(k){ p.set(k, UDAK_UTM[k]); }); var s = p.toString(); return s ? ('&' + s) : ''; }
 // 생년월일 6자리 → 8자리(YYYYMMDD, 유닥 시트 형식). 00~현재연도 끝2자리는 2000년대로
 function udakBirth8(b6){ var yy = parseInt(b6.slice(0,2), 10), cy = new Date().getFullYear() % 100; return (yy <= cy ? '20' : '19') + b6; }
-var BLOCKED_PHONES = ['01044713759'];
+var BLOCKED_PHONES = ['01044713759','01083706646']; // v20261007: 010-8370-6646 신청 차단 추가
 </script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
