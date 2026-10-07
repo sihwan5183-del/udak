@@ -1273,6 +1273,19 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     font-size:20px;cursor:pointer;line-height:1;
     z-index:1;
   }
+  /* v20261007: 신청 완료 상태 — 신청서 대신 완료 안내, 하단·카드 버튼도 '신청 완료' */
+  #rfDonePanel{ display:none; }
+  html.rf-done #rfDonePanel{ display:block; }
+  html.rf-done #rfSummary, html.rf-done #reservationForm{ display:none !important; }
+  .rf-done-panel{ text-align:center; padding:6px 4px 2px; }
+  .rf-done-ico{ width:56px;height:56px;margin:0 auto 14px;border-radius:50%;background:#e2067a;color:#fff;font-size:28px;font-weight:900;line-height:56px; }
+  .rf-done-t{ margin:0 0 8px;font-size:19px;font-weight:800;color:#0a0a0c;letter-spacing:-.02em; }
+  .rf-done-s{ margin:0 0 18px;font-size:14px;line-height:1.6;color:#6b6b72; }
+  .rf-done-again{ background:none;border:0;padding:6px;color:#8a8a90;font-family:inherit;font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer; }
+  .bottom-cta-btn.scta-done{ background:#fff !important;color:#e2067a !important;border:2px solid #e2067a !important;box-shadow:none !important; }
+  .b-modal-cta.is-done{ background:#fff !important;color:#e2067a !important;border:1.5px solid #e2067a !important;box-shadow:none !important; }
+  .done-again{ margin:12px 16px 0;padding:10px 12px;border-radius:12px;background:#fdf0f7;color:#c2185b;font-size:13.5px;font-weight:700;line-height:1.5;text-align:center; }
+  .done-again[hidden]{ display:none; }
   .done-btn{
     display:block;width:calc(100% - 32px);margin:12px auto 0;
     height:52px;border:none;border-radius:14px;
@@ -2058,6 +2071,7 @@ function closeNavModal(id){
     <div class="done-box">
       <button type="button" class="done-close" onclick="closeDoneOverlay()" aria-label="닫기">&times;</button>
       <img src="/assets/iphone18/reservation_done.webp" alt="정상적으로 사전예약이 완료되었습니다. 영업일 오전 9시 30분~오후 8시 이내에 영업사원이 010 번호로 연락드립니다. 영업시간 외 상담을 원하시면 카카오톡 또는 별도의 메모를 남겨주세요.">
+      <p class="done-again" id="doneAgain" hidden>이미 사전예약 신청이 접수되어 있어요.<br>바꾸실 내용은 상담 때 편하게 말씀해 주세요.</p>
       <button type="button" class="done-btn" onclick="closeDoneOverlay()">확인</button>
     </div>
   </div>
@@ -2078,6 +2092,13 @@ function closeNavModal(id){
         <div class="mfs-price" id="rfsPriceRow" hidden><div class="mfs-price-top"><span>예상 월 납부금액</span><b id="rfsPrice"></b></div><em id="rfsHint"></em></div>
       </div>
 
+      <!-- v20261007: 신청이 끝나면 빈 신청서 대신 이 안내 — 완료 팝업을 닫으면 화면이 신청 전과 똑같아(빈 신청서·'이 조건으로 신청하기') 한 번 더 신청하는 일이 많았음 -->
+      <div class="rf-done-panel" id="rfDonePanel">
+        <div class="rf-done-ico" aria-hidden="true">✓</div>
+        <p class="rf-done-t">사전예약 신청이 완료되었습니다</p>
+        <p class="rf-done-s">영업일 오전 9시 30분~오후 8시 사이에<br>010 번호로 연락드립니다.</p>
+        <button type="button" class="rf-done-again" onclick="rfAgain()">다른 분 명의로 추가 신청하기</button>
+      </div>
       <form id="reservationForm">
         <div class="rf-field">
           <label>이름 <span class="req">*</span></label>
@@ -2328,7 +2349,31 @@ window.closePriorityModal=function(){
   document.querySelector('.bottom-cta-bar').style.display='';
 };
 
+// v20261007: 중복 신청 막기 — 10/6~7 듀오 중복 4건 모두 같은 폰에서 첫 신청이 정상 저장된 뒤 17초~2분 안에 다시 신청
+//  (완료 팝업을 닫으면 화면이 신청 전과 똑같아서). 신청이 끝나면 '완료 상태'로 두고, 같은 번호로 30분 안에 또 누르면 새로 저장하지 않고 완료 팝업만 다시
+var RF_DONE_KEY='udak_done_iphone18', RF_DONE_MS=30*60*1000;
+function rfDoneGet(){ try{ var v=JSON.parse(localStorage.getItem(RF_DONE_KEY)||'null'); if(v&&v.p&&Date.now()-v.t<RF_DONE_MS) return v; }catch(e){} var w=window.__rfDone; return (w&&Date.now()-w.t<RF_DONE_MS)?w:null; }
+function rfDoneSet(p){ var v={p:p,t:Date.now()}; window.__rfDone=v; try{ localStorage.setItem(RF_DONE_KEY,JSON.stringify(v)); }catch(e){} }
+window.rfIsDone=function(){ return document.documentElement.classList.contains('rf-done'); };
+window.rfShowDoneState=function(on){
+  document.documentElement.classList.toggle('rf-done',!!on);
+  var b=document.getElementById('ctaBtnFixed');
+  if(b){
+    if(on){ b.innerHTML='<span class="scta-main">✓ 사전예약 신청 완료</span><span class="scta-sub">곧 010 번호로 연락드릴게요</span>'; b.classList.add('scta-on','scta-done'); }
+    else { b.classList.remove('scta-on','scta-done'); b.textContent='사전예약 신청하기'; }
+  }
+  var c=document.querySelector('#duoInline .b-modal-cta');
+  if(c){
+    if(on){ if(!c.getAttribute('data-label')) c.setAttribute('data-label',c.innerHTML); c.innerHTML='✓ 사전예약 신청 완료 · 곧 연락드릴게요'; c.classList.add('is-done'); }
+    else if(c.getAttribute('data-label')){ c.innerHTML=c.getAttribute('data-label'); c.classList.remove('is-done'); }
+  }
+};
+// 완료 안내의 '다른 분 명의로 추가 신청하기' — 신청서 다시 열기 (같은 번호는 30분 동안 다시 저장 안 됨)
+window.rfAgain=function(){ rfShowDoneState(false); openReserveModal(); };
+// 30분 안에 다시 들어와도 완료 상태 유지
+(function(){ if(rfDoneGet()){ var go=function(){ rfShowDoneState(true); }; if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',go); else go(); } })();
 window.openReserveModal=function(){
+  if(rfIsDone()){ openDoneOverlay(); return; }   // v20261007: 이미 신청 끝났으면 신청서 대신 완료 안내
   if(window.rfsApplyMode) rfsApplyMode();
   var inner = document.querySelector('#reserveForm .rf-inner');
   var slot = document.getElementById('reserveModalSlot');
@@ -2345,8 +2390,9 @@ window.closeReserveModal=function(){
   document.body.style.overflow='';
   document.querySelector('.bottom-cta-bar').style.display='';
 };
-window.openDoneOverlay=function(){
+window.openDoneOverlay=function(again){
   var ov=document.getElementById('doneOverlay');
+  var ag=document.getElementById('doneAgain'); if(ag) ag.hidden=(again!==true);
   ov.classList.add('open');
   ov.querySelector('.done-box').scrollTop=0;
   document.body.style.overflow='hidden';
@@ -2415,6 +2461,15 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
   var fullMemo=memo;
 
+  // v20261007: 같은 번호로 30분 안에 이미 신청 → 새로 저장하지 않고 완료 안내만 다시 (중복 방지)
+  var prevDone=rfDoneGet();
+  if(prevDone && prevDone.p===phoneF){
+    document.getElementById('reservationForm').reset();
+    window.rfPicked=false; if(window.rfsApplyMode) rfsApplyMode();
+    rfShowDoneState(true); closeReserveModal(); openDoneOverlay(true);
+    return;
+  }
+
   var btn=document.getElementById('rfSubmitBtn');
   var btnHTML=btn.innerHTML;
   btn.disabled=true;
@@ -2438,13 +2493,15 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
     }, udakMetaIds()))
   }).then(function(res){
     if(res.ok){
-      if(typeof fbq!=='undefined') fbq('track','Lead');
+      rfDoneSet(phoneF);   // v20261007: 완료 기록(같은 번호 30분 중복 방지) — 아래 어느 줄에서 오류가 나도 '네트워크 오류'로 다시 누르게 하지 않도록 맨 먼저
+      try{ if(typeof fbq!=='undefined') fbq('track','Lead'); }catch(e){}
       statusEl.textContent='신청이 완료되었습니다. 빠르게 연락드리겠습니다.';
       statusEl.className='rf-status ok';
       document.getElementById('reservationForm').reset();
       window.rfPicked=false; if(window.rfsApplyMode) rfsApplyMode();   // v20261006: 신청 끝나면 처음 상태로
       btn.disabled=false;
       btn.innerHTML=btnHTML;
+      rfShowDoneState(true);   // v20261007: 신청서 자리·하단·카드 버튼 모두 '신청 완료'로
       // 예약 모달은 닫고, 완료 안내 포스터를 전체 화면으로 띄움 (고객이 접수 사실을 확실히 알 수 있도록)
       closeReserveModal();
       openDoneOverlay();
@@ -2617,6 +2674,7 @@ function phoneSyncForm(id){
 // 하단 '사전예약 신청하기' → '이 조건으로 사전예약 신청하기' + 고른 내용 한 줄, 고를 때마다 한 번 톡 튐
 function phoneCtaUpdate(id,pop){
   var btn=document.getElementById('ctaBtnFixed'); if(!btn) return;
+  if(window.rfIsDone&&rfIsDone()) return;   // v20261007: 신청 완료 상태면 하단 버튼은 '신청 완료' 그대로
   var s=phoneSel[id];
   var sub=[PHONE_PRODUCT_NAME[id], s.color, s.cap, s.carrier, (s.months===null?null:(s.months===0?'일시납':s.months+'개월'))].filter(Boolean).join(' · ');
   btn.innerHTML='<span class="scta-main">이 조건으로 사전예약 신청하기</span><span class="scta-sub">'+sub+'</span>';
@@ -2633,6 +2691,7 @@ function phoneTouched(id){ phoneSyncForm(id); phoneCtaUpdate(id,true); window.rf
   },{threshold:0.6}).observe(cta);
 })();
 window.reserveFromPhone=function(id){
+  if(window.rfIsDone&&rfIsDone()){ openDoneOverlay(); return; }   // v20261007: 이미 신청 끝났으면 완료 안내
   var s=phoneSel[id];
   var p=document.getElementById('rfProduct'), c=document.getElementById('rfCapacity'), col=document.getElementById('rfColor'), car=document.getElementById('rfCarrier');
   if(p) p.value=PHONE_PRODUCT_NAME[id];
