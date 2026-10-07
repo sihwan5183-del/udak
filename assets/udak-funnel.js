@@ -32,6 +32,7 @@
       galaxy_z8:{ price:{'see:catalog':1, card_carrier:1, card_color:1, card_cta:1, form_carrier:1, calc_more:1}, form:{cta_bottom:1, card_cta:1, form_start:1, form_edit:1, form_carrier:1} },
       device:{ price:{'see:price_detail':1, carrier:1, color:1}, form:{consult_btn:1, order_btn:1, form_start:1} }
     };
+    STAGE.apple=STAGE.galaxy_z8;   // v20261008: /apple (아이폰 18 Pro 랜딩)은 갤럭시 랜딩과 같은 구성
     var stageSent={};
     function metaStage(name, detail){
       try{
@@ -97,6 +98,7 @@
                ['.mfs-edit','form_edit',txt],['.mfs-car-row button','form_carrier',function(el){ return el.getAttribute('data-car'); }]]
       }
     };
+    CFG.apple=CFG.galaxy_z8;       // v20261008: /apple — 같은 구성(카드·신청서)이라 같은 구간·버튼을 봄
     var cfg=CFG[PAGE]||{see:[],click:[]};
 
     // 1) 들어옴
