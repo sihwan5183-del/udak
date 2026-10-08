@@ -1694,6 +1694,23 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   .mfs-title{font-size:14.5px;} .mfs-spec{font-size:12.5px;} .mfs-sub{font-size:11.5px;letter-spacing:-.02em;}
 }
 
+/* v20261009: 요약 카드 안 '변경' — 컬러·용량·통신사·할부를 카드 안에서 바로 고르고 '저장하기' (모바일 기준, 버튼은 통신사 버튼과 같은 모양) */
+.mfs-ed{margin-top:14px;padding-top:12px;border-top:1px dashed #f0c3da;}
+.mfs-ed[hidden]{display:none;}
+.mfs-ed-g+.mfs-ed-g{margin-top:12px;}
+.mfs-opt-row{display:grid;gap:6px;}
+.mfs-opt-row.c2{grid-template-columns:repeat(2,1fr);}
+.mfs-opt-row.c3{grid-template-columns:repeat(3,1fr);}
+.mfs-opt-row.c4{grid-template-columns:repeat(4,1fr);}
+.mfs-opt-row button{display:flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:0 4px;border:1.5px solid #e2e2e6;border-radius:10px;background:#fff;font-family:inherit;font-size:13.5px;font-weight:800;color:#333;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;}
+.mfs-opt-row button.on{border-color:#e2067a;background:#e2067a;color:#fff;}
+.mfs-opt-row button i{width:14px;height:14px;flex-shrink:0;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);}
+.mfs-opt-row button.on i{box-shadow:0 0 0 1.5px #fff;}
+.mfs-ed .mfs-car-row button{min-height:42px;padding:0;}
+.mfs-ed-save{display:block;width:100%;min-height:48px;margin-top:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#ff2f92,#e2067a);box-shadow:0 8px 18px -8px rgba(226,6,122,.55);font-family:inherit;font-size:15px;font-weight:800;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.mfs-ed-save[hidden]{display:none;}
+@media (max-width:360px){ .mfs-opt-row button{font-size:13px;gap:4px;} .mfs-opt-row button i{width:12px;height:12px;} }
+@media (max-width:340px){ .mfs-opt-row,.mfs-ed .mfs-car-row{gap:4px;} .mfs-opt-row button{font-size:12px;padding:0 2px;} }
   #rfInner.rf-compact .rf-pick{display:none !important;}
   #rfInner.rf-compact.mf-edit .rf-pick{display:block !important;}
   #rfInner.rf-compact.mf-edit.rf-carrow .rf-pick-car{display:none !important;}
@@ -2141,11 +2158,19 @@ function closeNavModal(id){
       <div class="mfs" id="rfSummary" hidden>
         <div class="mfs-head"><span>선택한 조건</span><button type="button" class="mfs-edit" id="rfsEdit" onclick="rfsToggleEdit()">변경</button></div>
         <div class="mfs-prod"><img id="rfsImg" src="" alt=""><div class="mfs-txt"><p class="mfs-title" id="rfsTitle"></p><p class="mfs-spec" id="rfsSpec"></p><p class="mfs-sub" id="rfsSub"></p></div></div>
+        <!-- v20261009: '변경'을 누르면 이 카드 안에서 바로 컬러·용량·통신사·할부를 고르고 '저장하기' (예전엔 아래 칸이 펼쳐져서 모바일에선 안 보였음) -->
+        <div class="mfs-ed" id="rfsEd" hidden>
+          <div class="mfs-ed-g"><p class="mfs-car-t">컬러</p><div class="mfs-opt-row c2" data-k="color"><button type="button" data-v="스타 화이트" onclick="rfsEdPick(this)"><i style="--c:#e6e5e1"></i>스타 화이트</button><button type="button" data-v="나이트 스카이" onclick="rfsEdPick(this)"><i style="--c:#2b3340"></i>나이트 스카이</button></div></div>
+          <div class="mfs-ed-g"><p class="mfs-car-t">용량</p><div class="mfs-opt-row c3" data-k="cap"><button type="button" data-v="256GB" onclick="rfsEdPick(this)">256GB</button><button type="button" data-v="512GB" onclick="rfsEdPick(this)">512GB</button><button type="button" data-v="1TB" onclick="rfsEdPick(this)">1TB</button></div></div>
+          <div class="mfs-ed-g"><p class="mfs-car-t">현재 사용 중인 통신사</p><div class="mfs-car-row" data-k="car"><button type="button" data-v="SKT" data-car="SKT" onclick="rfsEdPick(this)">SKT</button><button type="button" data-v="KT" data-car="KT" onclick="rfsEdPick(this)">KT</button><button type="button" data-v="LG U+" data-car="LG U+" onclick="rfsEdPick(this)">LG U+</button><button type="button" data-v="알뜰폰" data-car="알뜰폰" onclick="rfsEdPick(this)">알뜰폰</button></div></div>
+          <div class="mfs-ed-g"><p class="mfs-car-t">할부 개월</p><div class="mfs-opt-row c4" data-k="inst"><button type="button" data-v="일시납" onclick="rfsEdPick(this)">일시납</button><button type="button" data-v="24개월" onclick="rfsEdPick(this)">24개월</button><button type="button" data-v="30개월" onclick="rfsEdPick(this)">30개월</button><button type="button" data-v="36개월" onclick="rfsEdPick(this)">36개월</button></div></div>
+        </div>
       <div class="mfs-car" id="rfsCar" hidden>
         <p class="mfs-car-t">지금 쓰는 통신사<span class="req">*</span></p>
         <div class="mfs-car-row"><button type="button" data-car="SKT" onclick="rfsPickCar(this)">SKT</button><button type="button" data-car="KT" onclick="rfsPickCar(this)">KT</button><button type="button" data-car="LG U+" onclick="rfsPickCar(this)">LG U+</button><button type="button" data-car="알뜰폰" onclick="rfsPickCar(this)">알뜰폰</button></div>
       </div>
         <div class="mfs-price" id="rfsPriceRow" hidden><div class="mfs-price-top"><span>예상 월 납부금액</span><b id="rfsPrice"></b></div><em id="rfsHint"></em></div>
+        <button type="button" class="mfs-ed-save" id="rfsEdSave" onclick="rfsEdSave()" hidden>저장하기</button>
       </div>
 
       <!-- v20261007: 신청이 끝나면 빈 신청서 대신 이 안내 — 완료 팝업을 닫으면 화면이 신청 전과 똑같아(빈 신청서·'이 조건으로 신청하기') 한 번 더 신청하는 일이 많았음 -->
@@ -2545,6 +2570,7 @@ window.closePrivacyModal=function(){
 
 document.getElementById('reservationForm').addEventListener('submit', function(e){
   e.preventDefault();
+  if(window.rfsEd&&rfsEd.open&&window.rfsEdSave) rfsEdSave();   // v20261009: 카드 안 '변경'에서 고르고 저장을 안 눌렀어도 고른 값으로 접수
   var statusEl=document.getElementById('rfStatus');
   statusEl.className='rf-status';
   statusEl.textContent='';
@@ -2857,19 +2883,25 @@ window.rfsApplyMode=function(){
   var inner=document.getElementById('rfInner'), box=document.getElementById('rfSummary'); if(!inner||!box) return;
   var on=!!window.rfPicked;
   inner.classList.toggle('rf-compact',on); box.hidden=!on;
-  if(!on){ inner.classList.remove('mf-edit','rf-carrow'); var eb=document.getElementById('rfsEdit'); if(eb) eb.textContent='변경'; return; }
+  if(!on){ inner.classList.remove('mf-edit','rf-carrow'); if(window.rfsEdReset) rfsEdReset(); var eb=document.getElementById('rfsEdit'); if(eb) eb.textContent='변경'; return; }
   rfsRender();
 };
 window.rfsRender=function(){
-  var inner=document.getElementById('rfInner'), box=document.getElementById('rfSummary'); if(!box||box.hidden) return;
-  var capV=rfsVal('rfCapacity'), colV=rfsVal('rfColor'), car=rfsVal('rfCarrier'), inst=rfsVal('rfInstallment');
+  var box=document.getElementById('rfSummary'); if(!box||box.hidden) return;
+  // v20261009: '변경' 중이면 고르는 중인 값으로 미리 보여 줌(저장 전), 아니면 신청서에 들어간 값
+  if(window.rfsEd&&rfsEd.open&&rfsEd.d){ rfsPaint(rfsEd.d,true); return; }
+  rfsPaint({cap:rfsVal('rfCapacity'), color:rfsVal('rfColor'), car:rfsVal('rfCarrier'), inst:rfsVal('rfInstallment')},false);
+};
+function rfsPaint(st,editing){
+  var inner=document.getElementById('rfInner');
+  var capV=st.cap||'', colV=st.color||'', car=st.car||'', inst=st.inst||'';
   var colSet=!!(colV&&colV!=='미정'), cap=capV||'256GB';
   var img=document.getElementById('rfsImg'); img.src=PHONE_IMG_BASE+(PHONE_COLOR_IMG[colSet?colV:'스타 화이트']||PHONE_COLOR_IMG['스타 화이트']); img.alt='아이폰 듀오';
   document.getElementById('rfsTitle').textContent='아이폰 듀오';
   document.getElementById('rfsSpec').textContent=[colSet?colV:'', capV].filter(Boolean).join(' · ')||'컬러·용량은 상담 때 정해도 돼요';
   var sub=[]; if(car) sub.push(car+' '+(car==='LG U+'?'기기변경':'번호이동')); if(inst) sub.push(inst==='일시납'?'일시납':inst+' 할부');
   document.getElementById('rfsSub').textContent=sub.join(' · ');
-  var carRow=document.getElementById('rfsCar'), showCar=!car;
+  var carRow=document.getElementById('rfsCar'), showCar=!car&&!editing;   // '변경' 중엔 아래 편집 칸에 통신사가 있어서 숨김
   carRow.hidden=!showCar; inner.classList.toggle('rf-carrow',showCar);
   carRow.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on',b.getAttribute('data-car')===car); });
   var row=document.getElementById('rfsPriceRow'), price=document.getElementById('rfsPrice'), hint=document.getElementById('rfsHint');
@@ -2879,14 +2911,46 @@ window.rfsRender=function(){
   var m=inst==='일시납'?0:(parseInt(inst,10)||36);   // v20261009: 할부 미정이면 36개월 기준 (예전 24개월)
   if(m===0){ price.textContent=won(after); hint.textContent='일시납 · 지원 후 금액'; }
   else { price.innerHTML=won(udakWon10(after*PHONE_MONTH_RATE[m]/m))+'<small>/월</small>'; hint.textContent=m+'개월 할부'+(inst?'':' 기준')+' · 기기값, 할부 이자 포함'; }
-};
+}
 window.rfsPickCar=function(btn){
   var sel=document.getElementById('rfCarrier'); if(sel){ sel.value=btn.getAttribute('data-car'); }
   rfsRender();
 };
+// v20261009: '변경' → 카드 안 편집(컬러·용량·통신사·할부) + '저장하기'. 예전처럼 아래 칸(rf-pick)을 펼치지 않음
+//  · 고르는 동안 위 요약·예상 월 납부금액이 바로 바뀌어 보이고, '저장하기'를 눌러야 신청서·위 카드·하단 버튼에 반영
+//  · '취소'를 누르면 고르기 전 그대로. 저장 안 하고 바로 '사전 예약 신청하기'를 눌러도 고른 값으로 저장 후 접수
+window.rfsEd={open:false,d:null};
+function rfsEdMarks(){
+  var ed=document.getElementById('rfsEd'); if(!ed||!rfsEd.d) return;
+  ed.querySelectorAll('[data-k]').forEach(function(row){
+    var v=rfsEd.d[row.getAttribute('data-k')]||'';
+    row.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on',b.getAttribute('data-v')===v); });
+  });
+}
+function rfsEdShow(on){
+  var ed=document.getElementById('rfsEd'), sv=document.getElementById('rfsEdSave'), eb=document.getElementById('rfsEdit');
+  if(ed) ed.hidden=!on; if(sv) sv.hidden=!on; if(eb) eb.textContent=on?'취소':'변경';
+}
+window.rfsEdReset=function(){ rfsEd.open=false; rfsEd.d=null; rfsEdShow(false); };
 window.rfsToggleEdit=function(){
-  var inner=document.getElementById('rfInner'); var on=!inner.classList.contains('mf-edit');
-  inner.classList.toggle('mf-edit',on); document.getElementById('rfsEdit').textContent=on?'접기':'변경';
+  if(rfsEd.open){ rfsEdReset(); rfsRender(); return; }   // 취소: 고르기 전 그대로
+  rfsEd.d={color:rfsVal('rfColor'), cap:rfsVal('rfCapacity'), car:rfsVal('rfCarrier'), inst:rfsVal('rfInstallment')};
+  rfsEd.open=true; rfsEdShow(true); rfsEdMarks(); rfsRender();
+};
+window.rfsEdPick=function(btn){
+  if(!rfsEd.open||!rfsEd.d) return;
+  rfsEd.d[btn.parentElement.getAttribute('data-k')]=btn.getAttribute('data-v');
+  rfsEdMarks(); rfsRender();
+};
+window.rfsEdSave=function(){
+  var d=rfsEd.d; if(!rfsEd.open||!d){ rfsEdReset(); rfsRender(); return; }
+  // 위 카드 버튼 함수를 그대로 써서 카드·하단 버튼·신청서 칸이 한 번에 같은 값이 되게
+  var q=function(sel){ return document.querySelector('#duoInline '+sel); }, b;
+  if(d.color&&d.color!=='미정'&&(b=q('.pm-swatch[data-color="'+d.color+'"]'))) selectColor('duo',b);
+  if(d.cap&&(b=q('.b-storage-badge[data-cap="'+d.cap+'"]'))) selectStorage('duo',b);
+  if(d.car&&(b=q('.pm-badge[data-carrier="'+d.car+'"]'))) selectCarrier('duo',b);
+  if(d.inst&&(b=q('.pm-badge[data-months="'+(d.inst==='일시납'?'0':String(parseInt(d.inst,10)))+'"]'))) selectMonths('duo',b);
+  rfsEdReset(); rfsRender();
 };
 ['rfCarrier','rfCapacity','rfColor','rfInstallment'].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener('change',function(){ rfsRender(); }); });
 // v20261009: 아래 '사전예약 신청하기'로 바로 들어온 신청서(카드에서 안 고른 경우)에서도 통신사를 고르면 예상 월 납부금액 표시
