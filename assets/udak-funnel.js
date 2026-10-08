@@ -89,8 +89,8 @@
                ['.udetail-btn-order','order_btn'],['.modal-submit','submit_click'],['.dtopbar-back','back'],['.side-quick-btn','quick',txt]]
       },
       iphone18:{
-        // v20261008: 사전예약 안내 포스터를 맨 위로 옮김 → preorder_info = 사전예약 안내(그대로), 진행 절차는 preorder_steps 로 따로
-        see:[['preorder_info','#preorderNotice'],['subsidy','#subsidyInfo'],['preorder_steps','#preorderInfo'],['models','#duoInline'],['benefit_imgs','.b-stack'],['form','#reserveForm']],
+        // v20261008: preorder_info = 사전예약 안내 포스터, subsidy = 지원금 이미지, preorder_steps = 사전예약 진행 절차 (각각 따로)
+        see:[['preorder_info','#preorderNotice'],['subsidy','#subsidyInfo'],['preorder_steps','#preorderSteps'],['models','#duoInline'],['benefit_imgs','.b-stack'],['form','#reserveForm']],
         click:[['.b-phone-item','model_open',function(el){ return (el.getAttribute('onclick')||'').replace(/^.*openPhoneModal\(|\).*$/g,'').replace(/'/g,''); }],   // 예전 화면(상세 열기)에만 있음
                ['.pm-swatch','pick_color',function(el){ return el.getAttribute('data-color'); }],['.b-storage-badge','pick_cap',txt],
                ['.pm-badge[data-carrier]','pick_carrier',txt],['.pm-badge[data-months]','pick_months',txt],
