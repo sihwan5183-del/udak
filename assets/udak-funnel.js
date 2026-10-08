@@ -98,7 +98,9 @@
                ['.mfs-edit','form_edit',txt],['.mfs-car-row button','form_carrier',function(el){ return el.getAttribute('data-car'); }]]
       }
     };
-    CFG.apple=CFG.galaxy_z8;       // v20261008: /apple — 같은 구성(카드·신청서)이라 같은 구간·버튼을 봄
+    // v20261008: /apple — 같은 구성(카드·신청서)이라 같은 구간·버튼을 봄 + 카드의 할인 방식(공시지원금/선택약정)·용량 누름은 따로 기록
+    var cardPick=function(el){ var c=el.closest('.ucard'), n=c&&c.querySelector('.ucard-name'); return (n?txt(n)+' · ':'')+txt(el); };
+    CFG.apple={ see:CFG.galaxy_z8.see, click:[['.ucard-disc','card_discount',cardPick],['.ucard-stor','card_storage',cardPick]].concat(CFG.galaxy_z8.click) };
     var cfg=CFG[PAGE]||{see:[],click:[]};
 
     // 1) 들어옴
