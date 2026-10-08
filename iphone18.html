@@ -1705,6 +1705,13 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   .mfs-price-top>b small{font-size:13px;font-weight:800;margin-left:2px;}
   .mfs-price>em{display:block;margin-top:3px;font-style:normal;font-size:11.5px;color:#9a9aa0;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   @media (max-width:360px){ .mfs-price-top>b{font-size:19px;} }
+  /* v20261009: 아래 '사전예약 신청하기'로 바로 들어온 신청서에서도 통신사를 고르면 예상 월 납부금액 표시 (요약 카드와 같은 모양) */
+  .rf-full-price{margin:0 0 20px;}
+  .rf-full-price>em{white-space:normal;}
+  /* v20261009: 가격 밑·신청 버튼 위 안심 문구 — 신청만으로는 결제·개통되지 않음 */
+  .b-safe-note,.rf-safe-note{margin:10px 0 0;font-size:12.5px;font-weight:700;line-height:1.5;color:#333;text-align:center;word-break:keep-all;}
+  .b-safe-note::before,.rf-safe-note::before{content:'✓';display:inline-block;width:15px;height:15px;margin-right:5px;border-radius:50%;background:#e2067a;color:#fff;font-size:10px;font-weight:900;line-height:15px;text-align:center;vertical-align:1px;}
+  .rf-safe-note{margin:0 0 12px;}
 
   /* ═══ v20261006: 한 화면에 다음 내용이 살짝 보이게 (폴드8 랜딩과 같은 기준) ═══
      - 이미지는 15% 작게(가로 100% → 85%), 첫 화면 위아래 여백을 줄여 아래 포스터 윗부분이 하단 버튼 위로 보이게
@@ -1911,6 +1918,7 @@ function closeNavModal(id){
         </div>
 
         <p class="b-price-note">* 자세한 내용은 상담 시에 확정됩니다.</p>
+        <p class="b-safe-note">신청만으로는 결제·개통되지 않아요. 상담 후 결정하시면 돼요.</p>
         <button type="button" class="b-modal-cta" onclick="reserveFromPhone('duo')">이 조건으로 사전예약 신청하기 ›</button>
       </div>
 
@@ -2238,6 +2246,9 @@ function closeNavModal(id){
           </div>
         </div>
 
+        <!-- v20261009: 아래 '사전예약 신청하기'로 바로 들어오면 신청서에서 골라도 가격이 안 보여 그냥 나가는 사람이 많았음 → 통신사를 고르면 예상 월 납부금액 표시 (카드에서 고르고 들어온 경우엔 위 요약에 이미 있어서 숨김) -->
+        <div class="mfs-price rf-full-price" id="rfFullPriceRow" hidden><div class="mfs-price-top"><span>예상 월 납부금액</span><b id="rfFullPrice"></b></div><em id="rfFullHint"></em></div>
+
         <div class="rf-field">
           <label>전달사항</label>
           <div class="rf-input-icon rf-textarea-wrap">
@@ -2257,6 +2268,7 @@ function closeNavModal(id){
           </button>
         </div>
 
+        <p class="rf-safe-note">신청만으로는 결제·개통되지 않아요. 상담 후 결정하시면 돼요.</p>
         <button type="submit" class="rf-submit" id="rfSubmitBtn">
           <svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
           <span>사전 예약 신청하기</span>
@@ -2839,6 +2851,7 @@ window.reserveFromPhone=function(id){
 window.rfPicked=false;
 function rfsVal(id){ var e=document.getElementById(id); return e?e.value:''; }
 window.rfsApplyMode=function(){
+  if(window.rfFullPriceRender) rfFullPriceRender();   // v20261009: 바로 들어온 신청서의 가격 줄도 같이 맞춤(신청 후 초기화 포함)
   var inner=document.getElementById('rfInner'), box=document.getElementById('rfSummary'); if(!inner||!box) return;
   var on=!!window.rfPicked;
   inner.classList.toggle('rf-compact',on); box.hidden=!on;
@@ -2874,6 +2887,25 @@ window.rfsToggleEdit=function(){
   inner.classList.toggle('mf-edit',on); document.getElementById('rfsEdit').textContent=on?'접기':'변경';
 };
 ['rfCarrier','rfCapacity','rfColor','rfInstallment'].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener('change',function(){ rfsRender(); }); });
+// v20261009: 아래 '사전예약 신청하기'로 바로 들어온 신청서(카드에서 안 고른 경우)에서도 통신사를 고르면 예상 월 납부금액 표시
+//  · 계산은 위 요약(rfsRender)과 같음 — 용량 미정이면 256GB 기준, 할부 미정이면 24개월 기준으로 보여 주고 '기준'이라고 적음
+//  · 카드에서 고르고 들어온 경우(rfPicked)는 위 요약에 이미 가격이 있어서 숨김
+window.rfFullPriceRender=function(){
+  var row=document.getElementById('rfFullPriceRow'); if(!row) return;
+  var car=rfsVal('rfCarrier');
+  if(window.rfPicked || !car){ row.hidden=true; return; }
+  var capV=rfsVal('rfCapacity'), inst=rfsVal('rfInstallment'), cap=capV||'256GB';
+  var sub=getSubsidy(car), after=((PHONE_DATA.duo.list||{})[cap]||0)-sub;
+  var m=inst==='일시납'?0:(parseInt(inst,10)||24);
+  var price=document.getElementById('rfFullPrice'), hint=document.getElementById('rfFullHint');
+  var parts=[cap+(capV?'':' 기준')];
+  if(m===0){ price.textContent=won(after); parts.push('일시납 · 지원 후 금액'); }
+  else { price.innerHTML=won(udakWon10(after*PHONE_MONTH_RATE[m]/m))+'<small>/월</small>'; parts.push(m+'개월 할부'+(inst?'':' 기준')+' · 할부이자 포함'); }
+  parts.push((car==='LG U+'?'기기변경':'번호이동')+' 지원금 '+(sub/10000)+'만원 적용');
+  hint.textContent=parts.join(' · ');
+  row.hidden=false;
+};
+['rfCarrier','rfCapacity','rfInstallment'].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener('change',function(){ rfFullPriceRender(); }); });
 
 updatePhonePrice('duo');   // 카드 처음 그릴 때 출고가부터 보이게
 // 휴대폰(640px 이하)에서 카드의 선택 줄이 오른쪽 아래 전화·카톡 버튼 자리(화면 아래쪽 띠)를 지날 때만 그 버튼을 잠깐 숨김
