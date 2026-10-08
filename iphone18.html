@@ -814,6 +814,9 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     font-size:12.5px; font-weight:700;
   }
   .b-label-sub svg{ width:14px;height:14px; }
+  /* v20261009: 듀오 카드 밑 '아이폰 듀오 사전예약 구매 혜택 2가지' — 좁은 화면에선 '사전예약' 뒤에서만 줄바꿈 */
+  .b-label .b-nw{ white-space:nowrap; }
+  .b-label--duo{ margin:0 0 clamp(16px,2.5vh,22px); word-break:keep-all; }
   .b-grid{
     display:grid;
     grid-template-columns:1fr;
@@ -1912,6 +1915,10 @@ function closeNavModal(id){
       </div>
 
       <div class="b-group">
+        <!-- v20261009: 제품 선택 카드와 애플워치 혜택 사이 제목 — '아이폰 듀오'(핑크) 사전예약 구매 혜택 2가지 -->
+        <div class="b-label b-label--duo">
+          <span class="b-label-title"><span class="b-nw"><em>아이폰 듀오</em> 사전예약</span> <span class="b-nw">구매 혜택 2가지</span></span>
+        </div>
         <div class="b-stack">
           <!-- v20261005: 요금제별 혜택 이미지(benefit_duo_main) 뺌 — 바로 아래 애플워치 기기값 무료 이미지와 겹쳐서 -->
           <div class="b-card"><img src="/assets/iphone18/benefit_watch_se3_v2.webp" width="1122" height="1402" alt="애플워치 SE3 40mm / 44mm 기기값 무료 제공 - 40mm 429,000원, 44mm 473,000원, 셀룰러 제품입니다" loading="lazy"></div>
