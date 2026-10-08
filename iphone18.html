@@ -2762,8 +2762,9 @@ function updatePhonePrice(id){
   $('subsidy').textContent='-'+won(sub);
   $('after').textContent=won(after);
   if(s.months===null){
-    $('result').textContent='— 원';
-    $('resultHint').textContent='할부 방식을 선택해주세요';
+    // v20261009(사장님 요청): 할부를 안 고르고 통신사만 눌러도 36개월 기준으로 바로 계산 — 버튼 순서·선택은 그대로, 개월을 고르면 그 개월로 바뀜
+    $('result').textContent=won(udakWon10(after*PHONE_MONTH_RATE[36]/36))+' / 월';
+    $('resultHint').textContent='36개월 할부 기준 · 기기값, 할부이자 포함';
   } else if(s.months===0){
     $('result').textContent=won(after);
     $('resultHint').textContent='일시납 · 지원 후 금액 (할부이자 없음)';
@@ -2875,7 +2876,7 @@ window.rfsRender=function(){
   if(!car){ row.hidden=true; return; }
   row.hidden=false;
   var after=((PHONE_DATA.duo.list||{})[cap]||0)-getSubsidy(car);
-  var m=inst==='일시납'?0:(parseInt(inst,10)||24);
+  var m=inst==='일시납'?0:(parseInt(inst,10)||36);   // v20261009: 할부 미정이면 36개월 기준 (예전 24개월)
   if(m===0){ price.textContent=won(after); hint.textContent='일시납 · 지원 후 금액'; }
   else { price.innerHTML=won(udakWon10(after*PHONE_MONTH_RATE[m]/m))+'<small>/월</small>'; hint.textContent=m+'개월 할부'+(inst?'':' 기준')+' · 기기값, 할부 이자 포함'; }
 };
@@ -2890,7 +2891,7 @@ window.rfsToggleEdit=function(){
 ['rfCarrier','rfCapacity','rfColor','rfInstallment'].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener('change',function(){ rfsRender(); }); });
 // v20261009: 아래 '사전예약 신청하기'로 바로 들어온 신청서(카드에서 안 고른 경우)에서도 통신사를 고르면 예상 월 납부금액 표시
 //  · 계산은 위 요약(rfsRender)과 같음 — 용량 미정이면 256GB 기준, 할부 미정이면 36개월 기준으로 보여 주고 '기준'이라고 적음
-//    (사장님 요청 10/9: 바로 신청하기로 들어온 신청서는 36개월 기준. 카드에서 고르고 들어온 요약은 그대로)
+//    (사장님 요청 10/9: 할부를 안 고르면 카드·요약·신청서 모두 36개월 기준으로 자동 계산)
 //  · 카드에서 고르고 들어온 경우(rfPicked)는 위 요약에 이미 가격이 있어서 숨김
 window.rfFullPriceRender=function(){
   var row=document.getElementById('rfFullPriceRow'); if(!row) return;
