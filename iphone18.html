@@ -1712,6 +1712,7 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   .b-safe-note,.rf-safe-note{margin:10px 0 0;font-size:12.5px;font-weight:700;line-height:1.5;color:#333;text-align:center;word-break:keep-all;}
   .b-safe-note::before,.rf-safe-note::before{content:'✓';display:inline-block;width:15px;height:15px;margin-right:5px;border-radius:50%;background:#e2067a;color:#fff;font-size:10px;font-weight:900;line-height:15px;text-align:center;vertical-align:1px;}
   .rf-safe-note{margin:0 0 12px;}
+  .b-safe-note>span,.rf-safe-note>span{display:block;margin-top:1px;font-weight:500;color:#666;}
 
   /* ═══ v20261006: 한 화면에 다음 내용이 살짝 보이게 (폴드8 랜딩과 같은 기준) ═══
      - 이미지는 15% 작게(가로 100% → 85%), 첫 화면 위아래 여백을 줄여 아래 포스터 윗부분이 하단 버튼 위로 보이게
@@ -1918,7 +1919,7 @@ function closeNavModal(id){
         </div>
 
         <p class="b-price-note">* 자세한 내용은 상담 시에 확정됩니다.</p>
-        <p class="b-safe-note">신청만으로는 결제·개통되지 않아요. 상담 후 결정하시면 돼요.</p>
+        <p class="b-safe-note">상담 신청만으로 구매가 확정되지 않습니다.<span>최종 조건 확인 후 결정하실 수 있습니다.</span></p>
         <button type="button" class="b-modal-cta" onclick="reserveFromPhone('duo')">이 조건으로 사전예약 신청하기 ›</button>
       </div>
 
@@ -2268,7 +2269,7 @@ function closeNavModal(id){
           </button>
         </div>
 
-        <p class="rf-safe-note">신청만으로는 결제·개통되지 않아요. 상담 후 결정하시면 돼요.</p>
+        <p class="rf-safe-note">상담 신청만으로 구매가 확정되지 않습니다.<span>최종 조건 확인 후 결정하실 수 있습니다.</span></p>
         <button type="submit" class="rf-submit" id="rfSubmitBtn">
           <svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
           <span>사전 예약 신청하기</span>
@@ -2888,7 +2889,8 @@ window.rfsToggleEdit=function(){
 };
 ['rfCarrier','rfCapacity','rfColor','rfInstallment'].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener('change',function(){ rfsRender(); }); });
 // v20261009: 아래 '사전예약 신청하기'로 바로 들어온 신청서(카드에서 안 고른 경우)에서도 통신사를 고르면 예상 월 납부금액 표시
-//  · 계산은 위 요약(rfsRender)과 같음 — 용량 미정이면 256GB 기준, 할부 미정이면 24개월 기준으로 보여 주고 '기준'이라고 적음
+//  · 계산은 위 요약(rfsRender)과 같음 — 용량 미정이면 256GB 기준, 할부 미정이면 36개월 기준으로 보여 주고 '기준'이라고 적음
+//    (사장님 요청 10/9: 바로 신청하기로 들어온 신청서는 36개월 기준. 카드에서 고르고 들어온 요약은 그대로)
 //  · 카드에서 고르고 들어온 경우(rfPicked)는 위 요약에 이미 가격이 있어서 숨김
 window.rfFullPriceRender=function(){
   var row=document.getElementById('rfFullPriceRow'); if(!row) return;
@@ -2896,7 +2898,7 @@ window.rfFullPriceRender=function(){
   if(window.rfPicked || !car){ row.hidden=true; return; }
   var capV=rfsVal('rfCapacity'), inst=rfsVal('rfInstallment'), cap=capV||'256GB';
   var sub=getSubsidy(car), after=((PHONE_DATA.duo.list||{})[cap]||0)-sub;
-  var m=inst==='일시납'?0:(parseInt(inst,10)||24);
+  var m=inst==='일시납'?0:(parseInt(inst,10)||36);
   var price=document.getElementById('rfFullPrice'), hint=document.getElementById('rfFullHint');
   var parts=[cap+(capV?'':' 기준')];
   if(m===0){ price.textContent=won(after); parts.push('일시납 · 지원 후 금액'); }
