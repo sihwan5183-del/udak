@@ -3365,6 +3365,7 @@ function mSubmitForm(){
     plan:c.plan?{name:c.plan.name, price:c.plan.monthlyPrice||null, group:c.plan.plangroup||null}:null,
     discount:discountSub, fee:feeRows, feeNote:null, subsidy:subRows, subsidyNote:c.ready?'할부 연 5.9%':'지원금 정책 준비중 · 출고가 기준',
     benefits:[], estimatedMonthly:c.total, installmentMonths:24};
+  if(gzDoneHas(phoneF)){ closeReservationModal(); mResetConsultForm(); showTicket(name, phoneF, mDevice); return; }   // v20261007: 30분 안 같은 번호 → 저장 안 함
   var mBtn=document.getElementById('mSubmitBtn'), mBtnLbl=mBtn?mBtn.querySelector('.rf-submit-label'):null, mBtnTxt=mBtnLbl?mBtnLbl.textContent:'';
   if(mBtn){ if(mBtn.disabled) return; mBtn.disabled=true; if(mBtnLbl) mBtnLbl.textContent='신청 중...'; }
   var mBtnReset=function(){ if(mBtn){ mBtn.disabled=false; if(mBtnLbl) mBtnLbl.textContent=mBtnTxt; } };
@@ -3380,6 +3381,7 @@ function mSubmitForm(){
     body:JSON.stringify(Object.assign({name:name,phone:phoneF,carrier:mCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:mDevice,capacity:c.st.name||null,product_color:c.colorName||null,installment_months:'24개월',birth_date:birth,memo:memo||null,snapshot:snapshotObj,status:'신규'}, udakMetaIds()))
   }).then(function(res){
     if(res.ok){
+      gzDoneSet(phoneF);   // v20261007: 완료 기록(같은 번호 30분 중복 방지)
       if(typeof fbq!=='undefined') fbq('track','Lead');
       mBtnReset();
       closeReservationModal();
@@ -3457,6 +3459,10 @@ window.fPickSecondModel=function(id){ fSecondDevice=(fSecondDevice===id?null:id)
 renderFSecondModels();
 function fFormatPhone(el){var v=el.value.replace(/[^0-9]/g,'');if(v.length>11)v=v.slice(0,11);if(v.length<=3)el.value=v;else if(v.length<=7)el.value=v.slice(0,3)+'-'+v.slice(3);else el.value=v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7);}
 // v20261007: 신청 차단 번호는 /assets/udak-block.js (소스에 번호가 그대로 보이지 않게 해시로 비교)
+// v20261007: 중복 신청 막기 — 같은 번호로 30분 안에 다시 누르면 새로 저장하지 않고 완료 안내만 (아이폰 랜딩과 같은 방식)
+var GZ_DONE_KEY='udak_done_galaxy_z8', GZ_DONE_MS=30*60*1000;
+function gzDoneHas(p){ var v=null; try{ v=JSON.parse(localStorage.getItem(GZ_DONE_KEY)||'null'); }catch(e){} if(!v) v=window.__gzDone; return !!(v&&v.p===p&&Date.now()-v.t<GZ_DONE_MS); }
+function gzDoneSet(p){ var v={p:p,t:Date.now()}; window.__gzDone=v; try{ localStorage.setItem(GZ_DONE_KEY,JSON.stringify(v)); }catch(e){} }
 function fSubmit(){
   var name=document.getElementById('fName').value.trim();
   var phone=document.getElementById('fPhone').value.replace(/[^0-9]/g,'');
@@ -3484,6 +3490,7 @@ function fSubmit(){
   }
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
   var birthF='19'+birth.slice(0,2)+'-'+birth.slice(2,4)+'-'+birth.slice(4,6);
+  if(gzDoneHas(phoneF)){ showTicket(name,phoneF,fDevice); return; }   // v20261007: 30분 안 같은 번호 → 저장 안 함
   // 팝업 먼저 표시
   showTicket(name,phoneF,fDevice);
   // DB 저장 (백그라운드)
@@ -3498,6 +3505,7 @@ function fSubmit(){
     body:JSON.stringify(Object.assign({name:name,phone:phoneF,carrier:fCarrier,channel:PAGE_CHANNEL,utm_campaign:PAGE_UTM_CAMPAIGN,device_interest:fDevice,capacity:fSelectedCapacity(),product_color:fSelectedColor(),birth_date:udakBirth8(birth),memo:memo||null,status:'신규'}, udakMetaIds()))
   }).then(function(res){
     if(res.ok){
+      gzDoneSet(phoneF);   // v20261007: 완료 기록(같은 번호 30분 중복 방지)
       if(typeof fbq!=='undefined')fbq('track','Lead');
     }
     showTicket(name,phoneF,fDevice);
