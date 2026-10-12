@@ -347,6 +347,11 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
   .hero-poster{ height:auto; } /* v20261007: 이미지에 크기 표시(width/height)를 넣어도 세로로 늘어나지 않게 */
   #hero .hero-poster{ margin-bottom:16px; } /* v20261008c: 위로 옮긴 사전예약 안내 포스터 → 제휴카드·부가서비스 NO 이미지 사이 간격 */
   #hero .hero-poster + .hero-poster{ margin-top:0; } /* v20261012b: 안내 1번·2번 두 장 사이도 다른 이미지들과 같은 16px (위아래 여백이 겹쳐 32px 되던 것 방지) */
+  /* v20261012c: 안내 1번·2번 더 붙임 — 2번 이미지 맨 위 흰 여백(이미지 폭의 약 11%)이 떨어져 보이게 만들어서,
+     그 여백 일부(폭의 약 6%)가 1번 밑으로 들어가게 겹침. 1번이 위에 덮이고, 2번 글자는 안 가려짐.
+     min(85%,408px) = 포스터 실제 폭 → 폰·PC 어디서든 이미지 크기에 맞춰 같은 비율로 붙음 */
+  #hero #preorderNotice{ z-index:2; }
+  #hero #preorderBenefit{ margin-top:calc(-16px - min(85%, 408px) * .059); }
 
   #preorderInfo{
     background:#fff;
