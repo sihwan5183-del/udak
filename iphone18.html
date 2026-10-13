@@ -950,7 +950,10 @@ var PAGE_CHANNEL = PAGE_UTM_SOURCE ? (CHANNEL_MAP[PAGE_UTM_SOURCE] || PAGE_UTM_S
     line-height:1.5;
     color:#8a8a90;
     margin-bottom:15px;
+    word-break:keep-all;
   }
+  /* v20261013b: 안내 둘째 줄 — 넓은 화면은 한 줄, 폰에선 길어서 두 줄로 고르게 나눔(낱말 중간에서 안 끊김) */
+  .rf-subtitle > span{ display:inline-block; text-wrap:balance; }
   .rf-divider{
     width:35px;height:2px;
     background:#e2067a;
@@ -2222,7 +2225,7 @@ function closeNavModal(id){
     <div class="rf-inner" id="rfInner">
       <h2 class="rf-title"><span class="rf-title-accent">사전예약</span> 신청서</h2>
       <!-- v20261013: 받은 신청서 목업대로 — 안내 문구 한 줄 / 선택한 조건 / 01 기본 정보 · 02 사전예약 정보 · 03 추가 요청 3단 (목업의 '신청 방법'·'신청 도움받기'는 아직 안 넣음) -->
-      <p class="rf-subtitle">상담을 위해 필요한 정보입니다.</p>
+      <p class="rf-subtitle">상담을 위해 필요한 정보입니다.<br><span>입력하신 정보는 상담을 위해서만 사용되며 안전하게 관리됩니다.</span></p>
       <div class="rf-divider"></div>
       <!-- v20261006: 카드에서 고르고 들어오면 고른 조건을 여기 한 장으로 (그냥 신청하기부터 누르면 안 보임)
            v20261013: 목업대로 카드가 있어도 아래 칸은 다 보임(예전엔 숨김) — 통신사도 01 기본 정보에 늘 있어서 카드 안 통신사 버튼은 뺌 -->
