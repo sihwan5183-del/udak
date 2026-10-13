@@ -1,4 +1,9 @@
-/* udak 랜딩 이탈 분석 (v20261006g — 아이폰 예전 화면(iphone18_prev) 비교용 model_open 기록 복구) — 개인정보 없이 '어디까지 봤고 어디서 나갔는지'만 익명으로 기록
+/* udak 랜딩 이탈 분석 (v20261013 — 기록량 대폭 축소) — 개인정보 없이 '어디까지 봤고 어디서 나갔는지'만 익명으로 기록
+   v20261013: 하루 6,600건씩 쌓이던 기록을 대폭 줄임 (사장님 지시)
+     · 방문 10명 중 1명(브라우저 세션 단위)만 행동(보기·스크롤·누름)을 기록 → 추이는 10배로 보면 됨
+     · 신청 시도·성공·실패·안내창(막힘)은 표본과 상관없이 전원 기록 (신청이 막히는 문제는 놓치면 안 되니까)
+     · 보내는 주기 3초 → 20초, 나갈 때 한 번에 (요청 횟수 자체도 줄임)
+     · 메타 픽셀 단계 신호(PriceCheck/FormOpen)는 전원 그대로 보냄 (광고 타겟용이라 표본 적용 안 함)
    기록처: Supabase landing_events (랜딩은 쓰기만 가능, 읽기 불가)
    메타 픽셀 단계 신호(9번): 가격 확인 → PriceCheck, 신청서 열기 → FormOpen (페이지마다 한 번씩, 내부 방문은 안 보냄)
    직원·내부 확인 방문 표시: 주소 뒤에 ?internal=1 로 한 번 열면 그 브라우저는 내부 방문으로 표시됨 (?internal=0 으로 해제) */
@@ -15,6 +20,12 @@
     function sset(k,v){ try{ sessionStorage.setItem(k,v); }catch(e){} }
     var sid=sget('udak_sid');
     if(!sid){ sid=(Date.now().toString(36)+Math.random().toString(36).slice(2,10)).slice(0,24); sset('udak_sid',sid); }
+    // 표본: 이 방문(세션)이 행동 기록 대상인지 — 10명 중 1명. 한 번 정하면 그 방문 동안(상세 페이지로 넘어가도) 유지
+    var SAMPLE_1_IN=10, sampled=sget('udak_sampled');
+    if(sampled!=='1' && sampled!=='0'){ sampled=(Math.random()*SAMPLE_1_IN<1)?'1':'0'; sset('udak_sampled',sampled); }
+    sampled=(sampled==='1');
+    // 표본과 상관없이 항상 기록하는 것 — 신청 흐름·막힘
+    var ALWAYS={ submit_send:1, lead:1, submit_fail:1, alert:1 };
     var qs=new URLSearchParams(location.search);
     if(qs.get('internal')==='1'){ try{ localStorage.setItem('udak_internal','1'); }catch(e){} }
     if(qs.get('internal')==='0'){ try{ localStorage.removeItem('udak_internal'); }catch(e){} }
@@ -51,10 +62,11 @@
       try{
         if(onceKey!==undefined){ var k=name+'|'+onceKey; if(done[k]) return; done[k]=1; }
         metaStage(name, detail);
+        if(!sampled && !ALWAYS[name]) return; // 표본 밖 방문은 행동 기록을 남기지 않음 (픽셀 신호는 위에서 이미 보냄)
         q.push({ sid:sid, page:PAGE, event:String(name).slice(0,40), detail:(detail==null?null:String(detail).slice(0,300)),
           sec:Math.round((Date.now()-t0)/1000), vw:(window.innerWidth||null),
           utm_source:src.s||null, utm_campaign:src.c||null, utm_content:src.a||null, fbclid:!!src.f, internal:internal });
-        if(q.length>=8) flush(false);
+        if(q.length>=20) flush(false);
       }catch(e){}
     }
     function flush(leaving){
@@ -66,7 +78,7 @@
           body:body }).catch(function(){});
       }catch(e){}
     }
-    setInterval(function(){ flush(false); }, 3000);
+    setInterval(function(){ flush(false); }, 20000);
 
     // ── 페이지별로 보는 구간·버튼
     var txt=function(el){ return (el.textContent||'').replace(/\s+/g,' ').trim().slice(0,40); };
