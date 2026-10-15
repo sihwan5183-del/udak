@@ -388,22 +388,67 @@ function tierLabel(t){ return t.fee?Number(t.fee).toLocaleString('ko-KR'):t.nm; 
 // 이 줄에서 쓰는 요금제 — 워치·탭처럼 구분 없는 줄은 첫 요금제 칸 하나만
 function rowTiers(r){ var ts=tiersOf(r.g); return (r.g==='second' && !r.split) ? ts.slice(0,1) : ts; }
 function curTier(m, g, r){ var ts=r?rowTiers(r):tiersOf(g); return ts.filter(function(t){return t.k===TIER[m.id]})[0]||(ts.indexOf(baseTier(g))>-1?baseTier(g):ts[0]); }
-function sheetTable(m, r){
-  var g=r.g, type=curType(g), out=num(r.out), ts=rowTiers(r), t=curTier(m,g,r), h='', single=(g==='second'&&!r.split);
-  if(g==='phone') h+='<div class="seg md-seg">'+segBtns()+'</div>';
-  h+='<div class="r"><span>출고가</span><b>'+(out!=null?won(out):'상담 시 안내')+'</b></div>';
-  if(out==null||!t) return h;
-  if(ts.length>1) h+='<div class="tpick"><div class="tpick-l">'+(g==='phone'?'요금제 (월 요금)':'요금제')+'</div><div class="tpick-row" style="--n:'+Math.min(ts.length,5)+'">'+ts.map(function(x){
-    return '<button type="button" class="tp'+(x===t?' on':'')+'" data-tier-pick="'+esc(x.k)+'" data-model="'+esc(m.id)+'">'+esc(tierLabel(x))+'</button>'; }).join('')+'</div></div>';
-  var c=rowCalc(r,type,t); if(!c) return h;
-  var grp=(plansOf(g).filter(function(p){return p.k===t.grp})[0]||{}).nm||'';
-  h+='<div class="pl first">'+(single?'':'<div class="pl-h">'+esc(t.fee?('월 '+won(t.fee)+' 요금제'):t.nm)+'</div>');
-  var ourTxt=c.our?'유플러스 다이렉트 지원금 -'+won(c.our):'';
-  if(c.pb!=null) h+=pline(g==='phone'?'공시지원금 선택 시':'구매가', (g==='phone'?'공시지원금':'이통사 지원금')+' -'+won(c.pub)+(ourTxt?' · '+ourTxt:''), c.pb);
-  if(g==='phone') h+=pline('선택약정 선택 시', (ourTxt?ourTxt+' · ':'')+(t.fee?'월 요금 '+won(t.fee)+' → '+won(Math.round(t.fee*0.75)):'월 요금 25% 할인'), c.sel);
-  else if(c.pb==null) h+=pline('구매가', ourTxt, c.sel);
-  h+='</div>';
+/* ---------- 상세 계산기: 컬러·용량 → 통신사 → 요금제 → 할인 방식 → 할부 → 예상 월 납부금액 ---------- */
+var RATE={24:1.0626,30:1.0781,36:1.0935};   // 할부이자 포함 계수 (휴대폰·워치·태블릿 동일)
+var SEL={};                                  // 모델별 고른 조건 {carrier, method, months}
+var CARRIERS=['SKT','KT','LG U+','알뜰폰'];
+// 원 단위 정리: 1원 자리가 8·9면 10원 올림, 그 밖엔 버림 (아이폰 듀오 랜딩과 같은 규칙)
+function won10(n){ n=Math.round(Number(n)||0); var x=((n%10)+10)%10; return x>=8?n+(10-x):n-x; }
+function noInterest(r){ return r.model==='tvfree5'; }   // TV프리는 이자 없이 그냥 나누기
+function calcState(m, r){
+  var g=r.g, s=SEL[m.id]||(SEL[m.id]={});
+  var type=g==='second'?'all':(s.carrier?(s.carrier==='LG U+'?'chg':'mnp'):(MNP?'mnp':'chg'));
+  var t=curTier(m,g,r), c=rowCalc(r,type,t), st={g:g, s:s, t:t, type:type, c:c, split:(g==='phone'||!!r.split)};
+  if(!c) return st;
+  st.method=g==='second'?'pub':((s.method==='sel'||!c.pub)?'sel':'pub');
+  st.after=(st.method==='pub'&&c.pb!=null)?c.pb:c.sel;
+  st.months=s.months==null?null:s.months; st.mm=st.months==null?36:st.months; st.noint=noInterest(r);
+  st.monthly=st.mm===0?null:won10(st.noint?st.after/st.mm:st.after*RATE[st.mm]/st.mm);
+  st.fee=g==='phone'?(t.fee||null):null; st.feeAfter=st.fee&&st.method==='sel'?Math.round(st.fee*0.75):st.fee;
+  return st;
+}
+function typeNm(st){ return st.type==='chg'?'기기변경':st.type==='mnp'?'번호이동':''; }
+function calcSummary(st){
+  if(!st.c) return '';
+  var a=[]; if(st.g==='phone') a.push(st.s.carrier?st.s.carrier+' · '+typeNm(st):typeNm(st)+' 기준');
+  if(st.split&&st.t) a.push(st.t.fee?tierLabel(st.t)+'원 요금제':st.t.nm);
+  if(st.g==='phone') a.push(st.method==='pub'?'공시지원금':'선택약정');
+  a.push(st.months===0?'일시납':(st.months==null?'36개월 할부(기준)':st.months+'개월 할부'));
+  return a.join(' · ');
+}
+function payTxt(st){ return st.months===0?won(st.after)+' (일시납)':won(st.monthly)+' / 월'; }
+function payHint(st){ return st.months===0?'일시납 · 기기값 기준':(st.mm+'개월 할부 · 기기값 기준, '+(st.noint?'이자 없음':'할부이자 포함')); }
+function cgrid(label, key, items, cur, m, n, hint){
+  return '<div class="cpick"><div class="cpick-l">'+label+'</div><div class="cgrid" style="--n:'+n+'">'+items.map(function(x){
+    return '<button type="button" class="cg'+(String(x[0])===String(cur)?' on':'')+(x[2]?' dis':'')+'" data-calc="'+key+'" data-v="'+esc(x[0])+'" data-model="'+esc(m.id)+'"'+(x[2]?' disabled':'')+'>'+esc(x[1])+'</button>';
+  }).join('')+'</div>'+(hint?'<div class="cpick-hint">'+hint+'</div>':'')+'</div>';
+}
+function calcPickers(m, r, st){
+  var g=r.g, h='';
+  if(g==='phone') h+=cgrid('현재 사용 중인 통신사','carrier',CARRIERS.map(function(c){return [c,c]}),st.s.carrier||'',m,4,
+    st.s.carrier?(st.s.carrier==='LG U+'?'LG U+ 고객님은 기기변경 조건으로 계산돼요':'타사 고객님은 번호이동 조건으로 계산돼요'):(MNP?'번호이동':'기기변경')+' 기준으로 계산 중이에요 · 통신사를 고르면 맞춰 계산돼요');
+  var ts=rowTiers(r);
+  if(ts.length>1) h+=cgrid(g==='phone'?'요금제 (월 요금)':'요금제','tier',ts.map(function(t){return [t.k,tierLabel(t)]}),st.t?st.t.k:'',m,Math.min(ts.length,5));
+  if(g==='phone'&&st.c) h+=cgrid('할인 방식','method',[['pub','공시지원금',!st.c.pub],['sel','선택약정 (요금 25%↓)']],st.method,m,2,
+    !st.c.pub?'이 조건은 공시지원금이 없어 선택약정으로 계산돼요':'공시지원금과 선택약정은 둘 중 하나만 받을 수 있어요');
+  h+=cgrid('할부 개월','months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],st.months==null?'':String(st.months),m,4,
+    st.months==null?'할부를 고르지 않으면 36개월 기준으로 보여드려요':'');
   return h;
+}
+function calcBox(m, r, st){
+  var out=num(r.out);
+  if(!st.c) return '<div class="r"><span>출고가</span><b>'+(out!=null?won(out):'상담 시 안내')+'</b></div>';
+  var tn=typeNm(st), c=st.c, h='<div class="cres"><div class="cres-l">예상 월 납부금액</div><div class="cres-v">'+payTxt(st)+'</div><div class="cres-h">'+payHint(st)+'</div><div class="cres-d">';
+  h+='<div><span>출고가</span><b>'+won(c.out)+'</b></div>';
+  if(st.method==='pub'&&c.pub) h+='<div><span>'+(st.g==='phone'?'공시지원금':'이통사 지원금')+(tn?' <small>('+tn+')</small>':'')+'</span><b class="m">-'+won(c.pub)+'</b></div>';
+  if(c.our) h+='<div><span>유플러스 다이렉트 지원금'+(tn?' <small>('+tn+')</small>':'')+'</span><b class="m">-'+won(c.our)+'</b></div>';
+  h+='<div class="sum"><span>지원 후 기기값</span><b>'+wz(st.after)+'</b></div></div>';
+  if(st.fee){
+    h+='<div class="cres-d fee"><div><span>월 통신 요금 <small>('+esc(tierLabel(st.t))+'원 요금제'+(st.method==='sel'?' · 선택약정 25%':'')+')</small></span><b>'+(st.method==='sel'?'<s>'+won(st.fee)+'</s> ':'')+won(st.feeAfter)+'</b></div>';
+    if(st.monthly) h+='<div class="sum"><span>월 예상 합계 <small>(기기 할부 + 요금)</small></span><b>'+won(st.monthly+st.feeAfter)+'</b></div>';
+    h+='</div>';
+  }
+  return h+'</div>';
 }
 /* ---------------- 렌더 ---------------- */
 var heroTimer=null, heroIdx=0;
@@ -613,10 +658,10 @@ function renderWish(){
 function renderModel(id, keepRecent){
   var m=byId(id); if(!m||(m.hidden&&!EDIT)){location.hash='#/';return}
   if(!keepRecent){ var r=store.get('recent',[]).filter(function(x){return x!==id}); r.unshift(id); store.set('recent',r.slice(0,10)); }
-  var srs=sheetRows(m), selRow=null, rows='';
+  var srs=sheetRows(m), selRow=null, rows='', pickers='';
   if(srs.length && (OPT[m.id]==null || !srs[OPT[m.id]])) OPT[m.id]=Math.max(0, srs.indexOf(priceOf(m).row));
   var p=priceOf(m, optsOf(m).length?(OPT[m.id]||0):null);
-  if(p.kind==='sheet'){ selRow=p.row; rows=sheetTable(m, p.row); }
+  if(p.kind==='sheet'){ selRow=p.row; var cst=calcState(m,p.row); pickers=calcPickers(m,p.row,cst); rows=calcBox(m,p.row,cst); }
   else if(p.kind==='hidden'){ rows='<div class="r hi"><span>가격</span><b>상담 시 안내</b></div>'; }
   else if(p.kind==='sub'){
     rows+='<div class="r"><span>출고가</span><b>'+(p.out!=null?won(p.out):'상담 시 안내')+'</b></div>';
@@ -632,11 +677,11 @@ function renderModel(id, keepRecent){
   $('#mdBody').innerHTML='<div class="ucard" data-edit="model:'+esc(m.id)+'"><div class="md-img" id="mdImg">'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(SO(m)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>'+
     '<h2 class="md-h ucard-name">'+esc(m.nm)+'</h2><p style="color:var(--sub);margin-top:4px">'+esc(m.ds)+'</p>'+
     '<div class="pills" style="margin-top:10px">'+m.tags.map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div>'+
-    colorPicker(m)+optPicker(m)+
+    colorPicker(m)+optPicker(m)+pickers+
     (SO(m)||(selRow&&selRow.so)?'<div class="so-notice">'+(SO(m)?'현재 일시품절입니다':'선택하신 '+esc(selRow.cap||'옵션')+' 은(는) 일시품절입니다')+'. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
     '<div class="ptable" id="ucatPrice">'+rows+'<div class="note">'+esc(S.priceNote)+'</div></div>'+
     '<div class="md-chips"><span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span><span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>'+
-    '<button class="cta ucard-cta" data-open="consult" data-model="'+esc(m.id)+'" data-color="'+esc(PICK[m.id]||'')+'" data-opt="'+esc(optsOf(m).length?optsOf(m)[OPT[m.id]||0].nm:'')+'" data-tier="'+esc(selRow&&!(selRow.g==='second'&&!selRow.split)&&curTier(m,selRow.g,selRow)?(curTier(m,selRow.g,selRow).fee?'월 '+won(curTier(m,selRow.g,selRow).fee):curTier(m,selRow.g,selRow).nm):'')+'">'+(SO(m)||(selRow&&selRow.so)?'입고 알림 상담 신청하기':'온라인 상담 신청하기')+'</button></div>';
+    '<button class="cta ucard-cta" data-open="consult" data-model="'+esc(m.id)+'" data-color="'+esc(PICK[m.id]||'')+'" data-opt="'+esc(optsOf(m).length?optsOf(m)[OPT[m.id]||0].nm:'')+'">'+(SO(m)||(selRow&&selRow.so)?'입고 알림 상담 신청하기':(selRow?'이 조건으로 온라인 상담 신청하기 ›':'온라인 상담 신청하기'))+'</button></div>';
 }
 
 var PICK={};   // 상세에서 고른 컬러 (모델별)
@@ -734,15 +779,27 @@ function optOpts(m, sel){
   var os=m?optsOf(m):[]; if(os.length<2) return '';
   return os.map(function(o){return '<option'+(o.nm===sel?' selected':'')+'>'+esc(o.nm)+'</option>'}).join('');
 }
+function pickedCalc(){
+  var m=CALCPICK&&byId(CALCPICK); if(!m) return null; var rs=sheetRows(m); if(!rs.length) return null;
+  var r=rs[OPT[m.id]||0]||rs[0], st=calcState(m,r); return st.c?{m:m,r:r,st:st}:null;
+}
+function consultSummary(){
+  var cp=pickedCalc(); if(!cp) return '';
+  var m=cp.m, cc=colorsOf(m).filter(function(c){return c.nm===PICK[m.id]})[0]||colorsOf(m)[0], sub=[(cc&&cs2(m)?cc.nm:''), cp.r.cap&&cp.r.cap!=='기본'?cp.r.cap:''].filter(Boolean).join(' · ');
+  return '<div class="csum"><div class="csum-h">선택한 조건</div><div class="csum-r"><div class="csum-img">'+im((cc&&cc.img)||mImg(m),'',true,m.nm)+'</div><div class="csum-t"><b>'+esc(m.nm)+'</b>'+(sub?'<span>'+esc(sub)+'</span>':'')+'<span>'+esc(calcSummary(cp.st))+'</span></div></div>'+
+    '<div class="csum-p"><span>예상 월 납부금액</span><b>'+payTxt(cp.st)+'</b></div><em>'+esc(payHint(cp.st))+' · 자세한 금액은 상담 시 확정돼요</em></div>';
+}
+function cs2(m){ return colorsOf(m).length>1; }
 function sheetConsult(modelId, colorNm, optNm){
   var opts=models().filter(function(m){return !m.hidden}).map(function(m){
     return '<option value="'+esc(m.nm)+'" data-id="'+esc(m.id)+'"'+(m.id===modelId?' selected':'')+'>'+esc(m.nm)+(SO(m)?' (일시품절 · 입고 알림)':'')+'</option>';
   }).join('');
-  return '<section id="consultForm"><h3>온라인 상담 신청</h3>'+
+  var cp=pickedCalc(), car=cp&&cp.m.id===modelId?(cp.st.s.carrier||''):'';
+  return '<section id="consultForm"><h3>온라인 상담 신청</h3>'+(cp&&cp.m.id===modelId?consultSummary():'')+
     '<div class="ff"><label>이름 <span class="req">*</span></label><input type="text" id="mUserName" placeholder="이름을 입력해 주세요" autocomplete="name"></div>'+
     '<div class="ff"><label>연락처 <span class="req">*</span></label><div class="phone3"><input type="text" id="mPhone1" value="010" readonly tabindex="-1"><span>-</span><input type="tel" id="mPhone2" maxlength="4" inputmode="numeric" placeholder="0000"><span>-</span><input type="tel" id="mPhone3" maxlength="4" inputmode="numeric" placeholder="0000"></div></div>'+
     '<div class="ff"><label>생년월일 <span class="req">*</span></label><input type="text" id="mUserBirth" inputmode="numeric" maxlength="8" placeholder="예: 940101"></div>'+
-    '<div class="ff"><label>현재 통신사 <span class="req">*</span></label><select id="mCarrierSel"><option value="" selected disabled>통신사를 선택해 주세요</option><option>SKT</option><option>KT</option><option>LG U+</option><option>알뜰폰</option></select></div>'+
+    '<div class="ff"><label>현재 통신사 <span class="req">*</span></label><select id="mCarrierSel"><option value=""'+(car?'':' selected')+' disabled>통신사를 선택해 주세요</option>'+CARRIERS.map(function(c){return '<option'+(c===car?' selected':'')+'>'+c+'</option>'}).join('')+'</select></div>'+
     '<div class="ff"><label>관심 기기 <span class="req">*</span></label><select id="mDeviceSelect"><option value=""'+(modelId?'':' selected')+' disabled>기기를 선택해 주세요</option>'+opts+'<option value="상담 후 결정">상담 후 결정할게요</option></select></div>'+
     '<div class="ff" id="mOptWrap"'+(optOpts(byId(modelId))?'':' hidden')+'><label id="mOptLbl">'+esc(byId(modelId)?optLabel(byId(modelId)):'사이즈')+'</label><select id="mOptSel">'+optOpts(byId(modelId),optNm)+'</select></div>'+
     '<div class="ff" id="mColorWrap"'+(colorOpts(byId(modelId))?'':' hidden')+'><label>희망 컬러</label><select id="mColorSel">'+colorOpts(byId(modelId),colorNm)+'</select></div>'+
@@ -754,7 +811,7 @@ function sheetConsult(modelId, colorNm, optNm){
     '<button type="button" class="cta" id="mSubmitBtn"><span class="rf-submit-label">온라인 상담 신청하기</span></button></section>';
 }
 function birth8(b){ b=String(b||'').replace(/\D/g,''); if(b.length===6){ var yy=+b.slice(0,2), cy=new Date().getFullYear()%100; b=(yy<=cy?'20':'19')+b; } return b; }
-var TIERPICK=null;   // 상세에서 고른 요금제 → 신청 메모에 남김
+var CALCPICK=null;   // 상세 '이 조건으로' 버튼으로 들어온 모델 → 신청서 위 '선택한 조건' + 메모
 function submitConsult(){
   if(EDIT){ alert('관리자 화면에서는 신청이 저장되지 않습니다.'); return; }
   var name=$('#mUserName').value.trim();
@@ -776,7 +833,7 @@ function submitConsult(){
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
   var dm=null; $$('#mDeviceSelect option').forEach(function(o){ if(o.selected&&o.getAttribute('data-id')) dm=byId(o.getAttribute('data-id')); });
   var optV=($('#mOptSel')&&!$('#mOptWrap').hidden&&$('#mOptSel').value)||null, capV=optV;
-  if(dm && TIERPICK && TIERPICK.tier && TIERPICK.model===dm.id) memo='[희망 요금제] '+TIERPICK.tier+(/요금제/.test(TIERPICK.tier)?'':' 요금제')+(memo?' / '+memo:'');
+  var cp=pickedCalc(); if(dm && cp && cp.m.id===dm.id) memo='[선택 조건] '+calcSummary(cp.st)+' · 예상 '+(cp.st.months===0?'일시납 '+won(cp.st.after):'월 '+won(cp.st.monthly))+(memo?' / '+memo:'');
   var dRows=dm?sheetRows(dm):[];
   if(dRows.length){ if(!capV && dRows.length===1 && dRows[0].cap && dRows[0].cap!=='기본') capV=dRows[0].cap; if(capV==='기본') capV=null; }
   else if(dm&&dm.optLabel==='요금제'){ if(optV) memo=('[희망 요금제] '+optV+(memo?' / '+memo:'')); capV=dm.capacity||null; }
@@ -798,7 +855,7 @@ function act(go, el){
   if(go.indexOf('sec:')===0){ var id={gifts:'giftSec',wear:'wearSec',zero:'zeroSec',rank:'rankSec',pick:'pickSec',pop:'popSec'}[go.slice(4)];
     var goSec=function(){ var el=id&&document.getElementById(id); if(el) window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-60,behavior:'smooth'}); };
     if(!$('#v-home').classList.contains('on')){ location.hash='#/'; setTimeout(goSec,120); } else goSec(); return; }
-  if(go==='consult'){ openSheet(sheetConsult(el&&el.getAttribute('data-model'), el&&el.getAttribute('data-color'), el&&el.getAttribute('data-opt'))); TIERPICK={model:el&&el.getAttribute('data-model'), tier:el&&el.getAttribute('data-tier')}; }
+  if(go==='consult'){ CALCPICK=(el&&el.classList&&el.classList.contains('ucard-cta'))?el.getAttribute('data-model'):null; openSheet(sheetConsult(el&&el.getAttribute('data-model'), el&&el.getAttribute('data-color'), el&&el.getAttribute('data-opt'))); }
   else if(go==='contact') openSheet(sheetContact());
   else if(go==='guide') openSheet(sheetGuide());
   else if(go==='store') openSheet(sheetStore());
@@ -814,10 +871,12 @@ document.addEventListener('click',function(e){
   if(t.closest('#mSubmitBtn')){ e.preventDefault(); submitConsult(); return; }
   if(t.closest('[data-privacy]')){ e.preventDefault(); $('#privacyTxt').classList.toggle('on'); return; }
   if(t.closest('#ticket') && (t.closest('.x') || t.id==='ticket')){ closeTicket(); return; }
-  var tp=t.closest('[data-tier-pick]');
-  if(tp){ e.preventDefault(); e.stopPropagation(); TIER[tp.getAttribute('data-model')]=tp.getAttribute('data-tier-pick'); renderModel(tp.getAttribute('data-model'),true); return; }
+  var cb=t.closest('[data-calc]');
+  if(cb){ e.preventDefault(); e.stopPropagation(); if(cb.disabled) return; var mid=cb.getAttribute('data-model'), k=cb.getAttribute('data-calc'), v=cb.getAttribute('data-v'), sel=SEL[mid]||(SEL[mid]={});
+    if(k==='tier') TIER[mid]=v; else if(k==='months') sel.months=+v; else sel[k]=v;
+    var y=window.scrollY; renderModel(mid,true); window.scrollTo(0,y); return; }
   var op=t.closest('[data-opt-pick]');
-  if(op){ e.preventDefault(); e.stopPropagation(); OPT[op.getAttribute('data-model')]=+op.getAttribute('data-opt-pick'); renderModel(op.getAttribute('data-model'),true); return; }
+  if(op){ e.preventDefault(); e.stopPropagation(); OPT[op.getAttribute('data-model')]=+op.getAttribute('data-opt-pick'); var y2=window.scrollY; renderModel(op.getAttribute('data-model'),true); window.scrollTo(0,y2); return; }
   var vb=t.closest('[data-video]'); if(vb){ e.preventDefault(); openVideo(vb.getAttribute('data-video')); return; }
   var cp=t.closest('[data-color-pick]');
   if(cp){ e.preventDefault(); e.stopPropagation(); var mm=byId(cp.getAttribute('data-model')), nm=cp.getAttribute('data-color-pick'), cc=colorsOf(mm).filter(function(c){return c.nm===nm})[0];
