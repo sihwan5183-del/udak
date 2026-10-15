@@ -613,3 +613,31 @@ body.pz-open{overflow:hidden}
 .big .bp-m{font-size:12.5px;color:var(--sub);margin-top:2px}
 .big .bp-m b{color:var(--pink);font-weight:900;font-size:14px}
 .big .bp-m small{font-size:11px;color:var(--mute);margin-left:2px}
+/* 워치·태블릿: 휴대폰과 함께 구매 안내 */
+.bundle-note{display:flex;align-items:center;gap:10px;margin:2px 16px 10px;padding:10px 12px;border-radius:12px;background:var(--pink-50);border:1px solid var(--pink-100)}
+.bundle-note svg{width:30px;height:30px;flex:none;stroke:var(--pink);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.bundle-note span{font-size:13px;color:var(--ink2);line-height:1.4}
+.bundle-note b{color:var(--pink)}
+.bundle-note small{display:block;font-size:11.5px;color:var(--sub)}
+#mdBody .bundle-note{margin:14px 0 0}
+/* 이용 가이드 */
+.guide{margin-top:12px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+.guide-h{padding:12px 14px;background:#F7F8FA;border-bottom:1px solid var(--line)}
+.guide-h b{display:block;font-size:14.5px}
+.guide-h span{font-size:12px;color:var(--sub)}
+.guide-it{display:flex;gap:12px;padding:12px 14px;border-top:1px solid var(--line)}
+.guide-h+.guide-it{border-top:0}
+.guide-it i{width:34px;height:34px;border-radius:10px;background:#F1F3F6;display:flex;align-items:center;justify-content:center;flex:none}
+.guide-it i svg{width:19px;height:19px;stroke:#4B5563;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.guide-it.hl i{background:var(--pink-50)}.guide-it.hl i svg{stroke:var(--pink)}
+.guide-it b{font-size:14px}
+.guide-it p{font-size:12.5px;color:var(--sub);margin-top:2px;line-height:1.5}
+.guide-tag{display:inline-block;margin-top:6px;font-size:11.5px;font-weight:800;color:var(--pink);background:var(--pink-50);border-radius:6px;padding:3px 8px}
+/* 신청서: 함께 구매 */
+.ff label small{font-weight:500;color:var(--mute)}
+.bchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.bchip{display:inline-flex;align-items:center;cursor:pointer}
+.bchip input{position:absolute;opacity:0;pointer-events:none}
+.bchip span{display:inline-block;padding:8px 12px;border-radius:999px;border:1.5px solid #E3E5EA;font-size:13px;font-weight:700;color:var(--ink2);background:#fff}
+.bchip input:checked+span{border-color:var(--pink);color:var(--pink);background:var(--pink-50)}
+.bnote{font-size:11.5px;color:var(--sub);margin-top:6px}

@@ -371,12 +371,12 @@ function stripOf(m){
   if(m.strip) return m.strip;
   var pp=priceOf(m);
   if(pp.kind==='sheet'){
-    if(pp.g==='second') return pp.pub?('이통사 지원금 '+won(pp.pub)+' 할인'):'스마트기기 상담 가능';
+    if(pp.g==='second') return pp.sub?('휴대폰과 함께 구매 시 '+won(pp.sub)+' 할인'):'휴대폰과 함께 구매 시 혜택';
     var lead=(MNP?'번호이동':'기기변경')+' 시 ', tail=m.tags[1]?' + '+m.tags[1]:'';
     if(pp.v===0) return lead+'기기값 0원'+tail;
     var pct=pctOf(pp); if(pct>0) return lead+'기기값 '+pct+'% 할인'+tail;
   }
-  if(pp.kind==='hidden' && isWear(m)) return '스마트기기 상담 가능';
+  if(pp.kind==='hidden' && isWear(m)) return '휴대폰과 함께 구매 시 혜택';
   if(pp.kind==='sub') return pp.sub?('이통사 지원금 '+won(pp.sub)+' 할인'):'스마트기기 상담 가능';
   return (MNP?'번호이동':'기기변경')+' 시 '+(m.tags[0]||'')+(m.tags[1]?' + '+m.tags[1]:'');
 }
@@ -546,10 +546,26 @@ function renderRecent(){
   $('#recentHead').innerHTML=secHead('recent');
   $('#recent').innerHTML=ids.map(function(id){return hcard(byId(id),{badge:'최근 본',dark:true})}).join('');
 }
+var BUNDLE_NOTE='<div class="bundle-note"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="8" height="15" rx="2"/><rect x="14" y="7" width="7" height="9" rx="2.5"/><path d="M16 5.5h3M16 17.5h3"/></svg><span><b>휴대폰과 함께 구매할 때</b> 받는 혜택이에요<small>휴대폰 + 워치 + 태블릿, 3개 동시 구매도 가능해요</small></span></div>';
+// 셀룰러 기기 이용 안내 — fee: 월 이용료, plan: 이 요금제 이상이면 이용료 없음
+var GUIDE={
+  watchultra2:{fee:11000, plan:95000, nm:'플러스플랜 95'}, watch9:{fee:11000, plan:95000, nm:'플러스플랜 95'}, watchse3:{fee:11000, plan:95000, nm:'플러스플랜 95'},
+  taba11plus:{fee:22000, plan:105000, nm:'플러스플랜 105'}
+};
+function guideHtml(m){
+  var g=GUIDE[m.id]; if(!g) return '';
+  var kind=m.cat.indexOf('tablet')>-1?'태블릿':'워치';
+  return '<div class="guide"><div class="guide-h"><b>'+kind+' 이용 가이드</b><span>알아두면 더 알뜰하게 쓸 수 있어요</span></div>'+
+    '<div class="guide-it"><i><svg viewBox="0 0 24 24"><path d="M5 12.5a10 10 0 0 1 14 0M8 15.5a6 6 0 0 1 8 0"/><circle cx="12" cy="18.5" r="1.3"/></svg></i><div><b>셀룰러 모델이에요</b><p>'+kind+'에 별도 회선이 개통되는 셀룰러 제품입니다.</p></div></div>'+
+    '<div class="guide-it hl"><i><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M4 10h16M8 14h3"/></svg></i><div><b>월 이용료 '+won(g.fee)+'</b><p>월 '+won(g.plan)+' 이상 요금제('+g.nm+' 이상)를 쓰시면 이용료 없이 휴대폰 요금에 포함돼요.</p>'+
+      '<span class="guide-tag">'+g.nm+' 이상이면 이용료 0원</span></div></div>'+
+    '<div class="guide-it"><i><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M9 3v4M15 3v4"/></svg></i><div><b>24개월 약정 상품이에요</b><p>개통일부터 24개월 동안 이용하는 조건이에요.</p></div></div>'+
+  '</div>';
+}
 function renderWear(){
   var list=wears();
   $('#wearSec').hidden=!secOn('wear') || !list.length;
-  $('#wearHead').innerHTML=secHead('wear','#/cat/watch');
+  $('#wearHead').innerHTML=secHead('wear','#/cat/watch')+BUNDLE_NOTE;
   $('#wear').innerHTML=list.map(function(m){return hcard(m)}).join('');
 }
 function renderGifts(){
@@ -571,7 +587,7 @@ function renderRank(){
 // 카드 가격: 실제 구매가를 크게, 출고가는 줄 긋고 작게 + 월 할부금 (출고가로 사는 것처럼 안 보이게)
 function priceBlock(p){
   if(p.v==null) return '';
-  var lab=p.kind==='sheet'?(p.g==='second'?'구매가':(MNP?'번호이동 구매가':'기기변경 구매가')):'구매가', pct=pctOf(p);
+  var lab=p.kind==='sheet'?(p.g==='second'?'휴대폰과 함께 구매 시':(MNP?'번호이동 구매가':'기기변경 구매가')):'구매가', pct=pctOf(p);
   var noint=p.row&&noInterest(p.row), mon=p.v>0?won10(noint?p.v/24:p.v*RATE[24]/24):0;   // 카드는 24개월 할부 기준
   return '<div class="bp"><span class="bp-l">'+lab+'</span>'+(pct>0?'<span class="bp-pct">'+pct+'%</span>':'')+'<b class="bp-v">'+wz(p.v)+(p.from?'~':'')+'</b>'+(p.out&&p.out>p.v?'<s class="bp-o">'+won(p.out)+'</s>':'')+'</div>'+
     '<div class="bp-m">'+(p.v===0?'기기값 0원 · 할부금 없음':'월 <b>'+won(mon)+(p.from?'~':'')+'</b> <small>24개월 할부 · '+(noint?'이자 없음':'할부이자 포함')+'</small>')+'</div>';
@@ -684,7 +700,8 @@ function renderModel(id, keepRecent){
     '<div class="pills" style="margin-top:10px">'+m.tags.map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div>'+
     colorPicker(m)+optPicker(m)+pickers+
     (SO(m)||(selRow&&selRow.so)?'<div class="so-notice">'+(SO(m)?'현재 일시품절입니다':'선택하신 '+esc(selRow.cap||'옵션')+' 은(는) 일시품절입니다')+'. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
-    '<div class="ptable" id="ucatPrice">'+rows+'<div class="note">'+esc(S.priceNote)+'</div></div>'+
+    (isWear(m)?BUNDLE_NOTE:'')+
+    '<div class="ptable" id="ucatPrice">'+rows+'<div class="note">'+esc(S.priceNote)+'</div></div>'+guideHtml(m)+
     '<div class="md-chips"><span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span><span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>'+
     '<button class="cta ucard-cta" data-open="consult" data-model="'+esc(m.id)+'" data-color="'+esc(PICK[m.id]||'')+'" data-opt="'+esc(optsOf(m).length?optsOf(m)[OPT[m.id]||0].nm:'')+'">'+(SO(m)||(selRow&&selRow.so)?'입고 알림 상담 신청하기':(selRow?'이 조건으로 온라인 상담 신청하기 ›':'온라인 상담 신청하기'))+'</button></div>';
 }
@@ -795,6 +812,15 @@ function consultSummary(){
     '<div class="csum-p"><span>예상 월 납부금액</span><b>'+payTxt(cp.st)+'</b></div><em>'+esc(payHint(cp.st))+' · 자세한 금액은 상담 시 확정돼요</em></div>';
 }
 function cs2(m){ return colorsOf(m).length>1; }
+// 함께 구매: 휴대폰을 고르면 워치·태블릿을 더 고를 수 있고, 워치·태블릿을 고르면 함께 살 휴대폰이 필요
+function bundleHtml(m){
+  var ph=models().filter(function(x){return !x.hidden&&!isWear(x)}), wr=models().filter(function(x){return !x.hidden&&isWear(x)&&(!m||x.id!==m.id)});
+  var chips='<div class="bchips">'+wr.map(function(x){ return '<label class="bchip"><input type="checkbox" name="mBundle" value="'+esc(x.nm)+'"><span>'+esc(x.nm)+'</span></label>'; }).join('')+'</div>';
+  if(m && isWear(m)) return '<label>함께 구매할 휴대폰 <span class="req">*</span></label><select id="mBundlePhone"><option value="" selected disabled>휴대폰을 선택해 주세요</option>'+
+    ph.map(function(x){return '<option>'+esc(x.nm)+'</option>'}).join('')+'<option value="상담 후 결정">상담 후 결정할게요</option></select>'+
+    '<div class="bnote">워치·태블릿 혜택은 휴대폰과 함께 구매할 때 적용돼요</div>'+(wr.length?'<label style="margin-top:12px">함께 구매할 워치·태블릿 <small>(선택)</small></label>'+chips:'');
+  return wr.length?'<label>함께 구매할 워치·태블릿 <small>(선택)</small></label>'+chips+'<div class="bnote">휴대폰 + 워치 + 태블릿, 3개 동시 구매도 가능해요</div>':'';
+}
 function sheetConsult(modelId, colorNm, optNm){
   var opts=models().filter(function(m){return !m.hidden}).map(function(m){
     return '<option value="'+esc(m.nm)+'" data-id="'+esc(m.id)+'"'+(m.id===modelId?' selected':'')+'>'+esc(m.nm)+(SO(m)?' (일시품절 · 입고 알림)':'')+'</option>';
@@ -806,6 +832,7 @@ function sheetConsult(modelId, colorNm, optNm){
     '<div class="ff"><label>생년월일 <span class="req">*</span></label><input type="text" id="mUserBirth" inputmode="numeric" maxlength="8" placeholder="예: 940101"></div>'+
     '<div class="ff"><label>현재 통신사 <span class="req">*</span></label><select id="mCarrierSel"><option value=""'+(car?'':' selected')+' disabled>통신사를 선택해 주세요</option>'+CARRIERS.map(function(c){return '<option'+(c===car?' selected':'')+'>'+c+'</option>'}).join('')+'</select></div>'+
     '<div class="ff"><label>관심 기기 <span class="req">*</span></label><select id="mDeviceSelect"><option value=""'+(modelId?'':' selected')+' disabled>기기를 선택해 주세요</option>'+opts+'<option value="상담 후 결정">상담 후 결정할게요</option></select></div>'+
+    '<div class="ff" id="mBundleWrap">'+bundleHtml(byId(modelId))+'</div>'+
     '<div class="ff" id="mOptWrap"'+(optOpts(byId(modelId))?'':' hidden')+'><label id="mOptLbl">'+esc(byId(modelId)?optLabel(byId(modelId)):'사이즈')+'</label><select id="mOptSel">'+optOpts(byId(modelId),optNm)+'</select></div>'+
     '<div class="ff" id="mColorWrap"'+(colorOpts(byId(modelId))?'':' hidden')+'><label>희망 컬러</label><select id="mColorSel">'+colorOpts(byId(modelId),colorNm)+'</select></div>'+
     '<div class="ff"><label>전달사항</label><textarea id="mUserNote" rows="3" maxlength="500" placeholder="요청사항을 적어주세요"></textarea></div>'+
@@ -832,12 +859,15 @@ function submitConsult(){
   if(age<19){ alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 신청해 주세요.'); return; }
   if(!carrier){ alert('현재 통신사를 선택해주세요.'); return; }
   if(!device){ alert('관심 기기를 선택해주세요.'); return; }
+  var bPhone=$('#mBundlePhone'), bList=$$('#mBundleWrap input[name=mBundle]:checked').map(function(x){return x.value});
+  if(bPhone && !bPhone.value){ alert('워치·태블릿 혜택은 휴대폰과 함께 구매할 때 적용돼요.\n함께 구매할 휴대폰을 선택해 주세요.'); return; }
   if(!$('#mPrivacyCheck').checked){ alert('개인정보 수집 및 이용에 동의해주세요.'); return; }
   var btn=$('#mSubmitBtn'); if(btn.disabled) return; btn.disabled=true; btn.firstChild.textContent='신청 중...';
   var reset=function(){ btn.disabled=false; btn.firstChild.textContent='온라인 상담 신청하기'; };
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
   var dm=null; $$('#mDeviceSelect option').forEach(function(o){ if(o.selected&&o.getAttribute('data-id')) dm=byId(o.getAttribute('data-id')); });
   var optV=($('#mOptSel')&&!$('#mOptWrap').hidden&&$('#mOptSel').value)||null, capV=optV;
+  if(bPhone||bList.length) memo='[함께 구매] '+[bPhone?'휴대폰: '+bPhone.value:'', bList.length?'워치·태블릿: '+bList.join(', '):''].filter(Boolean).join(' / ')+(memo?' / '+memo:'');
   var cp=pickedCalc(); if(dm && cp && cp.m.id===dm.id) memo='[선택 조건] '+calcSummary(cp.st)+' · 예상 '+(cp.st.months===0?'일시납 '+won(cp.st.after):'월 '+won(cp.st.monthly))+(memo?' / '+memo:'');
   var dRows=dm?sheetRows(dm):[];
   if(dRows.length){ if(!capV && dRows.length===1 && dRows[0].cap && dRows[0].cap!=='기본') capV=dRows[0].cap; if(capV==='기본') capV=null; }
@@ -911,6 +941,7 @@ document.addEventListener('change',function(e){
   if(e.target.id!=='mDeviceSelect') return;
   var o=e.target.selectedOptions&&e.target.selectedOptions[0], m=o&&byId(o.getAttribute('data-id')), h=colorOpts(m);
   $('#mColorSel').innerHTML=h; $('#mColorWrap').hidden=!h;
+  var bw=$('#mBundleWrap'); if(bw) bw.innerHTML=bundleHtml(m);
   var oh=optOpts(m); $('#mOptSel').innerHTML=oh; $('#mOptWrap').hidden=!oh; $('#mOptLbl').textContent=m?optLabel(m):'사이즈';
 });
 
