@@ -786,3 +786,29 @@ body.no-sq .side-quick{display:none}
 .ap-res .rc-mon .cres-d .cr-v b{font-size:15px;font-weight:800;color:var(--ink)}
 .ap-res .rc-mon .rc-sub{margin:6px -12px 0;border-radius:0;background:var(--pink-50);border-top:1px solid #F6D3E3;padding:11px 12px}
 .ap-res .rc-mon .rc-sub b{color:var(--pink);font-size:16.5px}
+/* 할인 방식 추천 */
+.cpick-hint b.adv{display:inline-block;color:var(--ink);font-weight:700;margin-bottom:2px}
+.cpick-hint b.adv em{font-style:normal;color:var(--pink);font-weight:900}
+/* 기기값 접기 */
+.ap-res .rc-tog{display:flex;align-items:center;gap:8px;width:100%;margin-top:8px;padding:9px 0;background:none;border:0;border-bottom:1px dotted #F0C6DA;text-align:left;cursor:pointer;font:inherit}
+.ap-res .rc-tog .rc-lab{margin:0;flex:none}
+.ap-res .rc-tog-v{flex:1;min-width:0;text-align:right}
+.ap-res .rc-tog-v b{display:block;font-size:14.5px;font-weight:800;color:var(--ink);white-space:nowrap}
+.ap-res .rc-tog-v small{display:block;font-size:11.5px;color:var(--pink);font-weight:700;margin-top:1px}
+.ap-res .rc-tog i{flex:none;font-style:normal;font-size:11.5px;font-weight:700;color:var(--sub);padding:3px 8px;border:1px solid #EBD3DF;border-radius:999px;background:#fff}
+.ap-res .rc-dev.on .rc-tog{border-bottom:0}
+/* 지원금 띠 (여러 줄) */
+.ap-res .rc-sup{display:block!important;padding:10px 12px!important}
+.ap-res .rc-sup-r{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ap-res .rc-sup-r+.rc-sup-r{margin-top:6px;padding-top:6px;border-top:1px dotted rgba(255,255,255,.5)}
+.ap-res .rc-sup-r span{font-size:13px;font-weight:800}
+.ap-res .rc-sup-r small{display:block;font-size:11.5px;font-weight:700;opacity:.85;margin-top:1px}
+.ap-res .rc-sup-r b{font-size:17px;font-weight:900;white-space:nowrap}
+.ap-res .rc-sup-r.sm b{font-size:15px}
+/* 기간별 예상 */
+.ap-res .rc-flow{margin-top:12px;padding:2px 12px 6px;background:#fff;border:1px solid #F6D3E3;border-radius:12px}
+.ap-res .rc-flow .cres-d{border-top:0!important;margin-top:0!important;padding-top:0!important}
+.ap-res .rc-flow .cres-d .cr-l span{font-size:13.5px;font-weight:700;color:var(--ink2)}
+.ap-res .rc-flow .cres-d .cr-v b{font-size:14.5px}
+.ap-res .rc-flow .cres-d .cr.sum{border-top:1px solid #F3B7D3}
+.ap-res .rc-flow .cres-d .cr.sum .cr-v b{color:var(--pink);font-size:15.5px}

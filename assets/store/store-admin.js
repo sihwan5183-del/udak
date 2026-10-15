@@ -137,9 +137,9 @@ var ED = {
   },
   foot:{
     title:function(){ return '📄 회사 소개 · 하단 정보'; },
-    html:function(){ var b=T.S.biz||{}; return txt('b_name','상호명',b.name)+txt('b_ceo','대표자',b.ceo)+txt('b_addr','사업장 주소',b.addr)+txt('b_no','사업자등록번호',b.no)+
+    html:function(){ var b=T.S.biz||{}; return txt('b_name','상호명',b.name)+txt('b_ceo','대표자',b.ceo)+txt('b_addr','사업장 주소',b.addr)+txt('b_no','사업자등록번호',b.no)+txt('b_sale','통신판매업 신고번호',b.sale)+
       txt('b_email','이메일',b.email)+txt('b_hours','상담시간',b.hours)+'<div class="hint">대표 전화번호·카카오톡 주소는 ⚙ 설정에서 바꿉니다.</div>'+applyBtn(); },
-    save:function(){ T.S.biz={name:V('b_name'),ceo:V('b_ceo'),addr:V('b_addr'),no:V('b_no'),email:V('b_email'),hours:V('b_hours')}; }
+    save:function(){ T.S.biz={name:V('b_name'),ceo:V('b_ceo'),addr:V('b_addr'),no:V('b_no'),sale:V('b_sale'),email:V('b_email'),hours:V('b_hours')}; }
   },
   sec:{
     title:function(k){ return '📑 구역 제목'; },
