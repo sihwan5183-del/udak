@@ -569,10 +569,17 @@ function renderRank(){
       (SO(m)?'<span class="so-tag" style="z-index:1">일시품절</span>':'')+'<div class="ov"><div class="sm">'+esc(m.ds)+'</div><div class="tt">'+esc(m.nm)+'</div><div class="pr">'+esc(badgeOf(m))+'</div></div></a>';
   }).join('');
 }
+// 카드 가격: 실제 구매가를 크게, 출고가는 줄 긋고 작게 + 월 할부금 (출고가로 사는 것처럼 안 보이게)
+function priceBlock(p){
+  if(p.v==null) return '';
+  var lab=p.kind==='sheet'?(p.g==='second'?'구매가':(MNP?'번호이동 구매가':'기기변경 구매가')):'구매가', pct=pctOf(p);
+  var noint=p.row&&noInterest(p.row), mon=p.v>0?won10(noint?p.v/36:p.v*RATE[36]/36):0;
+  return '<div class="bp"><span class="bp-l">'+lab+'</span>'+(pct>0?'<span class="bp-pct">'+pct+'%</span>':'')+'<b class="bp-v">'+wz(p.v)+(p.from?'~':'')+'</b>'+(p.out&&p.out>p.v?'<s class="bp-o">'+won(p.out)+'</s>':'')+'</div>'+
+    '<div class="bp-m">'+(p.v===0?'기기값 0원 · 할부금 없음':'월 <b>'+won(mon)+(p.from?'~':'')+'</b> <small>36개월 할부 · '+(noint?'이자 없음':'할부이자 포함')+'</small>')+'</div>';
+}
 function bigcard(m){
-  var wish=store.get('wish',[]).indexOf(m.id)>-1, p=priceOf(m), meta=[];
-  if(p.kind==='sheet'){ if(p.out!=null) meta.push('출고가 <b>'+won(p.out)+'</b>'); if(p.v!=null) meta.push((p.g==='second'?'구매가':(MNP?'번호이동':'기기변경'))+' <b>'+wz(p.v)+(p.from?'~':'')+'</b>'); }
-  else if(p.kind==='sub'){ if(p.out!=null) meta.push('출고가 <b>'+won(p.out)+'</b>'); if(p.sub) meta.push('지원금 <b>-'+won(p.sub)+'</b>'); if(p.v!=null) meta.push('구매가 <b>'+won(p.v)+(p.from?'~':'')+'</b>'); }
+  var wish=store.get('wish',[]).indexOf(m.id)>-1, p=priceOf(m), meta=[], pb=(p.kind==='sheet'||p.kind==='sub')?priceBlock(p):'';
+  if(pb){}
   else if(p.out!=null) meta.push('출고가 <b>'+won(p.out)+'</b>');
   if(p.mnp!=null) meta.push('번호이동 <b>'+(p.mnp===0?'0원':won(p.mnp))+'</b>');
   if(p.chg!=null) meta.push('기기변경 <b>'+(p.chg===0?'0원':won(p.chg))+'</b>');
@@ -582,9 +589,9 @@ function bigcard(m){
     '<button class="heart'+(wish?' on':'')+'" data-wish="'+esc(m.id)+'" aria-label="찜">'+HEART+'</button>'+
     '<div class="strip">'+esc(stripOf(m))+'</div></div>'+
     '<div class="row1"><h3 class="ucard-name">'+esc(m.nm)+'</h3><span class="bdg">'+(SO(m)?'일시품절':'당일발송')+'</span><span class="eta">'+esc(badgeOf(m))+'</span></div>'+
-    '<div class="meta">'+(meta.length?meta.join(' · '):'가격은 상담 시 안내드립니다')+'</div>'+
+    (pb||'<div class="meta">'+(meta.length?meta.join(' · '):'가격은 상담 시 안내드립니다')+'</div>')+
     '<div class="chips"><span class="chip">제휴카드 X</span><span class="chip">부가서비스 X</span><span class="chip gray">5분 상담</span></div>'+
-    '<div class="stamp">'+(SO(m)?'입고 알림 상담 신청 가능':'온라인 상담 신청 시 사은품 증정')+'</div></a>';
+    '<div class="stamp">'+(SO(m)?'입고 알림 상담 신청 가능':'구매 시 사은품 증정')+'</div></a>';
 }
 function smallCircles(list){
   return list.map(function(m){return '<a class="m'+(SO(m)?' soldout':'')+hidCls(m)+'" style="flex:0 0 76px;display:flex;flex-direction:column;align-items:center;gap:6px" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="cir">'+im(mImg(m),'','',m.nm)+'</div><span>'+esc(m.nm)+'</span></a>'}).join('');
@@ -598,13 +605,7 @@ function renderPick(){
 function renderFoot(){
   var b=S.biz||{}, n=S.stores.filter(function(s){return s&&s.nm}).length;
   $('#foot').innerHTML=
-    '<section class="about-us">'+
-      '<img class="au-badge" src="/assets/logo-uplus.png" alt="LG U+ 공식 파트너사" loading="lazy">'+
-      '<p class="au-eye">ABOUT US</p><p class="au-t">유플러스 다이렉트는<br>LG U+ 공식 파트너사가 운영하는<br>온라인 상담 채널입니다</p>'+
-      '<dl class="au-dl"><dt>파트너십</dt><dd>LG U+ 공식 파트너사</dd>'+
-      '<dt>직영매장</dt><dd>서울·경기 '+(n||24)+'개 운영</dd><dt>서비스</dt><dd>온라인 상담 · 개통 · 사후관리 일괄 진행</dd><dt>고객센터</dt><dd>'+esc(S.tel)+' · 카카오톡 상담</dd></dl>'+
-      '<div class="au-btns"><button type="button" class="au-btn pri" data-video="direct">▶ 소개 영상 보기</button><button type="button" class="au-btn" data-open="store">직영매장 찾기</button></div>'+
-    '</section>'+
+
     '<div class="sf">'+
       '<div class="sf-top"><div class="sf-links"><span>이용약관</span><span>개인정보처리방침</span><span>이메일무단수집거부</span></div>'+
         '<a class="sf-cert" href="tel:'+esc(S.tel)+'"><img src="/assets/logo-uplus.png" alt="LG U+" loading="lazy"><span><small>대표 전화번호</small><b>'+esc(S.tel)+'</b></span></a></div>'+
