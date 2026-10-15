@@ -42,13 +42,13 @@ var DEFAULT = {
     {id:'taba11plus',  nm:'갤럭시 탭 A11+',     cat:['tablet'],ds:'넉넉한 화면, 가벼운 태블릿',        tags:['상담 시 안내','스마트기기']}
   ],
   quick:[
-    {nm:'유닥 멤버십 가입', ic:'user',    c:'#FF3D8B', bg:'#FFF2F7', b:'#FADCE8', go:'consult'},
+    {nm:'유닥 멤버십 가입', ic:'user',    c:'#FF3D8B', bg:'#FFF2F7', b:'#FADCE8', go:'sec:gifts'},
     {nm:'인기 모델',       ic:'star',    c:'#3B82F6', bg:'#F2F6FF', b:'#DCE6FB', go:'#/cat/all'},
     {nm:'기기값 0원',      ic:'phone',   c:'#8B5CF6', bg:'#F6F2FF', b:'#E6DCFB', go:'#/cat/zero'},
     {nm:'지원금 혜택',     ic:'gift',    c:'#22B573', bg:'#F0FBF5', b:'#D3F0E1', go:'#/cat/zero'},
     {nm:'구매 가이드',     ic:'book',    c:'#FF8A1F', bg:'#FFF6EE', b:'#FBE4CF', go:'guide'},
     {nm:'QNA',             ic:'headset', c:'#FF2D78', bg:'#FFF2F7', b:'#FADCE8', go:'contact'},
-    {nm:'요금제별 혜택',   ic:'won',     c:'#2563EB', bg:'#F2F6FF', b:'#DCE6FB', go:'consult'},
+    {nm:'요금제별 혜택',   ic:'won',     c:'#2563EB', bg:'#F2F6FF', b:'#DCE6FB', go:'sec:wear'},
     {nm:'매장 방문하기',   ic:'pin',     c:'#F43F5E', bg:'#FFF2F4', b:'#FADDE2', go:'store'}
   ],
   trust:[
@@ -59,20 +59,19 @@ var DEFAULT = {
   ],
   promo:{tag:'가장 인기있는 선택', t:'아이폰 18프로 / 프로맥스', s:'더 강력해진 성능, 지금 가장 핫한 아이폰.', img:'promo/promo-01.jpg', go:'#/model/iphone18pro'},
   gifts:[
-    {nm:'애플워치 SE3',     sm:'아이폰 18프로 구매 시', pr:'무료 증정', img:'gift/gift-watch-se3.jpg'},
-    {nm:'아이패드 A16',     sm:'TV형 무료 제공',       pr:'무료 증정', img:'gift/gift-ipad-a16.jpg'},
-    {nm:'갤럭시 워치9',     sm:'폴드 8 구매 시',       pr:'무료 증정', img:'gift/gift-galaxy-watch9.jpg'},
-    {nm:'정품 케이스·필름', sm:'전 모델 기본 제공',     pr:'무료 증정', img:'gift/gift-case.jpg'}
+    {nm:'그립톡',          sm:'유닥 멤버십 회원', pr:'멤버십 증정', img:'gift/gift-griptok.jpg'},
+    {nm:'휴대폰 케이스',   sm:'유닥 멤버십 회원', pr:'멤버십 증정', img:'gift/gift-case.jpg'},
+    {nm:'강화유리 필름',   sm:'유닥 멤버십 회원', pr:'멤버십 증정', img:'gift/gift-film.jpg'}
   ],
   rank:['iphone18pro','fold8','s26ultra','iphone17','flip8'],
   sec:{
     pop:{t:'지금, 이런 모델도 많이 찾아요!'},
     recent:{t:'최근 본 모델'},
     zero:{t:'기기값 0원 모아보기', s:'제휴카드·부가서비스 가입 없이'},
-    gifts:{t:'유플러스 다이렉트 한정 사은품'},
+    gifts:{t:'유플러스 다이렉트 멤버십 사은품'},
     rank:{t:'이번 주 인기 모델 TOP'},
     pick:{t:'골라보는 휴대폰'},
-    wear:{t:'워치 · 태블릿도 함께', s:'이통사 지원금으로 더 가볍게'}
+    wear:{t:'유플러스 다이렉트 요금제별 혜택', s:'요금제에 따라 워치 · 태블릿을 더 가볍게'}
   },
   priceNote:'기기값 기준 금액이며 요금제·할인 방식(공시지원금/선택약정)에 따라 달라질 수 있습니다. 정확한 금액은 상담 시 안내드립니다.',
   stores:[],
@@ -101,7 +100,7 @@ var DEFCOLORS = {
   flip8:[{nm:'핑크',hex:'#F2C6D6',img:'model/flip8-pink.webp'},{nm:'그라파이트',hex:GR,img:'model/flip8-graphite.webp'},{nm:'크림',hex:CR,img:'model/flip8-cream.webp'}]
 };
 var CAT_TABS = [{k:'all',nm:'전체'},{k:'iphone',nm:'아이폰'},{k:'galaxy',nm:'갤럭시 S'},{k:'fold',nm:'폴더블'},{k:'zero',nm:'기기값 0원'},{k:'watch',nm:'워치'},{k:'tablet',nm:'태블릿'}];
-var GO_OPTIONS = [['consult','상담 신청서 열기'],['contact','전화·카톡 문의'],['guide','구매 가이드'],['store','매장찾기'],['#/cat/all','전체 모델'],['#/cat/iphone','아이폰 모아보기'],['#/cat/galaxy','갤럭시 S 모아보기'],['#/cat/fold','폴더블 모아보기'],['#/cat/zero','기기값 0원 모아보기']];
+var GO_OPTIONS = [['sec:gifts','멤버십 사은품 구역으로'],['sec:wear','요금제별 혜택 구역으로'],['consult','상담 신청서 열기'],['contact','전화·카톡 문의'],['guide','구매 가이드'],['store','매장찾기'],['#/cat/all','전체 모델'],['#/cat/iphone','아이폰 모아보기'],['#/cat/galaxy','갤럭시 S 모아보기'],['#/cat/fold','폴더블 모아보기'],['#/cat/zero','기기값 0원 모아보기']];
 
 var QI = { // 퀵메뉴 아이콘
   user:'<circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>',
@@ -563,6 +562,9 @@ function closeTicket(){ $('#ticket').classList.remove('on'); document.body.style
 function act(go, el){
   if(!go) return;
   if(go.charAt(0)==='#'){ location.hash=go; return; }
+  if(go.indexOf('sec:')===0){ var id={gifts:'giftSec',wear:'wearSec',zero:'zeroSec',rank:'rankSec',pick:'pickSec',pop:'popSec'}[go.slice(4)];
+    var goSec=function(){ var el=id&&document.getElementById(id); if(el) window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-60,behavior:'smooth'}); };
+    if(!$('#v-home').classList.contains('on')){ location.hash='#/'; setTimeout(goSec,120); } else goSec(); return; }
   if(go==='consult') openSheet(sheetConsult(el&&el.getAttribute('data-model'), el&&el.getAttribute('data-color'), el&&el.getAttribute('data-opt')));
   else if(go==='contact') openSheet(sheetContact());
   else if(go==='guide') openSheet(sheetGuide());
