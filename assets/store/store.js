@@ -939,7 +939,7 @@ function act(go, el){
    · 상품 상세에서 '이 조건으로' 누르면 고른 휴대폰·용량·컬러·통신사·요금제·할부가 그대로 들어옴
    ========================================================= */
 var AP=null;
-function apInit(){ return {phone:'',cap:0,color:'',carrier:'',tier:'',method:'',months:24,watch:'',tablet:'',tv:'',tvTier:'',tvOk:false,pick:false,note:''}; }
+function apInit(){ return {phone:'',cap:0,color:'',carrier:'',tier:'',method:'',months:24,watch:'',tablet:'',tv:'',tvTier:'',tvOk:false,pick:false,note:'',open:{}}; }
 function brandOf(m){ return (m && (/iphone|ipad|watchse|apple/i.test(m.id) || m.cat.indexOf('iphone')>-1)) ? 'apple' : 'samsung'; }
 var AP_SLOTS=[['watch','워치','watch'],['tablet','태블릿','tablet'],['tv','TV프리','tvfree']];
 function apPhone(){ return AP.phone && AP.phone!=='later' ? byId(AP.phone) : null; }
@@ -1022,12 +1022,17 @@ function apAddHtml(){
     '<div class="ap-sub">휴대폰과 함께 구매하면 워치·태블릿을 더 가볍게 만나보실 수 있어요. 휴대폰 + 워치 + 태블릿, 3개 동시 구매도 가능해요.</div>'+
     (AP.note?'<div class="ap-note">'+AP.note+'</div>':'');
   AP_SLOTS.forEach(function(s){
-    var list=all.filter(function(x){return kindOf(x)===s[2]}); if(!list.length) return;
+    // 지금 조건(요금제·휴대폰 브랜드)으로 고를 수 없는 건 아예 안 보이게
+    var list=all.filter(function(x){return kindOf(x)===s[2] && !apReason(x)}); if(!list.length) return;
     h+='<div class="ap-f"><div class="ap-l">'+s[1]+'</div><div class="ap-cards">'+list.map(function(x){
-      var why=apReason(x), on=AP[s[0]]===x.id, ac=apAddCalc(x);
-      return '<button type="button" class="ap-card'+(on?' on':'')+(why?' dis':'')+'" data-ap="'+s[0]+'" data-v="'+esc(x.id)+'"'+(why?' disabled':'')+'>'+
-        '<span class="ap-card-img">'+im(mImg(x),'','',x.nm)+'</span><span class="ap-card-t"><b>'+esc(x.nm)+'</b>'+
-        (why?'<em>'+esc(why)+'</em>':(ac?'<i>월 '+won(ac.monthly)+(AP.months===0?'':' ('+AP.months+'개월)')+'</i>':'<i>금액은 상담 시 안내</i>'))+'</span><span class="ap-chk"></span></button>';
+      var on=AP[s[0]]===x.id, ac=apAddCalc(x), g=GUIDE[x.id], open=on||AP.open[x.id];
+      var dev=ac?(ac.after===0?'기기값 0원':'기기 월 '+won(ac.monthly)+(AP.months===0?'':' ('+AP.months+'개월)')):'기기값은 상담 시 안내';
+      var fee=s[0]==='tv'?'이용료 월 9,350원부터':(g&&g.fee?'회선 이용료 월 '+won(g.fee)+' (요금제 포함)':'');
+      return '<div class="ap-card'+(on?' on':'')+'"><button type="button" class="ap-card-main" data-ap="'+s[0]+'" data-v="'+esc(x.id)+'">'+
+        '<span class="ap-card-img">'+im(mImg(x),'','',x.nm)+'</span><span class="ap-card-t"><b>'+esc(x.nm)+'</b><i>'+esc(dev)+'</i>'+(fee?'<em>'+esc(fee)+'</em>':'')+'</span><span class="ap-chk"></span></button>'+
+        (g?'<button type="button" class="ap-cond" data-ap-cond="'+esc(x.id)+'">'+(open?'이용 조건 접기 ▴':'이용 조건 보기 ▾')+'</button>'+
+          (open?'<ul class="ap-cond-list">'+g.items.map(function(it){ return '<li><b>'+esc(it.b)+'</b><span>'+esc(it.p)+'</span></li>'; }).join('')+'</ul>':''):'')+
+        '</div>';
     }).join('')+'</div>';
     if(s[0]==='tv' && AP.tv){
       var tm=byId(AP.tv), ts=tiersOf('tvfree');
@@ -1149,6 +1154,8 @@ document.addEventListener('click',function(e){
   var app=t.closest('[data-ap-pick]');
   if(app){ e.preventDefault(); var pv=app.getAttribute('data-ap-pick'); if(pv!==AP.phone){ AP.cap=0; AP.color=''; if(pv!=='later'){ var pm=byId(pv), prs=sheetRows(pm); if(prs.length){ var pp=priceOf(pm); AP.cap=Math.max(0,prs.indexOf(pp.row)); } } }
     AP.phone=pv; AP.pick=false; apRefresh(); return; }
+  var apc=t.closest('[data-ap-cond]');
+  if(apc){ e.preventDefault(); var cid=apc.getAttribute('data-ap-cond'); AP.open[cid]=!(AP.open[cid]||AP[kindOf(byId(cid))==='tvfree'?'tv':kindOf(byId(cid))]===cid); apRefresh(); return; }
   var apa=t.closest('[data-ap-act]');
   if(apa){ e.preventDefault(); var aa=apa.getAttribute('data-ap-act');
     if(aa==='change'){ AP.pick=true; apRefresh(); var si=$('#mDeviceSearch'); if(si) si.focus(); }
