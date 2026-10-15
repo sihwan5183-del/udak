@@ -33,6 +33,7 @@ function sortVers(){ var cur=ver(); W.vers.sort(function(a,b){ a=a.from||''; b=b
 // Q = 가격표 묶음(W 또는 엑셀 미리보기용 사본) — plans: 지원금 구간(군), tiers: 실제 요금제
 function plans(g, Q){ return (Q||W).plans[g]; }
 function tiers(g, Q){ return (Q||W).tiers[g]; }
+var GROUPS=['phone','second','tvfree'], GNAME={phone:'휴대폰',second:'세컨드 (워치·태블릿)',tvfree:'TV프리 (TV프리·아이패드)'}, GSHEET={phone:'휴대폰',second:'세컨드',tvfree:'TV프리'};
 function tierName(t){ return t.fee?t.nm+' 요금제':t.nm; }
 function tierHead(t){ return t.title||tierName(t); }
 function escRe(x){ return String(x).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
@@ -65,7 +66,7 @@ function render(){
   var v=ver(), st=status(v), today=T.todayKST(), act=T.verAt(today,W);
   var idx=W.vers.map(function(_,i){return i}).reverse();
   var vopts=idx.map(function(i){ var x=W.vers[i], s=status(x); return '<option value="'+i+'"'+(i===VI?' selected':'')+'>'+esc((x.from?md(x.from)+' 부터':'시작일 없음')+' · '+s.txt+(x.memo?' · '+x.memo:''))+'</option>'; }).join('');
-  var cnt={phone:0,second:0}, list=[];
+  var cnt={phone:0,second:0,tvfree:0}, list=[];
   v.rows.forEach(function(r,i){ cnt[r.g]=(cnt[r.g]||0)+1; if(r.g===TAB) list.push(i); });
   pz.innerHTML=
     '<div class="pz-h"><div><b>💰 가격표</b><small>오늘('+md(today)+') 홈페이지에 적용 중: <b>'+esc(act?md(act.from)+' 부터 정책':'-')+'</b></small></div>'+
@@ -81,7 +82,7 @@ function render(){
     '<label class="pz-pub'+(W.show?' on':'')+'"><input type="checkbox" data-pzv="show"'+(W.show?' checked':'')+'> 고객 화면(갤럭시)에 가격 공개 <small>'+(W.show?'켜짐 — 고객에게 가격이 보여요':'꺼짐 — 고객 화면은 "상담 시 안내"로 보이고, 관리자 화면에서만 가격이 보여요')+'</small></label>'+
     '<div class="pz-new" id="pzNew" hidden><span>지금 보고 있는 정책을 그대로 복사해서 새 정책을 만듭니다. 적용 시작일</span>'+
       '<input type="date" id="pzNewDate" value="'+addDays(today,1)+'"><button type="button" class="pz-b pri" data-pz="mkver">만들기</button></div>'+
-    '<div class="pz-tabs">'+['phone','second'].map(function(g){ return '<button type="button" data-pztab="'+g+'" class="'+(g===TAB?'on':'')+'">'+(g==='phone'?'휴대폰':'워치·태블릿·TV')+' <i>'+(cnt[g]||0)+'</i></button>'; }).join('')+'</div>'+
+    '<div class="pz-tabs">'+GROUPS.map(function(g){ return '<button type="button" data-pztab="'+g+'" class="'+(g===TAB?'on':'')+'">'+GNAME[g]+' <i>'+(cnt[g]||0)+'</i></button>'; }).join('')+'</div>'+
     '<div class="pz-tools">'+
       '<button type="button" class="pz-b pri" data-pz="up">⬆ 엑셀 업로드</button><input type="file" id="pzFile" accept=".xlsx,.xls,.csv" hidden>'+
       '<button type="button" class="pz-b" data-pz="down">⬇ 엑셀 다운로드</button>'+
@@ -97,7 +98,8 @@ function render(){
       '<button type="button" class="pz-b pri" data-pz="plansave" style="margin-top:8px">요금제 적용</button></div>'+
     '<div class="pz-help">'+(TAB==='phone'
       ? '실구매가 = 출고가 − (공시지원금 + 유플러스 다이렉트 지원금) · 선택약정이면 출고가 − 유플러스 다이렉트 지원금 (월 요금 25% 할인) · 홈페이지 카드는 <b>'+esc(tierName(T.baseTier('phone',W)||{nm:''}))+' 최저가</b> 기준으로 보이고 (상세에서 요금제별로 볼 수 있어요) 고객이 번호이동/기기변경을 바꿔 볼 수 있어요.'
-      : '구매가 = 출고가 − (이통사 지원금 + 유플러스 다이렉트 지원금) · 홈페이지는 <b>'+esc(tierName(T.baseTier('second',W)||{nm:''}))+'</b> 기준으로 보여요.')+
+      : TAB==='second' ? '구매가 = 출고가 − (이통사 지원금 + 유플러스 다이렉트 지원금) · 워치·태블릿은 요금제 구분 없이 지원금 한 칸씩이고, 휴대폰과 함께 구매할 때 적용되는 혜택이에요.'
+      : '구매가 = 출고가 − (이통사 지원금 + 유플러스 다이렉트 지원금) · 1GB / 500MB 요금제별로 넣고, 홈페이지는 <b>'+esc(tierName(T.baseTier('tvfree',W)||{nm:''}))+'</b> 기준으로 보여요.')+
       ' 엑셀에서 여러 칸을 복사해 붙여넣어도 됩니다. <b>[저장]</b>을 눌러야 홈페이지에 반영돼요.</div>'+
     table(list)+
     '</div>'+
@@ -110,7 +112,7 @@ function groupsOf(list){ // 같은 모델코드가 이어진 줄끼리 한 묶�
     if(last && ncode(ver().rows[last[0]].code)===ncode(r.code) && r.code) last.push(i); else gs.push([i]); }); return gs; }
 function table(list){
   var g=TAB, C=cols(g), types=T.TYPES[g], bt=T.baseTier(g,W)||{nm:''}, nT=tiers(g).length, nP=plans(g).length;
-  var h1='<tr><th rowspan="3" class="c-so">품절</th><th rowspan="3" class="c-code">모델</th><th rowspan="3">'+(g==='phone'?'용량':'사이즈')+'</th>'+(g==='second'?'<th rowspan="3" class="c-split">요금제별<br>지원금<small>TV프리·아이패드만</small></th>':'')+'<th rowspan="3" class="c-out">출고가</th>'+
+  var h1='<tr><th rowspan="3" class="c-so">품절</th><th rowspan="3" class="c-code">모델</th><th rowspan="3">'+(g==='phone'?'용량':'사이즈')+'</th><th rowspan="3" class="c-out">출고가</th>'+
     types.map(function(t){ return '<th colspan="'+(nT+nP)+'" class="blk b-'+t[0]+' bl">'+(g==='phone'?t[1]:'지원금')+'</th>'; }).join('')+
     '<th rowspan="3" class="cc bl">'+(g==='phone'?'번호이동 '+esc(bt.nm)+'<br>최저 기기값':esc(bt.nm)+'<br>구매가')+'</th><th rowspan="3" class="cc">할인율</th><th rowspan="3"></th></tr>';
   var h2='<tr>'+types.map(function(t){ return '<th colspan="'+nT+'" class="gh pub b-'+t[0]+' bl">'+(g==='phone'?'공시지원금 (요금제별)':'이통사 지원금')+'</th><th colspan="'+nP+'" class="gh our b-'+t[0]+' bl2">유플러스 다이렉트 지원금'+(g==='phone'?' (구간별)':'')+'</th>'; }).join('')+'</tr>';
@@ -133,10 +135,9 @@ function rowHtml(r,i,gr,gi){
   return '<tr data-ri="'+i+'" class="'+(gr?'gstart ':'')+(gi%2?'godd ':'')+(r.so?'is-so ':'')+(FOCUS&&r.model===FOCUS?'focus':'')+'">'+
     '<td class="c-so"><input type="checkbox" data-f="so"'+(r.so?' checked':'')+'></td>'+mcell+
     '<td class="c-cap"><input type="text" class="w4" data-f="cap" value="'+esc(r.cap||'')+'" placeholder="공통"></td>'+
-    (g==='second'?'<td class="c-split"><label><input type="checkbox" data-f="split"'+(r.split?' checked':'')+'> 1GB/500MB</label></td>':'')+
     '<td class="c-out">'+ni('out',r.out,num(r.out)==null?'need':'')+'</td>'+
     C.map(function(c){ var first=c.kind==='our'&&(!C0||C0.b!==c.b); if(c.kind==='our') C0=c;
-      var off=(g==='second' && !r.split && c.i>0);   // 요금제 구분 없는 줄(워치·탭)은 첫 칸만
+      var off=false;
       return '<td class="'+c.kind+' b-'+c.b+(c.bl?' bl':'')+(first?' bl2':'')+'">'+(off?'<span class="off">—</span>':ni(c.f,getF(r,c.f)))+'</td>'; }).join('')+
     ccHtml(r)+
     '<td class="act"><button type="button" data-pz="rdel" class="del" title="이 용량 삭제">✕</button></td></tr>';
@@ -330,7 +331,7 @@ function parseSheet(X, ws, name){
   var date=null, top=[]; for(r=0;r<first;r++) top=top.concat((aoa[r]||[]).map(String));
   var dm=top.join(' ').match(/(20\d{2})\s*[.\-\/년]\s*(\d{1,2})\s*[.\-\/월]\s*(\d{1,2})/);
   if(dm) date=dm[1]+'-'+('0'+dm[2]).slice(-2)+'-'+('0'+dm[3]).slice(-2);
-  var g=/워치|태블릿|TV|티비|세컨|패드/i.test(name)?'second':null, recs=[];
+  var g=/TV|티비|프리|패드/i.test(name)?'tvfree':/워치|태블릿|세컨/i.test(name)?'second':null, recs=[];
   for(r=first;r<aoa.length;r++){
     var code=String(cell(r,codeCol)).trim(); if(!code || CODE_HEAD.test(code.replace(/\s/g,'')) || code.length>24) continue;
     var vals=[]; for(c=0;c<width;c++){ if(c===codeCol||c===capCol||c===mkCol||c===soCol||c===linkCol) continue; var x=cell(r,c); if(x!==''&&isNum(x)) vals.push({label:labels[c], v:toNum(x)}); }
@@ -349,7 +350,7 @@ function classify(label, g, ctx){
     var hit=null; tiers(g,ctx).slice().sort(function(a,b){return String(b.nm).length-String(a.nm).length}).forEach(function(t){
       if(hit) return; var nm=String(t.nm).replace(/요금제|\s/g,''); if(new RegExp('(^|[^0-9])'+escRe(nm)+'([^0-9]|$)').test(Lc.replace(/요금제/g,''))) hit=t; });
     if(!hit){ ctx.skip[L||'(제목 없음)']=1; return null; }
-    var pt=g==='second'?['all']:(/MNP|번호이동|번이/i.test(Lc)?['mnp']:/기기변경|기변/.test(Lc)?['chg']:['mnp','chg']);
+    var pt=g!=='phone'?['all']:(/MNP|번호이동|번이/i.test(Lc)?['mnp']:/기기변경|기변/.test(Lc)?['chg']:['mnp','chg']);
     return {fs:pt.map(function(x){return 'pub.'+x+'_'+hit.k})};
   }
   var pl=plans(g,ctx), plan=null;
@@ -357,7 +358,7 @@ function classify(label, g, ctx){
   if(!plan){ var m=Lc.match(/(\d+)군/); if(m && g==='phone'){ var nm=m[1]+'군', used={}; pl.forEach(function(p){used[p.k]=1}); plan={k:planKey(nm,used), nm:nm}; pl.push(plan); ctx.newPlans.push(nm); } }
   if(!plan){ ctx.skip[L||'(제목 없음)']=1; return null; }
   var t=null;
-  if(g==='second') t='all';
+  if(g!=='phone') t='all';
   else if(/MNP|번호이동|번이/i.test(Lc)) t='mnp';
   else if(/기기변경|기변/.test(Lc)) t='chg';
   if(!t){ ctx.skip[L]=1; return null; }
@@ -449,7 +450,7 @@ function applyPending(){
 function exportXlsx(){
   loadXLSX().then(function(X){
     var wb=X.utils.book_new(), v=ver();
-    ['phone','second'].forEach(function(g){
+    GROUPS.forEach(function(g){
       var C=cols(g), types=T.TYPES[g], nT=tiers(g).length, nP=plans(g).length;
       var r0=['제조사','모델코드',g==='phone'?'용량':'사이즈','홈페이지 상품','출고가'], r1=['','','','',''], r2=['','','','',''], mg=[];
       for(var c=0;c<5;c++) mg.push({s:{r:0,c:c},e:{r:2,c:c}});
@@ -470,7 +471,7 @@ function exportXlsx(){
         line.push(r.so?'품절':''); data.push(line);
       });
       var ws=X.utils.aoa_to_sheet(data); ws['!merges']=mg; ws['!cols']=data[0].map(function(_,i){ return {wch:i<4?14:12}; });
-      X.utils.book_append_sheet(wb, ws, g==='phone'?'휴대폰':'워치태블릿TV');
+      X.utils.book_append_sheet(wb, ws, GSHEET[g]);
     });
     var out=X.write(wb,{bookType:'xlsx',type:'array'}), blob=new Blob([out],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
     var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='유플러스다이렉트_가격표_'+(v.from||'')+'.xlsx';
