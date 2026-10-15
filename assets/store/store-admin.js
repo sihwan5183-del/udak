@@ -58,7 +58,7 @@ function C(n){ var el=$('#sheet [name="'+n+'"]'); return !!(el&&el.checked); }
 function open(title, html){ T.openSheet('<div class="ed"><h3>'+title+'</h3>'+html+'</div>'); }
 
 /* ---------- 편집 대상별 화면 ---------- */
-var CATS=[['iphone','아이폰'],['galaxy','갤럭시 S'],['fold','폴더블'],['zero','기기값 0원 모아보기']];
+var CATS=[['iphone','아이폰'],['galaxy','갤럭시 S'],['fold','폴더블'],['watch','워치'],['tablet','태블릿'],['zero','기기값 0원 모아보기']];
 function edModel(m){
   return txt('nm','모델 이름',m.nm)+txt('ds','한 줄 설명',m.ds)+
     '<div class="grp"><div class="lbl">태그 2개 (카드의 분홍 글씨)</div><div class="row2c"><input type="text" name="tag0" value="'+esc(m.tags[0]||'')+'"><input type="text" name="tag1" value="'+esc(m.tags[1]||'')+'"></div></div>'+
@@ -67,6 +67,8 @@ function edModel(m){
       '<input type="text" inputmode="numeric" name="mnp" placeholder="번호이동" value="'+esc(m.price.mnp==null?'':m.price.mnp)+'">'+
       '<input type="text" inputmode="numeric" name="chg" placeholder="기기변경" value="'+esc(m.price.chg==null?'':m.price.chg)+'"></div>'+
       '<div class="hint">왼쪽부터 출고가 / 번호이동 구매가 / 기기변경 구매가. 0 을 넣으면 "0원"으로 표시됩니다.</div></div>'+
+    area('opts','워치·태블릿처럼 사이즈별 가격일 때 — 한 줄에 하나씩 "사이즈 | 출고가 | 이통사 지원금"',T.optsOf(m).map(function(o){return [o.nm,o.out==null?'':o.out,o.sub==null?'':o.sub].join(' | ')}).join('\n'),3)+
+    '<div class="hint">이 칸을 채우면 위 가격(번호이동/기기변경) 대신 "출고가 - 지원금 = 구매가"로 표시됩니다. 휴대폰은 비워두세요.</div>'+
     sw('soldout','일시품절 표시',m.soldout,true)+sw('hidden','고객 화면에서 숨기기',m.hidden)+
     '<div class="grp"><div class="lbl">분류 (탭·모아보기에 나오는 곳)</div><div class="chk-row">'+CATS.map(function(c){return '<label><input type="checkbox" name="cat_'+c[0]+'"'+(m.cat.indexOf(c[0])>-1?' checked':'')+'> '+c[1]+'</label>'}).join('')+'</div></div>'+
     txt('strip','카드 띠 문구 (비우면 자동)',m.strip,'번호이동 시 '+(m.tags[0]||'')+' + '+(m.tags[1]||''))+
@@ -82,6 +84,7 @@ function edModel(m){
 function saveModel(m){
   m.nm=V('nm')||m.nm; m.ds=V('ds'); m.tags=[V('tag0'),V('tag1')].filter(Boolean); m.strip=V('strip')||null;
   m.price={out:T.num(V('out')), mnp:T.num(V('mnp')), chg:T.num(V('chg'))};
+  m.opts=V('opts').split('\n').map(function(l){ var p=l.split('|').map(function(x){return x.trim()}); return p[0]?{nm:p[0],out:T.num(p[1]),sub:T.num(p[2])}:null; }).filter(Boolean);
   m.soldout=C('soldout'); m.hidden=C('hidden');
   m.cat=CATS.map(function(c){return c[0]}).filter(function(k){return C('cat_'+k)});
   m.colors=V('colors').split('\n').map(function(l){ var p=l.split('|').map(function(x){return x.trim()}); return p[0]?{nm:p[0],hex:p[1]||'',img:p[2]||null}:null; }).filter(Boolean);
@@ -242,7 +245,7 @@ document.addEventListener('click',function(e){
       var nm=CUR.type==='model'?T.byId(CUR.arg).nm:'이 항목';
       if(!confirm(nm+' 을(를) 삭제할까요?\n(잠깐 내리는 거면 삭제 대신 "숨기기"를 쓰세요)')) return;
       list.splice(idx,1);
-      if(CUR.type==='model'){ var id=CUR.arg; T.S.rank=T.S.rank.filter(function(x){return x!==id}); }
+      if(CUR.type==='model'){ var id=CUR.arg; T.S.rank=T.S.rank.filter(function(x){return x!==id}); T.S.removed=(T.S.removed||[]).concat([id]); }
       T.closeSheet(); CUR=null; commit('삭제했어요'); return;
     }
     ed.save(CUR.arg);   // 입력해둔 내용 먼저 반영
