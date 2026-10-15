@@ -132,9 +132,10 @@ var ED = {
     save:function(){ T.S.brand={small:V('small'), big:V('big')}; }
   },
   foot:{
-    title:function(){ return '📄 맨 아래 회사 정보'; },
-    html:function(){ return area('foot','줄바꿈 그대로 표시됩니다',T.S.foot,6)+'<div class="hint">상호 · 대표 · 사업자등록번호 · 통신판매업 신고번호 · 주소 · 고객센터</div>'+applyBtn(); },
-    save:function(){ T.S.foot=V('foot'); }
+    title:function(){ return '📄 회사 소개 · 하단 정보'; },
+    html:function(){ var b=T.S.biz||{}; return txt('b_name','상호명',b.name)+txt('b_ceo','대표자',b.ceo)+txt('b_addr','사업장 주소',b.addr)+txt('b_no','사업자등록번호',b.no)+
+      txt('b_email','이메일',b.email)+txt('b_hours','상담시간',b.hours)+txt('b_corp','운영사 (맨 아래 링크)',b.corp)+'<div class="hint">대표 전화번호·카카오톡 주소는 ⚙ 설정에서 바꿉니다.</div>'+applyBtn(); },
+    save:function(){ T.S.biz={name:V('b_name'),ceo:V('b_ceo'),addr:V('b_addr'),no:V('b_no'),email:V('b_email'),hours:V('b_hours'),corp:V('b_corp')}; }
   },
   sec:{
     title:function(k){ return '📑 구역 제목'; },

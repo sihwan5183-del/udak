@@ -78,8 +78,19 @@ var DEFAULT = {
     wear:{t:'유플러스 다이렉트 요금제별 혜택', s:'요금제에 따라 워치 · 태블릿을 더 가볍게'}
   },
   priceNote:'기기값 기준 금액이며 요금제·할인 방식(공시지원금/선택약정)에 따라 달라질 수 있습니다. 정확한 금액은 상담 시 안내드립니다.',
-  stores:[],
-  storeNote:'예약 후 방문하시면 당일 개통·수령이 가능합니다.',
+  stores:[
+    {nm:'건대입구역점',addr:'서울시 광진구 능동로 95'},{nm:'군자역점',addr:'서울시 광진구 천호대로 573'},{nm:'신군자점',addr:'서울시 광진구 천호대로 548'},
+    {nm:'신자양점',addr:'서울시 광진구 자양번영로 42'},{nm:'성수역점',addr:'서울시 성동구 아차산로 96'},{nm:'용답로데오점',addr:'서울시 성동구 용답동 58-1'},
+    {nm:'사가정점',addr:'서울시 중랑구 사가정로52길 5'},{nm:'먹골역점',addr:'서울시 중랑구 동일로 917'},{nm:'장한평역점',addr:'서울시 동대문구 장한로 3'},
+    {nm:'수유시장점',addr:'서울시 강북구 미아동 202-11'},{nm:'미아역점',addr:'서울시 강북구 도봉로 187'},{nm:'쌍문세라믹점',addr:'서울시 도봉구 도당로 2'},
+    {nm:'쌍문역점',addr:'서울시 도봉구 쌍문동 88-144'},{nm:'암사역점',addr:'서울시 강동구 올림픽로 769'},{nm:'길동역점',addr:'서울시 강동구 양재대로 1465'},
+    {nm:'미사역점',addr:'하남시 미사강변동로 70'},{nm:'금광동 E편한세상점',addr:'성남시 중원구 광명로 337'},{nm:'사무실',addr:'구리시 갈매순환로 188'},
+    {nm:'리맥스점',addr:'구리시 경춘로 239'},{nm:'퇴계원점',addr:'남양주시 퇴계원읍 퇴계원로 64'},{nm:'해밀점',addr:'남양주시 진접읍 해밀예당3로 57'},
+    {nm:'진주아파트점',addr:'남양주시 오남읍 진건오남로 639'},{nm:'장현초교점',addr:'남양주시 진접읍 장현로 83'},{nm:'마석점',addr:'남양주시 화도읍 마석중앙로 65'}
+  ],
+  biz:{name:'U+ Direct 유닥 :)', ceo:'이승환', addr:'경기 구리시 갈매동 552-4스칸센 제알토 현대 클러스터동 제 7층 5호', no:'804-81-00167', email:'udak@daum.net',
+       hours:'월~토요일 09:30~20:00 (주말 및 공휴일 휴무)', corp:'(주)신세계정보통신'},
+  storeNote:'서울·경기 고객님은 예약 후 매장에 방문하시면 당일 개통·수령이 가능합니다.',
   tel:'1660-1412',
   kakao:'http://pf.kakao.com/_HxfVxcn/chat',
   foot:'유플러스 공식파트너사 ㈜신세계정보통신\n고객센터 1660-1412'
@@ -174,7 +185,7 @@ function normalize(d){
     DEFAULT.models.forEach(function(m){ if(!have[m.id] && o.removed.indexOf(m.id)<0) o.models.push(clone(m)); }); }
   o.models.forEach(function(m){ m.cat=arr(m.cat); m.tags=arr(m.tags); m.cards=arr(m.cards); m.colors=arr(m.colors); m.opts=arr(m.opts); m.price=m.price||{}; });
   o.sec=o.sec||{}; Object.keys(DEFAULT.sec).forEach(function(k){ o.sec[k]=o.sec[k]||clone(DEFAULT.sec[k]); });
-  o.brand=o.brand||clone(DEFAULT.brand); o.promo=o.promo||clone(DEFAULT.promo);
+  o.brand=o.brand||clone(DEFAULT.brand); o.biz=o.biz||clone(DEFAULT.biz); o.promo=o.promo||clone(DEFAULT.promo);
   return o;
 }
 function vis(list){ return EDIT ? list : list.filter(function(x){return x && !x.hidden}); }
@@ -363,7 +374,32 @@ function renderPick(){
   $('#bigList').innerHTML=phones().map(bigcard).join('');
 }
 function renderFoot(){
-  $('#foot').innerHTML=esc(S.foot).replace(/\n/g,'<br>');
+  var b=S.biz||{}, n=S.stores.filter(function(s){return s&&s.nm}).length;
+  $('#foot').innerHTML=
+    '<section class="about-us">'+
+      '<img class="au-badge" src="/assets/about-official-badge.webp" alt="LG유플러스 공식인증대리점 (주)신세계정보통신" loading="lazy">'+
+      '<p class="au-eye">ABOUT US</p><p class="au-t">유플러스 다이렉트는<br>신세계정보통신이 운영하는<br>온라인 상담 채널입니다</p>'+
+      '<dl class="au-dl"><dt>운영사</dt><dd>신세계정보통신</dd><dt>파트너십</dt><dd>LG U+ 공식 파트너사</dd>'+
+      '<dt>직영매장</dt><dd>서울·경기 '+(n||24)+'개 운영</dd><dt>서비스</dt><dd>온라인 상담 · 개통 · 사후관리 일괄 진행</dd></dl>'+
+      '<div class="au-btns"><button type="button" class="au-btn pri" data-video="direct">▶ 소개 영상 보기</button><button type="button" class="au-btn" data-open="store">직영매장 찾기</button></div>'+
+    '</section>'+
+    '<div class="sf">'+
+      '<div class="sf-top"><div class="sf-links"><span>이용약관</span><span>개인정보처리방침</span><span>이메일무단수집거부</span></div>'+
+        '<a class="sf-cert" href="tel:'+esc(S.tel)+'"><img src="/assets/about-official-badge.webp" alt="LG유플러스 공식인증대리점" loading="lazy"><span><small>대표 전화번호</small><b>'+esc(S.tel)+'</b></span></a></div>'+
+      '<div class="sf-info"><p><span>상호명</span> '+esc(b.name)+' · <span>대표자</span> '+esc(b.ceo)+'</p><p><span>사업장 주소</span> '+esc(b.addr)+'</p>'+
+        '<p><span>사업자등록번호</span> '+esc(b.no)+' · <span>전화번호</span> '+esc(S.tel)+'</p><p><span>이메일</span> '+esc(b.email)+'</p>'+
+        '<p class="sf-h">상담시간 : '+esc(b.hours)+'</p></div>'+
+      '<div class="sf-bot"><p>Copyright(C) 2025 U+ 다이렉트. All rights reserved.</p><div class="sf-p">'+
+        '<a href="'+esc(S.kakao)+'" target="_blank" rel="noopener">Kakao</a><a href="#" data-video="direct">'+esc(b.corp||'(주)신세계정보통신')+'</a></div></div>'+
+    '</div>';
+}
+/* 소개 영상 팝업 */
+var VIDS={direct:{src:'/assets/udak-direct-intro-v2.mp4',poster:'/assets/udak-direct-intro-v2-poster.webp',title:'유플러스 다이렉트란?'}};
+function openVideo(k){
+  var v=VIDS[k]; if(!v) return;
+  var o=document.createElement('div'); o.className='vpop'; o.innerHTML='<div class="vp-in"><button type="button" class="vp-x" aria-label="닫기">×</button><video src="'+v.src+'" poster="'+v.poster+'" controls playsinline autoplay></video></div>';
+  o.addEventListener('click',function(e){ if(e.target===o||e.target.closest('.vp-x')){ var vd=o.querySelector('video'); try{vd.pause()}catch(x){} o.remove(); document.body.style.overflow=''; } });
+  document.body.appendChild(o); document.body.style.overflow='hidden';
 }
 function syncMnp(){ $$('[data-toggle="mnp"]').forEach(function(x){x.classList.toggle('on',MNP)}); }
 function renderHome(){
@@ -496,11 +532,16 @@ function sheetGuide(){
     '<li><b>당일 택배 발송 또는 매장 방문</b><br><span style="color:var(--sub);font-size:13px">택배로 받거나 매장에서 바로 개통·수령하세요.</span></li>'+
     '</ol><button class="cta" data-open="consult">온라인 상담 신청하기</button>';
 }
+function storeItem(s){
+  return '<div class="store-li"><div class="sl-r"><b>'+esc(s.nm)+'</b><a class="sl-map" href="https://map.naver.com/p/search/'+encodeURIComponent(s.addr||s.nm)+'" target="_blank" rel="noopener">지도</a></div><div>'+esc(s.addr||'')+'</div>'+
+    (s.tel?'<div><a href="tel:'+esc(s.tel)+'" style="color:var(--pink);font-weight:700">'+esc(s.tel)+'</a></div>':'')+'</div>';
+}
 function sheetStore(){
   var list=S.stores.filter(function(s){return s&&s.nm});
-  return '<h3>매장찾기</h3>'+(list.length?'<div>'+list.map(function(s){
-      return '<div class="store-li"><b>'+esc(s.nm)+'</b><div>'+esc(s.addr||'')+'</div>'+(s.tel?'<div><a href="tel:'+esc(s.tel)+'" style="color:var(--pink);font-weight:700">'+esc(s.tel)+'</a></div>':'')+'</div>';
-    }).join('')+'</div>':'<div class="todo">가까운 매장은 상담 시 안내드립니다.</div>')+
+  var seoul=list.filter(function(s){return /^서울/.test(s.addr||'')}), gg=list.filter(function(s){return !/^서울/.test(s.addr||'')});
+  return '<h3>매장찾기 <small style="font-size:13px;color:var(--sub);font-weight:600">서울·경기 '+list.length+'곳</small></h3>'+
+    (list.length?(seoul.length?'<div class="sl-g">서울</div>'+seoul.map(storeItem).join(''):'')+(gg.length?'<div class="sl-g">경기</div>'+gg.map(storeItem).join(''):'')
+      :'<div class="todo">가까운 매장은 상담 시 안내드립니다.</div>')+
     (S.storeNote?'<div class="todo" style="margin-top:10px">'+esc(S.storeNote)+'</div>':'')+
     '<button class="cta" data-open="consult">방문 예약 상담 신청하기</button>';
 }
@@ -593,6 +634,7 @@ document.addEventListener('click',function(e){
   if(t.closest('#ticket') && (t.closest('.x') || t.id==='ticket')){ closeTicket(); return; }
   var op=t.closest('[data-opt-pick]');
   if(op){ e.preventDefault(); e.stopPropagation(); OPT[op.getAttribute('data-model')]=+op.getAttribute('data-opt-pick'); renderModel(op.getAttribute('data-model'),true); return; }
+  var vb=t.closest('[data-video]'); if(vb){ e.preventDefault(); openVideo(vb.getAttribute('data-video')); return; }
   var cp=t.closest('[data-color-pick]');
   if(cp){ e.preventDefault(); e.stopPropagation(); var mm=byId(cp.getAttribute('data-model')), nm=cp.getAttribute('data-color-pick'), cc=colorsOf(mm).filter(function(c){return c.nm===nm})[0];
     PICK[mm.id]=nm; $$('[data-color-pick]').forEach(function(b){b.classList.toggle('on',b===cp)}); $('#cpickName').textContent=nm;
@@ -655,6 +697,8 @@ window.STORE = {
 /* 시작 */
 var ROOT=document.getElementById('storeRoot')||document.body;
 ROOT.insertAdjacentHTML('afterbegin', MARKUP);
+if(!EDIT) document.body.insertAdjacentHTML('beforeend','<div class="side-quick"><a class="side-quick-btn is-call" href="tel:'+esc(S.tel)+'"><i></i><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg><span>전화<br>상담</span></a>'+
+  '<a class="side-quick-btn is-kakao" href="'+esc(S.kakao)+'" target="_blank" rel="noopener"><i></i><svg viewBox="0 0 24 24"><path d="M12 3C7.03 3 3 6.36 3 10.5c0 2.7 1.7 5.07 4.27 6.43l-.9 3.32a.3.3 0 0 0 .45.33l3.9-2.57c.41.05.84.08 1.28.08 4.97 0 9-3.36 9-7.5S16.97 3 12 3z"/></svg><span>카톡<br>문의</span></a></div>');
 document.body.insertAdjacentHTML('beforeend','<div class="ticket" id="ticket"><div class="tw"><img src="/assets/ticket-complete-blue.webp" alt="상담 신청이 정상적으로 접수되었습니다"><button class="x" aria-label="닫기"></button></div></div>');
 $('#dim').addEventListener('click',closeSheet);
 window.addEventListener('scroll',onScroll,{passive:true});
