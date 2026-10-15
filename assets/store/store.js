@@ -297,6 +297,9 @@ function PV(){ return verAt(todayKST()); }
 function plansOf(g){ return (S.pricing.plans[g])||[]; }
 function tiersOf(g){ return (S.pricing.tiers[g])||[]; }
 function baseTier(g, P){ P=P||S.pricing; var ts=P.tiers[g]||[]; return ts.filter(function(t){return t.k===P.base[g]})[0]||ts[0]||null; }
+// 가격표에 이 모델 줄이 있는지 (공개 여부와 상관없이)
+function inSheet(m){ var v=PV(); return !!(v&&m&&v.rows.some(function(r){return r.model===m.id})); }
+function priceHidden(m){ return !EDIT && !S.pricing.show && inSheet(m); }
 function sheetRows(m){ if(!EDIT && !S.pricing.show) return []; var v=PV(); if(!v||!m) return []; return v.rows.filter(function(r){return r.model===m.id}); }
 function curType(g){ return g==='second'?'all':(MNP?'mnp':'chg'); }
 // 한 줄(기기·용량)의 실구매가 — pb: 공시지원금 선택, sel: 선택약정 선택
@@ -323,6 +326,7 @@ function optLabel(m){
   return (m&&m.optLabel)||'사이즈';
 }
 function priceOf(m, oi){
+  if(priceHidden(m)) return {kind:'hidden', v:null, out:null};   // 가격 비공개: 예전 가격 대신 '상담 시 안내'
   var rs=sheetRows(m);
   if(rs.length){
     var g=rs[0].g, pk=baseTier(g), type=curType(g), r=null, c=null;
@@ -370,6 +374,7 @@ function stripOf(m){
     if(pp.v===0) return lead+'기기값 0원'+tail;
     var pct=pctOf(pp); if(pct>0) return lead+'기기값 '+pct+'% 할인'+tail;
   }
+  if(pp.kind==='hidden' && isWear(m)) return '스마트기기 상담 가능';
   if(pp.kind==='sub') return pp.sub?('이통사 지원금 '+won(pp.sub)+' 할인'):'스마트기기 상담 가능';
   return (MNP?'번호이동':'기기변경')+' 시 '+(m.tags[0]||'')+(m.tags[1]?' + '+m.tags[1]:'');
 }
@@ -612,6 +617,7 @@ function renderModel(id, keepRecent){
   if(srs.length && (OPT[m.id]==null || !srs[OPT[m.id]])) OPT[m.id]=Math.max(0, srs.indexOf(priceOf(m).row));
   var p=priceOf(m, optsOf(m).length?(OPT[m.id]||0):null);
   if(p.kind==='sheet'){ selRow=p.row; rows=sheetTable(m, p.row); }
+  else if(p.kind==='hidden'){ rows='<div class="r hi"><span>가격</span><b>상담 시 안내</b></div>'; }
   else if(p.kind==='sub'){
     rows+='<div class="r"><span>출고가</span><b>'+(p.out!=null?won(p.out):'상담 시 안내')+'</b></div>';
     rows+='<div class="r"><span>이통사 지원금</span><b style="color:var(--pink)">'+(p.sub?'-'+won(p.sub):'-')+'</b></div>';
