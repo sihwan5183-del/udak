@@ -105,8 +105,9 @@ var DEFAULT = {
     },
     // 실제 요금제 — 공시지원금·선택약정(25%)은 요금제마다, grp = 어느 지원금 구간에 속하는지
     tiers:{
-      phone:[{k:'t85',nm:'85',fee:85000,grp:'p85'},{k:'t95',nm:'95',fee:95000,grp:'p85'},{k:'t105',nm:'105',fee:105000,grp:'p85'},
-             {k:'t115',nm:'115',fee:115000,grp:'p115'},{k:'t130',nm:'130',fee:130000,grp:'p115'}],
+      // title = 고객 화면에 보이는 요금제 이름
+      phone:[{k:'t85',nm:'85',title:'데이터플랜MAX',fee:85000,grp:'p85'},{k:'t95',nm:'95',title:'플러스플랜 95',fee:95000,grp:'p85'},{k:'t105',nm:'105',title:'플러스플랜 105',fee:105000,grp:'p85'},
+             {k:'t115',nm:'115',title:'플러스플랜 115',fee:115000,grp:'p115'},{k:'t130',nm:'130',title:'시그니처 130',fee:130000,grp:'p115'}],
       second:[{k:'t1GB',nm:'1GB 요금제',grp:'p1GB'},{k:'t500MB',nm:'500MB 요금제',grp:'p500MB'}]
     },
     base:{phone:'t115', second:'t1GB'},   // 홈페이지 카드에 보이는 기준 요금제
@@ -265,7 +266,8 @@ function normPricing(p){
   ['phone','second'].forEach(function(g){
     var fresh=!arr(p.tiers[g]).length, gk=p.plans[g].map(function(x){return x.k});
     p.tiers[g]=arr(p.tiers[g]).filter(function(x){return x&&x.k}); if(fresh) p.tiers[g]=clone(DEFAULT.pricing.tiers[g]);
-    p.tiers[g].forEach(function(t){ if(gk.indexOf(t.grp)<0) t.grp=gk[0]; });
+    p.tiers[g].forEach(function(t){ if(gk.indexOf(t.grp)<0) t.grp=gk[0];
+      if(!t.title){ var d=DEFAULT.pricing.tiers[g].filter(function(x){return x.nm===t.nm})[0]; if(d&&d.title) t.title=d.title; } });
     if(!p.tiers[g].some(function(t){return t.k===p.base[g]})) p.base[g]=(p.tiers[g].filter(function(t){return t.k===DEFAULT.pricing.base[g]})[0]||p.tiers[g][0]).k;
     if(fresh) p.vers.forEach(function(v){ v.rows.forEach(function(r){ if(r.g!==g) return;
       p.tiers[g].forEach(function(t){ if(r.pub[t.k]==null && r.pub[t.grp]!=null) r.pub[t.k]=r.pub[t.grp]; });
@@ -385,6 +387,8 @@ function segBtns(){
 function pline(t,sm,v){ return '<div class="r pr2"><span>'+t+(sm?'<small>'+esc(sm)+'</small>':'')+'</span><b>'+wz(v)+'</b></div>'; }
 var TIER={};   // 상세에서 고른 요금제 (모델별)
 function tierLabel(t){ return t.fee?Number(t.fee).toLocaleString('ko-KR'):t.nm; }
+function tierTitle(t){ return t.title?t.title+(t.fee?' (월 '+won(t.fee)+')':''):(t.fee?'월 '+won(t.fee)+' 요금제':t.nm); }
+var PLAN_NOTE='요금제는 6개월 후부터 47,000원 요금제 이상으로 자유롭게 변경 가능합니다.';
 // 이 줄에서 쓰는 요금제 — 워치·탭처럼 구분 없는 줄은 첫 요금제 칸 하나만
 function rowTiers(r){ var ts=tiersOf(r.g); return (r.g==='second' && !r.split) ? ts.slice(0,1) : ts; }
 function curTier(m, g, r){ var ts=r?rowTiers(r):tiersOf(g); return ts.filter(function(t){return t.k===TIER[m.id]})[0]||(ts.indexOf(baseTier(g))>-1?baseTier(g):ts[0]); }
@@ -411,7 +415,7 @@ function typeNm(st){ return st.type==='chg'?'기기변경':st.type==='mnp'?'번�
 function calcSummary(st){
   if(!st.c) return '';
   var a=[]; if(st.g==='phone') a.push(st.s.carrier?st.s.carrier+' · '+typeNm(st):typeNm(st)+' 기준');
-  if(st.split&&st.t) a.push(st.t.fee?tierLabel(st.t)+'원 요금제':st.t.nm);
+  if(st.split&&st.t) a.push(tierTitle(st.t));
   if(st.g==='phone') a.push(st.method==='pub'?'공시지원금':'선택약정');
   a.push(st.months===0?'일시납':(st.months==null?'36개월 할부(기준)':st.months+'개월 할부'));
   return a.join(' · ');
@@ -428,7 +432,8 @@ function calcPickers(m, r, st){
   if(g==='phone') h+=cgrid('현재 사용 중인 통신사','carrier',CARRIERS.map(function(c){return [c,c]}),st.s.carrier||'',m,4,
     st.s.carrier?(st.s.carrier==='LG U+'?'LG U+ 고객님은 기기변경 조건으로 계산돼요':'타사 고객님은 번호이동 조건으로 계산돼요'):(MNP?'번호이동':'기기변경')+' 기준으로 계산 중이에요 · 통신사를 고르면 맞춰 계산돼요');
   var ts=rowTiers(r);
-  if(ts.length>1) h+=cgrid(g==='phone'?'요금제 (월 요금)':'요금제','tier',ts.map(function(t){return [t.k,tierLabel(t)]}),st.t?st.t.k:'',m,Math.min(ts.length,5));
+  if(ts.length>1) h+='<div class="cpick"><div class="cpick-l">요금제</div><select class="csel" data-calc-sel="tier" data-model="'+esc(m.id)+'">'+ts.map(function(t){
+      return '<option value="'+esc(t.k)+'"'+(st.t&&st.t.k===t.k?' selected':'')+'>'+esc(tierTitle(t))+'</option>'; }).join('')+'</select>'+(g==='phone'?'<div class="cpick-hint">'+PLAN_NOTE+'</div>':'')+'</div>';
   if(g==='phone'&&st.c) h+=cgrid('할인 방식','method',[['pub','공시지원금',!st.c.pub],['sel','선택약정 (요금 25%↓)']],st.method,m,2,
     !st.c.pub?'이 조건은 공시지원금이 없어 선택약정으로 계산돼요':'공시지원금과 선택약정은 둘 중 하나만 받을 수 있어요');
   h+=cgrid('할부 개월','months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],st.months==null?'':String(st.months),m,4,
@@ -444,7 +449,7 @@ function calcBox(m, r, st){
   if(c.our) h+='<div><span>유플러스 다이렉트 지원금'+(tn?' <small>('+tn+')</small>':'')+'</span><b class="m">-'+won(c.our)+'</b></div>';
   h+='<div class="sum"><span>지원 후 기기값</span><b>'+wz(st.after)+'</b></div></div>';
   if(st.fee){
-    h+='<div class="cres-d fee"><div><span>월 통신 요금 <small>('+esc(tierLabel(st.t))+'원 요금제'+(st.method==='sel'?' · 선택약정 25%':'')+')</small></span><b>'+(st.method==='sel'?'<s>'+won(st.fee)+'</s> ':'')+won(st.feeAfter)+'</b></div>';
+    h+='<div class="cres-d fee"><div><span>월 통신 요금 <small>('+esc(st.t.title||tierLabel(st.t)+'원 요금제')+(st.method==='sel'?' · 선택약정 25%':'')+')</small></span><b>'+(st.method==='sel'?'<s>'+won(st.fee)+'</s> ':'')+won(st.feeAfter)+'</b></div>';
     if(st.monthly) h+='<div class="sum"><span>월 예상 합계 <small>(기기 할부 + 요금)</small></span><b>'+won(st.monthly+st.feeAfter)+'</b></div>';
     h+='</div>';
   }
@@ -901,6 +906,8 @@ document.addEventListener('input',function(e){
   else if(id==='q'){ renderSearch(e.target.value); }
 });
 document.addEventListener('change',function(e){
+  var cs=e.target.closest&&e.target.closest('[data-calc-sel]');
+  if(cs){ var mid=cs.getAttribute('data-model'); if(cs.getAttribute('data-calc-sel')==='tier') TIER[mid]=cs.value; var y=window.scrollY; renderModel(mid,true); window.scrollTo(0,y); return; }
   if(e.target.id!=='mDeviceSelect') return;
   var o=e.target.selectedOptions&&e.target.selectedOptions[0], m=o&&byId(o.getAttribute('data-id')), h=colorOpts(m);
   $('#mColorSel').innerHTML=h; $('#mColorWrap').hidden=!h;

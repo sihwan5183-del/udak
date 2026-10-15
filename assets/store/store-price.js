@@ -34,12 +34,13 @@ function sortVers(){ var cur=ver(); W.vers.sort(function(a,b){ a=a.from||''; b=b
 function plans(g, Q){ return (Q||W).plans[g]; }
 function tiers(g, Q){ return (Q||W).tiers[g]; }
 function tierName(t){ return t.fee?t.nm+' 요금제':t.nm; }
+function tierHead(t){ return t.title||tierName(t); }
 function escRe(x){ return String(x).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
 // 표 칸 순서: [번호이동: 공시(요금제별) | 다이렉트(구간별)] [기기변경: 공시 | 다이렉트]
 function grpNm(g,k,Q){ return (plans(g,Q).filter(function(p){return p.k===k})[0]||{}).nm||''; }
 function cols(g, Q){ var out=[];
   T.TYPES[g].forEach(function(t){
-    tiers(g,Q).forEach(function(x,i){ out.push({b:t[0], bn:t[1], kind:'pub', f:'pub.'+t[0]+'_'+x.k, nm:x.nm, sub:g==='phone'?grpNm(g,x.grp,Q):'', bl:i===0, i:i}); });
+    tiers(g,Q).forEach(function(x,i){ out.push({b:t[0], bn:t[1], kind:'pub', f:'pub.'+t[0]+'_'+x.k, nm:x.nm, sub:g==='phone'?((x.title?x.title+' · ':'')+grpNm(g,x.grp,Q)):'', bl:i===0, i:i}); });
     plans(g,Q).forEach(function(p,i){ out.push({b:t[0], bn:t[1], kind:'our', f:'our.'+t[0]+'_'+p.k, nm:p.nm, i:i}); });
   }); return out; }
 function status(v){ var t=T.todayKST(), a=T.verAt(t,W); if(v===a) return {txt:'적용 중',cls:'now'}; if((v.from||'')>t) return {txt:'예정',cls:'next'}; return {txt:'지난 정책',cls:'old'}; }
@@ -89,8 +90,8 @@ function render(){
     '<div class="pz-plans" id="pzPlans" hidden>'+
       '<div class="pz-pl2"><div><div class="pz-lb">지원금 구간 (단가표의 "군")</div><div class="pz-help" style="margin-top:2px">한 줄에 하나씩 · 예: 115군</div>'+
         '<textarea id="pzGrpTxt" rows="5">'+esc(plans(TAB).map(function(p){return p.nm}).join('\n'))+'</textarea></div>'+
-      '<div><div class="pz-lb">요금제</div><div class="pz-help" style="margin-top:2px">한 줄에 하나씩 <b>요금제 | 월 요금 | 지원금 구간</b> · 예: 130 | 130000 | 115군</div>'+
-        '<textarea id="pzTierTxt" rows="5">'+esc(tiers(TAB).map(function(t){ return [t.nm, t.fee||'', (plans(TAB).filter(function(p){return p.k===t.grp})[0]||{}).nm||''].join(' | '); }).join('\n'))+'</textarea></div></div>'+
+      '<div><div class="pz-lb">요금제</div><div class="pz-help" style="margin-top:2px">한 줄에 하나씩 <b>요금제 | 월 요금 | 지원금 구간 | 고객에게 보일 이름</b> · 예: 130 | 130000 | 115군 | 시그니처 130</div>'+
+        '<textarea id="pzTierTxt" rows="5">'+esc(tiers(TAB).map(function(t){ return [t.nm, t.fee||'', (plans(TAB).filter(function(p){return p.k===t.grp})[0]||{}).nm||'', t.title||''].join(' | '); }).join('\n'))+'</textarea></div></div>'+
       '<label class="pz-f" style="max-width:260px"><span>홈페이지 카드에 보일 기준 요금제</span><select id="pzBase">'+tiers(TAB).map(function(t){ return '<option value="'+esc(t.nm)+'"'+(t.k===W.base[TAB]?' selected':'')+'>'+esc(tierName(t))+'</option>'; }).join('')+'</select></label>'+
       '<div class="pz-help">공시지원금·선택약정(월 요금 25%)은 요금제마다, 유플러스 다이렉트 지원금은 구간마다 넣습니다. 이름을 바꾸면 그 칸 숫자는 비워져요.</div>'+
       '<button type="button" class="pz-b pri" data-pz="plansave" style="margin-top:8px">요금제 적용</button></div>'+
@@ -278,7 +279,7 @@ function savePlans(){
     var g=byNm[x[2]]||null; if(!g){ bad.push(x[0]); g=P[0]; }
     var same=oldT.filter(function(o){return o.nm===x[0]})[0], k=same&&!tused[same.k]?same.k:null;
     if(k) tused[k]=1; else { k='t'+x[0].replace(/요금제|\s/g,'').replace(/[^0-9A-Za-z가-힣_]/g,''); if(k==='t'||tused[k]) k='t'+Date.now().toString(36)+TS.length; tused[k]=1; }
-    var it={k:k, nm:x[0], grp:g.k}; var fee=num(x[1]); if(fee) it.fee=fee; TS.push(it); });
+    var it={k:k, nm:x[0], grp:g.k}; var fee=num(x[1]); if(fee) it.fee=fee; if(x[3]) it.title=x[3]; TS.push(it); });
   if(!TS.length){ alert('요금제가 최소 1개는 있어야 해요.'); return; }
   if(bad.length && !confirm('지원금 구간을 못 찾은 요금제가 있어요: '+bad.join(', ')+'\n"'+P[0].nm+'" 구간으로 넣을까요?')) return;
   var bn=$('#pzBase').value, bt=TS.filter(function(t){return t.nm===bn})[0]||TS[0];
