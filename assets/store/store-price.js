@@ -30,14 +30,18 @@ function ncap(c){
 }
 function ver(){ return W.vers[VI]; }
 function sortVers(){ var cur=ver(); W.vers.sort(function(a,b){ a=a.from||''; b=b.from||''; return a<b?-1:a>b?1:0; }); if(cur) VI=W.vers.indexOf(cur); }
-function plans(g, P){ return (P||W.plans)[g]; }
+// Q = 가격표 묶음(W 또는 엑셀 미리보기용 사본) — plans: 지원금 구간(군), tiers: 실제 요금제
+function plans(g, Q){ return (Q||W).plans[g]; }
+function tiers(g, Q){ return (Q||W).tiers[g]; }
+function tierName(t){ return t.fee?t.nm+' 요금제':t.nm; }
+function escRe(x){ return String(x).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
 function cols(g, P){ var out=[]; T.TYPES[g].forEach(function(t){ plans(g,P).forEach(function(p){ out.push({t:t[0], tn:t[1], p:p}); }); }); return out; }
 function status(v){ var t=T.todayKST(), a=T.verAt(t,W); if(v===a) return {txt:'적용 중',cls:'now'}; if((v.from||'')>t) return {txt:'예정',cls:'next'}; return {txt:'지난 정책',cls:'old'}; }
 function mName(id){ var m=T.byId(id); return m?m.nm:''; }
 function fieldName(f,g,P){
   if(f==='out') return '출고가'; if(f==='so') return '품절';
   var pl=plans(g,P), k, t;
-  if(f.indexOf('pub.')===0){ k=f.slice(4); return (g==='phone'?'공시 ':'이통사 지원금 ')+((pl.filter(function(p){return p.k===k})[0]||{}).nm||k); }
+  if(f.indexOf('pub.')===0){ k=f.slice(4); var tt=tiers(g,P).filter(function(x){return x.k===k})[0]; return (g==='phone'?'공시 ':'이통사 지원금 ')+(tt?tierName(tt):k); }
   if(f.indexOf('our.')===0){ var x=f.slice(4).split('_'); t=x[0]; k=x.slice(1).join('_');
     var tn=(T.TYPES[g].filter(function(y){return y[0]===t})[0]||[t,t])[1];
     return (g==='phone'?tn:'다이렉트 지원금')+' '+((pl.filter(function(p){return p.k===k})[0]||{}).nm||k); }
@@ -77,13 +81,18 @@ function render(){
       '<button type="button" class="pz-b pri" data-pz="up">⬆ 엑셀 업로드</button><input type="file" id="pzFile" accept=".xlsx,.xls,.csv" hidden>'+
       '<button type="button" class="pz-b" data-pz="down">⬇ 엑셀 다운로드</button>'+
       '<button type="button" class="pz-b" data-pz="addrow">＋ 줄 추가</button>'+
-      '<button type="button" class="pz-b" data-pz="plans">요금제 칸 설정</button></div>'+
-    '<div class="pz-plans" id="pzPlans" hidden><div class="pz-help">한 줄에 하나씩 <b>칸 이름 | 월 요금</b> (월 요금은 휴대폰만 · 선택약정 25% 계산과 고객 화면 "월 115,000원 요금제" 표시에 씀). 맨 윗줄이 홈페이지 기본 가격 기준입니다. 칸 이름을 바꾸면 그 칸의 숫자는 비워집니다.</div>'+
-      '<textarea id="pzPlanTxt" rows="4">'+esc(plans(TAB).map(function(p){return p.nm+(p.fee?' | '+p.fee:'')}).join('\n'))+'</textarea>'+
-      '<button type="button" class="pz-b pri" data-pz="plansave">칸 적용</button></div>'+
+      '<button type="button" class="pz-b" data-pz="plans">요금제 설정</button></div>'+
+    '<div class="pz-plans" id="pzPlans" hidden>'+
+      '<div class="pz-pl2"><div><div class="pz-lb">지원금 구간 (단가표의 "군")</div><div class="pz-help" style="margin-top:2px">한 줄에 하나씩 · 예: 115군</div>'+
+        '<textarea id="pzGrpTxt" rows="5">'+esc(plans(TAB).map(function(p){return p.nm}).join('\n'))+'</textarea></div>'+
+      '<div><div class="pz-lb">요금제</div><div class="pz-help" style="margin-top:2px">한 줄에 하나씩 <b>요금제 | 월 요금 | 지원금 구간</b> · 예: 130 | 130000 | 115군</div>'+
+        '<textarea id="pzTierTxt" rows="5">'+esc(tiers(TAB).map(function(t){ return [t.nm, t.fee||'', (plans(TAB).filter(function(p){return p.k===t.grp})[0]||{}).nm||''].join(' | '); }).join('\n'))+'</textarea></div></div>'+
+      '<label class="pz-f" style="max-width:260px"><span>홈페이지 카드에 보일 기준 요금제</span><select id="pzBase">'+tiers(TAB).map(function(t){ return '<option value="'+esc(t.nm)+'"'+(t.k===W.base[TAB]?' selected':'')+'>'+esc(tierName(t))+'</option>'; }).join('')+'</select></label>'+
+      '<div class="pz-help">공시지원금·선택약정(월 요금 25%)은 요금제마다, 유플러스 다이렉트 지원금은 구간마다 넣습니다. 이름을 바꾸면 그 칸 숫자는 비워져요.</div>'+
+      '<button type="button" class="pz-b pri" data-pz="plansave" style="margin-top:8px">요금제 적용</button></div>'+
     '<div class="pz-help">'+(TAB==='phone'
-      ? '실구매가 = 출고가 − (공시지원금 + 유플러스 다이렉트 지원금) · 선택약정이면 출고가 − 유플러스 다이렉트 지원금 (월 요금 25% 할인) · 홈페이지는 <b>'+esc((plans('phone')[0]||{}).nm||'')+' 최저가</b> 기준으로 보이고 고객이 번호이동/기기변경을 바꿔 볼 수 있어요.'
-      : '구매가 = 출고가 − (이통사 지원금 + 유플러스 다이렉트 지원금) · 홈페이지는 <b>'+esc((plans('second')[0]||{}).nm||'')+'</b> 기준으로 보여요.')+
+      ? '실구매가 = 출고가 − (공시지원금 + 유플러스 다이렉트 지원금) · 선택약정이면 출고가 − 유플러스 다이렉트 지원금 (월 요금 25% 할인) · 홈페이지 카드는 <b>'+esc(tierName(T.baseTier('phone',W)||{nm:''}))+' 최저가</b> 기준으로 보이고 (상세에서 요금제별로 볼 수 있어요) 고객이 번호이동/기기변경을 바꿔 볼 수 있어요.'
+      : '구매가 = 출고가 − (이통사 지원금 + 유플러스 다이렉트 지원금) · 홈페이지는 <b>'+esc(tierName(T.baseTier('second',W)||{nm:''}))+'</b> 기준으로 보여요.')+
       ' 엑셀에서 여러 칸을 복사해 붙여넣어도 됩니다. <b>[저장]</b>을 눌러야 홈페이지에 반영돼요.</div>'+
     table(list)+
     '</div>'+
@@ -91,12 +100,12 @@ function render(){
     (PEND?previewHtml():'');
 }
 function table(list){
-  var g=TAB, P=plans(g), C=cols(g), types=T.TYPES[g];
+  var g=TAB, P=plans(g), TS=tiers(g), C=cols(g), types=T.TYPES[g], bt=T.baseTier(g,W)||{nm:''};
   var h1='<tr><th rowspan="2" class="c-so">품절</th><th rowspan="2">제조사</th><th rowspan="2" class="c-code">모델코드</th><th rowspan="2">홈페이지 상품</th><th rowspan="2">'+(g==='phone'?'용량':'사이즈')+'</th><th rowspan="2">출고가</th>'+
-    '<th colspan="'+P.length+'" class="gh pub">'+(g==='phone'?'공시지원금':'이통사 지원금')+'</th>'+
-    types.map(function(t){ return '<th colspan="'+P.length+'" class="gh our">'+(g==='phone'?'다이렉트 지원금 · '+t[1]:'유플러스 다이렉트 지원금')+'</th>'; }).join('')+
-    '<th rowspan="2" class="cc">'+(g==='phone'?'번호이동 '+esc((P[0]||{}).nm||'')+'<br>최저 기기값':esc((P[0]||{}).nm||'')+'<br>구매가')+'</th><th rowspan="2" class="cc">할인율</th><th rowspan="2"></th></tr>';
-  var h2='<tr>'+P.map(function(p){return '<th class="pub">'+esc(p.nm)+'</th>'}).join('')+C.map(function(c){return '<th class="our">'+esc(c.p.nm)+'</th>'}).join('')+'</tr>';
+    '<th colspan="'+TS.length+'" class="gh pub">'+(g==='phone'?'공시지원금 (요금제별)':'이통사 지원금')+'</th>'+
+    types.map(function(t){ return '<th colspan="'+P.length+'" class="gh our">'+(g==='phone'?'다이렉트 지원금 · '+t[1]+' (구간별)':'유플러스 다이렉트 지원금')+'</th>'; }).join('')+
+    '<th rowspan="2" class="cc">'+(g==='phone'?'번호이동 '+esc(bt.nm)+'<br>최저 기기값':esc(bt.nm)+'<br>구매가')+'</th><th rowspan="2" class="cc">할인율</th><th rowspan="2"></th></tr>';
+  var h2='<tr>'+TS.map(function(t){ var gn=(P.filter(function(p){return p.k===t.grp})[0]||{}).nm||''; return '<th class="pub">'+esc(t.nm)+(g==='phone'&&gn?'<small>'+esc(gn)+'</small>':'')+'</th>'}).join('')+C.map(function(c){return '<th class="our">'+esc(c.p.nm)+'</th>'}).join('')+'</tr>';
   var body=list.map(function(i){ return rowHtml(ver().rows[i], i); }).join('') || '<tr><td colspan="99" class="pz-empty">줄이 없습니다. ＋ 줄 추가 또는 엑셀 업로드로 넣어주세요.</td></tr>';
   return '<div class="pz-tw"><table class="pz-t"><thead>'+h1+h2+'</thead><tbody>'+body+'</tbody></table></div>';
 }
@@ -105,7 +114,7 @@ function modelSel(r){
 }
 function ni(f,v,cls){ return '<input type="text" inputmode="numeric" class="n'+(cls?' '+cls:'')+'" data-f="'+f+'" value="'+fmt(v)+'">'; }
 function rowHtml(r,i){
-  var g=r.g, P=plans(g), C=cols(g);
+  var g=r.g, TS=tiers(g), C=cols(g);
   return '<tr data-ri="'+i+'" class="'+(r.so?'is-so ':'')+(FOCUS&&r.model===FOCUS?'focus':'')+'">'+
     '<td class="c-so"><input type="checkbox" data-f="so"'+(r.so?' checked':'')+'></td>'+
     '<td><input type="text" class="w4" data-f="mk" value="'+esc(r.mk||'')+'"></td>'+
@@ -113,13 +122,13 @@ function rowHtml(r,i){
     '<td>'+modelSel(r)+'</td>'+
     '<td><input type="text" class="w4" data-f="cap" value="'+esc(r.cap||'')+'" placeholder="공통"></td>'+
     '<td>'+ni('out',r.out,num(r.out)==null?'need':'')+'</td>'+
-    P.map(function(p){ return '<td class="pub">'+ni('pub.'+p.k,r.pub[p.k])+'</td>'; }).join('')+
+    TS.map(function(t){ return '<td class="pub">'+ni('pub.'+t.k,r.pub[t.k])+'</td>'; }).join('')+
     C.map(function(c){ return '<td class="our">'+ni('our.'+c.t+'_'+c.p.k,r.our[c.t+'_'+c.p.k])+'</td>'; }).join('')+
     ccHtml(r)+
     '<td class="act"><button type="button" data-pz="rup" title="위로">↑</button><button type="button" data-pz="rdn" title="아래로">↓</button><button type="button" data-pz="rcp" title="이 줄 복사">⧉</button><button type="button" data-pz="rdel" class="del" title="삭제">✕</button></td></tr>';
 }
 function calcTxt(r){
-  var g=r.g, t=T.TYPES[g][0][0], P=plans(g), c=P[0]?T.rowCalc(r,t,P[0].k):null;
+  var g=r.g, t=T.TYPES[g][0][0], c=T.rowCalc(r,t,T.baseTier(g,W));
   if(!c) return ['<span class="mute">출고가 입력 필요</span>','—'];
   var pct=c.out?Math.round((c.out-c.v)/c.out*100):0;
   return ['<b>'+(c.v===0?'0원':fmt(c.v)+'원')+'</b>', pct+'%'];
@@ -212,7 +221,7 @@ pz.addEventListener('click',function(e){
     var last=$$('tr[data-ri]',pz).pop(); if(last){ last.scrollIntoView({block:'center'}); var c=$('[data-f="code"]',last); if(c) c.focus(); } return;
   }
   if(a==='plans'){ var p=$('#pzPlans'); p.hidden=!p.hidden; return; }
-  if(a==='plansave'){ savePlans($('#pzPlanTxt').value); return; }
+  if(a==='plansave'){ savePlans(); return; }
   if(a==='save'){ save(); return; }
   if(a==='up'){ $('#pzFile').click(); return; }
   if(a==='down'){ exportXlsx(); return; }
@@ -233,16 +242,22 @@ function planKey(nm, used){
   if(base==='p') base='p'+Date.now().toString(36);
   var k=base, n=2; while(used[k]){ k=base+'_'+n; n++; } used[k]=1; return k;
 }
-function savePlans(txt){
-  var old=plans(TAB), used={}, out=[];
-  String(txt).split('\n').forEach(function(l){
-    var p=l.split('|').map(function(x){return x.trim()}); if(!p[0]) return;
-    var same=old.filter(function(o){return o.nm===p[0]})[0], k=same&&!used[same.k]?same.k:null;
-    if(k) used[k]=1; else k=planKey(p[0],used);
-    var it={k:k, nm:p[0]}; var fee=num(p[1]); if(fee) it.fee=fee; out.push(it);
-  });
-  if(!out.length){ alert('요금제 칸이 최소 1개는 있어야 해요.'); return; }
-  W.plans[TAB]=out; dirty(); render(); toast('요금제 칸을 바꿨어요 · [저장]을 눌러야 반영돼요');
+function savePlans(){
+  var oldP=plans(TAB), oldT=tiers(TAB), used={}, P=[], TS=[], byNm={};
+  $('#pzGrpTxt').value.split('\n').forEach(function(l){ var nm=l.split('|')[0].trim(); if(!nm||byNm[nm]) return;
+    var same=oldP.filter(function(o){return o.nm===nm})[0], k=same&&!used[same.k]?same.k:null; if(k) used[k]=1; else k=planKey(nm,used);
+    var it={k:k, nm:nm}; P.push(it); byNm[nm]=it; });
+  if(!P.length){ alert('지원금 구간이 최소 1개는 있어야 해요.'); return; }
+  var tused={}, bad=[];
+  $('#pzTierTxt').value.split('\n').forEach(function(l){ var x=l.split('|').map(function(y){return y.trim()}); if(!x[0]) return;
+    var g=byNm[x[2]]||null; if(!g){ bad.push(x[0]); g=P[0]; }
+    var same=oldT.filter(function(o){return o.nm===x[0]})[0], k=same&&!tused[same.k]?same.k:null;
+    if(k) tused[k]=1; else { k='t'+x[0].replace(/요금제|\s/g,'').replace(/[^0-9A-Za-z가-힣_]/g,''); if(k==='t'||tused[k]) k='t'+Date.now().toString(36)+TS.length; tused[k]=1; }
+    var it={k:k, nm:x[0], grp:g.k}; var fee=num(x[1]); if(fee) it.fee=fee; TS.push(it); });
+  if(!TS.length){ alert('요금제가 최소 1개는 있어야 해요.'); return; }
+  if(bad.length && !confirm('지원금 구간을 못 찾은 요금제가 있어요: '+bad.join(', ')+'\n"'+P[0].nm+'" 구간으로 넣을까요?')) return;
+  var bn=$('#pzBase').value, bt=TS.filter(function(t){return t.nm===bn})[0]||TS[0];
+  W.plans[TAB]=P; W.tiers[TAB]=TS; W.base[TAB]=bt.k; dirty(); render(); toast('요금제를 바꿨어요 · [저장]을 눌러야 반영돼요');
 }
 function save(){
   var froms={}, dup=null; W.vers.forEach(function(x){ if(froms[x.from]) dup=x.from; froms[x.from]=1; });
@@ -304,11 +319,16 @@ function parseSheet(X, ws, name){
 function classify(label, g, ctx){
   var L=String(label||''), Lc=L.replace(/\s/g,'');
   if(/출고/.test(Lc)) return {f:'out'};
-  var pl=ctx.plans[g], plan=null;
+  if(/공시|이통사/.test(Lc)){
+    var hit=null; tiers(g,ctx).slice().sort(function(a,b){return String(b.nm).length-String(a.nm).length}).forEach(function(t){
+      if(hit) return; var nm=String(t.nm).replace(/요금제|\s/g,''); if(new RegExp('(^|[^0-9])'+escRe(nm)+'([^0-9]|$)').test(Lc.replace(/요금제/g,''))) hit=t; });
+    if(!hit){ ctx.skip[L||'(제목 없음)']=1; return null; }
+    return {f:'pub.'+hit.k};
+  }
+  var pl=plans(g,ctx), plan=null;
   pl.forEach(function(p){ if(!plan && Lc.indexOf(String(p.nm).replace(/\s/g,''))>-1) plan=p; });
-  if(!plan){ var m=Lc.match(/(\d+)군/); if(m && g==='phone'){ var nm=m[1]+'군', used={}; pl.forEach(function(p){used[p.k]=1}); plan={k:planKey(nm,used), nm:nm, fee:(+m[1])*1000}; pl.push(plan); ctx.newPlans.push(nm); } }
+  if(!plan){ var m=Lc.match(/(\d+)군/); if(m && g==='phone'){ var nm=m[1]+'군', used={}; pl.forEach(function(p){used[p.k]=1}); plan={k:planKey(nm,used), nm:nm}; pl.push(plan); ctx.newPlans.push(nm); } }
   if(!plan){ ctx.skip[L||'(제목 없음)']=1; return null; }
-  if(/공시|이통사/.test(Lc)) return {f:'pub.'+plan.k};
   var t=null;
   if(g==='second') t='all';
   else if(/MNP|번호이동|번이/i.test(Lc)) t='mnp';
@@ -356,7 +376,7 @@ function readFile(file){
   }).catch(function(e){ alert(e.message||String(e)); });
 }
 function preview(){
-  var ctx={plans:T.clone(W.plans), newPlans:[], skip:{}}, v=T.clone(ver());
+  var ctx={plans:T.clone(W.plans), tiers:T.clone(W.tiers), newPlans:[], skip:{}}, v=T.clone(ver());
   PEND.res=applyRecs(PEND.recs, v, ctx); PEND.ctx=ctx; PEND.ver=v;
 }
 function previewHtml(){
@@ -365,12 +385,12 @@ function previewHtml(){
   return '<div class="pz-modal"><div class="pz-mb">'+
     '<h4>엑셀 불러오기 미리보기</h4><div class="pz-file">'+esc(P.file)+(P.date?' · 파일에 적힌 정책 시작일 <b>'+md(P.date)+'</b>':'')+'</div>'+
     '<div class="pz-sum"><span>읽은 줄 <b>'+P.recs.length+'</b></span><span>바뀌는 칸 <b>'+ch.length+'</b></span><span>새로 생기는 줄 <b>'+res.added.length+'</b></span></div>'+
-    (P.ctx.newPlans.length?'<div class="pz-warn">새 요금제 칸이 추가됩니다: '+esc(P.ctx.newPlans.join(', '))+'</div>':'')+
+    (P.ctx.newPlans.length?'<div class="pz-warn">새 지원금 구간이 추가됩니다 (요금제 설정에서 어느 요금제가 속하는지 정해 주세요): '+esc(P.ctx.newPlans.join(', '))+'</div>':'')+
     (res.added.length?'<div class="pz-warn">새 줄: '+res.added.map(function(r){return esc(r.code+' '+(r.cap||'공통'))+(r.model?'':' <small>(홈페이지 상품 연결 안 됨)</small>')}).join(', ')+' — 출고가는 표에서 넣어 주세요</div>':'')+
     (sk.length?'<div class="pz-warn mute">읽지 않은 칸: '+esc(sk.join(' / '))+'</div>':'')+
     '<div class="pz-chg">'+(ch.length?'<table><thead><tr><th>모델</th><th>항목</th><th>지금</th><th></th><th>바뀔 값</th></tr></thead><tbody>'+
       ch.slice(0,300).map(function(c){ var f=function(x){ return c.f==='so'?(x?'품절':'판매'):(x==null?'—':fmt(x)); };
-        return '<tr><td>'+esc(c.code+' '+c.cap)+'</td><td>'+esc(fieldName(c.f,c.g,P.ctx.plans))+'</td><td class="o">'+f(c.old)+'</td><td>→</td><td class="nw">'+f(c.nv)+'</td></tr>'; }).join('')+
+        return '<tr><td>'+esc(c.code+' '+c.cap)+'</td><td>'+esc(fieldName(c.f,c.g,P.ctx))+'</td><td class="o">'+f(c.old)+'</td><td>→</td><td class="nw">'+f(c.nv)+'</td></tr>'; }).join('')+
       '</tbody></table>':'<div class="pz-help">지금 정책과 다른 숫자가 없어요.</div>')+'</div>'+
     '<div class="pz-mode">'+
       '<label><input type="radio" name="pvmode" value="new"'+(P.mode==='new'?' checked':'')+'> 새 정책으로 만들기 — 적용 시작일 <input type="date" id="pvDate" value="'+esc(P.newDate)+'"></label>'+
@@ -394,7 +414,7 @@ function applyPending(){
     target=W.vers.filter(function(x){return x.from===P.newDate})[0];
     if(!target){ target=T.clone(ver()); target.id='v'+Date.now(); target.from=P.newDate; target.memo=P.file.replace(/\.(xlsx|xls|csv)$/i,''); W.vers.push(target); }
   }
-  var ctx={plans:W.plans, newPlans:[], skip:{}};
+  var ctx={plans:W.plans, tiers:W.tiers, newPlans:[], skip:{}};
   var res=applyRecs(P.recs, target, ctx);
   VI=W.vers.indexOf(target); sortVers(); PEND=null; dirty(); render();
   toast('표에 반영했어요 ('+res.changes.length+'칸) · 확인 후 [저장]');
@@ -403,16 +423,16 @@ function exportXlsx(){
   loadXLSX().then(function(X){
     var wb=X.utils.book_new(), v=ver();
     ['phone','second'].forEach(function(g){
-      var P=plans(g), types=T.TYPES[g], r1=['제조사','모델코드',g==='phone'?'용량':'사이즈','홈페이지 상품','출고가'], r2=['','','','',''], mg=[];
+      var P=plans(g), TS=tiers(g), types=T.TYPES[g], r1=['제조사','모델코드',g==='phone'?'용량':'사이즈','홈페이지 상품','출고가'], r2=['','','','',''], mg=[];
       for(var c=0;c<5;c++) mg.push({s:{r:0,c:c},e:{r:1,c:c}});
       var col=5;
-      P.forEach(function(p,i){ r1.push(i===0?(g==='phone'?'공시지원금':'이통사 지원금'):''); r2.push(p.nm); }); if(P.length>1) mg.push({s:{r:0,c:col},e:{r:0,c:col+P.length-1}}); col+=P.length;
+      TS.forEach(function(t,i){ r1.push(i===0?(g==='phone'?'공시지원금':'이통사 지원금'):''); r2.push(tierName(t)); }); if(TS.length>1) mg.push({s:{r:0,c:col},e:{r:0,c:col+TS.length-1}}); col+=TS.length;
       types.forEach(function(t){ P.forEach(function(p,i){ r1.push(i===0?(g==='phone'?t[1]:'유플러스 다이렉트 지원금'):''); r2.push(p.nm); }); if(P.length>1) mg.push({s:{r:0,c:col},e:{r:0,c:col+P.length-1}}); col+=P.length; });
       r1.push('품절'); r2.push(''); mg.push({s:{r:0,c:col},e:{r:1,c:col}});
       var data=[r1,r2];
       v.rows.filter(function(r){return r.g===g}).forEach(function(r){
         var line=[r.mk||'', r.code||'', r.cap||'공통', mName(r.model), num(r.out)==null?'':num(r.out)];
-        P.forEach(function(p){ var x=num(r.pub[p.k]); line.push(x==null?'':x); });
+        TS.forEach(function(t){ var x=num(r.pub[t.k]); line.push(x==null?'':x); });
         types.forEach(function(t){ P.forEach(function(p){ var x=num(r.our[t[0]+'_'+p.k]); line.push(x==null?'':x); }); });
         line.push(r.so?'품절':''); data.push(line);
       });

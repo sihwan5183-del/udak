@@ -75,7 +75,7 @@ var DEFAULT = {
     pick:{t:'골라보는 휴대폰'},
     wear:{t:'유플러스 다이렉트 요금제별 혜택', s:'요금제에 따라 워치 · 태블릿을 더 가볍게'}
   },
-  priceNote:'기기값은 선택한 요금제를 6개월 이상 유지하는 조건 기준입니다. 공시지원금과 선택약정(월 요금 25% 할인)은 둘 중 하나만 받을 수 있으며, 정확한 금액은 상담 시 안내드립니다.',
+  priceNote:'기기값은 선택한 요금제를 6개월 이상 유지하는 조건 기준입니다. 85·95·105 요금제와 115·130 요금제는 유플러스 다이렉트 지원금이 같습니다. 공시지원금과 선택약정(월 요금 25% 할인)은 둘 중 하나만 받을 수 있으며, 정확한 금액은 상담 시 안내드립니다.',
   stores:[
     {nm:'건대입구역점',addr:'서울시 광진구 능동로 95'},{nm:'군자역점',addr:'서울시 광진구 천호대로 573'},{nm:'신군자점',addr:'서울시 광진구 천호대로 548'},
     {nm:'신자양점',addr:'서울시 광진구 자양번영로 42'},{nm:'성수역점',addr:'서울시 성동구 아차산로 96'},{nm:'용답로데오점',addr:'서울시 성동구 용답동 58-1'},
@@ -97,17 +97,25 @@ var DEFAULT = {
      our 키 = 가입유형_요금제 (mnp=번호이동, chg=기기변경, all=워치·태블릿 공통) */
   pricing:{
     show:false,   // 고객 화면에 가격 공개 (가격표에서 켜기)
+    // 지원금 구간 (단가표의 '군') — 유플러스 다이렉트 지원금은 구간마다 같음
     plans:{
-      phone:[{k:'p115',nm:'115군',fee:115000},{k:'p85',nm:'85군',fee:85000}],
+      phone:[{k:'p115',nm:'115군'},{k:'p85',nm:'85군'}],
       second:[{k:'p1GB',nm:'1GB 요금제'},{k:'p500MB',nm:'500MB 요금제'}]
     },
+    // 실제 요금제 — 공시지원금·선택약정(25%)은 요금제마다, grp = 어느 지원금 구간에 속하는지
+    tiers:{
+      phone:[{k:'t85',nm:'85',fee:85000,grp:'p85'},{k:'t95',nm:'95',fee:95000,grp:'p85'},{k:'t105',nm:'105',fee:105000,grp:'p85'},
+             {k:'t115',nm:'115',fee:115000,grp:'p115'},{k:'t130',nm:'130',fee:130000,grp:'p115'}],
+      second:[{k:'t1GB',nm:'1GB 요금제',grp:'p1GB'},{k:'t500MB',nm:'500MB 요금제',grp:'p500MB'}]
+    },
+    base:{phone:'t115', second:'t1GB'},   // 홈페이지 카드에 보이는 기준 요금제
     vers:[{id:'v20261003', from:'2026-10-03', memo:'영업기획팀 모바일 단가표 (10/03 ~ 별도 공지 시까지)', rows:[]}]
   }
 };
 (function(){ // 단가표 → 줄 만들기 [번호이동115, 번호이동85, 기기변경115, 기기변경85]
   var rows=DEFAULT.pricing.vers[0].rows;
   function P(mk,code,cap,model,out,o,so){ rows.push({g:'phone',mk:mk,code:code,cap:cap,model:model,out:out,so:!!so,pub:{},our:{mnp_p115:o[0],mnp_p85:o[1],chg_p115:o[2],chg_p85:o[3]}}); }
-  function W(code,cap,model,out,p1,p2){ rows.push({g:'second',mk:'',code:code,cap:cap,model:model,out:out,so:false,pub:(p1!=null?{p1GB:p1,p500MB:p2}:{}),our:{}}); }
+  function W(code,cap,model,out,p1,p2){ rows.push({g:'second',mk:'',code:code,cap:cap,model:model,out:out,so:false,pub:(p1!=null?{t1GB:p1,t500MB:p2}:{}),our:{}}); }
   var S1=[680000,650000,420000,350000], S2=[620000,590000,360000,290000];
   P('삼성','SM-S942N','256GB','s26',1254000,S1);
   P('삼성','SM-S947N','256GB','s26plus',1452000,S2);
@@ -250,6 +258,16 @@ function normPricing(p){
   ['phone','second'].forEach(function(g){ p.plans[g]=arr(p.plans[g]).filter(function(x){return x&&x.k}); if(!p.plans[g].length) p.plans[g]=clone(DEFAULT.pricing.plans[g]); });
   p.vers=arr(p.vers).filter(function(v){return v&&typeof v==='object'}); if(!p.vers.length) p.vers=clone(DEFAULT.pricing.vers);
   p.vers.forEach(function(v){ v.rows=arr(v.rows).filter(Boolean); v.rows.forEach(function(r){ r.pub=r.pub||{}; r.our=r.our||{}; r.g=r.g==='second'?'second':'phone'; r.model=r.model||''; r.cap=r.cap||''; }); });
+  p.tiers=p.tiers||{}; p.base=p.base||{};
+  ['phone','second'].forEach(function(g){
+    var fresh=!arr(p.tiers[g]).length, gk=p.plans[g].map(function(x){return x.k});
+    p.tiers[g]=arr(p.tiers[g]).filter(function(x){return x&&x.k}); if(fresh) p.tiers[g]=clone(DEFAULT.pricing.tiers[g]);
+    p.tiers[g].forEach(function(t){ if(gk.indexOf(t.grp)<0) t.grp=gk[0]; });
+    if(!p.tiers[g].some(function(t){return t.k===p.base[g]})) p.base[g]=(p.tiers[g].filter(function(t){return t.k===DEFAULT.pricing.base[g]})[0]||p.tiers[g][0]).k;
+    if(fresh) p.vers.forEach(function(v){ v.rows.forEach(function(r){ if(r.g!==g) return;
+      p.tiers[g].forEach(function(t){ if(r.pub[t.k]==null && r.pub[t.grp]!=null) r.pub[t.k]=r.pub[t.grp]; });
+      gk.forEach(function(k){ delete r.pub[k]; }); }); });
+  });
   return p;
 }
 // 그 날짜에 적용되는 정책 = 시작일이 그 날짜 이전인 것 중 가장 최근
@@ -261,14 +279,17 @@ function verAt(day, p){
 }
 function PV(){ return verAt(todayKST()); }
 function plansOf(g){ return (S.pricing.plans[g])||[]; }
+function tiersOf(g){ return (S.pricing.tiers[g])||[]; }
+function baseTier(g, P){ P=P||S.pricing; var ts=P.tiers[g]||[]; return ts.filter(function(t){return t.k===P.base[g]})[0]||ts[0]||null; }
 function sheetRows(m){ if(!EDIT && !S.pricing.show) return []; var v=PV(); if(!v||!m) return []; return v.rows.filter(function(r){return r.model===m.id}); }
 function curType(g){ return g==='second'?'all':(MNP?'mnp':'chg'); }
 // 한 줄(기기·용량)의 실구매가 — pb: 공시지원금 선택, sel: 선택약정 선택
-function rowCalc(r, type, pk){
-  var out=num(r.out); if(out==null) return null;
-  var our=num((r.our||{})[type+'_'+pk])||0, pub=num((r.pub||{})[pk])||0;
+// tier = 요금제 (공시지원금은 요금제별, 다이렉트 지원금은 요금제가 속한 구간 기준)
+function rowCalc(r, type, tier){
+  if(!tier) return null; var out=num(r.out); if(out==null) return null;
+  var our=num((r.our||{})[type+'_'+tier.grp])||0, pub=num((r.pub||{})[tier.k])||0;
   var sel=Math.max(0,out-our), pb=pub?Math.max(0,out-pub-our):null;
-  return {out:out, our:our, pub:pub, sel:sel, pb:pb, v:(pb!=null?Math.min(pb,sel):sel)};
+  return {out:out, our:our, pub:pub, sel:sel, pb:pb, v:(pb!=null?Math.min(pb,sel):sel), fee:tier.fee||null};
 }
 function SO(m){ if(!m) return false; if(m.soldout) return true; var rs=sheetRows(m); return rs.length>0 && rs.every(function(r){return r.so}); }
 function wz(n){ return n===0?'0원':won(n); }
@@ -288,7 +309,7 @@ function optLabel(m){
 function priceOf(m, oi){
   var rs=sheetRows(m);
   if(rs.length){
-    var g=rs[0].g, pk=(plansOf(g)[0]||{}).k, type=curType(g), r=null, c=null;
+    var g=rs[0].g, pk=baseTier(g), type=curType(g), r=null, c=null;
     if(oi!=null && rs[oi]){ r=rs[oi]; c=rowCalc(r,type,pk); }
     else {
       var anyOn=rs.some(function(x){return !x.so});
@@ -341,21 +362,24 @@ function segBtns(){
 }
 // 상세 화면 가격표: 요금제별로 공시지원금 선택 / 선택약정 선택
 function pline(t,sm,v){ return '<div class="r pr2"><span>'+t+(sm?'<small>'+esc(sm)+'</small>':'')+'</span><b>'+wz(v)+'</b></div>'; }
+var TIER={};   // 상세에서 고른 요금제 (모델별)
+function tierLabel(t){ return t.fee?Number(t.fee).toLocaleString('ko-KR'):t.nm; }
+function curTier(m, g){ var ts=tiersOf(g); return ts.filter(function(t){return t.k===TIER[m.id]})[0]||baseTier(g); }
 function sheetTable(m, r){
-  var g=r.g, type=curType(g), out=num(r.out), h='';
+  var g=r.g, type=curType(g), out=num(r.out), ts=tiersOf(g), t=curTier(m,g), h='';
   if(g==='phone') h+='<div class="seg md-seg">'+segBtns()+'</div>';
   h+='<div class="r"><span>출고가</span><b>'+(out!=null?won(out):'상담 시 안내')+'</b></div>';
-  if(out==null) return h;
-  plansOf(g).forEach(function(p,i){
-    var c=rowCalc(r,type,p.k); if(!c) return;
-    if(g==='second' && !c.pub && !c.our && i>0) return;
-    h+='<div class="pl'+(i===0?' first':'')+'"><div class="pl-h">'+esc(p.fee?('월 '+won(p.fee)+' 요금제'):p.nm)+'</div>';
-    var ourTxt=c.our?'유플러스 다이렉트 지원금 -'+won(c.our):'';
-    if(c.pb!=null) h+=pline(g==='phone'?'공시지원금 선택 시':'구매가', (g==='phone'?'공시지원금':'이통사 지원금')+' -'+won(c.pub)+(ourTxt?' · '+ourTxt:''), c.pb);
-    if(g==='phone') h+=pline('선택약정 선택 시', (ourTxt?ourTxt+' · ':'')+(p.fee?'월 요금 '+won(p.fee)+' → '+won(Math.round(p.fee*0.75)):'월 요금 25% 할인'), c.sel);
-    else if(c.pb==null) h+=pline('구매가', ourTxt, c.sel);
-    h+='</div>';
-  });
+  if(out==null||!t) return h;
+  if(ts.length>1) h+='<div class="tpick"><div class="tpick-l">'+(g==='phone'?'요금제 (월 요금)':'요금제')+'</div><div class="tpick-row" style="--n:'+Math.min(ts.length,5)+'">'+ts.map(function(x){
+    return '<button type="button" class="tp'+(x===t?' on':'')+'" data-tier-pick="'+esc(x.k)+'" data-model="'+esc(m.id)+'">'+esc(tierLabel(x))+'</button>'; }).join('')+'</div></div>';
+  var c=rowCalc(r,type,t); if(!c) return h;
+  var grp=(plansOf(g).filter(function(p){return p.k===t.grp})[0]||{}).nm||'';
+  h+='<div class="pl first"><div class="pl-h">'+esc(t.fee?('월 '+won(t.fee)+' 요금제'):t.nm)+'</div>';
+  var ourTxt=c.our?'유플러스 다이렉트 지원금 -'+won(c.our):'';
+  if(c.pb!=null) h+=pline(g==='phone'?'공시지원금 선택 시':'구매가', (g==='phone'?'공시지원금':'이통사 지원금')+' -'+won(c.pub)+(ourTxt?' · '+ourTxt:''), c.pb);
+  if(g==='phone') h+=pline('선택약정 선택 시', (ourTxt?ourTxt+' · ':'')+(t.fee?'월 요금 '+won(t.fee)+' → '+won(Math.round(t.fee*0.75)):'월 요금 25% 할인'), c.sel);
+  else if(c.pb==null) h+=pline('구매가', ourTxt, c.sel);
+  h+='</div>';
   return h;
 }
 /* ---------------- 렌더 ---------------- */
@@ -588,7 +612,7 @@ function renderModel(id, keepRecent){
     (SO(m)||(selRow&&selRow.so)?'<div class="so-notice">'+(SO(m)?'현재 일시품절입니다':'선택하신 '+esc(selRow.cap||'옵션')+' 은(는) 일시품절입니다')+'. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
     '<div class="ptable" id="ucatPrice">'+rows+'<div class="note">'+esc(S.priceNote)+'</div></div>'+
     '<div class="md-chips"><span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span><span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>'+
-    '<button class="cta ucard-cta" data-open="consult" data-model="'+esc(m.id)+'" data-color="'+esc(PICK[m.id]||'')+'" data-opt="'+esc(optsOf(m).length?optsOf(m)[OPT[m.id]||0].nm:'')+'">'+(SO(m)||(selRow&&selRow.so)?'입고 알림 상담 신청하기':'온라인 상담 신청하기')+'</button></div>';
+    '<button class="cta ucard-cta" data-open="consult" data-model="'+esc(m.id)+'" data-color="'+esc(PICK[m.id]||'')+'" data-opt="'+esc(optsOf(m).length?optsOf(m)[OPT[m.id]||0].nm:'')+'" data-tier="'+esc(selRow&&curTier(m,selRow.g)&&curTier(m,selRow.g).fee?'월 '+won(curTier(m,selRow.g).fee):'')+'">'+(SO(m)||(selRow&&selRow.so)?'입고 알림 상담 신청하기':'온라인 상담 신청하기')+'</button></div>';
 }
 
 var PICK={};   // 상세에서 고른 컬러 (모델별)
@@ -706,6 +730,7 @@ function sheetConsult(modelId, colorNm, optNm){
     '<button type="button" class="cta" id="mSubmitBtn"><span class="rf-submit-label">온라인 상담 신청하기</span></button></section>';
 }
 function birth8(b){ b=String(b||'').replace(/\D/g,''); if(b.length===6){ var yy=+b.slice(0,2), cy=new Date().getFullYear()%100; b=(yy<=cy?'20':'19')+b; } return b; }
+var TIERPICK=null;   // 상세에서 고른 요금제 → 신청 메모에 남김
 function submitConsult(){
   if(EDIT){ alert('관리자 화면에서는 신청이 저장되지 않습니다.'); return; }
   var name=$('#mUserName').value.trim();
@@ -727,6 +752,7 @@ function submitConsult(){
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
   var dm=null; $$('#mDeviceSelect option').forEach(function(o){ if(o.selected&&o.getAttribute('data-id')) dm=byId(o.getAttribute('data-id')); });
   var optV=($('#mOptSel')&&!$('#mOptWrap').hidden&&$('#mOptSel').value)||null, capV=optV;
+  if(dm && TIERPICK && TIERPICK.tier && TIERPICK.model===dm.id) memo='[희망 요금제] '+TIERPICK.tier+' 요금제'+(memo?' / '+memo:'');
   var dRows=dm?sheetRows(dm):[];
   if(dRows.length){ if(!capV && dRows.length===1 && dRows[0].cap && dRows[0].cap!=='기본') capV=dRows[0].cap; if(capV==='기본') capV=null; }
   else if(dm&&dm.optLabel==='요금제'){ if(optV) memo=('[희망 요금제] '+optV+(memo?' / '+memo:'')); capV=dm.capacity||null; }
@@ -748,7 +774,7 @@ function act(go, el){
   if(go.indexOf('sec:')===0){ var id={gifts:'giftSec',wear:'wearSec',zero:'zeroSec',rank:'rankSec',pick:'pickSec',pop:'popSec'}[go.slice(4)];
     var goSec=function(){ var el=id&&document.getElementById(id); if(el) window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-60,behavior:'smooth'}); };
     if(!$('#v-home').classList.contains('on')){ location.hash='#/'; setTimeout(goSec,120); } else goSec(); return; }
-  if(go==='consult') openSheet(sheetConsult(el&&el.getAttribute('data-model'), el&&el.getAttribute('data-color'), el&&el.getAttribute('data-opt')));
+  if(go==='consult'){ openSheet(sheetConsult(el&&el.getAttribute('data-model'), el&&el.getAttribute('data-color'), el&&el.getAttribute('data-opt'))); TIERPICK={model:el&&el.getAttribute('data-model'), tier:el&&el.getAttribute('data-tier')}; }
   else if(go==='contact') openSheet(sheetContact());
   else if(go==='guide') openSheet(sheetGuide());
   else if(go==='store') openSheet(sheetStore());
@@ -764,6 +790,8 @@ document.addEventListener('click',function(e){
   if(t.closest('#mSubmitBtn')){ e.preventDefault(); submitConsult(); return; }
   if(t.closest('[data-privacy]')){ e.preventDefault(); $('#privacyTxt').classList.toggle('on'); return; }
   if(t.closest('#ticket') && (t.closest('.x') || t.id==='ticket')){ closeTicket(); return; }
+  var tp=t.closest('[data-tier-pick]');
+  if(tp){ e.preventDefault(); e.stopPropagation(); TIER[tp.getAttribute('data-model')]=tp.getAttribute('data-tier-pick'); renderModel(tp.getAttribute('data-model'),true); return; }
   var op=t.closest('[data-opt-pick]');
   if(op){ e.preventDefault(); e.stopPropagation(); OPT[op.getAttribute('data-model')]=+op.getAttribute('data-opt-pick'); renderModel(op.getAttribute('data-model'),true); return; }
   var vb=t.closest('[data-video]'); if(vb){ e.preventDefault(); openVideo(vb.getAttribute('data-video')); return; }
@@ -819,7 +847,7 @@ function live(){
 window.STORE = {
   get S(){ return S; }, set S(v){ S=v; },
   DB:DB, GH:GH, IMG:IMG, FOLDERS:FOLDERS, DEFAULT:DEFAULT, CAT_TABS:CAT_TABS, GO_OPTIONS:GO_OPTIONS, QI:QI, TI:TI,
-  TYPES:TYPES, todayKST:todayKST, verAt:verAt, PV:PV, plansOf:plansOf, sheetRows:sheetRows, rowCalc:rowCalc, normPricing:normPricing,
+  TYPES:TYPES, todayKST:todayKST, verAt:verAt, PV:PV, plansOf:plansOf, tiersOf:tiersOf, baseTier:baseTier, sheetRows:sheetRows, rowCalc:rowCalc, normPricing:normPricing,
   esc:esc, clone:clone, num:num, won:won, imgSrc:imgSrc, im:im, byId:byId, colorsOf:colorsOf, optsOf:optsOf, DEFCOLORS:DEFCOLORS, mImg:mImg, mCard:mCard, normalize:normalize,
   refresh:refresh, openSheet:openSheet, closeSheet:closeSheet, load:load, apply:apply,
   setEditing:function(v){ editing=v; document.body.classList.toggle('editing',v); },

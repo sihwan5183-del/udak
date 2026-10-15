@@ -527,3 +527,16 @@ body.pz-open{overflow:hidden}
 .pz-pub input{width:20px;height:20px;accent-color:#16A34A}
 .pz-pub small{font-size:12px;font-weight:600;opacity:.85}
 .pz-pub.on{border-color:#86EFAC;background:#F0FDF4;color:#166534}
+/* 상세: 요금제 고르기 */
+.ptable .tpick{padding:10px 14px 2px;border-top:1px solid var(--line)}
+.ptable .tpick-l{font-size:12.5px;color:var(--sub);font-weight:700}
+.ptable .tpick-row{display:grid;grid-template-columns:repeat(var(--n,5),1fr);gap:6px;margin-top:7px}
+.ptable .tp{height:34px;border-radius:9px;border:1.5px solid #E3E5EA;background:#fff;font-size:12.5px;font-weight:700;color:var(--ink2);padding:0 2px}
+.ptable .tp.on{border-color:var(--pink);color:var(--pink);background:var(--pink-50)}
+.ptable .pl.first .pl-h::after{content:none}
+/* 가격표: 요금제 설정 */
+.pz-pl2{display:grid;grid-template-columns:1fr 2fr;gap:12px}
+@media (max-width:640px){ .pz-pl2{grid-template-columns:1fr} }
+.pz-lb{font-size:12.5px;font-weight:800;color:#111318}
+.pz-t th small{display:block;font-size:10px;font-weight:600;opacity:.7}
+.pz-t thead tr:nth-child(2) th{top:29px;height:38px}
