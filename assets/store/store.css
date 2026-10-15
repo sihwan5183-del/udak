@@ -410,3 +410,11 @@ img.fit{object-fit:contain !important;padding:7%;background:radial-gradient(circ
 .foot .about-us b,.about-us{color:var(--ink)}
 .foot .sf b{color:#fff}
 .foot .sf-info span{color:#C9CCD2}
+
+/* 모든 팝업은 화면 가운데에서 */
+.sheet{left:50%;top:50%;bottom:auto;width:min(calc(100vw - 28px),440px);max-width:none;max-height:min(84vh,760px);
+  border-radius:20px;padding:22px 18px 20px;opacity:0;pointer-events:none;
+  transform:translate(-50%,-50%) scale(.94);transition:transform .22s cubic-bezier(.2,.7,.2,1),opacity .18s}
+.sheet.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+.sheet h3{padding-right:36px}
+.sheet-x{position:sticky;top:0;float:right;margin:-8px -6px 0 0;width:34px;height:34px;border-radius:50%;background:#F2F3F5;color:#555;font-size:20px;line-height:34px;z-index:2}
