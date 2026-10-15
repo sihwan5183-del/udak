@@ -644,3 +644,75 @@ body.pz-open{overflow:hidden}
 /* 히어로: '사진만 크게(배너형)' 슬라이드 — 상단 브랜드줄 아래에 배너 이미지를 통째로 */
 .slide.full{background:#fff}
 .slide.full .slide-img,.slide.full .slide-img.fit{left:0;right:0;top:auto;bottom:22px;width:100%;height:calc(100% - 86px);object-fit:contain;object-position:center;padding:0;background:none}
+/* ===== 온라인 상담 신청 페이지 (#/apply) ===== */
+#v-apply{padding-bottom:calc(var(--tabh) + 70px + env(safe-area-inset-bottom))}
+.ap-intro{margin:6px 16px 0;padding:11px 14px;border-radius:12px;background:var(--pink-50);color:var(--pink);font-size:13px;font-weight:800}
+.ap-sec{margin:12px 16px 0;padding:16px 14px;border:1px solid var(--line);border-radius:16px;background:#fff}
+.ap-h{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:900}
+.ap-h b{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:22px;padding:0 6px;border-radius:999px;background:var(--pink);color:#fff;font-size:11.5px}
+.ap-h small{font-size:12px;color:var(--mute);font-weight:600}
+.ap-sub{font-size:12.5px;color:var(--sub);line-height:1.55;margin-top:8px}
+.ap-f{margin-top:14px}
+.ap-l{font-size:13px;font-weight:800;color:var(--ink2)}
+.ap-l b{color:var(--ink);margin-left:4px}
+.ap-l .req,.ap-tvok .req{color:var(--pink)}
+.ap-f .cpick-row{margin-top:8px}
+.ap-f .sw{width:34px;height:34px;border-radius:50%;background:var(--c);border:1px solid rgba(0,0,0,.12);box-shadow:inset 0 0 0 3px #fff;outline:2px solid transparent;outline-offset:1px}
+.ap-f .sw.on{outline-color:var(--pink)}
+.ap-search{display:flex;align-items:center;gap:8px;height:44px;margin-top:12px;padding:0 12px;border:1.5px solid #E3E5EA;border-radius:12px}
+.ap-search input{flex:1;border:0;outline:0;font:inherit;font-size:14.5px;background:none}
+.ap-search .ico{width:18px;height:18px;color:var(--mute)}
+.ap-list{margin-top:8px;max-height:360px;overflow:auto;border:1px solid var(--line);border-radius:12px}
+.ap-li{display:flex;align-items:center;gap:10px;padding:8px 10px;border-top:1px solid var(--line)}
+.ap-li:first-child{border-top:0}
+.ap-li[hidden]{display:none}
+.ap-li-img{width:42px;height:42px;border-radius:10px;background:#F7F8FA;overflow:hidden;flex:none}
+.ap-li-img img,.ap-li-img .ph,.ap-li-img .ph-soft{width:100%;height:100%;object-fit:contain;font-size:0}
+.ap-li b{flex:1;font-size:14px}
+.ap-li b small{font-size:11px;color:#DC2626}
+.ap-li.later b{padding-left:4px;color:var(--sub)}
+.ap-pick{height:34px;padding:0 12px;border-radius:9px;background:var(--pink);color:#fff;font-size:12.5px;font-weight:800;flex:none}
+.ap-pick.on{background:var(--pink-50);color:var(--pink)}
+.ap-dev{display:flex;align-items:center;gap:12px;margin-top:12px;padding:10px;border:1.5px solid var(--pink-100);background:#FFF7FB;border-radius:14px}
+.ap-dev-img{width:64px;height:64px;border-radius:12px;background:#fff;overflow:hidden;flex:none}
+.ap-dev-img img,.ap-dev-img .ph,.ap-dev-img .ph-soft{width:100%;height:100%;object-fit:contain;font-size:0}
+.ap-dev-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ap-dev-t b{font-size:16px}.ap-dev-t span{font-size:12px;color:var(--sub)}
+.ap-chg{height:32px;padding:0 12px;border-radius:999px;border:1.5px solid #E3E5EA;background:#fff;font-size:12.5px;font-weight:800}
+.ap-perk{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ap-perk span{font-size:11.5px;font-weight:700;color:var(--mute);background:#F3F4F6;border-radius:999px;padding:4px 9px}
+.ap-perk span.ok{color:#0F766E;background:#ECFDF5}
+.ap-note{margin-top:10px;font-size:12px;color:#92400E;background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;padding:8px 10px;line-height:1.5}
+.ap-cards{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.ap-card{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:8px 10px;border:1.5px solid #E3E5EA;border-radius:12px;background:#fff}
+.ap-card-img{width:46px;height:46px;border-radius:10px;background:#F7F8FA;overflow:hidden;flex:none}
+.ap-card-img img,.ap-card-img .ph,.ap-card-img .ph-soft{width:100%;height:100%;object-fit:contain;font-size:0}
+.ap-card-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ap-card-t b{font-size:14px}
+.ap-card-t i{font-style:normal;font-size:12.5px;color:var(--pink);font-weight:800}
+.ap-card-t em{font-style:normal;font-size:11.5px;color:var(--mute);line-height:1.4}
+.ap-chk{width:22px;height:22px;border-radius:50%;border:1.5px solid #D1D5DB;flex:none}
+.ap-card.on{border-color:var(--pink);background:var(--pink-50)}
+.ap-card.on .ap-chk{background:var(--pink);border-color:var(--pink);box-shadow:inset 0 0 0 4px #fff}
+.ap-card.dis{opacity:.55;background:#FAFAFB}
+.ap-tvnote{margin-top:10px;font-size:12.5px;color:var(--ink2);background:#F7F8FA;border-radius:10px;padding:9px 11px;line-height:1.5}
+.ap-tvok{margin-top:8px;font-size:13px}
+.ap-res{margin:12px 0 0!important}
+.ap-res .cres-v small{font-size:14px;font-weight:700}
+.ap-res .cres-d>div span small{font-size:11px;color:var(--mute)}
+.ap-res .cres-d s{color:var(--mute);font-size:11px}
+#v-apply #consultForm .ff{margin-top:12px}
+.ap-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabh) + env(safe-area-inset-bottom));width:100%;max-width:var(--maxw);z-index:45;display:flex;align-items:center;gap:10px;
+  padding:10px 16px;background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 14px rgba(0,0,0,.05)}
+#v-apply:not(.on) .ap-bar{display:none}
+.ap-bar-t{flex:1;font-size:13px;color:var(--sub)}
+.ap-bar-t b{font-size:18px;color:var(--pink);font-weight:900}
+.ap-bar-b{height:44px;padding:0 18px;border-radius:12px;background:var(--pink);color:#fff;font-size:14.5px;font-weight:800}
+/* 신청 페이지 금액 상자 (상세 계산 상자와 같은 모양) */
+.ap-res{background:var(--pink-50);border:1.5px solid var(--pink-100);border-radius:14px;padding:14px 14px 10px}
+.ap-res .cres-l{font-size:12.5px;font-weight:800;color:var(--ink2)}
+.ap-res .cres-v{font-size:24px;font-weight:900;color:var(--pink);margin-top:4px;letter-spacing:-.02em}
+.ap-res .cres-h{font-size:11.5px;color:var(--mute);margin-top:2px}
+.ap-res .cres-d{border-top:1px dashed #F3B7D3;margin-top:10px;padding-top:8px}
+.ap-res .cres-d>div{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;padding:4px 0;color:var(--sub)}
+.ap-res .cres-d>div b{font-size:13.5px;color:var(--ink);font-weight:800;white-space:nowrap}
