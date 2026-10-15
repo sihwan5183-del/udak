@@ -547,20 +547,31 @@ function renderRecent(){
   $('#recent').innerHTML=ids.map(function(id){return hcard(byId(id),{badge:'최근 본',dark:true})}).join('');
 }
 var BUNDLE_NOTE='<div class="bundle-note"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="8" height="15" rx="2"/><rect x="14" y="7" width="7" height="9" rx="2.5"/><path d="M16 5.5h3M16 17.5h3"/></svg><span><b>휴대폰과 함께 구매할 때</b> 받는 혜택이에요<small>휴대폰 + 워치 + 태블릿, 3개 동시 구매도 가능해요</small></span></div>';
-// 셀룰러 기기 이용 안내 — fee: 월 이용료, plan: 이 요금제 이상이면 이용료 없음
+// 워치·태블릿·TV프리 이용 가이드 — 유의사항이 아니라 사용 설명서처럼 부드럽게
+var GI={ // 아이콘
+  cell:'<path d="M5 12.5a10 10 0 0 1 14 0M8 15.5a6 6 0 0 1 8 0"/><circle cx="12" cy="18.5" r="1.3"/>',
+  won:'<path d="M4 7h16v10H4z"/><path d="M4 10h16M8 14h3"/>',
+  cal:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M9 3v4M15 3v4"/>',
+  tv:'<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M9 20h6M12 17v3"/>'
+};
+function cellGuide(kind, fee, plan, nm){ return {t:kind+' 이용 가이드', items:[
+  {ic:'cell', b:'셀룰러 모델이에요', p:kind+' 전용 회선이 함께 개통되는 셀룰러 모델이에요.'},
+  {ic:'won', hl:1, b:'월 이용료 '+won(fee), p:'월 '+won(plan)+' 이상 요금제('+nm+' 이상)를 이용 중이시라면 이용료 없이 휴대폰 요금에 포함돼요.', tag:nm+' 이상 이용 시 이용료 0원'},
+  {ic:'cal', b:'24개월 함께하는 상품이에요', p:'24개월 약정으로 더 가벼운 가격에 만나보실 수 있어요.'}]}; }
+function tvGuide(kind){ return {t:kind+' 이용 가이드', items:[
+  {ic:'tv', b:'U+tv를 보는 태블릿PC예요', p:'유플러스 TV에 가입해 U+tv를 시청할 수 있는 TV 가입형 상품이에요. 별도 휴대폰 회선(셀룰러) 없이 이용하실 수 있어요.'},
+  {ic:'won', hl:1, b:'첫 9개월 월 9,350원', p:'10개월 차부터는 월 7,700원 요금제로 바꿔서 더 가볍게 이용하실 수 있어요.', tag:'10개월 차부터 월 7,700원'},
+  {ic:'cal', b:'36개월 함께하는 상품이에요', p:'36개월 약정으로 부담 없이 오래 이용하실 수 있어요.'}]}; }
 var GUIDE={
-  watchultra2:{fee:11000, plan:95000, nm:'플러스플랜 95'}, watch9:{fee:11000, plan:95000, nm:'플러스플랜 95'}, watchse3:{fee:11000, plan:95000, nm:'플러스플랜 95'},
-  taba11plus:{fee:22000, plan:105000, nm:'플러스플랜 105'}
+  watchultra2:cellGuide('워치',11000,95000,'플러스플랜 95'), watch9:cellGuide('워치',11000,95000,'플러스플랜 95'), watchse3:cellGuide('워치',11000,95000,'플러스플랜 95'),
+  taba11plus:cellGuide('태블릿',22000,105000,'플러스플랜 105'),
+  tvfree5:tvGuide('TV프리'), ipada16:tvGuide('아이패드')
 };
 function guideHtml(m){
   var g=GUIDE[m.id]; if(!g) return '';
-  var kind=m.cat.indexOf('tablet')>-1?'태블릿':'워치';
-  return '<div class="guide"><div class="guide-h"><b>'+kind+' 이용 가이드</b><span>알아두면 더 알뜰하게 쓸 수 있어요</span></div>'+
-    '<div class="guide-it"><i><svg viewBox="0 0 24 24"><path d="M5 12.5a10 10 0 0 1 14 0M8 15.5a6 6 0 0 1 8 0"/><circle cx="12" cy="18.5" r="1.3"/></svg></i><div><b>셀룰러 모델이에요</b><p>'+kind+'에 별도 회선이 개통되는 셀룰러 제품입니다.</p></div></div>'+
-    '<div class="guide-it hl"><i><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M4 10h16M8 14h3"/></svg></i><div><b>월 이용료 '+won(g.fee)+'</b><p>월 '+won(g.plan)+' 이상 요금제('+g.nm+' 이상)를 쓰시면 이용료 없이 휴대폰 요금에 포함돼요.</p>'+
-      '<span class="guide-tag">'+g.nm+' 이상이면 이용료 0원</span></div></div>'+
-    '<div class="guide-it"><i><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M9 3v4M15 3v4"/></svg></i><div><b>24개월 약정 상품이에요</b><p>개통일부터 24개월 동안 이용하는 조건이에요.</p></div></div>'+
-  '</div>';
+  return '<div class="guide"><div class="guide-h"><b>'+esc(g.t)+'</b><span>알아두면 더 알뜰하게 쓸 수 있어요</span></div>'+g.items.map(function(x){
+    return '<div class="guide-it'+(x.hl?' hl':'')+'"><i><svg viewBox="0 0 24 24">'+GI[x.ic]+'</svg></i><div><b>'+esc(x.b)+'</b><p>'+esc(x.p)+'</p>'+(x.tag?'<span class="guide-tag">'+esc(x.tag)+'</span>':'')+'</div></div>';
+  }).join('')+'</div>';
 }
 function renderWear(){
   var list=wears();
