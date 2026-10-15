@@ -360,3 +360,6 @@ img.fit{object-fit:contain !important;padding:7%;background:radial-gradient(circ
 .cpick .sw.on{outline-color:var(--pink)}
 .cpick .opt{height:36px;padding:0 14px;border-radius:999px;border:1.5px solid #E3E5EA;font-size:13.5px;font-weight:700;background:#fff}
 .cpick .opt.on{border-color:var(--pink);color:var(--pink);background:var(--pink-50)}
+/* 히어로 제품 누끼: 배경 없이 오른쪽에 크게 */
+.slide-img.fit{background:none;padding:40px 4px 0 0;object-position:right bottom}
+.slide-img,.promo .pimg{height:100%}
