@@ -75,6 +75,15 @@ var DEFAULT = {
   kakao:'http://pf.kakao.com/_HxfVxcn/chat',
   foot:'유플러스 공식파트너사 ㈜신세계정보통신\n고객센터 1660-1412'
 };
+var GR='#3A3A3C', CR='#F7F4EC';
+var IP18=[{nm:'글레이셔',hex:'#A1AFC1',img:'model/iphone18pro-glacier.webp'},{nm:'실버',hex:'#C0C0C0',img:'model/iphone18pro-silver.webp'},
+          {nm:'버건디',hex:'#47282E',img:'model/iphone18pro-burgundy.webp'},{nm:'블랙',hex:'#111111',img:'model/iphone18pro-black.webp'}];
+var DEFCOLORS = {
+  iphone18pro:IP18, iphone18promax:IP18,
+  fold8:[{nm:'라벤더',hex:'#C9BFE0',img:'model/fold8-lavender.webp'},{nm:'그라파이트',hex:GR,img:'model/fold8-graphite.webp'},{nm:'크림',hex:CR,img:'model/fold8-cream.webp'}],
+  fold8ultra:[{nm:'바이올렛 쉐도우',hex:'#5C4E77',img:'model/fold8ultra-violet.webp'},{nm:'그라파이트',hex:GR,img:'model/fold8ultra-graphite.webp'},{nm:'크림',hex:CR,img:'model/fold8ultra-cream.webp'}],
+  flip8:[{nm:'핑크',hex:'#F2C6D6',img:'model/flip8-pink.webp'},{nm:'그라파이트',hex:GR,img:'model/flip8-graphite.webp'},{nm:'크림',hex:CR,img:'model/flip8-cream.webp'}]
+};
 var CAT_TABS = [{k:'all',nm:'전체'},{k:'iphone',nm:'아이폰'},{k:'galaxy',nm:'갤럭시 S'},{k:'fold',nm:'폴더블'},{k:'zero',nm:'기기값 0원'}];
 var GO_OPTIONS = [['consult','상담 신청서 열기'],['contact','전화·카톡 문의'],['guide','구매 가이드'],['store','매장찾기'],['#/cat/all','전체 모델'],['#/cat/iphone','아이폰 모아보기'],['#/cat/galaxy','갤럭시 S 모아보기'],['#/cat/fold','폴더블 모아보기'],['#/cat/zero','기기값 0원 모아보기']];
 
@@ -112,9 +121,15 @@ function imgSrc(p){ if(!p) return ''; return /^(https?:)?\//.test(p) ? p : IMG+p
 // 이미지 — 파일이 없으면: 관리자 화면은 '들어갈 파일명', 고객 화면은 은은한 빈 칸
 function im(path, cls, eager, label){
   if(!path) return '<div class="'+(EDIT?'ph':'ph-soft')+' '+(cls||'')+'">'+esc(EDIT?'(사진 없음)':(label||''))+'</div>';
-  return '<img class="'+(cls||'')+'" src="'+esc(imgSrc(path))+'" alt="'+esc(label||'')+'" '+(eager?'':'loading="lazy" ')+'decoding="async" data-ph="'+esc(path)+'" data-lb="'+esc(label||'')+'" onerror="__stPh(this)">';
+  var fit=/(^|\/)model\//.test(path)||/\.(png|webp)(\?|$)/i.test(path);
+  return '<img class="'+(cls||'')+(fit?' fit':'')+'" src="'+esc(imgSrc(path))+'" alt="'+esc(label||'')+'" '+(eager?'':'loading="lazy" ')+'decoding="async" data-ph="'+esc(path)+'" data-lb="'+esc(label||'')+'" onerror="__stPh(this)">';
 }
 window.__stPh=function(el){
+  var src=el.getAttribute('src')||'', tried=+(el.getAttribute('data-try')||0);
+  if(/\.jpg$/i.test(el.getAttribute('data-ph')||'') && tried<2){
+    el.setAttribute('data-try',tried+1);
+    el.src=src.replace(/\.(jpg|png)$/i, tried===0?'.png':'.webp'); return;
+  }
   var d=document.createElement('div');
   d.className=(EDIT?'ph ':'ph-soft ')+el.className;
   d.textContent=EDIT?el.getAttribute('data-ph'):(el.getAttribute('data-lb')||'');
@@ -132,7 +147,7 @@ function normalize(d){
     Object.keys(d).forEach(function(k){ o[k]=d[k]; });
   }
   ['hero','models','quick','trust','gifts','rank','stores'].forEach(function(k){ o[k]=arr(o[k]); });
-  o.models.forEach(function(m){ m.cat=arr(m.cat); m.tags=arr(m.tags); m.cards=arr(m.cards); m.price=m.price||{}; });
+  o.models.forEach(function(m){ m.cat=arr(m.cat); m.tags=arr(m.tags); m.cards=arr(m.cards); m.colors=arr(m.colors); m.price=m.price||{}; });
   o.sec=o.sec||{}; Object.keys(DEFAULT.sec).forEach(function(k){ o.sec[k]=o.sec[k]||clone(DEFAULT.sec[k]); });
   o.brand=o.brand||clone(DEFAULT.brand); o.promo=o.promo||clone(DEFAULT.promo);
   return o;
@@ -140,8 +155,9 @@ function normalize(d){
 function vis(list){ return EDIT ? list : list.filter(function(x){return x && !x.hidden}); }
 function models(){ return vis(S.models); }
 function byId(id){ for(var i=0;i<S.models.length;i++) if(S.models[i].id===id) return S.models[i]; return null; }
-function mImg(m){ return m.img || ('model/'+m.id+'.jpg'); }
-function mCard(m,i){ return (m.cards&&m.cards[i]) || ('card/'+m.id+'-'+(i+1)+'.jpg'); }
+function colorsOf(m){ var c=arr(m.colors).filter(function(x){return x&&x.nm}); return c.length?c:(DEFCOLORS[m.id]||[]); }
+function mImg(m){ var c=colorsOf(m); return m.img || (c[0]&&c[0].img) || ('model/'+m.id+'.jpg'); }
+function mCard(m,i){ var c=colorsOf(m); return (m.cards&&m.cards[i]) || (c[i]&&c[i].img) || (i>0&&c[0]&&c[0].img) || ('card/'+m.id+'-'+(i+1)+'.jpg'); }
 function hidCls(x){ return x&&x.hidden?' is-hidden':''; }
 function secOn(k){ return EDIT || !(S.sec[k]&&S.sec[k].off); }
 
@@ -226,7 +242,7 @@ function renderPromo(){
   el.className='promo'+(p.full?' full':'')+hidCls(p);
   el.setAttribute('data-go',p.go||'');
   el.innerHTML='<div class="pt"><span class="tag">'+esc(p.tag)+'</span><h3>'+esc(p.t)+'</h3><p>'+esc(p.s)+'</p><span class="btn">자세히 보기 '+
-    '<svg class="ico" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="m9 6 6 6-6 6"/></svg></span></div>'+im(p.img,'pimg','',p.t);
+    '<svg class="ico" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="m9 6 6 6-6 6"/></svg></span></div>'+im(p.img,'pimg','','');
 }
 function secHead(k, more){
   var s=S.sec[k]||{};
@@ -348,13 +364,24 @@ function renderModel(id, keepRecent){
   rows+='<div class="r hi"><span>번호이동 구매가</span><b>'+(p.mnp!=null?(p.mnp===0?'0원':won(p.mnp)):'상담 시 안내')+'</b></div>';
   rows+='<div class="r hi"><span>기기변경 구매가</span><b>'+(p.chg!=null?(p.chg===0?'0원':won(p.chg)):'상담 시 안내')+'</b></div>';
   $('#mdTitle').textContent=m.nm;
-  $('#mdBody').innerHTML='<div class="ucard" data-edit="model:'+esc(m.id)+'"><div class="md-img">'+im(mImg(m),'',true,m.nm)+(m.soldout?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>'+
+  var pc=colorsOf(m).filter(function(c){return c.nm===PICK[m.id]})[0];
+  $('#mdBody').innerHTML='<div class="ucard" data-edit="model:'+esc(m.id)+'"><div class="md-img" id="mdImg">'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(m.soldout?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>'+
     '<h2 class="md-h ucard-name">'+esc(m.nm)+'</h2><p style="color:var(--sub);margin-top:4px">'+esc(m.ds)+'</p>'+
     '<div class="pills" style="margin-top:10px">'+m.tags.map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div>'+
+    colorPicker(m)+
     (m.soldout?'<div class="so-notice">현재 일시품절입니다. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
     '<div class="ptable" id="ucatPrice">'+rows+'<div class="note">'+esc(S.priceNote)+'</div></div>'+
     '<div class="md-chips"><span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span><span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>'+
-    '<button class="cta ucard-cta" data-open="consult" data-model="'+esc(m.id)+'">'+(m.soldout?'입고 알림 상담 신청하기':'온라인 상담 신청하기')+'</button></div>';
+    '<button class="cta ucard-cta" data-open="consult" data-model="'+esc(m.id)+'" data-color="'+esc(PICK[m.id]||'')+'">'+(m.soldout?'입고 알림 상담 신청하기':'온라인 상담 신청하기')+'</button></div>';
+}
+
+var PICK={};   // 상세에서 고른 컬러 (모델별)
+function colorPicker(m){
+  var cs=colorsOf(m); if(!cs.length) return '';
+  var cur=PICK[m.id]||cs[0].nm;
+  return '<div class="cpick"><div class="cpick-l">컬러 <b id="cpickName">'+esc(cur)+'</b></div><div class="cpick-row">'+cs.map(function(c){
+    return '<button type="button" class="sw'+(c.nm===cur?' on':'')+'" data-color-pick="'+esc(c.nm)+'" data-model="'+esc(m.id)+'" aria-label="'+esc(c.nm)+'" style="--c:'+esc(c.hex||'#ddd')+'"></button>';
+  }).join('')+'</div></div>';
 }
 
 /* ---------------- 라우터 ---------------- */
@@ -422,9 +449,13 @@ function sheetStore(){
 /* ---------------- 상담 신청서 (기존 갤럭시 신청서와 같은 저장 방식) ---------------- */
 var SB_URL='https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/reservations_udak';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q';
-function sheetConsult(modelId){
+function colorOpts(m, sel){
+  var cs=m?colorsOf(m):[]; if(!cs.length) return '';
+  return '<option value="">상담 시 결정</option>'+cs.map(function(c){return '<option'+(c.nm===sel?' selected':'')+'>'+esc(c.nm)+'</option>'}).join('');
+}
+function sheetConsult(modelId, colorNm){
   var opts=models().filter(function(m){return !m.hidden}).map(function(m){
-    return '<option value="'+esc(m.nm)+'"'+(m.id===modelId?' selected':'')+'>'+esc(m.nm)+(m.soldout?' (일시품절 · 입고 알림)':'')+'</option>';
+    return '<option value="'+esc(m.nm)+'" data-id="'+esc(m.id)+'"'+(m.id===modelId?' selected':'')+'>'+esc(m.nm)+(m.soldout?' (일시품절 · 입고 알림)':'')+'</option>';
   }).join('');
   return '<section id="consultForm"><h3>온라인 상담 신청</h3>'+
     '<div class="ff"><label>이름 <span class="req">*</span></label><input type="text" id="mUserName" placeholder="이름을 입력해 주세요" autocomplete="name"></div>'+
@@ -432,6 +463,7 @@ function sheetConsult(modelId){
     '<div class="ff"><label>생년월일 <span class="req">*</span></label><input type="text" id="mUserBirth" inputmode="numeric" maxlength="8" placeholder="예: 940101"></div>'+
     '<div class="ff"><label>현재 통신사 <span class="req">*</span></label><select id="mCarrierSel"><option value="" selected disabled>통신사를 선택해 주세요</option><option>SKT</option><option>KT</option><option>LG U+</option><option>알뜰폰</option></select></div>'+
     '<div class="ff"><label>관심 기기 <span class="req">*</span></label><select id="mDeviceSelect"><option value=""'+(modelId?'':' selected')+' disabled>기기를 선택해 주세요</option>'+opts+'<option value="상담 후 결정">상담 후 결정할게요</option></select></div>'+
+    '<div class="ff" id="mColorWrap"'+(colorOpts(byId(modelId))?'':' hidden')+'><label>희망 컬러</label><select id="mColorSel">'+colorOpts(byId(modelId),colorNm)+'</select></div>'+
     '<div class="ff"><label>전달사항</label><textarea id="mUserNote" rows="3" maxlength="500" placeholder="요청사항을 적어주세요"></textarea></div>'+
     '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히</button></label>'+
     '<div class="privacy-txt" id="privacyTxt">유플러스 다이렉트(이하 "회사")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
@@ -460,7 +492,7 @@ function submitConsult(){
   var reset=function(){ btn.disabled=false; btn.firstChild.textContent='온라인 상담 신청하기'; };
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
   var body={name:name, phone:phoneF, carrier:carrier, channel:window.PAGE_CHANNEL||'메타', utm_campaign:window.PAGE_UTM_CAMPAIGN||null,
-    device_interest:device, capacity:null, product_color:null, birth_date:birth, memo:memo||null, status:'신규'};
+    device_interest:device, capacity:null, product_color:($('#mColorSel')&&$('#mColorSel').value)||null, birth_date:birth, memo:memo||null, status:'신규'};
   if(typeof window.udakMetaIds==='function'){ var mi=window.udakMetaIds(); Object.keys(mi).forEach(function(k){ body[k]=mi[k]; }); }
   fetch(SB_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
   .then(function(res){
@@ -474,7 +506,7 @@ function closeTicket(){ $('#ticket').classList.remove('on'); document.body.style
 function act(go, el){
   if(!go) return;
   if(go.charAt(0)==='#'){ location.hash=go; return; }
-  if(go==='consult') openSheet(sheetConsult(el&&el.getAttribute('data-model')));
+  if(go==='consult') openSheet(sheetConsult(el&&el.getAttribute('data-model'), el&&el.getAttribute('data-color')));
   else if(go==='contact') openSheet(sheetContact());
   else if(go==='guide') openSheet(sheetGuide());
   else if(go==='store') openSheet(sheetStore());
@@ -489,6 +521,11 @@ document.addEventListener('click',function(e){
   if(t.closest('#mSubmitBtn')){ e.preventDefault(); submitConsult(); return; }
   if(t.closest('[data-privacy]')){ e.preventDefault(); $('#privacyTxt').classList.toggle('on'); return; }
   if(t.closest('#ticket') && (t.closest('.x') || t.id==='ticket')){ closeTicket(); return; }
+  var cp=t.closest('[data-color-pick]');
+  if(cp){ e.preventDefault(); e.stopPropagation(); var mm=byId(cp.getAttribute('data-model')), nm=cp.getAttribute('data-color-pick'), cc=colorsOf(mm).filter(function(c){return c.nm===nm})[0];
+    PICK[mm.id]=nm; $$('[data-color-pick]').forEach(function(b){b.classList.toggle('on',b===cp)}); $('#cpickName').textContent=nm;
+    if(cc&&cc.img) $('#mdImg').innerHTML=im(cc.img,'',true,mm.nm)+(mm.soldout?'<span class="so-tag" style="font-size:22px">일시품절</span>':'');
+    var cb=$('.ucard-cta'); if(cb) cb.setAttribute('data-color',nm); return; }
   var w=t.closest('[data-wish]');
   if(w){e.preventDefault();e.stopPropagation();var id=w.getAttribute('data-wish'),l=store.get('wish',[]),i=l.indexOf(id);
     if(i>-1)l.splice(i,1);else l.unshift(id);store.set('wish',l);
@@ -505,6 +542,11 @@ document.addEventListener('input',function(e){
   else if(id==='mUserBirth'){ e.target.value=e.target.value.replace(/\D/g,'').slice(0,8); }
   else if(id==='mUserName'){ e.target.value=e.target.value.replace(/[0-9]/g,''); }
   else if(id==='q'){ renderSearch(e.target.value); }
+});
+document.addEventListener('change',function(e){
+  if(e.target.id!=='mDeviceSelect') return;
+  var o=e.target.selectedOptions&&e.target.selectedOptions[0], m=o&&byId(o.getAttribute('data-id')), h=colorOpts(m);
+  $('#mColorSel').innerHTML=h; $('#mColorWrap').hidden=!h;
 });
 
 /* ---------------- 데이터 불러오기 + 실시간 반영 ---------------- */
@@ -530,7 +572,7 @@ function live(){
 window.STORE = {
   get S(){ return S; }, set S(v){ S=v; },
   DB:DB, GH:GH, IMG:IMG, FOLDERS:FOLDERS, DEFAULT:DEFAULT, CAT_TABS:CAT_TABS, GO_OPTIONS:GO_OPTIONS, QI:QI, TI:TI,
-  esc:esc, clone:clone, num:num, won:won, imgSrc:imgSrc, im:im, byId:byId, mImg:mImg, mCard:mCard, normalize:normalize,
+  esc:esc, clone:clone, num:num, won:won, imgSrc:imgSrc, im:im, byId:byId, colorsOf:colorsOf, DEFCOLORS:DEFCOLORS, mImg:mImg, mCard:mCard, normalize:normalize,
   refresh:refresh, openSheet:openSheet, closeSheet:closeSheet, load:load, apply:apply,
   setEditing:function(v){ editing=v; document.body.classList.toggle('editing',v); },
   isEditing:function(){ return editing; },

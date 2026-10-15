@@ -70,7 +70,9 @@ function edModel(m){
     sw('soldout','일시품절 표시',m.soldout,true)+sw('hidden','고객 화면에서 숨기기',m.hidden)+
     '<div class="grp"><div class="lbl">분류 (탭·모아보기에 나오는 곳)</div><div class="chk-row">'+CATS.map(function(c){return '<label><input type="checkbox" name="cat_'+c[0]+'"'+(m.cat.indexOf(c[0])>-1?' checked':'')+'> '+c[1]+'</label>'}).join('')+'</div></div>'+
     txt('strip','카드 띠 문구 (비우면 자동)',m.strip,'번호이동 시 '+(m.tags[0]||'')+' + '+(m.tags[1]||''))+
-    imgField('img','대표 사진 (원형·목록)','model',m.img,'model/'+m.id+'.jpg')+
+    area('colors','컬러 — 한 줄에 하나씩 "컬러명 | #색코드 | 사진"',T.colorsOf(m).map(function(c){return [c.nm,c.hex||'',c.img||''].join(' | ')}).join('\n'),4)+
+    '<div class="hint">사진은 깃허브 경로(model/파일.webp) 또는 https 주소. 첫 줄 컬러가 대표 사진이 되고, 상세 화면에서 컬러를 누르면 사진이 바뀝니다.</div>'+
+    imgField('img','대표 사진 (비우면 첫 번째 컬러 사진)','model',m.img,'')+
     imgField('c0','큰 카드 사진 ① 왼쪽 큰 칸','card',m.cards[0],'card/'+m.id+'-1.jpg')+
     imgField('c1','큰 카드 사진 ② 오른쪽 위','card',m.cards[1],'card/'+m.id+'-2.jpg')+
     imgField('c2','큰 카드 사진 ③ 오른쪽 아래','card',m.cards[2],'card/'+m.id+'-3.jpg')+
@@ -82,6 +84,7 @@ function saveModel(m){
   m.price={out:T.num(V('out')), mnp:T.num(V('mnp')), chg:T.num(V('chg'))};
   m.soldout=C('soldout'); m.hidden=C('hidden');
   m.cat=CATS.map(function(c){return c[0]}).filter(function(k){return C('cat_'+k)});
+  m.colors=V('colors').split('\n').map(function(l){ var p=l.split('|').map(function(x){return x.trim()}); return p[0]?{nm:p[0],hex:p[1]||'',img:p[2]||null}:null; }).filter(Boolean);
   m.img=V('img')||null; m.cards=[V('c0')||null,V('c1')||null,V('c2')||null];
   if(!m.cards[0]&&!m.cards[1]&&!m.cards[2]) m.cards=[];
 }
