@@ -727,3 +727,22 @@ body.pz-open{overflow:hidden}
 .ap-cond-list li{padding:6px 0;border-top:1px solid var(--line);font-size:12px;line-height:1.5;color:var(--sub)}
 .ap-cond-list li:first-child{border-top:0}
 .ap-cond-list b{display:block;font-size:12.5px;color:var(--ink)}
+/* ===== 금액 상자 가독성 정리 ===== */
+.cres,.ap-sec,.ptable,.guide,.ap-cards{word-break:keep-all;overflow-wrap:anywhere}
+.ptable:has(.cres){border:0;border-radius:0;overflow:visible}
+.ptable .cres{margin:12px 0 0}
+.ptable:has(.cres) .note{background:none;border-top:0;padding:10px 2px 0}
+.cres-v small{font-size:15px;font-weight:800;margin-left:2px}
+.cres .cres-d .cr{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:6px 0!important}
+.cres .cres-d .cr-l{flex:1;min-width:0}
+.cres .cres-d .cr-l span{display:block;font-size:13.5px;font-weight:600;color:var(--ink2);line-height:1.35}
+.cres .cres-d .cr-l small{display:block;font-size:11.5px;color:var(--mute);margin-top:2px;line-height:1.4}
+.cres .cres-d .cr-v{flex:none;text-align:right}
+.cres .cres-d .cr-v b{display:block;font-size:14.5px;font-weight:800;color:var(--ink);white-space:nowrap;line-height:1.35}
+.cres .cres-d .cr-v s{display:block;font-size:11.5px;color:var(--mute);white-space:nowrap;margin-top:2px}
+.cres .cres-d .cr.minus .cr-v b{color:var(--pink)}
+.cres .cres-d .cr.sum .cr-l span{font-weight:800;color:var(--ink)}
+.cres .cres-d .cr.sum .cr-v b{font-size:15.5px}
+.cres .cres-d .cr.total{margin-top:4px;padding-top:10px!important;border-top:1px solid #F3B7D3}
+.cres .cres-d .cr.total .cr-v b{font-size:17px;color:var(--pink)}
+body.no-sq .side-quick{display:none}
