@@ -1081,7 +1081,7 @@ function apSummary(){
     else { r.sub+=pc.monthly; row(r.mon,'기기 할부금',pc.monthly,pc.mm+'개월 · 할부이자 포함'); }
     if(pc.fee){
       var sel=pc.method==='sel'; r.sub+=pc.feeAfter; if(sel) out.selSave=(pc.fee-pc.feeAfter)*24;
-      row(r.mon,'월 통신 요금',pc.feeAfter,esc(pc.t.title||tierLabel(pc.t))+(sel?' · 선택약정 25% 할인 (24개월 총 '+won(out.selSave)+')':''),sel?pc.fee:null);
+      row(r.mon,'월 통신 요금',pc.feeAfter,esc(pc.t.title||tierLabel(pc.t))+(sel?' · 선택약정 25% 할인':''),sel?pc.fee:null);
     }
   } else if(m){ var r0=rec('휴대폰',m.nm,'phone',m); r0.ask=true; row(r0.mon,'예상 금액',null,'',null,'','상담 시 안내'); }
   AP_SLOTS.forEach(function(s){
@@ -1090,34 +1090,27 @@ function apSummary(){
     else {
       dev(r, ac.c, ac.c.pb!=null?ac.c.pub:0, '이통사 지원금', '', ac.after);
       if(AP.months===0){ r.up+=ac.after; row(r.mon,'기기값 일시납',ac.after,'한 번에 결제해요'); }
-      else { r.sub+=ac.monthly; row(r.mon,'기기 할부금',ac.monthly,AP.months+'개월'+(ac.noint?' · 이자 없음':' · 할부이자 포함')); }
+      else { r.sub+=ac.monthly; row(r.mon,'기기 할부금',ac.monthly,ac.after===0?'기기값 0원이라 할부금이 없어요':AP.months+'개월'+(ac.noint?' · 이자 없음':' · 할부이자 포함')); }
     }
     if(s[0]==='tv'){ out.tv=true; r.sub+=9350; row(r.mon,'TV프리 이용료',9350,'첫 9개월 · 10개월 차부터 7,700원'); }
-    else { var g=GUIDE[x.id]; if(g&&g.fee){ r.need={plan:g.plan,fee:g.fee}; row(r.mon,'회선 이용료',0,'요금제에 포함 · '+won(g.plan)+' 미만이면 월 '+won(g.fee),g.fee); } }
+    else { var g=GUIDE[x.id]; if(g&&g.fee){ r.need={plan:g.plan,fee:g.fee}; row(r.mon,'회선 이용료',0,'요금제에 포함',g.fee); r.mon[r.mon.length-1].tip={k:'line_'+s[0], t:won(g.plan)+' 미만 요금제로 바꾸시면 월 '+won(g.fee)+'이 청구돼요'}; } }
   });
   recs.forEach(function(r,i){ r.key=L[i]; out.total+=r.sub; out.upfront+=r.up; out.sup+=r.sup; });
-  // 기간별 예상 — 6개월 뒤 요금제를 낮추는 경우까지
-  if(out.total){
-    out.flow.push({l:'처음 6개월',a:out.total,sub:'지금 고르신 요금제 기준'});
-    var low=null, extra=0;
-    if(pc&&pc.fee>LOW_FEE){
-      low=out.total-pc.feeAfter+(pc.method==='sel'?Math.round(LOW_FEE*0.75):LOW_FEE);
-      var exk=[]; recs.forEach(function(r){ if(r.need&&LOW_FEE<r.need.plan){ extra+=r.need.fee; exk.push(r.kind); } }); low+=extra;
-    }
-    if(low!=null||out.tv){
-      var v=(low!=null?low:out.total)-(out.tv?1650:0), notes=[];
-      if(low!=null) notes.push('월 '+won(LOW_FEE)+' 요금제로 바꾸실 때'+(extra?' · '+exk.join('·')+' 회선 이용료 포함':''));
-      if(out.tv) notes.push('TV프리 월 7,700원');
-      out.flow.push({l:(out.tv?'10개월 차부터':'7개월 차부터')+(low!=null?' (최소)':''),a:v,sub:notes.join(' · ')});
-    }
-    out.flow.push({l:'24개월 총 납부 예상',a:(out.total-(out.tv?9350:0))*24+(out.tv?9350*9+7700*15:0)+out.upfront,sub:'요금제 유지 기준'+(out.upfront?' · 일시납 포함':'')});
+  // 기간별 예상 — 월 85,000·95,000원 요금제 고객만: 6개월 뒤 47,000원 요금제로 내렸을 때
+  if(out.total && pc && pc.fee && pc.fee<=95000 && pc.fee>LOW_FEE){
+    var low=out.total-pc.feeAfter+(pc.method==='sel'?Math.round(LOW_FEE*0.75):LOW_FEE), exk=[];
+    recs.forEach(function(r){ if(r.need&&LOW_FEE<r.need.plan){ low+=r.need.fee; exk.push(r.kind+' 회선 이용료 월 '+won(r.need.fee)); } });
+    out.flow.push({l:'처음 6개월',a:out.total,sub:esc(pc.t.title||tierLabel(pc.t))+' 기준'});
+    out.flow.push({l:'7개월 차부터',a:low,sub:'월 '+won(LOW_FEE)+' 요금제로 바꾸시면',tip:exk.length?{k:'flow',t:exk.join(', ')+'이 더해진 금액이에요'}:null});
   }
   return out;
 }
 function apRowHtml(x){
   var v=x.t!=null?x.t:(x.a<0?'-'+won(-x.a):wz(x.a));
   var was=x.was==null?'':(x.l==='회선 이용료'?'월 '+won(x.was):won(x.was));
-  return crow(x.l,x.sub,v,was,x.cls);
+  var tip=x.tip, on=tip&&AP.tip&&AP.tip[tip.k];
+  var lb=x.l+(tip?'<button type="button" class="tipb'+(on?' on':'')+'" data-ap-tip="'+tip.k+'" aria-label="조건 보기">?</button>':'');
+  return crow(lb,x.sub,v,was,x.cls)+(on?'<div class="tip-bub">'+tip.t+'</div>':'');
 }
 function apSumHtml(){
   var S2=apSummary(), recs=S2.recs, keys=recs.map(function(r){return r.key});
@@ -1144,7 +1137,7 @@ function apSumHtml(){
     '<div class="rc-total"><div class="rc-total-l"><span>매월 예상 납부금액</span><small>'+keys.join(' + ')+'</small></div>'+
       '<div class="rc-total-v">'+won(S2.total)+'<small> / 월</small></div></div>'+
     (S2.upfront?'<div class="rc-up">+ 일시납 '+won(S2.upfront)+'</div>':'')+
-    (S2.flow.length?'<div class="rc-flow"><div class="rc-lab">기간별 예상</div><div class="cres-d">'+S2.flow.map(function(f,i){ return crow(f.l,f.sub,won(f.a),'',i===S2.flow.length-1?'sum':''); }).join('')+'</div></div>':'')+
+    (S2.flow.length?'<div class="rc-flow"><div class="rc-lab">기간별 예상</div><div class="cres-d">'+S2.flow.map(function(f,i){ return apRowHtml({l:f.l,a:f.a,sub:f.sub,was:null,cls:i?'sum':'',t:null,tip:f.tip}); }).join('')+'</div></div>':'')+
     '</div><div class="ap-sub" style="margin-top:8px">자세한 금액은 상담 시 확정돼요. 신청만으로 구매가 확정되지 않아요.</div>';
   return h+'</section>';
 }
@@ -1251,6 +1244,8 @@ document.addEventListener('click',function(e){
   var app=t.closest('[data-ap-pick]');
   if(app){ e.preventDefault(); var pv=app.getAttribute('data-ap-pick'); if(pv!==AP.phone){ AP.cap=0; AP.color=''; if(pv!=='later'){ var pm=byId(pv), prs=sheetRows(pm); if(prs.length){ var pp=priceOf(pm); AP.cap=Math.max(0,prs.indexOf(pp.row)); } } }
     AP.phone=pv; AP.pick=false; apRefresh(); return; }
+  var apt=t.closest('[data-ap-tip]');
+  if(apt){ e.preventDefault(); AP.tip=AP.tip||{}; var tk=apt.getAttribute('data-ap-tip'); AP.tip[tk]=!AP.tip[tk]; apRefresh(); return; }
   var apd=t.closest('[data-ap-dev]');
   if(apd){ e.preventDefault(); AP.devOpen=AP.devOpen||{}; var dk=apd.getAttribute('data-ap-dev'); AP.devOpen[dk]=!AP.devOpen[dk]; apRefresh(); return; }
   var apc=t.closest('[data-ap-cond]');

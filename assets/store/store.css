@@ -812,3 +812,11 @@ body.no-sq .side-quick{display:none}
 .ap-res .rc-flow .cres-d .cr-v b{font-size:14.5px}
 .ap-res .rc-flow .cres-d .cr.sum{border-top:1px solid #F3B7D3}
 .ap-res .rc-flow .cres-d .cr.sum .cr-v b{color:var(--pink);font-size:15.5px}
+/* 조건 ? 버튼 + 말풍선 */
+.ap-res .tipb{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;margin-left:5px;vertical-align:1px;border-radius:50%;border:1px solid #E7BFD2;background:#fff;color:var(--pink);font-size:11px;font-weight:900;line-height:1;padding:0;cursor:pointer}
+.ap-res .tipb.on{background:var(--pink);border-color:var(--pink);color:#fff}
+.ap-res .tip-bub{position:relative;margin:2px 0 8px;padding:8px 10px;background:#FFF4F9;border:1px solid #F3C4DA;border-radius:10px;font-size:12px;font-weight:600;color:var(--ink2);line-height:1.45}
+.ap-res .tip-bub:before{content:'';position:absolute;top:-6px;left:22px;width:10px;height:10px;background:#FFF4F9;border-left:1px solid #F3C4DA;border-top:1px solid #F3C4DA;transform:rotate(45deg)}
+/* 기간별 예상: 6개월 → 7개월 차 비교 */
+.ap-res .rc-flow .cres-d .cr.sum{border-top:1px dotted #F0C6DA!important}
+.ap-res .rc-flow .cres-d .cr.sum .cr-l span{color:var(--pink)}
