@@ -86,7 +86,7 @@ var DEFAULT = {
     {nm:'리맥스점',addr:'구리시 경춘로 239'},{nm:'퇴계원점',addr:'남양주시 퇴계원읍 퇴계원로 64'},{nm:'해밀점',addr:'남양주시 진접읍 해밀예당3로 57'},
     {nm:'진주아파트점',addr:'남양주시 오남읍 진건오남로 639'},{nm:'장현초교점',addr:'남양주시 진접읍 장현로 83'},{nm:'마석점',addr:'남양주시 화도읍 마석중앙로 65'}
   ],
-  biz:{name:'U+ Direct 유닥 :)', ceo:'이승환', addr:'경기 구리시 갈매동 552-4스칸센 제알토 현대 클러스터동 제 7층 5호', no:'804-81-00167', email:'udak@daum.net',
+  biz:{name:'유플러스 다이렉트', ceo:'이승환', addr:'경기 구리시 갈매동 552-4스칸센 제알토 현대 클러스터동 제 7층 5호', no:'804-81-00167', email:'udak@daum.net',
        hours:'월~토요일 09:30~20:00 (주말 및 공휴일 휴무)'},
   storeNote:'서울·경기 고객님은 예약 후 매장에 방문하시면 당일 개통·수령이 가능합니다.',
   tel:'1660-1412',
@@ -502,7 +502,7 @@ function renderFoot(){
   var b=S.biz||{}, n=S.stores.filter(function(s){return s&&s.nm}).length;
   $('#foot').innerHTML=
     '<section class="about-us">'+
-      '<img class="au-badge" src="/assets/about-official-badge.webp" alt="LG유플러스 공식인증대리점" loading="lazy">'+
+      '<img class="au-badge" src="/assets/logo-uplus.png" alt="LG U+ 공식 파트너사" loading="lazy">'+
       '<p class="au-eye">ABOUT US</p><p class="au-t">유플러스 다이렉트는<br>LG U+ 공식 파트너사가 운영하는<br>온라인 상담 채널입니다</p>'+
       '<dl class="au-dl"><dt>파트너십</dt><dd>LG U+ 공식 파트너사</dd>'+
       '<dt>직영매장</dt><dd>서울·경기 '+(n||24)+'개 운영</dd><dt>서비스</dt><dd>온라인 상담 · 개통 · 사후관리 일괄 진행</dd><dt>고객센터</dt><dd>'+esc(S.tel)+' · 카카오톡 상담</dd></dl>'+
@@ -510,8 +510,8 @@ function renderFoot(){
     '</section>'+
     '<div class="sf">'+
       '<div class="sf-top"><div class="sf-links"><span>이용약관</span><span>개인정보처리방침</span><span>이메일무단수집거부</span></div>'+
-        '<a class="sf-cert" href="tel:'+esc(S.tel)+'"><img src="/assets/about-official-badge.webp" alt="LG유플러스 공식인증대리점" loading="lazy"><span><small>대표 전화번호</small><b>'+esc(S.tel)+'</b></span></a></div>'+
-      '<div class="sf-info"><p><span>상호명</span> '+esc(b.name)+' · <span>대표자</span> '+esc(b.ceo)+'</p><p><span>사업장 주소</span> '+esc(b.addr)+'</p>'+
+        '<a class="sf-cert" href="tel:'+esc(S.tel)+'"><img src="/assets/logo-uplus.png" alt="LG U+" loading="lazy"><span><small>대표 전화번호</small><b>'+esc(S.tel)+'</b></span></a></div>'+
+      '<div class="sf-info"><p><span>상호명</span> '+esc(/유닥/.test(b.name||'')||!b.name?'유플러스 다이렉트':b.name)+' · <span>대표자</span> '+esc(b.ceo)+'</p><p><span>사업장 주소</span> '+esc(b.addr)+'</p>'+
         '<p><span>사업자등록번호</span> '+esc(b.no)+' · <span>전화번호</span> '+esc(S.tel)+'</p><p><span>이메일</span> '+esc(b.email)+'</p>'+
         '<p class="sf-h">상담시간 : '+esc(b.hours)+'</p></div>'+
       '<div class="sf-bot"><p>Copyright(C) 2025 U+ 다이렉트. All rights reserved.</p><div class="sf-p">'+
