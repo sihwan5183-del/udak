@@ -1050,25 +1050,37 @@ function apAddHtml(){
   return h+'</section>';
 }
 function apSumHtml(){
-  var pc=apPhoneCalc(), rows=[], total=0, upfront=0, m=apPhone();
-  var line=function(l,v,sm,was){ rows.push(crow(l,sm||'',v,was||'')); };
+  var pc=apPhoneCalc(), m=apPhone(), recs=[], total=0, upfront=0, L='ABCDE';
+  var rec=function(kind,nm){ var r={kind:kind,nm:nm,rows:[],sub:0,up:0,ask:false}; recs.push(r); return r; };
+  var line=function(r,l,v,sm,was){ r.rows.push(crow(l,sm||'',v,was||'')); };
   if(pc){
-    if(pc.mm===0){ upfront+=pc.after; line(esc(m.nm)+' 기기값','일시납 '+wz(pc.after)); }
-    else { total+=pc.monthly; line(esc(m.nm)+' 할부',won(pc.monthly),pc.mm+'개월'); }
-    if(pc.fee){ total+=pc.feeAfter; line('월 통신 요금',won(pc.feeAfter),esc(pc.t.title||tierLabel(pc.t))+(pc.method==='sel'?' · 선택약정 25% 할인':''),pc.method==='sel'?won(pc.fee):''); }
-  }
+    var r=rec('휴대폰',m.nm);
+    if(pc.mm===0){ r.up+=pc.after; line(r,'기기값','일시납 '+wz(pc.after)); }
+    else { r.sub+=pc.monthly; line(r,'기기 할부금',won(pc.monthly),pc.mm+'개월 · 할부이자 포함'); }
+    if(pc.fee){ r.sub+=pc.feeAfter; line(r,'월 통신 요금',won(pc.feeAfter),esc(pc.t.title||tierLabel(pc.t))+(pc.method==='sel'?' · 선택약정 25% 할인':''),pc.method==='sel'?won(pc.fee):''); }
+  } else if(m){ var r0=rec('휴대폰',m.nm); r0.ask=true; line(r0,'예상 금액','상담 시 안내'); }
   AP_SLOTS.forEach(function(s){
-    var x=AP[s[0]]&&byId(AP[s[0]]); if(!x) return; var ac=apAddCalc(x); if(!ac) { line(esc(x.nm),'상담 시 안내'); return; }
-    if(AP.months===0){ upfront+=ac.after; line(esc(x.nm)+' 기기값','일시납 '+wz(ac.after)); } else { total+=ac.monthly; line(esc(x.nm)+' 할부',won(ac.monthly),AP.months+'개월'+(ac.noint?' · 이자 없음':'')); }
-    if(s[0]==='tv'){ total+=9350; line('TV프리 이용료','9,350원','첫 9개월 · 10개월 차부터 7,700원'); }
-    else { var g=GUIDE[x.id]; if(g&&g.fee) line(esc(x.nm)+' 회선 이용료','0원','요금제에 포함',won(g.fee)); }
+    var x=AP[s[0]]&&byId(AP[s[0]]); if(!x) return; var r=rec(s[1],x.nm), ac=apAddCalc(x);
+    if(!ac){ r.ask=true; line(r,'기기값','상담 시 안내'); }
+    else if(AP.months===0){ r.up+=ac.after; line(r,'기기값','일시납 '+wz(ac.after)); }
+    else { r.sub+=ac.monthly; line(r,'기기 할부금',won(ac.monthly),AP.months+'개월'+(ac.noint?' · 이자 없음':' · 할부이자 포함')); }
+    if(s[0]==='tv'){ r.sub+=9350; line(r,'TV프리 이용료','9,350원','첫 9개월 · 10개월 차부터 7,700원'); }
+    else { var g=GUIDE[x.id]; if(g&&g.fee) line(r,'회선 이용료','0원','요금제에 포함','월 '+won(g.fee)); }
   });
   var h='<section class="ap-sec ap-sumsec"><div class="ap-h"><b>04</b>예상 월 납부금액</div>';
-  if(!pc && !rows.length){ h+='<div class="ap-sub">휴대폰과 조건을 고르시면 예상 금액을 바로 보여드려요. 정확한 금액은 상담 시 안내드려요.</div>'; return h+'</section>'; }
-  if(!pc && m){ h+='<div class="ap-sub">'+esc(m.nm)+' 금액은 상담 시 안내드려요.</div>'; }
-  h+='<div class="cres ap-res"><div class="cres-l">매월 예상</div><div class="cres-v">'+won(total)+'<small> / 월</small></div>'+
-    (upfront?'<div class="cres-h">+ 일시납 '+won(upfront)+'</div>':'<div class="cres-h">기기 할부(할부이자 포함) + 통신 요금 기준</div>')+
-    '<div class="cres-d">'+rows.join('')+'</div></div><div class="ap-sub" style="margin-top:8px">자세한 금액은 상담 시 확정돼요. 신청만으로 구매가 확정되지 않아요.</div>';
+  if(!recs.length){ h+='<div class="ap-sub">휴대폰과 조건을 고르시면 예상 금액을 바로 보여드려요. 정확한 금액은 상담 시 안내드려요.</div>'; return h+'</section>'; }
+  var body='', keys=[];
+  recs.forEach(function(r,i){
+    var k=L[i]; keys.push(k); total+=r.sub; upfront+=r.up;
+    body+='<div class="rc"><div class="rc-h"><i>'+k+'</i><span>'+esc(r.kind)+'</span><b>'+esc(r.nm)+'</b></div>'+
+      '<div class="cres-d">'+r.rows.join('')+'</div>'+
+      '<div class="rc-sub"><span>'+esc(r.kind)+' 월 합계 <i>'+k+'</i></span><b>'+(r.ask&&!r.sub?'상담 시 안내':won(r.sub))+'</b></div></div>';
+  });
+  h+='<div class="cres ap-res">'+body+
+    '<div class="rc-total"><div class="rc-total-l"><span>매월 예상 납부금액</span><small>'+keys.join(' + ')+'</small></div>'+
+      '<div class="rc-total-v">'+won(total)+'<small> / 월</small></div></div>'+
+    (upfront?'<div class="rc-up">+ 일시납 '+won(upfront)+'</div>':'')+
+    '</div><div class="ap-sub" style="margin-top:8px">자세한 금액은 상담 시 확정돼요. 신청만으로 구매가 확정되지 않아요.</div>';
   return h+'</section>';
 }
 function apInfoHtml(){
