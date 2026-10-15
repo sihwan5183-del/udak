@@ -14,7 +14,7 @@ var CUR=null;       // 지금 열린 편집 대상 키
 /* ---------- 상단 관리자 바 ---------- */
 document.body.insertAdjacentHTML('afterbegin',
   '<div class="adm-bar"><div class="ttl">관리자 · 갤럭시 연동<small id="admSub">누르면 수정 → 적용 시 바로 반영</small></div>'+
-  '<button id="admEdit" class="on">편집 ON</button><button id="admAdd">＋ 추가</button><button id="admSet">⚙ 설정</button><button id="admUndo">↶</button></div>'+
+  '<button id="admEdit" class="on">편집 ON</button><button id="admPrice" class="pr">💰 가격표</button><button id="admAdd">＋ 추가</button><button id="admSet">⚙ 설정</button><button id="admUndo">↶</button></div>'+
   '<div class="adm-toast" id="admToast"></div>');
 var toastT;
 function toast(m){ var t=$('#admToast'); t.textContent=m; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(function(){t.classList.remove('on')},2600); }
@@ -32,6 +32,7 @@ function save(msg){
     .catch(function(e){ $('#admSub').textContent='저장 실패'; alert('저장에 실패했어요. 인터넷 연결을 확인하고 다시 적용해 주세요.\n('+e.message+')'); });
 }
 function commit(msg){ T.refresh(); return save(msg); }
+window.__stCommit=commit; window.__stToast=toast;
 
 /* ---------- 입력칸 만들기 ---------- */
 function txt(name,label,val,ph,extra){ return '<div class="grp"><div class="lbl">'+label+'</div><input type="text" name="'+name+'" value="'+esc(val==null?'':val)+'" placeholder="'+esc(ph||'')+'" '+(extra||'')+'></div>'; }
@@ -60,15 +61,18 @@ function open(title, html){ T.openSheet('<div class="ed"><h3>'+title+'</h3>'+htm
 /* ---------- 편집 대상별 화면 ---------- */
 var CATS=[['iphone','아이폰'],['galaxy','갤럭시 S'],['fold','폴더블'],['watch','워치'],['tablet','태블릿'],['zero','기기값 0원 모아보기']];
 function edModel(m){
+  var srs=T.sheetRows(m);
   return txt('nm','모델 이름',m.nm)+txt('ds','한 줄 설명',m.ds)+
     '<div class="grp"><div class="lbl">태그 2개 (카드의 분홍 글씨)</div><div class="row2c"><input type="text" name="tag0" value="'+esc(m.tags[0]||'')+'"><input type="text" name="tag1" value="'+esc(m.tags[1]||'')+'"></div></div>'+
+    (srs.length ? '<div class="grp"><div class="lbl">가격</div><div class="pz-link">💰 가격표에서 관리 중 · '+srs.map(function(r){return esc(r.cap||'기본')+(r.so?'(품절)':'')}).join(', ')+
+      '<button type="button" class="btn2" data-ed="price" data-model="'+esc(m.id)+'">가격표 열기</button></div><div class="hint">출고가·지원금·용량별 품절은 가격표에서 바꿉니다. 아래 "일시품절"을 켜면 모든 용량이 품절로 보입니다.</div></div>' : (
     '<div class="grp"><div class="lbl">가격 (원, 숫자만 · 비우면 "상담 시 안내")</div><div class="row3c">'+
       '<input type="text" inputmode="numeric" name="out" placeholder="출고가" value="'+esc(m.price.out==null?'':m.price.out)+'">'+
       '<input type="text" inputmode="numeric" name="mnp" placeholder="번호이동" value="'+esc(m.price.mnp==null?'':m.price.mnp)+'">'+
       '<input type="text" inputmode="numeric" name="chg" placeholder="기기변경" value="'+esc(m.price.chg==null?'':m.price.chg)+'"></div>'+
       '<div class="hint">왼쪽부터 출고가 / 번호이동 구매가 / 기기변경 구매가. 0 을 넣으면 "0원"으로 표시됩니다.</div></div>'+
     area('opts','워치·태블릿처럼 사이즈별 가격일 때 — 한 줄에 하나씩 "사이즈 | 출고가 | 이통사 지원금"',T.optsOf(m).map(function(o){return [o.nm,o.out==null?'':o.out,o.sub==null?'':o.sub].join(' | ')}).join('\n'),3)+
-    '<div class="hint">이 칸을 채우면 위 가격(번호이동/기기변경) 대신 "출고가 - 지원금 = 구매가"로 표시됩니다. 휴대폰은 비워두세요.</div>'+
+    '<div class="hint">이 칸을 채우면 위 가격(번호이동/기기변경) 대신 "출고가 - 지원금 = 구매가"로 표시됩니다. 휴대폰은 비워두세요. 💰 가격표에서 이 모델을 연결하면 가격표 값이 우선합니다.</div>'))+
     sw('soldout','일시품절 표시',m.soldout,true)+sw('hidden','고객 화면에서 숨기기',m.hidden)+
     '<div class="grp"><div class="lbl">분류 (탭·모아보기에 나오는 곳)</div><div class="chk-row">'+CATS.map(function(c){return '<label><input type="checkbox" name="cat_'+c[0]+'"'+(m.cat.indexOf(c[0])>-1?' checked':'')+'> '+c[1]+'</label>'}).join('')+'</div></div>'+
     txt('strip','카드 띠 문구 (비우면 자동)',m.strip,'번호이동 시 '+(m.tags[0]||'')+' + '+(m.tags[1]||''))+
@@ -83,8 +87,8 @@ function edModel(m){
 }
 function saveModel(m){
   m.nm=V('nm')||m.nm; m.ds=V('ds'); m.tags=[V('tag0'),V('tag1')].filter(Boolean); m.strip=V('strip')||null;
-  m.price={out:T.num(V('out')), mnp:T.num(V('mnp')), chg:T.num(V('chg'))};
-  m.opts=V('opts').split('\n').map(function(l){ var p=l.split('|').map(function(x){return x.trim()}); return p[0]?{nm:p[0],out:T.num(p[1]),sub:T.num(p[2])}:null; }).filter(Boolean);
+  if($('#sheet [name="out"]')) m.price={out:T.num(V('out')), mnp:T.num(V('mnp')), chg:T.num(V('chg'))};
+  if($('#sheet [name="opts"]')) m.opts=V('opts').split('\n').map(function(l){ var p=l.split('|').map(function(x){return x.trim()}); return p[0]?{nm:p[0],out:T.num(p[1]),sub:T.num(p[2])}:null; }).filter(Boolean);
   m.soldout=C('soldout'); m.hidden=C('hidden');
   m.cat=CATS.map(function(c){return c[0]}).filter(function(k){return C('cat_'+k)});
   m.colors=V('colors').split('\n').map(function(l){ var p=l.split('|').map(function(x){return x.trim()}); return p[0]?{nm:p[0],hex:p[1]||'',img:p[2]||null}:null; }).filter(Boolean);
@@ -134,8 +138,8 @@ var ED = {
   foot:{
     title:function(){ return '📄 회사 소개 · 하단 정보'; },
     html:function(){ var b=T.S.biz||{}; return txt('b_name','상호명',b.name)+txt('b_ceo','대표자',b.ceo)+txt('b_addr','사업장 주소',b.addr)+txt('b_no','사업자등록번호',b.no)+
-      txt('b_email','이메일',b.email)+txt('b_hours','상담시간',b.hours)+txt('b_corp','운영사 (맨 아래 링크)',b.corp)+'<div class="hint">대표 전화번호·카카오톡 주소는 ⚙ 설정에서 바꿉니다.</div>'+applyBtn(); },
-    save:function(){ T.S.biz={name:V('b_name'),ceo:V('b_ceo'),addr:V('b_addr'),no:V('b_no'),email:V('b_email'),hours:V('b_hours'),corp:V('b_corp')}; }
+      txt('b_email','이메일',b.email)+txt('b_hours','상담시간',b.hours)+'<div class="hint">대표 전화번호·카카오톡 주소는 ⚙ 설정에서 바꿉니다.</div>'+applyBtn(); },
+    save:function(){ T.S.biz={name:V('b_name'),ceo:V('b_ceo'),addr:V('b_addr'),no:V('b_no'),email:V('b_email'),hours:V('b_hours')}; }
   },
   sec:{
     title:function(k){ return '📑 구역 제목'; },
@@ -166,6 +170,7 @@ window.__stEditClick=function(e){
   var t=e.target;
   if(t.closest('.adm-bar')||t.closest('#sheet')||t.closest('#dim')||t.closest('.login')) return false;
   if(t.closest('.tabbar')||t.closest('.topbar')||t.closest('[data-back]')||t.closest('.ctabs')||t.closest('[data-toggle]')||t.closest('.subhead')) return false;
+  if(t.closest('[data-mnp]')||t.closest('[data-opt-pick]')||t.closest('[data-color-pick]')||t.closest('.pz')||t.closest('a[download]')) return false;
   var el=t.closest('[data-edit]');
   if(!el){
     if(t.closest('a,[data-go],[data-open],label.search')){ e.preventDefault(); e.stopPropagation(); toast('편집 중에는 이동하지 않아요 · [편집 ON] 을 끄면 고객처럼 둘러볼 수 있어요'); return true; }
@@ -226,6 +231,7 @@ document.addEventListener('click',function(e){
   if(t.closest('#admAdd')){ openAdd(); return; }
   if(t.closest('#admSet')){ openSettings(); return; }
   if(t.closest('#admUndo')){ undo(); return; }
+  if(t.closest('#admPrice')){ if(window.__stPriceOpen) window.__stPriceOpen(); return; }
   if(!t.closest('#sheet')) return;
 
   if((b=t.closest('[data-pick]'))){ setImg(b.getAttribute('data-for'), b.getAttribute('data-pick')); $$('[data-pick]',b.parentNode).forEach(function(x){x.classList.toggle('sel',x===b)}); return; }
@@ -238,6 +244,7 @@ document.addEventListener('click',function(e){
   }
   if(!(b=t.closest('[data-ed]'))) return;
   var act=b.getAttribute('data-ed');
+  if(act==='price'){ T.closeSheet(); if(window.__stPriceOpen) window.__stPriceOpen(b.getAttribute('data-model')); return; }
   if(act==='gal'){ var box=$('#sheet [data-galfor="'+b.getAttribute('data-for')+'"]'); if(box.innerHTML){ box.innerHTML=''; } else galRender(box, b.getAttribute('data-for'), b.getAttribute('data-folder')); return; }
   if(act==='apply' && CUR){ ED[CUR.type].save(CUR.arg); T.closeSheet(); commit(); return; }
   if((act==='left'||act==='right'||act==='del') && CUR){

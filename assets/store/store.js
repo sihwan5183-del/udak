@@ -14,7 +14,7 @@ var IMG = '/assets/store/';
 var GH = 'https://api.github.com/repos/sihwan5183-del/udak/contents/assets/store/';
 var FOLDERS = ['hero','model','card','promo','gift'];
 
-var MARKUP = "<!-- 스크롤 시 나타나는 상단바 (쿠팡이츠 방식) -->\n<header class=\"topbar\" id=\"topbar\">\n  <button class=\"lbl\" data-open=\"store\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>매장찾기<svg class=\"ico chev\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n  <button data-go=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button>\n  <button style=\"position:relative;display:flex\" data-open=\"noti\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8\"/><path d=\"M10.3 21a1.9 1.9 0 0 0 3.4 0\"/></svg><i class=\"dot-new\"></i></button>\n</header>\n<div class=\"app\" id=\"app\">\n<!-- ===================== 홈 ===================== -->\n<main class=\"view on\" id=\"v-home\">\n  <!-- 1. 히어로 -->\n  <section class=\"hero\" id=\"hero\">\n    <div class=\"hero-top\">\n      <div class=\"brand\" id=\"brand\" data-edit=\"brand\"></div>\n      <div class=\"hero-r\">\n        <div class=\"uplus-logo\">U<sup>+</sup></div>\n        <div class=\"hero-icons\">\n          <button data-go=\"search\" aria-label=\"검색\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button>\n          <button data-open=\"noti\" aria-label=\"알림\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8\"/><path d=\"M10.3 21a1.9 1.9 0 0 0 3.4 0\"/></svg><i class=\"dot-new\"></i></button>\n        </div>\n      </div>\n    </div>\n    <div class=\"hero-track\" id=\"heroTrack\"></div>\n    <div class=\"dots\" id=\"heroDots\"></div>\n  </section>\n  <!-- 2. 매장찾기 -->\n  <button class=\"locbar\" data-open=\"store\">\n    <svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>\n    <span class=\"lbl\">매장찾기 <svg class=\"ico chev\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><path d=\"m6 9 6 6 6-6\"/></svg></span>\n    <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px;color:#9aa0a8\"><path d=\"m9 6 6 6-6 6\"/></svg>\n  </button>\n  <!-- 3. 검색 -->\n  <label class=\"search\" data-go=\"search\">\n    <svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg>\n    <input type=\"text\" placeholder=\"어떤 휴대폰을 찾고 계세요?\" readonly tabindex=\"-1\">\n  </label>\n  <!-- 4. 모델 원형 아이콘 -->\n  <nav class=\"models\" id=\"models\"></nav>\n  <!-- 5. 퀵메뉴 -->\n  <nav class=\"quick hscroll\" id=\"quick\"></nav>\n  <!-- 6. 신뢰 스트립 -->\n  <div class=\"trust hscroll\" id=\"trust\"></div>\n  <!-- 7. 프로모 배너 -->\n  <a class=\"promo\" id=\"promo\" data-edit=\"promo\"></a>\n  <!-- 8. 많이 찾아요 -->\n  <section class=\"sec\" id=\"popSec\">\n    <div id=\"popHead\"></div>\n    <div class=\"popgrid\" id=\"popgrid\"></div>\n  </section>\n  <div class=\"divider\" style=\"margin-top:16px\"></div>\n  <!-- ===== 여기부터 쿠팡이츠 모티브 섹션 ===== -->\n  <!-- 9-1. 최근 본 모델 (본 게 없으면 숨김) -->\n  <section class=\"sec\" id=\"recentSec\" hidden>\n    <div id=\"recentHead\"></div>\n    <div class=\"hcards hscroll\" id=\"recent\"></div>\n  </section>\n  <!-- 9-2. 기기값 0원 모아보기 -->\n  <section class=\"sec zero-sec\" id=\"zeroSec\">\n    <div id=\"zeroHead\"></div>\n    <div class=\"hcards hscroll\" id=\"zero\"></div>\n  </section>\n  <section class=\"sec\" id=\"wearSec\">\n    <div id=\"wearHead\"></div>\n    <div class=\"hcards hscroll\" id=\"wear\"></div>\n  </section>\n  <div class=\"divider\"></div>\n  <!-- 10-1. 한정 사은품 -->\n  <section class=\"sec\" id=\"giftSec\">\n    <div id=\"giftHead\"></div>\n    <div class=\"dcards hscroll\" id=\"gifts\"></div>\n  </section>\n  <!-- 10-2. 우리 동네 인기 모델 -->\n  <section class=\"sec\" id=\"rankSec\">\n    <div id=\"rankHead\"></div>\n    <div class=\"dcards hscroll\" id=\"rank\"></div>\n  </section>\n  <div class=\"divider\" style=\"margin-top:16px\"></div>\n  <!-- 11. 골라보는 휴대폰 -->\n  <section class=\"sec ucat-wrap\" id=\"pickSec\" style=\"padding-bottom:0\">\n    <div id=\"pickHead\"></div>\n    <nav class=\"models hscroll\" id=\"pickCircles\" style=\"display:flex;gap:4px;padding:0 10px 6px\"></nav>\n    <div class=\"filters\">\n      <button class=\"chk on\" data-toggle=\"mnp\"><i></i>번호이동 가격</button>\n      <button class=\"fbtn\">추천순 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n      <button class=\"fbtn\">필터 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"M4 6h16M7 12h10M10 18h4\"/></svg></button>\n    </div>\n    <div class=\"adlabel\">추천 리스트</div>\n    <div id=\"bigList\"></div>\n  </section>\n  <footer class=\"foot\" id=\"foot\" data-edit=\"foot\"></footer>\n</main>\n<!-- ===================== 카테고리 (쿠팡이츠 '한식' 화면) ===================== -->\n<main class=\"view\" id=\"v-cat\">\n  <div class=\"subhead\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button><h1 id=\"catTitle\">전체</h1><button data-go=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button></div>\n  <div class=\"sticky-tabs\"><nav class=\"ctabs hscroll\" id=\"catTabs\"></nav></div>\n  <nav class=\"hscroll\" id=\"catCircles\" style=\"display:flex;gap:4px;padding:14px 10px 6px\"></nav>\n  <div class=\"filters\">\n    <button class=\"chk on\" data-toggle=\"mnp\"><i></i>번호이동 가격</button>\n    <button class=\"fbtn\">추천순 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n    <button class=\"fbtn\">필터 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"M4 6h16M7 12h10M10 18h4\"/></svg></button>\n  </div>\n  <div class=\"adlabel\">추천 리스트</div>\n  <div id=\"catList\"></div>\n</main>\n<!-- ===================== 검색 ===================== -->\n<main class=\"view\" id=\"v-search\">\n  <div class=\"subhead\" style=\"gap:4px;justify-content:flex-start\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button>\n    <label class=\"search\" style=\"margin:0;flex:1;height:40px\"><svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg><input id=\"q\" type=\"search\" autocomplete=\"off\" placeholder=\"모델명을 입력하세요 (예: 폴드, 아이폰)\"></label></div>\n  <div class=\"results\" id=\"results\"></div>\n</main>\n<!-- ===================== 찜한 모델 ===================== -->\n<main class=\"view\" id=\"v-wish\">\n  <div class=\"subhead\"><span style=\"width:40px\"></span><h1>찜한 모델</h1><span style=\"width:40px\"></span></div>\n  <div id=\"wishList\"></div>\n</main>\n<!-- ===================== 모델 상세 (다음 단계) ===================== -->\n<main class=\"view\" id=\"v-model\">\n  <div class=\"subhead\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button><h1 id=\"mdTitle\"></h1><span style=\"width:40px\"></span></div>\n  <div id=\"mdBody\" style=\"padding:0 16px 20px\"></div>\n</main>\n</div><!-- /app -->\n<!-- 하단 탭바 -->\n<nav class=\"tabbar\" id=\"tabbar\">\n  <a href=\"#/\" data-tab=\"home\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z\"/></svg>홈</a>\n  <a href=\"#/search\" data-tab=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg>검색</a>\n  <a href=\"#/wish\" data-tab=\"wish\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z\"/></svg>찜</a>\n  <a href=\"javascript:void 0\" data-open=\"consult\" data-tab=\"consult\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2\"/><path d=\"M9 4h6v3H9zM9 12l2 2 4-4\"/></svg>상담신청</a>\n  <a href=\"javascript:void 0\" data-open=\"store\" data-tab=\"store\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>매장</a>\n</nav>\n<div class=\"dim\" id=\"dim\"></div>\n<div class=\"sheet\" id=\"sheet\"><button type=\"button\" class=\"sheet-x\" aria-label=\"닫기\">×</button><div id=\"sheetBody\"></div></div>";
+var MARKUP = "<!-- 스크롤 시 나타나는 상단바 (쿠팡이츠 방식) -->\n<header class=\"topbar\" id=\"topbar\">\n  <button class=\"lbl\" data-open=\"store\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>매장찾기<svg class=\"ico chev\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n  <button data-go=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button>\n  <button style=\"position:relative;display:flex\" data-open=\"noti\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8\"/><path d=\"M10.3 21a1.9 1.9 0 0 0 3.4 0\"/></svg><i class=\"dot-new\"></i></button>\n</header>\n<div class=\"app\" id=\"app\">\n<!-- ===================== 홈 ===================== -->\n<main class=\"view on\" id=\"v-home\">\n  <!-- 1. 히어로 -->\n  <section class=\"hero\" id=\"hero\">\n    <div class=\"hero-top\">\n      <div class=\"brand\" id=\"brand\" data-edit=\"brand\"></div>\n      <div class=\"hero-r\">\n        <div class=\"uplus-logo\">U<sup>+</sup></div>\n        <div class=\"hero-icons\">\n          <button data-go=\"search\" aria-label=\"검색\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button>\n          <button data-open=\"noti\" aria-label=\"알림\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8\"/><path d=\"M10.3 21a1.9 1.9 0 0 0 3.4 0\"/></svg><i class=\"dot-new\"></i></button>\n        </div>\n      </div>\n    </div>\n    <div class=\"hero-track\" id=\"heroTrack\"></div>\n    <div class=\"dots\" id=\"heroDots\"></div>\n  </section>\n  <!-- 2. 매장찾기 -->\n  <button class=\"locbar\" data-open=\"store\">\n    <svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>\n    <span class=\"lbl\">매장찾기 <svg class=\"ico chev\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><path d=\"m6 9 6 6 6-6\"/></svg></span>\n    <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px;color:#9aa0a8\"><path d=\"m9 6 6 6-6 6\"/></svg>\n  </button>\n  <!-- 3. 검색 -->\n  <label class=\"search\" data-go=\"search\">\n    <svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg>\n    <input type=\"text\" placeholder=\"어떤 휴대폰을 찾고 계세요?\" readonly tabindex=\"-1\">\n  </label>\n  <!-- 4. 모델 원형 아이콘 -->\n  <nav class=\"models\" id=\"models\"></nav>\n  <!-- 5. 퀵메뉴 -->\n  <nav class=\"quick hscroll\" id=\"quick\"></nav>\n  <!-- 6. 신뢰 스트립 -->\n  <div class=\"trust hscroll\" id=\"trust\"></div>\n  <!-- 7. 프로모 배너 -->\n  <a class=\"promo\" id=\"promo\" data-edit=\"promo\"></a>\n  <!-- 8. 많이 찾아요 -->\n  <section class=\"sec\" id=\"popSec\">\n    <div id=\"popHead\"></div>\n    <div class=\"popgrid\" id=\"popgrid\"></div>\n  </section>\n  <div class=\"divider\" style=\"margin-top:16px\"></div>\n  <!-- ===== 여기부터 쿠팡이츠 모티브 섹션 ===== -->\n  <!-- 9-1. 최근 본 모델 (본 게 없으면 숨김) -->\n  <section class=\"sec\" id=\"recentSec\" hidden>\n    <div id=\"recentHead\"></div>\n    <div class=\"hcards hscroll\" id=\"recent\"></div>\n  </section>\n  <!-- 9-2. 기기값 0원 모아보기 -->\n  <section class=\"sec zero-sec\" id=\"zeroSec\">\n    <div id=\"zeroHead\"></div>\n    <div class=\"hcards hscroll\" id=\"zero\"></div>\n  </section>\n  <section class=\"sec\" id=\"wearSec\">\n    <div id=\"wearHead\"></div>\n    <div class=\"hcards hscroll\" id=\"wear\"></div>\n  </section>\n  <div class=\"divider\"></div>\n  <!-- 10-1. 한정 사은품 -->\n  <section class=\"sec\" id=\"giftSec\">\n    <div id=\"giftHead\"></div>\n    <div class=\"dcards hscroll\" id=\"gifts\"></div>\n  </section>\n  <!-- 10-2. 우리 동네 인기 모델 -->\n  <section class=\"sec\" id=\"rankSec\">\n    <div id=\"rankHead\"></div>\n    <div class=\"dcards hscroll\" id=\"rank\"></div>\n  </section>\n  <div class=\"divider\" style=\"margin-top:16px\"></div>\n  <!-- 11. 골라보는 휴대폰 -->\n  <section class=\"sec ucat-wrap\" id=\"pickSec\" style=\"padding-bottom:0\">\n    <div id=\"pickHead\"></div>\n    <nav class=\"models hscroll\" id=\"pickCircles\" style=\"display:flex;gap:4px;padding:0 10px 6px\"></nav>\n    <div class=\"filters\">\n      <div class=\"seg\" data-seg></div>\n      <button class=\"fbtn\">추천순 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n      <button class=\"fbtn\">필터 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"M4 6h16M7 12h10M10 18h4\"/></svg></button>\n    </div>\n    <div class=\"adlabel\">추천 리스트</div>\n    <div id=\"bigList\"></div>\n  </section>\n  <footer class=\"foot\" id=\"foot\" data-edit=\"foot\"></footer>\n</main>\n<!-- ===================== 카테고리 (쿠팡이츠 '한식' 화면) ===================== -->\n<main class=\"view\" id=\"v-cat\">\n  <div class=\"subhead\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button><h1 id=\"catTitle\">전체</h1><button data-go=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button></div>\n  <div class=\"sticky-tabs\"><nav class=\"ctabs hscroll\" id=\"catTabs\"></nav></div>\n  <nav class=\"hscroll\" id=\"catCircles\" style=\"display:flex;gap:4px;padding:14px 10px 6px\"></nav>\n  <div class=\"filters\">\n    <div class=\"seg\" data-seg></div>\n    <button class=\"fbtn\">추천순 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n    <button class=\"fbtn\">필터 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"M4 6h16M7 12h10M10 18h4\"/></svg></button>\n  </div>\n  <div class=\"adlabel\">추천 리스트</div>\n  <div id=\"catList\"></div>\n</main>\n<!-- ===================== 검색 ===================== -->\n<main class=\"view\" id=\"v-search\">\n  <div class=\"subhead\" style=\"gap:4px;justify-content:flex-start\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button>\n    <label class=\"search\" style=\"margin:0;flex:1;height:40px\"><svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg><input id=\"q\" type=\"search\" autocomplete=\"off\" placeholder=\"모델명을 입력하세요 (예: 폴드, 아이폰)\"></label></div>\n  <div class=\"results\" id=\"results\"></div>\n</main>\n<!-- ===================== 찜한 모델 ===================== -->\n<main class=\"view\" id=\"v-wish\">\n  <div class=\"subhead\"><span style=\"width:40px\"></span><h1>찜한 모델</h1><span style=\"width:40px\"></span></div>\n  <div id=\"wishList\"></div>\n</main>\n<!-- ===================== 모델 상세 (다음 단계) ===================== -->\n<main class=\"view\" id=\"v-model\">\n  <div class=\"subhead\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button><h1 id=\"mdTitle\"></h1><span style=\"width:40px\"></span></div>\n  <div id=\"mdBody\" style=\"padding:0 16px 20px\"></div>\n</main>\n</div><!-- /app -->\n<!-- 하단 탭바 -->\n<nav class=\"tabbar\" id=\"tabbar\">\n  <a href=\"#/\" data-tab=\"home\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z\"/></svg>홈</a>\n  <a href=\"#/search\" data-tab=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg>검색</a>\n  <a href=\"#/wish\" data-tab=\"wish\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z\"/></svg>찜</a>\n  <a href=\"javascript:void 0\" data-open=\"consult\" data-tab=\"consult\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2\"/><path d=\"M9 4h6v3H9zM9 12l2 2 4-4\"/></svg>상담신청</a>\n  <a href=\"javascript:void 0\" data-open=\"store\" data-tab=\"store\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>매장</a>\n</nav>\n<div class=\"dim\" id=\"dim\"></div>\n<div class=\"sheet\" id=\"sheet\"><button type=\"button\" class=\"sheet-x\" aria-label=\"닫기\">×</button><div id=\"sheetBody\"></div></div>";
 
 /* ---------------- 기본 데이터 (파이어베이스가 비어 있을 때) ---------------- */
 var DEFAULT = {
@@ -35,15 +35,13 @@ var DEFAULT = {
     {id:'flip8',          nm:'플립 8',            cat:['fold'],          ds:'한 손에 들어오는 혁신',        tags:['기기값 할인','사은품 증정']},
     {id:'fold8ultra',     nm:'폴드 8 울트라',     cat:['fold'],          ds:'가장 강력한 폴더블 경험',      tags:['기기값 할인','사은품 증정']},
     {id:'fold8',          nm:'폴드 8',            cat:['fold'],          ds:'더 넓은 세상, 더 많은 가능성', tags:['기기값 할인','사은품 증정']},
-    // 워치·태블릿: opts = 사이즈별 [이름, 출고가, 이통사 지원금] → 구매가 = 출고가 - 지원금
-    {id:'watchultra2', nm:'갤럭시 워치 울트라2', cat:['watch'], ds:'티타늄으로 완성한 아웃도어 워치', tags:['이통사 지원금','스마트기기'], opts:[{nm:'기본',out:969100,sub:450000}]},
-    {id:'watch9',      nm:'갤럭시 워치9',       cat:['watch'], ds:'매일 함께하는 건강 파트너',       tags:['이통사 지원금','스마트기기'], opts:[{nm:'44mm',out:569800,sub:164000},{nm:'40mm',out:529100,sub:164000}]},
-    {id:'watchse3',    nm:'애플워치 SE3',       cat:['watch'], ds:'아이폰과 가장 잘 어울리는 워치',   tags:['이통사 지원금','스마트기기'], opts:[{nm:'40mm',out:429000,sub:287500},{nm:'44mm',out:473000,sub:287500}]},
+    // 워치·태블릿·TV프리: 가격은 아래 pricing(가격표)에서 관리
+    {id:'watchultra2', nm:'갤럭시 워치 울트라2', cat:['watch'], ds:'티타늄으로 완성한 아웃도어 워치', tags:['이통사 지원금','스마트기기']},
+    {id:'watch9',      nm:'갤럭시 워치9',       cat:['watch'], ds:'매일 함께하는 건강 파트너',       tags:['이통사 지원금','스마트기기']},
+    {id:'watchse3',    nm:'애플워치 SE3',       cat:['watch'], ds:'아이폰과 가장 잘 어울리는 워치',   tags:['이통사 지원금','스마트기기']},
     {id:'taba11plus',  nm:'갤럭시 탭 A11+',     cat:['tablet'],ds:'넉넉한 화면, 가벼운 태블릿',        tags:['상담 시 안내','스마트기기']},
-    {id:'tvfree5',     nm:'U+ tv 프리5',        cat:['tablet'],ds:'12.4인치 대화면, TV를 내 방 어디서나', tags:['이통사 지원금','스마트기기'], optLabel:'요금제',
-      opts:[{nm:'1GB 요금제',out:799700,sub:601700},{nm:'500MB 요금제',out:799700,sub:562100}]},
-    {id:'ipada16',     nm:'아이패드 A16',        cat:['tablet'],ds:'128GB · 가볍게 시작하는 아이패드',   tags:['이통사 지원금','스마트기기'], optLabel:'요금제', capacity:'128GB',
-      opts:[{nm:'1GB 요금제',out:748000,sub:550000},{nm:'500MB 요금제',out:748000,sub:510400}]}
+    {id:'tvfree5',     nm:'U+ tv 프리5',        cat:['tablet'],ds:'12.4인치 대화면, TV를 내 방 어디서나', tags:['이통사 지원금','스마트기기']},
+    {id:'ipada16',     nm:'아이패드 A16',        cat:['tablet'],ds:'128GB · 가볍게 시작하는 아이패드',   tags:['이통사 지원금','스마트기기']}
   ],
   quick:[
     {nm:'유닥 멤버십 가입', ic:'user',    c:'#FF3D8B', bg:'#FFF2F7', b:'#FADCE8', go:'sec:gifts'},
@@ -77,7 +75,7 @@ var DEFAULT = {
     pick:{t:'골라보는 휴대폰'},
     wear:{t:'유플러스 다이렉트 요금제별 혜택', s:'요금제에 따라 워치 · 태블릿을 더 가볍게'}
   },
-  priceNote:'기기값 기준 금액이며 요금제·할인 방식(공시지원금/선택약정)에 따라 달라질 수 있습니다. 정확한 금액은 상담 시 안내드립니다.',
+  priceNote:'기기값은 선택한 요금제를 6개월 이상 유지하는 조건 기준입니다. 공시지원금과 선택약정(월 요금 25% 할인)은 둘 중 하나만 받을 수 있으며, 정확한 금액은 상담 시 안내드립니다.',
   stores:[
     {nm:'건대입구역점',addr:'서울시 광진구 능동로 95'},{nm:'군자역점',addr:'서울시 광진구 천호대로 573'},{nm:'신군자점',addr:'서울시 광진구 천호대로 548'},
     {nm:'신자양점',addr:'서울시 광진구 자양번영로 42'},{nm:'성수역점',addr:'서울시 성동구 아차산로 96'},{nm:'용답로데오점',addr:'서울시 성동구 용답동 58-1'},
@@ -89,12 +87,54 @@ var DEFAULT = {
     {nm:'진주아파트점',addr:'남양주시 오남읍 진건오남로 639'},{nm:'장현초교점',addr:'남양주시 진접읍 장현로 83'},{nm:'마석점',addr:'남양주시 화도읍 마석중앙로 65'}
   ],
   biz:{name:'U+ Direct 유닥 :)', ceo:'이승환', addr:'경기 구리시 갈매동 552-4스칸센 제알토 현대 클러스터동 제 7층 5호', no:'804-81-00167', email:'udak@daum.net',
-       hours:'월~토요일 09:30~20:00 (주말 및 공휴일 휴무)', corp:'(주)신세계정보통신'},
+       hours:'월~토요일 09:30~20:00 (주말 및 공휴일 휴무)'},
   storeNote:'서울·경기 고객님은 예약 후 매장에 방문하시면 당일 개통·수령이 가능합니다.',
   tel:'1660-1412',
   kakao:'http://pf.kakao.com/_HxfVxcn/chat',
-  foot:'유플러스 공식파트너사 ㈜신세계정보통신\n고객센터 1660-1412'
+  foot:'유플러스 공식파트너사 ㈜신세계정보통신\n고객센터 1660-1412',
+  /* 가격표 — 애플 '💰 가격표'에서 관리. 정책(vers)은 적용 시작일(from)부터 자동 적용
+     휴대폰: 실구매가 = 출고가 - (공시지원금 + 유플러스 다이렉트 지원금)  또는  출고가 - 유플러스 다이렉트 지원금 (선택약정 25%)
+     our 키 = 가입유형_요금제 (mnp=번호이동, chg=기기변경, all=워치·태블릿 공통) */
+  pricing:{
+    show:false,   // 고객 화면에 가격 공개 (가격표에서 켜기)
+    plans:{
+      phone:[{k:'p115',nm:'115군',fee:115000},{k:'p85',nm:'85군',fee:85000}],
+      second:[{k:'p1GB',nm:'1GB 요금제'},{k:'p500MB',nm:'500MB 요금제'}]
+    },
+    vers:[{id:'v20261003', from:'2026-10-03', memo:'영업기획팀 모바일 단가표 (10/03 ~ 별도 공지 시까지)', rows:[]}]
+  }
 };
+(function(){ // 단가표 → 줄 만들기 [번호이동115, 번호이동85, 기기변경115, 기기변경85]
+  var rows=DEFAULT.pricing.vers[0].rows;
+  function P(mk,code,cap,model,out,o,so){ rows.push({g:'phone',mk:mk,code:code,cap:cap,model:model,out:out,so:!!so,pub:{},our:{mnp_p115:o[0],mnp_p85:o[1],chg_p115:o[2],chg_p85:o[3]}}); }
+  function W(code,cap,model,out,p1,p2){ rows.push({g:'second',mk:'',code:code,cap:cap,model:model,out:out,so:false,pub:(p1!=null?{p1GB:p1,p500MB:p2}:{}),our:{}}); }
+  var S1=[680000,650000,420000,350000], S2=[620000,590000,360000,290000];
+  P('삼성','SM-S942N','256GB','s26',1254000,S1);
+  P('삼성','SM-S947N','256GB','s26plus',1452000,S2);
+  P('삼성','SM-S948N','256GB','s26ultra',1797000,S2);
+  P('삼성','SM-S937N','256GB','',1353000,[680000,650000,570000,500000]);
+  P('삼성','SM-F776N','256GB','flip8',1683000,[600000,570000,340000,270000]);
+  P('삼성','SM-F776N','512GB','flip8',null,[750000,720000,490000,420000]);
+  P('삼성','SM-F971N','256GB','fold8',2278100,[730000,700000,470000,400000]);
+  P('삼성','SM-F971N','512GB','fold8',null,[530000,500000,270000,200000]);
+  P('삼성','SM-F976N','256GB','fold8ultra',2577300,[600000,570000,340000,270000]);
+  P('삼성','SM-F976N','512GB','fold8ultra',null,[750000,720000,490000,420000]);
+  var A18=[440000,410000,190000,160000], A17=[500000,470000,240000,170000];
+  [['256GB',1991000],['512GB',2299000],['1TB',2893000],['2TB',3795000]].forEach(function(c){ P('애플','UIP18PR',c[0],'iphone18pro',c[1],A18); });
+  [['256GB',2200000],['512GB',2497000],['1TB',3091000],['2TB',3993000]].forEach(function(c){ P('애플','UIP18PM',c[0],'iphone18promax',c[1],A18); });
+  P('애플','UIP17','256GB','iphone17',1452000,A17);
+  P('애플','UIP17PR','','',null,A17,true);
+  P('애플','UIP17PM','','',null,A17,true);
+  P('애플','UIPA','','',null,[430000,400000,240000,170000],true);
+  W('watchultra2','기본','watchultra2',969100,450000,450000);
+  W('watch9','44mm','watch9',569800,164000,164000);
+  W('watch9','40mm','watch9',529100,164000,164000);
+  W('watchse3','40mm','watchse3',429000,287500,287500);
+  W('watchse3','44mm','watchse3',473000,287500,287500);
+  W('taba11plus','기본','taba11plus',null);
+  W('tvfree5','기본','tvfree5',799700,601700,562100);
+  W('ipada16','128GB','ipada16',748000,550000,510400);
+})();
 var GR='#3A3A3C', CR='#F7F4EC';
 var IP18=[{nm:'글레이셔',hex:'#A1AFC1',img:'model/iphone18pro-glacier.webp'},{nm:'실버',hex:'#C0C0C0',img:'model/iphone18pro-silver.webp'},
           {nm:'버건디',hex:'#47282E',img:'model/iphone18pro-burgundy.webp'},{nm:'블랙',hex:'#111111',img:'model/iphone18pro-black.webp'}];
@@ -186,6 +226,7 @@ function normalize(d){
   o.models.forEach(function(m){ m.cat=arr(m.cat); m.tags=arr(m.tags); m.cards=arr(m.cards); m.colors=arr(m.colors); m.opts=arr(m.opts); m.price=m.price||{}; });
   o.sec=o.sec||{}; Object.keys(DEFAULT.sec).forEach(function(k){ o.sec[k]=o.sec[k]||clone(DEFAULT.sec[k]); });
   o.brand=o.brand||clone(DEFAULT.brand); o.biz=o.biz||clone(DEFAULT.biz); o.promo=o.promo||clone(DEFAULT.promo);
+  o.pricing=normPricing(o.pricing);
   return o;
 }
 function vis(list){ return EDIT ? list : list.filter(function(x){return x && !x.hidden}); }
@@ -200,10 +241,63 @@ function mCard(m,i){ var c=colorsOf(m); return (m.cards&&m.cards[i]) || (c[i]&&c
 function hidCls(x){ return x&&x.hidden?' is-hidden':''; }
 function secOn(k){ return EDIT || !(S.sec[k]&&S.sec[k].off); }
 
+/* ---------------- 가격표 (애플 💰 가격표에서 관리) ---------------- */
+var TYPES={phone:[['mnp','번호이동'],['chg','기기변경']], second:[['all','지원금']]};
+function todayKST(){ return new Date(Date.now()+9*3600e3).toISOString().slice(0,10); }
+function normPricing(p){
+  p=(p&&typeof p==='object')?p:clone(DEFAULT.pricing);
+  p.plans=p.plans||{};
+  ['phone','second'].forEach(function(g){ p.plans[g]=arr(p.plans[g]).filter(function(x){return x&&x.k}); if(!p.plans[g].length) p.plans[g]=clone(DEFAULT.pricing.plans[g]); });
+  p.vers=arr(p.vers).filter(function(v){return v&&typeof v==='object'}); if(!p.vers.length) p.vers=clone(DEFAULT.pricing.vers);
+  p.vers.forEach(function(v){ v.rows=arr(v.rows).filter(Boolean); v.rows.forEach(function(r){ r.pub=r.pub||{}; r.our=r.our||{}; r.g=r.g==='second'?'second':'phone'; r.model=r.model||''; r.cap=r.cap||''; }); });
+  return p;
+}
+// 그 날짜에 적용되는 정책 = 시작일이 그 날짜 이전인 것 중 가장 최근
+function verAt(day, p){
+  p=p||S.pricing; var best=null;
+  p.vers.forEach(function(v){ if(v.from && v.from<=day && (!best || v.from>=best.from)) best=v; });
+  if(!best) p.vers.forEach(function(v){ if(!best || (v.from||'')<(best.from||'')) best=v; });
+  return best;
+}
+function PV(){ return verAt(todayKST()); }
+function plansOf(g){ return (S.pricing.plans[g])||[]; }
+function sheetRows(m){ if(!EDIT && !S.pricing.show) return []; var v=PV(); if(!v||!m) return []; return v.rows.filter(function(r){return r.model===m.id}); }
+function curType(g){ return g==='second'?'all':(MNP?'mnp':'chg'); }
+// 한 줄(기기·용량)의 실구매가 — pb: 공시지원금 선택, sel: 선택약정 선택
+function rowCalc(r, type, pk){
+  var out=num(r.out); if(out==null) return null;
+  var our=num((r.our||{})[type+'_'+pk])||0, pub=num((r.pub||{})[pk])||0;
+  var sel=Math.max(0,out-our), pb=pub?Math.max(0,out-pub-our):null;
+  return {out:out, our:our, pub:pub, sel:sel, pb:pb, v:(pb!=null?Math.min(pb,sel):sel)};
+}
+function SO(m){ if(!m) return false; if(m.soldout) return true; var rs=sheetRows(m); return rs.length>0 && rs.every(function(r){return r.so}); }
+function wz(n){ return n===0?'0원':won(n); }
+
 /* 가격: 번호이동/기기변경 중 지금 보는 가격 */
-var OPT={};   // 상세에서 고른 사이즈 (모델별)
-function optsOf(m){ return arr(m.opts).filter(function(o){return o&&o.nm}); }
+var OPT={};   // 상세에서 고른 사이즈·용량 (모델별)
+function optsOf(m){
+  var rs=sheetRows(m);
+  if(rs.length) return rs.map(function(r){ return {nm:r.cap||'기본', row:r}; });
+  return arr(m.opts).filter(function(o){return o&&o.nm});
+}
+function optLabel(m){
+  var rs=sheetRows(m);
+  if(rs.length) return rs[0].g==='phone'?'용량':(rs.some(function(r){return /mm/i.test(r.cap)})?'사이즈':'옵션');
+  return (m&&m.optLabel)||'사이즈';
+}
 function priceOf(m, oi){
+  var rs=sheetRows(m);
+  if(rs.length){
+    var g=rs[0].g, pk=(plansOf(g)[0]||{}).k, type=curType(g), r=null, c=null;
+    if(oi!=null && rs[oi]){ r=rs[oi]; c=rowCalc(r,type,pk); }
+    else {
+      var anyOn=rs.some(function(x){return !x.so});
+      rs.forEach(function(x){ if(x.so&&anyOn) return; var cx=rowCalc(x,type,pk); if(cx && (!c || cx.v<c.v)){ c=cx; r=x; } });
+      if(!r) r=rs[0];
+    }
+    var priced=rs.filter(function(x){return num(x.out)!=null}).length;
+    return {kind:'sheet', g:g, row:r, out:c?c.out:null, v:c?c.v:null, pub:c?c.pub:0, our:c?c.our:0, sub:c?(c.pub+c.our):0, from:(oi==null && priced>1)};
+  }
   var os=optsOf(m);
   if(os.length){
     var o = oi!=null ? os[oi] : (OPT[m.id]!=null ? os[OPT[m.id]] : null);
@@ -219,22 +313,51 @@ function priceOf(m, oi){
 function priceLine(m){
   var p=priceOf(m);
   if(p.v==null) return '<div class="pr" style="font-size:14px">'+esc(m.tags[0]||'상담 시 안내')+'</div>';
-  return '<div class="pr price-row">'+(p.v===0?'0원':won(p.v))+(p.from?'<span style="font-size:12px;color:var(--sub);font-weight:600">~</span>':'')+(p.out&&p.out>p.v?'<s>'+won(p.out)+'</s>':'')+'</div>';
+  return '<div class="pr price-row">'+wz(p.v)+(p.from?'<span style="font-size:12px;color:var(--sub);font-weight:600">~</span>':'')+(p.out&&p.out>p.v?'<s>'+won(p.out)+'</s>':'')+'</div>';
 }
+function pctOf(p){ return (p.v!=null && p.out && p.out>p.v) ? Math.round((p.out-p.v)/p.out*100) : 0; }
 function badgeOf(m){
-  if(m.soldout) return '일시품절';
+  if(SO(m)) return '일시품절';
   var p=priceOf(m);
   if(p.v===0) return '기기값 0원';
-  if(p.v!=null && p.out && p.out>p.v){ var pct=Math.round((p.out-p.v)/p.out*100); if(pct>0) return pct+'% 할인'; }
+  var pct=pctOf(p); if(pct>0) return pct+'% 할인';
   return m.tags[0]||'';
 }
 function stripOf(m){
-  if(m.soldout) return '일시품절 · 입고 알림 상담 가능';
+  if(SO(m)) return '일시품절 · 입고 알림 상담 가능';
   if(m.strip) return m.strip;
-  var pp=priceOf(m); if(pp.kind==='sub') return pp.sub?('이통사 지원금 '+won(pp.sub)+' 할인'):'스마트기기 상담 가능';
-  return '번호이동 시 '+(m.tags[0]||'')+(m.tags[1]?' + '+m.tags[1]:'');
+  var pp=priceOf(m);
+  if(pp.kind==='sheet'){
+    if(pp.g==='second') return pp.pub?('이통사 지원금 '+won(pp.pub)+' 할인'):'스마트기기 상담 가능';
+    var lead=(MNP?'번호이동':'기기변경')+' 시 ', tail=m.tags[1]?' + '+m.tags[1]:'';
+    if(pp.v===0) return lead+'기기값 0원'+tail;
+    var pct=pctOf(pp); if(pct>0) return lead+'기기값 '+pct+'% 할인'+tail;
+  }
+  if(pp.kind==='sub') return pp.sub?('이통사 지원금 '+won(pp.sub)+' 할인'):'스마트기기 상담 가능';
+  return (MNP?'번호이동':'기기변경')+' 시 '+(m.tags[0]||'')+(m.tags[1]?' + '+m.tags[1]:'');
 }
-
+function segBtns(){
+  return '<button type="button" data-mnp="1" class="'+(MNP?'on':'')+'">번호이동</button><button type="button" data-mnp="0" class="'+(MNP?'':'on')+'">기기변경</button>';
+}
+// 상세 화면 가격표: 요금제별로 공시지원금 선택 / 선택약정 선택
+function pline(t,sm,v){ return '<div class="r pr2"><span>'+t+(sm?'<small>'+esc(sm)+'</small>':'')+'</span><b>'+wz(v)+'</b></div>'; }
+function sheetTable(m, r){
+  var g=r.g, type=curType(g), out=num(r.out), h='';
+  if(g==='phone') h+='<div class="seg md-seg">'+segBtns()+'</div>';
+  h+='<div class="r"><span>출고가</span><b>'+(out!=null?won(out):'상담 시 안내')+'</b></div>';
+  if(out==null) return h;
+  plansOf(g).forEach(function(p,i){
+    var c=rowCalc(r,type,p.k); if(!c) return;
+    if(g==='second' && !c.pub && !c.our && i>0) return;
+    h+='<div class="pl'+(i===0?' first':'')+'"><div class="pl-h">'+esc(p.fee?('월 '+won(p.fee)+' 요금제'):p.nm)+'</div>';
+    var ourTxt=c.our?'유플러스 다이렉트 지원금 -'+won(c.our):'';
+    if(c.pb!=null) h+=pline(g==='phone'?'공시지원금 선택 시':'구매가', (g==='phone'?'공시지원금':'이통사 지원금')+' -'+won(c.pub)+(ourTxt?' · '+ourTxt:''), c.pb);
+    if(g==='phone') h+=pline('선택약정 선택 시', (ourTxt?ourTxt+' · ':'')+(p.fee?'월 요금 '+won(p.fee)+' → '+won(Math.round(p.fee*0.75)):'월 요금 25% 할인'), c.sel);
+    else if(c.pb==null) h+=pline('구매가', ourTxt, c.sel);
+    h+='</div>';
+  });
+  return h;
+}
 /* ---------------- 렌더 ---------------- */
 var heroTimer=null, heroIdx=0;
 function renderHero(){
@@ -268,7 +391,7 @@ function bindHeroSwipe(){
 }
 
 function circle(m,eager){
-  return '<a class="m'+(m.soldout?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="cir">'+im(mImg(m),'',eager,m.nm)+'</div><span>'+esc(m.nm)+'</span></a>';
+  return '<a class="m'+(SO(m)?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="cir">'+im(mImg(m),'',eager,m.nm)+'</div><span>'+esc(m.nm)+'</span></a>';
 }
 function renderModels(){
   var list=phones();
@@ -303,7 +426,7 @@ function renderPop(){
   $('#popSec').hidden=!secOn('pop');
   $('#popHead').innerHTML=secHead('pop','#/cat/all');
   $('#popgrid').innerHTML=phones().map(function(m){
-    return '<a class="pc'+(m.soldout?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="thumb" style="position:relative">'+im(mImg(m),'','',m.nm)+(m.soldout?'<span class="so-tag" style="font-size:11px">품절</span>':'')+'</div><div class="info">'+
+    return '<a class="pc'+(SO(m)?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="thumb" style="position:relative">'+im(mImg(m),'','',m.nm)+(SO(m)?'<span class="so-tag" style="font-size:11px">품절</span>':'')+'</div><div class="info">'+
       '<div class="nm">'+esc(m.nm)+CHEV+'</div><div class="ds">'+esc(m.ds)+'</div>'+
       '<div class="pills">'+m.tags.map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div></div></a>';
   }).join('');
@@ -311,14 +434,15 @@ function renderPop(){
 function hcard(m,opt){
   opt=opt||{};
   var badge=opt.badge||badgeOf(m);
-  return '<a class="hc'+(m.soldout?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="im">'+(badge?'<span class="badge'+(opt.dark||m.soldout?' dark':'')+'">'+esc(badge)+'</span>':'')+
+  return '<a class="hc'+(SO(m)?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="im">'+(badge?'<span class="badge'+(opt.dark||SO(m)?' dark':'')+'">'+esc(badge)+'</span>':'')+
     im(mImg(m),'','',m.nm)+'</div><div class="strip">'+esc(stripOf(m))+'</div>'+
     '<div class="bd"><div class="t">'+esc(m.nm)+'</div>'+priceLine(m)+'<div class="mt">제휴카드·부가서비스 X · 당일발송</div></div></a>';
 }
+function isZero(m){ if(m.cat.indexOf('zero')>-1) return true; var p=priceOf(m); return p.kind==='sheet' && p.v===0; }
 function renderZero(){
   $('#zeroSec').hidden=!secOn('zero');
   $('#zeroHead').innerHTML=secHead('zero','#/cat/zero');
-  $('#zero').innerHTML=phones().filter(function(m){return m.cat.indexOf('zero')>-1}).map(function(m){return hcard(m)}).join('');
+  $('#zero').innerHTML=phones().filter(isZero).map(function(m){return hcard(m)}).join('');
 }
 function renderRecent(){
   var ids=store.get('recent',[]).filter(function(id){var m=byId(id);return m&&(EDIT||!m.hidden)});
@@ -344,28 +468,29 @@ function renderRank(){
   $('#rankSec').hidden=!secOn('rank');
   $('#rankHead').innerHTML=secHead('rank','#/cat/all');
   $('#rank').innerHTML=S.rank.map(byId).filter(function(m){return m&&(EDIT||!m.hidden)}).map(function(m,i){
-    return '<a class="dc'+(m.soldout?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="sec:rank"><span class="rk">'+(i+1)+'위</span>'+im(mImg(m),'','',m.nm)+
-      (m.soldout?'<span class="so-tag" style="z-index:1">일시품절</span>':'')+'<div class="ov"><div class="sm">'+esc(m.ds)+'</div><div class="tt">'+esc(m.nm)+'</div><div class="pr">'+esc(badgeOf(m))+'</div></div></a>';
+    return '<a class="dc'+(SO(m)?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="sec:rank"><span class="rk">'+(i+1)+'위</span>'+im(mImg(m),'','',m.nm)+
+      (SO(m)?'<span class="so-tag" style="z-index:1">일시품절</span>':'')+'<div class="ov"><div class="sm">'+esc(m.ds)+'</div><div class="tt">'+esc(m.nm)+'</div><div class="pr">'+esc(badgeOf(m))+'</div></div></a>';
   }).join('');
 }
 function bigcard(m){
   var wish=store.get('wish',[]).indexOf(m.id)>-1, p=priceOf(m), meta=[];
-  if(p.kind==='sub'){ if(p.out!=null) meta.push('출고가 <b>'+won(p.out)+'</b>'); if(p.sub) meta.push('지원금 <b>-'+won(p.sub)+'</b>'); if(p.v!=null) meta.push('구매가 <b>'+won(p.v)+(p.from?'~':'')+'</b>'); }
+  if(p.kind==='sheet'){ if(p.out!=null) meta.push('출고가 <b>'+won(p.out)+'</b>'); if(p.v!=null) meta.push((p.g==='second'?'구매가':(MNP?'번호이동':'기기변경'))+' <b>'+wz(p.v)+(p.from?'~':'')+'</b>'); }
+  else if(p.kind==='sub'){ if(p.out!=null) meta.push('출고가 <b>'+won(p.out)+'</b>'); if(p.sub) meta.push('지원금 <b>-'+won(p.sub)+'</b>'); if(p.v!=null) meta.push('구매가 <b>'+won(p.v)+(p.from?'~':'')+'</b>'); }
   else if(p.out!=null) meta.push('출고가 <b>'+won(p.out)+'</b>');
   if(p.mnp!=null) meta.push('번호이동 <b>'+(p.mnp===0?'0원':won(p.mnp))+'</b>');
   if(p.chg!=null) meta.push('기기변경 <b>'+(p.chg===0?'0원':won(p.chg))+'</b>');
-  return '<a class="big'+(m.soldout?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="media">'+im(mCard(m,0),'main','',m.nm)+
+  return '<a class="big'+(SO(m)?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="media">'+im(mCard(m,0),'main','',m.nm)+
     '<div class="side">'+im(mCard(m,1),'','',m.nm)+im(mCard(m,2),'','',m.nm)+'</div>'+
-    (m.soldout?'<span class="so-tag" style="font-size:18px">일시품절</span>':'')+
+    (SO(m)?'<span class="so-tag" style="font-size:18px">일시품절</span>':'')+
     '<button class="heart'+(wish?' on':'')+'" data-wish="'+esc(m.id)+'" aria-label="찜">'+HEART+'</button>'+
     '<div class="strip">'+esc(stripOf(m))+'</div></div>'+
-    '<div class="row1"><h3 class="ucard-name">'+esc(m.nm)+'</h3><span class="bdg">'+(m.soldout?'일시품절':'당일발송')+'</span><span class="eta">'+esc(badgeOf(m))+'</span></div>'+
+    '<div class="row1"><h3 class="ucard-name">'+esc(m.nm)+'</h3><span class="bdg">'+(SO(m)?'일시품절':'당일발송')+'</span><span class="eta">'+esc(badgeOf(m))+'</span></div>'+
     '<div class="meta">'+(meta.length?meta.join(' · '):'가격은 상담 시 안내드립니다')+'</div>'+
     '<div class="chips"><span class="chip">제휴카드 X</span><span class="chip">부가서비스 X</span><span class="chip gray">5분 상담</span></div>'+
-    '<div class="stamp">'+(m.soldout?'입고 알림 상담 신청 가능':'온라인 상담 신청 시 사은품 증정')+'</div></a>';
+    '<div class="stamp">'+(SO(m)?'입고 알림 상담 신청 가능':'온라인 상담 신청 시 사은품 증정')+'</div></a>';
 }
 function smallCircles(list){
-  return list.map(function(m){return '<a class="m'+(m.soldout?' soldout':'')+hidCls(m)+'" style="flex:0 0 76px;display:flex;flex-direction:column;align-items:center;gap:6px" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="cir">'+im(mImg(m),'','',m.nm)+'</div><span>'+esc(m.nm)+'</span></a>'}).join('');
+  return list.map(function(m){return '<a class="m'+(SO(m)?' soldout':'')+hidCls(m)+'" style="flex:0 0 76px;display:flex;flex-direction:column;align-items:center;gap:6px" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="cir">'+im(mImg(m),'','',m.nm)+'</div><span>'+esc(m.nm)+'</span></a>'}).join('');
 }
 function renderPick(){
   $('#pickSec').hidden=!secOn('pick');
@@ -377,10 +502,10 @@ function renderFoot(){
   var b=S.biz||{}, n=S.stores.filter(function(s){return s&&s.nm}).length;
   $('#foot').innerHTML=
     '<section class="about-us">'+
-      '<img class="au-badge" src="/assets/about-official-badge.webp" alt="LG유플러스 공식인증대리점 (주)신세계정보통신" loading="lazy">'+
-      '<p class="au-eye">ABOUT US</p><p class="au-t">유플러스 다이렉트는<br>신세계정보통신이 운영하는<br>온라인 상담 채널입니다</p>'+
-      '<dl class="au-dl"><dt>운영사</dt><dd>신세계정보통신</dd><dt>파트너십</dt><dd>LG U+ 공식 파트너사</dd>'+
-      '<dt>직영매장</dt><dd>서울·경기 '+(n||24)+'개 운영</dd><dt>서비스</dt><dd>온라인 상담 · 개통 · 사후관리 일괄 진행</dd></dl>'+
+      '<img class="au-badge" src="/assets/about-official-badge.webp" alt="LG유플러스 공식인증대리점" loading="lazy">'+
+      '<p class="au-eye">ABOUT US</p><p class="au-t">유플러스 다이렉트는<br>LG U+ 공식 파트너사가 운영하는<br>온라인 상담 채널입니다</p>'+
+      '<dl class="au-dl"><dt>파트너십</dt><dd>LG U+ 공식 파트너사</dd>'+
+      '<dt>직영매장</dt><dd>서울·경기 '+(n||24)+'개 운영</dd><dt>서비스</dt><dd>온라인 상담 · 개통 · 사후관리 일괄 진행</dd><dt>고객센터</dt><dd>'+esc(S.tel)+' · 카카오톡 상담</dd></dl>'+
       '<div class="au-btns"><button type="button" class="au-btn pri" data-video="direct">▶ 소개 영상 보기</button><button type="button" class="au-btn" data-open="store">직영매장 찾기</button></div>'+
     '</section>'+
     '<div class="sf">'+
@@ -390,7 +515,7 @@ function renderFoot(){
         '<p><span>사업자등록번호</span> '+esc(b.no)+' · <span>전화번호</span> '+esc(S.tel)+'</p><p><span>이메일</span> '+esc(b.email)+'</p>'+
         '<p class="sf-h">상담시간 : '+esc(b.hours)+'</p></div>'+
       '<div class="sf-bot"><p>Copyright(C) 2025 U+ 다이렉트. All rights reserved.</p><div class="sf-p">'+
-        '<a href="'+esc(S.kakao)+'" target="_blank" rel="noopener">Kakao</a><a href="#" data-video="direct">'+esc(b.corp||'(주)신세계정보통신')+'</a></div></div>'+
+        '<a href="'+esc(S.kakao)+'" target="_blank" rel="noopener">Kakao</a><a href="#" data-video="direct">회사 소개</a></div></div>'+
     '</div>';
 }
 /* 소개 영상 팝업 */
@@ -401,7 +526,7 @@ function openVideo(k){
   o.addEventListener('click',function(e){ if(e.target===o||e.target.closest('.vp-x')){ var vd=o.querySelector('video'); try{vd.pause()}catch(x){} o.remove(); document.body.style.overflow=''; } });
   document.body.appendChild(o); document.body.style.overflow='hidden';
 }
-function syncMnp(){ $$('[data-toggle="mnp"]').forEach(function(x){x.classList.toggle('on',MNP)}); }
+function syncMnp(){ $$('[data-seg]').forEach(function(x){ x.innerHTML=segBtns(); }); }
 function renderHome(){
   renderHero(); renderModels(); renderQuick(); renderTrust(); renderPromo(); renderPop(); renderRecent();
   renderZero(); renderWear(); renderGifts(); renderRank(); renderPick(); renderFoot(); syncMnp();
@@ -412,7 +537,7 @@ function renderCat(k){
   var tab=CAT_TABS.filter(function(t){return t.k===k})[0]||CAT_TABS[0];
   $('#catTitle').textContent=tab.nm;
   $('#catTabs').innerHTML=CAT_TABS.map(function(t){return '<button class="'+(t.k===tab.k?'on':'')+'" data-cat="'+t.k+'">'+t.nm+'</button>'}).join('');
-  var list=models().filter(function(m){return tab.k==='all'||m.cat.indexOf(tab.k)>-1});
+  var list=models().filter(function(m){return tab.k==='all'||m.cat.indexOf(tab.k)>-1||(tab.k==='zero'&&!isWear(m)&&isZero(m))});
   $('#catCircles').innerHTML=smallCircles(list);
   $('#catList').innerHTML=list.map(bigcard).join('') || '<div class="empty">해당 모델이 없습니다</div>';
   syncMnp();
@@ -441,8 +566,11 @@ function renderWish(){
 function renderModel(id, keepRecent){
   var m=byId(id); if(!m||(m.hidden&&!EDIT)){location.hash='#/';return}
   if(!keepRecent){ var r=store.get('recent',[]).filter(function(x){return x!==id}); r.unshift(id); store.set('recent',r.slice(0,10)); }
-  var p=priceOf(m, optsOf(m).length?(OPT[m.id]||0):null), rows='';
-  if(p.kind==='sub'){
+  var srs=sheetRows(m), selRow=null, rows='';
+  if(srs.length && (OPT[m.id]==null || !srs[OPT[m.id]])) OPT[m.id]=Math.max(0, srs.indexOf(priceOf(m).row));
+  var p=priceOf(m, optsOf(m).length?(OPT[m.id]||0):null);
+  if(p.kind==='sheet'){ selRow=p.row; rows=sheetTable(m, p.row); }
+  else if(p.kind==='sub'){
     rows+='<div class="r"><span>출고가</span><b>'+(p.out!=null?won(p.out):'상담 시 안내')+'</b></div>';
     rows+='<div class="r"><span>이통사 지원금</span><b style="color:var(--pink)">'+(p.sub?'-'+won(p.sub):'-')+'</b></div>';
     rows+='<div class="r hi"><span>구매가</span><b>'+(p.v!=null?won(p.v):'상담 시 안내')+'</b></div>';
@@ -453,22 +581,23 @@ function renderModel(id, keepRecent){
   }
   $('#mdTitle').textContent=m.nm;
   var pc=colorsOf(m).filter(function(c){return c.nm===PICK[m.id]})[0];
-  $('#mdBody').innerHTML='<div class="ucard" data-edit="model:'+esc(m.id)+'"><div class="md-img" id="mdImg">'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(m.soldout?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>'+
+  $('#mdBody').innerHTML='<div class="ucard" data-edit="model:'+esc(m.id)+'"><div class="md-img" id="mdImg">'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(SO(m)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>'+
     '<h2 class="md-h ucard-name">'+esc(m.nm)+'</h2><p style="color:var(--sub);margin-top:4px">'+esc(m.ds)+'</p>'+
     '<div class="pills" style="margin-top:10px">'+m.tags.map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div>'+
     colorPicker(m)+optPicker(m)+
-    (m.soldout?'<div class="so-notice">현재 일시품절입니다. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
+    (SO(m)||(selRow&&selRow.so)?'<div class="so-notice">'+(SO(m)?'현재 일시품절입니다':'선택하신 '+esc(selRow.cap||'옵션')+' 은(는) 일시품절입니다')+'. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
     '<div class="ptable" id="ucatPrice">'+rows+'<div class="note">'+esc(S.priceNote)+'</div></div>'+
     '<div class="md-chips"><span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span><span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>'+
-    '<button class="cta ucard-cta" data-open="consult" data-model="'+esc(m.id)+'" data-color="'+esc(PICK[m.id]||'')+'" data-opt="'+esc(optsOf(m).length?optsOf(m)[OPT[m.id]||0].nm:'')+'">'+(m.soldout?'입고 알림 상담 신청하기':'온라인 상담 신청하기')+'</button></div>';
+    '<button class="cta ucard-cta" data-open="consult" data-model="'+esc(m.id)+'" data-color="'+esc(PICK[m.id]||'')+'" data-opt="'+esc(optsOf(m).length?optsOf(m)[OPT[m.id]||0].nm:'')+'">'+(SO(m)||(selRow&&selRow.so)?'입고 알림 상담 신청하기':'온라인 상담 신청하기')+'</button></div>';
 }
 
 var PICK={};   // 상세에서 고른 컬러 (모델별)
 function optPicker(m){
   var os=optsOf(m); if(os.length<2) return '';
   var cur=OPT[m.id]||0;
-  return '<div class="cpick"><div class="cpick-l">'+esc(m.optLabel||'사이즈')+'</div><div class="cpick-row">'+os.map(function(o,i){
-    return '<button type="button" class="opt'+(i===cur?' on':'')+'" data-opt-pick="'+i+'" data-model="'+esc(m.id)+'">'+esc(o.nm)+'</button>';
+  return '<div class="cpick"><div class="cpick-l">'+esc(optLabel(m))+'</div><div class="cpick-row">'+os.map(function(o,i){
+    var so=o.row&&o.row.so;
+    return '<button type="button" class="opt'+(i===cur?' on':'')+(so?' so':'')+'" data-opt-pick="'+i+'" data-model="'+esc(m.id)+'">'+esc(o.nm)+(so?' <small>품절</small>':'')+'</button>';
   }).join('')+'</div></div>';
 }
 function colorPicker(m){
@@ -559,7 +688,7 @@ function optOpts(m, sel){
 }
 function sheetConsult(modelId, colorNm, optNm){
   var opts=models().filter(function(m){return !m.hidden}).map(function(m){
-    return '<option value="'+esc(m.nm)+'" data-id="'+esc(m.id)+'"'+(m.id===modelId?' selected':'')+'>'+esc(m.nm)+(m.soldout?' (일시품절 · 입고 알림)':'')+'</option>';
+    return '<option value="'+esc(m.nm)+'" data-id="'+esc(m.id)+'"'+(m.id===modelId?' selected':'')+'>'+esc(m.nm)+(SO(m)?' (일시품절 · 입고 알림)':'')+'</option>';
   }).join('');
   return '<section id="consultForm"><h3>온라인 상담 신청</h3>'+
     '<div class="ff"><label>이름 <span class="req">*</span></label><input type="text" id="mUserName" placeholder="이름을 입력해 주세요" autocomplete="name"></div>'+
@@ -567,7 +696,7 @@ function sheetConsult(modelId, colorNm, optNm){
     '<div class="ff"><label>생년월일 <span class="req">*</span></label><input type="text" id="mUserBirth" inputmode="numeric" maxlength="8" placeholder="예: 940101"></div>'+
     '<div class="ff"><label>현재 통신사 <span class="req">*</span></label><select id="mCarrierSel"><option value="" selected disabled>통신사를 선택해 주세요</option><option>SKT</option><option>KT</option><option>LG U+</option><option>알뜰폰</option></select></div>'+
     '<div class="ff"><label>관심 기기 <span class="req">*</span></label><select id="mDeviceSelect"><option value=""'+(modelId?'':' selected')+' disabled>기기를 선택해 주세요</option>'+opts+'<option value="상담 후 결정">상담 후 결정할게요</option></select></div>'+
-    '<div class="ff" id="mOptWrap"'+(optOpts(byId(modelId))?'':' hidden')+'><label id="mOptLbl">'+esc((byId(modelId)&&byId(modelId).optLabel)||'사이즈')+'</label><select id="mOptSel">'+optOpts(byId(modelId),optNm)+'</select></div>'+
+    '<div class="ff" id="mOptWrap"'+(optOpts(byId(modelId))?'':' hidden')+'><label id="mOptLbl">'+esc(byId(modelId)?optLabel(byId(modelId)):'사이즈')+'</label><select id="mOptSel">'+optOpts(byId(modelId),optNm)+'</select></div>'+
     '<div class="ff" id="mColorWrap"'+(colorOpts(byId(modelId))?'':' hidden')+'><label>희망 컬러</label><select id="mColorSel">'+colorOpts(byId(modelId),colorNm)+'</select></div>'+
     '<div class="ff"><label>전달사항</label><textarea id="mUserNote" rows="3" maxlength="500" placeholder="요청사항을 적어주세요"></textarea></div>'+
     '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히</button></label>'+
@@ -598,7 +727,9 @@ function submitConsult(){
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
   var dm=null; $$('#mDeviceSelect option').forEach(function(o){ if(o.selected&&o.getAttribute('data-id')) dm=byId(o.getAttribute('data-id')); });
   var optV=($('#mOptSel')&&!$('#mOptWrap').hidden&&$('#mOptSel').value)||null, capV=optV;
-  if(dm&&dm.optLabel==='요금제'){ if(optV) memo=('[희망 요금제] '+optV+(memo?' / '+memo:'')); capV=dm.capacity||null; }
+  var dRows=dm?sheetRows(dm):[];
+  if(dRows.length){ if(!capV && dRows.length===1 && dRows[0].cap && dRows[0].cap!=='기본') capV=dRows[0].cap; if(capV==='기본') capV=null; }
+  else if(dm&&dm.optLabel==='요금제'){ if(optV) memo=('[희망 요금제] '+optV+(memo?' / '+memo:'')); capV=dm.capacity||null; }
   var body={name:name, phone:phoneF, carrier:carrier, channel:window.PAGE_CHANNEL||'메타', utm_campaign:window.PAGE_UTM_CAMPAIGN||null,
     device_interest:device, capacity:capV, product_color:($('#mColorSel')&&$('#mColorSel').value)||null, birth_date:birth, memo:memo||null, status:'신규'};
   if(typeof window.udakMetaIds==='function'){ var mi=window.udakMetaIds(); Object.keys(mi).forEach(function(k){ body[k]=mi[k]; }); }
@@ -639,7 +770,7 @@ document.addEventListener('click',function(e){
   var cp=t.closest('[data-color-pick]');
   if(cp){ e.preventDefault(); e.stopPropagation(); var mm=byId(cp.getAttribute('data-model')), nm=cp.getAttribute('data-color-pick'), cc=colorsOf(mm).filter(function(c){return c.nm===nm})[0];
     PICK[mm.id]=nm; $$('[data-color-pick]').forEach(function(b){b.classList.toggle('on',b===cp)}); $('#cpickName').textContent=nm;
-    if(cc&&cc.img) $('#mdImg').innerHTML=im(cc.img,'',true,mm.nm)+(mm.soldout?'<span class="so-tag" style="font-size:22px">일시품절</span>':'');
+    if(cc&&cc.img) $('#mdImg').innerHTML=im(cc.img,'',true,mm.nm)+(SO(mm)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'');
     var cb=$('.ucard-cta'); if(cb) cb.setAttribute('data-color',nm); return; }
   var w=t.closest('[data-wish]');
   if(w){e.preventDefault();e.stopPropagation();var id=w.getAttribute('data-wish'),l=store.get('wish',[]),i=l.indexOf(id);
@@ -648,7 +779,7 @@ document.addEventListener('click',function(e){
   var o=t.closest('[data-open]'); if(o){e.preventDefault();act(o.getAttribute('data-open'),o);return}
   var g=t.closest('[data-go]'); if(g){e.preventDefault();act(g.getAttribute('data-go'),g);return}
   var c=t.closest('[data-cat]'); if(c){location.hash='#/cat/'+c.getAttribute('data-cat');return}
-  var tg=t.closest('[data-toggle]'); if(tg){ MNP=!MNP; refresh(); return; }
+  var mp=t.closest('[data-mnp]'); if(mp){ e.preventDefault(); MNP=mp.getAttribute('data-mnp')==='1'; refresh(); return; }
   if(t.closest('[data-back]')){e.preventDefault();history.length>1?history.back():location.hash='#/';return}
 });
 document.addEventListener('input',function(e){
@@ -662,7 +793,7 @@ document.addEventListener('change',function(e){
   if(e.target.id!=='mDeviceSelect') return;
   var o=e.target.selectedOptions&&e.target.selectedOptions[0], m=o&&byId(o.getAttribute('data-id')), h=colorOpts(m);
   $('#mColorSel').innerHTML=h; $('#mColorWrap').hidden=!h;
-  var oh=optOpts(m); $('#mOptSel').innerHTML=oh; $('#mOptWrap').hidden=!oh; $('#mOptLbl').textContent=(m&&m.optLabel)||'사이즈';
+  var oh=optOpts(m); $('#mOptSel').innerHTML=oh; $('#mOptWrap').hidden=!oh; $('#mOptLbl').textContent=m?optLabel(m):'사이즈';
 });
 
 /* ---------------- 데이터 불러오기 + 실시간 반영 ---------------- */
@@ -688,6 +819,7 @@ function live(){
 window.STORE = {
   get S(){ return S; }, set S(v){ S=v; },
   DB:DB, GH:GH, IMG:IMG, FOLDERS:FOLDERS, DEFAULT:DEFAULT, CAT_TABS:CAT_TABS, GO_OPTIONS:GO_OPTIONS, QI:QI, TI:TI,
+  TYPES:TYPES, todayKST:todayKST, verAt:verAt, PV:PV, plansOf:plansOf, sheetRows:sheetRows, rowCalc:rowCalc, normPricing:normPricing,
   esc:esc, clone:clone, num:num, won:won, imgSrc:imgSrc, im:im, byId:byId, colorsOf:colorsOf, optsOf:optsOf, DEFCOLORS:DEFCOLORS, mImg:mImg, mCard:mCard, normalize:normalize,
   refresh:refresh, openSheet:openSheet, closeSheet:closeSheet, load:load, apply:apply,
   setEditing:function(v){ editing=v; document.body.classList.toggle('editing',v); },
