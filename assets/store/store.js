@@ -406,7 +406,7 @@ function calcState(m, r){
   if(!c) return st;
   st.method=g==='second'?'pub':((s.method==='sel'||!c.pub)?'sel':'pub');
   st.after=(st.method==='pub'&&c.pb!=null)?c.pb:c.sel;
-  st.months=s.months==null?null:s.months; st.mm=st.months==null?36:st.months; st.noint=noInterest(r);
+  st.months=s.months==null?24:s.months; st.mm=st.months;   // 기본 24개월 할부 st.noint=noInterest(r);
   st.monthly=st.mm===0?null:won10(st.noint?st.after/st.mm:st.after*RATE[st.mm]/st.mm);
   st.fee=g==='phone'?(t.fee||null):null; st.feeAfter=st.fee&&st.method==='sel'?Math.round(st.fee*0.75):st.fee;
   return st;
@@ -417,7 +417,7 @@ function calcSummary(st){
   var a=[]; if(st.g==='phone') a.push(st.s.carrier?st.s.carrier+' · '+typeNm(st):typeNm(st)+' 기준');
   if(st.split&&st.t) a.push(tierTitle(st.t));
   if(st.g==='phone') a.push(st.method==='pub'?'공시지원금':'선택약정');
-  a.push(st.months===0?'일시납':(st.months==null?'36개월 할부(기준)':st.months+'개월 할부'));
+  a.push(st.months===0?'일시납':st.months+'개월 할부');
   return a.join(' · ');
 }
 function payTxt(st){ return st.months===0?won(st.after)+' (일시납)':won(st.monthly)+' / 월'; }
@@ -436,8 +436,7 @@ function calcPickers(m, r, st){
       return '<option value="'+esc(t.k)+'"'+(st.t&&st.t.k===t.k?' selected':'')+'>'+esc(tierTitle(t))+'</option>'; }).join('')+'</select>'+(g==='phone'?'<div class="cpick-hint">'+PLAN_NOTE+'</div>':'')+'</div>';
   if(g==='phone'&&st.c) h+=cgrid('할인 방식','method',[['pub','공시지원금',!st.c.pub],['sel','선택약정 (요금 25%↓)']],st.method,m,2,
     !st.c.pub?'이 조건은 공시지원금이 없어 선택약정으로 계산돼요':'공시지원금과 선택약정은 둘 중 하나만 받을 수 있어요');
-  h+=cgrid('할부 개월','months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],st.months==null?'':String(st.months),m,4,
-    st.months==null?'할부를 고르지 않으면 36개월 기준으로 보여드려요':'');
+  h+=cgrid('할부 개월','months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(st.months),m,4,'');
   return h;
 }
 function calcBox(m, r, st){
@@ -573,9 +572,9 @@ function renderRank(){
 function priceBlock(p){
   if(p.v==null) return '';
   var lab=p.kind==='sheet'?(p.g==='second'?'구매가':(MNP?'번호이동 구매가':'기기변경 구매가')):'구매가', pct=pctOf(p);
-  var noint=p.row&&noInterest(p.row), mon=p.v>0?won10(noint?p.v/36:p.v*RATE[36]/36):0;
+  var noint=p.row&&noInterest(p.row), mon=p.v>0?won10(noint?p.v/24:p.v*RATE[24]/24):0;   // 카드는 24개월 할부 기준
   return '<div class="bp"><span class="bp-l">'+lab+'</span>'+(pct>0?'<span class="bp-pct">'+pct+'%</span>':'')+'<b class="bp-v">'+wz(p.v)+(p.from?'~':'')+'</b>'+(p.out&&p.out>p.v?'<s class="bp-o">'+won(p.out)+'</s>':'')+'</div>'+
-    '<div class="bp-m">'+(p.v===0?'기기값 0원 · 할부금 없음':'월 <b>'+won(mon)+(p.from?'~':'')+'</b> <small>36개월 할부 · '+(noint?'이자 없음':'할부이자 포함')+'</small>')+'</div>';
+    '<div class="bp-m">'+(p.v===0?'기기값 0원 · 할부금 없음':'월 <b>'+won(mon)+(p.from?'~':'')+'</b> <small>24개월 할부 · '+(noint?'이자 없음':'할부이자 포함')+'</small>')+'</div>';
 }
 function bigcard(m){
   var wish=store.get('wish',[]).indexOf(m.id)>-1, p=priceOf(m), meta=[], pb=(p.kind==='sheet'||p.kind==='sub')?priceBlock(p):'';
