@@ -39,7 +39,11 @@ var DEFAULT = {
     {id:'watchultra2', nm:'갤럭시 워치 울트라2', cat:['watch'], ds:'티타늄으로 완성한 아웃도어 워치', tags:['이통사 지원금','스마트기기'], opts:[{nm:'기본',out:969100,sub:450000}]},
     {id:'watch9',      nm:'갤럭시 워치9',       cat:['watch'], ds:'매일 함께하는 건강 파트너',       tags:['이통사 지원금','스마트기기'], opts:[{nm:'44mm',out:569800,sub:164000},{nm:'40mm',out:529100,sub:164000}]},
     {id:'watchse3',    nm:'애플워치 SE3',       cat:['watch'], ds:'아이폰과 가장 잘 어울리는 워치',   tags:['이통사 지원금','스마트기기'], opts:[{nm:'40mm',out:429000,sub:287500},{nm:'44mm',out:473000,sub:287500}]},
-    {id:'taba11plus',  nm:'갤럭시 탭 A11+',     cat:['tablet'],ds:'넉넉한 화면, 가벼운 태블릿',        tags:['상담 시 안내','스마트기기']}
+    {id:'taba11plus',  nm:'갤럭시 탭 A11+',     cat:['tablet'],ds:'넉넉한 화면, 가벼운 태블릿',        tags:['상담 시 안내','스마트기기']},
+    {id:'tvfree5',     nm:'U+ tv 프리5',        cat:['tablet'],ds:'12.4인치 대화면, TV를 내 방 어디서나', tags:['이통사 지원금','스마트기기'], optLabel:'요금제',
+      opts:[{nm:'1GB 요금제',out:799700,sub:601700},{nm:'500MB 요금제',out:799700,sub:562100}]},
+    {id:'ipada16',     nm:'아이패드 A16',        cat:['tablet'],ds:'128GB · 가볍게 시작하는 아이패드',   tags:['이통사 지원금','스마트기기'], optLabel:'요금제', capacity:'128GB',
+      opts:[{nm:'1GB 요금제',out:748000,sub:550000},{nm:'500MB 요금제',out:748000,sub:510400}]}
   ],
   quick:[
     {nm:'유닥 멤버십 가입', ic:'user',    c:'#FF3D8B', bg:'#FFF2F7', b:'#FADCE8', go:'sec:gifts'},
@@ -95,6 +99,8 @@ var DEFCOLORS = {
   watchultra2:[{nm:'티타늄 실버',hex:'#C9C9C7',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20260730-100757-105-s4pfDDQm.png'},{nm:'티타늄 그레이',hex:'#6B6E70',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20260730-100814-359-AI00mavL.png'}],
   watch9:[{nm:'그라파이트',hex:'#3A3A3C',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20260730-100914-697-6wrbN7a3.png'},{nm:'크림',hex:'#F2EDE3',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20260730-100933-342-dXgligws.png'}],
   watchse3:[{nm:'미드나이트',hex:'#232A35',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20250924-024025-748-JQRwZZ8s.png'},{nm:'스타라이트',hex:'#E9E3D6',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20250924-024253-142-X6foS0eQ.png'}],
+  tvfree5:[{nm:'기본',hex:'#3A3A3C',img:'https://i.namu.wiki/i/BeQj_MqtIzsrmIX4_9xVUxo2Ed38qGyNS3jJCKDdMbMmeisoJKoig23xkjR03tMQg2GSXmP6ae0wkKcIA92klzXZsktGeT7YBI_q-v-DoDeCH9qfwD_DnoPD2fAhXnsbUX4LoaEjK2T7gp4MDA7Dgw.webp || model/tvfree5.webp'}],
+  ipada16:[{nm:'실버',hex:'#D9DADC',img:'model/ipada16-silver.webp'}],
   taba11plus:[{nm:'기본',hex:'#8A8F98',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20251127-040323-387-In3ubFxO.png'}],
   fold8ultra:[{nm:'바이올렛 쉐도우',hex:'#5C4E77',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20260723-040628-100-q8B7Lw9c.png'},{nm:'그라파이트',hex:'#3A3A3C',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20260723-040656-778-ob3Y60Ad.png'},{nm:'크림',hex:'#F7F4EC',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20260723-040643-727-3rHd0IUe.png'}],
   flip8:[{nm:'핑크',hex:'#F2C6D6',img:'model/flip8-pink.webp'},{nm:'그라파이트',hex:GR,img:'model/flip8-graphite.webp'},{nm:'크림',hex:CR,img:'model/flip8-cream.webp'}]
@@ -132,7 +138,7 @@ function num(v){ if(v===0) return 0; v=String(v==null?'':v).replace(/[^\d]/g,'')
 function won(n){ return Number(n).toLocaleString('ko-KR')+'원'; }
 var store={get:function(k,d){try{var v=localStorage.getItem('ud_'+k);return v?JSON.parse(v):d}catch(e){return d}},
            set:function(k,v){try{localStorage.setItem('ud_'+k,JSON.stringify(v))}catch(e){}}};
-function imgSrc(p){ if(!p) return ''; return /^(https?:)?\//.test(p) ? p : IMG+p; }
+function imgSrc(p){ if(!p) return ''; p=String(p).split('||')[0].trim(); return /^(https?:)?\//.test(p) ? p : IMG+p; }
 // 이미지 — 파일이 없으면: 관리자 화면은 '들어갈 파일명', 고객 화면은 은은한 빈 칸
 function im(path, cls, eager, label){
   if(!path) return '<div class="'+(EDIT?'ph':'ph-soft')+' '+(cls||'')+'">'+esc(EDIT?'(사진 없음)':(label||''))+'</div>';
@@ -140,6 +146,8 @@ function im(path, cls, eager, label){
   return '<img class="'+(cls||'')+(fit?' fit':'')+'" src="'+esc(imgSrc(path))+'" alt="'+esc(label||'')+'" '+(eager?'':'loading="lazy" ')+'decoding="async" data-ph="'+esc(path)+'" data-lb="'+esc(label||'')+'" onerror="__stPh(this)">';
 }
 window.__stPh=function(el){
+  var alts=(el.getAttribute('data-ph')||'').split('||');
+  if(alts.length>1){ var rest=alts.slice(1).join('||').trim(); el.setAttribute('data-ph',rest); el.src=imgSrc(rest); return; }
   var src=el.getAttribute('src')||'', tried=+(el.getAttribute('data-try')||0);
   if(/\.jpg$/i.test(el.getAttribute('data-ph')||'') && tried<2){
     el.setAttribute('data-try',tried+1);
@@ -423,7 +431,7 @@ var PICK={};   // 상세에서 고른 컬러 (모델별)
 function optPicker(m){
   var os=optsOf(m); if(os.length<2) return '';
   var cur=OPT[m.id]||0;
-  return '<div class="cpick"><div class="cpick-l">사이즈</div><div class="cpick-row">'+os.map(function(o,i){
+  return '<div class="cpick"><div class="cpick-l">'+esc(m.optLabel||'사이즈')+'</div><div class="cpick-row">'+os.map(function(o,i){
     return '<button type="button" class="opt'+(i===cur?' on':'')+'" data-opt-pick="'+i+'" data-model="'+esc(m.id)+'">'+esc(o.nm)+'</button>';
   }).join('')+'</div></div>';
 }
@@ -518,7 +526,7 @@ function sheetConsult(modelId, colorNm, optNm){
     '<div class="ff"><label>생년월일 <span class="req">*</span></label><input type="text" id="mUserBirth" inputmode="numeric" maxlength="8" placeholder="예: 940101"></div>'+
     '<div class="ff"><label>현재 통신사 <span class="req">*</span></label><select id="mCarrierSel"><option value="" selected disabled>통신사를 선택해 주세요</option><option>SKT</option><option>KT</option><option>LG U+</option><option>알뜰폰</option></select></div>'+
     '<div class="ff"><label>관심 기기 <span class="req">*</span></label><select id="mDeviceSelect"><option value=""'+(modelId?'':' selected')+' disabled>기기를 선택해 주세요</option>'+opts+'<option value="상담 후 결정">상담 후 결정할게요</option></select></div>'+
-    '<div class="ff" id="mOptWrap"'+(optOpts(byId(modelId))?'':' hidden')+'><label>사이즈</label><select id="mOptSel">'+optOpts(byId(modelId),optNm)+'</select></div>'+
+    '<div class="ff" id="mOptWrap"'+(optOpts(byId(modelId))?'':' hidden')+'><label id="mOptLbl">'+esc((byId(modelId)&&byId(modelId).optLabel)||'사이즈')+'</label><select id="mOptSel">'+optOpts(byId(modelId),optNm)+'</select></div>'+
     '<div class="ff" id="mColorWrap"'+(colorOpts(byId(modelId))?'':' hidden')+'><label>희망 컬러</label><select id="mColorSel">'+colorOpts(byId(modelId),colorNm)+'</select></div>'+
     '<div class="ff"><label>전달사항</label><textarea id="mUserNote" rows="3" maxlength="500" placeholder="요청사항을 적어주세요"></textarea></div>'+
     '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히</button></label>'+
@@ -547,8 +555,11 @@ function submitConsult(){
   var btn=$('#mSubmitBtn'); if(btn.disabled) return; btn.disabled=true; btn.firstChild.textContent='신청 중...';
   var reset=function(){ btn.disabled=false; btn.firstChild.textContent='온라인 상담 신청하기'; };
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
+  var dm=null; $$('#mDeviceSelect option').forEach(function(o){ if(o.selected&&o.getAttribute('data-id')) dm=byId(o.getAttribute('data-id')); });
+  var optV=($('#mOptSel')&&!$('#mOptWrap').hidden&&$('#mOptSel').value)||null, capV=optV;
+  if(dm&&dm.optLabel==='요금제'){ if(optV) memo=('[희망 요금제] '+optV+(memo?' / '+memo:'')); capV=dm.capacity||null; }
   var body={name:name, phone:phoneF, carrier:carrier, channel:window.PAGE_CHANNEL||'메타', utm_campaign:window.PAGE_UTM_CAMPAIGN||null,
-    device_interest:device, capacity:($('#mOptSel')&&!$('#mOptWrap').hidden&&$('#mOptSel').value)||null, product_color:($('#mColorSel')&&$('#mColorSel').value)||null, birth_date:birth, memo:memo||null, status:'신규'};
+    device_interest:device, capacity:capV, product_color:($('#mColorSel')&&$('#mColorSel').value)||null, birth_date:birth, memo:memo||null, status:'신규'};
   if(typeof window.udakMetaIds==='function'){ var mi=window.udakMetaIds(); Object.keys(mi).forEach(function(k){ body[k]=mi[k]; }); }
   fetch(SB_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
   .then(function(res){
@@ -608,7 +619,7 @@ document.addEventListener('change',function(e){
   if(e.target.id!=='mDeviceSelect') return;
   var o=e.target.selectedOptions&&e.target.selectedOptions[0], m=o&&byId(o.getAttribute('data-id')), h=colorOpts(m);
   $('#mColorSel').innerHTML=h; $('#mColorWrap').hidden=!h;
-  var oh=optOpts(m); $('#mOptSel').innerHTML=oh; $('#mOptWrap').hidden=!oh;
+  var oh=optOpts(m); $('#mOptSel').innerHTML=oh; $('#mOptWrap').hidden=!oh; $('#mOptLbl').textContent=(m&&m.optLabel)||'사이즈';
 });
 
 /* ---------------- 데이터 불러오기 + 실시간 반영 ---------------- */
