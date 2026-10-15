@@ -1050,13 +1050,13 @@ function apAddHtml(){
 }
 function apSumHtml(){
   var pc=apPhoneCalc(), m=apPhone(), recs=[], total=0, upfront=0, L='ABCDE';
-  var rec=function(kind,nm){ var r={kind:kind,nm:nm,rows:[],sub:0,up:0,sup:0,ask:false}; recs.push(r); return r; };
+  var rec=function(kind,nm){ var r={kind:kind,nm:nm,dev:[],rows:[],sub:0,up:0,sup:0,ask:false}; recs.push(r); return r; };
   var apDev=function(r,c,pub,pubNm,tn,after){
-    r.rows.push(crow('출고가','',won(c.out)));
-    if(pub) r.rows.push(crow(pubNm,tn,'-'+won(pub),'','minus'));
-    if(c.our) r.rows.push(crow('유플러스 다이렉트 지원금',tn,'-'+won(c.our),'','minus'));
+    r.dev.push(crow('출고가','',won(c.out)));
+    if(pub) r.dev.push(crow(pubNm,tn,'-'+won(pub),'','minus'));
+    if(c.our) r.dev.push(crow('유플러스 다이렉트 지원금',tn,'-'+won(c.our),'','minus'));
     r.sup=c.out-after;
-    r.rows.push(crow('지원 후 기기값',r.sup?'총 '+won(r.sup)+' 지원':'',wz(after),'','sum'));
+    r.dev.push(crow('지원 후 기기값',r.sup?'총 '+won(r.sup)+' 지원':'',wz(after),'','sum'));
   };
   var line=function(r,l,v,sm,was){ r.rows.push(crow(l,sm||'',v,was||'')); };
   if(pc){
@@ -1068,7 +1068,7 @@ function apSumHtml(){
   } else if(m){ var r0=rec('휴대폰',m.nm); r0.ask=true; line(r0,'예상 금액','상담 시 안내'); }
   AP_SLOTS.forEach(function(s){
     var x=AP[s[0]]&&byId(AP[s[0]]); if(!x) return; var r=rec(s[1],x.nm), ac=apAddCalc(x);
-    if(!ac){ r.ask=true; line(r,'기기값','상담 시 안내'); }
+    if(!ac){ r.ask=true; r.dev.push(crow('기기값','','상담 시 안내')); }
     else { apDev(r, ac.c, ac.c.pb!=null?ac.c.pub:0, '이통사 지원금', '', ac.after); }
     if(!ac){} else if(AP.months===0){ r.up+=ac.after; line(r,'기기값','일시납 '+wz(ac.after)); }
     else { r.sub+=ac.monthly; line(r,'기기 할부금',won(ac.monthly),AP.months+'개월'+(ac.noint?' · 이자 없음':' · 할부이자 포함')); }
@@ -1081,8 +1081,9 @@ function apSumHtml(){
   recs.forEach(function(r,i){
     var k=L[i]; keys.push(k); total+=r.sub; upfront+=r.up; supAll+=r.sup;
     body+='<div class="rc"><div class="rc-h"><i>'+k+'</i><span>'+esc(r.kind)+'</span><b>'+esc(r.nm)+'</b></div>'+
-      '<div class="cres-d">'+r.rows.join('')+'</div>'+
-      '<div class="rc-sub"><span>'+esc(r.kind)+' 월 합계 <i>'+k+'</i></span><b>'+(r.ask&&!r.sub?'상담 시 안내':won(r.sub))+'</b></div></div>';
+      (r.dev.length?'<div class="rc-dev"><div class="rc-lab">기기값</div><div class="cres-d">'+r.dev.join('')+'</div></div>':'')+
+      '<div class="rc-mon"><div class="rc-lab">매월 내는 금액</div><div class="cres-d">'+r.rows.join('')+'</div>'+
+      '<div class="rc-sub"><span>'+esc(r.kind)+' 월 합계 <i>'+k+'</i></span><b>'+(r.ask&&!r.sub?'상담 시 안내':won(r.sub))+'</b></div></div></div>';
   });
   h+='<div class="cres ap-res">'+body+
     (supAll?'<div class="rc-sup"><span>받으시는 기기 지원금 <small>'+keys.join(' + ')+'</small></span><b>총 '+won(supAll)+'</b></div>':'')+

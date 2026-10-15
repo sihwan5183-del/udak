@@ -771,3 +771,18 @@ body.no-sq .side-quick{display:none}
 .ap-res .rc-sup span{font-size:13px;font-weight:800}
 .ap-res .rc-sup small{display:block;font-size:11.5px;font-weight:700;opacity:.85;margin-top:1px}
 .ap-res .rc-sup b{font-size:17px;font-weight:900;white-space:nowrap}
+/* 영수증 위계: 기기값(회색 계열·작게) → 매월 내는 금액(흰 카드·강조) */
+.ap-res .rc-lab{font-size:11.5px;font-weight:800;color:var(--mute);letter-spacing:.02em;margin:10px 0 2px}
+.ap-res .rc-dev .cres-d .cr{padding:4px 0!important}
+.ap-res .rc-dev .cres-d .cr-l span{font-size:13px;font-weight:500;color:var(--sub)}
+.ap-res .rc-dev .cres-d .cr-l small{font-size:11px}
+.ap-res .rc-dev .cres-d .cr-v b{font-size:13.5px;font-weight:700;color:var(--sub)}
+.ap-res .rc-dev .cres-d .cr.minus .cr-v b{color:var(--pink)}
+.ap-res .rc-dev .cres-d .cr.sum .cr-l span{font-weight:800;color:var(--ink)}
+.ap-res .rc-dev .cres-d .cr.sum .cr-v b{font-size:15px;font-weight:800;color:var(--ink)}
+.ap-res .rc-mon{margin-top:14px;background:#fff;border:1px solid #F6D3E3;border-radius:12px;padding:2px 12px 0;overflow:hidden}
+.ap-res .rc-mon .rc-lab{color:var(--pink);margin-top:10px}
+.ap-res .rc-mon .cres-d .cr-l span{font-size:14px;font-weight:700;color:var(--ink)}
+.ap-res .rc-mon .cres-d .cr-v b{font-size:15px;font-weight:800;color:var(--ink)}
+.ap-res .rc-mon .rc-sub{margin:6px -12px 0;border-radius:0;background:var(--pink-50);border-top:1px solid #F6D3E3;padding:11px 12px}
+.ap-res .rc-mon .rc-sub b{color:var(--pink);font-size:16.5px}
