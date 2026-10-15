@@ -35,16 +35,20 @@ function plans(g, Q){ return (Q||W).plans[g]; }
 function tiers(g, Q){ return (Q||W).tiers[g]; }
 function tierName(t){ return t.fee?t.nm+' 요금제':t.nm; }
 function escRe(x){ return String(x).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
-function cols(g, P){ var out=[]; T.TYPES[g].forEach(function(t){ plans(g,P).forEach(function(p){ out.push({t:t[0], tn:t[1], p:p}); }); }); return out; }
+// 표 칸 순서: [번호이동: 공시(요금제별) | 다이렉트(구간별)] [기기변경: 공시 | 다이렉트]
+function grpNm(g,k,Q){ return (plans(g,Q).filter(function(p){return p.k===k})[0]||{}).nm||''; }
+function cols(g, Q){ var out=[];
+  T.TYPES[g].forEach(function(t){
+    tiers(g,Q).forEach(function(x,i){ out.push({b:t[0], bn:t[1], kind:'pub', f:'pub.'+t[0]+'_'+x.k, nm:x.nm, sub:g==='phone'?grpNm(g,x.grp,Q):'', bl:i===0, i:i}); });
+    plans(g,Q).forEach(function(p,i){ out.push({b:t[0], bn:t[1], kind:'our', f:'our.'+t[0]+'_'+p.k, nm:p.nm, i:i}); });
+  }); return out; }
 function status(v){ var t=T.todayKST(), a=T.verAt(t,W); if(v===a) return {txt:'적용 중',cls:'now'}; if((v.from||'')>t) return {txt:'예정',cls:'next'}; return {txt:'지난 정책',cls:'old'}; }
 function mName(id){ var m=T.byId(id); return m?m.nm:''; }
-function fieldName(f,g,P){
+function fieldName(f,g,Q){
   if(f==='out') return '출고가'; if(f==='so') return '품절';
-  var pl=plans(g,P), k, t;
-  if(f.indexOf('pub.')===0){ k=f.slice(4); var tt=tiers(g,P).filter(function(x){return x.k===k})[0]; return (g==='phone'?'공시 ':'이통사 지원금 ')+(tt?tierName(tt):k); }
-  if(f.indexOf('our.')===0){ var x=f.slice(4).split('_'); t=x[0]; k=x.slice(1).join('_');
-    var tn=(T.TYPES[g].filter(function(y){return y[0]===t})[0]||[t,t])[1];
-    return (g==='phone'?tn:'다이렉트 지원금')+' '+((pl.filter(function(p){return p.k===k})[0]||{}).nm||k); }
+  var x=f.slice(4).split('_'), t=x[0], k=x.slice(1).join('_'), tn=(T.TYPES[g].filter(function(y){return y[0]===t})[0]||[t,''])[1], pre=g==='phone'?tn+' ':'';
+  if(f.indexOf('pub.')===0){ var tt=tiers(g,Q).filter(function(y){return y.k===k})[0]; return pre+(g==='phone'?'공시 ':'이통사 지원금 ')+(tt?tierName(tt):k); }
+  if(f.indexOf('our.')===0) return pre+'다이렉트 지원금 '+(grpNm(g,k,Q)||k);
   return f;
 }
 function getF(r,f){ if(f.indexOf('pub.')===0) return r.pub[f.slice(4)]; if(f.indexOf('our.')===0) return r.our[f.slice(4)]; return r[f]; }
@@ -80,7 +84,7 @@ function render(){
     '<div class="pz-tools">'+
       '<button type="button" class="pz-b pri" data-pz="up">⬆ 엑셀 업로드</button><input type="file" id="pzFile" accept=".xlsx,.xls,.csv" hidden>'+
       '<button type="button" class="pz-b" data-pz="down">⬇ 엑셀 다운로드</button>'+
-      '<button type="button" class="pz-b" data-pz="addrow">＋ 줄 추가</button>'+
+      '<button type="button" class="pz-b" data-pz="addrow">＋ 모델 추가</button>'+
       '<button type="button" class="pz-b" data-pz="plans">요금제 설정</button></div>'+
     '<div class="pz-plans" id="pzPlans" hidden>'+
       '<div class="pz-pl2"><div><div class="pz-lb">지원금 구간 (단가표의 "군")</div><div class="pz-help" style="margin-top:2px">한 줄에 하나씩 · 예: 115군</div>'+
@@ -99,33 +103,42 @@ function render(){
     '<div class="pz-foot"><span id="pzDirty">'+(DIRTY?'저장하지 않은 수정이 있어요':'')+'</span><button type="button" class="pz-save" data-pz="save">저장 (홈페이지 반영)</button></div>'+
     (PEND?previewHtml():'');
 }
+var VIEW='all';   // 칸 보기: all | mnp | chg
+function groupsOf(list){ // 같은 모델코드가 이어진 줄끼리 한 묶음
+  var gs=[]; list.forEach(function(i){ var r=ver().rows[i], last=gs[gs.length-1];
+    if(last && ncode(ver().rows[last[0]].code)===ncode(r.code) && r.code) last.push(i); else gs.push([i]); }); return gs; }
 function table(list){
-  var g=TAB, P=plans(g), TS=tiers(g), C=cols(g), types=T.TYPES[g], bt=T.baseTier(g,W)||{nm:''};
-  var h1='<tr><th rowspan="2" class="c-so">품절</th><th rowspan="2">제조사</th><th rowspan="2" class="c-code">모델코드</th><th rowspan="2">홈페이지 상품</th><th rowspan="2">'+(g==='phone'?'용량':'사이즈')+'</th><th rowspan="2">출고가</th>'+
-    '<th colspan="'+TS.length+'" class="gh pub">'+(g==='phone'?'공시지원금 (요금제별)':'이통사 지원금')+'</th>'+
-    types.map(function(t){ return '<th colspan="'+P.length+'" class="gh our">'+(g==='phone'?'다이렉트 지원금 · '+t[1]+' (구간별)':'유플러스 다이렉트 지원금')+'</th>'; }).join('')+
-    '<th rowspan="2" class="cc">'+(g==='phone'?'번호이동 '+esc(bt.nm)+'<br>최저 기기값':esc(bt.nm)+'<br>구매가')+'</th><th rowspan="2" class="cc">할인율</th><th rowspan="2"></th></tr>';
-  var h2='<tr>'+TS.map(function(t){ var gn=(P.filter(function(p){return p.k===t.grp})[0]||{}).nm||''; return '<th class="pub">'+esc(t.nm)+(g==='phone'&&gn?'<small>'+esc(gn)+'</small>':'')+'</th>'}).join('')+C.map(function(c){return '<th class="our">'+esc(c.p.nm)+'</th>'}).join('')+'</tr>';
-  var body=list.map(function(i){ return rowHtml(ver().rows[i], i); }).join('') || '<tr><td colspan="99" class="pz-empty">줄이 없습니다. ＋ 줄 추가 또는 엑셀 업로드로 넣어주세요.</td></tr>';
-  return '<div class="pz-tw"><table class="pz-t"><thead>'+h1+h2+'</thead><tbody>'+body+'</tbody></table></div>';
+  var g=TAB, C=cols(g), types=T.TYPES[g], bt=T.baseTier(g,W)||{nm:''}, nT=tiers(g).length, nP=plans(g).length;
+  var h1='<tr><th rowspan="3" class="c-so">품절</th><th rowspan="3" class="c-code">모델</th><th rowspan="3">'+(g==='phone'?'용량':'사이즈')+'</th>'+(g==='second'?'<th rowspan="3" class="c-split">요금제별<br>지원금<small>TV프리·아이패드만</small></th>':'')+'<th rowspan="3" class="c-out">출고가</th>'+
+    types.map(function(t){ return '<th colspan="'+(nT+nP)+'" class="blk b-'+t[0]+' bl">'+(g==='phone'?t[1]:'지원금')+'</th>'; }).join('')+
+    '<th rowspan="3" class="cc bl">'+(g==='phone'?'번호이동 '+esc(bt.nm)+'<br>최저 기기값':esc(bt.nm)+'<br>구매가')+'</th><th rowspan="3" class="cc">할인율</th><th rowspan="3"></th></tr>';
+  var h2='<tr>'+types.map(function(t){ return '<th colspan="'+nT+'" class="gh pub b-'+t[0]+' bl">'+(g==='phone'?'공시지원금 (요금제별)':'이통사 지원금')+'</th><th colspan="'+nP+'" class="gh our b-'+t[0]+' bl2">유플러스 다이렉트 지원금'+(g==='phone'?' (구간별)':'')+'</th>'; }).join('')+'</tr>';
+  var h3='<tr>'+C.map(function(c){ return '<th class="'+c.kind+' b-'+c.b+(c.bl?' bl':'')+(c.kind==='our'&&c.f===C.filter(function(x){return x.b===c.b&&x.kind==='our'})[0].f?' bl2':'')+'">'+esc(c.nm)+(c.sub?'<small>'+esc(c.sub)+'</small>':'')+'</th>'; }).join('')+'</tr>';
+  var gs=groupsOf(list), body=gs.map(function(gr,gi){ return gr.map(function(i,j){ return rowHtml(ver().rows[i], i, j===0?gr:null, gi); }).join(''); }).join('')
+    || '<tr><td colspan="99" class="pz-empty">줄이 없습니다. ＋ 모델 추가 또는 엑셀 업로드로 넣어주세요.</td></tr>';
+  return '<div class="pz-view">칸 보기 '+[['all','전체'],['mnp','번호이동만'],['chg','기기변경만']].map(function(x){ return '<button type="button" data-pzview="'+x[0]+'" class="'+(VIEW===x[0]?'on':'')+'">'+x[1]+'</button>'; }).join('')+'</div>'+
+    '<div class="pz-tw"><table class="pz-t v-'+VIEW+'"><thead>'+h1+h2+h3+'</thead><tbody>'+body+'</tbody></table></div>';
 }
 function modelSel(r){
-  return '<select data-f="model"><option value="">— 연결 안 함 —</option>'+T.S.models.map(function(m){ return '<option value="'+esc(m.id)+'"'+(m.id===r.model?' selected':'')+'>'+esc(m.nm)+'</option>'; }).join('')+'</select>';
+  return '<select data-f="model" title="홈페이지 상품 연결"><option value="">— 홈페이지 연결 안 함 —</option>'+T.S.models.map(function(m){ return '<option value="'+esc(m.id)+'"'+(m.id===r.model?' selected':'')+'>'+esc(m.nm)+'</option>'; }).join('')+'</select>';
 }
 function ni(f,v,cls){ return '<input type="text" inputmode="numeric" class="n'+(cls?' '+cls:'')+'" data-f="'+f+'" value="'+fmt(v)+'">'; }
-function rowHtml(r,i){
-  var g=r.g, TS=tiers(g), C=cols(g);
-  return '<tr data-ri="'+i+'" class="'+(r.so?'is-so ':'')+(FOCUS&&r.model===FOCUS?'focus':'')+'">'+
-    '<td class="c-so"><input type="checkbox" data-f="so"'+(r.so?' checked':'')+'></td>'+
-    '<td><input type="text" class="w4" data-f="mk" value="'+esc(r.mk||'')+'"></td>'+
-    '<td class="c-code"><input type="text" class="w7" data-f="code" value="'+esc(r.code||'')+'"></td>'+
-    '<td>'+modelSel(r)+'</td>'+
-    '<td><input type="text" class="w4" data-f="cap" value="'+esc(r.cap||'')+'" placeholder="공통"></td>'+
-    '<td>'+ni('out',r.out,num(r.out)==null?'need':'')+'</td>'+
-    TS.map(function(t){ return '<td class="pub">'+ni('pub.'+t.k,r.pub[t.k])+'</td>'; }).join('')+
-    C.map(function(c){ return '<td class="our">'+ni('our.'+c.t+'_'+c.p.k,r.our[c.t+'_'+c.p.k])+'</td>'; }).join('')+
+function rowHtml(r,i,gr,gi){
+  var g=r.g, C=cols(g), C0=null;
+  var mcell = gr ? '<td class="c-code" rowspan="'+gr.length+'"><div class="mc">'+
+      '<input type="text" class="w7" data-f="code" value="'+esc(r.code||'')+'" placeholder="모델코드">'+modelSel(r)+
+      '<div class="mc-b"><button type="button" data-pz="gup" title="모델 위로">↑</button><button type="button" data-pz="gdn" title="모델 아래로">↓</button>'+
+      '<button type="button" data-pz="gcap">＋ 용량</button><button type="button" data-pz="gdel" class="del">모델 삭제</button></div></div></td>' : '';
+  return '<tr data-ri="'+i+'" class="'+(gr?'gstart ':'')+(gi%2?'godd ':'')+(r.so?'is-so ':'')+(FOCUS&&r.model===FOCUS?'focus':'')+'">'+
+    '<td class="c-so"><input type="checkbox" data-f="so"'+(r.so?' checked':'')+'></td>'+mcell+
+    '<td class="c-cap"><input type="text" class="w4" data-f="cap" value="'+esc(r.cap||'')+'" placeholder="공통"></td>'+
+    (g==='second'?'<td class="c-split"><label><input type="checkbox" data-f="split"'+(r.split?' checked':'')+'> 1GB/500MB</label></td>':'')+
+    '<td class="c-out">'+ni('out',r.out,num(r.out)==null?'need':'')+'</td>'+
+    C.map(function(c){ var first=c.kind==='our'&&(!C0||C0.b!==c.b); if(c.kind==='our') C0=c;
+      var off=(g==='second' && !r.split && c.i>0);   // 요금제 구분 없는 줄(워치·탭)은 첫 칸만
+      return '<td class="'+c.kind+' b-'+c.b+(c.bl?' bl':'')+(first?' bl2':'')+'">'+(off?'<span class="off">—</span>':ni(c.f,getF(r,c.f)))+'</td>'; }).join('')+
     ccHtml(r)+
-    '<td class="act"><button type="button" data-pz="rup" title="위로">↑</button><button type="button" data-pz="rdn" title="아래로">↓</button><button type="button" data-pz="rcp" title="이 줄 복사">⧉</button><button type="button" data-pz="rdel" class="del" title="삭제">✕</button></td></tr>';
+    '<td class="act"><button type="button" data-pz="rdel" class="del" title="이 용량 삭제">✕</button></td></tr>';
 }
 function calcTxt(r){
   var g=r.g, t=T.TYPES[g][0][0], c=T.rowCalc(r,t,T.baseTier(g,W));
@@ -133,14 +146,20 @@ function calcTxt(r){
   var pct=c.out?Math.round((c.out-c.v)/c.out*100):0;
   return ['<b>'+(c.v===0?'0원':fmt(c.v)+'원')+'</b>', pct+'%'];
 }
-function ccHtml(r){ var c=calcTxt(r); return '<td class="cc" data-cc>'+c[0]+'</td><td class="cc" data-cc2>'+c[1]+'</td>'; }
+function ccHtml(r){ var c=calcTxt(r); return '<td class="cc bl" data-cc>'+c[0]+'</td><td class="cc" data-cc2>'+c[1]+'</td>'; }
 function updCC(tr,r){ var c=calcTxt(r); $('[data-cc]',tr).innerHTML=c[0]; $('[data-cc2]',tr).innerHTML=c[1]; tr.classList.toggle('is-so',!!r.so); }
 function dirty(){ DIRTY=true; var d=$('#pzDirty'); if(d) d.textContent='저장하지 않은 수정이 있어요'; }
 function rowOf(el){ var tr=el.closest('tr[data-ri]'); return tr?{tr:tr, i:+tr.getAttribute('data-ri'), r:ver().rows[+tr.getAttribute('data-ri')]}:null; }
-function readInput(el, r){
+// 모델코드·홈페이지 상품은 묶음(같은 모델의 모든 용량)에 같이 적용
+function groupIdx(i){ var rows=ver().rows, c=ncode(rows[i].code), a=i, b=i; if(!rows[i].code) return [i];
+  while(a>0 && rows[a-1].g===rows[i].g && ncode(rows[a-1].code)===c) a--; while(b<rows.length-1 && rows[b+1].g===rows[i].g && ncode(rows[b+1].code)===c) b++;
+  var out=[]; for(var k=a;k<=b;k++) out.push(k); return out; }
+function readInput(el, r, i){
   var f=el.getAttribute('data-f');
   if(f==='so') r.so=el.checked;
-  else if(f==='mk'||f==='code'||f==='cap'||f==='model') r[f]=el.value.trim();
+  else if(f==='split'){ r.split=el.checked; setTimeout(render,0); }
+  else if(f==='code'||f==='model'){ var v=el.value.trim(); (i!=null?groupIdx(i):[]).forEach(function(k){ ver().rows[k][f]=v; }); r[f]=v; }
+  else if(f==='mk'||f==='cap') r[f]=el.value.trim();
   else setF(r,f,num(el.value));
 }
 
@@ -162,12 +181,12 @@ window.__stPriceOpen=open;
 /* ---------------- 입력 ---------------- */
 pz.addEventListener('input',function(e){
   var t=e.target;
-  if(t.hasAttribute('data-f')){ var o=rowOf(t); if(!o) return; readInput(t,o.r); dirty(); updCC(o.tr,o.r); if(t.getAttribute('data-f')==='out') t.classList.toggle('need', num(t.value)==null); return; }
+  if(t.hasAttribute('data-f')){ var o=rowOf(t); if(!o) return; if(t.getAttribute('data-f')==='code') return; readInput(t,o.r,o.i); dirty(); updCC(o.tr,o.r); if(t.getAttribute('data-f')==='out') t.classList.toggle('need', num(t.value)==null); return; }
   if(t.getAttribute('data-pzv')==='memo'){ ver().memo=t.value; dirty(); }
 });
 pz.addEventListener('change',function(e){
   var t=e.target, k=t.getAttribute('data-pzv');
-  if(t.hasAttribute('data-f')){ var o=rowOf(t); if(o){ readInput(t,o.r); dirty(); updCC(o.tr,o.r); } return; }
+  if(t.hasAttribute('data-f')){ var o=rowOf(t); if(o){ var gi=groupIdx(o.i); readInput(t,o.r,o.i); dirty(); updCC(o.tr,o.r); if(t.getAttribute('data-f')==='code'&&gi.length>1) render(); } return; }
   if(k==='ver'){ VI=+t.value; FOCUS=null; render(); return; }
   if(k==='show'){ W.show=t.checked; dirty(); render(); return; }
   if(k==='from'){
@@ -189,10 +208,10 @@ pz.addEventListener('paste',function(e){
   var txt=(e.clipboardData||window.clipboardData).getData('text'); if(!/[\t\n]/.test(String(txt).trim())) return;
   e.preventDefault();
   var grid=String(txt).replace(/\r/g,'').replace(/\n$/,'').split('\n').map(function(l){return l.split('\t')});
-  var tr=t.closest('tr'), fields=function(row){ return $$('input[data-f]:not([type=checkbox])',row); }, start=fields(tr).indexOf(t);
+  var tr=t.closest('tr'), fields=function(row){ return $$('input[data-f].n, input[data-f="cap"]',row); }, start=fields(tr).indexOf(t); if(start<0) return;
   grid.forEach(function(line,i){
     if(!tr) return; var ins=fields(tr), o=rowOf(tr); if(!o) return;
-    line.forEach(function(val,j){ var el=ins[start+j]; if(!el) return; el.value=val.trim(); readInput(el,o.r); if(el.classList.contains('n')) el.value=fmt(num(el.value)); });
+    line.forEach(function(val,j){ var el=ins[start+j]; if(!el) return; el.value=val.trim(); readInput(el,o.r,o.i); if(el.classList.contains('n')) el.value=fmt(num(el.value)); });
     updCC(tr,o.r); tr=tr.nextElementSibling;
   });
   dirty(); toast('붙여넣었어요');
@@ -200,8 +219,9 @@ pz.addEventListener('paste',function(e){
 
 /* ---------------- 버튼 ---------------- */
 pz.addEventListener('click',function(e){
-  var b=e.target.closest('[data-pz],[data-pztab]'); if(!b) return;
+  var b=e.target.closest('[data-pz],[data-pztab],[data-pzview]'); if(!b) return;
   var tb=b.getAttribute('data-pztab'); if(tb){ TAB=tb; render(); return; }
+  var vw=b.getAttribute('data-pzview'); if(vw){ VIEW=vw; render(); return; }
   var a=b.getAttribute('data-pz'), v=ver(), o;
   if(a==='close'){ close(); return; }
   if(a==='newver'){ var n=$('#pzNew'); n.hidden=!n.hidden; return; }
@@ -217,7 +237,7 @@ pz.addEventListener('click',function(e){
     W.vers.splice(VI,1); VI=Math.max(0,W.vers.indexOf(T.verAt(T.todayKST(),W))); dirty(); render(); return;
   }
   if(a==='addrow'){
-    v.rows.push({g:TAB, mk:'', code:'', cap:'', model:'', out:null, so:false, pub:{}, our:{}}); dirty(); render();
+    v.rows.push({g:TAB, mk:'', code:'', cap:TAB==='phone'?'256GB':'', model:'', out:null, so:false, pub:{}, our:{}}); dirty(); render();
     var last=$$('tr[data-ri]',pz).pop(); if(last){ last.scrollIntoView({block:'center'}); var c=$('[data-f="code"]',last); if(c) c.focus(); } return;
   }
   if(a==='plans'){ var p=$('#pzPlans'); p.hidden=!p.hidden; return; }
@@ -228,12 +248,17 @@ pz.addEventListener('click',function(e){
   if(a==='pv-cancel'){ PEND=null; render(); return; }
   if(a==='pv-apply'){ applyPending(); return; }
   if((o=rowOf(b))){
-    var rows=v.rows, i=o.i;
-    if(a==='rdel'){ if(!confirm((o.r.code||'이')+' '+(o.r.cap||'')+' 줄을 삭제할까요?')) return; rows.splice(i,1); dirty(); render(); return; }
-    if(a==='rcp'){ var c2=T.clone(o.r); c2.cap=''; rows.splice(i+1,0,c2); dirty(); render(); return; }
-    if(a==='rup'||a==='rdn'){
-      var j=i, step=a==='rup'?-1:1; do { j+=step; } while(j>=0 && j<rows.length && rows[j].g!==o.r.g);
-      if(j<0||j>=rows.length) return; var tmp=rows[i]; rows[i]=rows[j]; rows[j]=tmp; dirty(); render(); return;
+    var rows=v.rows, i=o.i, gi=groupIdx(i), nm=(o.r.code||'이 모델');
+    if(a==='rdel'){ if(!confirm(nm+' '+(o.r.cap||'공통')+' 줄을 삭제할까요?')) return; rows.splice(i,1); dirty(); render(); return; }
+    if(a==='gdel'){ if(!confirm(nm+' ('+gi.length+'줄)을 통째로 삭제할까요?')) return; rows.splice(gi[0],gi.length); dirty(); render(); return; }
+    if(a==='gcap'){ var src=rows[gi[gi.length-1]], nr=T.clone(src); nr.cap=''; nr.out=null; nr.so=false; rows.splice(gi[gi.length-1]+1,0,nr); dirty(); render();
+      var tr=$('tr[data-ri="'+(gi[gi.length-1]+1)+'"]',pz); if(tr){ var c=$('[data-f="cap"]',tr); if(c) c.focus(); } return; }
+    if(a==='gup'||a==='gdn'){ // 같은 탭의 이웃 모델 묶음과 자리 바꾸기
+      var bs=[]; rows.forEach(function(r,k){ var l=bs[bs.length-1]; if(l && rows[l[0]].g===r.g && r.code && ncode(rows[l[0]].code)===ncode(r.code)) l.push(k); else bs.push([k]); });
+      var bi=-1; bs.forEach(function(x,k){ if(x.indexOf(i)>-1) bi=k; }); var step=a==='gup'?-1:1, j=bi+step;
+      while(j>=0 && j<bs.length && rows[bs[j][0]].g!==o.r.g) j+=step;
+      if(bi<0||j<0||j>=bs.length) return; var tmp=bs[bi]; bs[bi]=bs[j]; bs[j]=tmp;
+      v.rows=[].concat.apply([],bs).map(function(k){return rows[k]}); dirty(); render(); return;
     }
   }
 });
@@ -318,12 +343,13 @@ function parseSheet(X, ws, name){
 // 칸 제목 → 어느 칸인지 (요금제는 이름으로 찾고, 없는 'OO군'은 새 칸으로 추가)
 function classify(label, g, ctx){
   var L=String(label||''), Lc=L.replace(/\s/g,'');
-  if(/출고/.test(Lc)) return {f:'out'};
+  if(/출고/.test(Lc)) return {fs:['out']};
   if(/공시|이통사/.test(Lc)){
     var hit=null; tiers(g,ctx).slice().sort(function(a,b){return String(b.nm).length-String(a.nm).length}).forEach(function(t){
       if(hit) return; var nm=String(t.nm).replace(/요금제|\s/g,''); if(new RegExp('(^|[^0-9])'+escRe(nm)+'([^0-9]|$)').test(Lc.replace(/요금제/g,''))) hit=t; });
     if(!hit){ ctx.skip[L||'(제목 없음)']=1; return null; }
-    return {f:'pub.'+hit.k};
+    var pt=g==='second'?['all']:(/MNP|번호이동|번이/i.test(Lc)?['mnp']:/기기변경|기변/.test(Lc)?['chg']:['mnp','chg']);
+    return {fs:pt.map(function(x){return 'pub.'+x+'_'+hit.k})};
   }
   var pl=plans(g,ctx), plan=null;
   pl.forEach(function(p){ if(!plan && Lc.indexOf(String(p.nm).replace(/\s/g,''))>-1) plan=p; });
@@ -334,7 +360,7 @@ function classify(label, g, ctx){
   else if(/MNP|번호이동|번이/i.test(Lc)) t='mnp';
   else if(/기기변경|기변/.test(Lc)) t='chg';
   if(!t){ ctx.skip[L]=1; return null; }
-  return {f:'our.'+t+'_'+plan.k};
+  return {fs:['our.'+t+'_'+plan.k]};
 }
 function applyRecs(recs, v, ctx){
   var res={changes:[], added:[], touched:0};
@@ -354,8 +380,8 @@ function applyRecs(recs, v, ctx){
       res.touched++;
       rec.vals.forEach(function(cv){
         var cl=classify(cv.label, r.g, ctx); if(!cl) return;
-        var old=getF(r,cl.f); if(old===cv.v) return;
-        setF(r,cl.f,cv.v); res.changes.push({code:r.code, cap:r.cap||'공통', f:cl.f, g:r.g, old:old, nv:cv.v});
+        cl.fs.forEach(function(f){ var old=getF(r,f); if(old===cv.v) return;
+          setF(r,f,cv.v); res.changes.push({code:r.code, cap:r.cap||'공통', f:f, g:r.g, old:old, nv:cv.v}); });
       });
       if(rec.so!=null && !!r.so!==rec.so){ res.changes.push({code:r.code, cap:r.cap||'공통', f:'so', g:r.g, old:!!r.so, nv:rec.so}); r.so=rec.so; }
     });
@@ -423,17 +449,23 @@ function exportXlsx(){
   loadXLSX().then(function(X){
     var wb=X.utils.book_new(), v=ver();
     ['phone','second'].forEach(function(g){
-      var P=plans(g), TS=tiers(g), types=T.TYPES[g], r1=['제조사','모델코드',g==='phone'?'용량':'사이즈','홈페이지 상품','출고가'], r2=['','','','',''], mg=[];
-      for(var c=0;c<5;c++) mg.push({s:{r:0,c:c},e:{r:1,c:c}});
+      var C=cols(g), types=T.TYPES[g], nT=tiers(g).length, nP=plans(g).length;
+      var r0=['제조사','모델코드',g==='phone'?'용량':'사이즈','홈페이지 상품','출고가'], r1=['','','','',''], r2=['','','','',''], mg=[];
+      for(var c=0;c<5;c++) mg.push({s:{r:0,c:c},e:{r:2,c:c}});
       var col=5;
-      TS.forEach(function(t,i){ r1.push(i===0?(g==='phone'?'공시지원금':'이통사 지원금'):''); r2.push(tierName(t)); }); if(TS.length>1) mg.push({s:{r:0,c:col},e:{r:0,c:col+TS.length-1}}); col+=TS.length;
-      types.forEach(function(t){ P.forEach(function(p,i){ r1.push(i===0?(g==='phone'?t[1]:'유플러스 다이렉트 지원금'):''); r2.push(p.nm); }); if(P.length>1) mg.push({s:{r:0,c:col},e:{r:0,c:col+P.length-1}}); col+=P.length; });
-      r1.push('품절'); r2.push(''); mg.push({s:{r:0,c:col},e:{r:1,c:col}});
-      var data=[r1,r2];
+      types.forEach(function(t){
+        mg.push({s:{r:0,c:col},e:{r:0,c:col+nT+nP-1}});
+        if(nT>1) mg.push({s:{r:1,c:col},e:{r:1,c:col+nT-1}}); if(nP>1) mg.push({s:{r:1,c:col+nT},e:{r:1,c:col+nT+nP-1}});
+        C.filter(function(x){return x.b===t[0]}).forEach(function(x,i){
+          r0.push(i===0?(g==='phone'?t[1]:'지원금'):''); r1.push(x.kind==='pub'&&i===0?(g==='phone'?'공시지원금':'이통사 지원금'):(x.kind==='our'&&i===nT?'유플러스 다이렉트 지원금':''));
+          r2.push(x.kind==='pub'?tierName(tiers(g).filter(function(y){return 'pub.'+t[0]+'_'+y.k===x.f})[0]||{nm:x.nm}):x.nm); });
+        col+=nT+nP;
+      });
+      r0.push('품절'); r1.push(''); r2.push(''); mg.push({s:{r:0,c:col},e:{r:2,c:col}});
+      var data=[r0,r1,r2];
       v.rows.filter(function(r){return r.g===g}).forEach(function(r){
         var line=[r.mk||'', r.code||'', r.cap||'공통', mName(r.model), num(r.out)==null?'':num(r.out)];
-        TS.forEach(function(t){ var x=num(r.pub[t.k]); line.push(x==null?'':x); });
-        types.forEach(function(t){ P.forEach(function(p){ var x=num(r.our[t[0]+'_'+p.k]); line.push(x==null?'':x); }); });
+        C.forEach(function(x){ var n=num(getF(r,x.f)); line.push(n==null?'':n); });
         line.push(r.so?'품절':''); data.push(line);
       });
       var ws=X.utils.aoa_to_sheet(data); ws['!merges']=mg; ws['!cols']=data[0].map(function(_,i){ return {wch:i<4?14:12}; });

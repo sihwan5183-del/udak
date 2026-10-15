@@ -96,6 +96,7 @@ var DEFAULT = {
      휴대폰: 실구매가 = 출고가 - (공시지원금 + 유플러스 다이렉트 지원금)  또는  출고가 - 유플러스 다이렉트 지원금 (선택약정 25%)
      our 키 = 가입유형_요금제 (mnp=번호이동, chg=기기변경, all=워치·태블릿 공통) */
   pricing:{
+    rev:3,        // 데이터 구조 버전 (2: 공시지원금도 번호이동/기기변경 따로, 2TB 제외 · 3: 워치·탭은 요금제 구분 없음)
     show:false,   // 고객 화면에 가격 공개 (가격표에서 켜기)
     // 지원금 구간 (단가표의 '군') — 유플러스 다이렉트 지원금은 구간마다 같음
     plans:{
@@ -115,7 +116,9 @@ var DEFAULT = {
 (function(){ // 단가표 → 줄 만들기 [번호이동115, 번호이동85, 기기변경115, 기기변경85]
   var rows=DEFAULT.pricing.vers[0].rows;
   function P(mk,code,cap,model,out,o,so){ rows.push({g:'phone',mk:mk,code:code,cap:cap,model:model,out:out,so:!!so,pub:{},our:{mnp_p115:o[0],mnp_p85:o[1],chg_p115:o[2],chg_p85:o[3]}}); }
-  function W(code,cap,model,out,p1,p2){ rows.push({g:'second',mk:'',code:code,cap:cap,model:model,out:out,so:false,pub:(p1!=null?{t1GB:p1,t500MB:p2}:{}),our:{}}); }
+  // split = 1GB/500MB 요금제별 지원금이 따로 있는지 (TV프리·아이패드만) — 아니면 첫 칸 하나만 씀
+  function W(code,cap,model,out,p1,p2,split){ var pub={}; if(p1!=null) pub.all_t1GB=p1; if(split&&p2!=null) pub.all_t500MB=p2;
+    rows.push({g:'second',mk:'',code:code,cap:cap,model:model,out:out,so:false,split:!!split,pub:pub,our:{}}); }
   var S1=[680000,650000,420000,350000], S2=[620000,590000,360000,290000];
   P('삼성','SM-S942N','256GB','s26',1254000,S1);
   P('삼성','SM-S947N','256GB','s26plus',1452000,S2);
@@ -128,20 +131,20 @@ var DEFAULT = {
   P('삼성','SM-F976N','256GB','fold8ultra',2577300,[600000,570000,340000,270000]);
   P('삼성','SM-F976N','512GB','fold8ultra',null,[750000,720000,490000,420000]);
   var A18=[440000,410000,190000,160000], A17=[500000,470000,240000,170000];
-  [['256GB',1991000],['512GB',2299000],['1TB',2893000],['2TB',3795000]].forEach(function(c){ P('애플','UIP18PR',c[0],'iphone18pro',c[1],A18); });
-  [['256GB',2200000],['512GB',2497000],['1TB',3091000],['2TB',3993000]].forEach(function(c){ P('애플','UIP18PM',c[0],'iphone18promax',c[1],A18); });
+  [['256GB',1991000],['512GB',2299000],['1TB',2893000]].forEach(function(c){ P('애플','UIP18PR',c[0],'iphone18pro',c[1],A18); });
+  [['256GB',2200000],['512GB',2497000],['1TB',3091000]].forEach(function(c){ P('애플','UIP18PM',c[0],'iphone18promax',c[1],A18); });
   P('애플','UIP17','256GB','iphone17',1452000,A17);
   P('애플','UIP17PR','','',null,A17,true);
   P('애플','UIP17PM','','',null,A17,true);
   P('애플','UIPA','','',null,[430000,400000,240000,170000],true);
-  W('watchultra2','기본','watchultra2',969100,450000,450000);
-  W('watch9','44mm','watch9',569800,164000,164000);
-  W('watch9','40mm','watch9',529100,164000,164000);
-  W('watchse3','40mm','watchse3',429000,287500,287500);
-  W('watchse3','44mm','watchse3',473000,287500,287500);
+  W('watchultra2','기본','watchultra2',969100,450000);
+  W('watch9','44mm','watch9',569800,164000);
+  W('watch9','40mm','watch9',529100,164000);
+  W('watchse3','40mm','watchse3',429000,287500);
+  W('watchse3','44mm','watchse3',473000,287500);
   W('taba11plus','기본','taba11plus',null);
-  W('tvfree5','기본','tvfree5',799700,601700,562100);
-  W('ipada16','128GB','ipada16',748000,550000,510400);
+  W('tvfree5','기본','tvfree5',799700,601700,562100,true);
+  W('ipada16','128GB','ipada16',748000,550000,510400,true);
 })();
 var GR='#3A3A3C', CR='#F7F4EC';
 var IP18=[{nm:'글레이셔',hex:'#A1AFC1',img:'model/iphone18pro-glacier.webp'},{nm:'실버',hex:'#C0C0C0',img:'model/iphone18pro-silver.webp'},
@@ -218,6 +221,7 @@ window.__stPh=function(el){
   if(el.parentNode) el.parentNode.replaceChild(d,el);
 };
 
+var TYPES={phone:[['mnp','번호이동'],['chg','기기변경']], second:[['all','지원금']]};
 /* ---------------- 상태 ---------------- */
 var S = normalize(null);
 var MNP = true;        // '번호이동 가격' 체크
@@ -250,7 +254,6 @@ function hidCls(x){ return x&&x.hidden?' is-hidden':''; }
 function secOn(k){ return EDIT || !(S.sec[k]&&S.sec[k].off); }
 
 /* ---------------- 가격표 (애플 💰 가격표에서 관리) ---------------- */
-var TYPES={phone:[['mnp','번호이동'],['chg','기기변경']], second:[['all','지원금']]};
 function todayKST(){ return new Date(Date.now()+9*3600e3).toISOString().slice(0,10); }
 function normPricing(p){
   p=(p&&typeof p==='object')?p:clone(DEFAULT.pricing);
@@ -268,6 +271,19 @@ function normPricing(p){
       p.tiers[g].forEach(function(t){ if(r.pub[t.k]==null && r.pub[t.grp]!=null) r.pub[t.k]=r.pub[t.grp]; });
       gk.forEach(function(k){ delete r.pub[k]; }); }); });
   });
+  if((p.rev||0)<2){   // 공시지원금을 번호이동/기기변경 따로 → 예전 값은 양쪽에 복사, 2TB 줄 빼기
+    p.vers.forEach(function(v){
+      v.rows=v.rows.filter(function(r){ return !/^2\s*TB$/i.test(r.cap||''); });
+      v.rows.forEach(function(r){ var types=TYPES[r.g].map(function(t){return t[0]});
+        Object.keys(r.pub).forEach(function(k){ if(k.indexOf('_')>-1 && types.indexOf(k.split('_')[0])>-1) return;
+          types.forEach(function(t){ if(r.pub[t+'_'+k]==null) r.pub[t+'_'+k]=r.pub[k]; }); delete r.pub[k]; }); });
+    });
+    p.rev=2;
+  }
+  if((p.rev||0)<3){   // 워치·탭은 요금제 구분 없이 지원금 하나 — TV프리·아이패드만 1GB/500MB
+    p.vers.forEach(function(v){ v.rows.forEach(function(r){ if(r.g==='second' && r.split==null) r.split=(r.model==='tvfree5'||r.model==='ipada16'); }); });
+    p.rev=3;
+  }
   return p;
 }
 // 그 날짜에 적용되는 정책 = 시작일이 그 날짜 이전인 것 중 가장 최근
@@ -287,7 +303,7 @@ function curType(g){ return g==='second'?'all':(MNP?'mnp':'chg'); }
 // tier = 요금제 (공시지원금은 요금제별, 다이렉트 지원금은 요금제가 속한 구간 기준)
 function rowCalc(r, type, tier){
   if(!tier) return null; var out=num(r.out); if(out==null) return null;
-  var our=num((r.our||{})[type+'_'+tier.grp])||0, pub=num((r.pub||{})[tier.k])||0;
+  var our=num((r.our||{})[type+'_'+tier.grp])||0, pub=num((r.pub||{})[type+'_'+tier.k])||0;
   var sel=Math.max(0,out-our), pb=pub?Math.max(0,out-pub-our):null;
   return {out:out, our:our, pub:pub, sel:sel, pb:pb, v:(pb!=null?Math.min(pb,sel):sel), fee:tier.fee||null};
 }
@@ -364,9 +380,11 @@ function segBtns(){
 function pline(t,sm,v){ return '<div class="r pr2"><span>'+t+(sm?'<small>'+esc(sm)+'</small>':'')+'</span><b>'+wz(v)+'</b></div>'; }
 var TIER={};   // 상세에서 고른 요금제 (모델별)
 function tierLabel(t){ return t.fee?Number(t.fee).toLocaleString('ko-KR'):t.nm; }
-function curTier(m, g){ var ts=tiersOf(g); return ts.filter(function(t){return t.k===TIER[m.id]})[0]||baseTier(g); }
+// 이 줄에서 쓰는 요금제 — 워치·탭처럼 구분 없는 줄은 첫 요금제 칸 하나만
+function rowTiers(r){ var ts=tiersOf(r.g); return (r.g==='second' && !r.split) ? ts.slice(0,1) : ts; }
+function curTier(m, g, r){ var ts=r?rowTiers(r):tiersOf(g); return ts.filter(function(t){return t.k===TIER[m.id]})[0]||(ts.indexOf(baseTier(g))>-1?baseTier(g):ts[0]); }
 function sheetTable(m, r){
-  var g=r.g, type=curType(g), out=num(r.out), ts=tiersOf(g), t=curTier(m,g), h='';
+  var g=r.g, type=curType(g), out=num(r.out), ts=rowTiers(r), t=curTier(m,g,r), h='', single=(g==='second'&&!r.split);
   if(g==='phone') h+='<div class="seg md-seg">'+segBtns()+'</div>';
   h+='<div class="r"><span>출고가</span><b>'+(out!=null?won(out):'상담 시 안내')+'</b></div>';
   if(out==null||!t) return h;
@@ -374,7 +392,7 @@ function sheetTable(m, r){
     return '<button type="button" class="tp'+(x===t?' on':'')+'" data-tier-pick="'+esc(x.k)+'" data-model="'+esc(m.id)+'">'+esc(tierLabel(x))+'</button>'; }).join('')+'</div></div>';
   var c=rowCalc(r,type,t); if(!c) return h;
   var grp=(plansOf(g).filter(function(p){return p.k===t.grp})[0]||{}).nm||'';
-  h+='<div class="pl first"><div class="pl-h">'+esc(t.fee?('월 '+won(t.fee)+' 요금제'):t.nm)+'</div>';
+  h+='<div class="pl first">'+(single?'':'<div class="pl-h">'+esc(t.fee?('월 '+won(t.fee)+' 요금제'):t.nm)+'</div>');
   var ourTxt=c.our?'유플러스 다이렉트 지원금 -'+won(c.our):'';
   if(c.pb!=null) h+=pline(g==='phone'?'공시지원금 선택 시':'구매가', (g==='phone'?'공시지원금':'이통사 지원금')+' -'+won(c.pub)+(ourTxt?' · '+ourTxt:''), c.pb);
   if(g==='phone') h+=pline('선택약정 선택 시', (ourTxt?ourTxt+' · ':'')+(t.fee?'월 요금 '+won(t.fee)+' → '+won(Math.round(t.fee*0.75)):'월 요금 25% 할인'), c.sel);
@@ -612,7 +630,7 @@ function renderModel(id, keepRecent){
     (SO(m)||(selRow&&selRow.so)?'<div class="so-notice">'+(SO(m)?'현재 일시품절입니다':'선택하신 '+esc(selRow.cap||'옵션')+' 은(는) 일시품절입니다')+'. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
     '<div class="ptable" id="ucatPrice">'+rows+'<div class="note">'+esc(S.priceNote)+'</div></div>'+
     '<div class="md-chips"><span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span><span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>'+
-    '<button class="cta ucard-cta" data-open="consult" data-model="'+esc(m.id)+'" data-color="'+esc(PICK[m.id]||'')+'" data-opt="'+esc(optsOf(m).length?optsOf(m)[OPT[m.id]||0].nm:'')+'" data-tier="'+esc(selRow&&curTier(m,selRow.g)&&curTier(m,selRow.g).fee?'월 '+won(curTier(m,selRow.g).fee):'')+'">'+(SO(m)||(selRow&&selRow.so)?'입고 알림 상담 신청하기':'온라인 상담 신청하기')+'</button></div>';
+    '<button class="cta ucard-cta" data-open="consult" data-model="'+esc(m.id)+'" data-color="'+esc(PICK[m.id]||'')+'" data-opt="'+esc(optsOf(m).length?optsOf(m)[OPT[m.id]||0].nm:'')+'" data-tier="'+esc(selRow&&!(selRow.g==='second'&&!selRow.split)&&curTier(m,selRow.g,selRow)?(curTier(m,selRow.g,selRow).fee?'월 '+won(curTier(m,selRow.g,selRow).fee):curTier(m,selRow.g,selRow).nm):'')+'">'+(SO(m)||(selRow&&selRow.so)?'입고 알림 상담 신청하기':'온라인 상담 신청하기')+'</button></div>';
 }
 
 var PICK={};   // 상세에서 고른 컬러 (모델별)
@@ -752,7 +770,7 @@ function submitConsult(){
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
   var dm=null; $$('#mDeviceSelect option').forEach(function(o){ if(o.selected&&o.getAttribute('data-id')) dm=byId(o.getAttribute('data-id')); });
   var optV=($('#mOptSel')&&!$('#mOptWrap').hidden&&$('#mOptSel').value)||null, capV=optV;
-  if(dm && TIERPICK && TIERPICK.tier && TIERPICK.model===dm.id) memo='[희망 요금제] '+TIERPICK.tier+' 요금제'+(memo?' / '+memo:'');
+  if(dm && TIERPICK && TIERPICK.tier && TIERPICK.model===dm.id) memo='[희망 요금제] '+TIERPICK.tier+(/요금제/.test(TIERPICK.tier)?'':' 요금제')+(memo?' / '+memo:'');
   var dRows=dm?sheetRows(dm):[];
   if(dRows.length){ if(!capV && dRows.length===1 && dRows[0].cap && dRows[0].cap!=='기본') capV=dRows[0].cap; if(capV==='기본') capV=null; }
   else if(dm&&dm.optLabel==='요금제'){ if(optV) memo=('[희망 요금제] '+optV+(memo?' / '+memo:'')); capV=dm.capacity||null; }
