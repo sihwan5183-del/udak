@@ -21,7 +21,7 @@ var DEFAULT = {
   v:1,
   brand:{small:'유플러스 공식파트너사', big:'유플러스 다이렉트'},
   hero:[
-    {k:'U+ 최초의 온라인 대리점', t:'아이폰 18프로 / 프로맥스', s:'불필요한 가입 없이 온라인으로 간편하게.', img:'hero/hero-01.webp', go:'#/model/iphone18pro'},
+    {k:'U+ 최초의 온라인 대리점', t:'불필요한 가입 없이 온라인으로 간편하게 구입', s:'', img:'hero/hero-main-01.webp', full:true, go:'consult'},
     {k:'번호이동 특가', t:'갤럭시 폴드 8 / 플립 8', s:'보이는 가격 그대로, 정직하게.', img:'hero/hero-02.jpg', go:'#/model/fold8'},
     {k:'갤럭시 S26 시리즈', t:'S26 · S26+ · S26 울트라', s:'제휴카드·부가서비스 의무가입 없이.', img:'hero/hero-03.jpg', go:'#/model/s26ultra'}
   ],

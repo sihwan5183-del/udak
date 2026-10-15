@@ -641,3 +641,7 @@ body.pz-open{overflow:hidden}
 .bchip span{display:inline-block;padding:8px 12px;border-radius:999px;border:1.5px solid #E3E5EA;font-size:13px;font-weight:700;color:var(--ink2);background:#fff}
 .bchip input:checked+span{border-color:var(--pink);color:var(--pink);background:var(--pink-50)}
 .bnote{font-size:11.5px;color:var(--sub);margin-top:6px}
+/* 히어로: '사진만 크게(배너형)' 슬라이드 — 상단 브랜드줄 아래에 배너 이미지를 통째로 */
+.slide{height:clamp(224px,58vw,262px)}
+.slide.full{background:#fff}
+.slide.full .slide-img,.slide.full .slide-img.fit{left:0;right:0;top:auto;bottom:22px;width:100%;height:calc(100% - 86px);object-fit:contain;object-position:center;padding:0;background:none}
