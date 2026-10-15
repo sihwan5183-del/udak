@@ -79,7 +79,8 @@ var GR='#3A3A3C', CR='#F7F4EC';
 var IP18=[{nm:'글레이셔',hex:'#A1AFC1',img:'model/iphone18pro-glacier.webp'},{nm:'실버',hex:'#C0C0C0',img:'model/iphone18pro-silver.webp'},
           {nm:'버건디',hex:'#47282E',img:'model/iphone18pro-burgundy.webp'},{nm:'블랙',hex:'#111111',img:'model/iphone18pro-black.webp'}];
 var DEFCOLORS = {
-  iphone18pro:IP18, iphone18promax:IP18,
+  iphone18pro:IP18,
+  iphone18promax:[IP18[2],IP18[0],IP18[1],IP18[3]],   // 프로맥스는 버건디가 대표 (18프로 글레이셔와 안 겹치게)
   fold8:[{nm:'라벤더',hex:'#C9BFE0',img:'model/fold8-lavender.webp'},{nm:'그라파이트',hex:GR,img:'model/fold8-graphite.webp'},{nm:'크림',hex:CR,img:'model/fold8-cream.webp'}],
   fold8ultra:[{nm:'바이올렛 쉐도우',hex:'#5C4E77',img:'model/fold8ultra-violet.webp'},{nm:'그라파이트',hex:GR,img:'model/fold8ultra-graphite.webp'},{nm:'크림',hex:CR,img:'model/fold8ultra-cream.webp'}],
   flip8:[{nm:'핑크',hex:'#F2C6D6',img:'model/flip8-pink.webp'},{nm:'그라파이트',hex:GR,img:'model/flip8-graphite.webp'},{nm:'크림',hex:CR,img:'model/flip8-cream.webp'}]
