@@ -979,17 +979,19 @@ function sheetSoon(){
   return '<div class="soon-box"><div class="soon-ic">🛠</div><b>현재 준비중이에요!</b><p>더 좋은 혜택으로 곧 찾아올게요.</p></div><button class="cta" type="button" data-close-sheet>확인</button>';
 }
 function sheetSubsidy(){
-  return '<h3>지원금 혜택 안내</h3><div class="gd-box hl"><p>월 <em>85,000원</em> 요금제를 <em>6개월 이상 유지</em>하시는 조건으로 드리고 있어요!</p>'+
-    '<p>6개월 후부터는 월 <em>47,000원 이상</em> 요금제로 자유롭게 변경 가능하십니다!</p></div>'+
-    '<div class="gd-sub">제휴카드·부가서비스 의무 가입 없이 진행돼요.</div>'+
-    '<button class="cta" data-go="#/cat/all">지원금 받는 모델 보러가기</button>';
+  var gift='<svg viewBox="0 0 24 24"><rect x="3.5" y="8.5" width="17" height="4" rx="1"/><path d="M5 12.5v7.5h14v-7.5M12 8.5V20M12 8.5c-1.6-3.6-6-4-6-1.4 0 1.6 2.6 1.4 6 1.4zM12 8.5c1.6-3.6 6-4 6-1.4 0 1.6-2.6 1.4-6 1.4z"/></svg>';
+  return '<h3 class="gd-t">지원금 혜택 안내</h3><div class="sb-box"><i class="sb-ic">'+gift+'</i><div class="sb-txt">'+
+    '<p>월 <em>85,000원</em> 요금제를 <em>6개월 이상</em> 유지하시는 조건으로 안내드리고 있어요.</p>'+
+    '<p>6개월 이후에는 월 <em>47,000원 이상</em> 요금제로 자유롭게 변경하실 수 있습니다.</p></div></div>'+
+    '<div class="gd-sub">제휴카드 · 부가서비스 의무 가입 없이 진행됩니다.</div>'+
+    '<button class="cta gd-cta" data-go="#/cat/all">지원금 받는 모델 보러가기 <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
 }
 var QNA=[
   ['제휴카드나 부가서비스에 꼭 가입해야 하나요?','아니요. 제휴카드·부가서비스 의무 가입 없이 진행돼요.'],
   ['요금제는 얼마나 유지해야 하나요?','월 85,000원 요금제를 6개월 이상 유지하시는 조건이에요. 6개월 후부터는 월 47,000원 이상 요금제로 자유롭게 변경하실 수 있어요.'],
   ['공시지원금과 선택약정은 뭐가 다른가요?','공시지원금은 기기값을 할인받는 방식이고, 선택약정은 매달 통신 요금을 25% 할인받는 방식이에요. 상품 화면에서 두 방식을 눌러 보시면 어느 쪽이 더 저렴한지 바로 비교해 드려요.'],
   ['번호이동·기기변경 모두 가능한가요?','네. SKT·KT·알뜰폰을 쓰고 계시면 번호이동, LG U+를 쓰고 계시면 기기변경으로 진행돼요.'],
-  ['휴대폰은 언제 받을 수 있나요?','상담 후 개통이 확정되면 당일 택배로 보내드려요. 서울·경기 고객님은 예약 후 매장에 방문하시면 당일 개통·수령도 가능해요.'],
+  ['휴대폰은 언제 받을 수 있나요?','상담 후 구매가 확정되면 당일 택배로 보내드려요. 서울·경기 고객님은 예약 후 매장에 방문하시면 당일 개통·수령도 가능해요.'],
   ['사은품도 있나요?','구매 시 투명케이스·보호필름·충전기를 함께 드려요.'],
   ['TV프리는 누가 받을 수 있나요?','U+ 인터넷TV를 1년 이상 2년 미만, 500MB 이상 요금제로 사용해주고 있으신 고객님이라면 기기값 0원으로 받으실 수 있어요. (약정 36개월 · 이용료 첫 9개월 월 9,350원, 10개월 차부터 월 7,700원)'],
   ['미성년자도 신청할 수 있나요?','개통 시 본인 신분증 확인과 법정대리인 동의가 필요해요. 보호자와 함께 신청해 주세요.']
@@ -1002,12 +1004,15 @@ function sheetQna(){
 }
 function sheetSpecial(){
   var ck='<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
-  return '<div class="sp-k">U+ 인터넷TV를 이용하고 있으시다면?</div><h3>오직! U+고객님께만 드리는,<br>유플러스 다이렉트 단독 혜택!</h3>'+
-    '<div class="sp-hero"><b>TV프리 기기값 0원</b><span>약정 36개월 · 이용료 첫 9개월 월 '+won(TV_FEE)+', 10개월 차부터 월 '+won(TV_FEE2)+'</span></div>'+
-    '<div class="tv-cond"><div class="tv-cond-h">이런 고객님께 드려요</div><ul>'+
+  var tv='<svg class="sp-tv" viewBox="0 0 120 90"><ellipse cx="58" cy="46" rx="56" ry="40" fill="#FBE1EC"/><defs><linearGradient id="spg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#FCE3EE"/></linearGradient></defs>'+
+    '<rect x="16" y="14" width="84" height="54" rx="4" fill="url(#spg)" stroke="#E6007E" stroke-width="3.5"/><rect x="50" y="68" width="16" height="7" fill="#E6007E"/><rect x="38" y="74" width="40" height="4" rx="2" fill="#E6007E"/>'+
+    '<text x="58" y="47" text-anchor="middle" font-family="Pretendard,sans-serif" font-weight="900" font-size="15" fill="#E6007E">U<tspan dy="-6" font-size="10">+</tspan><tspan dy="6" fill="#4A2B3A" dx="2">TV</tspan></text></svg>';
+  return '<div class="sp-k">U+ 인터넷TV를 이용하고 있으시다면</div><h3 class="gd-t sp-t">오직 <em>U+ 고객님</em>께만 드리는,<br>유플러스 다이렉트 단독 혜택!</h3>'+
+    '<div class="sp-hero2">'+tv+'<div class="sp-hr"><b>TV프리 <em>기기값 0원</em></b><span>약정 36개월 · 이용료 첫 9개월 월 '+won(TV_FEE)+', 10개월 차부터 월 '+won(TV_FEE2)+'</span></div></div>'+
+    '<div class="tv-cond sp-cond"><div class="tv-cond-h">이런 고객님께 드려요</div><ul>'+
       '<li><i>'+ck+'</i><span><b>U+ 인터넷TV</b> 1년 이상 ~ 2년 미만 이용 중</span></li>'+
       '<li><i>'+ck+'</i><span>인터넷 <b>500MB 이상</b> 요금제 사용</span></li></ul></div>'+
-    '<button class="cta" data-go="#/cat/tvfree">TV프리 보러가기</button>';
+    '<button class="cta gd-cta" data-go="#/cat/tvfree">TV프리 보러가기 <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
 }
 function storeItem(s){
   var i=S.stores.indexOf(s);
