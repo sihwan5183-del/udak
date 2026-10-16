@@ -1309,3 +1309,18 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .cpick-hint b.adv{display:flex;align-items:flex-start;gap:5px;word-break:keep-all}
 .cpick-hint b.adv>i{flex:none;font-style:normal}
 .cpick-hint b.adv>span{flex:1;min-width:0}
+
+/* TV프리 대상 카드 (레퍼런스 맞춤) */
+.tc{margin:14px 0 6px;padding:18px 14px 14px;border-radius:22px;background:#fff;border:1px solid #F8DCE8;box-shadow:0 6px 22px rgba(232,25,127,.07)}
+.tc-h{position:relative;display:flex;align-items:center;gap:6px;padding-left:22px;margin-bottom:12px;font-size:clamp(18px,5.2vw,21px);font-weight:900;color:var(--ink);letter-spacing:-.04em}
+.tc-h em{font-style:normal;color:#E8197F}
+.tc-sp{position:absolute;left:-2px;top:-8px;width:22px;height:22px;fill:none;stroke:#E8197F;stroke-width:2.2;stroke-linecap:round}
+.tc-it{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;border:1px solid #F6E3EC;background:#fff}
+.tc-it+.tc-it{margin-top:8px}
+.tc-it i{flex:none;width:34px;height:34px;border-radius:50%;background:#FDECF3;display:flex;align-items:center;justify-content:center}
+.tc-it i svg{width:17px;height:17px;fill:none;stroke:#E8197F;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+.tc-it span{font-size:clamp(13.5px,3.8vw,15px);color:#3F434B;line-height:1.4;word-break:keep-all;letter-spacing:-.02em}
+.tc-it b{color:var(--ink);font-weight:900}
+.sheet .tc{margin-top:12px}
+.tc-sp{width:26px;height:26px;left:-4px;top:-12px}
+.tc-h{padding-left:24px}

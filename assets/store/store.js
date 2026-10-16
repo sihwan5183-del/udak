@@ -482,11 +482,7 @@ function calcPickers(m, r, st){
   if(g==='phone') h+=cgrid('사용 통신사','carrier',CARRIERS.map(function(c){return [c,c]}),st.s.carrier||'',m,4,
     '');
   var ts=g==='tvfree'?[]:rowTiers(r);
-  if(g==='tvfree'){ var ck='<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
-    h+='<div class="tv-cond"><div class="tv-cond-h">이런 고객님께 드려요</div><ul>'+
-      '<li><i>'+ck+'</i><span><b>U+ 인터넷TV</b> 1년 이상 ~ 2년 미만 이용 중</span></li>'+
-      '<li><i>'+ck+'</i><span>인터넷 <b>500MB 이상</b> 요금제 사용</span></li>'+
-      '<li><i>'+ck+'</i><span>약정 <b>36개월</b></span></li></ul></div>'; }
+  if(g==='tvfree') h+=tvCondHtml();
   if(ts.length>1) h+='<div class="cpick"><div class="cpick-l">'+(g==='tvfree'?'집 인터넷':'요금제')+'</div><select class="csel" data-calc-sel="tier" data-model="'+esc(m.id)+'">'+ts.map(function(t){
       return '<option value="'+esc(t.k)+'"'+(st.t&&st.t.k===t.k?' selected':'')+'>'+esc(tierTitle(t))+'</option>'; }).join('')+'</select>'+(g==='phone'?'<div class="cpick-hint">'+PLAN_NOTE+'</div>':'')+'</div>';
   if(g==='phone'&&st.c) h+=cgrid('할인 방식','method',[['pub','공시지원금',!st.c.pub],['sel','선택약정 (요금 25%↓)']],st.method,m,2,
@@ -561,6 +557,13 @@ function shipState(){
   return {today:false, when:add===1?'내일':DN[nd]+'요일', cutTxt:ch+'시'};
 }
 function hms(t){ var h=Math.floor(t/3600), m=Math.floor(t%3600/60), x=t%60; return ('0'+h).slice(-2)+':'+('0'+m).slice(-2)+':'+('0'+x).slice(-2); }
+// TV프리 대상 카드 (레퍼런스: '이런 고객님께 추천드려요' + 항목별 둥근 칸)
+function tvCondHtml(){
+  var ck='<svg viewBox="0 0 24 24"><path d="m5.5 12.5 4.3 4.3L18.5 8"/></svg>', sp='<svg class="tc-sp" viewBox="0 0 24 24"><path d="M3 15.5l4 1.6M7.2 7.5l2.6 3.2M13.4 4v4"/></svg>';
+  return '<div class="tc"><div class="tc-h">'+sp+'이런 고객님께 <em>추천드려요</em></div>'+
+    '<div class="tc-it"><i>'+ck+'</i><span><b>U+ 인터넷TV</b> 1년 이상 ~ 2년 미만 이용 중인 고객님</span></div>'+
+    '<div class="tc-it"><i>'+ck+'</i><span>인터넷 <b>500MB 이상</b> 요금제를 사용 중인 고객님</span></div></div>';
+}
 function cutLabel(){ var c=String((S.ship||{}).cut||'15:00').split(':'), h=+c[0]||15, m=+c[1]||0; return (h<12?'오전 ':'오후 ')+(h%12||12)+'시'+(m?' '+m+'분':''); }
 function cdBoxes(t){ var h=Math.floor(t/3600), m=Math.floor(t%3600/60), x=t%60, p=function(n){return ('0'+n).slice(-2)};
   return '<span class="shp-u"><b>'+p(h)+'</b><small>시</small></span><i>:</i><span class="shp-u"><b>'+p(m)+'</b><small>분</small></span><i>:</i><span class="shp-u"><b>'+p(x)+'</b><small>초</small></span>'; }
@@ -1060,9 +1063,7 @@ function sheetSpecial(){
     '<text x="58" y="47" text-anchor="middle" font-family="Pretendard,sans-serif" font-weight="900" font-size="15" fill="#E6007E">U<tspan dy="-6" font-size="10">+</tspan><tspan dy="6" fill="#4A2B3A" dx="2">TV</tspan></text></svg>';
   return '<div class="sp-k">U+ 인터넷TV를 이용하고 있으시다면</div><h3 class="gd-t sp-t">오직 <em>U+ 고객님</em>께만 드리는,<br>유플러스 다이렉트 단독 혜택!</h3>'+
     '<div class="sp-hero2">'+tv+'<div class="sp-hr"><b>TV프리 <em>기기값 0원</em></b><span>약정 36개월 · 이용료 첫 9개월 월 '+won(TV_FEE)+', 10개월 차부터 월 '+won(TV_FEE2)+'</span></div></div>'+
-    '<div class="tv-cond sp-cond"><div class="tv-cond-h">이런 고객님께 드려요</div><ul>'+
-      '<li><i>'+ck+'</i><span><b>U+ 인터넷TV</b> 1년 이상 ~ 2년 미만 이용 중</span></li>'+
-      '<li><i>'+ck+'</i><span>인터넷 <b>500MB 이상</b> 요금제 사용</span></li></ul></div>'+
+    tvCondHtml()+
     '<button class="cta gd-cta c-sp" data-go="#/cat/tvfree">TV프리 보러가기 <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
 }
 function storeItem(s){
