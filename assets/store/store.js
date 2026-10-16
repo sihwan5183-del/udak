@@ -517,10 +517,17 @@ function weekRange(){
   var t=new Date(todayKST()+'T00:00:00'), d=(t.getDay()+6)%7, a=new Date(t), b=new Date(t); a.setDate(t.getDate()-d); b.setDate(a.getDate()+6);
   var f=function(x){ return (x.getMonth()+1)+'/'+x.getDate(); }; return f(a)+'(월) ~ '+f(b)+'(일)';
 }
+// 특가 구매가: 가격표 기준, 요금제 중 가장 싸게 살 수 있는 금액 (번호이동/기기변경 각각)
+function dealPrice(m,type){
+  var rs=sheetRows(m); if(!rs.length) return null;
+  var on=rs.filter(function(r){return !r.so}); if(on.length) rs=on;
+  var best=null, g=rs[0].g;
+  rs.forEach(function(r){ tiersOf(g).forEach(function(t){ var c=rowCalc(r,type,t); if(c && c.v!=null && (best==null || c.v<best)) best=c.v; }); });
+  return best;
+}
 function dealItems(){
-  var D=S.deal||{}, v=PV();
-  var auto=function(m,type){ var r=v&&v.rows.filter(function(x){return x.model===m.id})[0]; var n=r&&num((r.our||{})[type+'_p115']); return n?Math.round(n/10000)+'만원':''; };
-  return String(D.items||'').split('\n').map(function(l){ var r=l.split('|').map(function(x){return x.trim()}); var m=r[0]&&(byId(r[0])||models().filter(function(x){return x.nm.replace(/\s/g,'')===r[0].replace(/\s/g,'')})[0]); return m?{m:m,mnp:r[1]||auto(m,'mnp'),chg:r[2]||auto(m,'chg')}:null; }).filter(Boolean);
+  var D=S.deal||{};
+  return String(D.items||'').split('\n').map(function(l){ var r=l.split('|').map(function(x){return x.trim()}); var m=r[0]&&(byId(r[0])||models().filter(function(x){return x.nm.replace(/\s/g,'')===r[0].replace(/\s/g,'')})[0]); return m?{m:m,mnp:dealPrice(m,'mnp'),chg:dealPrice(m,'chg')}:null; }).filter(Boolean);
 }
 function renderDeal(){
   var D=S.deal, sub=$('#dealSubs'), hero=document.querySelector('.hero');
@@ -533,9 +540,9 @@ function renderDeal(){
   $('#heroTrack').innerHTML='<div class="deal-box" data-edit="deal"><div class="dl-tag"><b>'+esc(D.title||'이번 주 특가')+'</b><span>'+weekRange()+'</span></div>'+
     '<div class="dl-grid">'+it.map(function(x){
       return '<a class="dl-c" href="#/model/'+esc(x.m.id)+'" data-edit="deal"><div class="dl-c-h"><span class="dl-c-img">'+im(mImg(x.m),'','',x.m.nm)+'</span><b>'+esc(x.m.nm)+'</b></div>'+
-        (x.mnp?'<div class="dl-c-m"><small>번호이동 최대</small><em>'+esc(x.mnp)+'</em></div>':'<div class="dl-c-m"><small>지원금</small><em class="ask">상담 시 안내</em></div>')+
-        (x.chg?'<div class="dl-c-c">기기변경 '+esc(x.chg)+'</div>':'')+'</a>';
-    }).join('')+'</div></div>';
+        (x.mnp!=null?'<div class="dl-c-m"><small>번호이동</small><em>'+wz(x.mnp)+'</em></div>':'<div class="dl-c-m"><small>구매가</small><em class="ask">상담 시 안내</em></div>')+
+        (x.chg!=null?'<div class="dl-c-c">기기변경 '+wz(x.chg)+'</div>':'')+'</a>';
+    }).join('')+'</div>'+(it.some(function(x){return x.mnp!=null||x.chg!=null})?'<div class="dl-note">구매 가능 금액 · 월 115,000원 이상 요금제 6개월 유지 기준</div>':'')+'</div>';
   $('#heroDots').innerHTML='';
   return true;
 }
