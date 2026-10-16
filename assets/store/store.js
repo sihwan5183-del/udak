@@ -74,7 +74,7 @@ var DEFAULT = {
     zero:{t:'기기값 0원 모아보기', s:'제휴카드·부가서비스 가입 없이'},
     gifts:{t:'유플러스 다이렉트 멤버십 사은품'},
     rank:{t:'이번 주 인기 모델 TOP'},
-    pick:{t:'골라보는 휴대폰'},
+    pick:{t:'내게 맞는 휴대폰 찾기'},
     wear:{t:'유플러스 다이렉트 요금제별 혜택', s:'요금제에 따라 워치 · 태블릿을 더 가볍게'}
   },
   priceNote:'',
@@ -537,9 +537,10 @@ function renderDeal(){
   if(!it.length) return false;
   clearInterval(heroTimer);
   $('#heroTrack').style.transform='';
-  $('#heroTrack').innerHTML='<div class="deal-box" data-edit="deal"><div class="dl-tag"><b>'+esc(D.title||'이번 주 특가')+'</b><span>'+weekRange()+'</span></div>'+
+  var tt=esc(String(D.title||'이번주 특가').replace(/^이번 주 /,'이번주 ')).split(' '), tl=tt.pop();
+  $('#heroTrack').innerHTML='<div class="deal-box" data-edit="deal"><div class="dl-head"><h3 class="dl-ttl"><span>'+(tt.length?tt.join(' ')+' ':'')+'<em>'+tl+'</em></span></h3><i class="dl-sep"></i><span class="dl-date">'+weekRange()+'</span></div>'+
     '<div class="dl-grid">'+it.map(function(x){
-      return '<a class="dl-c" href="#/model/'+esc(x.m.id)+'" data-edit="deal"><div class="dl-c-h"><span class="dl-c-img">'+im(mImg(x.m),'','',x.m.nm)+'</span><b>'+esc(x.m.nm)+'</b></div>'+
+      return '<a class="dl-c" href="#/model/'+esc(x.m.id)+'" data-edit="deal" data-mid="'+esc(x.m.id)+'"><div class="dl-c-h"><span class="dl-c-img">'+im(mImg(x.m),'','',x.m.nm)+'</span><b>'+esc(x.m.nm)+'</b></div>'+
         (x.mnp!=null?'<div class="dl-c-m"><small>번호이동</small><em>'+wz(x.mnp)+'</em></div>':'<div class="dl-c-m"><small>구매가</small><em class="ask">상담 시 안내</em></div>')+
         (x.chg!=null?'<div class="dl-c-c">기기변경 '+wz(x.chg)+'</div>':'')+'</a>';
     }).join('')+'</div>'+(it.some(function(x){return x.mnp!=null||x.chg!=null})?'<div class="dl-note">구매 가능 금액 · 월 115,000원 이상 요금제 6개월 유지 기준</div>':'')+'</div>';
@@ -557,7 +558,7 @@ function heroSup(t){
 function renderHero(){
   var b=S.brand;
   var tr=b.trust==null?'U+ 최초의 온라인 대리점':b.trust;
-  $('#brand').innerHTML='<small>'+esc(b.small)+'</small><b>'+esc(b.big)+'</b>'+(tr?'<span class="brand-trust"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 3 7.7 7 9 4-1.3 7-4.5 7-9V6l-7-3z"/><path d="m9 12 2 2 4-4"/></svg>'+esc(tr).replace(/^U\+/,'U<sup>+</sup>')+'</span>':'');
+  $('#brand').innerHTML='<small>'+esc(b.small)+'</small><b>'+esc(b.big)+'</b>'+(tr?'<span class="brand-trust" data-cert role="button"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 3 7.7 7 9 4-1.3 7-4.5 7-9V6l-7-3z"/><path d="m9 12 2 2 4-4"/></svg>'+esc(tr).replace(/^U\+\s*/,'<b class="bt-u">U<sup>+</sup></b><i class="bt-dot">·</i>')+'<svg class="bt-go" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>':'');
   if(renderDeal()) return;
   var list=vis(S.hero);
   $('#heroTrack').innerHTML = list.map(function(h,i){

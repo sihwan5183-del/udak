@@ -137,10 +137,10 @@ var ED = {
   },
   deal:{
     title:function(){ return '🔥 이번 주 특가 (맨 위)'; },
-    html:function(){ var d=T.S.deal||{}; return sw('on','켜기 (끄면 예전 슬라이드 배너가 보여요)',d.on)+txt('title','제목',d.title||'이번 주 특가')+
+    html:function(){ var d=T.S.deal||{}; return sw('on','켜기 (끄면 예전 슬라이드 배너가 보여요)',d.on)+txt('title','제목 (마지막 단어가 분홍색)',d.title||'이번주 특가')+
       area('items','모델 — 한 줄에 하나 (2칸씩 뱃지로 나열)\n모델은 이름(예: 폴드8) 또는 코드(예: fold8) · 구매가(번호이동/기기변경)는 가격표에서 자동 계산',d.items,4)+
       '<div class="hint">날짜(이번 주 월~일)는 자동으로 바뀌어요.</div>'+applyBtn(); },
-    save:function(){ T.S.deal={on:C('on'), title:V('title')||'이번 주 특가', items:V('items')}; }
+    save:function(){ T.S.deal={on:C('on'), title:V('title')||'이번주 특가', items:V('items')}; }
   },
   brand:{
     title:function(){ return '🏷 상단 브랜드'; },
@@ -237,7 +237,7 @@ function openAdd(){
   CUR=null;
 }
 function openSettings(){
-  var secNames={pop:'많이 찾아요',recent:'최근 본 모델',zero:'기기값 0원 모아보기',gifts:'멤버십 사은품',rank:'인기 TOP',pick:'골라보는 휴대폰',wear:'요금제별 혜택'};
+  var secNames={pop:'많이 찾아요',recent:'최근 본 모델',zero:'기기값 0원 모아보기',gifts:'멤버십 사은품',rank:'인기 TOP',pick:'내게 맞는 휴대폰 찾기',wear:'요금제별 혜택'};
   open('⚙ 설정',
     txt('tel','고객센터 전화번호',T.S.tel)+txt('kakao','카카오톡 문의 주소',T.S.kakao)+
     area('priceNote','상세 화면 가격 안내 문구',T.S.priceNote,3)+
@@ -331,12 +331,13 @@ function undo(){
   }).catch(function(e){ alert('되돌리기에 실패했어요. ('+e.message+')'); });
 }
 
-/* ---------- 꾹 눌러서 끌어 순서 바꾸기 (모델 원형 아이콘 · 퀵메뉴 · 신뢰 스트립) ---------- */
+/* ---------- 꾹 눌러서 끌어 순서 바꾸기 (모델 원형 아이콘 · 퀵메뉴 · 신뢰 스트립 · 이번주 특가) ---------- */
 (function(){
   var ZONES=[
     {box:'#models', item:'a.m', key:'models'},
     {box:'#quick', item:'a', key:'quick'},
-    {box:'#trust', item:'.it', key:'trust'}
+    {box:'#trust', item:'.it', key:'trust'},
+    {box:'.dl-grid', item:'a.dl-c', key:'deal'}
   ];
   var D=null, timer=null, justDragged=false;
   function zoneOf(el){ for(var i=0;i<ZONES.length;i++){ var z=ZONES[i], box=el.closest(z.box); if(box){ var it=el.closest(z.item); if(it&&box.contains(it)) return {z:z,box:box,it:it}; } } return null; }
@@ -362,7 +363,10 @@ function undo(){
     var list=items(d.hit.box,d.hit.z), from=list.indexOf(d.hit.it), to=list.indexOf(d.target);
     if(from<0||to<0||from===to) return;
     var k=d.hit.z.key;
-    if(k==='models'){
+    if(k==='deal'){
+      var mids=list.map(function(it){return it.getAttribute('data-mid')}), mm=mids.splice(from,1)[0]; mids.splice(to,0,mm);
+      T.S.deal=Object.assign({},T.S.deal,{items:mids.join('\n')});
+    } else if(k==='models'){
       var ids=list.map(idOf), mv=ids.splice(from,1)[0]; ids.splice(to,0,mv);
       var rest=T.S.models.filter(function(m){ return ids.indexOf(m.id)<0; });
       T.S.models=ids.map(function(id){ return T.S.models.filter(function(m){return m.id===id})[0]; }).filter(Boolean).concat(rest);
