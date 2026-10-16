@@ -1086,7 +1086,7 @@ function sheetStoreOne(s){
     '<div><span>전화</span><b>'+(s.tel?'<a href="tel:'+esc(s.tel)+'">'+esc(s.tel)+'</a>':'<a href="tel:'+esc(S.tel)+'">'+esc(S.tel)+' (대표)</a>')+'</b></div></div>'+
     '<a class="st-map" href="'+map+'" target="_blank" rel="noopener">네이버 지도로 보기 '+CHEV_I+'</a>'+
     (S.storeNote?'<div class="todo" style="margin-top:12px">'+esc(S.storeNote)+'</div>':'')+
-    '<button class="cta" data-open="consult">'+esc(s.nm)+' 방문 예약 상담 신청하기</button>';
+    '<button class="cta" data-open="consult" data-store="'+esc(s.nm)+'">'+esc(s.nm)+' 방문 예약 상담 신청하기</button>';
 }
 function sheetStore(){
   var list=S.stores.filter(function(s){return s&&s.nm});
@@ -1095,7 +1095,7 @@ function sheetStore(){
     (list.length?(seoul.length?'<div class="sl-g">서울</div>'+seoul.map(storeItem).join(''):'')+(gg.length?'<div class="sl-g">경기</div>'+gg.map(storeItem).join(''):'')
       :'<div class="todo">가까운 매장은 상담 시 안내드립니다.</div>')+
     (S.storeNote?'<div class="todo" style="margin-top:10px">'+esc(S.storeNote)+'</div>':'')+
-    '<button class="cta" data-open="consult">방문 예약 상담 신청하기</button>';
+    '<button class="cta" data-open="consult" data-store="">방문 예약 상담 신청하기</button>';
 }
 
 /* ---------------- 상담 신청서 (기존 갤럭시 신청서와 같은 저장 방식) ---------------- */
@@ -1463,6 +1463,8 @@ function apSumHtml(){
 }
 function apInfoHtml(){
   return '<section class="ap-sec ap-info" id="consultForm"><div class="ap-h"><b>05</b>고객 정보</div>'+
+    (AP&&AP.visit?'<div class="ff"><label>방문 매장</label><select id="mStoreSel"><option value="">매장을 골라 주세요</option>'+
+      S.stores.filter(function(s){return s&&s.nm}).map(function(s){ return '<option value="'+esc(s.nm)+'"'+(s.nm===AP.store?' selected':'')+'>'+esc(s.nm)+'</option>'; }).join('')+'</select></div>':'')+
     '<div class="ff"><label>이름 <span class="req">*</span></label><input type="text" id="mUserName" placeholder="이름을 입력해 주세요" autocomplete="name"></div>'+
     '<div class="ff"><label>연락처 <span class="req">*</span></label><div class="phone3"><input type="text" id="mPhone1" value="010" readonly tabindex="-1"><span>-</span><input type="tel" id="mPhone2" maxlength="4" inputmode="numeric" placeholder="0000"><span>-</span><input type="tel" id="mPhone3" maxlength="4" inputmode="numeric" placeholder="0000"></div></div>'+
     '<div class="ff"><label>생년월일 <span class="req">*</span></label><input type="text" id="mUserBirth" inputmode="numeric" maxlength="8" placeholder="예: 940101"></div>'+
@@ -1512,6 +1514,8 @@ function openApply(el){
     else if(k==='tvfree'){ AP.tv=m.id; AP.tvTier=TIER[m.id]||''; AP.tvType=tvTypeOf((SEL[m.id]||{}).tvtype); AP.tvFix=true; var ts0=SEL[m.id]||{}; if(ts0.months!=null) AP.months=ts0.months; if(AP.tvType==='old') AP.phone='none'; }
     else AP[k]=m.id;
   }
+  // 20261017: 매장찾기에서 '방문 예약 상담 신청하기'로 들어오면 고른 매장을 신청서까지 가져감 (목록 버튼은 매장 미정)
+  var stn=el&&el.getAttribute&&el.getAttribute('data-store'); if(stn!=null){ AP.visit=true; AP.store=stn; }
   apValidate();
   if(location.hash==='#/apply'){ renderApply(true); window.scrollTo(0,0); } else location.hash='#/apply';
 }
@@ -1572,6 +1576,7 @@ function apSubmit(mode){
     home_tv:tvx?(tvx.id==='tvfree5'?'프리5':tvx.id==='ipada16'?'아이패드':tvx.nm):null, snapshot:snapshot};
   // 20261016: 카톡 예약으로 신청 → CRM '카톡 상담 요청' (전화 전에 문자·카톡으로 먼저 케어)
   snapshot.consult=kakao?'카톡':'전화'; if(kakao) body.consult_channel='카톡';
+  if(AP.visit){ body.visit_store=AP.store||'미정'; snapshot.visitStore=AP.store||'미정'; }   // 20261017: CRM에 '📍OO점 방문'으로 표시
   if(typeof window.udakMetaIds==='function'){ var mi=window.udakMetaIds(); Object.keys(mi).forEach(function(k){ body[k]=mi[k]; }); }
   fetch(SB_URL,{method:'POST',keepalive:kakao,headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
   .then(function(res){
@@ -1661,6 +1666,7 @@ document.addEventListener('input',function(e){
 });
 document.addEventListener('change',function(e){
   if(e.target.id==='mPlanSel'){ AP.tier=e.target.value; apRefresh(); return; }
+  if(e.target.id==='mStoreSel'){ AP.store=e.target.value; return; }
   if(e.target.id==='apTvTier'){ AP.tvTier=e.target.value; apRefresh(); return; }
   var cs=e.target.closest&&e.target.closest('[data-calc-sel]');
   if(cs){ var mid=cs.getAttribute('data-model'); if(cs.getAttribute('data-calc-sel')==='tier') TIER[mid]=cs.value; var y=window.scrollY; renderModel(mid,true); window.scrollTo(0,y); return; }
