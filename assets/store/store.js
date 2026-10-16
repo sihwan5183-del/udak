@@ -242,6 +242,8 @@ function normalize(d){
   o.models.forEach(function(m){ m.cat=arr(m.cat);
     if((m.id==='tvfree5'||m.id==='ipada16') && m.cat.indexOf('tvfree')<0) m.cat=m.cat.filter(function(c){return c!=='tablet'}).concat(['tvfree']); m.tags=arr(m.tags); m.cards=arr(m.cards); m.colors=arr(m.colors); m.opts=arr(m.opts); m.price=m.price||{}; });
   o.sec=o.sec||{}; Object.keys(DEFAULT.sec).forEach(function(k){ o.sec[k]=o.sec[k]||clone(DEFAULT.sec[k]); });
+  // 히어로 사진: 예전 저장값(hero-0N.jpg)은 실제 파일(hero-0N.webp)로
+  (o.hero||[]).forEach(function(h){ if(h&&typeof h.img==='string') h.img=h.img.replace(/^hero\/(hero-0[1-3])\.jpg$/,'hero/$1.webp'); });
   o.brand=o.brand||clone(DEFAULT.brand); o.biz=o.biz||clone(DEFAULT.biz); o.promo=o.promo||clone(DEFAULT.promo);
   o.pricing=normPricing(o.pricing);
   return o;
@@ -485,7 +487,7 @@ function renderHero(){
     var real=S.hero.indexOf(h);
     return '<a class="slide'+(h.full?' full':'')+hidCls(h)+'" data-go="'+esc(h.go||'')+'" data-edit="hero:'+real+'">'+
       '<div class="slide-txt"><div class="k">'+k+'</div><div class="t">'+esc(h.t)+'</div><div class="s">'+esc(h.s)+'</div></div>'+
-      im(h.img,'slide-img',i===0,'')+'</a>';
+      im(h.img,'slide-img',true,'')+'</a>';
   }).join('');
   $('#heroDots').innerHTML = list.length>1 ? list.map(function(_,i){return '<i'+(i?'':' class="on"')+'></i>'}).join('') : '';
   heroIdx=0; heroGo(0); heroAuto();
