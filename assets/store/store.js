@@ -262,7 +262,7 @@ var TV_FEE=9350, TV_FEE2=7700;   // TV프리 이용료: 첫 9개월 9,350원 →
 // TV프리 = U+ 기존 고객님(인터넷TV 1년 이상~2년 미만 이용 중)을 위한 유플러스 다이렉트만의 혜택 · 휴대폰 구매 없이도 가능
 // 1GB/500MB는 가입할 인터넷 요금제가 아니라 '집에서 이미 쓰는 인터넷 속도' — 속도에 따라 지원금이 달라짐 (500MB 이상이어야 가능)
 function tvTypeOf(){ return 'old'; }
-var TV_WHO='유플러스 다이렉트 특별 혜택', TV_CHIPS=['U+ 인터넷TV 1년 이상 2년 미만 이용 중','500MB 이상 요금제'], TV_TGT='U+ 인터넷TV를 1년 이상 2년 미만, 500MB 이상 요금제로 사용해주고 있으신 고객님';
+var TV_WHO='유플러스 다이렉트 특별 혜택', TV_CHIPS=['U+ 인터넷TV 1년 이상 2년 미만 이용 중','500MB 이상 요금제'], TV_TGT='U+ 인터넷TV를 1년 이상 2년 미만, 500MB 이상 요금제로 이용 중인 고객님';
 function kindOf(m){ return isTv(m)?'tvfree':m.cat.indexOf('watch')>-1?'watch':m.cat.indexOf('tablet')>-1?'tablet':'phone'; }
 function phones(){ return models().filter(function(m){return !isWear(m)}); }
 function wears(){ return models().filter(isWear); }
@@ -562,7 +562,7 @@ function tvCondHtml(){
   var ck='<svg viewBox="0 0 24 24"><path d="m5.5 12.5 4.3 4.3L18.5 8"/></svg>', sp='<svg class="tc-sp" viewBox="0 0 24 24"><path d="M3 15.5l4 1.6M7.2 7.5l2.6 3.2M13.4 4v4"/></svg>';
   return '<div class="tc"><div class="tc-h">'+sp+'이런 고객님께 <em>추천드려요</em></div>'+
     '<div class="tc-it"><i>'+ck+'</i><span><b>U+ 인터넷TV</b> 1년 이상 ~ 2년 미만 이용 중인 고객님</span></div>'+
-    '<div class="tc-it"><i>'+ck+'</i><span>인터넷 <b>500MB 이상</b> 요금제를 사용 중인 고객님</span></div></div>';
+    '<div class="tc-it"><i>'+ck+'</i><span>인터넷 <b>500MB 이상</b> 요금제를 이용 중인 고객님</span></div></div>';
 }
 function cutLabel(){ var c=String((S.ship||{}).cut||'15:00').split(':'), h=+c[0]||15, m=+c[1]||0; return (h<12?'오전 ':'오후 ')+(h%12||12)+'시'+(m?' '+m+'분':''); }
 function cdBoxes(t){ var h=Math.floor(t/3600), m=Math.floor(t%3600/60), x=t%60, p=function(n){return ('0'+n).slice(-2)};
@@ -723,7 +723,7 @@ function cellGuide(kind, fee, plan, nm){ return {fee:fee, plan:plan, t:kind+' �
   {ic:'won', hl:1, b:'월 이용료 '+won(fee), p:'월 '+won(plan)+' 이상 요금제('+nm+' 이상)를 이용 중이시라면 이용료 없이 휴대폰 요금에 포함돼요.', tag:nm+' 이상 이용 시 이용료 0원'},
   {ic:'cal', b:'24개월 함께하는 상품이에요', p:'24개월 약정으로 더 가벼운 가격에 만나보실 수 있어요.'}]}; }
 function tvGuide(kind){ return {t:kind+' 이용 가이드', items:[
-  {ic:'tv', hl:1, b:'오직 U+ 고객님께만, 유플러스 다이렉트 특별 혜택', p:'U+ 인터넷·TV를 1년 이상 2년 미만 이용 중이면서, 인터넷 500MB 이상 요금제를 사용 중인 고객님이라면 기기값 0원 혜택을 받으실 수 있어요.', tag:'U+ 인터넷·TV 이용 고객님 대상'},
+  {ic:'tv', hl:1, b:'오직 U+ 고객님께만, 유플러스 다이렉트 특별 혜택', p:'U+ 인터넷·TV를 1년 이상 2년 미만 이용 중이면서, 인터넷 500MB 이상 요금제를 이용 중인 고객님이라면 기기값 0원 혜택을 받으실 수 있어요.', tag:'U+ 인터넷·TV 이용 고객님 대상'},
   {ic:'tv', b:'태블릿으로 U+tv를 이용할 수 있어요', p:'U+tv를 시청할 수 있는 TV 가입형 태블릿 상품이에요.\n별도의 휴대폰 셀룰러 회선 없이 이용하실 수 있어요.'},
   {ic:'won', hl:1, b:'첫 9개월 월 9,350원', p:'첫 9개월은 월 9,350원으로 이용하고,\n10개월 차부터는 월 7,700원 요금제로 변경해 이용하실 수 있어요.', tag:'10개월 차부터 월 7,700원'},
   {ic:'cal', b:'36개월 약정 상품이에요', p:'36개월 약정, TV 가입형 상품입니다.'}]}; }
@@ -1329,9 +1329,9 @@ function apAddHtml(){
     }).join('')+'</div>';
     if(s[0]==='tv' && AP.tv){
       var tm=byId(AP.tv), ts=tiersOf('tvfree');
-      h+='<div class="ap-tvnote"><b>오직 U+ 고객님께만 드리는, 유플러스 다이렉트 특별 혜택</b>이에요. U+ 인터넷TV를 1년 이상 2년 미만, 500MB 이상 요금제로 사용해주고 있으신 고객님이라면 신청하실 수 있어요.'+
+      h+='<div class="ap-tvnote"><b>오직 U+ 고객님께만 드리는, 유플러스 다이렉트 특별 혜택</b>이에요. U+ 인터넷TV를 1년 이상 2년 미만, 500MB 이상 요금제로 이용 중인 고객님이라면 신청하실 수 있어요.'+
         '<br>TV프리 이용료는 첫 9개월 월 '+won(TV_FEE)+', 10개월 차부터 월 '+won(TV_FEE2)+'이에요. (약정 36개월)</div>'+
-        '<label class="agree ap-tvok"><input type="checkbox" id="mTvOk"'+(AP.tvOk?' checked':'')+'> U+ 인터넷TV를 1년 이상 2년 미만, 500MB 이상 요금제로 사용 중이에요 <span class="req">(필수)</span></label>';
+        '<label class="agree ap-tvok"><input type="checkbox" id="mTvOk"'+(AP.tvOk?' checked':'')+'> U+ 인터넷TV를 1년 이상 2년 미만, 500MB 이상 요금제로 이용 중이에요 <span class="req">(필수)</span></label>';
     }
     h+='</div>';
   });
@@ -1495,7 +1495,7 @@ function apSubmit(){
   var name=$('#mUserName').value.trim(), phone='010'+$('#mPhone2').value.replace(/\D/g,'')+$('#mPhone3').value.replace(/\D/g,''), birth=birth8($('#mUserBirth').value), memo=$('#mUserNote').value.trim();
   if(!AP.phone){ alert('휴대폰을 선택해 주세요.\n(아직 정하지 않으셨다면 "상담 후 결정할게요"를 골라 주세요)'); window.scrollTo({top:0,behavior:'smooth'}); return; }
   if(!AP.carrier && AP.phone!=='none'){ alert('현재 사용 중인 통신사를 선택해 주세요.'); return; }
-  if(AP.tv && !AP.tvOk){ alert('TV프리는 U+ 인터넷TV를 1년 이상 2년 미만, 500MB 이상 요금제로 사용해주고 있으신 고객님께 드리는 유플러스 다이렉트 특별 혜택이에요.\n확인 항목에 체크해 주세요.'); return; }
+  if(AP.tv && !AP.tvOk){ alert('TV프리는 U+ 인터넷TV를 1년 이상 2년 미만, 500MB 이상 요금제로 이용 중인 고객님께 드리는 유플러스 다이렉트 특별 혜택이에요.\n확인 항목에 체크해 주세요.'); return; }
   if(!name){ alert('이름을 입력해주세요.'); return; }
   if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해주세요.'); return; }
   if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해주세요.'); return; }
