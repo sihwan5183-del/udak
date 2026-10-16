@@ -1195,3 +1195,16 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .qna-cats::-webkit-scrollbar{display:none}
 .qna-cats button{flex:none;padding:8px 13px;border-radius:999px;border:1px solid #ECEDF0;background:#fff;font-size:13px;font-weight:700;color:#5B5F68;white-space:nowrap;cursor:pointer}
 .qna-cats button.on{background:#FDF2F8;border-color:#F3B3DB;color:#DE1B6A}
+
+.qna-search{display:flex;align-items:center;gap:8px;height:46px;padding:0 12px 0 14px;margin-bottom:10px;border-radius:14px;border:1.5px solid #ECEDF0;background:#F7F8FA}
+.qna-search:focus-within{border-color:#F3B3DB;background:#fff}
+.qna-search svg{flex:none;width:18px;height:18px;fill:none;stroke:#9AA0A8;stroke-width:2;stroke-linecap:round}
+.qna-search input{flex:1;min-width:0;border:0;background:none;outline:none;font-size:14.5px;color:var(--ink);-webkit-appearance:none}
+.qna-search input::-webkit-search-cancel-button{display:none}
+.qna-x{display:none;flex:none;width:22px;height:22px;border-radius:50%;border:0;background:#C9CCD3;color:#fff;font-size:15px;line-height:1;cursor:pointer}
+.qna-search.on .qna-x{display:block}
+.qna-cats.qdim{opacity:.45}
+.qna-n{font-size:12.5px;color:var(--sub);margin:0 2px 2px}
+.qna-c{display:inline-block;margin-right:6px;padding:1px 7px;border-radius:999px;background:#FDF2F8;color:#DE1B6A;font-size:11px;font-weight:700;vertical-align:1px}
+.qna mark{background:#FDE1EE;color:inherit;border-radius:3px;padding:0 1px}
+.qna-none{padding:22px 10px;text-align:center;font-size:13.5px;line-height:1.6;color:var(--sub)}
