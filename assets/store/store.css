@@ -863,3 +863,12 @@ body.no-sq .side-quick{display:none}
 .sortpop button small{display:block;font-size:10.5px;font-weight:600;color:var(--mute);margin-top:1px}
 .sortpop button.on{color:var(--pink);background:var(--pink-50)}
 .big .media .rank-b{position:absolute;left:8px;top:8px;z-index:3;padding:4px 9px;border-radius:999px;background:var(--pink);color:#fff;font-size:11px;font-weight:900}
+/* 상단 브랜드 아래 신뢰 문구 */
+.brand .brand-trust{display:inline-flex;align-items:center;gap:4px;margin-top:6px;padding:3px 9px 3px 6px;border-radius:999px;border:1px solid #F3C4DA;background:#fff;font-size:11.5px;font-weight:800;color:var(--ink);white-space:nowrap}
+.brand .brand-trust svg{width:14px;height:14px;fill:none;stroke:var(--pink);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.brand .brand-trust sup{font-size:.62em;vertical-align:.55em;margin-left:-1px;margin-right:2px;color:var(--pink);font-weight:900}
+.brand .brand-trust{color:var(--ink)}
+/* 특가 칸은 신뢰 문구 아래부터 */
+.slide.deal{height:clamp(262px,70vw,318px)}
+.slide.deal .slide-txt{top:92px!important;bottom:18px!important;justify-content:center}
+.slide.deal .slide-img{top:92px!important;height:calc(100% - 110px)!important}

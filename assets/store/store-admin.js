@@ -144,8 +144,8 @@ var ED = {
   },
   brand:{
     title:function(){ return '🏷 상단 브랜드'; },
-    html:function(){ var b=T.S.brand; return txt('small','윗줄',b.small)+txt('big','분홍 큰 글씨',b.big)+applyBtn(); },
-    save:function(){ T.S.brand={small:V('small'), big:V('big')}; }
+    html:function(){ var b=T.S.brand; return txt('small','윗줄',b.small)+txt('big','분홍 큰 글씨',b.big)+txt('trust','신뢰 문구 (비우면 숨김)',b.trust==null?'U+ 최초의 온라인 대리점':b.trust)+applyBtn(); },
+    save:function(){ T.S.brand={small:V('small'), big:V('big'), trust:V('trust')}; }
   },
   foot:{
     title:function(){ return '📄 회사 소개 · 하단 정보'; },

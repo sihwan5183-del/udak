@@ -519,7 +519,8 @@ function heroSup(t){
 }
 function renderHero(){
   var b=S.brand;
-  $('#brand').innerHTML='<small>'+esc(b.small)+'</small><b>'+esc(b.big)+'</b>';
+  var tr=b.trust==null?'U+ 최초의 온라인 대리점':b.trust;
+  $('#brand').innerHTML='<small>'+esc(b.small)+'</small><b>'+esc(b.big)+'</b>'+(tr?'<span class="brand-trust"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 3 7.7 7 9 4-1.3 7-4.5 7-9V6l-7-3z"/><path d="m9 12 2 2 4-4"/></svg>'+esc(tr).replace(/^U\+/,'U<sup>+</sup>')+'</span>':'');
   if(renderDeal()) return;
   var list=vis(S.hero);
   $('#heroTrack').innerHTML = list.map(function(h,i){
