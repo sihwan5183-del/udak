@@ -714,7 +714,7 @@ function renderGifts(){
   $('#giftHead').innerHTML=secHead('gifts');
   $('#gifts').innerHTML=vis(S.gifts).map(function(g){
     var i=S.gifts.indexOf(g);
-    return '<a class="dc'+hidCls(g)+'" data-go="'+esc(g.go||'consult')+'" data-edit="gift:'+i+'">'+im(g.img,'','',g.nm)+'<div class="ov"><div class="sm">'+esc(g.sm)+'</div><div class="tt">'+esc(g.nm)+'</div><div class="pr">'+esc(g.pr||'')+'</div></div></a>';
+    return '<a class="dc'+hidCls(g)+'" data-go="'+esc(g.go||'soon')+'" data-edit="gift:'+i+'">'+im(g.img,'','',g.nm)+'<div class="ov"><div class="sm">'+esc(g.sm)+'</div><div class="tt">'+esc(g.nm)+'</div><div class="pr">'+esc(g.pr||'')+'</div></div></a>';
   }).join('');
 }
 function renderRank(){
