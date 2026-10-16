@@ -237,7 +237,7 @@ function openAdd(){
   CUR=null;
 }
 function openSettings(){
-  var secNames={pop:'많이 찾아요',recent:'최근 본 모델',zero:'기기값 0원 모아보기',gifts:'멤버십 사은품',rank:'인기 TOP',pick:'내게 맞는 휴대폰 찾기',wear:'요금제별 혜택'};
+  var secNames={pop:'많이 찾아요',recent:'최근 본 모델',zero:'기기값 0원 모아보기',gifts:'멤버십 사은품',rank:'인기 TOP',pick:'내게 맞는 휴대폰 찾기',wear:'기존 고객 혜택 (TV프리 등)'};
   open('⚙ 설정',
     txt('tel','고객센터 전화번호',T.S.tel)+txt('kakao','카카오톡 문의 주소',T.S.kakao)+
     area('priceNote','상세 화면 가격 안내 문구',T.S.priceNote,3)+

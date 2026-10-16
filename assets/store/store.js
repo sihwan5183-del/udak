@@ -52,7 +52,7 @@ var DEFAULT = {
     {nm:'지원금 혜택',     ic:'gift',    c:'#22B573', bg:'#F0FBF5', b:'#D3F0E1', go:'#/cat/zero'},
     {nm:'구매 가이드',     ic:'book',    c:'#FF8A1F', bg:'#FFF6EE', b:'#FBE4CF', go:'guide'},
     {nm:'QNA',             ic:'headset', c:'#FF2D78', bg:'#FFF2F7', b:'#FADCE8', go:'contact'},
-    {nm:'요금제별 혜택',   ic:'won',     c:'#2563EB', bg:'#F2F6FF', b:'#DCE6FB', go:'sec:wear'},
+    {nm:'기존 고객 혜택',   ic:'won',     c:'#2563EB', bg:'#F2F6FF', b:'#DCE6FB', go:'sec:wear'},
     {nm:'매장 방문하기',   ic:'pin',     c:'#F43F5E', bg:'#FFF2F4', b:'#FADDE2', go:'store'}
   ],
   trust:[
@@ -75,7 +75,7 @@ var DEFAULT = {
     gifts:{t:'유플러스 다이렉트 멤버십 사은품'},
     rank:{t:'이번 주 인기 모델 TOP'},
     pick:{t:'내게 맞는 휴대폰 찾기'},
-    wear:{t:'유플러스 다이렉트 요금제별 혜택', s:'요금제에 따라 워치 · 태블릿을 더 가볍게'}
+    wear:{t:'U+ 고객님께만, 유플러스 다이렉트 단독 혜택', s:'이미 U+ 쓰고 계시면 휴대폰 안 바꿔도 TV프리 기기값 0원'}
   },
   priceNote:'',
   stores:[
@@ -173,7 +173,7 @@ var DEFCOLORS = {
   flip8:[{nm:'핑크',hex:'#F2C6D6',img:'model/flip8-pink.webp'},{nm:'그라파이트',hex:GR,img:'model/flip8-graphite.webp'},{nm:'크림',hex:CR,img:'model/flip8-cream.webp'}]
 };
 var CAT_TABS = [{k:'all',nm:'전체'},{k:'iphone',nm:'아이폰'},{k:'galaxy',nm:'갤럭시 S'},{k:'fold',nm:'폴더블'},{k:'zero',nm:'기기값 0원'},{k:'watch',nm:'워치'},{k:'tablet',nm:'태블릿'},{k:'tvfree',nm:'TV프리'}];
-var GO_OPTIONS = [['sec:gifts','멤버십 사은품 구역으로'],['sec:wear','요금제별 혜택 구역으로'],['consult','상담 신청서 열기'],['contact','전화·카톡 문의'],['guide','구매 가이드'],['store','매장찾기'],['#/cat/all','전체 모델'],['#/cat/iphone','아이폰 모아보기'],['#/cat/galaxy','갤럭시 S 모아보기'],['#/cat/fold','폴더블 모아보기'],['#/cat/zero','기기값 0원 모아보기']];
+var GO_OPTIONS = [['sec:gifts','멤버십 사은품 구역으로'],['sec:wear','기존 고객 혜택 구역으로'],['consult','상담 신청서 열기'],['contact','전화·카톡 문의'],['guide','구매 가이드'],['store','매장찾기'],['#/cat/all','전체 모델'],['#/cat/iphone','아이폰 모아보기'],['#/cat/galaxy','갤럭시 S 모아보기'],['#/cat/fold','폴더블 모아보기'],['#/cat/zero','기기값 0원 모아보기']];
 
 var QI = { // 퀵메뉴 아이콘
   user:'<circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>',
@@ -698,7 +698,8 @@ function guideHtml(m){
 function renderWear(){
   var list=wears();
   $('#wearSec').hidden=!secOn('wear') || !list.length;
-  $('#wearHead').innerHTML=secHead('wear','#/cat/watch');
+  var wk=['watch','tablet','tvfree'].filter(function(k){ return list.some(function(m){return m.cat.indexOf(k)>-1}); });
+  $('#wearHead').innerHTML=secHead('wear','#/cat/'+(wk[0]||'watch'));
   $('#wear').innerHTML=list.map(function(m){return hcard(m)}).join('');
 }
 function renderGifts(){
@@ -829,7 +830,9 @@ function renderHome(){
 function renderCat(k){
   var tab=CAT_TABS.filter(function(t){return t.k===k})[0]||CAT_TABS[0];
   $('#catTitle').textContent=tab.nm;
-  $('#catTabs').innerHTML=CAT_TABS.map(function(t){return '<button class="'+(t.k===tab.k?'on':'')+'" data-cat="'+t.k+'">'+t.nm+'</button>'}).join('');
+  // 고객 화면: 보이는 모델이 하나도 없는 탭(예: 워치·태블릿 노출 멈춤)은 숨김
+  var tabs=CAT_TABS.filter(function(t){ return EDIT||t.k==='all'||t.k==='zero'||t.k===tab.k||models().some(function(m){return m.cat.indexOf(t.k)>-1}); });
+  $('#catTabs').innerHTML=tabs.map(function(t){return '<button class="'+(t.k===tab.k?'on':'')+'" data-cat="'+t.k+'">'+t.nm+'</button>'}).join('');
   var list=tab.k==='zero'&&S.lists&&S.lists.zero&&S.lists.zero.length ? pickList('zero')   // 관리자가 고른 '기기값 0원' 목록과 똑같이
     : models().filter(function(m){return tab.k==='all'||m.cat.indexOf(tab.k)>-1||(tab.k==='zero'&&!isWear(m)&&isZero(m))});
   $('#catCircles').innerHTML=smallCircles(list);
