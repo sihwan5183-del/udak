@@ -632,7 +632,7 @@ function renderPromo(){
 }
 function secHead(k, more){
   var s=S.sec[k]||{};
-  return '<div class="sec-h" data-edit="sec:'+k+'"><div>'+(s.s?'<div style="font-size:12.5px;color:var(--sub)">'+esc(s.s)+'</div>':'')+'<h2>'+esc(s.t)+(EDIT&&s.off?' <small style="color:#DC2626;font-size:12px">(숨김)</small>':'')+'</h2></div>'+
+  return '<div class="sec-h" data-edit="sec:'+k+'"><div>'+(s.s?'<div style="font-size:12.5px;color:var(--sub)">'+esc(s.s)+'</div>':'')+'<h2'+(String(s.t||'').length>15?' class="long"':'')+'>'+esc(s.t)+(EDIT&&s.off?' <small style="color:#DC2626;font-size:12px">(숨김)</small>':'')+'</h2></div>'+
     (more?'<a class="more" href="'+more+'">전체보기 '+CHEV_I+'</a>':'')+'</div>';
 }
 // 많이 찾아요 / 기기값 0원 — 관리자가 고른 목록(없으면 자동)
@@ -655,8 +655,8 @@ function hcard(m,opt){
   opt=opt||{};
   var badge=opt.badge||badgeOf(m);
   return '<a class="hc'+(SO(m)?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="'+esc(opt.edit||('model:'+m.id))+'" data-mid="'+esc(m.id)+'"><div class="im">'+(badge?'<span class="badge'+(opt.dark||SO(m)?' dark':'')+'">'+esc(badge)+'</span>':'')+
-    im(mImg(m),'','',m.nm)+'</div><div class="strip">'+esc(stripOf(m))+'</div>'+
-    '<div class="bd"><div class="t">'+esc(m.nm)+'</div>'+priceLine(m)+'<div class="mt">'+(isTv(m)?'유플러스 다이렉트 특별 혜택 · 약정 36개월':'제휴카드·부가서비스 X · 당일발송')+'</div></div></a>';
+    im(mImg(m),'','',m.nm)+'</div><div class="strip">'+esc(isTv(m)?TV_WHO:stripOf(m).replace(/ \+ .*$/,'').replace(/^(번호이동|기기변경) 시 /,'$1 '))+'</div>'+
+    '<div class="bd"><div class="t">'+esc(m.nm)+'</div>'+priceLine(m)+'<div class="mt">'+(isTv(m)?'약정 36개월 · 당일발송':'카드·부가서비스 X · 당일발송')+'</div></div></a>';
 }
 function isZero(m){ if(m.cat.indexOf('zero')>-1) return true; var p=priceOf(m); return p.kind==='sheet' && p.v===0; }
 function renderZero(){

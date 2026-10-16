@@ -1058,3 +1058,15 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .cpick-badge{display:flex;align-items:center;min-height:40px}
 .cpick-badge span{display:inline-flex;align-items:center;padding:7px 16px;border-radius:999px;background:var(--pink-50);border:1.5px solid var(--pink);color:var(--pink);font-size:13.5px;font-weight:800}
 #v-cat.cat-tv [data-seg],#v-cat.cat-tv [data-maxwrap]{display:none!important}
+
+/* 섹션 제목·작은 카드: 잘림·밀림 방지 */
+.sec-h{gap:10px;align-items:flex-end}
+.sec-h>div:first-child{min-width:0;flex:1}
+.sec-h h2{line-height:1.3;word-break:keep-all;overflow-wrap:break-word;text-wrap:balance}
+.sec-h h2.long{font-size:clamp(16px,4.4vw,18px);letter-spacing:-.05em}
+.sec-h .more{flex:none;white-space:nowrap;padding-bottom:3px}
+.hc .pr{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:4px;line-height:1.25}
+.hc .pr s{margin-left:0}
+.hc .pr-c{white-space:normal;overflow:visible;line-height:1.35;word-break:keep-all;margin-top:3px}
+.hc .mt{line-height:1.35;word-break:keep-all}
+.hc .mt{font-size:11px;letter-spacing:-.02em}
