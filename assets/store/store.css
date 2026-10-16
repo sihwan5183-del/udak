@@ -1190,3 +1190,8 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .sp-cond .tv-cond-h{color:#DA177C}
 .sp-cond i{background:#DF0F7F}
 .gd-t{font-size:clamp(22px,6.4vw,26px)!important}
+
+.qna-cats{display:flex;gap:6px;overflow-x:auto;margin:0 -2px 12px;padding:2px 2px 4px;scrollbar-width:none}
+.qna-cats::-webkit-scrollbar{display:none}
+.qna-cats button{flex:none;padding:8px 13px;border-radius:999px;border:1px solid #ECEDF0;background:#fff;font-size:13px;font-weight:700;color:#5B5F68;white-space:nowrap;cursor:pointer}
+.qna-cats button.on{background:#FDF2F8;border-color:#F3B3DB;color:#DE1B6A}
