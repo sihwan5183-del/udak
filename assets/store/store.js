@@ -21,7 +21,7 @@ var DEFAULT = {
   v:1,
   brand:{small:'유플러스 공식파트너사', big:'유플러스 다이렉트'},
   // 맨 위: 이번 주 특가 (켜면 히어로 슬라이드 대신 보임). items 첫 줄이 대표 모델 — '모델|번호이동 최대|기기변경'
-  deal:{on:true, title:'이번 주 특가', img:'hero/hero-02.webp', items:'fold8|73만원|47만원\nflip8|60만원|34만원\ns26|68만원|50만원\niphone17||'},
+  deal:{on:true, title:'이번 주 특가', img:'hero/hero-02.webp', items:'fold8|73만원|47만원\nflip8|60만원|34만원\ns26|68만원|50만원\niphone17|50만원|24만원'},
   hero:[
     {k:'U+ 최초의 온라인 대리점', t:'유플러스 다이렉트', s:'불필요한 가입 없이 온라인으로 간편하게.', img:'hero/hero-01.webp', go:'#/model/iphone18pro'},
     {k:'갤럭시 폴드8 / 플립8', t:'', s:'', sup:'폴드8|73만원|47만원\n플립8|60만원|34만원', img:'hero/hero-02.webp', go:'#/model/fold8'},
@@ -487,7 +487,9 @@ function weekRange(){
   var f=function(x){ return (x.getMonth()+1)+'/'+x.getDate(); }; return f(a)+'(월) ~ '+f(b)+'(일)';
 }
 function dealItems(){
-  var D=S.deal||{}; return String(D.items||'').split('\n').map(function(l){ var r=l.split('|').map(function(x){return x.trim()}); var m=r[0]&&(byId(r[0])||models().filter(function(x){return x.nm.replace(/\s/g,'')===r[0].replace(/\s/g,'')})[0]); return m?{m:m,mnp:r[1]||'',chg:r[2]||''}:null; }).filter(Boolean);
+  var D=S.deal||{}, v=PV();
+  var auto=function(m,type){ var r=v&&v.rows.filter(function(x){return x.model===m.id})[0]; var n=r&&num((r.our||{})[type+'_p115']); return n?Math.round(n/10000)+'만원':''; };
+  return String(D.items||'').split('\n').map(function(l){ var r=l.split('|').map(function(x){return x.trim()}); var m=r[0]&&(byId(r[0])||models().filter(function(x){return x.nm.replace(/\s/g,'')===r[0].replace(/\s/g,'')})[0]); return m?{m:m,mnp:r[1]||auto(m,'mnp'),chg:r[2]||auto(m,'chg')}:null; }).filter(Boolean);
 }
 function renderDeal(){
   var D=S.deal, sub=$('#dealSubs'), hero=document.querySelector('.hero');
@@ -1005,6 +1007,7 @@ function act(go, el){
   if(go.indexOf('sec:')===0){ var id={gifts:'giftSec',wear:'wearSec',zero:'zeroSec',rank:'rankSec',pick:'pickSec',pop:'popSec'}[go.slice(4)];
     var goSec=function(){ var el=id&&document.getElementById(id); if(el) window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-60,behavior:'smooth'}); };
     if(!$('#v-home').classList.contains('on')){ location.hash='#/'; setTimeout(goSec,120); } else goSec(); return; }
+  if(go==='search'){ closeSheet(); location.hash='#/search'; return; }
   if(go==='consult'){ closeSheet(); openApply(el); }
   else if(go==='contact') openSheet(sheetContact());
   else if(go==='guide') openSheet(sheetGuide());

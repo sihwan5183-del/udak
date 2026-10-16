@@ -138,7 +138,7 @@ var ED = {
   deal:{
     title:function(){ return '🔥 이번 주 특가 (맨 위)'; },
     html:function(){ var d=T.S.deal||{}; return sw('on','켜기 (끄면 예전 슬라이드 배너가 보여요)',d.on)+txt('title','제목',d.title||'이번 주 특가')+
-      area('items','모델 · 지원금 — 한 줄에 하나: 모델|번호이동 최대|기기변경 (2칸씩 뱃지로 나열 · 금액 비우면 상담 시 안내)\n모델은 이름(예: 폴드8) 또는 코드(예: fold8)',d.items,4)+
+      area('items','모델 · 지원금 — 한 줄에 하나: 모델|번호이동 최대|기기변경 (2칸씩 뱃지로 나열 · 금액을 비우면 가격표의 다이렉트 지원금 115군으로 자동)\n모델은 이름(예: 폴드8) 또는 코드(예: fold8)',d.items,4)+
       '<div class="hint">날짜(이번 주 월~일)는 자동으로 바뀌어요.</div>'+applyBtn(); },
     save:function(){ T.S.deal={on:C('on'), title:V('title')||'이번 주 특가', items:V('items')}; }
   },
