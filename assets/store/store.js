@@ -42,8 +42,8 @@ var DEFAULT = {
     {id:'watch9',      nm:'갤럭시 워치9',       cat:['watch'], ds:'매일 함께하는 건강 파트너',       tags:['이통사 지원금','스마트기기']},
     {id:'watchse3',    nm:'애플워치 SE3',       cat:['watch'], ds:'아이폰과 가장 잘 어울리는 워치',   tags:['이통사 지원금','스마트기기']},
     {id:'taba11plus',  nm:'갤럭시 탭 A11+',     cat:['tablet'],ds:'넉넉한 화면, 가벼운 태블릿',        tags:['상담 시 안내','스마트기기']},
-    {id:'tvfree5',     nm:'U+ tv 프리5',        cat:['tvfree'],ds:'12.4인치 대화면, TV를 내 방 어디서나', tags:['이통사 지원금','스마트기기']},
-    {id:'ipada16',     nm:'아이패드 A16',        cat:['tvfree'],ds:'128GB · 가볍게 시작하는 아이패드',   tags:['이통사 지원금','스마트기기']}
+    {id:'tvfree5',     nm:'U+ tv 프리5',        cat:['tvfree'],ds:'12.4인치 대화면, TV를 내 방 어디서나', tags:['U+ 인터넷TV 고객','TV 가입형']},
+    {id:'ipada16',     nm:'아이패드 A16',        cat:['tvfree'],ds:'128GB · 가볍게 시작하는 아이패드',   tags:['U+ 인터넷TV 고객','TV 가입형']}
   ],
   quick:[
     {nm:'유닥 멤버십 가입', ic:'user',    c:'#FF3D8B', bg:'#FFF2F7', b:'#FADCE8', go:'sec:gifts'},
@@ -256,6 +256,8 @@ function vis(list){ return EDIT ? list : list.filter(function(x){return x && !x.
 function models(){ return vis(S.models); }
 function isWear(m){ return m.cat.indexOf('watch')>-1 || m.cat.indexOf('tablet')>-1 || m.cat.indexOf('tvfree')>-1; }
 function isTv(m){ return m.cat.indexOf('tvfree')>-1; }
+// TV프리·아이패드(TV 가입형): 통신사가 그냥 주는 게 아니라 U+ 인터넷TV 가입/이용 고객 조건 — 항상 조건을 함께 표시
+var TV_WHO='U+ 인터넷TV 신규가입·이용 고객', TV_CHIPS=['U+ 인터넷TV 가입 시 (500MB 이상)','1년 이상 2년 미만 이용 중 시'];
 function kindOf(m){ return isTv(m)?'tvfree':m.cat.indexOf('watch')>-1?'watch':m.cat.indexOf('tablet')>-1?'tablet':'phone'; }
 function phones(){ return models().filter(function(m){return !isWear(m)}); }
 function wears(){ return models().filter(isWear); }
@@ -406,13 +408,15 @@ function stripOf(m){
   var pp=priceOf(m);
   if(pp.kind==='sheet'){
     if(pp.g==='second') return pp.sub?('휴대폰과 함께 구매 시 '+won(pp.sub)+' 할인'):'휴대폰과 함께 구매 시 혜택';
-    if(pp.g==='tvfree') return pp.sub?('이통사 지원금 '+won(pp.sub)+' 할인'):'TV프리 상담 가능';
+    if(pp.g==='tvfree') return pp.v===0?(TV_WHO+' 기기값 0원'):pp.sub?(TV_WHO+' '+won(pp.sub)+' 할인'):'TV프리 상담 가능';
     var lead=(MNP?'번호이동':'기기변경')+' 시 ', tail=tagsOf(m)[1]?' + '+tagsOf(m)[1]:'';
     if(pp.v===0) return lead+'기기값 0원'+tail;
     var pct=pctOf(pp); if(pct>0) return lead+'기기값 '+pct+'% 할인'+tail;
   }
+  if(pp.kind==='hidden' && isTv(m)) return TV_WHO+' 혜택';
   if(pp.kind==='hidden' && isWear(m)) return '휴대폰과 함께 구매 시 혜택';
-  if(pp.kind==='sub') return pp.sub?('이통사 지원금 '+won(pp.sub)+' 할인'):'스마트기기 상담 가능';
+  if(pp.kind==='sub') return pp.sub?((isTv(m)?TV_WHO:'이통사 지원금')+' '+won(pp.sub)+' 할인'):'스마트기기 상담 가능';
+  if(isTv(m)) return TV_WHO+' 혜택 · 상담 시 안내';
   return (MNP?'번호이동':'기기변경')+' 시 '+(tagsOf(m)[0]||'')+(tagsOf(m)[1]?' + '+tagsOf(m)[1]:'');
 }
 function segBtns(){
@@ -501,7 +505,7 @@ function calcBox(m, r, st){
   if(st.fee) mon+=line('월 통신 요금'+(st.method==='sel'?' <small>25% 할인</small>':''),won(fee));
   mon+=line('월 합계',won(total),'sum');
   var ben=line('출고가',won(c.out));
-  if(st.method==='pub'&&c.pub) ben+=line((st.g==='phone'?'공시지원금':'이통사 지원금')+(tn?' ('+tn+')':''),'-'+won(c.pub),'minus');
+  if(st.method==='pub'&&c.pub) ben+=line((st.g==='phone'?'공시지원금':st.g==='tvfree'?'인터넷TV 고객 지원금':'이통사 지원금')+(tn?' ('+tn+')':''),'-'+won(c.pub),'minus');
   if(c.our) ben+=line('추가 지원금 (유플러스 다이렉트)','-'+won(c.our),'minus');
   ben+=line('지원 후 기기값',wz(st.after),'sum');
   h+='<div class="ms-grid">'+
@@ -640,7 +644,7 @@ function hcard(m,opt){
   var badge=opt.badge||badgeOf(m);
   return '<a class="hc'+(SO(m)?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="'+esc(opt.edit||('model:'+m.id))+'" data-mid="'+esc(m.id)+'"><div class="im">'+(badge?'<span class="badge'+(opt.dark||SO(m)?' dark':'')+'">'+esc(badge)+'</span>':'')+
     im(mImg(m),'','',m.nm)+'</div><div class="strip">'+esc(stripOf(m))+'</div>'+
-    '<div class="bd"><div class="t">'+esc(m.nm)+'</div>'+priceLine(m)+'<div class="mt">제휴카드·부가서비스 X · 당일발송</div></div></a>';
+    '<div class="bd"><div class="t">'+esc(m.nm)+'</div>'+priceLine(m)+'<div class="mt">'+(isTv(m)?'U+ 인터넷TV 가입·이용 고객 대상':'제휴카드·부가서비스 X · 당일발송')+'</div></div></a>';
 }
 function isZero(m){ if(m.cat.indexOf('zero')>-1) return true; var p=priceOf(m); return p.kind==='sheet' && p.v===0; }
 function renderZero(){
@@ -668,6 +672,7 @@ function cellGuide(kind, fee, plan, nm){ return {fee:fee, plan:plan, t:kind+' �
   {ic:'won', hl:1, b:'월 이용료 '+won(fee), p:'월 '+won(plan)+' 이상 요금제('+nm+' 이상)를 이용 중이시라면 이용료 없이 휴대폰 요금에 포함돼요.', tag:nm+' 이상 이용 시 이용료 0원'},
   {ic:'cal', b:'24개월 함께하는 상품이에요', p:'24개월 약정으로 더 가벼운 가격에 만나보실 수 있어요.'}]}; }
 function tvGuide(kind){ return {t:kind+' 이용 가이드', items:[
+  {ic:'tv', hl:1, b:'U+ 인터넷TV 고객 전용 혜택이에요', p:'휴대폰을 바꾸면서 U+ 인터넷TV(500MB 이상)를 새로 가입하시거나, U+ 인터넷TV를 1년 이상 2년 미만 이용 중인 고객이 받을 수 있는 혜택이에요.', tag:'인터넷TV 신규가입 · 이용 중 고객'},
   {ic:'tv', b:'U+tv를 보는 태블릿PC예요', p:'유플러스 TV에 가입해 U+tv를 시청할 수 있는 TV 가입형 상품이에요. 별도 휴대폰 회선(셀룰러) 없이 이용하실 수 있어요.'},
   {ic:'won', hl:1, b:'첫 9개월 월 9,350원', p:'10개월 차부터는 월 7,700원 요금제로 바꿔서 더 가볍게 이용하실 수 있어요.', tag:'10개월 차부터 월 7,700원'},
   {ic:'cal', b:'36개월 함께하는 상품이에요', p:'36개월 약정으로 부담 없이 오래 이용하실 수 있어요.'}]}; }
@@ -711,6 +716,7 @@ function priceBlock(p){
   var noint=p.row&&noInterest(p.row), mon=p.v>0?won10(noint?p.v/24:p.v*RATE[24]/24):0;   // 카드는 24개월 할부 기준
   return '<div class="bp"><span class="bp-l">'+lab+'</span>'+(pct>0?'<span class="bp-pct">'+pct+'%</span>':'')+'<b class="bp-v">'+wz(p.v)+(p.from?'~':'')+'</b>'+(p.out&&p.out>p.v?'<s class="bp-o">'+won(p.out)+'</s>':'')+'</div>'+
     '<div class="bp-m">'+(p.v===0?'기기값 0원 · 할부금 없음':'월 <b>'+won(mon)+(p.from?'~':'')+'</b> <small>24개월 할부 · '+(noint?'이자 없음':'할부이자 포함')+'</small>')+'</div>'+
+    (p.g==='tvfree'?'<div class="bp-c">U+ 인터넷TV 신규가입(500MB 이상) 또는 1년 이상 2년 미만 이용 중인 고객 기준</div>':'')+
     (p.g==='phone'&&p.tier?'<div class="bp-c">'+(MNP?'번호이동':'기기변경')+' · '+esc(p.tier.title||tierLabel(p.tier))+' 6개월 유지 · '+(p.sel?'선택약정':'공시지원금')+' 기준</div>':'');
 }
 function bigcard(m){
@@ -726,7 +732,7 @@ function bigcard(m){
     '<div class="strip">'+esc(stripOf(m))+'</div></div>'+
     '<div class="row1"><h3 class="ucard-name">'+esc(m.nm)+'</h3><span class="bdg">'+(SO(m)?'일시품절':'당일발송')+'</span><span class="eta">'+esc(badgeOf(m))+'</span></div>'+
     (pb||'<div class="meta">'+(meta.length?meta.join(' · '):'가격은 상담 시 안내드립니다')+'</div>')+
-    '<div class="chips"><span class="chip">제휴카드 X</span><span class="chip">부가서비스 X</span><span class="chip gray">5분 상담</span></div>'+
+    '<div class="chips">'+(isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):'<span class="chip">제휴카드 X</span><span class="chip">부가서비스 X</span>')+'<span class="chip gray">5분 상담</span></div>'+
     '<div class="stamp">'+(SO(m)?'입고 알림 상담 신청 가능':'구매 시 투명케이스 · 보호필름 · 충전기 제공')+'</div></a>';
 }
 function smallCircles(list){
@@ -853,7 +859,7 @@ function renderModel(id, keepRecent){
   else if(p.kind==='hidden'){ rows='<div class="r hi"><span>가격</span><b>상담 시 안내</b></div>'; }
   else if(p.kind==='sub'){
     rows+='<div class="r"><span>출고가</span><b>'+(p.out!=null?won(p.out):'상담 시 안내')+'</b></div>';
-    rows+='<div class="r"><span>이통사 지원금</span><b style="color:var(--pink)">'+(p.sub?'-'+won(p.sub):'-')+'</b></div>';
+    rows+='<div class="r"><span>'+(isTv(m)?'인터넷TV 고객 지원금':'이통사 지원금')+'</span><b style="color:var(--pink)">'+(p.sub?'-'+won(p.sub):'-')+'</b></div>';
     rows+='<div class="r hi"><span>구매가</span><b>'+(p.v!=null?won(p.v):'상담 시 안내')+'</b></div>';
   } else {
   rows+='<div class="r"><span>출고가</span><b>'+(p.out!=null?won(p.out):'상담 시 안내')+'</b></div>';
@@ -868,7 +874,7 @@ function renderModel(id, keepRecent){
     colorPicker(m)+optPicker(m)+pickers+
     (SO(m)||(selRow&&selRow.so)?'<div class="so-notice">'+(SO(m)?'현재 일시품절입니다':'선택하신 '+esc(selRow.cap||'옵션')+' 은(는) 일시품절입니다')+'. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
     '<div class="ptable" id="ucatPrice">'+rows+''+'</div>'+guideHtml(m)+
-    '<div class="md-chips"><span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span><span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>'+
+    '<div class="md-chips">'+(isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):'<span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span>')+'<span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>'+
     '<button class="cta ucard-cta" data-open="consult" data-model="'+esc(m.id)+'" data-color="'+esc(PICK[m.id]||'')+'" data-opt="'+esc(optsOf(m).length?optsOf(m)[OPT[m.id]||0].nm:'')+'">'+(SO(m)||(selRow&&selRow.so)?'입고 알림 상담 신청하기':(selRow?'이 조건으로 온라인 상담 신청하기 ›':'온라인 상담 신청하기'))+'</button></div>';
 }
 
@@ -1232,7 +1238,7 @@ function apSummary(){
     var x=AP[s[0]]&&byId(AP[s[0]]); if(!x) return; var r=rec(s[1],x.nm,s[0],x), ac=apAddCalc(x);
     if(!ac){ r.ask=true; row(r.dev,'기기값',null,'',null,'','상담 시 안내'); }
     else {
-      dev(r, ac.c, ac.c.pb!=null?ac.c.pub:0, '이통사 지원금', '', ac.after);
+      dev(r, ac.c, ac.c.pb!=null?ac.c.pub:0, s[0]==='tv'?'인터넷TV 고객 지원금':'이통사 지원금', '', ac.after);
       if(AP.months===0){ r.up+=ac.after; row(r.mon,'기기값 일시납',ac.after,'한 번에 결제해요'); }
       else { r.sub+=ac.monthly; row(r.mon,'기기 할부금',ac.monthly,ac.after===0?'기기값 0원이라 할부금이 없어요':AP.months+'개월'+(ac.noint?' · 이자 없음':' · 할부이자 포함')); }
     }
