@@ -46,13 +46,13 @@ var DEFAULT = {
     {id:'ipada16',     nm:'아이패드 A16',        cat:['tvfree'],ds:'128GB · 가볍게 시작하는 아이패드',   tags:['유플러스 다이렉트 특별 혜택','약정 36개월']}
   ],
   quick:[
-    {nm:'유닥 멤버십 가입', ic:'user',    c:'#FF3D8B', bg:'#FFF2F7', b:'#FADCE8', go:'sec:gifts'},
-    {nm:'인기 모델',       ic:'star',    c:'#3B82F6', bg:'#F2F6FF', b:'#DCE6FB', go:'#/cat/all'},
-    {nm:'기기값 0원',      ic:'phone',   c:'#8B5CF6', bg:'#F6F2FF', b:'#E6DCFB', go:'#/cat/zero'},
-    {nm:'지원금 혜택',     ic:'gift',    c:'#22B573', bg:'#F0FBF5', b:'#D3F0E1', go:'#/cat/zero'},
+    {nm:'유닥 멤버십 가입', ic:'user',    c:'#FF3D8B', bg:'#FFF2F7', b:'#FADCE8', go:'soon'},
+    {nm:'인기 모델',       ic:'star',    c:'#3B82F6', bg:'#F2F6FF', b:'#DCE6FB', go:'popular'},
+    {nm:'기기값 0원',      ic:'phone',   c:'#8B5CF6', bg:'#F6F2FF', b:'#E6DCFB', go:'#/cat/tvfree'},
+    {nm:'지원금 혜택',     ic:'gift',    c:'#22B573', bg:'#F0FBF5', b:'#D3F0E1', go:'subsidy'},
     {nm:'구매 가이드',     ic:'book',    c:'#FF8A1F', bg:'#FFF6EE', b:'#FBE4CF', go:'guide'},
-    {nm:'QNA',             ic:'headset', c:'#FF2D78', bg:'#FFF2F7', b:'#FADCE8', go:'contact'},
-    {nm:'다이렉트 특별 혜택',   ic:'won',     c:'#2563EB', bg:'#F2F6FF', b:'#DCE6FB', go:'sec:wear'},
+    {nm:'QNA',             ic:'headset', c:'#FF2D78', bg:'#FFF2F7', b:'#FADCE8', go:'qna'},
+    {nm:'다이렉트 특별 혜택',   ic:'won',     c:'#2563EB', bg:'#F2F6FF', b:'#DCE6FB', go:'special'},
     {nm:'매장 방문하기',   ic:'pin',     c:'#F43F5E', bg:'#FFF2F4', b:'#FADDE2', go:'store'}
   ],
   trust:[
@@ -173,7 +173,7 @@ var DEFCOLORS = {
   flip8:[{nm:'핑크',hex:'#F2C6D6',img:'model/flip8-pink.webp'},{nm:'그라파이트',hex:GR,img:'model/flip8-graphite.webp'},{nm:'크림',hex:CR,img:'model/flip8-cream.webp'}]
 };
 var CAT_TABS = [{k:'all',nm:'전체'},{k:'iphone',nm:'아이폰'},{k:'galaxy',nm:'갤럭시 S'},{k:'fold',nm:'폴더블'},{k:'zero',nm:'기기값 0원'},{k:'watch',nm:'워치'},{k:'tablet',nm:'태블릿'},{k:'tvfree',nm:'TV프리'}];
-var GO_OPTIONS = [['sec:gifts','멤버십 사은품 구역으로'],['sec:wear','다이렉트 특별 혜택(TV프리) 구역으로'],['consult','상담 신청서 열기'],['contact','전화·카톡 문의'],['guide','구매 가이드'],['store','매장찾기'],['#/cat/all','전체 모델'],['#/cat/iphone','아이폰 모아보기'],['#/cat/galaxy','갤럭시 S 모아보기'],['#/cat/fold','폴더블 모아보기'],['#/cat/zero','기기값 0원 모아보기']];
+var GO_OPTIONS = [['popular','인기 모델 (판매량순)'],['soon','준비중 팝업'],['subsidy','지원금 조건 안내 팝업'],['qna','자주 묻는 질문'],['special','다이렉트 특별 혜택(TV프리) 안내'],['#/cat/tvfree','TV프리 목록'],['sec:gifts','멤버십 사은품 구역으로'],['sec:wear','다이렉트 특별 혜택(TV프리) 구역으로'],['consult','상담 신청서 열기'],['contact','전화·카톡 문의'],['guide','구매 가이드'],['store','매장찾기'],['#/cat/all','전체 모델'],['#/cat/iphone','아이폰 모아보기'],['#/cat/galaxy','갤럭시 S 모아보기'],['#/cat/fold','폴더블 모아보기'],['#/cat/zero','기기값 0원 모아보기']];
 
 var QI = { // 퀵메뉴 아이콘
   user:'<circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>',
@@ -963,16 +963,69 @@ function sheetContact(){
     '<button class="cta" data-open="consult">온라인 상담 신청하기</button>';
 }
 function sheetGuide(){
-  return '<h3>구매 가이드</h3><ol class="steps">'+
-    '<li><b>온라인 상담 신청</b><br><span style="color:var(--sub);font-size:13px">원하는 모델을 고르고 신청서를 남겨주세요.</span></li>'+
-    '<li><b>상담 연락</b><br><span style="color:var(--sub);font-size:13px">요금제·할인 방식·최종 금액을 안내드립니다.</span></li>'+
-    '<li><b>조건 확인 후 결정</b><br><span style="color:var(--sub);font-size:13px">고객님이 동의하실 때만 구매가 진행됩니다.</span></li>'+
-    '<li><b>당일 택배 발송 또는 매장 방문</b><br><span style="color:var(--sub);font-size:13px">택배로 받거나 매장에서 바로 개통·수령하세요.</span></li>'+
-    '</ol><button class="cta" data-open="consult">온라인 상담 신청하기</button>';
+  var st=[
+    ['모델·조건 고르기','상품을 누르고 통신사·요금제·할인 방식을 고르면 예상 월 납부금액을 바로 확인하실 수 있어요.'],
+    ['온라인 상담 신청서 작성','이름·연락처·생년월일만 남겨 주시면 신청이 끝나요.'],
+    ['5분 상담','상담사가 연락드려 최종 금액과 조건을 안내드려요. 고객님이 동의하실 때만 진행돼요.'],
+    ['개통 & 수령','당일 택배로 받으시거나, 가까운 매장에 방문하셔서 바로 개통·수령하실 수 있어요.']];
+  return '<h3>구매 가이드</h3><ol class="steps">'+st.map(function(x){ return '<li><b>'+x[0]+'</b><br><span style="color:var(--sub);font-size:13px">'+x[1]+'</span></li>'; }).join('')+'</ol>'+
+    '<div class="gd-box"><b>꼭 알아두세요</b><ul>'+
+      '<li>월 <em>85,000원</em> 요금제 <em>6개월 이상 유지</em> 조건이에요. 6개월 후부터는 월 47,000원 이상 요금제로 자유롭게 변경하실 수 있어요.</li>'+
+      '<li>제휴카드·부가서비스 <em>의무 가입 없이</em> 진행돼요.</li>'+
+      '<li>구매 시 <em>투명케이스·보호필름·충전기</em>를 함께 드려요.</li></ul></div>'+
+    '<button class="cta" data-open="consult">온라인 상담 신청하기</button>';
+}
+function sheetSoon(){
+  return '<div class="soon-box"><div class="soon-ic">🛠</div><b>현재 준비중이에요!</b><p>더 좋은 혜택으로 곧 찾아올게요.</p></div><button class="cta" type="button" data-close-sheet>확인</button>';
+}
+function sheetSubsidy(){
+  return '<h3>지원금 혜택 안내</h3><div class="gd-box hl"><p>월 <em>85,000원</em> 요금제를 <em>6개월 이상 유지</em>하시는 조건으로 드리고 있어요!</p>'+
+    '<p>6개월 후부터는 월 <em>47,000원 이상</em> 요금제로 자유롭게 변경 가능하십니다!</p></div>'+
+    '<div class="gd-sub">제휴카드·부가서비스 의무 가입 없이 진행돼요.</div>'+
+    '<button class="cta" data-go="#/cat/all">지원금 받는 모델 보러가기</button>';
+}
+var QNA=[
+  ['제휴카드나 부가서비스에 꼭 가입해야 하나요?','아니요. 제휴카드·부가서비스 의무 가입 없이 진행돼요.'],
+  ['요금제는 얼마나 유지해야 하나요?','월 85,000원 요금제를 6개월 이상 유지하시는 조건이에요. 6개월 후부터는 월 47,000원 이상 요금제로 자유롭게 변경하실 수 있어요.'],
+  ['공시지원금과 선택약정은 뭐가 다른가요?','공시지원금은 기기값을 할인받는 방식이고, 선택약정은 매달 통신 요금을 25% 할인받는 방식이에요. 상품 화면에서 두 방식을 눌러 보시면 어느 쪽이 더 저렴한지 바로 비교해 드려요.'],
+  ['번호이동·기기변경 모두 가능한가요?','네. SKT·KT·알뜰폰을 쓰고 계시면 번호이동, LG U+를 쓰고 계시면 기기변경으로 진행돼요.'],
+  ['휴대폰은 언제 받을 수 있나요?','상담 후 개통이 확정되면 당일 택배로 보내드려요. 서울·경기 고객님은 예약 후 매장에 방문하시면 당일 개통·수령도 가능해요.'],
+  ['사은품도 있나요?','구매 시 투명케이스·보호필름·충전기를 함께 드려요.'],
+  ['TV프리는 누가 받을 수 있나요?','U+ 인터넷TV를 1년 이상 2년 미만, 500MB 이상 요금제로 사용해주고 있으신 고객님이라면 기기값 0원으로 받으실 수 있어요. (약정 36개월 · 이용료 첫 9개월 월 9,350원, 10개월 차부터 월 7,700원)'],
+  ['미성년자도 신청할 수 있나요?','개통 시 본인 신분증 확인과 법정대리인 동의가 필요해요. 보호자와 함께 신청해 주세요.']
+];
+function sheetQna(){
+  var b=S.biz||{};
+  return '<h3>자주 묻는 질문</h3><div class="qna">'+QNA.map(function(x,i){ return '<details'+(i?'':' open')+'><summary><i>Q</i><span>'+esc(x[0])+'</span></summary><div class="qa"><i>A</i><p>'+esc(x[1])+'</p></div></details>'; }).join('')+'</div>'+
+    '<div class="gd-sub" style="margin-top:14px">더 궁금한 점은 편하게 물어보세요'+(b.hours?' · 상담 시간 '+esc(b.hours):'')+'</div>'+
+    '<div class="contact-btns"><a href="tel:'+esc(S.tel)+'">📞 전화 상담</a><a class="kakao" href="'+esc(S.kakao)+'" target="_blank" rel="noopener">💬 카톡 문의</a></div>';
+}
+function sheetSpecial(){
+  var ck='<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+  return '<div class="sp-k">U+ 인터넷TV를 이용하고 있으시다면?</div><h3>오직! U+고객님께만 드리는,<br>유플러스 다이렉트 단독 혜택!</h3>'+
+    '<div class="sp-hero"><b>TV프리 기기값 0원</b><span>약정 36개월 · 이용료 첫 9개월 월 '+won(TV_FEE)+', 10개월 차부터 월 '+won(TV_FEE2)+'</span></div>'+
+    '<div class="tv-cond"><div class="tv-cond-h">이런 고객님께 드려요</div><ul>'+
+      '<li><i>'+ck+'</i><span><b>U+ 인터넷TV</b> 1년 이상 ~ 2년 미만 이용 중</span></li>'+
+      '<li><i>'+ck+'</i><span>인터넷 <b>500MB 이상</b> 요금제 사용</span></li></ul></div>'+
+    '<button class="cta" data-go="#/cat/tvfree">TV프리 보러가기</button>';
 }
 function storeItem(s){
-  return '<div class="store-li"><div class="sl-r"><b>'+esc(s.nm)+'</b><a class="sl-map" href="https://map.naver.com/p/search/'+encodeURIComponent(s.addr||s.nm)+'" target="_blank" rel="noopener">지도</a></div><div>'+esc(s.addr||'')+'</div>'+
-    (s.tel?'<div><a href="tel:'+esc(s.tel)+'" style="color:var(--pink);font-weight:700">'+esc(s.tel)+'</a></div>':'')+'</div>';
+  var i=S.stores.indexOf(s);
+  return '<div class="store-li" data-store-i="'+i+'" role="button"><div class="sl-r"><b>'+esc(s.nm)+'</b><a class="sl-map" href="https://map.naver.com/p/search/'+encodeURIComponent(s.addr||s.nm)+'" target="_blank" rel="noopener">지도</a></div><div>'+esc(s.addr||'')+'</div>'+
+    (s.tel?'<div><a href="tel:'+esc(s.tel)+'" style="color:var(--pink);font-weight:700">'+esc(s.tel)+'</a></div>':'')+'<span class="sl-go">자세히 '+CHEV_I+'</span></div>';
+}
+// 매장 상세 (사진은 관리자에서 매장별 img 추가 시 표시)
+function sheetStoreOne(s){
+  var b=S.biz||{}, map='https://map.naver.com/p/search/'+encodeURIComponent(s.addr||s.nm);
+  return '<button class="st-back" type="button" data-go="store">‹ 매장 목록</button>'+
+    (s.img?'<div class="st-img">'+im(s.img,'','',s.nm)+'</div>':'')+
+    '<h3>'+esc(s.nm)+'</h3><div class="st-rows">'+
+    '<div><span>주소</span><b>'+esc(s.addr||'-')+'</b></div>'+
+    '<div><span>영업시간</span><b>'+esc(s.hours||b.hours||'상담 시 안내')+'</b></div>'+
+    '<div><span>전화</span><b>'+(s.tel?'<a href="tel:'+esc(s.tel)+'">'+esc(s.tel)+'</a>':'<a href="tel:'+esc(S.tel)+'">'+esc(S.tel)+' (대표)</a>')+'</b></div></div>'+
+    '<a class="st-map" href="'+map+'" target="_blank" rel="noopener">네이버 지도로 보기 '+CHEV_I+'</a>'+
+    (S.storeNote?'<div class="todo" style="margin-top:12px">'+esc(S.storeNote)+'</div>':'')+
+    '<button class="cta" data-open="consult">'+esc(s.nm)+' 방문 예약 상담 신청하기</button>';
 }
 function sheetStore(){
   var list=S.stores.filter(function(s){return s&&s.nm});
@@ -1084,7 +1137,12 @@ function closeTicket(){ $('#ticket').classList.remove('on'); document.body.style
 
 function act(go, el){
   if(!go) return;
-  if(go.charAt(0)==='#'){ location.hash=go; return; }
+  if(go.charAt(0)==='#'){ closeSheet(); location.hash=go; return; }
+  if(go==='popular'){ closeSheet(); SORT='sales'; loadRank(); if(location.hash==='#/cat/all') refresh(); else location.hash='#/cat/all'; return; }
+  if(go==='soon'){ openSheet(sheetSoon()); return; }
+  if(go==='subsidy'){ openSheet(sheetSubsidy()); return; }
+  if(go==='qna'){ openSheet(sheetQna()); return; }
+  if(go==='special'){ openSheet(sheetSpecial()); return; }
   if(go.indexOf('sec:')===0){ var id={gifts:'giftSec',wear:'wearSec',zero:'zeroSec',rank:'rankSec',pick:'pickSec',pop:'popSec'}[go.slice(4)];
     var goSec=function(){ var el=id&&document.getElementById(id); if(el) window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-60,behavior:'smooth'}); };
     if(!$('#v-home').classList.contains('on')){ location.hash='#/'; setTimeout(goSec,120); } else goSec(); return; }
@@ -1433,7 +1491,7 @@ var editing = EDIT; // 관리자: 편집 켜짐(누르면 수정) / 꺼짐(고�
 document.addEventListener('click',function(e){
   if(EDIT && editing && window.__stEditClick && window.__stEditClick(e)) return;
   var t=e.target;
-  if(t.closest('.sheet-x')){ e.preventDefault(); closeSheet(); return; }
+  if(t.closest('.sheet-x')||t.closest('[data-close-sheet]')){ e.preventDefault(); closeSheet(); return; }
   if(t.closest('#mSubmitBtn')){ e.preventDefault(); apSubmit(); return; }
   if(t.closest('[data-maxv]')){ e.preventDefault(); MAXV=!MAXV; try{ sessionStorage.setItem('st_maxv',MAXV?'1':'0'); }catch(x){} refresh(); return; }
   var so=t.closest('[data-sort-open]');
@@ -1483,6 +1541,7 @@ document.addEventListener('click',function(e){
     if(i>-1)l.splice(i,1);else l.unshift(id);store.set('wish',l);
     $$('[data-wish="'+id+'"]').forEach(function(b){b.classList.toggle('on',i<0)}); if($('#v-wish').classList.contains('on'))renderWish(); return}
   var o=t.closest('[data-open]'); if(o){e.preventDefault();act(o.getAttribute('data-open'),o);return}
+  var sti=t.closest('[data-store-i]'); if(sti && !t.closest('a')){ e.preventDefault(); var so=S.stores[+sti.getAttribute('data-store-i')]; if(so){ openSheet(sheetStoreOne(so)); } return; }
   var g=t.closest('[data-go]'); if(g){e.preventDefault();act(g.getAttribute('data-go'),g);return}
   var c=t.closest('[data-cat]'); if(c){location.hash='#/cat/'+c.getAttribute('data-cat');return}
   var mp=t.closest('[data-mnp]'); if(mp){ e.preventDefault(); MNP=mp.getAttribute('data-mnp')==='1'; refresh(); return; }
