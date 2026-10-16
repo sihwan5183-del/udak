@@ -912,3 +912,5 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .side-quick.sq-img .sq-hit{position:absolute;left:0;right:0;height:50%;border-radius:28px}
 .side-quick.sq-img .sq-hit.is-call{top:0}
 .side-quick.sq-img .sq-hit.is-kakao{bottom:0}
+.bp-c{margin-top:3px;font-size:11.5px;font-weight:600;color:var(--mute);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr-c{font-size:11px;font-weight:600;color:var(--mute);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

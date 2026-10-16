@@ -352,15 +352,17 @@ function priceOf(m, oi){
   if(priceHidden(m)) return {kind:'hidden', v:null, out:null};   // 가격 비공개: 예전 가격 대신 '상담 시 안내'
   var rs=sheetRows(m);
   if(rs.length){
-    var g=rs[0].g, pk=baseTier(g), type=curType(g), r=null, c=null;
-    if(oi!=null && rs[oi]){ r=rs[oi]; c=rowCalc(r,type,pk); }
+    var g=rs[0].g, pk=baseTier(g), type=curType(g), r=null, c=null, ct=null;
+    // 카드·목록 가격: 휴대폰은 요금제 중 가장 싸게 살 수 있는 조건(최대 지원) 기준 — 조건은 카드에 함께 표시
+    var best=function(x){ if(g!=='phone') return {c:rowCalc(x,type,pk),t:pk}; var b=null; tiersOf(g).forEach(function(t){ var cx=rowCalc(x,type,t); if(cx&&(!b||cx.v<b.c.v)) b={c:cx,t:t}; }); return b||{c:null,t:pk}; };
+    if(oi!=null && rs[oi]){ r=rs[oi]; var b0=best(r); c=b0.c; ct=b0.t; }
     else {
       var anyOn=rs.some(function(x){return !x.so});
-      rs.forEach(function(x){ if(x.so&&anyOn) return; var cx=rowCalc(x,type,pk); if(cx && (!c || cx.v<c.v)){ c=cx; r=x; } });
+      rs.forEach(function(x){ if(x.so&&anyOn) return; var bx=best(x); if(bx.c && (!c || bx.c.v<c.v)){ c=bx.c; ct=bx.t; r=x; } });
       if(!r) r=rs[0];
     }
     var priced=rs.filter(function(x){return num(x.out)!=null}).length;
-    return {kind:'sheet', g:g, row:r, out:c?c.out:null, v:c?c.v:null, pub:c?c.pub:0, our:c?c.our:0, sub:c?(c.pub+c.our):0, from:(oi==null && priced>1)};
+    return {kind:'sheet', g:g, row:r, tier:ct, out:c?c.out:null, v:c?c.v:null, pub:c?c.pub:0, our:c?c.our:0, sub:c?(c.pub+c.our):0, sel:!!(c&&!(c.pb!=null&&c.pb<=c.sel)), from:(oi==null && priced>1)};
   }
   var os=optsOf(m);
   if(os.length){
@@ -377,7 +379,8 @@ function priceOf(m, oi){
 function priceLine(m){
   var p=priceOf(m);
   if(p.v==null) return '<div class="pr" style="font-size:14px">'+esc(m.tags[0]||'상담 시 안내')+'</div>';
-  return '<div class="pr price-row">'+wz(p.v)+(p.from?'<span style="font-size:12px;color:var(--sub);font-weight:600">~</span>':'')+(p.out&&p.out>p.v?'<s>'+won(p.out)+'</s>':'')+'</div>';
+  return '<div class="pr price-row">'+wz(p.v)+(p.from?'<span style="font-size:12px;color:var(--sub);font-weight:600">~</span>':'')+(p.out&&p.out>p.v?'<s>'+won(p.out)+'</s>':'')+'</div>'+
+    (p.g==='phone'&&p.tier?'<div class="pr-c">'+(MNP?'번호이동':'기기변경')+' · '+esc(p.tier.title||tierLabel(p.tier))+' 기준</div>':'');
 }
 function pctOf(p){ return (p.v!=null && p.out && p.out>p.v) ? Math.round((p.out-p.v)/p.out*100) : 0; }
 function badgeOf(m){
@@ -672,7 +675,8 @@ function priceBlock(p){
   var lab=p.kind==='sheet'?(p.g==='second'?'휴대폰과 함께 구매 시':p.g==='tvfree'?'구매가':(MNP?'번호이동 구매가':'기기변경 구매가')):'구매가', pct=pctOf(p);
   var noint=p.row&&noInterest(p.row), mon=p.v>0?won10(noint?p.v/24:p.v*RATE[24]/24):0;   // 카드는 24개월 할부 기준
   return '<div class="bp"><span class="bp-l">'+lab+'</span>'+(pct>0?'<span class="bp-pct">'+pct+'%</span>':'')+'<b class="bp-v">'+wz(p.v)+(p.from?'~':'')+'</b>'+(p.out&&p.out>p.v?'<s class="bp-o">'+won(p.out)+'</s>':'')+'</div>'+
-    '<div class="bp-m">'+(p.v===0?'기기값 0원 · 할부금 없음':'월 <b>'+won(mon)+(p.from?'~':'')+'</b> <small>24개월 할부 · '+(noint?'이자 없음':'할부이자 포함')+'</small>')+'</div>';
+    '<div class="bp-m">'+(p.v===0?'기기값 0원 · 할부금 없음':'월 <b>'+won(mon)+(p.from?'~':'')+'</b> <small>24개월 할부 · '+(noint?'이자 없음':'할부이자 포함')+'</small>')+'</div>'+
+    (p.g==='phone'&&p.tier?'<div class="bp-c">'+(MNP?'번호이동':'기기변경')+' · '+esc(p.tier.title||tierLabel(p.tier))+' 6개월 유지 · '+(p.sel?'선택약정':'공시지원금')+' 기준</div>':'');
 }
 function bigcard(m){
   var wish=store.get('wish',[]).indexOf(m.id)>-1, p=priceOf(m), meta=[], pb=(p.kind==='sheet'||p.kind==='sub')?priceBlock(p):'';
