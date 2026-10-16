@@ -21,14 +21,19 @@ function toast(m){ var t=$('#admToast'); t.textContent=m; t.classList.add('on');
 
 /* ---------- 저장 ---------- */
 function snapshot(){ var o=T.clone(T.S); return o; }
+// 저장: 이 화면에서 바뀐 칸(최상위 항목)만 덮어씀 — 다른 창·다른 사람이 바꾼 다른 칸은 그대로 둠
 function save(msg){
-  var now=Date.now(), prev=LAST;
-  T.S.updatedAt=now; T.setStamp(now);
-  var body=JSON.stringify(snapshot());
+  var now=Date.now(), cur=snapshot(), base=LAST||{}, patch={};
+  Object.keys(cur).forEach(function(k){ if(k!=='updatedAt' && JSON.stringify(cur[k])!==JSON.stringify(base[k])) patch[k]=cur[k]; });
+  Object.keys(base).forEach(function(k){ if(k!=='updatedAt' && !(k in cur)) patch[k]=null; });
+  patch.updatedAt=now; T.S.updatedAt=now; T.setStamp(now);
   $('#admSub').textContent='저장 중…';
-  var first = prev ? fetch(DB+'/store_history/'+now+'.json',{method:'PUT',body:JSON.stringify(prev)}) : Promise.resolve({ok:true});
-  return first.then(function(){ return fetch(DB+'/store.json',{method:'PUT',body:body}); })
-    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); LAST=JSON.parse(body); $('#admSub').textContent='반영 완료 · '+new Date(now).toLocaleTimeString('ko-KR'); toast(msg||'고객 화면(갤럭시)에 반영됐어요'); })
+  return fetch(DB+'/store.json',{cache:'no-store'}).then(function(r){ return r.ok?r.json():null; })
+    .then(function(remote){ return remote ? fetch(DB+'/store_history/'+now+'.json',{method:'PUT',body:JSON.stringify(remote)}) : null; })
+    .then(function(){ return fetch(DB+'/store.json',{method:'PATCH',body:JSON.stringify(patch)}); })
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return fetch(DB+'/store.json',{cache:'no-store'}); })
+    .then(function(r){ return r.json(); })
+    .then(function(d){ T.setStamp(0); T.apply(d); LAST=T.clone(T.S); T.setStamp(now); $('#admSub').textContent='반영 완료 · '+new Date(now).toLocaleTimeString('ko-KR'); toast(msg||'고객 화면(갤럭시)에 반영됐어요'); })
     .catch(function(e){ $('#admSub').textContent='저장 실패'; alert('저장에 실패했어요. 인터넷 연결을 확인하고 다시 적용해 주세요.\n('+e.message+')'); });
 }
 function commit(msg){ T.refresh(); return save(msg); }
@@ -306,4 +311,6 @@ function undo(){
 }
 
 window.__stReady=function(){ LAST=T.clone(T.S); };
+// 저장소를 이미 불러온 뒤에 이 스크립트가 붙은 경우에도 기준점을 잡아 둠
+if(!LAST && T.S && T.S.updatedAt) LAST=T.clone(T.S);
 })();
