@@ -1208,3 +1208,23 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .qna-c{display:inline-block;margin-right:6px;padding:1px 7px;border-radius:999px;background:#FDF2F8;color:#DE1B6A;font-size:11px;font-weight:700;vertical-align:1px}
 .qna mark{background:#FDE1EE;color:inherit;border-radius:3px;padding:0 1px}
 .qna-none{padding:22px 10px;text-align:center;font-size:13.5px;line-height:1.6;color:var(--sub)}
+
+/* 당일 출발 띠 (매장찾기 자리) */
+.shipbar{margin:14px 16px 10px}
+.sb-in{display:block;width:100%;text-align:left;padding:14px 14px 12px;border-radius:18px;border:1px solid #F6D0E1;background:linear-gradient(135deg,#FFF5F9 0%,#FFFFFF 70%);box-shadow:0 4px 14px rgba(230,0,126,.06);cursor:pointer;font:inherit;color:inherit}
+.sb-top{display:flex;align-items:center;gap:9px}
+.sb-ic{flex:none;width:32px;height:32px;border-radius:50%;background:#FDE4EF;display:flex;align-items:center;justify-content:center}
+.sb-ic svg{width:18px;height:18px;fill:none;stroke:#E31E78;stroke-width:1.9;stroke-linejoin:round}
+.sb-top b{flex:1;min-width:0;font-size:clamp(13.5px,3.8vw,15px);font-weight:800;color:var(--ink);letter-spacing:-.03em;line-height:1.35;word-break:keep-all}
+.sb-top b em{font-style:normal;color:#E31E78;white-space:nowrap}
+.sb-cd{flex:none;padding:5px 9px;border-radius:999px;background:#E31E78;color:#fff;font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.sb-cd.off{background:#F2F3F6;color:#5B5F68;font-weight:700;font-size:12px;letter-spacing:-.02em}
+.sb-steps{list-style:none;margin:12px 0 0;padding:10px 4px 0;border-top:1px dashed #F3C9DB;display:flex;align-items:center}
+.sb-steps li{display:flex;flex-direction:column;align-items:center;gap:5px;flex:none;min-width:0}
+.sb-steps li i{width:30px;height:30px;border-radius:50%;background:#F4F5F7;display:flex;align-items:center;justify-content:center}
+.sb-steps li i svg{width:16px;height:16px;fill:none;stroke:#6B6F78;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
+.sb-steps li span{font-size:12px;font-weight:700;color:#5B5F68;white-space:nowrap;letter-spacing:-.02em}
+.sb-steps li.hl i{background:#E31E78}
+.sb-steps li.hl i svg{stroke:#fff}
+.sb-steps li.hl span{color:#E31E78}
+.sb-steps li.sb-ln{flex:1;height:0;border-top:2px dotted #E9C3D4;margin:0 6px 20px}

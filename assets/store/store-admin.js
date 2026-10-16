@@ -135,6 +135,12 @@ var ED = {
       goField('go',g.go||'consult')+sw('hidden','숨기기',g.hidden)+moveBtns(true)+applyBtn(); },
     save:function(i){ var g=T.S.gifts[i]; g.nm=V('nm'); g.sm=V('sm'); g.pr=V('pr'); g.img=V('img')||null; g.go=V('go'); g.hidden=C('hidden'); }
   },
+  ship:{
+    title:function(){ return '🚚 당일 출발 안내'; },
+    html:function(){ var d=T.S.ship||{}; return sw('on','켜기',d.on)+txt('cut','당일 발송 마감 시각 (24시간, 예: 15:00)',d.cut||'15:00')+
+      '<div class="hint">월~금 마감 전에는 "오늘 출발 + 남은 시간", 마감 후·토·일에는 다음 발송일(내일/월요일)이 자동으로 나와요.</div>'+applyBtn(); },
+    save:function(){ var c=(V('cut')||'15:00').replace(/[^0-9:]/g,''); T.S.ship={on:C('on'), cut:/^\d{1,2}(:\d{2})?$/.test(c)?c:'15:00'}; }
+  },
   deal:{
     title:function(){ return '🔥 이번 주 특가 (맨 위)'; },
     html:function(){ var d=T.S.deal||{}; return sw('on','켜기 (끄면 예전 슬라이드 배너가 보여요)',d.on)+txt('title','제목 (마지막 단어가 분홍색)',d.title||'이번주 특가')+
