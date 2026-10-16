@@ -1301,3 +1301,7 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .promo .pimg{right:0;top:0;bottom:0;width:40%;height:100%;padding:clamp(14px,4.5vw,20px) clamp(12px,4vw,20px);box-sizing:border-box;object-fit:contain;object-position:center}
 .promo .pt{top:50%;transform:translateY(-50%);max-width:58%}
 .promo .pimg{padding:clamp(18px,5.4vw,26px) clamp(14px,4vw,22px)}
+.promo .pimg{right:5%;width:38%}
+.promo .pimg{right:6%;width:36%}
+.promo .pt{max-width:54%}
+.promo p{word-break:keep-all;line-height:1.45}
