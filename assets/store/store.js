@@ -481,13 +481,16 @@ function calcPickers(m, r, st){
   if(g==='phone') h+=cgrid('사용 통신사','carrier',CARRIERS.map(function(c){return [c,c]}),st.s.carrier||'',m,4,
     '');
   var ts=g==='tvfree'?[]:rowTiers(r);
-  if(g==='tvfree') h+='<div class="cpick"><div class="cpick-l">대상</div><div class="cpick-txt"><b>U+ 인터넷TV</b>를 <b>1년 이상 2년 미만</b>, <b>500MB 이상</b> 요금제로 사용해주고 있으신 고객님</div></div>';
+  if(g==='tvfree'){ var ck='<svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>';
+    h+='<div class="tv-cond"><div class="tv-cond-h">이런 고객님께 드려요</div><ul>'+
+      '<li><i>'+ck+'</i><span><b>U+ 인터넷TV</b> 1년 이상 ~ 2년 미만 이용 중</span></li>'+
+      '<li><i>'+ck+'</i><span>인터넷 <b>500MB 이상</b> 요금제 사용</span></li>'+
+      '<li><i>'+ck+'</i><span>약정 <b>36개월</b></span></li></ul></div>'; }
   if(ts.length>1) h+='<div class="cpick"><div class="cpick-l">'+(g==='tvfree'?'집 인터넷':'요금제')+'</div><select class="csel" data-calc-sel="tier" data-model="'+esc(m.id)+'">'+ts.map(function(t){
       return '<option value="'+esc(t.k)+'"'+(st.t&&st.t.k===t.k?' selected':'')+'>'+esc(tierTitle(t))+'</option>'; }).join('')+'</select>'+(g==='phone'?'<div class="cpick-hint">'+PLAN_NOTE+'</div>':'')+'</div>';
   if(g==='phone'&&st.c) h+=cgrid('할인 방식','method',[['pub','공시지원금',!st.c.pub],['sel','선택약정 (요금 25%↓)']],st.method,m,2,
     !st.c.pub?'이 조건은 공시지원금이 없어 선택약정으로 계산돼요':adviceTxt(cmpMethod(st.c,st.fee,st.months),st.method));
-  if(g==='tvfree') h+='<div class="cpick"><div class="cpick-l">약정</div><div class="cpick-badge"><span>36개월</span></div></div>';
-  else h+=cgrid('할부 개월','months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(st.months),m,4,'');
+  if(g!=='tvfree') h+=cgrid('할부 개월','months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(st.months),m,4,'');
   return h;
 }
 var MSTIP={};   // 상세 계산 박스 ? 설명 열림
