@@ -462,7 +462,7 @@ function cgrid(label, key, items, cur, m, n, hint){
 }
 function calcPickers(m, r, st){
   var g=r.g, h='';
-  if(g==='phone') h+=cgrid('현재 사용 중인 통신사','carrier',CARRIERS.map(function(c){return [c,c]}),st.s.carrier||'',m,4,
+  if(g==='phone') h+=cgrid('사용 통신사','carrier',CARRIERS.map(function(c){return [c,c]}),st.s.carrier||'',m,4,
     '');
   var ts=rowTiers(r);
   if(ts.length>1) h+='<div class="cpick"><div class="cpick-l">요금제</div><select class="csel" data-calc-sel="tier" data-model="'+esc(m.id)+'">'+ts.map(function(t){
@@ -472,20 +472,37 @@ function calcPickers(m, r, st){
   h+=cgrid('할부 개월','months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(st.months),m,4,'');
   return h;
 }
+var MSTIP={};   // 상세 계산 박스 ? 설명 열림
 function calcBox(m, r, st){
   var out=num(r.out);
   if(!st.c) return crow('출고가','',out!=null?won(out):'상담 시 안내');
-  var tn=typeNm(st), c=st.c, h='<div class="cres"><div class="cres-l">예상 월 납부금액</div><div class="cres-v">'+payTxt(st)+'</div><div class="cres-h">'+payHint(st)+'</div><div class="cres-d">';
-  h+=crow('출고가','',won(c.out));
-  if(st.method==='pub'&&c.pub) h+=crow(st.g==='phone'?'공시지원금':'이통사 지원금', tn, '-'+won(c.pub), '', 'minus');
-  if(c.our) h+=crow('유플러스 다이렉트 지원금', tn, '-'+won(c.our), '', 'minus');
-  h+=crow('지원 후 기기값','',wz(st.after),'','sum')+'</div>';
-  if(st.fee){
-    h+='<div class="cres-d">'+crow('월 통신 요금', esc(st.t.title||tierLabel(st.t)+'원 요금제')+(st.method==='sel'?' · 선택약정 25% 할인':''), won(st.feeAfter), st.method==='sel'?won(st.fee):'');
-    if(st.monthly) h+=crow('월 예상 합계','기기 할부 + 통신 요금',won(st.monthly+st.feeAfter),'','sum total');
-    h+='</div>';
-  }
-  return h+'</div>';
+  var c=st.c, tn=typeNm(st), mm=st.months, monthly=mm===0?0:(st.monthly||0), fee=st.feeAfter||0, total=monthly+fee;
+  var tipB=function(k,t){ return '<button type="button" class="tipb'+(MSTIP[k]?' on':'')+'" data-ms-tip="'+k+'" aria-label="설명 보기">?</button>'+(MSTIP[k]?'<div class="tip-bub">'+t+'</div>':''); };
+  var line=function(l,v,cls){ return '<div class="ms-r'+(cls?' '+cls:'')+'"><span>'+l+'</span><b>'+v+'</b></div>'; };
+  // 기간별 (85·95 요금제만): 7개월 차부터 월 47,000원 요금제로 바꾸면
+  var low=null;
+  if(st.g==='phone'&&st.fee&&st.fee<=95000&&st.fee>LOW_FEE) low=monthly+(st.method==='sel'?Math.round(LOW_FEE*0.75):LOW_FEE);
+  var h='<div class="ap-sumsec ms-detail"><div class="ms-top'+(low!=null?'':' solo')+'"><div class="ms-main"><span class="ms-l">월 예상 납부금액</span>'+
+    '<b class="ms-v">'+(total?won(total)+'<small> / 월</small>':(st.after===0?'0원':won(st.after)+'<small> 일시납</small>'))+'</b>'+
+    '<span class="ms-h">'+(mm===0?(fee?'통신 요금 기준 · 기기값은 일시납':'기기값 일시납'):(fee?'기기 할부금 + 통신 요금 ('+mm+'개월 기준)':mm+'개월 할부 · '+(st.noint?'이자 없음':'할부이자 포함')))+'</span>'+
+    (mm===0&&st.after>0&&fee?'<span class="ms-h">+ 일시납 '+won(st.after)+'</span>':'')+'</div>';
+  if(low!=null) h+='<div class="ms-flow">'+
+    '<div class="ms-f"><i class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4M9 14h.01M12 14h.01M15 14h.01"/></svg></i><div><span>처음 6개월</span><b>'+won(total)+'<small> / 월</small></b><em>'+esc(st.t.title||tierLabel(st.t))+' 기준</em></div></div>'+
+    '<div class="ms-f"><i class="ic"><svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></svg></i><div><span>7개월 차부터</span><b>'+won(low)+'<small> / 월</small></b><em>월 '+won(LOW_FEE)+' 요금제로 변경 시</em></div></div></div>';
+  h+='</div>';
+  var mon='';
+  if(mm===0) mon+=line('기기값 일시납',wz(st.after)); else mon+=line('기기 할부금 ('+mm+'개월)',st.after===0?'0원':won(monthly));
+  if(st.fee) mon+=line('월 통신 요금'+(st.method==='sel'?' <small>25% 할인</small>':''),won(fee));
+  mon+=line('월 합계',won(total),'sum');
+  var ben=line('출고가',won(c.out));
+  if(st.method==='pub'&&c.pub) ben+=line((st.g==='phone'?'공시지원금':'이통사 지원금')+(tn?' ('+tn+')':''),'-'+won(c.pub),'minus');
+  if(c.our) ben+=line('추가 지원금 (유플러스 다이렉트)','-'+won(c.our),'minus');
+  ben+=line('지원 후 기기값',wz(st.after),'sum');
+  h+='<div class="ms-grid">'+
+    '<div class="ms-card"><div class="ms-ch"><i class="ic won">₩</i>월 납부 구성'+tipB('mon','기기 할부금은 할부이자(연 5.9%)가 포함된 금액이에요. 통신 요금은 고르신 요금제 기준이에요.')+'</div>'+mon+'</div>'+
+    '<div class="ms-card"><div class="ms-ch"><i class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8c-1.5-3-5.5-3.5-5.5-1S9 8 12 8c3 0 7-.5 5.5-2.5S13.5 5 12 8z"/></svg></i>기기 구매 혜택'+tipB('ben','출고가에서 지원금을 빼고 남은 기기값을 할부로 나눠 내요.')+'</div>'+ben+'</div>'+
+  '</div></div>';
+  return h;
 }
 /* ---------------- 렌더 ---------------- */
 var heroTimer=null, heroIdx=0;
@@ -1390,6 +1407,8 @@ document.addEventListener('click',function(e){
     return; }
   if(t.closest('[data-privacy]')){ e.preventDefault(); $('#privacyTxt').classList.toggle('on'); return; }
   if(t.closest('#ticket') && (t.closest('.x') || t.id==='ticket')){ closeTicket(); return; }
+  var mt=t.closest('[data-ms-tip]');
+  if(mt){ e.preventDefault(); var mk=mt.getAttribute('data-ms-tip'); MSTIP[mk]=!MSTIP[mk]; var hm=location.hash.match(/#\/model\/([^/?]+)/); if(hm){ var y=window.scrollY; renderModel(hm[1],true); window.scrollTo(0,y); } return; }
   var cb=t.closest('[data-calc]');
   if(cb){ e.preventDefault(); e.stopPropagation(); if(cb.disabled) return; var mid=cb.getAttribute('data-model'), k=cb.getAttribute('data-calc'), v=cb.getAttribute('data-v'), sel=SEL[mid]||(SEL[mid]={});
     if(k==='tier') TIER[mid]=v; else if(k==='months') sel.months=+v; else sel[k]=v;

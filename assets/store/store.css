@@ -1009,3 +1009,14 @@ body.dragging,body.dragging *{cursor:grabbing!important}
   .ap-sumsec .ms-r b{font-size:13px}
 }
 #v-apply .ap-row{grid-template-columns:66px 1fr}#v-apply .ap-row .ap-l{font-size:12px;white-space:nowrap;letter-spacing:-.02em}
+/* 상품 상세 계산기: 신청서와 같은 레이아웃 */
+#v-model .cpick{display:grid;grid-template-columns:66px 1fr;column-gap:6px;align-items:start;margin-top:12px}
+#v-model .cpick-l{padding-top:11px;font-size:12px;font-weight:700;color:var(--sub);white-space:nowrap;letter-spacing:-.02em}
+#v-model .cpick-l b{display:block;margin:2px 0 0;font-size:11.5px;white-space:normal}
+#v-model .cpick .cgrid,#v-model .cpick .csel,#v-model .cpick .cpick-row{margin-top:0}
+#v-model .cpick .cpick-row{padding-top:3px}
+#v-model .cpick .cpick-hint{grid-column:2}
+#v-model .cpick .cg{font-size:12.5px;white-space:nowrap;letter-spacing:-.02em;padding-left:2px;padding-right:2px}
+#v-model .ptable:has(.ms-detail){border:0;background:none;padding:0;margin-top:14px}
+.ms-detail{margin-top:4px}
+.ms-detail .ms-top{margin-top:0}
