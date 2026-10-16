@@ -820,3 +820,9 @@ body.no-sq .side-quick{display:none}
 /* 기간별 예상: 6개월 → 7개월 차 비교 */
 .ap-res .rc-flow .cres-d .cr.sum{border-top:1px dotted #F0C6DA!important}
 .ap-res .rc-flow .cres-d .cr.sum .cr-l span{color:var(--pink)}
+/* 히어로 밸런스 (v20261016): 배경 화이트, 제품은 상단 아이콘 아래 영역에 바닥 정렬로 담기 */
+.hero{background:#fff!important}
+.slide{height:clamp(232px,62vw,290px)}
+.slide:not(.full) .slide-img,.slide:not(.full) .slide-img.fit{left:auto;right:16px;top:70px;bottom:auto;width:36%;height:calc(100% - 92px)!important;object-fit:contain;object-position:center bottom;padding:0;background:none}
+.slide-txt{bottom:34px;max-width:calc(64% - 36px)}
+.slide-txt .s{margin-top:6px;font-size:12px;line-height:1.45;word-break:keep-all}
