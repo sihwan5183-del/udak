@@ -331,13 +331,15 @@ function undo(){
   }).catch(function(e){ alert('되돌리기에 실패했어요. ('+e.message+')'); });
 }
 
-/* ---------- 꾹 눌러서 끌어 순서 바꾸기 (모델 원형 아이콘 · 퀵메뉴 · 신뢰 스트립 · 이번주 특가) ---------- */
+/* ---------- 꾹 눌러서 끌어 순서 바꾸기 (모델 원형 아이콘 · 퀵메뉴 · 신뢰 스트립 · 이번주 특가 · 많이 찾아요 · 기기값 0원) ---------- */
 (function(){
   var ZONES=[
     {box:'#models', item:'a.m', key:'models'},
     {box:'#quick', item:'a', key:'quick'},
     {box:'#trust', item:'.it', key:'trust'},
-    {box:'.dl-grid', item:'a.dl-c', key:'deal'}
+    {box:'.dl-grid', item:'a.dl-c', key:'deal'},
+    {box:'#popgrid', item:'a.pc', key:'list:pop'},
+    {box:'#zero', item:'a.hc', key:'list:zero'}
   ];
   var D=null, timer=null, justDragged=false;
   function zoneOf(el){ for(var i=0;i<ZONES.length;i++){ var z=ZONES[i], box=el.closest(z.box); if(box){ var it=el.closest(z.item); if(it&&box.contains(it)) return {z:z,box:box,it:it}; } } return null; }
@@ -363,7 +365,11 @@ function undo(){
     var list=items(d.hit.box,d.hit.z), from=list.indexOf(d.hit.it), to=list.indexOf(d.target);
     if(from<0||to<0||from===to) return;
     var k=d.hit.z.key;
-    if(k==='deal'){
+    if(k.indexOf('list:')===0){
+      var lk=k.slice(5), mids2=list.map(function(it){return it.getAttribute('data-mid')}), m2=mids2.splice(from,1)[0]; mids2.splice(to,0,m2);
+      var base=(T.S.lists&&T.S.lists[lk]&&T.S.lists[lk].length&&T.S.lists[lk][0]!=='_none')?T.S.lists[lk]:[];
+      T.S.lists=Object.assign({},T.S.lists); T.S.lists[lk]=mids2.concat(base.filter(function(id){return mids2.indexOf(id)<0}));
+    } else if(k==='deal'){
       var mids=list.map(function(it){return it.getAttribute('data-mid')}), mm=mids.splice(from,1)[0]; mids.splice(to,0,mm);
       T.S.deal=Object.assign({},T.S.deal,{items:mids.join('\n')});
     } else if(k==='models'){
