@@ -62,7 +62,7 @@ var DEFAULT = {
     {b:'제휴카드 의무가입 X',   s:'원하는 요금제로만',    ic:'cardx'},
     {b:'부가서비스 의무가입 X', s:'불필요한 가입 없이',   ic:'docx'}
   ],
-  promo:{tag:'가장 인기있는 선택', t:'아이폰 18프로 / 프로맥스', s:'더 강력해진 성능, 지금 가장 핫한 아이폰.', img:'promo/promo-iphone18pro.webp', go:'#/model/iphone18pro'},
+  promo:{tag:'가장 인기있는 선택', t:'아이폰 18프로 / 프로맥스', s:'더 강력해진 성능, 지금 가장 핫한 아이폰.', img:'promo/promo-iphone18pro.webp', go:'#/cat/iphone/iphone18pro,iphone18promax'},
   gifts:[
     {nm:'그립톡',          sm:'유닥 멤버십 회원', pr:'멤버십 증정', img:'gift/gift-griptok.jpg'},
     {nm:'휴대폰 케이스',   sm:'유닥 멤버십 회원', pr:'멤버십 증정', img:'gift/gift-case.jpg'},
@@ -867,14 +867,16 @@ function renderHome(){
 }
 
 /* 카테고리 */
-function renderCat(k){
+function renderCat(k, only){
   var tab=CAT_TABS.filter(function(t){return t.k===k})[0]||CAT_TABS[0];
-  $('#catTitle').textContent=tab.nm;
+  // #/cat/탭/모델1,모델2 — 특정 모델만 모아 보기 (예: 배너 '아이폰 18프로 / 프로맥스')
+  var ids=only?decodeURIComponent(only).split(',').filter(Boolean):null, picked=ids?ids.map(byId).filter(function(m){return m&&(EDIT||!m.hidden)}):null;
+  $('#catTitle').textContent=picked&&picked.length?picked.map(function(m){return m.nm}).join(' · '):tab.nm;
   $('#v-cat').classList.toggle('cat-tv',tab.k==='tvfree');   // TV프리: 번호이동/기기변경·최대 혜택 토글 없음
   // 고객 화면: 보이는 모델이 하나도 없는 탭(예: 워치·태블릿 노출 멈춤)은 숨김
   var tabs=CAT_TABS.filter(function(t){ return EDIT||t.k==='all'||t.k==='zero'||t.k===tab.k||models().some(function(m){return m.cat.indexOf(t.k)>-1}); });
   $('#catTabs').innerHTML=tabs.map(function(t){return '<button class="'+(t.k===tab.k?'on':'')+'" data-cat="'+t.k+'">'+t.nm+'</button>'}).join('');
-  var list=tab.k==='zero'&&S.lists&&S.lists.zero&&S.lists.zero.length ? pickList('zero')   // 관리자가 고른 '기기값 0원' 목록과 똑같이
+  var list=picked&&picked.length ? picked : tab.k==='zero'&&S.lists&&S.lists.zero&&S.lists.zero.length ? pickList('zero')   // 관리자가 고른 '기기값 0원' 목록과 똑같이
     : models().filter(function(m){return tab.k==='all'||m.cat.indexOf(tab.k)>-1||(tab.k==='zero'&&!isWear(m)&&isZero(m))});
   $('#catCircles').innerHTML=smallCircles(list);
   $('#catList').innerHTML=sortedCards(list) || '<div class="empty">해당 모델이 없습니다</div>';
@@ -954,7 +956,7 @@ function route(){
   var prev=$('.view.on'); if(prev&&prev.id==='v-home') homeScroll=window.scrollY;
   $$('.view').forEach(function(x){x.classList.remove('on')});
   var tab='home';
-  if(v==='cat'){renderCat(h[1]||'all');$('#v-cat').classList.add('on')}
+  if(v==='cat'){renderCat(h[1]||'all',h[2]);$('#v-cat').classList.add('on')}
   else if(v==='model'){renderModel(decodeURIComponent(h[1]||''));$('#v-model').classList.add('on')}
   else if(v==='search'){$('#v-search').classList.add('on');tab='search';renderSearch($('#q').value);setTimeout(function(){try{$('#q').focus()}catch(e){}},50)}
   else if(v==='wish'){renderWish();$('#v-wish').classList.add('on');tab='wish'}
@@ -973,7 +975,7 @@ function refresh(){
   var y=window.scrollY;
   renderHome();
   var h=location.hash.replace(/^#\/?/,'').split('/'), v=h[0]||'home';
-  if(v==='cat') renderCat(h[1]||'all');
+  if(v==='cat') renderCat(h[1]||'all',h[2]);
   else if(v==='model') renderModel(decodeURIComponent(h[1]||''),true);
   else if(v==='search') renderSearch($('#q').value);
   else if(v==='wish') renderWish();
