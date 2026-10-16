@@ -1055,3 +1055,5 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 
 .cpick-txt{flex:1;min-width:0;font-size:13px;line-height:1.5;color:var(--ink2);padding:9px 12px;border-radius:12px;background:var(--pink-50);border:1px solid #F7CFE1}
 .cpick-txt b{color:var(--ink);font-weight:800}
+.cpick-badge{display:flex;align-items:center;min-height:40px}
+.cpick-badge span{display:inline-flex;align-items:center;padding:7px 16px;border-radius:999px;background:var(--pink-50);border:1.5px solid var(--pink);color:var(--pink);font-size:13.5px;font-weight:800}
