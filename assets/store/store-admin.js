@@ -232,6 +232,7 @@ function openSettings(){
     area('stores','매장 목록 — 한 줄에 하나씩 "매장명 | 주소 | 전화"',T.S.stores.map(function(s){return [s.nm,s.addr||'',s.tel||''].join(' | ')}).join('\n'),6)+
     txt('storeNote','매장찾기 안내 문구',T.S.storeNote)+
     '<div class="grp"><div class="lbl">구역 보이기</div>'+Object.keys(secNames).map(function(k){return '<label class="sw" style="margin-top:6px">'+secNames[k]+'<input type="checkbox" name="secon_'+k+'"'+(T.S.sec[k]&&T.S.sec[k].off?'':' checked')+'></label>'}).join('')+'</div>'+
+    '<div class="grp"><div class="lbl">온라인 상담 신청</div><label class="sw" style="margin-top:6px">워치 · 태블릿 · TV프리 함께 구매 보이기<input type="checkbox" name="applyAdd"'+(T.S.applyAdd?' checked':'')+'></label><div class="hint">끄면 신청서에서 03 요금제별 혜택(워치·태블릿·TV프리)이 통째로 숨겨져요.</div></div>'+
     '<button type="button" class="cta" data-ed="saveset">적용 (갤럭시에 바로 반영)</button>');
   CUR={type:'settings'};
 }
@@ -288,6 +289,7 @@ document.addEventListener('click',function(e){
     T.S.tel=V('tel'); T.S.kakao=V('kakao'); T.S.priceNote=V('priceNote'); T.S.storeNote=V('storeNote');
     T.S.stores=V('stores').split('\n').map(function(l){ var p=l.split('|').map(function(x){return x.trim()}); return p[0]?{nm:p[0],addr:p[1]||'',tel:p[2]||''}:null; }).filter(Boolean);
     Object.keys(T.S.sec).forEach(function(k){ var el=$('#sheet [name="secon_'+k+'"]'); if(el) T.S.sec[k].off=!el.checked; });
+    var aa=$('#sheet [name="applyAdd"]'); if(aa) T.S.applyAdd=aa.checked;
     T.closeSheet(); commit(); return;
   }
 });

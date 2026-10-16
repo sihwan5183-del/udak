@@ -247,6 +247,7 @@ function normalize(d){
   // 히어로 사진: 예전 저장값(hero-0N.jpg)은 실제 파일(hero-0N.webp)로
   (o.hero||[]).forEach(function(h){ if(h&&typeof h.img==='string') h.img=h.img.replace(/^hero\/(hero-0[1-3])\.jpg$/,'hero/$1.webp'); });
   o.deal=o.deal||clone(DEFAULT.deal);
+  o.applyAdd=!!o.applyAdd;   // 상담 신청 '요금제별 혜택(워치·태블릿·TV프리)' — 기본 숨김
   o.brand=o.brand||clone(DEFAULT.brand); o.biz=o.biz||clone(DEFAULT.biz); o.promo=o.promo||clone(DEFAULT.promo);
   o.pricing=normPricing(o.pricing);
   return o;
@@ -1040,6 +1041,7 @@ function apReason(m){
   return '';
 }
 function apValidate(){
+  if(!apAddOn()){ AP.watch=''; AP.tablet=''; AP.tv=''; AP.tvOk=false; }
   var notes=[];
   AP_SLOTS.forEach(function(s){ var m=AP[s[0]]&&byId(AP[s[0]]); if(m && apReason(m)){ notes.push(m.nm+' 선택이 해제됐어요 — '+apReason(m)); AP[s[0]]=''; } });
   AP.note=notes.join('<br>');
@@ -1099,10 +1101,13 @@ function apPlanHtml(){
 }
 // 이 요금제로 함께 살 수 있는 것 안내
 function apPerk(t){
+  if(!apAddOn()) return '';
   var f=(t&&t.fee)||0, w=f>=95000, tb=f>=105000;
   return '<div class="ap-perk"><span class="'+(w?'ok':'')+'">'+(w?'✓':'–')+' 워치 함께 구매</span><span class="'+(tb?'ok':'')+'">'+(tb?'✓':'–')+' 태블릿 함께 구매</span><span class="ok">✓ TV프리</span></div>';
 }
+function apAddOn(){ return !!S.applyAdd; }
 function apAddHtml(){
+  if(!apAddOn()) return '';
   var all=models().filter(function(x){return !x.hidden}), h='<section class="ap-sec"><div class="ap-h"><b>03</b>요금제별 혜택 <small>(선택사항)</small></div>'+
     (AP.note?'<div class="ap-note">'+AP.note+'</div>':'');
   AP_SLOTS.forEach(function(s){
@@ -1164,7 +1169,7 @@ function apSummary(){
       row(r.mon,'월 통신 요금',pc.feeAfter,esc(pc.t.title||tierLabel(pc.t))+(sel?' · 선택약정 25% 할인':''),sel?pc.fee:null);
     }
   } else if(m){ var r0=rec('휴대폰',m.nm,'phone',m); r0.ask=true; row(r0.mon,'예상 금액',null,'',null,'','상담 시 안내'); }
-  AP_SLOTS.forEach(function(s){
+  if(apAddOn()) AP_SLOTS.forEach(function(s){
     var x=AP[s[0]]&&byId(AP[s[0]]); if(!x) return; var r=rec(s[1],x.nm,s[0],x), ac=apAddCalc(x);
     if(!ac){ r.ask=true; row(r.dev,'기기값',null,'',null,'','상담 시 안내'); }
     else {
@@ -1194,7 +1199,7 @@ function apRowHtml(x){
 }
 function apSumHtml(){
   var S2=apSummary(), recs=S2.recs, keys=recs.map(function(r){return r.key});
-  var h='<section class="ap-sec ap-sumsec"><div class="ap-h"><b>04</b>예상 월 납부금액</div>';
+  var h='<section class="ap-sec ap-sumsec"><div class="ap-h"><b>'+(apAddOn()?'04':'03')+'</b>예상 월 납부금액</div>';
   if(!recs.length){ h+='<div class="ap-sub">휴대폰과 조건을 고르시면 예상 금액을 바로 보여드려요. 정확한 금액은 상담 시 안내드려요.</div>'; return h+'</section>'; }
   AP.devOpen=AP.devOpen||{};
   var body='';
@@ -1222,7 +1227,7 @@ function apSumHtml(){
   return h+'</section>';
 }
 function apInfoHtml(){
-  return '<section class="ap-sec" id="consultForm"><div class="ap-h"><b>05</b>고객 정보</div>'+
+  return '<section class="ap-sec" id="consultForm"><div class="ap-h"><b>'+(apAddOn()?'05':'04')+'</b>고객 정보</div>'+
     '<div class="ff"><label>이름 <span class="req">*</span></label><input type="text" id="mUserName" placeholder="이름을 입력해 주세요" autocomplete="name"></div>'+
     '<div class="ff"><label>연락처 <span class="req">*</span></label><div class="phone3"><input type="text" id="mPhone1" value="010" readonly tabindex="-1"><span>-</span><input type="tel" id="mPhone2" maxlength="4" inputmode="numeric" placeholder="0000"><span>-</span><input type="tel" id="mPhone3" maxlength="4" inputmode="numeric" placeholder="0000"></div></div>'+
     '<div class="ff"><label>생년월일 <span class="req">*</span></label><input type="text" id="mUserBirth" inputmode="numeric" maxlength="8" placeholder="예: 940101"></div>'+
