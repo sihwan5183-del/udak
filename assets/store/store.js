@@ -1001,6 +1001,7 @@ function qnaList(){
     QNA.forEach(function(c){ c[1].forEach(function(x){ var t=(x[0]+' '+x[1]).toLowerCase(), sc=0;
       if(x[0].toLowerCase().indexOf(main)>-1) sc+=3; if(t.indexOf(main)>-1) sc+=2;
       ws.forEach(function(w){ if(t.indexOf(w.toLowerCase())>-1) sc+=1; });
+      if(c[0].toLowerCase().indexOf(main)>-1) sc+=1;   // 카테고리 이름이 맞으면 그 카테고리 질문도 함께
       if(sc) hit.push({x:x,c:c[0],sc:sc}); }); });
     hit.sort(function(a,b){ return b.sc-a.sc; });
     return hit.length ? '<div class="qna-n">\''+esc(QQ.trim())+'\' 관련 질문 '+hit.length+'개</div>'+hit.map(function(h,i){ return qnaItem(h.x,i,h.c); }).join('')
