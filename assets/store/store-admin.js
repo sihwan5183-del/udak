@@ -247,7 +247,7 @@ function openSettings(){
   open('⚙ 설정',
     txt('tel','고객센터 전화번호',T.S.tel)+txt('kakao','카카오톡 문의 주소',T.S.kakao)+
     area('priceNote','상세 화면 가격 안내 문구',T.S.priceNote,3)+
-    area('stores','매장 목록 — 한 줄에 하나씩 "매장명 | 주소 | 전화"',T.S.stores.map(function(s){return [s.nm,s.addr||'',s.tel||''].join(' | ')}).join('\n'),6)+
+    area('stores','매장 목록 — 한 줄에 하나씩 "매장명 | 주소 | 전화 | 사진" (사진은 깃허브 store 폴더 파일명, 여러 장은 쉼표로: store/건대-1.jpg, store/건대-2.jpg)',T.S.stores.map(function(s){return [s.nm,s.addr||'',s.tel||'',s.img||''].join(' | ').replace(/( \| )+$/,'')}).join('\n'),8)+
     txt('storeNote','매장찾기 안내 문구',T.S.storeNote)+
     '<div class="grp"><div class="lbl">구역 보이기</div>'+Object.keys(secNames).map(function(k){return '<label class="sw" style="margin-top:6px">'+secNames[k]+'<input type="checkbox" name="secon_'+k+'"'+(T.S.sec[k]&&T.S.sec[k].off?'':' checked')+'></label>'}).join('')+'</div>'+
     '<div class="grp"><div class="lbl">온라인 상담 신청</div><label class="sw" style="margin-top:6px">워치 · 태블릿 · TV프리 함께 구매 보이기<input type="checkbox" name="applyAdd"'+(T.S.applyAdd?' checked':'')+'></label><div class="hint">끄면 신청서에서 03 요금제별 혜택(워치·태블릿·TV프리)이 통째로 숨겨져요.</div></div>'+
@@ -305,7 +305,7 @@ document.addEventListener('click',function(e){
   if(act==='newgift'){ T.S.gifts.push({nm:'새 사은품',sm:'',pr:'무료 증정',img:null,hidden:true}); commit('사은품을 추가했어요 (숨김 상태)').then(function(){ openEditor('gift:'+(T.S.gifts.length-1)); }); return; }
   if(act==='saveset'){
     T.S.tel=V('tel'); T.S.kakao=V('kakao'); T.S.priceNote=V('priceNote'); T.S.storeNote=V('storeNote');
-    T.S.stores=V('stores').split('\n').map(function(l){ var p=l.split('|').map(function(x){return x.trim()}); return p[0]?{nm:p[0],addr:p[1]||'',tel:p[2]||''}:null; }).filter(Boolean);
+    T.S.stores=V('stores').split('\n').map(function(l){ var p=l.split('|').map(function(x){return x.trim()}); return p[0]?{nm:p[0],addr:p[1]||'',tel:p[2]||'',img:p[3]||''}:null; }).filter(Boolean);
     Object.keys(T.S.sec).forEach(function(k){ var el=$('#sheet [name="secon_'+k+'"]'); if(el) T.S.sec[k].off=!el.checked; });
     var aa=$('#sheet [name="applyAdd"]'); if(aa) T.S.applyAdd=aa.checked;
     T.closeSheet(); commit(); return;

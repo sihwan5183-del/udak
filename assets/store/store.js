@@ -724,7 +724,7 @@ function cellGuide(kind, fee, plan, nm){ return {fee:fee, plan:plan, t:kind+' �
   {ic:'cal', b:'24개월 함께하는 상품이에요', p:'24개월 약정으로 더 가벼운 가격에 만나보실 수 있어요.'}]}; }
 function tvGuide(kind){ return {t:kind+' 이용 가이드', items:[
   {ic:'tv', hl:1, b:'오직 U+ 고객님께만, 유플러스 다이렉트 특별 혜택', p:'U+ 인터넷·TV를 1년 이상 2년 미만 이용 중이면서, 인터넷 500MB 이상 요금제를 이용 중인 고객님이라면 기기값 0원 혜택을 받으실 수 있어요.', tag:'U+ 인터넷·TV 이용 고객님 대상'},
-  {ic:'tv', b:'태블릿으로 U+tv를 이용할 수 있어요', p:'U+tv를 시청할 수 있는 TV 가입형 태블릿 상품이에요.\n별도의 휴대폰 셀룰러 회선 없이 이용하실 수 있어요.'},
+  {ic:'tv', b:'태블릿으로 U+tv를 이용할 수 있어요', p:'U+tv를 시청할 수 있는 TV 가입형 태블릿 상품이에요.'},
   {ic:'won', hl:1, b:'첫 9개월 월 9,350원', p:'첫 9개월은 월 9,350원으로 이용하고,\n10개월 차부터는 월 7,700원 요금제로 변경해 이용하실 수 있어요.', tag:'10개월 차부터 월 7,700원'},
   {ic:'cal', b:'36개월 약정 상품이에요', p:'36개월 약정, TV 가입형 상품입니다.'}]}; }
 var GUIDE={
@@ -1068,14 +1068,16 @@ function sheetSpecial(){
 }
 function storeItem(s){
   var i=S.stores.indexOf(s);
-  return '<div class="store-li" data-store-i="'+i+'" role="button"><div class="sl-r"><b>'+esc(s.nm)+'</b><a class="sl-map" href="https://map.naver.com/p/search/'+encodeURIComponent(s.addr||s.nm)+'" target="_blank" rel="noopener">지도</a></div><div>'+esc(s.addr||'')+'</div>'+
+  var th=String(s.img||'').split(',')[0].trim();
+  return '<div class="store-li'+(th?' has-th':'')+'" data-store-i="'+i+'" role="button">'+(th?'<div class="sl-th">'+im(th,'','',s.nm)+'</div>':'')+'<div class="sl-r"><b>'+esc(s.nm)+'</b><a class="sl-map" href="https://map.naver.com/p/search/'+encodeURIComponent(s.addr||s.nm)+'" target="_blank" rel="noopener">지도</a></div><div>'+esc(s.addr||'')+'</div>'+
     (s.tel?'<div><a href="tel:'+esc(s.tel)+'" style="color:var(--pink);font-weight:700">'+esc(s.tel)+'</a></div>':'')+'<span class="sl-go">자세히 '+CHEV_I+'</span></div>';
 }
 // 매장 상세 (사진은 관리자에서 매장별 img 추가 시 표시)
 function sheetStoreOne(s){
   var b=S.biz||{}, map='https://map.naver.com/p/search/'+encodeURIComponent(s.addr||s.nm);
   return '<button class="st-back" type="button" data-go="store">‹ 매장 목록</button>'+
-    (s.img?'<div class="st-img">'+im(s.img,'','',s.nm)+'</div>':'')+
+    (function(){ var ims=String(s.img||'').split(',').map(function(x){return x.trim()}).filter(Boolean); if(!ims.length) return '';
+      return '<div class="st-gal'+(ims.length>1?' multi':'')+'">'+ims.map(function(x){ return '<div class="st-img">'+im(x,'',true,s.nm)+'</div>'; }).join('')+'</div>'+(ims.length>1?'<div class="st-gal-n">옆으로 넘겨서 '+ims.length+'장 보기</div>':''); })()+
     '<h3>'+esc(s.nm)+'</h3><div class="st-rows">'+
     '<div><span>주소</span><b>'+esc(s.addr||'-')+'</b></div>'+
     '<div><span>영업시간</span><b>'+esc(s.hours||b.hours||'상담 시 안내')+'</b></div>'+
