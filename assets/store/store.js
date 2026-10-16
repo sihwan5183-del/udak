@@ -964,16 +964,16 @@ function sheetContact(){
 }
 function sheetGuide(){
   var st=[
-    ['모델·조건 고르기','상품을 누르고 통신사·요금제·할인 방식을 고르면 예상 월 납부금액을 바로 확인하실 수 있어요.'],
-    ['온라인 상담 신청서 작성','이름·연락처·생년월일만 남겨 주시면 신청이 끝나요.'],
-    ['5분 상담','상담사가 연락드려 최종 금액과 조건을 안내드려요. 고객님이 동의하실 때만 진행돼요.'],
-    ['개통 & 수령','당일 택배로 받으시거나, 가까운 매장에 방문하셔서 바로 개통·수령하실 수 있어요.']];
-  return '<h3>구매 가이드</h3><ol class="steps">'+st.map(function(x){ return '<li><b>'+x[0]+'</b><br><span style="color:var(--sub);font-size:13px">'+x[1]+'</span></li>'; }).join('')+'</ol>'+
-    '<div class="gd-box"><b>꼭 알아두세요</b><ul>'+
-      '<li>월 <em>85,000원</em> 요금제 <em>6개월 이상 유지</em> 조건이에요. 6개월 후부터는 월 47,000원 이상 요금제로 자유롭게 변경하실 수 있어요.</li>'+
-      '<li>제휴카드·부가서비스 <em>의무 가입 없이</em> 진행돼요.</li>'+
-      '<li>구매 시 <em>투명케이스·보호필름·충전기</em>를 함께 드려요.</li></ul></div>'+
-    '<button class="cta" data-open="consult">온라인 상담 신청하기</button>';
+    ['모델·조건 선택','원하시는 휴대폰, 요금제, 할인 방식을 선택하시면 <br class="gd-br">예상 월 납부금액을 바로 확인하실 수 있습니다.'],
+    ['온라인 상담 신청서 작성','이름, 연락처, 생년월일을 남겨주시면 상담 신청이 완료됩니다.'],
+    ['상담 진행','상담사가 연락드려 최종 금액과 진행 조건을 안내해 드립니다. <br class="gd-br">고객님께서 동의하실 때만 진행됩니다.'],
+    ['개통 및 수령','당일 택배로 받아보시거나 가까운 매장에서 개통 및 수령하실 수 있습니다.']];
+  return '<h3 class="gd-t">구매 가이드</h3><ol class="gd-steps">'+st.map(function(x,i){ return '<li><span class="gd-n">'+(i+1)+'</span><div><b>'+x[0]+'</b><p>'+x[1]+'</p></div></li>'; }).join('')+'</ol>'+
+    '<div class="gd-note"><div class="gd-note-h"><i>!</i>꼭 확인해 주세요</div><ul>'+
+      '<li>월 <em>85,000원</em> 요금제를 <em>6개월 이상 유지</em>하는 조건입니다. 6개월 이후에는 월 47,000원 이상 요금제로 자유롭게 변경하실 수 있습니다.</li>'+
+      '<li>제휴카드 및 부가서비스 <em>의무 가입 없이</em> 진행됩니다.</li>'+
+      '<li>구매 시 <em>투명 케이스, 보호필름, 충전기</em>를 함께 드립니다.</li></ul></div>'+
+    '<button class="cta gd-cta" data-open="consult">온라인 상담 신청하기 <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
 }
 function sheetSoon(){
   return '<div class="soon-box"><div class="soon-ic">🛠</div><b>현재 준비중이에요!</b><p>더 좋은 혜택으로 곧 찾아올게요.</p></div><button class="cta" type="button" data-close-sheet>확인</button>';
