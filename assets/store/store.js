@@ -562,21 +562,24 @@ function shipState(){
 }
 function hms(t){ var h=Math.floor(t/3600), m=Math.floor(t%3600/60), x=t%60; return ('0'+h).slice(-2)+':'+('0'+m).slice(-2)+':'+('0'+x).slice(-2); }
 function cutLabel(){ var c=String((S.ship||{}).cut||'15:00').split(':'), h=+c[0]||15, m=+c[1]||0; return (h<12?'오전 ':'오후 ')+(h%12||12)+'시'+(m?' '+m+'분':''); }
+function cdBoxes(t){ var h=Math.floor(t/3600), m=Math.floor(t%3600/60), x=t%60, p=function(n){return ('0'+n).slice(-2)};
+  return '<span class="shp-u"><b>'+p(h)+'</b><small>시</small></span><i>:</i><span class="shp-u"><b>'+p(m)+'</b><small>분</small></span><i>:</i><span class="shp-u"><b>'+p(x)+'</b><small>초</small></span>'; }
 function renderShip(){
   var el=$('#shipBar'); if(!el) return;
   var sh=S.ship||{}; clearInterval(shipTimer);
   if(!sh.on && !EDIT){ el.hidden=true; return; } el.hidden=false;
   var st=shipState(), clock='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.2 1.8"/></svg>', chev='<svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>';
-  var cd=st.today?'<div class="shp-cd" id="shipCdW"><i></i>마감까지 <b id="shipCd">'+hms(st.left)+'</b></div>'
-                 :'<div class="shp-cd off"><i></i>'+(st.when==='내일'?'오늘 접수 마감 · <b>내일 발송</b>':'<b>'+st.when+' 발송</b> 예정')+'</div>';
-  var steps=[['step1','온라인 신청'],['step2','5분 상담'],['step3','당일 발송']];
-  el.innerHTML='<div class="shp" data-go="guide"><div class="shp-top"><div class="shp-txt">'+
-      '<div class="shp-l1">'+clock+'<em>'+cutLabel()+'까지</em> 구매확정</div>'+
-      '<div class="shp-l2"><em>당일 택배</em> 발송</div>'+cd+'</div>'+
+  var head=st.today
+    ? '<div class="shp-l1">'+clock+'오늘 <em>'+cutLabel()+'까지</em> 구매확정</div><div class="shp-l2"><em>당일 택배</em> 발송</div>'+
+      '<div class="shp-cd"><span class="shp-cl">발송 마감까지</span><span class="shp-box" id="shipCd">'+cdBoxes(st.left)+'</span></div>'
+    : '<div class="shp-l1">'+clock+'지금 구매확정하시면</div><div class="shp-l2 sm"><em>'+st.when+'</em> 택배 발송</div>'+
+      '<div class="shp-cd off"><span class="shp-cl">'+st.when+' '+cutLabel()+' 마감 · 순차 발송</span></div>';
+  var steps=[['ico-form','온라인 신청'],['ico-call','5분 상담'],['ico-ship',(st.today?'당일':st.when)+' 발송']];
+  el.innerHTML='<div class="shp" data-go="guide"><div class="shp-top"><div class="shp-txt">'+head+'</div>'+
       '<img class="shp-truck" src="/assets/store/ship/truck.webp" alt="" loading="eager"></div>'+
-    '<div class="shp-steps">'+steps.map(function(x){ return '<div class="shp-st"><img src="/assets/store/ship/'+x[0]+'.webp" alt=""><span>'+x[1]+'</span></div>'; }).join('<i class="shp-ar">'+chev+'</i>')+
+    '<div class="shp-steps">'+steps.map(function(x){ return '<div class="shp-st"><span class="shp-ic"><img src="/assets/store/ship/'+x[0]+'.webp" alt=""></span><span>'+x[1]+'</span></div>'; }).join('<i class="shp-ar">'+chev+'</i>')+
       '<span class="shp-div"></span><span class="shp-guide">구매 가이드'+chev+'</span></div></div>';
-  if(st.today) shipTimer=setInterval(function(){ var s2=shipState(), c2=$('#shipCd'); if(!s2.today||!c2){ renderShip(); return; } c2.textContent=hms(s2.left); },1000);
+  if(st.today) shipTimer=setInterval(function(){ var s2=shipState(), c2=$('#shipCd'); if(!s2.today||!c2){ renderShip(); return; } c2.innerHTML=cdBoxes(s2.left); },1000);
 }
 function renderDeal(){
   var D=S.deal, sub=$('#dealSubs'), hero=document.querySelector('.hero');

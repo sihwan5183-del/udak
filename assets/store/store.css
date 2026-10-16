@@ -1265,3 +1265,30 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .shp-div{margin:0 clamp(5px,2vw,12px)}
 .shp-guide{padding:clamp(10px,3vw,14px) clamp(8px,2.4vw,14px);font-size:clamp(12px,3.4vw,14.5px)}
 .shp-top{min-height:104px}
+
+/* 당일 발송 카드 v3 — 포인트 컬러 최소화 (아이콘·가이드 검정), 시/분/초 타이머 */
+.shp-l1{font-size:clamp(14px,4vw,16px);gap:5px}
+.shp-l1 svg{width:19px;height:19px;stroke:#1A1A1E;stroke-width:2}
+.shp-l2{font-size:clamp(28px,8.2vw,34px);margin-top:3px}
+.shp-cd{display:flex;align-items:center;gap:10px;margin-top:10px;padding:0;background:none;color:inherit;border-radius:0}
+.shp-cd i{display:none}
+.shp-cl{font-size:12.5px;font-weight:600;color:#8A8E97;white-space:nowrap}
+.shp-box{display:flex;align-items:flex-start;gap:4px}
+.shp-box>i{display:block;font-style:normal;font-size:20px;font-weight:800;color:#E8197F;line-height:34px;animation:none;width:auto;height:auto;background:none;border-radius:0}
+.shp-u{display:flex;flex-direction:column;align-items:center;gap:2px}
+.shp-u b{min-width:40px;padding:3px 0;border-radius:9px;background:#FDEEF5;color:#E8197F;font-size:clamp(20px,6vw,24px);font-weight:900;text-align:center;font-variant-numeric:tabular-nums;line-height:1.2}
+.shp-u small{font-size:10.5px;color:#8A8E97;font-weight:600}
+.shp-cd.off{background:none}
+.shp-cd.off .shp-cl{white-space:normal;color:#6B6F78;font-size:12.5px}
+.shp-ic{width:clamp(44px,12.5vw,52px);height:clamp(44px,12.5vw,52px);border-radius:50%;background:#F4F5F7;display:flex;align-items:center;justify-content:center}
+.shp-ic img{width:58%;height:58%;object-fit:contain}
+.shp-st img{width:auto}
+.shp-st span:last-child{color:#1A1A1E}
+.shp-steps{background:#FAFAFB;border-color:#EEEEF1}
+.shp-ar svg{stroke:#B5B8BF}
+.shp-guide{background:#F1F2F4;color:#1A1A1E}
+.shp-top{min-height:0}
+.shp-truck{width:min(42%,184px);top:2px}
+.shp-l2.sm{font-size:clamp(23px,6.6vw,30px)}
+.shp-txt{max-width:66%}
+.shp-cd.off .shp-cl{white-space:nowrap}
