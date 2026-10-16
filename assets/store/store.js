@@ -740,13 +740,20 @@ function renderFoot(){
 
     '<div class="sf">'+
       '<div class="sf-top"><div class="sf-links"><span>이용약관</span><span>개인정보처리방침</span><span>이메일무단수집거부</span></div>'+
-        '<a class="sf-cert" href="tel:'+esc(S.tel)+'"><img src="/assets/logo-uplus.png" alt="LG U+" loading="lazy"><span><small>대표 전화번호</small><b>'+esc(S.tel)+'</b></span></a></div>'+
+        '<div class="sf-cert"><button type="button" class="sf-mark" data-cert aria-label="LG U+ 공식인증대리점 인증마크 보기"><img src="/assets/store/cert-mark-s.webp" alt="LG U+ 공식인증대리점 인증마크" loading="lazy"></button><a href="tel:'+esc(S.tel)+'"><small>대표 전화번호</small><b>'+esc(S.tel)+'</b></a></div></div>'+
       '<div class="sf-info"><p><span>상호명</span> '+esc(/유닥/.test(b.name||'')||!b.name?'유플러스 다이렉트':b.name)+' · <span>대표자</span> '+esc(b.ceo)+'</p><p><span>사업장 주소</span> '+esc(b.addr)+'</p>'+
         '<p><span>사업자등록번호</span> '+esc(b.no)+' · <span>전화번호</span> '+esc(S.tel)+'</p>'+(b.sale?'<p><span>통신판매업 신고번호</span> '+esc(b.sale)+'</p>':'')+'<p><span>이메일</span> '+esc(b.email)+'</p>'+
         '<p class="sf-h">상담시간 : '+esc(b.hours)+'</p></div>'+
       '<div class="sf-bot"><p>Copyright(C) 2025 U+ 다이렉트. All rights reserved.</p><div class="sf-p">'+
         '<a href="'+esc(S.kakao)+'" target="_blank" rel="noopener">Kakao</a><a href="#" data-video="direct">회사 소개</a></div></div>'+
     '</div>';
+}
+/* 대리점 인증마크 크게 보기 */
+function openCert(){
+  var o=document.createElement('div'); o.className='vpop cpop';
+  o.innerHTML='<div class="cp-in"><button type="button" class="vp-x" aria-label="닫기">×</button><img src="/assets/store/cert-mark.webp" alt="LG U+ 공식인증대리점 인증마크"><p>LG U+ 공식인증대리점</p></div>';
+  o.addEventListener('click',function(e){ if(e.target===o||e.target.closest('.vp-x')){ o.remove(); document.body.style.overflow=''; } });
+  document.body.appendChild(o); document.body.style.overflow='hidden';
 }
 /* 소개 영상 팝업 */
 var VIDS={direct:{src:'/assets/udak-direct-intro-v2.mp4',poster:'/assets/udak-direct-intro-v2-poster.webp',title:'유플러스 다이렉트란?'}};
@@ -1372,6 +1379,7 @@ document.addEventListener('click',function(e){
   var g=t.closest('[data-go]'); if(g){e.preventDefault();act(g.getAttribute('data-go'),g);return}
   var c=t.closest('[data-cat]'); if(c){location.hash='#/cat/'+c.getAttribute('data-cat');return}
   var mp=t.closest('[data-mnp]'); if(mp){ e.preventDefault(); MNP=mp.getAttribute('data-mnp')==='1'; refresh(); return; }
+  if(t.closest('[data-cert]')){e.preventDefault();openCert();return}
   if(t.closest('[data-home]')){e.preventDefault();closeSheet();location.hash='#/';window.scrollTo(0,0);return}
   if(t.closest('[data-back]')){e.preventDefault();history.length>1?history.back():location.hash='#/';return}
 });
