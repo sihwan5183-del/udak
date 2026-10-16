@@ -162,14 +162,17 @@ var ED = {
         '<select data-rankadd data-k="'+k+'" style="margin-top:8px"><option value="">＋ 모델 추가</option>'+T.S.models.filter(function(m){return arr.indexOf(m.id)<0}).map(function(m){return '<option value="'+esc(m.id)+'">'+esc(m.nm)+'</option>'}).join('')+'</select></div>'; }
       return h+applyBtn();
     },
-    save:function(k){ var s=T.S.sec[k]=T.S.sec[k]||{}; s.t=V('t'); s.s=V('s')||null; s.off=C('off'); }
+    save:function(k){ var s=T.S.sec[k]=T.S.sec[k]||{}; s.t=V('t'); s.s=V('s')||null; s.off=C('off');
+      if((k==='pop'||k==='zero')&&T.S.lists&&T.S.lists[k]&&!T.S.lists[k].length) T.S.lists[k]=['_none'];   // 다 빼면 빈 목록으로 저장 (자동으로 돌아가지 않게)
+    }
   }
 };
 // 순위·많이 찾아요·기기값 0원 — 모델 목록 직접 고르기 (처음 열면 지금 보이는 목록에서 시작)
 function listArr(k){
   if(k==='rank') return T.S.rank;
   T.S.lists=T.S.lists||{};
-  if(!T.S.lists[k]||!T.S.lists[k].length) T.S.lists[k]=T.autoList(k);
+  if(!T.S.lists[k]) T.S.lists[k]=T.autoList(k);
+  T.S.lists[k]=T.S.lists[k].filter(function(id){return id!=='_none'});
   return T.S.lists[k];
 }
 function rankList(k){

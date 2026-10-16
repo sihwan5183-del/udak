@@ -584,14 +584,14 @@ function secHead(k, more){
 // 많이 찾아요 / 기기값 0원 — 관리자가 고른 목록(없으면 자동)
 function autoList(k){ return (k==='zero'?phones().filter(isZero):phones()).map(function(m){return m.id}); }
 function pickList(k){
-  var ids=S.lists&&S.lists[k]; if(!ids||!ids.length) ids=autoList(k);
+  var ids=S.lists&&S.lists[k]; if(!ids||!ids.length) ids=autoList(k);   // '_none' 만 있으면 빈 목록
   var all=models(); return ids.map(function(id){ return all.filter(function(m){return m.id===id})[0]; }).filter(Boolean);
 }
 function renderPop(){
-  $('#popSec').hidden=!secOn('pop');
+  $('#popSec').hidden=!secOn('pop')||(!EDIT&&!pickList('pop').length);
   $('#popHead').innerHTML=secHead('pop','#/cat/all');
   $('#popgrid').innerHTML=pickList('pop').map(function(m){
-    return '<a class="pc'+(SO(m)?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="thumb" style="position:relative">'+im(mImg(m),'','',m.nm)+(SO(m)?'<span class="so-tag" style="font-size:11px">품절</span>':'')+'</div><div class="info">'+
+    return '<a class="pc'+(SO(m)?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="sec:pop"><div class="thumb" style="position:relative">'+im(mImg(m),'','',m.nm)+(SO(m)?'<span class="so-tag" style="font-size:11px">품절</span>':'')+'</div><div class="info">'+
       '<div class="nm">'+esc(m.nm)+CHEV+'</div><div class="ds">'+esc(m.ds)+'</div>'+
       '<div class="pills">'+m.tags.map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div></div></a>';
   }).join('');
@@ -599,15 +599,15 @@ function renderPop(){
 function hcard(m,opt){
   opt=opt||{};
   var badge=opt.badge||badgeOf(m);
-  return '<a class="hc'+(SO(m)?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="im">'+(badge?'<span class="badge'+(opt.dark||SO(m)?' dark':'')+'">'+esc(badge)+'</span>':'')+
+  return '<a class="hc'+(SO(m)?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="'+esc(opt.edit||('model:'+m.id))+'"><div class="im">'+(badge?'<span class="badge'+(opt.dark||SO(m)?' dark':'')+'">'+esc(badge)+'</span>':'')+
     im(mImg(m),'','',m.nm)+'</div><div class="strip">'+esc(stripOf(m))+'</div>'+
     '<div class="bd"><div class="t">'+esc(m.nm)+'</div>'+priceLine(m)+'<div class="mt">제휴카드·부가서비스 X · 당일발송</div></div></a>';
 }
 function isZero(m){ if(m.cat.indexOf('zero')>-1) return true; var p=priceOf(m); return p.kind==='sheet' && p.v===0; }
 function renderZero(){
-  $('#zeroSec').hidden=!secOn('zero');
+  $('#zeroSec').hidden=!secOn('zero')||(!EDIT&&!pickList('zero').length);
   $('#zeroHead').innerHTML=secHead('zero','#/cat/zero');
-  $('#zero').innerHTML=pickList('zero').map(function(m){return hcard(m)}).join('');
+  $('#zero').innerHTML=pickList('zero').map(function(m){return hcard(m,{edit:'sec:zero'})}).join('');
 }
 function renderRecent(){
   var ids=store.get('recent',[]).filter(function(id){var m=byId(id);return m&&(EDIT||!m.hidden)});
