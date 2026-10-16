@@ -1279,7 +1279,7 @@ function apPhoneHtml(){
       '<div class="ap-list" id="apList">'+list.map(function(x){
         return '<div class="ap-li" data-nm="'+esc((x.nm+' '+x.id).toLowerCase().replace(/\s/g,''))+'"><div class="ap-li-img">'+im(mImg(x),'','',x.nm)+'</div><b>'+esc(x.nm)+(SO(x)?' <small>일시품절</small>':'')+'</b>'+
           '<button type="button" class="ap-pick'+(x.id===AP.phone?' on':'')+'" data-ap-pick="'+esc(x.id)+'">'+(x.id===AP.phone?'선택됨':'선택하기')+'</button></div>'; }).join('')+
-      '<div class="ap-li later" data-nm="상담후결정"><b>상담 후 결정할게요</b><button type="button" class="ap-pick" data-ap-pick="later">선택하기</button></div>'+
+      // 20261016: '상담 후 결정할게요' 줄 삭제 (휴대폰은 꼭 골라서 신청)
       (AP.tv&&AP.tvType==='old'?'<div class="ap-li later" data-nm="휴대폰변경없음tv프리만"><b>휴대폰은 바꾸지 않아요 (TV프리만)</b><button type="button" class="ap-pick" data-ap-pick="none">선택하기</button></div>':'')+'</div>';
   }
   if(m && !AP.pick && AP.optOpen){
@@ -1494,7 +1494,7 @@ function openApply(el){
 function apSubmit(){
   if(EDIT){ alert('관리자 화면에서는 신청이 저장되지 않습니다.'); return; }
   var name=$('#mUserName').value.trim(), phone='010'+$('#mPhone2').value.replace(/\D/g,'')+$('#mPhone3').value.replace(/\D/g,''), birth=birth8($('#mUserBirth').value), memo=$('#mUserNote').value.trim();
-  if(!AP.phone){ alert('휴대폰을 선택해 주세요.\n(아직 정하지 않으셨다면 "상담 후 결정할게요"를 골라 주세요)'); window.scrollTo({top:0,behavior:'smooth'}); return; }
+  if(!AP.phone){ alert('휴대폰을 선택해 주세요.'); window.scrollTo({top:0,behavior:'smooth'}); return; }
   if(!AP.carrier && AP.phone!=='none'){ alert('현재 사용 중인 통신사를 선택해 주세요.'); return; }
   if(!name){ alert('이름을 입력해주세요.'); return; }
   if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해주세요.'); return; }
