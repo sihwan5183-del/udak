@@ -1332,8 +1332,7 @@ function apAddHtml(){
     if(s[0]==='tv' && AP.tv){
       var tm=byId(AP.tv), ts=tiersOf('tvfree');
       h+='<div class="ap-tvnote"><b>오직 U+ 고객님께만 드리는, 유플러스 다이렉트 특별 혜택</b>이에요. U+ 인터넷TV를 1년 이상 2년 미만, 500MB 이상 요금제로 이용 중인 고객님이라면 신청하실 수 있어요.'+
-        '<br>TV프리 이용료는 첫 9개월 월 '+won(TV_FEE)+', 10개월 차부터 월 '+won(TV_FEE2)+'이에요. (약정 36개월)</div>'+
-        '<label class="agree ap-tvok"><input type="checkbox" id="mTvOk"'+(AP.tvOk?' checked':'')+'> U+ 인터넷TV를 1년 이상 2년 미만, 500MB 이상 요금제로 이용 중이에요 <span class="req">(필수)</span></label>';
+        '<br>TV프리 이용료는 첫 9개월 월 '+won(TV_FEE)+', 10개월 차부터 월 '+won(TV_FEE2)+'이에요. (약정 36개월)</div>';   // 20261016: '이용 중이에요(필수)' 체크 뺌 — 대상 여부는 전산 조회로 우리가 확인
     }
     h+='</div>';
   });
@@ -1497,7 +1496,6 @@ function apSubmit(){
   var name=$('#mUserName').value.trim(), phone='010'+$('#mPhone2').value.replace(/\D/g,'')+$('#mPhone3').value.replace(/\D/g,''), birth=birth8($('#mUserBirth').value), memo=$('#mUserNote').value.trim();
   if(!AP.phone){ alert('휴대폰을 선택해 주세요.\n(아직 정하지 않으셨다면 "상담 후 결정할게요"를 골라 주세요)'); window.scrollTo({top:0,behavior:'smooth'}); return; }
   if(!AP.carrier && AP.phone!=='none'){ alert('현재 사용 중인 통신사를 선택해 주세요.'); return; }
-  if(AP.tv && !AP.tvOk){ alert('TV프리는 U+ 인터넷TV를 1년 이상 2년 미만, 500MB 이상 요금제로 이용 중인 고객님께 드리는 유플러스 다이렉트 특별 혜택이에요.\n확인 항목에 체크해 주세요.'); return; }
   if(!name){ alert('이름을 입력해주세요.'); return; }
   if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해주세요.'); return; }
   if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해주세요.'); return; }
@@ -1625,7 +1623,6 @@ document.addEventListener('input',function(e){
 document.addEventListener('change',function(e){
   if(e.target.id==='mPlanSel'){ AP.tier=e.target.value; apRefresh(); return; }
   if(e.target.id==='apTvTier'){ AP.tvTier=e.target.value; apRefresh(); return; }
-  if(e.target.id==='mTvOk'){ AP.tvOk=e.target.checked; return; }
   var cs=e.target.closest&&e.target.closest('[data-calc-sel]');
   if(cs){ var mid=cs.getAttribute('data-model'); if(cs.getAttribute('data-calc-sel')==='tier') TIER[mid]=cs.value; var y=window.scrollY; renderModel(mid,true); window.scrollTo(0,y); return; }
   if(e.target.id!=='mDeviceSelect') return;
