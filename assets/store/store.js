@@ -1362,6 +1362,7 @@ function apSummary(){
     if(pub) row(r.dev,pubNm,-pub,tn,null,'minus');
     if(c.our) row(r.dev,'유플러스 다이렉트 지원금',-c.our,tn,null,'minus');
     r.sup=c.out-after; r.after=after;
+    r.cs=Math.min(pub||0,r.sup); r.os=r.sup-r.cs; r.csNm=pubNm;   // 20261016: 직원용 — 이통사 지원금 / 유플러스 다이렉트 지원금 따로 (출고가를 넘으면 이통사 몫 먼저, 나머지가 우리 몫)
     row(r.dev,'지원 후 기기값',after,r.sup?'총 '+won(r.sup)+' 지원':'',null,'sum');
   };
   if(pc){
@@ -1379,7 +1380,7 @@ function apSummary(){
     var x=AP[s[0]]&&byId(AP[s[0]]); if(!x) return; var r=rec(s[1],x.nm,s[0],x), ac=apAddCalc(x);
     if(!ac){ r.ask=true; row(r.dev,'기기값',null,'',null,'','상담 시 안내'); }
     else {
-      if(s[0]==='tv'){ row(r.dev,'출고가',ac.c.out); if(ac.c.out>ac.after) row(r.dev,'유플러스 다이렉트 지원금',-(ac.c.out-ac.after),'',null,'minus'); r.sup=ac.c.out-ac.after; r.after=ac.after; row(r.dev,'지원 후 기기값',ac.after,r.sup?'총 '+won(r.sup)+' 지원':'',null,'sum'); }
+      if(s[0]==='tv'){ row(r.dev,'출고가',ac.c.out); if(ac.c.out>ac.after) row(r.dev,'유플러스 다이렉트 지원금',-(ac.c.out-ac.after),'',null,'minus'); r.sup=ac.c.out-ac.after; r.after=ac.after; r.cs=Math.min(ac.c.pb!=null?ac.c.pub:0,r.sup); r.os=r.sup-r.cs; r.csNm='기존 고객 지원금'; row(r.dev,'지원 후 기기값',ac.after,r.sup?'총 '+won(r.sup)+' 지원':'',null,'sum'); }
       else dev(r, ac.c, ac.c.pb!=null?ac.c.pub:0, '이통사 지원금', '', ac.after);
       if(s[0]==='tv'){ if(ac.after>0){ r.up+=ac.after; row(r.mon,'기기값',ac.after,'별도'); } }
       else if(AP.months===0){ r.up+=ac.after; row(r.mon,'기기값 일시납',ac.after,'한 번에 결제해요'); }
@@ -1508,7 +1509,12 @@ function apSubmit(){
   if(cap==='기본') cap=null;
   var tt=apTier(), SM=apSummary(), pc=SM.pc, type=AP.carrier==='LG U+'?'기기변경':'번호이동', pv=PV()||{};
   var nums=function(rows){ return rows.filter(function(x){return typeof x.a==='number'}).map(function(x){ return {label:x.l==='지원 후 기기값'?'기기값 원금':x.l, amount:x.a}; }); };
-  var item=function(r){ return {key:r.key, kind:r.kind, device:r.nm, subsidy:nums(r.dev), monthly:nums(r.mon), subtotal:r.ask&&!r.sub?null:r.sub, support:r.sup}; };
+  var item=function(r){ var o={key:r.key, kind:r.kind, device:r.nm, subsidy:nums(r.dev), monthly:nums(r.mon), subtotal:r.ask&&!r.sub?null:r.sub, support:r.sup};
+    // 20261016: 직원용(ssgadmin) — 기기별 이통사 지원금 / 우리(유플러스 다이렉트) 지원금 금액을 따로 저장. TV프리는 고객 화면에선 합계 한 줄이지만 여기선 나눔
+    if(r.cs!=null){ o.carrierSupport=r.cs; o.ourSupport=r.os; o.carrierLabel=r.csNm;
+      if(r.sk==='tv'){ var sp=[]; o.subsidy.forEach(function(x){ if(x.label==='유플러스 다이렉트 지원금') return; sp.push(x);
+        if(x.label==='출고가'){ if(r.cs) sp.push({label:r.csNm, amount:-r.cs}); if(r.os) sp.push({label:'유플러스 다이렉트 지원금', amount:-r.os}); } }); o.subsidy=sp; } }
+    return o; };
   var A=SM.recs.filter(function(r){return r.sk==='phone'})[0], addRecs=SM.recs.filter(function(r){return r.sk!=='phone'});
   var tvTierNm=function(){ return '집 인터넷 500MB 이상'; };
   var fee=[]; if(pc&&pc.fee){ fee.push({label:tt.title||tierTitle(tt), amount:pc.fee}); if(pc.method==='sel') fee.push({label:'선택약정 할인(25%)', amount:-(pc.fee-pc.feeAfter)}); fee.push({label:'월 통신요금', amount:pc.feeAfter}); }
@@ -1523,7 +1529,7 @@ function apSubmit(){
     discount:noPh?null:pc?(pc.method==='sel'?'선택약정':'공시지원금'):(AP.method==='sel'?'선택약정':'공시지원금'),
     fee:fee, feeNote:null, subsidy:subsidy, subsidyNote:noPh?'TV프리 약정 36개월':AP.months===0?'일시납':'할부 '+AP.months+'개월 · 연 5.9%',
     benefits:benefits, estimatedMonthly:SM.total||null, installmentMonths:noPh?null:(AP.months||null), upfront:SM.upfront||null,
-    items:SM.recs.map(item), supportTotal:SM.sup||null, selDiscountTotal:SM.selSave||null,
+    items:SM.recs.map(item), supportTotal:SM.sup||null, supportSplit:{carrier:SM.recs.reduce(function(t,r){return t+(r.cs||0)},0), our:SM.recs.reduce(function(t,r){return t+(r.os||0)},0)}, selDiscountTotal:SM.selSave||null,
     flow:SM.flow.map(function(f){ return {label:f.l, amount:f.a, note:f.sub||null}; }),
     advice:cm&&cm.diff>=1000?(cm.best==='pub'?'공시지원금':'선택약정')+' 쪽이 24개월 기준 약 '+won(Math.round(cm.diff/1000)*1000)+' 저렴':null,
     tvJoin:tvx?'U+ 기존 고객 (인터넷TV 1년 이상~2년 미만 이용 · 500MB 이상)':null,
