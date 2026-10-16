@@ -288,9 +288,14 @@ img{display:block;max-width:100%}
 .store-li div{font-size:13px;color:var(--sub);margin-top:3px}
 .ticket{position:fixed;inset:0;z-index:120;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center}
 .ticket.on{display:flex}
-.ticket .tw{position:relative;width:90%;max-width:400px}
-.ticket img{width:100%;height:auto;display:block;border-radius:5%/3.56%}
-.ticket .x{position:absolute;left:93.05%;top:5.1%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%}
+.ticket .tw{position:relative;width:90%;max-width:400px;container-type:inline-size}
+.ticket img{width:100%;height:auto;display:block;border-radius:3.3%/2.3%}
+/* 20261016 핑크 완료 팝업: 이미지 위 X·확인 누르는 자리 + '010-XXXX-XXXX 번호로' 자리에 고객 번호 */
+.ticket .x{position:absolute;left:93.96%;top:3.89%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%}
+.ticket .ok{position:absolute;left:4.27%;top:89.79%;width:91.45%;height:7.6%;border-radius:12px;background:transparent}
+.ticket .tk-ph{position:absolute;left:30.02%;top:66.91%;width:46.37%;height:3.11%;display:flex;align-items:center;gap:.25em;background:#FCF7FA;font-size:4.54cqw;font-weight:800;line-height:1;color:#161D24;white-space:nowrap;pointer-events:none}
+.ticket .tk-ph[hidden]{display:none}
+.ticket .tk-ph b{color:#EE1376;font-weight:800}
 
 /* ===== 관리자(애플) ===== */
 body.edit .app{padding-top:52px}
@@ -992,6 +997,12 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 #v-apply .ap-info .agree button{text-decoration:underline}
 #v-apply .ap-info .cta{display:flex;align-items:center;justify-content:center;gap:4px}
 #v-apply .ap-info .cta .cta-ar{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2.6}
+/* 20261016 신청 버튼 2개: 상담 예약(핑크) / 카톡 예약(카카오 노랑) — 예상 월 납부금액 아래 */
+#v-apply .ap-btns{margin:14px 16px 0}
+#v-apply .ap-btns .cta{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:0}
+#v-apply .ap-btns .cta .cta-ar{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2.6}
+#v-apply .ap-btns .cta-kakao{margin-top:8px;gap:6px;background:#FEE500;color:#191919}
+#v-apply .ap-btns .cta-kakao .kk{width:20px;height:20px;fill:#191919}
 /* 신청서: 좁은 폰 화면 맞춤 */
 #v-apply .ap-row{grid-template-columns:62px 1fr;column-gap:6px}
 #v-apply .ap-row .cg{font-size:12.5px;padding-left:2px;padding-right:2px;white-space:nowrap;letter-spacing:-.02em}
