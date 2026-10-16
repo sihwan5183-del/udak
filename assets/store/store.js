@@ -973,7 +973,7 @@ function sheetGuide(){
       '<li>월 <em>85,000원</em> 요금제를 <em>6개월 이상 유지</em>하는 조건입니다. 6개월 이후에는 월 47,000원 이상 요금제로 자유롭게 변경하실 수 있습니다.</li>'+
       '<li>제휴카드 및 부가서비스 <em>의무 가입 없이</em> 진행됩니다.</li>'+
       '<li>구매 시 <em>투명 케이스, 보호필름, 충전기</em>를 함께 드립니다.</li></ul></div>'+
-    '<button class="cta gd-cta" data-open="consult">온라인 상담 신청하기 <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
+    '<button class="cta gd-cta c-guide" data-open="consult">온라인 상담 신청하기 <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
 }
 function sheetSoon(){
   return '<div class="soon-box"><div class="soon-ic">🛠</div><b>현재 준비중이에요!</b><p>더 좋은 혜택으로 곧 찾아올게요.</p></div><button class="cta" type="button" data-close-sheet>확인</button>';
@@ -984,7 +984,7 @@ function sheetSubsidy(){
     '<p>월 <em>85,000원</em> 요금제를 <em>6개월 이상</em> 유지하시는 조건으로 안내드리고 있어요.</p>'+
     '<p>6개월 이후에는 월 <em>47,000원 이상</em> 요금제로 자유롭게 변경하실 수 있습니다.</p></div></div>'+
     '<div class="gd-sub">제휴카드 · 부가서비스 의무 가입 없이 진행됩니다.</div>'+
-    '<button class="cta gd-cta" data-go="#/cat/all">지원금 받는 모델 보러가기 <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
+    '<button class="cta gd-cta c-sub" data-go="#/cat/all">지원금 받는 모델 보러가기 <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
 }
 var QNA=[
   ['제휴카드나 부가서비스에 꼭 가입해야 하나요?','아니요. 제휴카드·부가서비스 의무 가입 없이 진행돼요.'],
@@ -1012,7 +1012,7 @@ function sheetSpecial(){
     '<div class="tv-cond sp-cond"><div class="tv-cond-h">이런 고객님께 드려요</div><ul>'+
       '<li><i>'+ck+'</i><span><b>U+ 인터넷TV</b> 1년 이상 ~ 2년 미만 이용 중</span></li>'+
       '<li><i>'+ck+'</i><span>인터넷 <b>500MB 이상</b> 요금제 사용</span></li></ul></div>'+
-    '<button class="cta gd-cta" data-go="#/cat/tvfree">TV프리 보러가기 <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
+    '<button class="cta gd-cta c-sp" data-go="#/cat/tvfree">TV프리 보러가기 <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
 }
 function storeItem(s){
   var i=S.stores.indexOf(s);
