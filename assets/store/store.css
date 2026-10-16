@@ -905,3 +905,4 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .cpop .cp-in img{width:100%;height:auto;display:block}
 .cpop .cp-in p{margin-top:10px;font-size:14px;font-weight:800;color:var(--ink)}
 .cpop .vp-x{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;background:#F1F2F4;color:#111;font-size:22px;line-height:34px;border:0}
+.adm-empty{margin:4px 16px 8px;padding:16px;border:1.5px dashed #F3B7D3;border-radius:12px;background:#fff;color:var(--sub);font-size:13px;font-weight:700;text-align:center;cursor:pointer;width:calc(100% - 32px)}

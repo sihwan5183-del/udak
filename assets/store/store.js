@@ -590,6 +590,7 @@ function pickList(k){
 function renderPop(){
   $('#popSec').hidden=!secOn('pop')||(!EDIT&&!pickList('pop').length);
   $('#popHead').innerHTML=secHead('pop','#/cat/all');
+  if(EDIT&&!pickList('pop').length){ $('#popgrid').innerHTML='<div class="adm-empty" data-edit="sec:pop">비어 있어요 · 고객 화면에서는 이 구역이 숨겨져요 (눌러서 모델 추가)</div>'; return; }
   $('#popgrid').innerHTML=pickList('pop').map(function(m){
     return '<a class="pc'+(SO(m)?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="sec:pop"><div class="thumb" style="position:relative">'+im(mImg(m),'','',m.nm)+(SO(m)?'<span class="so-tag" style="font-size:11px">품절</span>':'')+'</div><div class="info">'+
       '<div class="nm">'+esc(m.nm)+CHEV+'</div><div class="ds">'+esc(m.ds)+'</div>'+
@@ -607,7 +608,8 @@ function isZero(m){ if(m.cat.indexOf('zero')>-1) return true; var p=priceOf(m); 
 function renderZero(){
   $('#zeroSec').hidden=!secOn('zero')||(!EDIT&&!pickList('zero').length);
   $('#zeroHead').innerHTML=secHead('zero','#/cat/zero');
-  $('#zero').innerHTML=pickList('zero').map(function(m){return hcard(m,{edit:'sec:zero'})}).join('');
+  var zl=pickList('zero');
+  $('#zero').innerHTML=zl.map(function(m){return hcard(m,{edit:'sec:zero'})}).join('')||(EDIT?'<div class="adm-empty" data-edit="sec:zero">비어 있어요 · 고객 화면에서는 이 구역이 숨겨져요 (눌러서 모델 추가)</div>':'');
 }
 function renderRecent(){
   var ids=store.get('recent',[]).filter(function(id){var m=byId(id);return m&&(EDIT||!m.hidden)});
@@ -774,7 +776,8 @@ function renderCat(k){
   var tab=CAT_TABS.filter(function(t){return t.k===k})[0]||CAT_TABS[0];
   $('#catTitle').textContent=tab.nm;
   $('#catTabs').innerHTML=CAT_TABS.map(function(t){return '<button class="'+(t.k===tab.k?'on':'')+'" data-cat="'+t.k+'">'+t.nm+'</button>'}).join('');
-  var list=models().filter(function(m){return tab.k==='all'||m.cat.indexOf(tab.k)>-1||(tab.k==='zero'&&!isWear(m)&&isZero(m))});
+  var list=tab.k==='zero'&&S.lists&&S.lists.zero&&S.lists.zero.length ? pickList('zero')   // 관리자가 고른 '기기값 0원' 목록과 똑같이
+    : models().filter(function(m){return tab.k==='all'||m.cat.indexOf(tab.k)>-1||(tab.k==='zero'&&!isWear(m)&&isZero(m))});
   $('#catCircles').innerHTML=smallCircles(list);
   $('#catList').innerHTML=sortedCards(list) || '<div class="empty">해당 모델이 없습니다</div>';
   syncMnp();
