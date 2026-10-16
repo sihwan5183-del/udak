@@ -261,8 +261,6 @@ var TV_FEE=9350, TV_FEE2=7700;   // TV프리 이용료: 첫 9개월 9,350원 →
 // TV프리 = U+ 기존 고객님(인터넷TV 1년 이상~2년 미만 이용 중)을 위한 유플러스 다이렉트만의 혜택 · 휴대폰 구매 없이도 가능
 // 1GB/500MB는 가입할 인터넷 요금제가 아니라 '집에서 이미 쓰는 인터넷 속도' — 속도에 따라 지원금이 달라짐 (500MB 이상이어야 가능)
 function tvTypeOf(){ return 'old'; }
-function tvNetNm(t){ var n=(t&&t.nm)||''; return /1\s*G/i.test(n)?'1GB 이용 중':/500\s*M/i.test(n)?'500MB 이용 중':n; }
-var TV_NET_HINT='집 인터넷을 500MB 이상 쓰고 계셔야 받을 수 있어요 · 속도에 따라 지원금이 달라요';
 var TV_WHO='U+ 기존 고객님 전용 혜택', TV_CHIPS=['U+ 인터넷TV 1년 이상 2년 미만 이용 중','집 인터넷 500MB 이상'];
 function kindOf(m){ return isTv(m)?'tvfree':m.cat.indexOf('watch')>-1?'watch':m.cat.indexOf('tablet')>-1?'tablet':'phone'; }
 function phones(){ return models().filter(function(m){return !isWear(m)}); }
@@ -436,7 +434,9 @@ function tierTitle(t){ return t.title?t.title+(t.fee?' (월 '+won(t.fee)+')':'')
 var PLAN_NOTE='요금제는 6개월 후부터 47,000원 요금제 이상으로 자유롭게 변경 가능합니다.';
 // 이 줄에서 쓰는 요금제 — 워치·탭처럼 구분 없는 줄은 첫 요금제 칸 하나만
 function rowTiers(r){ return tiersOf(r.g); }
-function curTier(m, g, r){ var ts=r?rowTiers(r):tiersOf(g); return ts.filter(function(t){return t.k===TIER[m.id]})[0]||(ts.indexOf(baseTier(g))>-1?baseTier(g):ts[0]); }
+// TV프리: 집 인터넷 500MB·1GB 고객 모두 같은 조건(기기값 0원) — 고객이 고르지 않고 가장 좋은 조건으로 계산
+function tvTier(r){ var ts=tiersOf('tvfree'), b=null; ts.forEach(function(t){ var c=r&&rowCalc(r,'all',t); var a=c?(c.pb!=null?c.pb:c.sel):null; if(a!=null&&(!b||a<b.a)) b={t:t,a:a}; }); return b?b.t:ts[0]; }
+function curTier(m, g, r){ if(g==='tvfree'&&r) return tvTier(r); var ts=r?rowTiers(r):tiersOf(g); return ts.filter(function(t){return t.k===TIER[m.id]})[0]||(ts.indexOf(baseTier(g))>-1?baseTier(g):ts[0]); }
 /* ---------- 상세 계산기: 컬러·용량 → 통신사 → 요금제 → 할인 방식 → 할부 → 예상 월 납부금액 ---------- */
 var RATE={24:1.0626,30:1.0781,36:1.0935};   // 할부이자 포함 계수 (휴대폰·워치·태블릿 동일)
 var SEL={};                                  // 모델별 고른 조건 {carrier, method, months}
@@ -460,7 +460,7 @@ function typeNm(st){ return st.type==='chg'?'기기변경':st.type==='mnp'?'번�
 function calcSummary(st){
   if(!st.c) return '';
   var a=[]; if(st.g==='phone') a.push(st.s.carrier?st.s.carrier+' · '+typeNm(st):typeNm(st)+' 기준');
-  if(st.split&&st.t) a.push(st.g==='tvfree'?'집 인터넷 '+tvNetNm(st.t):tierTitle(st.t));
+  if(st.split&&st.t&&st.g!=='tvfree') a.push(tierTitle(st.t));
   if(st.g==='phone') a.push(st.method==='pub'?'공시지원금':'선택약정');
   a.push(st.months===0?'일시납':st.months+'개월 할부');
   return a.join(' · ');
@@ -480,9 +480,10 @@ function calcPickers(m, r, st){
   var g=r.g, h='';
   if(g==='phone') h+=cgrid('사용 통신사','carrier',CARRIERS.map(function(c){return [c,c]}),st.s.carrier||'',m,4,
     '');
-  var ts=rowTiers(r);
+  var ts=g==='tvfree'?[]:rowTiers(r);
+  if(g==='tvfree') h+='<div class="cpick"><div class="cpick-l">대상</div><div class="cpick-txt">집에서 <b>U+ 인터넷TV</b>를 <b>1년 이상 2년 미만</b>, <b>500MB 이상</b> 요금제로 이용 중이시면 기기값 0원이에요</div></div>';
   if(ts.length>1) h+='<div class="cpick"><div class="cpick-l">'+(g==='tvfree'?'집 인터넷':'요금제')+'</div><select class="csel" data-calc-sel="tier" data-model="'+esc(m.id)+'">'+ts.map(function(t){
-      return '<option value="'+esc(t.k)+'"'+(st.t&&st.t.k===t.k?' selected':'')+'>'+esc(g==='tvfree'?tvNetNm(t):tierTitle(t))+'</option>'; }).join('')+'</select>'+(g==='phone'?'<div class="cpick-hint">'+PLAN_NOTE+'</div>':g==='tvfree'?'<div class="cpick-hint">'+TV_NET_HINT+'</div>':'')+'</div>';
+      return '<option value="'+esc(t.k)+'"'+(st.t&&st.t.k===t.k?' selected':'')+'>'+esc(tierTitle(t))+'</option>'; }).join('')+'</select>'+(g==='phone'?'<div class="cpick-hint">'+PLAN_NOTE+'</div>':'')+'</div>';
   if(g==='phone'&&st.c) h+=cgrid('할인 방식','method',[['pub','공시지원금',!st.c.pub],['sel','선택약정 (요금 25%↓)']],st.method,m,2,
     !st.c.pub?'이 조건은 공시지원금이 없어 선택약정으로 계산돼요':adviceTxt(cmpMethod(st.c,st.fee,st.months),st.method));
   h+=cgrid('할부 개월','months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(st.months),m,4,'');
@@ -513,8 +514,9 @@ function calcBox(m, r, st){
   else if(st.fee) mon+=line('월 통신 요금'+(st.method==='sel'?' <small>25% 할인</small>':''),won(fee));
   mon+=line('월 합계',won(total),'sum');
   var ben=line('출고가',won(c.out));
-  if(st.method==='pub'&&c.pub) ben+=line((st.g==='phone'?'공시지원금':st.g==='tvfree'?'기존 고객 지원금':'이통사 지원금')+(tn?' ('+tn+')':''),'-'+won(c.pub),'minus');
-  if(c.our) ben+=line('추가 지원금 (유플러스 다이렉트)','-'+won(c.our),'minus');
+  if(tv){ if(c.out>st.after) ben+=line('U+ 기존 고객 혜택','-'+won(c.out-st.after),'minus'); }
+  else if(st.method==='pub'&&c.pub) ben+=line((st.g==='phone'?'공시지원금':st.g==='tvfree'?'기존 고객 지원금':'이통사 지원금')+(tn?' ('+tn+')':''),'-'+won(c.pub),'minus');
+  if(c.our&&!tv) ben+=line('추가 지원금 (유플러스 다이렉트)','-'+won(c.our),'minus');
   ben+=line('지원 후 기기값',wz(st.after),'sum');
   h+='<div class="ms-grid">'+
     '<div class="ms-card"><div class="ms-ch"><i class="ic won">₩</i>월 납부 구성'+tipB('mon','기기 할부금은 할부이자(연 5.9%)가 포함된 금액이에요. 통신 요금은 고르신 요금제 기준이에요.')+'</div>'+mon+'</div>'+
@@ -680,7 +682,7 @@ function cellGuide(kind, fee, plan, nm){ return {fee:fee, plan:plan, t:kind+' �
   {ic:'won', hl:1, b:'월 이용료 '+won(fee), p:'월 '+won(plan)+' 이상 요금제('+nm+' 이상)를 이용 중이시라면 이용료 없이 휴대폰 요금에 포함돼요.', tag:nm+' 이상 이용 시 이용료 0원'},
   {ic:'cal', b:'24개월 함께하는 상품이에요', p:'24개월 약정으로 더 가벼운 가격에 만나보실 수 있어요.'}]}; }
 function tvGuide(kind){ return {t:kind+' 이용 가이드', items:[
-  {ic:'tv', hl:1, b:'U+ 기존 고객님을 위한 유플러스 다이렉트만의 혜택', p:'U+ 인터넷TV를 1년 이상 2년 미만 이용 중이시고 집 인터넷을 500MB 이상 쓰고 계시다면, 휴대폰을 바꾸지 않아도 받으실 수 있어요. 집 인터넷 속도에 따라 지원금이 달라요.', tag:'휴대폰 구매 없이 신청 가능'},
+  {ic:'tv', hl:1, b:'U+ 기존 고객님을 위한 유플러스 다이렉트만의 혜택', p:'집에서 U+ 인터넷TV를 1년 이상 2년 미만, 500MB 이상 요금제로 이용 중이시면 기기값 0원이에요. 휴대폰을 바꾸지 않아도 받으실 수 있어요.', tag:'휴대폰 구매 없이 신청 가능'},
   {ic:'tv', b:'U+tv를 보는 태블릿PC예요', p:'유플러스 TV에 가입해 U+tv를 시청할 수 있는 TV 가입형 상품이에요. 별도 휴대폰 회선(셀룰러) 없이 이용하실 수 있어요.'},
   {ic:'won', hl:1, b:'첫 9개월 월 9,350원', p:'10개월 차부터는 월 7,700원 요금제로 바꿔서 더 가볍게 이용하실 수 있어요.', tag:'10개월 차부터 월 7,700원'},
   {ic:'cal', b:'36개월 함께하는 상품이에요', p:'36개월 약정으로 부담 없이 오래 이용하실 수 있어요.'}]}; }
@@ -1130,7 +1132,7 @@ function apPhoneCalc(){
 // 함께 구매 금액 (워치·태블릿·TV프리)
 function apAddCalc(m){
   var rs=sheetRows(m); if(!rs.length) return null;
-  var r=rs.filter(function(x){return !x.so})[0]||rs[0], g=r.g, ts=tiersOf(g), t=g==='tvfree'?(ts.filter(function(x){return x.k===AP.tvTier})[0]||ts[0]):ts[0];
+  var r=rs.filter(function(x){return !x.so})[0]||rs[0], g=r.g, ts=tiersOf(g), t=g==='tvfree'?tvTier(r):ts[0];
   var c=rowCalc(r,'all',t); if(!c) return null;
   var after=c.pb!=null?c.pb:c.sel, mm=AP.months, noint=noInterest(r);
   return {r:r, t:t, c:c, after:after, monthly:mm===0||after===0?0:won10(noint?after/mm:after*RATE[mm]/mm), noint:noint};
@@ -1206,8 +1208,6 @@ function apAddHtml(){
     }).join('')+'</div>';
     if(s[0]==='tv' && AP.tv){
       var tm=byId(AP.tv), ts=tiersOf('tvfree');
-      if(ts.length>1) h+='<div class="ap-l" style="margin-top:12px">우리 집 인터넷 속도</div><select class="csel" id="apTvTier">'+ts.map(function(x){return '<option value="'+esc(x.k)+'"'+(x.k===AP.tvTier?' selected':'')+'>'+esc(tvNetNm(x))+'</option>'}).join('')+'</select>'+
-        '<div class="cpick-hint">'+TV_NET_HINT+'</div>';
       h+='<div class="ap-tvnote"><b>U+ 기존 고객님을 위한 유플러스 다이렉트만의 혜택</b>이에요. U+ 인터넷TV를 1년 이상 2년 미만 이용 중이시면 휴대폰을 바꾸지 않아도 신청하실 수 있어요.'+
         '<br>TV프리 이용료는 첫 9개월 월 '+won(TV_FEE)+', 10개월 차부터 월 '+won(TV_FEE2)+'이에요.</div>'+
         '<label class="agree ap-tvok"><input type="checkbox" id="mTvOk"'+(AP.tvOk?' checked':'')+'> U+ 인터넷TV를 1년 이상 2년 미만 이용 중이고, 집 인터넷은 500MB 이상이에요 <span class="req">(필수)</span></label>';
@@ -1257,7 +1257,8 @@ function apSummary(){
     var x=AP[s[0]]&&byId(AP[s[0]]); if(!x) return; var r=rec(s[1],x.nm,s[0],x), ac=apAddCalc(x);
     if(!ac){ r.ask=true; row(r.dev,'기기값',null,'',null,'','상담 시 안내'); }
     else {
-      dev(r, ac.c, ac.c.pb!=null?ac.c.pub:0, s[0]==='tv'?'기존 고객 지원금':'이통사 지원금', '', ac.after);
+      if(s[0]==='tv'){ row(r.dev,'출고가',ac.c.out); if(ac.c.out>ac.after) row(r.dev,'U+ 기존 고객 혜택',-(ac.c.out-ac.after),'',null,'minus'); r.sup=ac.c.out-ac.after; r.after=ac.after; row(r.dev,'지원 후 기기값',ac.after,r.sup?'총 '+won(r.sup)+' 지원':'',null,'sum'); }
+      else dev(r, ac.c, ac.c.pb!=null?ac.c.pub:0, '이통사 지원금', '', ac.after);
       if(AP.months===0){ r.up+=ac.after; row(r.mon,'기기값 일시납',ac.after,'한 번에 결제해요'); }
       else { r.sub+=ac.monthly; row(r.mon,'기기 할부금',ac.monthly,ac.after===0?'기기값 0원이라 할부금이 없어요':AP.months+'개월'+(ac.noint?' · 이자 없음':' · 할부이자 포함')); }
     }
@@ -1387,7 +1388,7 @@ function apSubmit(){
   var nums=function(rows){ return rows.filter(function(x){return typeof x.a==='number'}).map(function(x){ return {label:x.l==='지원 후 기기값'?'기기값 원금':x.l, amount:x.a}; }); };
   var item=function(r){ return {key:r.key, kind:r.kind, device:r.nm, subsidy:nums(r.dev), monthly:nums(r.mon), subtotal:r.ask&&!r.sub?null:r.sub, support:r.sup}; };
   var A=SM.recs.filter(function(r){return r.sk==='phone'})[0], addRecs=SM.recs.filter(function(r){return r.sk!=='phone'});
-  var tvTierNm=function(){ var ts=tiersOf('tvfree'), tv=ts.filter(function(y){return y.k===AP.tvTier})[0]||ts[0]; return tv?'집 인터넷 '+tvNetNm(tv):''; };
+  var tvTierNm=function(){ return '집 인터넷 500MB 이상'; };
   var fee=[]; if(pc&&pc.fee){ fee.push({label:tt.title||tierTitle(tt), amount:pc.fee}); if(pc.method==='sel') fee.push({label:'선택약정 할인(25%)', amount:-(pc.fee-pc.feeAfter)}); fee.push({label:'월 통신요금', amount:pc.feeAfter}); }
   var subsidy=A&&A.after!=null?nums(A.dev):[]; if(pc&&pc.mm) subsidy.push({label:'기기값 월 청구 예정액', amount:pc.monthly});
   var tvTypeNm='U+ 기존 고객(인터넷TV 1년 이상~2년 미만 이용)';
@@ -1403,7 +1404,7 @@ function apSubmit(){
     items:SM.recs.map(item), supportTotal:SM.sup||null, selDiscountTotal:SM.selSave||null,
     flow:SM.flow.map(function(f){ return {label:f.l, amount:f.a, note:f.sub||null}; }),
     advice:cm&&cm.diff>=1000?(cm.best==='pub'?'공시지원금':'선택약정')+' 쪽이 24개월 기준 약 '+won(Math.round(cm.diff/1000)*1000)+' 저렴':null,
-    tvJoin:tvx?'U+ 기존 고객 (인터넷TV 1년 이상~2년 미만 이용 · '+tvTierNm()+')':null,
+    tvJoin:tvx?'U+ 기존 고객 (인터넷TV 1년 이상~2년 미만 이용 · 500MB 이상)':null,
     policy:{id:pv.id||null, from:pv.from||null, memo:pv.memo||null}, submittedAt:new Date().toISOString()};
     var btn=$('#mSubmitBtn'); if(btn.disabled) return; btn.disabled=true; btn.firstChild.textContent='신청 중...';
   var reset=function(){ btn.disabled=false; btn.firstChild.textContent='이 조건으로 상담 신청하기'; };

@@ -1052,3 +1052,6 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .hero.hero-deal .dl-c-c{margin-top:3px;font-size:11.5px;font-weight:500;color:#7A7E87}
 .hero.hero-deal .dl-note{margin-top:10px;font-size:11px;color:#8A8E97}
 @media (max-width:360px){ .dl-ttl{font-size:24px} .dl-head{gap:8px} .dl-date{font-size:12px} }
+
+.cpick-txt{flex:1;min-width:0;font-size:13px;line-height:1.5;color:var(--ink2);padding:9px 12px;border-radius:12px;background:var(--pink-50);border:1px solid #F7CFE1}
+.cpick-txt b{color:var(--ink);font-weight:800}
