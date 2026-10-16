@@ -21,9 +21,9 @@ var DEFAULT = {
   v:1,
   brand:{small:'유플러스 공식파트너사', big:'유플러스 다이렉트'},
   hero:[
-    {k:'U+ 최초의 온라인 대리점', t:'아이폰 18프로 / 프로맥스', s:'불필요한 가입 없이 온라인으로 간편하게.', img:'hero/hero-01.webp', go:'#/model/iphone18pro'},
-    {k:'번호이동 특가', t:'갤럭시 폴드 8 / 플립 8', s:'보이는 가격 그대로, 정직하게.', img:'hero/hero-02.webp', go:'#/model/fold8'},
-    {k:'갤럭시 S26 시리즈', t:'S26 · S26+ · S26 울트라', s:'제휴카드·부가서비스 의무가입 없이.', img:'hero/hero-03.webp', go:'#/model/s26ultra'}
+    {k:'U+ 최초의 온라인 대리점', t:'유플러스 다이렉트', s:'불필요한 가입 없이 온라인으로 간편하게.', img:'hero/hero-01.webp', go:'#/model/iphone18pro'},
+    {k:'갤럭시 폴드8 / 플립8', t:'', s:'', sup:'폴드8|73만원|47만원\n플립8|60만원|34만원', img:'hero/hero-02.webp', go:'#/model/fold8'},
+    {k:'갤럭시 S26 시리즈', t:'', s:'', sup:'|68만원|50만원', img:'hero/hero-03.webp', go:'#/model/s26ultra'}
   ],
   models:[
     {id:'iphone18pro',    nm:'아이폰 18프로',     cat:['iphone','zero'], ds:'프로가 하는 프로의 선택',      tags:['기기값 0원','최대 지원금']},
@@ -478,6 +478,14 @@ function calcBox(m, r, st){
 }
 /* ---------------- 렌더 ---------------- */
 var heroTimer=null, heroIdx=0;
+// 히어로 지원금 표: '모델|번호이동|기기변경' 한 줄씩 (모델 비우면 한 줄형)
+function heroSup(t){
+  var rows=String(t||'').split('\n').map(function(l){ return l.split('|').map(function(x){return x.trim()}); }).filter(function(r){ return r.length>=2&&(r[1]||r[2]); });
+  if(!rows.length) return '';
+  var lab=rows.some(function(r){return r[0]});
+  return '<div class="hsup'+(lab?'':' nolab')+'"><div class="hs-r hs-h">'+(lab?'<span></span>':'')+'<span>번호이동 최대</span><span>기기변경</span></div>'+
+    rows.map(function(r){ return '<div class="hs-r">'+(lab?'<b class="hs-l">'+esc(r[0])+'</b>':'')+'<b class="hs-m">'+esc(r[1]||'-')+'</b><b>'+esc(r[2]||'-')+'</b></div>'; }).join('')+'</div>';
+}
 function renderHero(){
   var b=S.brand;
   $('#brand').innerHTML='<small>'+esc(b.small)+'</small><b>'+esc(b.big)+'</b>';
@@ -486,7 +494,7 @@ function renderHero(){
     var k=esc(h.k||'').replace(/^U\+/, '<em>U<sup style="font-size:.6em">+</sup></em>');
     var real=S.hero.indexOf(h);
     return '<a class="slide'+(h.full?' full':'')+hidCls(h)+'" data-go="'+esc(h.go||'')+'" data-edit="hero:'+real+'">'+
-      '<div class="slide-txt"><div class="k">'+k+'</div><div class="t">'+esc(h.t)+'</div><div class="s">'+esc(h.s)+'</div></div>'+
+      '<div class="slide-txt"><div class="k">'+k+'</div>'+(h.t?'<div class="t">'+esc(h.t)+'</div>':'')+(h.s?'<div class="s">'+esc(h.s)+'</div>':'')+heroSup(h.sup)+'</div>'+
       im(h.img,'slide-img',true,'')+'</a>';
   }).join('');
   $('#heroDots').innerHTML = list.length>1 ? list.map(function(_,i){return '<i'+(i?'':' class="on"')+'></i>'}).join('') : '';

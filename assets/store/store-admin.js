@@ -104,9 +104,9 @@ var ED = {
   },
   hero:{
     title:function(i){ return '🖼 히어로 슬라이드 '+(+i+1); }, list:function(){ return T.S.hero; },
-    html:function(i){ var h=T.S.hero[i]; return txt('k','작은 제목 (U+ 로 시작하면 로고 표시)',h.k)+txt('t','큰 제목',h.t)+txt('s','설명',h.s)+
+    html:function(i){ var h=T.S.hero[i]; return txt('k','첫째 줄 (U+ 로 시작하면 로고 표시)',h.k)+txt('t','둘째 줄 (비우면 숨김)',h.t)+txt('s','설명 (비우면 숨김)',h.s)+area('sup','지원금 표 — 한 줄에 하나: 모델|번호이동|기기변경 (모델 비우면 한 줄형)',h.sup,3)+
       imgField('img','사진','hero',h.img)+goField('go',h.go)+sw('full','사진만 크게 (글자 숨김 · 배너형)',h.full)+sw('hidden','숨기기',h.hidden)+moveBtns(true)+applyBtn(); },
-    save:function(i){ var h=T.S.hero[i]; h.k=V('k'); h.t=V('t'); h.s=V('s'); h.img=V('img')||null; h.go=V('go'); h.full=C('full'); h.hidden=C('hidden'); }
+    save:function(i){ var h=T.S.hero[i]; h.k=V('k'); h.t=V('t'); h.s=V('s'); h.sup=V('sup')||null; h.img=V('img')||null; h.go=V('go'); h.full=C('full'); h.hidden=C('hidden'); }
   },
   promo:{
     title:function(){ return '🎀 프로모 배너'; },

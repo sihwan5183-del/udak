@@ -826,3 +826,15 @@ body.no-sq .side-quick{display:none}
 .slide:not(.full) .slide-img,.slide:not(.full) .slide-img.fit{left:auto;right:16px;top:70px;bottom:auto;width:36%;height:calc(100% - 92px)!important;object-fit:contain;object-position:center bottom;padding:0;background:none}
 .slide-txt{bottom:34px;max-width:calc(64% - 36px)}
 .slide-txt .s{margin-top:6px;font-size:12px;line-height:1.45;word-break:keep-all}
+/* 히어로 글씨: 상단 브랜드줄과 점 사이 가운데에 */
+.slide:not(.full) .slide-txt{top:64px;bottom:26px;display:flex;flex-direction:column;justify-content:center}
+.slide-txt .k+.t{margin-top:2px}
+/* 히어로 지원금 표 */
+.hsup{margin-top:9px;padding:7px 10px 6px;border-radius:10px;background:var(--pink-50);border:1px solid #F7CFE1;width:max-content;max-width:100%}
+.hsup .hs-r{display:grid;grid-template-columns:auto 1fr 1fr;align-items:baseline;column-gap:12px}
+.hsup.nolab .hs-r{grid-template-columns:auto auto}
+.hsup .hs-h span{font-size:10.5px;font-weight:700;color:var(--sub)}
+.hsup .hs-r+.hs-r{margin-top:2px}
+.hsup .hs-l{font-size:12px;font-weight:800;color:var(--ink2)}
+.hsup b{font-size:14.5px;font-weight:800;color:var(--ink);white-space:nowrap}
+.hsup b.hs-m{color:var(--pink);font-size:15.5px;font-weight:900}
