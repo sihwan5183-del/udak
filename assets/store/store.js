@@ -686,7 +686,7 @@ function bigcard(m){
     '<div class="row1"><h3 class="ucard-name">'+esc(m.nm)+'</h3><span class="bdg">'+(SO(m)?'일시품절':'당일발송')+'</span><span class="eta">'+esc(badgeOf(m))+'</span></div>'+
     (pb||'<div class="meta">'+(meta.length?meta.join(' · '):'가격은 상담 시 안내드립니다')+'</div>')+
     '<div class="chips"><span class="chip">제휴카드 X</span><span class="chip">부가서비스 X</span><span class="chip gray">5분 상담</span></div>'+
-    '<div class="stamp">'+(SO(m)?'입고 알림 상담 신청 가능':'구매 시 사은품 증정')+'</div></a>';
+    '<div class="stamp">'+(SO(m)?'입고 알림 상담 신청 가능':'구매 시 투명케이스 · 보호필름 · 충전기 제공')+'</div></a>';
 }
 function smallCircles(list){
   return list.map(function(m){return '<a class="m'+(SO(m)?' soldout':'')+hidCls(m)+'" style="flex:0 0 76px;display:flex;flex-direction:column;align-items:center;gap:6px" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="cir">'+im(mImg(m),'','',m.nm)+'</div><span>'+esc(m.nm)+'</span></a>'}).join('');

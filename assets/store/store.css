@@ -896,3 +896,4 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .drag-ghost{opacity:.92;transform:scale(1.06);box-shadow:0 10px 26px rgba(17,24,39,.22);border-radius:14px;background:#fff}
 .drag-src{opacity:.3}
 .drag-over{outline:2.5px solid var(--pink)!important;outline-offset:2px;border-radius:14px}
+.big .stamp{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em}
