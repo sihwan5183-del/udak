@@ -77,7 +77,7 @@ var DEFAULT = {
     pick:{t:'골라보는 휴대폰'},
     wear:{t:'유플러스 다이렉트 요금제별 혜택', s:'요금제에 따라 워치 · 태블릿을 더 가볍게'}
   },
-  priceNote:'기기값은 선택한 요금제를 6개월 이상 유지하는 조건 기준입니다. 85·95·105 요금제와 115·130 요금제는 유플러스 다이렉트 지원금이 같습니다. 공시지원금과 선택약정(월 요금 25% 할인)은 둘 중 하나만 받을 수 있으며, 정확한 금액은 상담 시 안내드립니다.',
+  priceNote:'',
   stores:[
     {nm:'건대입구역점',addr:'서울시 광진구 능동로 95'},{nm:'군자역점',addr:'서울시 광진구 천호대로 573'},{nm:'신군자점',addr:'서울시 광진구 천호대로 548'},
     {nm:'신자양점',addr:'서울시 광진구 자양번영로 42'},{nm:'성수역점',addr:'서울시 성동구 아차산로 96'},{nm:'용답로데오점',addr:'서울시 성동구 용답동 58-1'},
@@ -114,7 +114,7 @@ var DEFAULT = {
       second:[{k:'t1GB',nm:'기본',grp:'p1GB'}],
       tvfree:[{k:'t1GB',nm:'1GB 요금제',grp:'p1GB'},{k:'t500MB',nm:'500MB 요금제',grp:'p500MB'}]
     },
-    base:{phone:'t115', second:'t1GB', tvfree:'t1GB'},   // 홈페이지 카드에 보이는 기준 요금제
+    base:{phone:'t85', second:'t1GB', tvfree:'t1GB'},   // 홈페이지 카드에 보이는 기준 요금제
     vers:[{id:'v20261003', from:'2026-10-03', memo:'영업기획팀 모바일 단가표 (10/03 ~ 별도 공지 시까지)', rows:[]}]
   }
 };
@@ -456,12 +456,12 @@ function cgrid(label, key, items, cur, m, n, hint){
 function calcPickers(m, r, st){
   var g=r.g, h='';
   if(g==='phone') h+=cgrid('현재 사용 중인 통신사','carrier',CARRIERS.map(function(c){return [c,c]}),st.s.carrier||'',m,4,
-    st.s.carrier?(st.s.carrier==='LG U+'?'LG U+ 고객님은 기기변경 조건으로 계산돼요':'타사 고객님은 번호이동 조건으로 계산돼요'):(MNP?'번호이동':'기기변경')+' 기준으로 계산 중이에요 · 통신사를 고르면 맞춰 계산돼요');
+    '');
   var ts=rowTiers(r);
   if(ts.length>1) h+='<div class="cpick"><div class="cpick-l">요금제</div><select class="csel" data-calc-sel="tier" data-model="'+esc(m.id)+'">'+ts.map(function(t){
       return '<option value="'+esc(t.k)+'"'+(st.t&&st.t.k===t.k?' selected':'')+'>'+esc(tierTitle(t))+'</option>'; }).join('')+'</select>'+(g==='phone'?'<div class="cpick-hint">'+PLAN_NOTE+'</div>':'')+'</div>';
   if(g==='phone'&&st.c) h+=cgrid('할인 방식','method',[['pub','공시지원금',!st.c.pub],['sel','선택약정 (요금 25%↓)']],st.method,m,2,
-    !st.c.pub?'이 조건은 공시지원금이 없어 선택약정으로 계산돼요':adviceTxt(cmpMethod(st.c,st.fee,st.months),st.method)+'<br>공시지원금과 선택약정은 둘 중 하나만 받을 수 있어요');
+    !st.c.pub?'이 조건은 공시지원금이 없어 선택약정으로 계산돼요':adviceTxt(cmpMethod(st.c,st.fee,st.months),st.method));
   h+=cgrid('할부 개월','months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(st.months),m,4,'');
   return h;
 }
@@ -827,7 +827,7 @@ function renderModel(id, keepRecent){
     '<div class="pills" style="margin-top:10px">'+m.tags.map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div>'+
     colorPicker(m)+optPicker(m)+pickers+
     (SO(m)||(selRow&&selRow.so)?'<div class="so-notice">'+(SO(m)?'현재 일시품절입니다':'선택하신 '+esc(selRow.cap||'옵션')+' 은(는) 일시품절입니다')+'. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
-    '<div class="ptable" id="ucatPrice">'+rows+(isWear(m)?'':'<div class="note">'+esc(S.priceNote)+'</div>')+'</div>'+guideHtml(m)+
+    '<div class="ptable" id="ucatPrice">'+rows+''+'</div>'+guideHtml(m)+
     '<div class="md-chips"><span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span><span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>'+
     '<button class="cta ucard-cta" data-open="consult" data-model="'+esc(m.id)+'" data-color="'+esc(PICK[m.id]||'')+'" data-opt="'+esc(optsOf(m).length?optsOf(m)[OPT[m.id]||0].nm:'')+'">'+(SO(m)||(selRow&&selRow.so)?'입고 알림 상담 신청하기':(selRow?'이 조건으로 온라인 상담 신청하기 ›':'온라인 상담 신청하기'))+'</button></div>';
 }
@@ -938,7 +938,7 @@ function consultSummary(){
   var cp=pickedCalc(); if(!cp) return '';
   var m=cp.m, cc=colorsOf(m).filter(function(c){return c.nm===PICK[m.id]})[0]||colorsOf(m)[0], sub=[(cc&&cs2(m)?cc.nm:''), cp.r.cap&&cp.r.cap!=='기본'?cp.r.cap:''].filter(Boolean).join(' · ');
   return '<div class="csum"><div class="csum-h">선택한 조건</div><div class="csum-r"><div class="csum-img">'+im((cc&&cc.img)||mImg(m),'',true,m.nm)+'</div><div class="csum-t"><b>'+esc(m.nm)+'</b>'+(sub?'<span>'+esc(sub)+'</span>':'')+'<span>'+esc(calcSummary(cp.st))+'</span></div></div>'+
-    '<div class="csum-p"><span>예상 월 납부금액</span><b>'+payTxt(cp.st)+'</b></div><em>'+esc(payHint(cp.st))+' · 자세한 금액은 상담 시 확정돼요</em></div>';
+    '<div class="csum-p"><span>예상 월 납부금액</span><b>'+payTxt(cp.st)+'</b></div><em>'+esc(payHint(cp.st))+'</em></div>';
 }
 function cs2(m){ return colorsOf(m).length>1; }
 // 함께 구매: 휴대폰을 고르면 워치·태블릿을 더 고를 수 있고, 워치·태블릿을 고르면 함께 살 휴대폰이 필요
@@ -1107,10 +1107,10 @@ function apColorImg(m){ var cs=colorsOf(m), c=cs.filter(function(x){return x.nm=
 function apPlanHtml(){
   var ts=tiersOf('phone'), t=apTier(), pc=apPhoneCalc(), h='<section class="ap-sec"><div class="ap-h"><b>02</b>가입 조건</div>';
   h+='<div class="ap-f"><div class="ap-l">현재 사용 중인 통신사 <span class="req">*</span></div>'+apChips('carrier',CARRIERS.map(function(c){return [c,c]}),AP.carrier,4)+
-    '<div class="cpick-hint">'+(AP.carrier?(AP.carrier==='LG U+'?'LG U+ 고객님은 기기변경 조건으로 안내돼요':'타사 고객님은 번호이동 조건으로 안내돼요'):'SKT·KT·알뜰폰은 번호이동, LG U+는 기기변경 조건이에요')+'</div></div>';
+    '</div>';
   h+='<div class="ap-f"><div class="ap-l">요금제</div><select class="csel" id="mPlanSel">'+ts.map(function(x){ return '<option value="'+esc(x.k)+'"'+(t&&x.k===t.k?' selected':'')+'>'+esc(tierTitle(x))+'</option>'; }).join('')+'</select>'+
     '<div class="cpick-hint">'+PLAN_NOTE+'</div>'+apPerk(t)+'</div>';
-  h+='<div class="ap-f"><div class="ap-l">할인 방식</div>'+apChips('method',[['pub','공시지원금',pc&&!pc.c.pub],['sel','선택약정 (요금 25%↓)']],pc?pc.method:(AP.method||'pub'),2)+'<div class="cpick-hint">'+(pc?adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)+'<br>':'')+'공시지원금과 선택약정은 둘 중 하나만 받을 수 있어요</div></div>';
+  h+='<div class="ap-f"><div class="ap-l">할인 방식</div>'+apChips('method',[['pub','공시지원금',pc&&!pc.c.pub],['sel','선택약정 (요금 25%↓)']],pc?pc.method:(AP.method||'pub'),2)+(pc&&adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)?'<div class="cpick-hint">'+adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)+'</div>':'')+'</div>';
   h+='<div class="ap-f"><div class="ap-l">할부 개월</div>'+apChips('months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(AP.months),4)+'</div>';
   return h+'</section>';
 }
@@ -1238,7 +1238,7 @@ function apSumHtml(){
       '<div class="rc-total-v">'+won(S2.total)+'<small> / 월</small></div></div>'+
     (S2.upfront?'<div class="rc-up">+ 일시납 '+won(S2.upfront)+'</div>':'')+
     (S2.flow.length?'<div class="rc-flow"><div class="rc-lab">기간별 예상</div><div class="cres-d">'+S2.flow.map(function(f,i){ return apRowHtml({l:f.l,a:f.a,sub:f.sub,was:null,cls:i?'sum':'',t:null,tip:f.tip}); }).join('')+'</div></div>':'')+
-    '</div><div class="ap-sub" style="margin-top:8px">자세한 금액은 상담 시 확정돼요. 신청만으로 구매가 확정되지 않아요.</div>';
+    '</div>';
   return h+'</section>';
 }
 function apInfoHtml(){
@@ -1443,9 +1443,9 @@ window.STORE = {
 var ROOT=document.getElementById('storeRoot')||document.body;
 ROOT.insertAdjacentHTML('afterbegin', MARKUP);
 // 온라인 상담 신청 페이지
-$('#app').insertAdjacentHTML('beforeend','<main class="view" id="v-apply"><div class="subhead"><button data-back><svg class="ico" viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button><h1>온라인 상담 신청</h1><button data-home aria-label="홈으로"><svg class="ico" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg></button></div><div id="apBody"></div><div class="ap-bar" id="apBar"></div></main>');
-if(!EDIT) document.body.insertAdjacentHTML('beforeend','<div class="side-quick"><a class="side-quick-btn is-call" href="tel:'+esc(S.tel)+'"><i></i><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg><span>전화<br>상담</span></a>'+
-  '<a class="side-quick-btn is-kakao" href="'+esc(S.kakao)+'" target="_blank" rel="noopener"><i></i><svg viewBox="0 0 24 24"><path d="M12 3C7.03 3 3 6.36 3 10.5c0 2.7 1.7 5.07 4.27 6.43l-.9 3.32a.3.3 0 0 0 .45.33l3.9-2.57c.41.05.84.08 1.28.08 4.97 0 9-3.36 9-7.5S16.97 3 12 3z"/></svg><span>카톡<br>문의</span></a></div>');
+$('#app').insertAdjacentHTML('beforeend','<main class="view" id="v-apply"><div class="subhead"><button data-back><svg class="ico" viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button><h1>온라인 상담 신청서</h1><button data-home aria-label="홈으로"><svg class="ico" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg></button></div><div id="apBody"></div><div class="ap-bar" id="apBar"></div></main>');
+if(!EDIT) document.body.insertAdjacentHTML('beforeend','<div class="side-quick sq-img"><img src="/assets/store/side-quick.webp" alt="" aria-hidden="true">'+
+  '<a class="sq-hit is-call" href="tel:'+esc(S.tel)+'" aria-label="전화 상담"></a><a class="sq-hit is-kakao" href="'+esc(S.kakao)+'" target="_blank" rel="noopener" aria-label="카톡 문의"></a></div>');
 document.body.insertAdjacentHTML('beforeend','<div class="ticket" id="ticket"><div class="tw"><img src="/assets/ticket-complete-blue.webp" alt="상담 신청이 정상적으로 접수되었습니다"><button class="x" aria-label="닫기"></button></div></div>');
 $('#dim').addEventListener('click',closeSheet);
 window.addEventListener('scroll',onScroll,{passive:true});
