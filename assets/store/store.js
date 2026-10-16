@@ -246,7 +246,7 @@ function normalize(d){
   o.sec=o.sec||{}; Object.keys(DEFAULT.sec).forEach(function(k){ o.sec[k]=o.sec[k]||clone(DEFAULT.sec[k]); });
   // 히어로 사진: 예전 저장값(hero-0N.jpg)은 실제 파일(hero-0N.webp)로
   (o.hero||[]).forEach(function(h){ if(h&&typeof h.img==='string') h.img=h.img.replace(/^hero\/(hero-0[1-3])\.jpg$/,'hero/$1.webp'); });
-  o.deal=o.deal||clone(DEFAULT.deal);
+  o.deal=o.deal||clone(DEFAULT.deal); o.lists=o.lists||{};
   o.applyAdd=!!o.applyAdd;   // 상담 신청 '요금제별 혜택(워치·태블릿·TV프리)' — 기본 숨김
   o.brand=o.brand||clone(DEFAULT.brand); o.biz=o.biz||clone(DEFAULT.biz); o.promo=o.promo||clone(DEFAULT.promo);
   o.pricing=normPricing(o.pricing);
@@ -581,10 +581,16 @@ function secHead(k, more){
   return '<div class="sec-h" data-edit="sec:'+k+'"><div>'+(s.s?'<div style="font-size:12.5px;color:var(--sub)">'+esc(s.s)+'</div>':'')+'<h2>'+esc(s.t)+(EDIT&&s.off?' <small style="color:#DC2626;font-size:12px">(숨김)</small>':'')+'</h2></div>'+
     (more?'<a class="more" href="'+more+'">전체보기 '+CHEV_I+'</a>':'')+'</div>';
 }
+// 많이 찾아요 / 기기값 0원 — 관리자가 고른 목록(없으면 자동)
+function autoList(k){ return (k==='zero'?phones().filter(isZero):phones()).map(function(m){return m.id}); }
+function pickList(k){
+  var ids=S.lists&&S.lists[k]; if(!ids||!ids.length) ids=autoList(k);
+  var all=models(); return ids.map(function(id){ return all.filter(function(m){return m.id===id})[0]; }).filter(Boolean);
+}
 function renderPop(){
   $('#popSec').hidden=!secOn('pop');
   $('#popHead').innerHTML=secHead('pop','#/cat/all');
-  $('#popgrid').innerHTML=phones().map(function(m){
+  $('#popgrid').innerHTML=pickList('pop').map(function(m){
     return '<a class="pc'+(SO(m)?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="thumb" style="position:relative">'+im(mImg(m),'','',m.nm)+(SO(m)?'<span class="so-tag" style="font-size:11px">품절</span>':'')+'</div><div class="info">'+
       '<div class="nm">'+esc(m.nm)+CHEV+'</div><div class="ds">'+esc(m.ds)+'</div>'+
       '<div class="pills">'+m.tags.map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div></div></a>';
@@ -601,7 +607,7 @@ function isZero(m){ if(m.cat.indexOf('zero')>-1) return true; var p=priceOf(m); 
 function renderZero(){
   $('#zeroSec').hidden=!secOn('zero');
   $('#zeroHead').innerHTML=secHead('zero','#/cat/zero');
-  $('#zero').innerHTML=phones().filter(isZero).map(function(m){return hcard(m)}).join('');
+  $('#zero').innerHTML=pickList('zero').map(function(m){return hcard(m)}).join('');
 }
 function renderRecent(){
   var ids=store.get('recent',[]).filter(function(id){var m=byId(id);return m&&(EDIT||!m.hidden)});
@@ -639,7 +645,7 @@ function guideHtml(m){
 function renderWear(){
   var list=wears();
   $('#wearSec').hidden=!secOn('wear') || !list.length;
-  $('#wearHead').innerHTML=secHead('wear','#/cat/watch')+BUNDLE_NOTE;
+  $('#wearHead').innerHTML=secHead('wear','#/cat/watch');
   $('#wear').innerHTML=list.map(function(m){return hcard(m)}).join('');
 }
 function renderGifts(){
@@ -811,7 +817,6 @@ function renderModel(id, keepRecent){
     '<div class="pills" style="margin-top:10px">'+m.tags.map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div>'+
     colorPicker(m)+optPicker(m)+pickers+
     (SO(m)||(selRow&&selRow.so)?'<div class="so-notice">'+(SO(m)?'현재 일시품절입니다':'선택하신 '+esc(selRow.cap||'옵션')+' 은(는) 일시품절입니다')+'. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
-    (isWear(m)&&!isTv(m)?BUNDLE_NOTE:'')+
     '<div class="ptable" id="ucatPrice">'+rows+(isWear(m)?'':'<div class="note">'+esc(S.priceNote)+'</div>')+'</div>'+guideHtml(m)+
     '<div class="md-chips"><span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span><span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>'+
     '<button class="cta ucard-cta" data-open="consult" data-model="'+esc(m.id)+'" data-color="'+esc(PICK[m.id]||'')+'" data-opt="'+esc(optsOf(m).length?optsOf(m)[OPT[m.id]||0].nm:'')+'">'+(SO(m)||(selRow&&selRow.so)?'입고 알림 상담 신청하기':(selRow?'이 조건으로 온라인 상담 신청하기 ›':'온라인 상담 신청하기'))+'</button></div>';
@@ -1415,7 +1420,7 @@ window.STORE = {
   get S(){ return S; }, set S(v){ S=v; },
   DB:DB, GH:GH, IMG:IMG, FOLDERS:FOLDERS, DEFAULT:DEFAULT, CAT_TABS:CAT_TABS, GO_OPTIONS:GO_OPTIONS, QI:QI, TI:TI,
   TYPES:TYPES, todayKST:todayKST, verAt:verAt, PV:PV, plansOf:plansOf, tiersOf:tiersOf, baseTier:baseTier, sheetRows:sheetRows, rowCalc:rowCalc, normPricing:normPricing,
-  esc:esc, clone:clone, num:num, won:won, imgSrc:imgSrc, im:im, byId:byId, colorsOf:colorsOf, optsOf:optsOf, DEFCOLORS:DEFCOLORS, mImg:mImg, mCard:mCard, normalize:normalize,
+  esc:esc, clone:clone, num:num, won:won, imgSrc:imgSrc, im:im, byId:byId, autoList:autoList, colorsOf:colorsOf, optsOf:optsOf, DEFCOLORS:DEFCOLORS, mImg:mImg, mCard:mCard, normalize:normalize,
   refresh:refresh, openSheet:openSheet, closeSheet:closeSheet, load:load, apply:apply,
   setEditing:function(v){ editing=v; document.body.classList.toggle('editing',v); },
   isEditing:function(){ return editing; },

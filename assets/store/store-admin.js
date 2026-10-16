@@ -157,15 +157,24 @@ var ED = {
     title:function(k){ return '📑 구역 제목'; },
     html:function(k){
       var s=T.S.sec[k]||{}, h=txt('t','제목',s.t)+txt('s','제목 위 작은 글씨 (선택)',s.s)+sw('off','이 구역 통째로 숨기기',s.off);
-      if(k==='rank') h+='<div class="grp"><div class="lbl">순위 (◀▶ 로 순서, ✕ 로 빼기)</div><div class="mlist" id="rankList">'+rankList()+'</div>'+
-        '<select data-rankadd style="margin-top:8px"><option value="">＋ 순위에 모델 추가</option>'+T.S.models.filter(function(m){return T.S.rank.indexOf(m.id)<0}).map(function(m){return '<option value="'+esc(m.id)+'">'+esc(m.nm)+'</option>'}).join('')+'</select></div>';
+      if(k==='rank'||k==='pop'||k==='zero'){ var arr=listArr(k);
+        h+='<div class="grp"><div class="lbl">'+(k==='rank'?'순위':'보여줄 모델')+' (◀▶ 로 순서, ✕ 로 빼기)</div><div class="mlist" id="rankList">'+rankList(k)+'</div>'+
+        '<select data-rankadd data-k="'+k+'" style="margin-top:8px"><option value="">＋ 모델 추가</option>'+T.S.models.filter(function(m){return arr.indexOf(m.id)<0}).map(function(m){return '<option value="'+esc(m.id)+'">'+esc(m.nm)+'</option>'}).join('')+'</select></div>'; }
       return h+applyBtn();
     },
     save:function(k){ var s=T.S.sec[k]=T.S.sec[k]||{}; s.t=V('t'); s.s=V('s')||null; s.off=C('off'); }
   }
 };
-function rankList(){
-  return T.S.rank.map(function(id,i){ var m=T.byId(id); return '<div class="it"><b style="width:28px">'+(i+1)+'위</b><span>'+esc(m?m.nm:id)+'</span><button type="button" data-rk="up" data-i="'+i+'">◀</button><button type="button" data-rk="down" data-i="'+i+'">▶</button><button type="button" data-rk="x" data-i="'+i+'">✕</button></div>'; }).join('');
+// 순위·많이 찾아요·기기값 0원 — 모델 목록 직접 고르기 (처음 열면 지금 보이는 목록에서 시작)
+function listArr(k){
+  if(k==='rank') return T.S.rank;
+  T.S.lists=T.S.lists||{};
+  if(!T.S.lists[k]||!T.S.lists[k].length) T.S.lists[k]=T.autoList(k);
+  return T.S.lists[k];
+}
+function rankList(k){
+  k=k||'rank';
+  return listArr(k).map(function(id,i){ var m=T.byId(id); return '<div class="it"><b style="width:28px">'+(i+1)+(k==='rank'?'위':'')+'</b><span>'+esc(m?m.nm:id)+'</span><button type="button" data-rk="up" data-k="'+k+'" data-i="'+i+'">◀</button><button type="button" data-rk="down" data-k="'+k+'" data-i="'+i+'">▶</button><button type="button" data-rk="x" data-k="'+k+'" data-i="'+i+'">✕</button></div>'; }).join('');
 }
 
 function openEditor(key){
@@ -251,9 +260,9 @@ document.addEventListener('click',function(e){
   if((b=t.closest('[data-galtab]'))){ galRender(b.closest('[data-galfor]'), b.getAttribute('data-for'), b.getAttribute('data-galtab')); return; }
   if((b=t.closest('[data-galref]'))){ delete galCache[b.getAttribute('data-galref')]; galRender(b.closest('[data-galfor]'), b.getAttribute('data-for'), b.getAttribute('data-galref')); return; }
   if((b=t.closest('[data-rk]'))){
-    var i=+b.getAttribute('data-i'), r=T.S.rank, a=b.getAttribute('data-rk');
+    var i=+b.getAttribute('data-i'), rk=b.getAttribute('data-k')||'rank', r=listArr(rk), a=b.getAttribute('data-rk');
     if(a==='x') r.splice(i,1); else { var j=a==='up'?i-1:i+1; if(j>=0&&j<r.length){ var tmp=r[i]; r[i]=r[j]; r[j]=tmp; } }
-    $('#rankList').innerHTML=rankList(); return;
+    $('#rankList').innerHTML=rankList(rk); return;
   }
   if(!(b=t.closest('[data-ed]'))) return;
   var act=b.getAttribute('data-ed');
@@ -297,7 +306,7 @@ document.addEventListener('change',function(e){
   var t=e.target;
   if(!t.closest||!t.closest('#sheet')) return;
   var gs=t.getAttribute('data-gosel'); if(gs){ if(t.value){ var inp=$('#sheet [name="'+gs+'"]'); if(inp) inp.value=t.value; } return; }
-  if(t.hasAttribute('data-rankadd')){ if(t.value){ T.S.rank.push(t.value); $('#rankList').innerHTML=rankList(); t.querySelector('option[value="'+t.value+'"]').remove(); t.value=''; } return; }
+  if(t.hasAttribute('data-rankadd')){ if(t.value){ var ak=t.getAttribute('data-k')||'rank'; listArr(ak).push(t.value); $('#rankList').innerHTML=rankList(ak); t.querySelector('option[value="'+t.value+'"]').remove(); t.value=''; } return; }
 });
 document.addEventListener('input',function(e){
   var t=e.target; if(!t.closest||!t.closest('#sheet')) return;
