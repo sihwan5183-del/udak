@@ -62,7 +62,7 @@ var DEFAULT = {
     {b:'제휴카드 의무가입 X',   s:'원하는 요금제로만',    ic:'cardx'},
     {b:'부가서비스 의무가입 X', s:'불필요한 가입 없이',   ic:'docx'}
   ],
-  promo:{tag:'가장 인기있는 선택', t:'아이폰 18프로 / 프로맥스', s:'더 강력해진 성능, 지금 가장 핫한 아이폰.', img:'promo/promo-01.jpg', go:'#/model/iphone18pro'},
+  promo:{tag:'가장 인기있는 선택', t:'아이폰 18프로 / 프로맥스', s:'더 강력해진 성능, 지금 가장 핫한 아이폰.', img:'promo/promo-iphone18pro.webp', go:'#/model/iphone18pro'},
   gifts:[
     {nm:'그립톡',          sm:'유닥 멤버십 회원', pr:'멤버십 증정', img:'gift/gift-griptok.jpg'},
     {nm:'휴대폰 케이스',   sm:'유닥 멤버십 회원', pr:'멤버십 증정', img:'gift/gift-case.jpg'},

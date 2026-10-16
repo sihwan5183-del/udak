@@ -1297,3 +1297,7 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .promo .tag{background:#1A1A1E;color:#fff}
 .promo .btn{border-color:#1A1A1E;color:#1A1A1E;background:#fff}
 .promo .pimg{background:#fff}
+/* 프로모 제품 이미지: 오른쪽 영역 정중앙(가로·세로), 글씨와 균형 맞는 크기 */
+.promo .pimg{right:0;top:0;bottom:0;width:40%;height:100%;padding:clamp(14px,4.5vw,20px) clamp(12px,4vw,20px);box-sizing:border-box;object-fit:contain;object-position:center}
+.promo .pt{top:50%;transform:translateY(-50%);max-width:58%}
+.promo .pimg{padding:clamp(18px,5.4vw,26px) clamp(14px,4vw,22px)}
