@@ -872,3 +872,19 @@ body.no-sq .side-quick{display:none}
 .slide.deal{height:clamp(262px,70vw,318px)}
 .slide.deal .slide-txt{top:92px!important;bottom:18px!important;justify-content:center}
 .slide.deal .slide-img{top:92px!important;height:calc(100% - 110px)!important}
+/* 이번 주 특가: 사진 없이 2칸 뱃지 */
+.hero.hero-deal .deal-box{flex:0 0 100%;padding:100px 16px 16px;box-sizing:border-box}
+.hero.hero-deal .dl-tag{display:inline-flex;align-items:center;gap:6px;margin-bottom:10px;padding:4px 10px 4px 4px;border-radius:999px;background:var(--pink-50);border:1px solid #F7CFE1}
+.hero.hero-deal .dl-tag b{padding:3px 9px;border-radius:999px;background:var(--pink);color:#fff;font-size:12px;font-weight:900}
+.hero.hero-deal .dl-tag span{font-size:11.5px;font-weight:700;color:var(--pink);white-space:nowrap}
+.dl-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dl-c{display:block;padding:11px 12px 10px;border-radius:14px;border:1px solid #F3D3E2;background:#fff;min-width:0;box-shadow:0 2px 8px rgba(230,0,126,.05)}
+.dl-c-h{display:flex;align-items:center;gap:8px;min-width:0}
+.dl-c-img{flex:none;width:34px;height:34px;border-radius:50%;overflow:hidden;background:#F5F6F9}
+.dl-c-img img{width:100%;height:100%;object-fit:cover}
+.dl-c-h b{font-size:13.5px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dl-c-m{display:flex;align-items:baseline;justify-content:space-between;gap:4px;margin-top:9px}
+.dl-c-m small{font-size:11px;font-weight:700;color:var(--sub);white-space:nowrap}
+.dl-c-m em{font-style:normal;font-size:19px;font-weight:900;color:var(--pink);letter-spacing:-.02em;white-space:nowrap}
+.dl-c-m em.ask{font-size:13px;color:var(--ink2)}
+.dl-c-c{margin-top:2px;text-align:right;font-size:11.5px;font-weight:600;color:var(--mute)}

@@ -21,7 +21,7 @@ var DEFAULT = {
   v:1,
   brand:{small:'유플러스 공식파트너사', big:'유플러스 다이렉트'},
   // 맨 위: 이번 주 특가 (켜면 히어로 슬라이드 대신 보임). items 첫 줄이 대표 모델 — '모델|번호이동 최대|기기변경'
-  deal:{on:true, title:'이번 주 특가', img:'hero/hero-02.webp', items:'fold8|73만원|47만원\ns26|68만원|50만원\nflip8|60만원|34만원'},
+  deal:{on:true, title:'이번 주 특가', img:'hero/hero-02.webp', items:'fold8|73만원|47만원\nflip8|60만원|34만원\ns26|68만원|50만원\niphone17||'},
   hero:[
     {k:'U+ 최초의 온라인 대리점', t:'유플러스 다이렉트', s:'불필요한 가입 없이 온라인으로 간편하게.', img:'hero/hero-01.webp', go:'#/model/iphone18pro'},
     {k:'갤럭시 폴드8 / 플립8', t:'', s:'', sup:'폴드8|73만원|47만원\n플립8|60만원|34만원', img:'hero/hero-02.webp', go:'#/model/fold8'},
@@ -490,23 +490,20 @@ function dealItems(){
   var D=S.deal||{}; return String(D.items||'').split('\n').map(function(l){ var r=l.split('|').map(function(x){return x.trim()}); var m=r[0]&&(byId(r[0])||models().filter(function(x){return x.nm.replace(/\s/g,'')===r[0].replace(/\s/g,'')})[0]); return m?{m:m,mnp:r[1]||'',chg:r[2]||''}:null; }).filter(Boolean);
 }
 function renderDeal(){
-  var D=S.deal, sub=$('#dealSubs');
-  if(!D||!D.on){ if(sub) sub.innerHTML=''; return false; }
-  var it=dealItems(); if(!it.length){ if(sub) sub.innerHTML=''; return false; }
-  var a=it[0];
+  var D=S.deal, sub=$('#dealSubs'), hero=document.querySelector('.hero');
+  if(sub) sub.innerHTML='';
+  var it=(D&&D.on)?dealItems():[];
+  if(hero) hero.classList.toggle('hero-deal',!!it.length);
+  if(!it.length) return false;
   clearInterval(heroTimer);
   $('#heroTrack').style.transform='';
-  $('#heroTrack').innerHTML='<a class="slide deal" data-go="#/model/'+esc(a.m.id)+'" data-edit="deal">'+
-    '<div class="slide-txt"><div class="dl-tag"><b>'+esc(D.title||'이번 주 특가')+'</b><span>'+weekRange()+'</span></div>'+
-    '<div class="k">'+esc(a.m.nm)+'</div>'+
-    (a.mnp?'<div class="dl-amt"><small>번호이동 최대</small><b>'+esc(a.mnp)+'</b></div>':'')+
-    (a.chg?'<div class="dl-chg">기기변경 '+esc(a.chg)+'</div>':'')+
-    '<span class="dl-go">자세히 보기 ›</span></div>'+
-    im(D.img||mImg(a.m),'slide-img',true,'')+'</a>';
+  $('#heroTrack').innerHTML='<div class="deal-box" data-edit="deal"><div class="dl-tag"><b>'+esc(D.title||'이번 주 특가')+'</b><span>'+weekRange()+'</span></div>'+
+    '<div class="dl-grid">'+it.map(function(x){
+      return '<a class="dl-c" href="#/model/'+esc(x.m.id)+'" data-edit="deal"><div class="dl-c-h"><span class="dl-c-img">'+im(mImg(x.m),'','',x.m.nm)+'</span><b>'+esc(x.m.nm)+'</b></div>'+
+        (x.mnp?'<div class="dl-c-m"><small>번호이동 최대</small><em>'+esc(x.mnp)+'</em></div>':'<div class="dl-c-m"><small>지원금</small><em class="ask">상담 시 안내</em></div>')+
+        (x.chg?'<div class="dl-c-c">기기변경 '+esc(x.chg)+'</div>':'')+'</a>';
+    }).join('')+'</div></div>';
   $('#heroDots').innerHTML='';
-  if(sub) sub.innerHTML=it.length>1?it.slice(1).map(function(x){
-    return '<a class="dl-s" href="#/model/'+esc(x.m.id)+'" data-edit="deal"><span class="dl-s-img">'+im(mImg(x.m),'','',x.m.nm)+'</span><span class="dl-s-t"><b>'+esc(x.m.nm)+'</b>'+
-      '<span>번호이동 최대 <em>'+esc(x.mnp||'-')+'</em></span>'+(x.chg?'<small>기기변경 '+esc(x.chg)+'</small>':'')+'</span></a>'; }).join(''):'';
   return true;
 }
 // 히어로 지원금 표: '모델|번호이동|기기변경' 한 줄씩 (모델 비우면 한 줄형)
