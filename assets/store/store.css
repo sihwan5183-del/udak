@@ -1305,3 +1305,7 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .promo .pimg{right:6%;width:36%}
 .promo .pt{max-width:54%}
 .promo p{word-break:keep-all;line-height:1.45}
+/* 💡 안내: 둘째 줄이 전구 밑이 아니라 글씨 시작 위치에 맞춰 들여쓰기 */
+.cpick-hint b.adv{display:flex;align-items:flex-start;gap:5px;word-break:keep-all}
+.cpick-hint b.adv>i{flex:none;font-style:normal}
+.cpick-hint b.adv>span{flex:1;min-width:0}

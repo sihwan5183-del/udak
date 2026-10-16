@@ -1348,7 +1348,7 @@ function adviceTxt(cm, cur){
   if(!cm) return '';
   var d=Math.round(cm.diff/1000)*1000;
   if(d<1000) return '<b class="adv">두 방식 금액이 거의 같아요</b>';
-  return '<b class="adv">💡 이 조건에선 <em>'+(cm.best==='pub'?'공시지원금':'선택약정')+'</em>이 24개월 기준 약 '+won(d)+' 더 저렴해요'+(cur&&cur!==cm.best?' · 눌러서 바꿔 보세요':'')+'</b>';
+  return '<b class="adv"><i>💡</i><span>이 조건에선 <em>'+(cm.best==='pub'?'공시지원금':'선택약정')+'</em>이 24개월 기준 약 '+won(d)+' 더 저렴해요'+(cur&&cur!==cm.best?' · 눌러서 바꿔 보세요':'')+'</span></b>';
 }
 // 신청 영수증 계산 (화면·신청서 저장 공용)
 function apSummary(){
