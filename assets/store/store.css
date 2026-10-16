@@ -1292,3 +1292,8 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .shp-l2.sm{font-size:clamp(23px,6.6vw,30px)}
 .shp-txt{max-width:66%}
 .shp-cd.off .shp-cl{white-space:nowrap}
+/* 프로모 배너: 붉은 기 제거 — 화이트 베이스 */
+.promo{background:#fff;border:1px solid #ECEDF1;box-shadow:0 2px 12px rgba(20,20,40,.04)}
+.promo .tag{background:#1A1A1E;color:#fff}
+.promo .btn{border-color:#1A1A1E;color:#1A1A1E;background:#fff}
+.promo .pimg{background:#fff}
