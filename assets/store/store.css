@@ -890,3 +890,9 @@ body.no-sq .side-quick{display:none}
 .dl-c-c{margin-top:2px;text-align:right;font-size:11.5px;font-weight:600;color:var(--mute)}
 .login input+input{margin-top:8px}
 .subhead .sh-r{display:flex;align-items:center}
+/* 관리자: 꾹 눌러 끌어서 순서 바꾸기 */
+body.editing #models a.m,body.editing #quick a,body.editing #trust .it{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+body.dragging,body.dragging *{cursor:grabbing!important}
+.drag-ghost{opacity:.92;transform:scale(1.06);box-shadow:0 10px 26px rgba(17,24,39,.22);border-radius:14px;background:#fff}
+.drag-src{opacity:.3}
+.drag-over{outline:2.5px solid var(--pink)!important;outline-offset:2px;border-radius:14px}

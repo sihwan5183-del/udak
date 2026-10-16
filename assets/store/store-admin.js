@@ -331,6 +331,62 @@ function undo(){
   }).catch(function(e){ alert('되돌리기에 실패했어요. ('+e.message+')'); });
 }
 
+/* ---------- 꾹 눌러서 끌어 순서 바꾸기 (모델 원형 아이콘 · 퀵메뉴 · 신뢰 스트립) ---------- */
+(function(){
+  var ZONES=[
+    {box:'#models', item:'a.m', key:'models'},
+    {box:'#quick', item:'a', key:'quick'},
+    {box:'#trust', item:'.it', key:'trust'}
+  ];
+  var D=null, timer=null, justDragged=false;
+  function zoneOf(el){ for(var i=0;i<ZONES.length;i++){ var z=ZONES[i], box=el.closest(z.box); if(box){ var it=el.closest(z.item); if(it&&box.contains(it)) return {z:z,box:box,it:it}; } } return null; }
+  function items(box,z){ return Array.prototype.slice.call(box.querySelectorAll(z.item)); }
+  function idOf(it){ var e=it.getAttribute('data-edit')||''; return e.split(':').slice(1).join(':'); }
+  function start(hit,x,y){
+    var r=hit.it.getBoundingClientRect(), g=hit.it.cloneNode(true);
+    g.className+=' drag-ghost'; g.style.cssText+='position:fixed;left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;height:'+r.height+'px;pointer-events:none;z-index:9999;';
+    document.body.appendChild(g); hit.it.classList.add('drag-src'); document.body.classList.add('dragging');
+    D={hit:hit, ghost:g, dx:x-r.left, dy:y-r.top, target:null};
+  }
+  function move(x,y){
+    D.ghost.style.left=(x-D.dx)+'px'; D.ghost.style.top=(y-D.dy)+'px';
+    var el=document.elementFromPoint(x,y), t=el&&el.closest(D.hit.z.item);
+    if(D.target&&D.target!==t) D.target.classList.remove('drag-over');
+    if(t&&t!==D.hit.it&&D.hit.box.contains(t)){ t.classList.add('drag-over'); D.target=t; } else D.target=null;
+  }
+  function end(){
+    var d=D; D=null; d.ghost.remove(); d.hit.it.classList.remove('drag-src'); document.body.classList.remove('dragging');
+    if(d.target) d.target.classList.remove('drag-over');
+    justDragged=true; setTimeout(function(){ justDragged=false; },350);
+    if(!d.target) return;
+    var list=items(d.hit.box,d.hit.z), from=list.indexOf(d.hit.it), to=list.indexOf(d.target);
+    if(from<0||to<0||from===to) return;
+    var k=d.hit.z.key;
+    if(k==='models'){
+      var ids=list.map(idOf), mv=ids.splice(from,1)[0]; ids.splice(to,0,mv);
+      var rest=T.S.models.filter(function(m){ return ids.indexOf(m.id)<0; });
+      T.S.models=ids.map(function(id){ return T.S.models.filter(function(m){return m.id===id})[0]; }).filter(Boolean).concat(rest);
+    } else {
+      var arr=T.S[k], fi=+idOf(d.hit.it), ti=+idOf(d.target), x=arr.splice(fi,1)[0]; arr.splice(ti,0,x);
+    }
+    commit('순서를 바꿨어요');
+  }
+  document.addEventListener('pointerdown',function(e){
+    if(!T.isEditing()||e.button>0) return; var hit=zoneOf(e.target); if(!hit) return;
+    var x=e.clientX, y=e.clientY;
+    clearTimeout(timer); timer=setTimeout(function(){ start(hit,x,y); },280);
+    var up=function(){ clearTimeout(timer); document.removeEventListener('pointerup',up); document.removeEventListener('pointercancel',up); };
+    document.addEventListener('pointerup',up); document.addEventListener('pointercancel',up);
+  });
+  document.addEventListener('pointermove',function(e){
+    if(D){ e.preventDefault(); move(e.clientX,e.clientY); }
+  },{passive:false});
+  document.addEventListener('pointerup',function(){ if(D) end(); });
+  document.addEventListener('pointercancel',function(){ if(D) end(); });
+  document.addEventListener('click',function(e){ if(justDragged){ e.preventDefault(); e.stopPropagation(); } },true);
+  document.addEventListener('dragstart',function(e){ if(T.isEditing()&&zoneOf(e.target)) e.preventDefault(); });
+})();
+
 window.__stReady=function(){ LAST=T.clone(T.S); };
 // 저장소를 이미 불러온 뒤에 이 스크립트가 붙은 경우에도 기준점을 잡아 둠
 if(!LAST && T.S && T.S.updatedAt) LAST=T.clone(T.S);
