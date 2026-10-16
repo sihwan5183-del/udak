@@ -135,6 +135,13 @@ var ED = {
       goField('go',g.go||'consult')+sw('hidden','숨기기',g.hidden)+moveBtns(true)+applyBtn(); },
     save:function(i){ var g=T.S.gifts[i]; g.nm=V('nm'); g.sm=V('sm'); g.pr=V('pr'); g.img=V('img')||null; g.go=V('go'); g.hidden=C('hidden'); }
   },
+  deal:{
+    title:function(){ return '🔥 이번 주 특가 (맨 위)'; },
+    html:function(){ var d=T.S.deal||{}; return sw('on','켜기 (끄면 예전 슬라이드 배너가 보여요)',d.on)+txt('title','제목',d.title||'이번 주 특가')+
+      area('items','모델 · 지원금 — 한 줄에 하나: 모델|번호이동 최대|기기변경 (첫 줄이 크게, 나머지는 아래 작은 카드)\n모델은 이름(예: 폴드8) 또는 코드(예: fold8)',d.items,4)+
+      imgField('img','대표 사진','hero',d.img)+'<div class="hint">날짜(이번 주 월~일)는 자동으로 바뀌어요.</div>'+applyBtn(); },
+    save:function(){ T.S.deal={on:C('on'), title:V('title')||'이번 주 특가', items:V('items'), img:V('img')||null}; }
+  },
   brand:{
     title:function(){ return '🏷 상단 브랜드'; },
     html:function(){ var b=T.S.brand; return txt('small','윗줄',b.small)+txt('big','분홍 큰 글씨',b.big)+applyBtn(); },
@@ -175,7 +182,7 @@ window.__stEditClick=function(e){
   var t=e.target;
   if(t.closest('.adm-bar')||t.closest('#sheet')||t.closest('#dim')||t.closest('.login')) return false;
   if(t.closest('.tabbar')||t.closest('.topbar')||t.closest('[data-back]')||t.closest('.ctabs')||t.closest('[data-toggle]')||t.closest('.subhead')) return false;
-  if(t.closest('[data-mnp]')||t.closest('[data-opt-pick]')||t.closest('[data-tier-pick]')||t.closest('[data-calc]')||t.closest('[data-color-pick]')||t.closest('.pz')||t.closest('a[download]')) return false;
+  if(t.closest('[data-mnp]')||t.closest('[data-opt-pick]')||t.closest('[data-tier-pick]')||t.closest('[data-calc]')||t.closest('[data-color-pick]')||t.closest('[data-sort-open]')||t.closest('[data-sort]')||t.closest('.pz')||t.closest('a[download]')) return false;
   var el=t.closest('[data-edit]');
   if(!el){
     if(t.closest('a,[data-go],[data-open],label.search')){ e.preventDefault(); e.stopPropagation(); toast('편집 중에는 이동하지 않아요 · [편집 ON] 을 끄면 고객처럼 둘러볼 수 있어요'); return true; }

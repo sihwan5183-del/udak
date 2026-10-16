@@ -14,12 +14,14 @@ var IMG = '/assets/store/';
 var GH = 'https://api.github.com/repos/sihwan5183-del/udak/contents/assets/store/';
 var FOLDERS = ['hero','model','card','promo','gift'];
 
-var MARKUP = "<!-- 스크롤 시 나타나는 상단바 (쿠팡이츠 방식) -->\n<header class=\"topbar\" id=\"topbar\">\n  <button class=\"lbl\" data-open=\"store\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>매장찾기<svg class=\"ico chev\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n  <button data-go=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button>\n  <button style=\"position:relative;display:flex\" data-open=\"noti\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8\"/><path d=\"M10.3 21a1.9 1.9 0 0 0 3.4 0\"/></svg><i class=\"dot-new\"></i></button>\n</header>\n<div class=\"app\" id=\"app\">\n<!-- ===================== 홈 ===================== -->\n<main class=\"view on\" id=\"v-home\">\n  <!-- 1. 히어로 -->\n  <section class=\"hero\" id=\"hero\">\n    <div class=\"hero-top\">\n      <div class=\"brand\" id=\"brand\" data-edit=\"brand\"></div>\n      <div class=\"hero-r\">\n        <div class=\"uplus-logo\">U<sup>+</sup></div>\n        <div class=\"hero-icons\">\n          <button data-go=\"search\" aria-label=\"검색\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button>\n          <button data-open=\"noti\" aria-label=\"알림\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8\"/><path d=\"M10.3 21a1.9 1.9 0 0 0 3.4 0\"/></svg><i class=\"dot-new\"></i></button>\n        </div>\n      </div>\n    </div>\n    <div class=\"hero-track\" id=\"heroTrack\"></div>\n    <div class=\"dots\" id=\"heroDots\"></div>\n  </section>\n  <!-- 2. 매장찾기 -->\n  <button class=\"locbar\" data-open=\"store\">\n    <svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>\n    <span class=\"lbl\">매장찾기 <svg class=\"ico chev\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><path d=\"m6 9 6 6 6-6\"/></svg></span>\n    <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px;color:#9aa0a8\"><path d=\"m9 6 6 6-6 6\"/></svg>\n  </button>\n  <!-- 3. 검색 -->\n  <label class=\"search\" data-go=\"search\">\n    <svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg>\n    <input type=\"text\" placeholder=\"어떤 휴대폰을 찾고 계세요?\" readonly tabindex=\"-1\">\n  </label>\n  <!-- 4. 모델 원형 아이콘 -->\n  <nav class=\"models\" id=\"models\"></nav>\n  <!-- 5. 퀵메뉴 -->\n  <nav class=\"quick hscroll\" id=\"quick\"></nav>\n  <!-- 6. 신뢰 스트립 -->\n  <div class=\"trust hscroll\" id=\"trust\"></div>\n  <!-- 7. 프로모 배너 -->\n  <a class=\"promo\" id=\"promo\" data-edit=\"promo\"></a>\n  <!-- 8. 많이 찾아요 -->\n  <section class=\"sec\" id=\"popSec\">\n    <div id=\"popHead\"></div>\n    <div class=\"popgrid\" id=\"popgrid\"></div>\n  </section>\n  <div class=\"divider\" style=\"margin-top:16px\"></div>\n  <!-- ===== 여기부터 쿠팡이츠 모티브 섹션 ===== -->\n  <!-- 9-1. 최근 본 모델 (본 게 없으면 숨김) -->\n  <section class=\"sec\" id=\"recentSec\" hidden>\n    <div id=\"recentHead\"></div>\n    <div class=\"hcards hscroll\" id=\"recent\"></div>\n  </section>\n  <!-- 9-2. 기기값 0원 모아보기 -->\n  <section class=\"sec zero-sec\" id=\"zeroSec\">\n    <div id=\"zeroHead\"></div>\n    <div class=\"hcards hscroll\" id=\"zero\"></div>\n  </section>\n  <section class=\"sec\" id=\"wearSec\">\n    <div id=\"wearHead\"></div>\n    <div class=\"hcards hscroll\" id=\"wear\"></div>\n  </section>\n  <div class=\"divider\"></div>\n  <!-- 10-1. 한정 사은품 -->\n  <section class=\"sec\" id=\"giftSec\">\n    <div id=\"giftHead\"></div>\n    <div class=\"dcards hscroll\" id=\"gifts\"></div>\n  </section>\n  <!-- 10-2. 우리 동네 인기 모델 -->\n  <section class=\"sec\" id=\"rankSec\">\n    <div id=\"rankHead\"></div>\n    <div class=\"dcards hscroll\" id=\"rank\"></div>\n  </section>\n  <div class=\"divider\" style=\"margin-top:16px\"></div>\n  <!-- 11. 골라보는 휴대폰 -->\n  <section class=\"sec ucat-wrap\" id=\"pickSec\" style=\"padding-bottom:0\">\n    <div id=\"pickHead\"></div>\n    <nav class=\"models hscroll\" id=\"pickCircles\" style=\"display:flex;gap:4px;padding:0 10px 6px\"></nav>\n    <div class=\"filters\">\n      <div class=\"seg\" data-seg></div>\n      <button class=\"fbtn\">추천순 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n      <button class=\"fbtn\">필터 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"M4 6h16M7 12h10M10 18h4\"/></svg></button>\n    </div>\n    <div class=\"adlabel\">추천 리스트</div>\n    <div id=\"bigList\"></div>\n  </section>\n  <footer class=\"foot\" id=\"foot\" data-edit=\"foot\"></footer>\n</main>\n<!-- ===================== 카테고리 (쿠팡이츠 '한식' 화면) ===================== -->\n<main class=\"view\" id=\"v-cat\">\n  <div class=\"subhead\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button><h1 id=\"catTitle\">전체</h1><button data-go=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button></div>\n  <div class=\"sticky-tabs\"><nav class=\"ctabs hscroll\" id=\"catTabs\"></nav></div>\n  <nav class=\"hscroll\" id=\"catCircles\" style=\"display:flex;gap:4px;padding:14px 10px 6px\"></nav>\n  <div class=\"filters\">\n    <div class=\"seg\" data-seg></div>\n    <button class=\"fbtn\">추천순 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n    <button class=\"fbtn\">필터 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"M4 6h16M7 12h10M10 18h4\"/></svg></button>\n  </div>\n  <div class=\"adlabel\">추천 리스트</div>\n  <div id=\"catList\"></div>\n</main>\n<!-- ===================== 검색 ===================== -->\n<main class=\"view\" id=\"v-search\">\n  <div class=\"subhead\" style=\"gap:4px;justify-content:flex-start\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button>\n    <label class=\"search\" style=\"margin:0;flex:1;height:40px\"><svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg><input id=\"q\" type=\"search\" autocomplete=\"off\" placeholder=\"모델명을 입력하세요 (예: 폴드, 아이폰)\"></label></div>\n  <div class=\"results\" id=\"results\"></div>\n</main>\n<!-- ===================== 찜한 모델 ===================== -->\n<main class=\"view\" id=\"v-wish\">\n  <div class=\"subhead\"><span style=\"width:40px\"></span><h1>찜한 모델</h1><span style=\"width:40px\"></span></div>\n  <div id=\"wishList\"></div>\n</main>\n<!-- ===================== 모델 상세 (다음 단계) ===================== -->\n<main class=\"view\" id=\"v-model\">\n  <div class=\"subhead\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button><h1 id=\"mdTitle\"></h1><span style=\"width:40px\"></span></div>\n  <div id=\"mdBody\" style=\"padding:0 16px 20px\"></div>\n</main>\n</div><!-- /app -->\n<!-- 하단 탭바 -->\n<nav class=\"tabbar\" id=\"tabbar\">\n  <a href=\"#/\" data-tab=\"home\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z\"/></svg>홈</a>\n  <a href=\"#/search\" data-tab=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg>검색</a>\n  <a href=\"#/wish\" data-tab=\"wish\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z\"/></svg>찜</a>\n  <a href=\"javascript:void 0\" data-open=\"consult\" data-tab=\"consult\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2\"/><path d=\"M9 4h6v3H9zM9 12l2 2 4-4\"/></svg>상담신청</a>\n  <a href=\"javascript:void 0\" data-open=\"store\" data-tab=\"store\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>매장</a>\n</nav>\n<div class=\"dim\" id=\"dim\"></div>\n<div class=\"sheet\" id=\"sheet\"><button type=\"button\" class=\"sheet-x\" aria-label=\"닫기\">×</button><div id=\"sheetBody\"></div></div>";
+var MARKUP = "<!-- 스크롤 시 나타나는 상단바 (쿠팡이츠 방식) -->\n<header class=\"topbar\" id=\"topbar\">\n  <button class=\"lbl\" data-open=\"store\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>매장찾기<svg class=\"ico chev\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n  <button data-go=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button>\n  <button style=\"position:relative;display:flex\" data-open=\"noti\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8\"/><path d=\"M10.3 21a1.9 1.9 0 0 0 3.4 0\"/></svg><i class=\"dot-new\"></i></button>\n</header>\n<div class=\"app\" id=\"app\">\n<!-- ===================== 홈 ===================== -->\n<main class=\"view on\" id=\"v-home\">\n  <!-- 1. 히어로 -->\n  <section class=\"hero\" id=\"hero\">\n    <div class=\"hero-top\">\n      <div class=\"brand\" id=\"brand\" data-edit=\"brand\"></div>\n      <div class=\"hero-r\">\n        <div class=\"uplus-logo\">U<sup>+</sup></div>\n        <div class=\"hero-icons\">\n          <button data-go=\"search\" aria-label=\"검색\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button>\n          <button data-open=\"noti\" aria-label=\"알림\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8\"/><path d=\"M10.3 21a1.9 1.9 0 0 0 3.4 0\"/></svg><i class=\"dot-new\"></i></button>\n        </div>\n      </div>\n    </div>\n    <div class=\"hero-track\" id=\"heroTrack\"></div>\n    <div class=\"dots\" id=\"heroDots\"></div>\n    <div class=\"deal-subs\" id=\"dealSubs\"></div>\n  </section>\n  <!-- 2. 매장찾기 -->\n  <button class=\"locbar\" data-open=\"store\">\n    <svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>\n    <span class=\"lbl\">매장찾기 <svg class=\"ico chev\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><path d=\"m6 9 6 6 6-6\"/></svg></span>\n    <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px;color:#9aa0a8\"><path d=\"m9 6 6 6-6 6\"/></svg>\n  </button>\n  <!-- 3. 검색 -->\n  <label class=\"search\" data-go=\"search\">\n    <svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg>\n    <input type=\"text\" placeholder=\"어떤 휴대폰을 찾고 계세요?\" readonly tabindex=\"-1\">\n  </label>\n  <!-- 4. 모델 원형 아이콘 -->\n  <nav class=\"models\" id=\"models\"></nav>\n  <!-- 5. 퀵메뉴 -->\n  <nav class=\"quick hscroll\" id=\"quick\"></nav>\n  <!-- 6. 신뢰 스트립 -->\n  <div class=\"trust hscroll\" id=\"trust\"></div>\n  <!-- 7. 프로모 배너 -->\n  <a class=\"promo\" id=\"promo\" data-edit=\"promo\"></a>\n  <!-- 8. 많이 찾아요 -->\n  <section class=\"sec\" id=\"popSec\">\n    <div id=\"popHead\"></div>\n    <div class=\"popgrid\" id=\"popgrid\"></div>\n  </section>\n  <div class=\"divider\" style=\"margin-top:16px\"></div>\n  <!-- ===== 여기부터 쿠팡이츠 모티브 섹션 ===== -->\n  <!-- 9-1. 최근 본 모델 (본 게 없으면 숨김) -->\n  <section class=\"sec\" id=\"recentSec\" hidden>\n    <div id=\"recentHead\"></div>\n    <div class=\"hcards hscroll\" id=\"recent\"></div>\n  </section>\n  <!-- 9-2. 기기값 0원 모아보기 -->\n  <section class=\"sec zero-sec\" id=\"zeroSec\">\n    <div id=\"zeroHead\"></div>\n    <div class=\"hcards hscroll\" id=\"zero\"></div>\n  </section>\n  <section class=\"sec\" id=\"wearSec\">\n    <div id=\"wearHead\"></div>\n    <div class=\"hcards hscroll\" id=\"wear\"></div>\n  </section>\n  <div class=\"divider\"></div>\n  <!-- 10-1. 한정 사은품 -->\n  <section class=\"sec\" id=\"giftSec\">\n    <div id=\"giftHead\"></div>\n    <div class=\"dcards hscroll\" id=\"gifts\"></div>\n  </section>\n  <!-- 10-2. 우리 동네 인기 모델 -->\n  <section class=\"sec\" id=\"rankSec\">\n    <div id=\"rankHead\"></div>\n    <div class=\"dcards hscroll\" id=\"rank\"></div>\n  </section>\n  <div class=\"divider\" style=\"margin-top:16px\"></div>\n  <!-- 11. 골라보는 휴대폰 -->\n  <section class=\"sec ucat-wrap\" id=\"pickSec\" style=\"padding-bottom:0\">\n    <div id=\"pickHead\"></div>\n    <nav class=\"models hscroll\" id=\"pickCircles\" style=\"display:flex;gap:4px;padding:0 10px 6px\"></nav>\n    <div class=\"filters\">\n      <div class=\"seg\" data-seg></div>\n      <button class=\"fbtn\" type=\"button\" data-sort-open><span class=\"sort-lbl\">추천순</span> <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n      <button class=\"fbtn\">필터 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"M4 6h16M7 12h10M10 18h4\"/></svg></button>\n    </div>\n    <div class=\"adlabel\">추천 리스트</div>\n    <div id=\"bigList\"></div>\n  </section>\n  <footer class=\"foot\" id=\"foot\" data-edit=\"foot\"></footer>\n</main>\n<!-- ===================== 카테고리 (쿠팡이츠 '한식' 화면) ===================== -->\n<main class=\"view\" id=\"v-cat\">\n  <div class=\"subhead\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button><h1 id=\"catTitle\">전체</h1><button data-go=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button></div>\n  <div class=\"sticky-tabs\"><nav class=\"ctabs hscroll\" id=\"catTabs\"></nav></div>\n  <nav class=\"hscroll\" id=\"catCircles\" style=\"display:flex;gap:4px;padding:14px 10px 6px\"></nav>\n  <div class=\"filters\">\n    <div class=\"seg\" data-seg></div>\n    <button class=\"fbtn\" type=\"button\" data-sort-open><span class=\"sort-lbl\">추천순</span> <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n    <button class=\"fbtn\">필터 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"M4 6h16M7 12h10M10 18h4\"/></svg></button>\n  </div>\n  <div class=\"adlabel\">추천 리스트</div>\n  <div id=\"catList\"></div>\n</main>\n<!-- ===================== 검색 ===================== -->\n<main class=\"view\" id=\"v-search\">\n  <div class=\"subhead\" style=\"gap:4px;justify-content:flex-start\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button>\n    <label class=\"search\" style=\"margin:0;flex:1;height:40px\"><svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg><input id=\"q\" type=\"search\" autocomplete=\"off\" placeholder=\"모델명을 입력하세요 (예: 폴드, 아이폰)\"></label></div>\n  <div class=\"results\" id=\"results\"></div>\n</main>\n<!-- ===================== 찜한 모델 ===================== -->\n<main class=\"view\" id=\"v-wish\">\n  <div class=\"subhead\"><span style=\"width:40px\"></span><h1>찜한 모델</h1><span style=\"width:40px\"></span></div>\n  <div id=\"wishList\"></div>\n</main>\n<!-- ===================== 모델 상세 (다음 단계) ===================== -->\n<main class=\"view\" id=\"v-model\">\n  <div class=\"subhead\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button><h1 id=\"mdTitle\"></h1><span style=\"width:40px\"></span></div>\n  <div id=\"mdBody\" style=\"padding:0 16px 20px\"></div>\n</main>\n</div><!-- /app -->\n<!-- 하단 탭바 -->\n<nav class=\"tabbar\" id=\"tabbar\">\n  <a href=\"#/\" data-tab=\"home\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z\"/></svg>홈</a>\n  <a href=\"#/search\" data-tab=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg>검색</a>\n  <a href=\"#/wish\" data-tab=\"wish\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z\"/></svg>찜</a>\n  <a href=\"javascript:void 0\" data-open=\"consult\" data-tab=\"consult\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2\"/><path d=\"M9 4h6v3H9zM9 12l2 2 4-4\"/></svg>상담신청</a>\n  <a href=\"javascript:void 0\" data-open=\"store\" data-tab=\"store\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>매장</a>\n</nav>\n<div class=\"dim\" id=\"dim\"></div>\n<div class=\"sheet\" id=\"sheet\"><button type=\"button\" class=\"sheet-x\" aria-label=\"닫기\">×</button><div id=\"sheetBody\"></div></div>";
 
 /* ---------------- 기본 데이터 (파이어베이스가 비어 있을 때) ---------------- */
 var DEFAULT = {
   v:1,
   brand:{small:'유플러스 공식파트너사', big:'유플러스 다이렉트'},
+  // 맨 위: 이번 주 특가 (켜면 히어로 슬라이드 대신 보임). items 첫 줄이 대표 모델 — '모델|번호이동 최대|기기변경'
+  deal:{on:true, title:'이번 주 특가', img:'hero/hero-02.webp', items:'fold8|73만원|47만원\ns26|68만원|50만원\nflip8|60만원|34만원'},
   hero:[
     {k:'U+ 최초의 온라인 대리점', t:'유플러스 다이렉트', s:'불필요한 가입 없이 온라인으로 간편하게.', img:'hero/hero-01.webp', go:'#/model/iphone18pro'},
     {k:'갤럭시 폴드8 / 플립8', t:'', s:'', sup:'폴드8|73만원|47만원\n플립8|60만원|34만원', img:'hero/hero-02.webp', go:'#/model/fold8'},
@@ -244,6 +246,7 @@ function normalize(d){
   o.sec=o.sec||{}; Object.keys(DEFAULT.sec).forEach(function(k){ o.sec[k]=o.sec[k]||clone(DEFAULT.sec[k]); });
   // 히어로 사진: 예전 저장값(hero-0N.jpg)은 실제 파일(hero-0N.webp)로
   (o.hero||[]).forEach(function(h){ if(h&&typeof h.img==='string') h.img=h.img.replace(/^hero\/(hero-0[1-3])\.jpg$/,'hero/$1.webp'); });
+  o.deal=o.deal||clone(DEFAULT.deal);
   o.brand=o.brand||clone(DEFAULT.brand); o.biz=o.biz||clone(DEFAULT.biz); o.promo=o.promo||clone(DEFAULT.promo);
   o.pricing=normPricing(o.pricing);
   return o;
@@ -478,6 +481,34 @@ function calcBox(m, r, st){
 }
 /* ---------------- 렌더 ---------------- */
 var heroTimer=null, heroIdx=0;
+// 이번 주 특가 — 이번 주 월~일 날짜는 자동
+function weekRange(){
+  var t=new Date(todayKST()+'T00:00:00'), d=(t.getDay()+6)%7, a=new Date(t), b=new Date(t); a.setDate(t.getDate()-d); b.setDate(a.getDate()+6);
+  var f=function(x){ return (x.getMonth()+1)+'/'+x.getDate(); }; return f(a)+'(월) ~ '+f(b)+'(일)';
+}
+function dealItems(){
+  var D=S.deal||{}; return String(D.items||'').split('\n').map(function(l){ var r=l.split('|').map(function(x){return x.trim()}); var m=r[0]&&(byId(r[0])||models().filter(function(x){return x.nm.replace(/\s/g,'')===r[0].replace(/\s/g,'')})[0]); return m?{m:m,mnp:r[1]||'',chg:r[2]||''}:null; }).filter(Boolean);
+}
+function renderDeal(){
+  var D=S.deal, sub=$('#dealSubs');
+  if(!D||!D.on){ if(sub) sub.innerHTML=''; return false; }
+  var it=dealItems(); if(!it.length){ if(sub) sub.innerHTML=''; return false; }
+  var a=it[0];
+  clearInterval(heroTimer);
+  $('#heroTrack').style.transform='';
+  $('#heroTrack').innerHTML='<a class="slide deal" data-go="#/model/'+esc(a.m.id)+'" data-edit="deal">'+
+    '<div class="slide-txt"><div class="dl-tag"><b>'+esc(D.title||'이번 주 특가')+'</b><span>'+weekRange()+'</span></div>'+
+    '<div class="k">'+esc(a.m.nm)+'</div>'+
+    (a.mnp?'<div class="dl-amt"><small>번호이동 최대</small><b>'+esc(a.mnp)+'</b></div>':'')+
+    (a.chg?'<div class="dl-chg">기기변경 '+esc(a.chg)+'</div>':'')+
+    '<span class="dl-go">자세히 보기 ›</span></div>'+
+    im(D.img||mImg(a.m),'slide-img',true,'')+'</a>';
+  $('#heroDots').innerHTML='';
+  if(sub) sub.innerHTML=it.length>1?it.slice(1).map(function(x){
+    return '<a class="dl-s" href="#/model/'+esc(x.m.id)+'" data-edit="deal"><span class="dl-s-img">'+im(mImg(x.m),'','',x.m.nm)+'</span><span class="dl-s-t"><b>'+esc(x.m.nm)+'</b>'+
+      '<span>번호이동 최대 <em>'+esc(x.mnp||'-')+'</em></span>'+(x.chg?'<small>기기변경 '+esc(x.chg)+'</small>':'')+'</span></a>'; }).join(''):'';
+  return true;
+}
 // 히어로 지원금 표: '모델|번호이동|기기변경' 한 줄씩 (모델 비우면 한 줄형)
 function heroSup(t){
   var rows=String(t||'').split('\n').map(function(l){ return l.split('|').map(function(x){return x.trim()}); }).filter(function(r){ return r.length>=2&&(r[1]||r[2]); });
@@ -489,6 +520,7 @@ function heroSup(t){
 function renderHero(){
   var b=S.brand;
   $('#brand').innerHTML='<small>'+esc(b.small)+'</small><b>'+esc(b.big)+'</b>';
+  if(renderDeal()) return;
   var list=vis(S.hero);
   $('#heroTrack').innerHTML = list.map(function(h,i){
     var k=esc(h.k||'').replace(/^U\+/, '<em>U<sup style="font-size:.6em">+</sup></em>');
@@ -652,11 +684,48 @@ function bigcard(m){
 function smallCircles(list){
   return list.map(function(m){return '<a class="m'+(SO(m)?' soldout':'')+hidCls(m)+'" style="flex:0 0 76px;display:flex;flex-direction:column;align-items:center;gap:6px" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="cir">'+im(mImg(m),'','',m.nm)+'</div><span>'+esc(m.nm)+'</span></a>'}).join('');
 }
+// 정렬: 추천순(관리자 순서) / 낮은가격순 / 높은가격순 / 판매량순(온라인팀 최근 30일 개통, 휴대폰만 — 세컨드 제외)
+var SORT='rec', RANK=null, RANK_LOADING=false;
+var SORTS=[['rec','추천순'],['low','낮은가격순'],['high','높은가격순'],['sales','판매량순']];
+function sortPrice(m){
+  var p=priceOf(m); if(p.v!=null) return p.v; if(p.out!=null) return p.out;
+  var v=PV(), outs=v?v.rows.filter(function(r){return r.model===m.id}).map(function(r){return num(r.out)}).filter(function(x){return x!=null}):[];
+  return outs.length?Math.min.apply(null,outs):null;
+}
+function loadRank(){
+  if(RANK||RANK_LOADING) return; RANK_LOADING=true;
+  fetch(SB_URL.replace(/\/rest\/v1\/.*$/,'/rest/v1/rpc/udak_store_sales_rank'),{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY},body:'{}'})
+    .then(function(r){return r.ok?r.json():[]}).then(function(rows){ RANK={}; (rows||[]).forEach(function(x,i){ RANK[x.model]={n:x.n,rank:i+1}; }); RANK_LOADING=false; if(SORT==='sales') refresh(); })
+    .catch(function(){ RANK={}; RANK_LOADING=false; });
+}
+function sortList(list){
+  var idx={}; list.forEach(function(m,i){ idx[m.id]=i; });
+  if(SORT==='rec') return list;
+  var key=function(m){
+    if(SORT==='sales'){ if(isWear(m)) return 1; var r=RANK&&RANK[m.id]; return r?-r.n:0; }
+    var v=sortPrice(m); return v==null?(SORT==='low'?Infinity:-Infinity):(SORT==='low'?v:-v);
+  };
+  return list.slice().sort(function(a,b){ var sa=SO(a)?1:0, sb=SO(b)?1:0; if(sa!==sb) return sa-sb; var d=key(a)-key(b); return d||idx[a.id]-idx[b.id]; });
+}
+function sortedCards(list){
+  document.querySelectorAll('.sort-lbl').forEach(function(lb){ lb.textContent=SORTS.filter(function(x){return x[0]===SORT})[0][1]; });
+  return sortList(list).map(function(m){
+    var h=bigcard(m), r=SORT==='sales'&&!isWear(m)&&RANK&&RANK[m.id];
+    return r&&r.rank<=3?h.replace('<div class="media">','<div class="media"><span class="rank-b">온라인 판매 '+r.rank+'위</span>'):h;
+  }).join('');
+}
 function renderPick(){
   $('#pickSec').hidden=!secOn('pick');
   $('#pickHead').innerHTML=secHead('pick');
   $('#pickCircles').innerHTML=smallCircles(phones());
-  $('#bigList').innerHTML=phones().map(bigcard).join('');
+  $('#bigList').innerHTML=sortedCards(phones());
+}
+function sortPop(b){
+  var old=document.querySelector('.sortpop'); if(old){ var same=old.parentNode===b.parentNode; old.remove(); if(same) return; }
+  var d=document.createElement('div'); d.className='sortpop';
+  d.innerHTML=SORTS.map(function(x){ return '<button type="button" data-sort="'+x[0]+'"'+(x[0]===SORT?' class="on"':'')+'>'+x[1]+(x[0]==='sales'?'<small>최근 30일 온라인 개통 기준</small>':'')+'</button>'; }).join('');
+  b.parentNode.style.position='relative'; b.parentNode.appendChild(d);
+  d.style.top=(b.offsetTop+b.offsetHeight+6)+'px'; d.style.left=Math.max(8,Math.min(b.offsetLeft,b.parentNode.clientWidth-d.offsetWidth-12))+'px';
 }
 function renderFoot(){
   var b=S.biz||{}, n=S.stores.filter(function(s){return s&&s.nm}).length;
@@ -693,7 +762,7 @@ function renderCat(k){
   $('#catTabs').innerHTML=CAT_TABS.map(function(t){return '<button class="'+(t.k===tab.k?'on':'')+'" data-cat="'+t.k+'">'+t.nm+'</button>'}).join('');
   var list=models().filter(function(m){return tab.k==='all'||m.cat.indexOf(tab.k)>-1||(tab.k==='zero'&&!isWear(m)&&isZero(m))});
   $('#catCircles').innerHTML=smallCircles(list);
-  $('#catList').innerHTML=list.map(bigcard).join('') || '<div class="empty">해당 모델이 없습니다</div>';
+  $('#catList').innerHTML=sortedCards(list) || '<div class="empty">해당 모델이 없습니다</div>';
   syncMnp();
   var on=$('#catTabs .on'); if(on&&on.scrollIntoView) on.scrollIntoView({inline:'center',block:'nearest'});
 }
@@ -1246,6 +1315,11 @@ document.addEventListener('click',function(e){
   var t=e.target;
   if(t.closest('.sheet-x')){ e.preventDefault(); closeSheet(); return; }
   if(t.closest('#mSubmitBtn')){ e.preventDefault(); apSubmit(); return; }
+  var so=t.closest('[data-sort-open]');
+  if(so){ e.preventDefault(); sortPop(so); return; }
+  var sb=t.closest('[data-sort]');
+  if(sb){ e.preventDefault(); SORT=sb.getAttribute('data-sort'); var sp=document.querySelector('.sortpop'); if(sp) sp.remove(); if(SORT==='sales') loadRank(); refresh(); return; }
+  if(!t.closest('.sortpop')){ var sp2=document.querySelector('.sortpop'); if(sp2) sp2.remove(); }
   var apb=t.closest('[data-ap]');
   if(apb){ e.preventDefault(); if(apb.disabled) return; var ak=apb.getAttribute('data-ap'), av=apb.getAttribute('data-v');
     if(ak==='cap'||ak==='months') AP[ak]=+av; else if(ak==='watch'||ak==='tablet'||ak==='tv') AP[ak]=(AP[ak]===av?'':av); else AP[ak]=av;
