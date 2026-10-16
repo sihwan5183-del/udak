@@ -720,10 +720,10 @@ function cellGuide(kind, fee, plan, nm){ return {fee:fee, plan:plan, t:kind+' �
   {ic:'won', hl:1, b:'월 이용료 '+won(fee), p:'월 '+won(plan)+' 이상 요금제('+nm+' 이상)를 이용 중이시라면 이용료 없이 휴대폰 요금에 포함돼요.', tag:nm+' 이상 이용 시 이용료 0원'},
   {ic:'cal', b:'24개월 함께하는 상품이에요', p:'24개월 약정으로 더 가벼운 가격에 만나보실 수 있어요.'}]}; }
 function tvGuide(kind){ return {t:kind+' 이용 가이드', items:[
-  {ic:'tv', hl:1, b:'오직 U+ 고객님께만, 유플러스 다이렉트 특별 혜택', p:'U+ 인터넷TV를 1년 이상 2년 미만, 500MB 이상 요금제로 사용해주고 있으신 고객님이라면 기기값 0원으로 드려요.', tag:'U+ 인터넷TV 이용 고객님 대상'},
-  {ic:'tv', b:'U+tv를 보는 태블릿PC예요', p:'유플러스 TV에 가입해 U+tv를 시청할 수 있는 TV 가입형 상품이에요. 별도 휴대폰 회선(셀룰러) 없이 이용하실 수 있어요.'},
-  {ic:'won', hl:1, b:'첫 9개월 월 9,350원', p:'10개월 차부터는 월 7,700원 요금제로 바꿔서 더 가볍게 이용하실 수 있어요.', tag:'10개월 차부터 월 7,700원'},
-  {ic:'cal', b:'36개월 함께하는 상품이에요', p:'36개월 약정으로 부담 없이 오래 이용하실 수 있어요.'}]}; }
+  {ic:'tv', hl:1, b:'오직 U+ 고객님께만, 유플러스 다이렉트 특별 혜택', p:'U+ 인터넷·TV를 1년 이상 2년 미만 이용 중이면서, 인터넷 500MB 이상 요금제를 사용 중인 고객님이라면 기기값 0원 혜택을 받으실 수 있어요.', tag:'U+ 인터넷·TV 이용 고객님 대상'},
+  {ic:'tv', b:'태블릿으로 U+tv를 이용할 수 있어요', p:'U+tv를 시청할 수 있는 TV 가입형 태블릿 상품이에요.\n별도의 휴대폰 셀룰러 회선 없이 이용하실 수 있어요.'},
+  {ic:'won', hl:1, b:'첫 9개월 월 9,350원', p:'첫 9개월은 월 9,350원으로 이용하고,\n10개월 차부터는 월 7,700원 요금제로 변경해 이용하실 수 있어요.', tag:'10개월 차부터 월 7,700원'},
+  {ic:'cal', b:'36개월 약정 상품이에요', p:'36개월 약정, TV 가입형 상품입니다.'}]}; }
 var GUIDE={
   watchultra2:cellGuide('워치',11000,95000,'플러스플랜 95'), watch9:cellGuide('워치',11000,95000,'플러스플랜 95'), watchse3:cellGuide('워치',11000,95000,'플러스플랜 95'),
   taba11plus:cellGuide('태블릿',22000,105000,'플러스플랜 105'),
@@ -732,7 +732,7 @@ var GUIDE={
 function guideHtml(m){
   var g=GUIDE[m.id]; if(!g) return '';
   return '<div class="guide"><div class="guide-h"><b>'+esc(g.t)+'</b><span>알아두면 더 알뜰하게 쓸 수 있어요</span></div>'+g.items.map(function(x){
-    return '<div class="guide-it'+(x.hl?' hl':'')+'"><i><svg viewBox="0 0 24 24">'+GI[x.ic]+'</svg></i><div><b>'+esc(x.b)+'</b><p>'+esc(x.p)+'</p>'+(x.tag?'<span class="guide-tag">'+esc(x.tag)+'</span>':'')+'</div></div>';
+    return '<div class="guide-it'+(x.hl?' hl':'')+'"><i><svg viewBox="0 0 24 24">'+GI[x.ic]+'</svg></i><div><b>'+esc(x.b)+'</b><p>'+esc(x.p).replace(/\n/g,'<br>')+'</p>'+(x.tag?'<span class="guide-tag">'+esc(x.tag)+'</span>':'')+'</div></div>';
   }).join('')+'</div>';
 }
 function renderWear(){
@@ -1323,7 +1323,7 @@ function apAddHtml(){
       return '<div class="ap-card'+(on?' on':'')+'"><button type="button" class="ap-card-main" data-ap="'+s[0]+'" data-v="'+esc(x.id)+'">'+
         '<span class="ap-card-img">'+im(mImg(x),'','',x.nm)+'</span><span class="ap-card-t"><b>'+esc(x.nm)+'</b><i>'+esc(dev)+'</i>'+(fee?'<em>'+esc(fee)+'</em>':'')+'</span><span class="ap-chk"></span></button>'+
         (g?'<button type="button" class="ap-cond" data-ap-cond="'+esc(x.id)+'">'+(open?'이용 조건 접기 ▴':'이용 조건 보기 ▾')+'</button>'+
-          (open?'<ul class="ap-cond-list">'+g.items.map(function(it){ return '<li><b>'+esc(it.b)+'</b><span>'+esc(it.p)+'</span></li>'; }).join('')+'</ul>':''):'')+
+          (open?'<ul class="ap-cond-list">'+g.items.map(function(it){ return '<li><b>'+esc(it.b)+'</b><span>'+esc(it.p).replace(/\n/g,' ')+'</span></li>'; }).join('')+'</ul>':''):'')+
         '</div>';
     }).join('')+'</div>';
     if(s[0]==='tv' && AP.tv){
