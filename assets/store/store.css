@@ -1228,3 +1228,40 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .sb-steps li.hl i svg{stroke:#fff}
 .sb-steps li.hl span{color:#E31E78}
 .sb-steps li.sb-ln{flex:1;height:0;border-top:2px dotted #E9C3D4;margin:0 6px 20px}
+
+/* 당일 택배 발송 카드 (레퍼런스 맞춤 + 타이머) */
+.shipbar{margin:14px 16px 10px}
+.shp{position:relative;display:block;padding:16px 14px 12px;border-radius:22px;border:1px solid #ECEDF1;background:#fff;box-shadow:0 2px 12px rgba(20,20,40,.04);cursor:pointer;overflow:hidden}
+.shp-top{position:relative;min-height:112px}
+.shp-txt{position:relative;z-index:1;max-width:64%}
+.shp-l1{display:flex;align-items:center;gap:6px;font-size:clamp(15px,4.3vw,17px);font-weight:800;color:var(--ink);letter-spacing:-.03em;white-space:nowrap}
+.shp-l1 svg{flex:none;width:22px;height:22px;fill:none;stroke:#E8197F;stroke-width:2.2;stroke-linecap:round}
+.shp-l1 em{font-style:normal;color:#E8197F}
+.shp-l2{margin-top:4px;font-size:clamp(27px,8vw,33px);font-weight:900;color:var(--ink);letter-spacing:-.05em;line-height:1.1;white-space:nowrap}
+.shp-l2 em{font-style:normal;color:#E8197F}
+.shp-cd{display:inline-flex;align-items:center;gap:6px;margin-top:9px;padding:5px 11px 5px 9px;border-radius:999px;background:#E8197F;color:#fff;font-size:12.5px;font-weight:700;white-space:nowrap}
+.shp-cd b{font-weight:900;font-size:14px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.shp-cd i{width:7px;height:7px;border-radius:50%;background:#fff;animation:shpBlink 1s steps(2) infinite}
+.shp-cd.off{background:#FDEEF5;color:#C3166B}
+.shp-cd.off i{background:#E8197F;animation:none}
+.shp-cd.off b{font-size:12.5px}
+@keyframes shpBlink{50%{opacity:.25}}
+.shp-truck{position:absolute;right:-18px;top:-4px;width:min(46%,200px);height:auto;pointer-events:none}
+.shp-steps{display:flex;align-items:center;margin-top:12px;padding:12px 10px;border-radius:18px;border:1px solid #F1EEF2;background:#FFFBFD}
+.shp-st{flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;width:clamp(56px,16.5vw,70px)}
+.shp-st img{width:clamp(44px,12.5vw,54px);height:auto}
+.shp-st span{font-size:clamp(11.5px,3.3vw,13px);font-weight:800;color:var(--ink);white-space:nowrap;letter-spacing:-.03em}
+.shp-ar{flex:1;display:flex;justify-content:center;margin-bottom:22px;min-width:8px}
+.shp-ar svg{width:16px;height:16px;fill:none;stroke:#E8197F;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.shp-div{flex:none;align-self:stretch;width:1px;background:#ECE6EB;margin:0 clamp(6px,2.4vw,12px)}
+.shp-guide{flex:none;display:inline-flex;align-items:center;gap:2px;padding:clamp(10px,3vw,14px) clamp(9px,2.8vw,14px);border-radius:16px;background:#FDE8F1;color:#E8197F;font-size:clamp(12.5px,3.6vw,14.5px);font-weight:800;white-space:nowrap;letter-spacing:-.03em}
+.shp-guide svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.shp-steps{padding:12px 8px}
+.shp-st{width:auto;min-width:0}
+.shp-st img{width:clamp(42px,12vw,54px)}
+.shp-st span{font-size:clamp(11.5px,3.2vw,13px)}
+.shp-ar{min-width:12px}
+.shp-ar svg{width:18px;height:18px}
+.shp-div{margin:0 clamp(5px,2vw,12px)}
+.shp-guide{padding:clamp(10px,3vw,14px) clamp(8px,2.4vw,14px);font-size:clamp(12px,3.4vw,14.5px)}
+.shp-top{min-height:104px}
