@@ -14,7 +14,7 @@ var IMG = '/assets/store/';
 var GH = 'https://api.github.com/repos/sihwan5183-del/udak/contents/assets/store/';
 var FOLDERS = ['hero','model','card','promo','gift'];
 
-var MARKUP = "<!-- 스크롤 시 나타나는 상단바 (쿠팡이츠 방식) -->\n<header class=\"topbar\" id=\"topbar\">\n  <button class=\"lbl\" data-open=\"store\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>매장찾기<svg class=\"ico chev\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n  <button data-go=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button>\n  <button style=\"position:relative;display:flex\" data-open=\"noti\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8\"/><path d=\"M10.3 21a1.9 1.9 0 0 0 3.4 0\"/></svg><i class=\"dot-new\"></i></button>\n</header>\n<div class=\"app\" id=\"app\">\n<!-- ===================== 홈 ===================== -->\n<main class=\"view on\" id=\"v-home\">\n  <!-- 1. 히어로 -->\n  <section class=\"hero\" id=\"hero\">\n    <div class=\"hero-top\">\n      <div class=\"brand\" id=\"brand\" data-edit=\"brand\"></div>\n      <div class=\"hero-r\">\n        <div class=\"uplus-logo\">U<sup>+</sup></div>\n        <div class=\"hero-icons\">\n          <button data-go=\"search\" aria-label=\"검색\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button>\n          <button data-open=\"noti\" aria-label=\"알림\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8\"/><path d=\"M10.3 21a1.9 1.9 0 0 0 3.4 0\"/></svg><i class=\"dot-new\"></i></button>\n        </div>\n      </div>\n    </div>\n    <div class=\"hero-track\" id=\"heroTrack\"></div>\n    <div class=\"dots\" id=\"heroDots\"></div>\n    <div class=\"deal-subs\" id=\"dealSubs\"></div>\n  </section>\n  <!-- 2. 매장찾기 -->\n  <button class=\"locbar\" data-open=\"store\">\n    <svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>\n    <span class=\"lbl\">매장찾기 <svg class=\"ico chev\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><path d=\"m6 9 6 6 6-6\"/></svg></span>\n    <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px;color:#9aa0a8\"><path d=\"m9 6 6 6-6 6\"/></svg>\n  </button>\n  <!-- 3. 검색 -->\n  <label class=\"search\" data-go=\"search\">\n    <svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg>\n    <input type=\"text\" placeholder=\"어떤 휴대폰을 찾고 계세요?\" readonly tabindex=\"-1\">\n  </label>\n  <!-- 4. 모델 원형 아이콘 -->\n  <nav class=\"models\" id=\"models\"></nav>\n  <!-- 5. 퀵메뉴 -->\n  <nav class=\"quick hscroll\" id=\"quick\"></nav>\n  <!-- 6. 신뢰 스트립 -->\n  <div class=\"trust hscroll\" id=\"trust\"></div>\n  <!-- 7. 프로모 배너 -->\n  <a class=\"promo\" id=\"promo\" data-edit=\"promo\"></a>\n  <!-- 8. 많이 찾아요 -->\n  <section class=\"sec\" id=\"popSec\">\n    <div id=\"popHead\"></div>\n    <div class=\"popgrid\" id=\"popgrid\"></div>\n  </section>\n  <div class=\"divider\" style=\"margin-top:16px\"></div>\n  <!-- ===== 여기부터 쿠팡이츠 모티브 섹션 ===== -->\n  <!-- 9-1. 최근 본 모델 (본 게 없으면 숨김) -->\n  <section class=\"sec\" id=\"recentSec\" hidden>\n    <div id=\"recentHead\"></div>\n    <div class=\"hcards hscroll\" id=\"recent\"></div>\n  </section>\n  <!-- 9-2. 기기값 0원 모아보기 -->\n  <section class=\"sec zero-sec\" id=\"zeroSec\">\n    <div id=\"zeroHead\"></div>\n    <div class=\"hcards hscroll\" id=\"zero\"></div>\n  </section>\n  <section class=\"sec\" id=\"wearSec\">\n    <div id=\"wearHead\"></div>\n    <div class=\"hcards hscroll\" id=\"wear\"></div>\n  </section>\n  <div class=\"divider\"></div>\n  <!-- 10-1. 한정 사은품 -->\n  <section class=\"sec\" id=\"giftSec\">\n    <div id=\"giftHead\"></div>\n    <div class=\"dcards hscroll\" id=\"gifts\"></div>\n  </section>\n  <!-- 10-2. 우리 동네 인기 모델 -->\n  <section class=\"sec\" id=\"rankSec\">\n    <div id=\"rankHead\"></div>\n    <div class=\"dcards hscroll\" id=\"rank\"></div>\n  </section>\n  <div class=\"divider\" style=\"margin-top:16px\"></div>\n  <!-- 11. 골라보는 휴대폰 -->\n  <section class=\"sec ucat-wrap\" id=\"pickSec\" style=\"padding-bottom:0\">\n    <div id=\"pickHead\"></div>\n    <nav class=\"models hscroll\" id=\"pickCircles\" style=\"display:flex;gap:4px;padding:0 10px 6px\"></nav>\n    <div class=\"filters\">\n      <div class=\"seg\" data-seg></div>\n      <button class=\"fbtn\" type=\"button\" data-sort-open><span class=\"sort-lbl\">추천순</span> <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n      <button class=\"fbtn\">필터 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"M4 6h16M7 12h10M10 18h4\"/></svg></button>\n    </div>\n    <div class=\"adlabel\">추천 리스트</div>\n    <div id=\"bigList\"></div>\n  </section>\n  <footer class=\"foot\" id=\"foot\" data-edit=\"foot\"></footer>\n</main>\n<!-- ===================== 카테고리 (쿠팡이츠 '한식' 화면) ===================== -->\n<main class=\"view\" id=\"v-cat\">\n  <div class=\"subhead\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button><h1 id=\"catTitle\">전체</h1><span class=\"sh-r\"><button data-home aria-label=\"홈으로\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M3 10.5 12 3l9 7.5\"/><path d=\"M5 9.5V20h5v-6h4v6h5V9.5\"/></svg></button><button data-go=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button></span></div>\n  <div class=\"sticky-tabs\"><nav class=\"ctabs hscroll\" id=\"catTabs\"></nav></div>\n  <nav class=\"hscroll\" id=\"catCircles\" style=\"display:flex;gap:4px;padding:14px 10px 6px\"></nav>\n  <div class=\"filters\">\n    <div class=\"seg\" data-seg></div>\n    <button class=\"fbtn\" type=\"button\" data-sort-open><span class=\"sort-lbl\">추천순</span> <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n    <button class=\"fbtn\">필터 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"M4 6h16M7 12h10M10 18h4\"/></svg></button>\n  </div>\n  <div class=\"adlabel\">추천 리스트</div>\n  <div id=\"catList\"></div>\n</main>\n<!-- ===================== 검색 ===================== -->\n<main class=\"view\" id=\"v-search\">\n  <div class=\"subhead\" style=\"gap:4px;justify-content:flex-start\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button>\n    <label class=\"search\" style=\"margin:0;flex:1;height:40px\"><svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg><input id=\"q\" type=\"search\" autocomplete=\"off\" placeholder=\"모델명을 입력하세요 (예: 폴드, 아이폰)\"></label></div>\n  <div class=\"results\" id=\"results\"></div>\n</main>\n<!-- ===================== 찜한 모델 ===================== -->\n<main class=\"view\" id=\"v-wish\">\n  <div class=\"subhead\"><span style=\"width:40px\"></span><h1>찜한 모델</h1><span style=\"width:40px\"></span></div>\n  <div id=\"wishList\"></div>\n</main>\n<!-- ===================== 모델 상세 (다음 단계) ===================== -->\n<main class=\"view\" id=\"v-model\">\n  <div class=\"subhead\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button><h1 id=\"mdTitle\"></h1><button data-home aria-label=\"홈으로\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M3 10.5 12 3l9 7.5\"/><path d=\"M5 9.5V20h5v-6h4v6h5V9.5\"/></svg></button></div>\n  <div id=\"mdBody\" style=\"padding:0 16px 20px\"></div>\n</main>\n</div><!-- /app -->\n<!-- 하단 탭바 -->\n<nav class=\"tabbar\" id=\"tabbar\">\n  <a href=\"#/\" data-tab=\"home\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z\"/></svg>홈</a>\n  <a href=\"#/search\" data-tab=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg>검색</a>\n  <a href=\"#/wish\" data-tab=\"wish\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z\"/></svg>찜</a>\n  <a href=\"javascript:void 0\" data-open=\"consult\" data-tab=\"consult\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2\"/><path d=\"M9 4h6v3H9zM9 12l2 2 4-4\"/></svg>상담신청</a>\n  <a href=\"javascript:void 0\" data-open=\"store\" data-tab=\"store\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>매장</a>\n</nav>\n<div class=\"dim\" id=\"dim\"></div>\n<div class=\"sheet\" id=\"sheet\"><button type=\"button\" class=\"sheet-x\" aria-label=\"닫기\">×</button><div id=\"sheetBody\"></div></div>";
+var MARKUP = "<!-- 스크롤 시 나타나는 상단바 (쿠팡이츠 방식) -->\n<header class=\"topbar\" id=\"topbar\">\n  <button class=\"lbl\" data-open=\"store\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>매장찾기<svg class=\"ico chev\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n  <button data-go=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button>\n  <button style=\"position:relative;display:flex\" data-open=\"noti\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8\"/><path d=\"M10.3 21a1.9 1.9 0 0 0 3.4 0\"/></svg><i class=\"dot-new\"></i></button>\n</header>\n<div class=\"app\" id=\"app\">\n<!-- ===================== 홈 ===================== -->\n<main class=\"view on\" id=\"v-home\">\n  <!-- 1. 히어로 -->\n  <section class=\"hero\" id=\"hero\">\n    <div class=\"hero-top\">\n      <div class=\"brand\" id=\"brand\" data-edit=\"brand\"></div>\n      <div class=\"hero-r\">\n        <div class=\"uplus-logo\">U<sup>+</sup></div>\n        <div class=\"hero-icons\">\n          <button data-go=\"search\" aria-label=\"검색\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button>\n          <button data-open=\"noti\" aria-label=\"알림\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8\"/><path d=\"M10.3 21a1.9 1.9 0 0 0 3.4 0\"/></svg><i class=\"dot-new\"></i></button>\n        </div>\n      </div>\n    </div>\n    <div class=\"hero-track\" id=\"heroTrack\"></div>\n    <div class=\"dots\" id=\"heroDots\"></div>\n    <div class=\"deal-subs\" id=\"dealSubs\"></div>\n  </section>\n  <!-- 2. 매장찾기 -->\n  <button class=\"locbar\" data-open=\"store\">\n    <svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>\n    <span class=\"lbl\">매장찾기 <svg class=\"ico chev\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><path d=\"m6 9 6 6 6-6\"/></svg></span>\n    <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px;color:#9aa0a8\"><path d=\"m9 6 6 6-6 6\"/></svg>\n  </button>\n  <!-- 3. 검색 -->\n  <label class=\"search\" data-go=\"search\">\n    <svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg>\n    <input type=\"text\" placeholder=\"어떤 휴대폰을 찾고 계세요?\" readonly tabindex=\"-1\">\n  </label>\n  <!-- 4. 모델 원형 아이콘 -->\n  <nav class=\"models\" id=\"models\"></nav>\n  <!-- 5. 퀵메뉴 -->\n  <nav class=\"quick hscroll\" id=\"quick\"></nav>\n  <!-- 6. 신뢰 스트립 -->\n  <div class=\"trust hscroll\" id=\"trust\"></div>\n  <!-- 7. 프로모 배너 -->\n  <a class=\"promo\" id=\"promo\" data-edit=\"promo\"></a>\n  <!-- 8. 많이 찾아요 -->\n  <section class=\"sec\" id=\"popSec\">\n    <div id=\"popHead\"></div>\n    <div class=\"popgrid\" id=\"popgrid\"></div>\n  </section>\n  <div class=\"divider\" style=\"margin-top:16px\"></div>\n  <!-- ===== 여기부터 쿠팡이츠 모티브 섹션 ===== -->\n  <!-- 9-1. 최근 본 모델 (본 게 없으면 숨김) -->\n  <section class=\"sec\" id=\"recentSec\" hidden>\n    <div id=\"recentHead\"></div>\n    <div class=\"hcards hscroll\" id=\"recent\"></div>\n  </section>\n  <!-- 9-2. 기기값 0원 모아보기 -->\n  <section class=\"sec zero-sec\" id=\"zeroSec\">\n    <div id=\"zeroHead\"></div>\n    <div class=\"hcards hscroll\" id=\"zero\"></div>\n  </section>\n  <section class=\"sec\" id=\"wearSec\">\n    <div id=\"wearHead\"></div>\n    <div class=\"hcards hscroll\" id=\"wear\"></div>\n  </section>\n  <div class=\"divider\"></div>\n  <!-- 10-1. 한정 사은품 -->\n  <section class=\"sec\" id=\"giftSec\">\n    <div id=\"giftHead\"></div>\n    <div class=\"dcards hscroll\" id=\"gifts\"></div>\n  </section>\n  <!-- 10-2. 우리 동네 인기 모델 -->\n  <section class=\"sec\" id=\"rankSec\">\n    <div id=\"rankHead\"></div>\n    <div class=\"dcards hscroll\" id=\"rank\"></div>\n  </section>\n  <div class=\"divider\" style=\"margin-top:16px\"></div>\n  <!-- 11. 골라보는 휴대폰 -->\n  <section class=\"sec ucat-wrap\" id=\"pickSec\" style=\"padding-bottom:0\">\n    <div id=\"pickHead\"></div>\n    <nav class=\"models hscroll\" id=\"pickCircles\" style=\"display:flex;gap:4px;padding:0 10px 6px\"></nav>\n    <div class=\"filters\">\n      <div class=\"seg\" data-seg></div><div class=\"maxv-wrap\" data-maxwrap></div>\n      <button class=\"fbtn\" type=\"button\" data-sort-open><span class=\"sort-lbl\">추천순</span> <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n      <button class=\"fbtn\">필터 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"M4 6h16M7 12h10M10 18h4\"/></svg></button>\n    </div>\n    <div class=\"adlabel\">추천 리스트</div>\n    <div id=\"bigList\"></div>\n  </section>\n  <footer class=\"foot\" id=\"foot\" data-edit=\"foot\"></footer>\n</main>\n<!-- ===================== 카테고리 (쿠팡이츠 '한식' 화면) ===================== -->\n<main class=\"view\" id=\"v-cat\">\n  <div class=\"subhead\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button><h1 id=\"catTitle\">전체</h1><span class=\"sh-r\"><button data-home aria-label=\"홈으로\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M3 10.5 12 3l9 7.5\"/><path d=\"M5 9.5V20h5v-6h4v6h5V9.5\"/></svg></button><button data-go=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button></span></div>\n  <div class=\"sticky-tabs\"><nav class=\"ctabs hscroll\" id=\"catTabs\"></nav></div>\n  <nav class=\"hscroll\" id=\"catCircles\" style=\"display:flex;gap:4px;padding:14px 10px 6px\"></nav>\n  <div class=\"filters\">\n    <div class=\"seg\" data-seg></div><div class=\"maxv-wrap\" data-maxwrap></div>\n    <button class=\"fbtn\" type=\"button\" data-sort-open><span class=\"sort-lbl\">추천순</span> <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n    <button class=\"fbtn\">필터 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"M4 6h16M7 12h10M10 18h4\"/></svg></button>\n  </div>\n  <div class=\"adlabel\">추천 리스트</div>\n  <div id=\"catList\"></div>\n</main>\n<!-- ===================== 검색 ===================== -->\n<main class=\"view\" id=\"v-search\">\n  <div class=\"subhead\" style=\"gap:4px;justify-content:flex-start\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button>\n    <label class=\"search\" style=\"margin:0;flex:1;height:40px\"><svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg><input id=\"q\" type=\"search\" autocomplete=\"off\" placeholder=\"모델명을 입력하세요 (예: 폴드, 아이폰)\"></label></div>\n  <div class=\"results\" id=\"results\"></div>\n</main>\n<!-- ===================== 찜한 모델 ===================== -->\n<main class=\"view\" id=\"v-wish\">\n  <div class=\"subhead\"><span style=\"width:40px\"></span><h1>찜한 모델</h1><span style=\"width:40px\"></span></div>\n  <div id=\"wishList\"></div>\n</main>\n<!-- ===================== 모델 상세 (다음 단계) ===================== -->\n<main class=\"view\" id=\"v-model\">\n  <div class=\"subhead\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button><h1 id=\"mdTitle\"></h1><button data-home aria-label=\"홈으로\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M3 10.5 12 3l9 7.5\"/><path d=\"M5 9.5V20h5v-6h4v6h5V9.5\"/></svg></button></div>\n  <div id=\"mdBody\" style=\"padding:0 16px 20px\"></div>\n</main>\n</div><!-- /app -->\n<!-- 하단 탭바 -->\n<nav class=\"tabbar\" id=\"tabbar\">\n  <a href=\"#/\" data-tab=\"home\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z\"/></svg>홈</a>\n  <a href=\"#/search\" data-tab=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg>검색</a>\n  <a href=\"#/wish\" data-tab=\"wish\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z\"/></svg>찜</a>\n  <a href=\"javascript:void 0\" data-open=\"consult\" data-tab=\"consult\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2\"/><path d=\"M9 4h6v3H9zM9 12l2 2 4-4\"/></svg>상담신청</a>\n  <a href=\"javascript:void 0\" data-open=\"store\" data-tab=\"store\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>매장</a>\n</nav>\n<div class=\"dim\" id=\"dim\"></div>\n<div class=\"sheet\" id=\"sheet\"><button type=\"button\" class=\"sheet-x\" aria-label=\"닫기\">×</button><div id=\"sheetBody\"></div></div>";
 
 /* ---------------- 기본 데이터 (파이어베이스가 비어 있을 때) ---------------- */
 var DEFAULT = {
@@ -348,13 +348,17 @@ function optLabel(m){
   if(rs.length) return rs[0].g==='phone'?'용량':(rs.some(function(r){return /mm/i.test(r.cap)})?'사이즈':'옵션');
   return (m&&m.optLabel)||'사이즈';
 }
+// 카드 가격 기준: 기본은 기준 요금제(85), '최대 혜택 기준으로 보기'를 켜면 115,000원 이상 요금제 중 가장 싼 조건
+var MAXV=false; try{ MAXV=sessionStorage.getItem('st_maxv')==='1'; }catch(e){}
+function maxBar(){ return '<button type="button" class="maxv'+(MAXV?' on':'')+'" data-maxv><span class="mv-sw"><i></i></span>최대 혜택 기준으로 보기</button>'+
+  (MAXV?'<div class="maxv-note">최대 혜택 기준인 <b>월 115,000원 이상 요금제를 6개월 이상 유지</b>하는 조건일 때의 혜택이에요.</div>':''); }
 function priceOf(m, oi){
   if(priceHidden(m)) return {kind:'hidden', v:null, out:null};   // 가격 비공개: 예전 가격 대신 '상담 시 안내'
   var rs=sheetRows(m);
   if(rs.length){
     var g=rs[0].g, pk=baseTier(g), type=curType(g), r=null, c=null, ct=null;
     // 카드·목록 가격: 휴대폰은 요금제 중 가장 싸게 살 수 있는 조건(최대 지원) 기준 — 조건은 카드에 함께 표시
-    var best=function(x){ if(g!=='phone') return {c:rowCalc(x,type,pk),t:pk}; var b=null; tiersOf(g).forEach(function(t){ var cx=rowCalc(x,type,t); if(cx&&(!b||cx.v<b.c.v)) b={c:cx,t:t}; }); return b||{c:null,t:pk}; };
+    var best=function(x){ if(g!=='phone'||!MAXV) return {c:rowCalc(x,type,pk),t:pk}; var b=null; tiersOf(g).forEach(function(t){ var cx=rowCalc(x,type,t); if(cx&&(!b||cx.v<b.c.v)) b={c:cx,t:t}; }); return b||{c:null,t:pk}; };
     if(oi!=null && rs[oi]){ r=rs[oi]; var b0=best(r); c=b0.c; ct=b0.t; }
     else {
       var anyOn=rs.some(function(x){return !x.so});
@@ -721,6 +725,7 @@ function sortList(list){
   return list.slice().sort(function(a,b){ var sa=SO(a)?1:0, sb=SO(b)?1:0; if(sa!==sb) return sa-sb; var d=key(a)-key(b); return d||idx[a.id]-idx[b.id]; });
 }
 function sortedCards(list){
+  document.querySelectorAll('[data-maxwrap]').forEach(function(w){ w.innerHTML=maxBar(); });
   document.querySelectorAll('.sort-lbl').forEach(function(lb){ lb.textContent=SORTS.filter(function(x){return x[0]===SORT})[0][1]; });
   return sortList(list).map(function(m){
     var h=bigcard(m), r=SORT==='sales'&&!isWear(m)&&RANK&&RANK[m.id];
@@ -1086,10 +1091,14 @@ function apChips(key, items, cur, n){
     return '<button type="button" class="cg'+(String(x[0])===String(cur)?' on':'')+(x[2]?' dis':'')+'" data-ap="'+key+'" data-v="'+esc(x[0])+'"'+(x[2]?' disabled':'')+'>'+esc(x[1])+'</button>'; }).join('')+'</div>';
 }
 function apPhoneHtml(){
-  var m=apPhone(), h='<section class="ap-sec"><div class="ap-h"><b>01</b>휴대폰</div>';
+  var m=apPhone(), h='<section class="ap-sec"><div class="ap-h"><b>01</b>'+(AP.phone&&!AP.pick?'선택한 휴대폰':'휴대폰')+'</div>';
   if((AP.phone && !AP.pick)){
+    var os0=m?optsOf(m):[], cs0=m?colorsOf(m):[], capNm=os0[AP.cap]&&os0[AP.cap].nm!=='기본'?os0[AP.cap].nm:'', colNm=AP.color||(cs0.length===1?cs0[0].nm:(cs0[0]&&cs0[0].nm)||'');
+    var pills=[capNm,colNm].filter(Boolean);
     h+='<div class="ap-dev"><div class="ap-dev-img">'+(m?im(apColorImg(m),'',true,m.nm):'')+'</div><div class="ap-dev-t"><b>'+esc(m?m.nm:'상담 후 결정할게요')+'</b>'+
-      (m?'<span>'+esc(m.ds||'')+'</span>':'<span>상담하면서 함께 골라 드릴게요</span>')+'</div><button type="button" class="ap-chg" data-ap-act="change">변경</button></div>';
+      (m?'<span>'+esc(m.ds||'')+'</span>':'<span>상담하면서 함께 골라 드릴게요</span>')+
+      (pills.length&&(os0.length>1||cs0.length>1)?'<button type="button" class="ap-opt" data-ap-act="opts">'+pills.map(esc).join('<i></i>')+'</button>':(pills.length?'<span class="ap-opt">'+pills.map(esc).join('<i></i>')+'</span>':''))+
+      '</div><button type="button" class="ap-chg" data-ap-act="change">변경하기 <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button></div>';
   } else {
     var list=models().filter(function(x){return !x.hidden&&kindOf(x)==='phone'});
     h+='<label class="ap-search"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="mDeviceSearch" placeholder="모델명을 검색하세요 (예: S26, 아이폰)" autocomplete="off"></label>'+
@@ -1098,7 +1107,7 @@ function apPhoneHtml(){
           '<button type="button" class="ap-pick'+(x.id===AP.phone?' on':'')+'" data-ap-pick="'+esc(x.id)+'">'+(x.id===AP.phone?'선택됨':'선택하기')+'</button></div>'; }).join('')+
       '<div class="ap-li later" data-nm="상담후결정"><b>상담 후 결정할게요</b><button type="button" class="ap-pick" data-ap-pick="later">선택하기</button></div></div>';
   }
-  if(m && !AP.pick){
+  if(m && !AP.pick && AP.optOpen){
     var os=optsOf(m), cs=colorsOf(m);
     if(os.length>1) h+='<div class="ap-f"><div class="ap-l">'+esc(optLabel(m))+'</div>'+apChips('cap',os.map(function(o,i){return [i,o.nm+(o.row&&o.row.so?' (품절)':'')]}),AP.cap,Math.min(os.length,4))+'</div>';
     if(cs.length>1){ var cur=AP.color||cs[0].nm;
@@ -1110,12 +1119,12 @@ function apPhoneHtml(){
 function apColorImg(m){ var cs=colorsOf(m), c=cs.filter(function(x){return x.nm===AP.color})[0]||cs[0]; return (c&&c.img)||mImg(m); }
 function apPlanHtml(){
   var ts=tiersOf('phone'), t=apTier(), pc=apPhoneCalc(), h='<section class="ap-sec"><div class="ap-h"><b>02</b>가입 조건</div>';
-  h+='<div class="ap-f"><div class="ap-l">현재 사용 중인 통신사 <span class="req">*</span></div>'+apChips('carrier',CARRIERS.map(function(c){return [c,c]}),AP.carrier,4)+
+  h+='<div class="ap-f ap-row"><div class="ap-l">사용 통신사</div><div class="ap-r">'+apChips('carrier',CARRIERS.map(function(c){return [c,c]}),AP.carrier,4)+'</div>'+
     '</div>';
-  h+='<div class="ap-f"><div class="ap-l">요금제</div><select class="csel" id="mPlanSel">'+ts.map(function(x){ return '<option value="'+esc(x.k)+'"'+(t&&x.k===t.k?' selected':'')+'>'+esc(tierTitle(x))+'</option>'; }).join('')+'</select>'+
-    '<div class="cpick-hint">'+PLAN_NOTE+'</div>'+apPerk(t)+'</div>';
-  h+='<div class="ap-f"><div class="ap-l">할인 방식</div>'+apChips('method',[['pub','공시지원금',pc&&!pc.c.pub],['sel','선택약정 (요금 25%↓)']],pc?pc.method:(AP.method||'pub'),2)+(pc&&adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)?'<div class="cpick-hint">'+adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)+'</div>':'')+'</div>';
-  h+='<div class="ap-f"><div class="ap-l">할부 개월</div>'+apChips('months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(AP.months),4)+'</div>';
+  h+='<div class="ap-f ap-row"><div class="ap-l">요금제</div><div class="ap-r"><select class="csel" id="mPlanSel">'+ts.map(function(x){ return '<option value="'+esc(x.k)+'"'+(t&&x.k===t.k?' selected':'')+'>'+esc(tierTitle(x))+'</option>'; }).join('')+'</select>'+
+    '<div class="cpick-hint">'+PLAN_NOTE+'</div>'+apPerk(t)+'</div></div>';
+  h+='<div class="ap-f ap-row"><div class="ap-l">할인 방식</div><div class="ap-r">'+apChips('method',[['pub','공시지원금',pc&&!pc.c.pub],['sel','선택약정 (요금 25%↓)']],pc?pc.method:(AP.method||'pub'),2)+(pc&&adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)?'<div class="cpick-hint">'+adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)+'</div>':'')+'</div></div>';
+  h+='<div class="ap-f ap-row"><div class="ap-l">할부 개월</div><div class="ap-r">'+apChips('months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(AP.months),4)+'</div></div>';
   return h+'</section>';
 }
 // 이 요금제로 함께 살 수 있는 것 안내
@@ -1217,45 +1226,58 @@ function apRowHtml(x){
   return crow(lb,x.sub,v,was,x.cls)+(on?'<div class="tip-bub">'+tip.t+'</div>':'');
 }
 function apSumHtml(){
-  var S2=apSummary(), recs=S2.recs, keys=recs.map(function(r){return r.key});
+  var S2=apSummary(), recs=S2.recs, A=recs.filter(function(r){return r.sk==='phone'})[0], adds=recs.filter(function(r){return r.sk!=='phone'}), pc=S2.pc;
   var h='<section class="ap-sec ap-sumsec"><div class="ap-h"><b>'+(apAddOn()?'04':'03')+'</b>예상 월 납부금액</div>';
-  if(!recs.length){ h+='<div class="ap-sub">휴대폰과 조건을 고르시면 예상 금액을 바로 보여드려요. 정확한 금액은 상담 시 안내드려요.</div>'; return h+'</section>'; }
-  AP.devOpen=AP.devOpen||{};
-  var body='';
-  recs.forEach(function(r){
-    var dv='';
-    if(r.after!=null){
-      var open=!!AP.devOpen[r.sk];
-      dv='<div class="rc-dev'+(open?' on':'')+'"><button type="button" class="rc-tog" data-ap-dev="'+r.sk+'"><span class="rc-lab">기기값</span>'+
-        '<span class="rc-tog-v"><b>'+wz(r.after)+'</b>'+(r.sup?'<small>총 '+won(r.sup)+' 지원</small>':'')+'</span><i>'+(open?'접기':'자세히')+'</i></button>'+
-        (open?'<div class="cres-d">'+r.dev.map(apRowHtml).join('')+'</div>':'')+'</div>';
-    } else if(r.dev.length) dv='<div class="rc-dev"><div class="cres-d">'+r.dev.map(apRowHtml).join('')+'</div></div>';
-    body+='<div class="rc"><div class="rc-h"><i>'+r.key+'</i><span>'+esc(r.kind)+'</span><b>'+esc(r.nm)+'</b></div>'+dv+
-      '<div class="rc-mon"><div class="rc-lab">매월 내는 금액</div><div class="cres-d">'+r.mon.map(apRowHtml).join('')+'</div>'+
-      '<div class="rc-sub"><span>'+esc(r.kind)+' 월 합계 <i>'+r.key+'</i></span><b>'+(r.ask&&!r.sub?'상담 시 안내':won(r.sub))+'</b></div></div></div>';
-  });
-  h+='<div class="cres ap-res">'+body+
-    (S2.sup||S2.selSave?'<div class="rc-sup">'+
-      (S2.sup?'<div class="rc-sup-r"><span>받으시는 기기 지원금 <small>'+keys.join(' + ')+'</small></span><b>총 '+won(S2.sup)+'</b></div>':'')+
-      (S2.selSave?'<div class="rc-sup-r sm"><span>선택약정 요금 할인 <small>24개월</small></span><b>총 '+won(S2.selSave)+'</b></div>':'')+'</div>':'')+
-    '<div class="rc-total"><div class="rc-total-l"><span>매월 예상 납부금액</span><small>'+keys.join(' + ')+'</small></div>'+
-      '<div class="rc-total-v">'+won(S2.total)+'<small> / 월</small></div></div>'+
-    (S2.upfront?'<div class="rc-up">+ 일시납 '+won(S2.upfront)+'</div>':'')+
-    (S2.flow.length?'<div class="rc-flow"><div class="rc-lab">기간별 예상</div><div class="cres-d">'+S2.flow.map(function(f,i){ return apRowHtml({l:f.l,a:f.a,sub:f.sub,was:null,cls:i?'sum':'',t:null,tip:f.tip}); }).join('')+'</div></div>':'')+
+  if(!recs.length||(!S2.total&&!S2.upfront)){ h+='<div class="ap-sub">휴대폰과 조건을 고르시면 예상 금액을 바로 보여드려요.</div>'; return h+'</section>'; }
+  AP.tip=AP.tip||{};
+  var tipB=function(k,t){ return '<button type="button" class="tipb'+(AP.tip[k]?' on':'')+'" data-ap-tip="'+k+'" aria-label="설명 보기">?</button>'+(AP.tip[k]?'<div class="tip-bub">'+t+'</div>':''); };
+  var line=function(l,v,cls){ return '<div class="ms-r'+(cls?' '+cls:'')+'"><span>'+l+'</span><b>'+v+'</b></div>'; };
+  // 위: 월 예상 납부금액 + 기간별
+  var flow=S2.flow, f1=flow[0], f2=flow[1];
+  h+='<div class="ms-top'+(f2?'':' solo')+'"><div class="ms-main"><span class="ms-l">월 예상 납부금액</span><b class="ms-v">'+won(S2.total)+'<small> / 월</small></b>'+
+    '<span class="ms-h">'+(pc&&pc.mm===0?'통신 요금 기준 · 기기값은 일시납':'기기 할부금 + 통신 요금 ('+(AP.months||24)+'개월 기준)')+'</span>'+(S2.upfront?'<span class="ms-h">+ 일시납 '+won(S2.upfront)+'</span>':'')+'</div>';
+  if(f2) h+='<div class="ms-flow">'+
+      '<div class="ms-f"><i class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4M9 14h.01M12 14h.01M15 14h.01"/></svg></i><div><span>처음 6개월</span><b>'+won(f1.a)+'<small> / 월</small></b><em>'+f1.sub+'</em></div></div>'+
+      '<div class="ms-f"><i class="ic"><svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></svg></i><div><span>7개월 차부터'+(f2.tip?tipB(f2.tip.k,f2.tip.t):'')+'</span><b>'+won(f2.a)+'<small> / 월</small></b><em>'+f2.sub.replace('바꾸시면','변경 시')+'</em></div></div>'+
     '</div>';
+  h+='</div>';
+  // 아래 왼쪽: 월 납부 구성
+  var mon='';
+  if(A&&A.mon.length) A.mon.forEach(function(x){
+    if(x.t!=null) mon+=line(esc(x.l),esc(x.t));
+    else if(x.l==='기기 할부금') mon+=line('기기 할부금 ('+(AP.months||24)+'개월)',won(x.a));
+    else if(x.l==='기기값 일시납') mon+=line('기기값 일시납',won(x.a));
+    else mon+=line(esc(x.l)+(x.was?' <small>25% 할인</small>':''),won(x.a));
+  });
+  adds.forEach(function(r){ r.mon.forEach(function(x){ if(typeof x.a==='number'&&x.a>0&&x.l!=='기기값 일시납') mon+=line(esc(r.kind)+' '+esc(x.l.replace('기기 ','')),won(x.a)); }); });
+  mon+=line('월 합계',won(S2.total),'sum');
+  // 아래 오른쪽: 기기 구매 혜택
+  var ben='';
+  if(A&&A.after!=null){
+    A.dev.forEach(function(x){
+      if(x.l==='출고가') ben+=line('출고가',won(x.a));
+      else if(x.cls==='minus') ben+=line((x.l==='유플러스 다이렉트 지원금'?'추가 지원금 (유플러스 다이렉트)':esc(x.l)+(x.sub?' ('+esc(x.sub)+')':'')),'-'+won(-x.a),'minus');
+    });
+    ben+=line('지원 후 기기값',wz(A.after),'sum');
+  } else ben+='<div class="ms-ask">기기값은 상담 시 안내드려요</div>';
+  adds.forEach(function(r){ if(r.sup) ben+=line(esc(r.kind)+' 지원금','-'+won(r.sup),'minus'); });
+  h+='<div class="ms-grid">'+
+    '<div class="ms-card"><div class="ms-ch"><i class="ic won">₩</i>월 납부 구성'+tipB('mon','기기 할부금은 할부이자(연 5.9%)가 포함된 금액이에요. 통신 요금은 고르신 요금제 기준이에요.')+'</div>'+mon+'</div>'+
+    '<div class="ms-card"><div class="ms-ch"><i class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8c-1.5-3-5.5-3.5-5.5-1S9 8 12 8c3 0 7-.5 5.5-2.5S13.5 5 12 8z"/></svg></i>기기 구매 혜택'+tipB('ben','출고가에서 지원금을 빼고 남은 기기값을 할부로 나눠 내요.')+'</div>'+ben+'</div>'+
+  '</div>';
   return h+'</section>';
 }
 function apInfoHtml(){
-  return '<section class="ap-sec" id="consultForm"><div class="ap-h"><b>'+(apAddOn()?'05':'04')+'</b>고객 정보</div>'+
+  return '<section class="ap-sec ap-info" id="consultForm"><div class="ap-h"><b>'+(apAddOn()?'05':'04')+'</b>고객 정보</div>'+
     '<div class="ff"><label>이름 <span class="req">*</span></label><input type="text" id="mUserName" placeholder="이름을 입력해 주세요" autocomplete="name"></div>'+
     '<div class="ff"><label>연락처 <span class="req">*</span></label><div class="phone3"><input type="text" id="mPhone1" value="010" readonly tabindex="-1"><span>-</span><input type="tel" id="mPhone2" maxlength="4" inputmode="numeric" placeholder="0000"><span>-</span><input type="tel" id="mPhone3" maxlength="4" inputmode="numeric" placeholder="0000"></div></div>'+
     '<div class="ff"><label>생년월일 <span class="req">*</span></label><input type="text" id="mUserBirth" inputmode="numeric" maxlength="8" placeholder="예: 940101"></div>'+
-    '<div class="ff"><label>전달사항</label><textarea id="mUserNote" rows="3" maxlength="500" placeholder="요청사항을 적어주세요"></textarea></div>'+
-    '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히</button></label>'+
+    '<div class="ff"><label>전달사항</label><textarea id="mUserNote" rows="3" maxlength="500" placeholder="요청사항을 적어주세요 (선택)"></textarea></div>'+
+    '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히 보기 ›</button></label>'+
     '<div class="privacy-txt" id="privacyTxt">유플러스 다이렉트(이하 "회사")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
     '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사<br>· 목적: 온라인 상담 신청 접수, 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
     '동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.</div>'+
-    '<button type="button" class="cta" id="mSubmitBtn"><span class="rf-submit-label">이 조건으로 상담 신청하기</span></button></section>';
+    '<button type="button" class="cta" id="mSubmitBtn"><span class="rf-submit-label">이 조건으로 상담 신청하기</span> <svg class="cta-ar" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button></section>';
 }
 function apBarHtml(){
   var t=apSummary().total;
@@ -1264,7 +1286,7 @@ function apBarHtml(){
 function renderApply(full){
   if(!AP) AP=apInit();
   if(full || !$('#apCond')){
-    $('#apBody').innerHTML='<div class="ap-intro">조건을 고르시면 예상 금액을 바로 보여드려요</div><div id="apCond"></div><div id="apSum"></div>'+apInfoHtml();
+    $('#apBody').innerHTML='<div id="apCond"></div><div id="apSum"></div>'+apInfoHtml();
   }
   $('#apCond').innerHTML=apPhoneHtml()+apPlanHtml()+apAddHtml();
   $('#apSum').innerHTML=apSumHtml();
@@ -1340,6 +1362,7 @@ document.addEventListener('click',function(e){
   var t=e.target;
   if(t.closest('.sheet-x')){ e.preventDefault(); closeSheet(); return; }
   if(t.closest('#mSubmitBtn')){ e.preventDefault(); apSubmit(); return; }
+  if(t.closest('[data-maxv]')){ e.preventDefault(); MAXV=!MAXV; try{ sessionStorage.setItem('st_maxv',MAXV?'1':'0'); }catch(x){} refresh(); return; }
   var so=t.closest('[data-sort-open]');
   if(so){ e.preventDefault(); sortPop(so); return; }
   var sb=t.closest('[data-sort]');
@@ -1361,7 +1384,8 @@ document.addEventListener('click',function(e){
   if(apc){ e.preventDefault(); var cid=apc.getAttribute('data-ap-cond'); AP.open[cid]=!(AP.open[cid]||AP[kindOf(byId(cid))==='tvfree'?'tv':kindOf(byId(cid))]===cid); apRefresh(); return; }
   var apa=t.closest('[data-ap-act]');
   if(apa){ e.preventDefault(); var aa=apa.getAttribute('data-ap-act');
-    if(aa==='change'){ AP.pick=true; apRefresh(); var si=$('#mDeviceSearch'); if(si) si.focus(); }
+    if(aa==='opts'){ AP.optOpen=!AP.optOpen; apRefresh(); }
+    else if(aa==='change'){ AP.pick=true; apRefresh(); var si=$('#mDeviceSearch'); if(si) si.focus(); }
     else if(aa==='go'){ var cf=$('#consultForm'); if(cf) window.scrollTo({top:cf.getBoundingClientRect().top+window.scrollY-60,behavior:'smooth'}); }
     return; }
   if(t.closest('[data-privacy]')){ e.preventDefault(); $('#privacyTxt').classList.toggle('on'); return; }
