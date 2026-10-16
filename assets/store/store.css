@@ -996,7 +996,8 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 #v-apply .ap-row{grid-template-columns:62px 1fr;column-gap:6px}
 #v-apply .ap-row .cg{font-size:12.5px;padding-left:2px;padding-right:2px;white-space:nowrap;letter-spacing:-.02em}
 #v-apply .ap-row .csel{font-size:14px}
-.ap-sumsec .ms-r span{white-space:nowrap}
+.ap-sumsec .ms-r span{white-space:normal;word-break:keep-all;flex:1 1 auto;min-width:0}
+.ap-sumsec .ms-r b{flex:none}
 @media (max-width:480px){
   .ap-sumsec .ms-top{grid-template-columns:1fr;padding:16px 14px 12px}
   .ap-sumsec .ms-main{padding-right:0}

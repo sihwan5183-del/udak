@@ -380,9 +380,15 @@ function priceOf(m, oi){
   var v = MNP ? (mnp!=null?mnp:chg) : (chg!=null?chg:mnp);
   return {out:num(p.out), mnp:mnp, chg:chg, v:v};
 }
+// 태그: '기기값 0원' 같은 0원 문구는 지금 보는 가격이 실제로 0원일 때만 노출
+function tagsOf(m){
+  var t=arr(m&&m.tags); if(!t.length) return t;
+  var p=priceOf(m), zero = p.v===0 || (p.kind==='hidden' && m.cat.indexOf('zero')>-1);
+  return zero ? t : t.filter(function(x){ return !/(^|[^0-9,])0원|공짜/.test(String(x)); });
+}
 function priceLine(m){
   var p=priceOf(m);
-  if(p.v==null) return '<div class="pr" style="font-size:14px">'+esc(m.tags[0]||'상담 시 안내')+'</div>';
+  if(p.v==null) return '<div class="pr" style="font-size:14px">'+esc(tagsOf(m)[0]||'상담 시 안내')+'</div>';
   return '<div class="pr price-row">'+wz(p.v)+(p.from?'<span style="font-size:12px;color:var(--sub);font-weight:600">~</span>':'')+(p.out&&p.out>p.v?'<s>'+won(p.out)+'</s>':'')+'</div>'+
     (p.g==='phone'&&p.tier?'<div class="pr-c">'+(MNP?'번호이동':'기기변경')+' · '+esc(p.tier.title||tierLabel(p.tier))+' 기준</div>':'');
 }
@@ -392,22 +398,22 @@ function badgeOf(m){
   var p=priceOf(m);
   if(p.v===0) return '기기값 0원';
   var pct=pctOf(p); if(pct>0) return pct+'% 할인';
-  return m.tags[0]||'';
+  return tagsOf(m)[0]||'';
 }
 function stripOf(m){
   if(SO(m)) return '일시품절 · 입고 알림 상담 가능';
-  if(m.strip) return m.strip;
+  if(m.strip && !(/(^|[^0-9,])0원|공짜/.test(m.strip) && priceOf(m).v!==0)) return m.strip;
   var pp=priceOf(m);
   if(pp.kind==='sheet'){
     if(pp.g==='second') return pp.sub?('휴대폰과 함께 구매 시 '+won(pp.sub)+' 할인'):'휴대폰과 함께 구매 시 혜택';
     if(pp.g==='tvfree') return pp.sub?('이통사 지원금 '+won(pp.sub)+' 할인'):'TV프리 상담 가능';
-    var lead=(MNP?'번호이동':'기기변경')+' 시 ', tail=m.tags[1]?' + '+m.tags[1]:'';
+    var lead=(MNP?'번호이동':'기기변경')+' 시 ', tail=tagsOf(m)[1]?' + '+tagsOf(m)[1]:'';
     if(pp.v===0) return lead+'기기값 0원'+tail;
     var pct=pctOf(pp); if(pct>0) return lead+'기기값 '+pct+'% 할인'+tail;
   }
   if(pp.kind==='hidden' && isWear(m)) return '휴대폰과 함께 구매 시 혜택';
   if(pp.kind==='sub') return pp.sub?('이통사 지원금 '+won(pp.sub)+' 할인'):'스마트기기 상담 가능';
-  return (MNP?'번호이동':'기기변경')+' 시 '+(m.tags[0]||'')+(m.tags[1]?' + '+m.tags[1]:'');
+  return (MNP?'번호이동':'기기변경')+' 시 '+(tagsOf(m)[0]||'')+(tagsOf(m)[1]?' + '+tagsOf(m)[1]:'');
 }
 function segBtns(){
   return '<button type="button" data-mnp="1" class="'+(MNP?'on':'')+'">번호이동</button><button type="button" data-mnp="0" class="'+(MNP?'':'on')+'">기기변경</button>';
@@ -618,7 +624,7 @@ function renderPop(){
   $('#popgrid').innerHTML=pickList('pop').map(function(m){
     return '<a class="pc'+(SO(m)?' soldout':'')+hidCls(m)+'" href="#/model/'+esc(m.id)+'" data-edit="sec:pop"><div class="thumb" style="position:relative">'+im(mImg(m),'','',m.nm)+(SO(m)?'<span class="so-tag" style="font-size:11px">품절</span>':'')+'</div><div class="info">'+
       '<div class="nm">'+esc(m.nm)+CHEV+'</div><div class="ds">'+esc(m.ds)+'</div>'+
-      '<div class="pills">'+m.tags.map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div></div></a>';
+      '<div class="pills">'+tagsOf(m).map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div></div></a>';
   }).join('');
 }
 function hcard(m,opt){
@@ -850,7 +856,7 @@ function renderModel(id, keepRecent){
   var pc=colorsOf(m).filter(function(c){return c.nm===PICK[m.id]})[0];
   $('#mdBody').innerHTML='<div class="ucard" data-edit="model:'+esc(m.id)+'"><div class="md-img" id="mdImg">'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(SO(m)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>'+
     '<h2 class="md-h ucard-name">'+esc(m.nm)+'</h2><p style="color:var(--sub);margin-top:4px">'+esc(m.ds)+'</p>'+
-    '<div class="pills" style="margin-top:10px">'+m.tags.map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div>'+
+    '<div class="pills" style="margin-top:10px">'+tagsOf(m).map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div>'+
     colorPicker(m)+optPicker(m)+pickers+
     (SO(m)||(selRow&&selRow.so)?'<div class="so-notice">'+(SO(m)?'현재 일시품절입니다':'선택하신 '+esc(selRow.cap||'옵션')+' 은(는) 일시품절입니다')+'. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
     '<div class="ptable" id="ucatPrice">'+rows+''+'</div>'+guideHtml(m)+
