@@ -2837,21 +2837,14 @@ var PHONE_TYPE_LABEL={mnp:'(번호이동)',chg:'(기기변경)'};
 var PHONE_PRODUCT_NAME={duo:'아이폰 듀오'};
 var PHONE_IMG_BASE='/assets/iphone18/';
 var PHONE_COLOR_IMG={'스타 화이트':'duo_starwhite.webp','나이트 스카이':'duo_nightsky.webp'};
-// v20261017: 월 할부금은 사장님 단가표 숫자를 그대로 보여 준다 — '지원 후 금액'(출고가−지원금)별 24/30/36개월 월 할부금.
-//  단가표에 없는 조합(1TB, 지원금이 또 바뀐 뒤 등)만 U+ 할부이자(연 5.9%) 원리금균등 식으로 계산해 원 단위 정리(udakWon10).
-//  (예전 '할부이자 계수 1.0626/1.0781/1.0935' 방식은 30개월에서 단가표와 10원씩 어긋나서 바꿈)
-var PHONE_MONTHLY_TABLE={
-  3000000:{24:132820,30:107800,36:91130},   // 256GB 번호이동 (3,300,000 − 300,000)
-  3297000:{24:145970,30:118470,36:100150},  // 512GB 번호이동 (3,597,000 − 300,000)
-  3100000:{24:137250,30:111390,36:94160},   // 256GB 기기변경 (3,300,000 − 200,000)
-  3397000:{24:150400,30:122060,36:103180}   // 512GB 기기변경 (3,597,000 − 200,000)
-};
+// v20261017: 월 할부금 = U+ 전산 방식 — 지원 후 금액에 연 5.9% 원리금균등(원금×월이율÷(1−(1+월이율)^−개월)) → 1원 반올림 → 10원 아래 버림.
+//  사장님 단가표(10/17) 12건(256·512 × 번이·기변 × 24/30/36) 전부 이 식으로 정확히 나온다.
+//  (예전 '할부이자 계수 1.0626/1.0781/1.0935 + 1원 자리 8·9 올림' 방식은 30개월에서 +10원, 36개월 번이에서 −10원 어긋나서 바꿈)
+//  서류작성 시트(ssgadmin sheetCalc.monthlyInstallmentOf)와 같은 식 — 한쪽을 고치면 다른 쪽도 같이.
 var PHONE_APR=0.059; // U+ 할부수수료 연 5.9%
 function monthlyOf(after,months){
-  var t=PHONE_MONTHLY_TABLE[after];
-  if(t&&t[months]) return t[months];
   var r=PHONE_APR/12;
-  return udakWon10(after*r/(1-Math.pow(1+r,-months)));
+  return uplusWon10(after*r/(1-Math.pow(1+r,-months)));
 }
 // SKT/KT/알뜰폰 고객 = 번호이동, LG U+ 고객 = 기기변경
 function carrierType(c){ return c==='LG U+' ? 'chg' : 'mnp'; }
@@ -2861,8 +2854,9 @@ var phoneSel={
 };
 
 function won(n){ return n.toLocaleString('ko-KR')+'원'; }
-// v20261006: 원 단위 정리 규칙 — 1원 자리가 8·9면 10원 올림, 1~7이면 버림(절삭) (갤럭시 랜딩과 같은 규칙)
-function udakWon10(n){ n=Math.round(Number(n)||0); var r=((n%10)+10)%10; return r>=8?n+(10-r):n-r; }
+// v20261017: 원 단위 정리 규칙 — U+ 전산과 같이 1원 단위 반올림 뒤 10원 아래 버림 (예 94,167.6 → 94,160 / 91,129.9 → 91,130).
+//  (v20261006의 '1원 자리 8·9면 올림' 규칙은 94,168 → 94,170 으로 만들어 단가표와 어긋남. 갤럭시 랜딩은 아직 옛 규칙)
+function uplusWon10(n){ n=Math.round(Number(n)||0); return n-(((n%10)+10)%10); }
 function updatePhonePrice(id){
   var s=phoneSel[id], d=PHONE_DATA[id];
   var list=d.list[s.cap];
