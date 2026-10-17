@@ -2822,10 +2822,11 @@ window.toggleQmPopup=function(kind){
 window.closeQmPopup=function(kind){
   (kind==='call'?document.getElementById('qmPhoneOverlay'):document.getElementById('qmKakaoOverlay')).classList.remove('open');
 };
-// v20261002: 아이폰 듀오 출고가 — 애플 공식 국내 가격 기준(256GB 3,290,000원부터). U+ 출고가가 다르면 이 표 숫자만 바꾸면 됨.
-// 월 할부금은 아래 updatePhonePrice에서 (출고가-지원금)×할부이자 계수/개월로 실시간 계산.
+// v20261017: 아이폰 출고가 인상 반영(사장님 단가표 10/17) — 256GB 3,300,000(+1만) / 512GB 3,597,000(+7천) / 1TB 4,191,000(+1천).
+//  (v20261002 애플 공식가 3,290,000/3,590,000/4,190,000 에서 바뀜. 출고가가 또 바뀌면 이 표 숫자만 고치면 됨)
+// 월 할부금은 아래 monthlyOf() — 단가표 숫자가 있으면 그대로, 없으면 할부이자 식으로 계산.
 var PHONE_DATA={
-  duo:{ list:{'256GB':3290000,'512GB':3590000,'1TB':4190000} } // v20261006: 2TB 뺌
+  duo:{ list:{'256GB':3300000,'512GB':3597000,'1TB':4191000} } // v20261006: 2TB 뺌
 };
 // v20261002: 번호이동 지원금 30만원 / 기기변경 20만원 (지원금 조건: 85,000원 요금제 6개월 이상 유지 — 배너 이미지에 표기).
 // v20260914: 요금제에 따른 금액 차이는 랜딩에서 분기 안 하고 상담 단계에서 안내. 월 할부금은 할부이자 계수로
@@ -2836,7 +2837,22 @@ var PHONE_TYPE_LABEL={mnp:'(번호이동)',chg:'(기기변경)'};
 var PHONE_PRODUCT_NAME={duo:'아이폰 듀오'};
 var PHONE_IMG_BASE='/assets/iphone18/';
 var PHONE_COLOR_IMG={'스타 화이트':'duo_starwhite.webp','나이트 스카이':'duo_nightsky.webp'};
-var PHONE_MONTH_RATE={24:1.0626,30:1.0781,36:1.0935}; // 할부이자 포함 계수(연 5.9% 기준)
+// v20261017: 월 할부금은 사장님 단가표 숫자를 그대로 보여 준다 — '지원 후 금액'(출고가−지원금)별 24/30/36개월 월 할부금.
+//  단가표에 없는 조합(1TB, 지원금이 또 바뀐 뒤 등)만 U+ 할부이자(연 5.9%) 원리금균등 식으로 계산해 원 단위 정리(udakWon10).
+//  (예전 '할부이자 계수 1.0626/1.0781/1.0935' 방식은 30개월에서 단가표와 10원씩 어긋나서 바꿈)
+var PHONE_MONTHLY_TABLE={
+  3000000:{24:132820,30:107800,36:91130},   // 256GB 번호이동 (3,300,000 − 300,000)
+  3297000:{24:145970,30:118470,36:100150},  // 512GB 번호이동 (3,597,000 − 300,000)
+  3100000:{24:137250,30:111390,36:94160},   // 256GB 기기변경 (3,300,000 − 200,000)
+  3397000:{24:150400,30:122060,36:103180}   // 512GB 기기변경 (3,597,000 − 200,000)
+};
+var PHONE_APR=0.059; // U+ 할부수수료 연 5.9%
+function monthlyOf(after,months){
+  var t=PHONE_MONTHLY_TABLE[after];
+  if(t&&t[months]) return t[months];
+  var r=PHONE_APR/12;
+  return udakWon10(after*r/(1-Math.pow(1+r,-months)));
+}
 // SKT/KT/알뜰폰 고객 = 번호이동, LG U+ 고객 = 기기변경
 function carrierType(c){ return c==='LG U+' ? 'chg' : 'mnp'; }
 function getSubsidy(carrier){ return carrierType(carrier)==='chg' ? PHONE_SUBSIDY_CHG : PHONE_SUBSIDY_MNP; }
@@ -2866,14 +2882,13 @@ function updatePhonePrice(id){
   $('after').textContent=won(after);
   if(s.months===null){
     // v20261009(사장님 요청): 할부를 안 고르고 통신사만 눌러도 36개월 기준으로 바로 계산 — 버튼 순서·선택은 그대로, 개월을 고르면 그 개월로 바뀜
-    $('result').textContent=won(udakWon10(after*PHONE_MONTH_RATE[36]/36))+' / 월';
+    $('result').textContent=won(monthlyOf(after,36))+' / 월';
     $('resultHint').textContent='36개월 할부 기준 · 기기값, 할부이자 포함';
   } else if(s.months===0){
     $('result').textContent=won(after);
     $('resultHint').textContent='일시납 · 지원 후 금액 (할부이자 없음)';
   } else {
-    var raw=after*PHONE_MONTH_RATE[s.months]/s.months;
-    var m=udakWon10(raw);
+    var m=monthlyOf(after,s.months);
     $('result').textContent=won(m)+' / 월';
     $('resultHint').textContent=s.months+'개월 할부 · 기기값 기준, 할부이자 포함';
   }
@@ -2986,7 +3001,7 @@ function rfsPaint(st,editing){
   var after=((PHONE_DATA.duo.list||{})[cap]||0)-getSubsidy(car);
   var m=inst==='일시납'?0:(parseInt(inst,10)||36);   // v20261009: 할부 미정이면 36개월 기준 (예전 24개월)
   if(m===0){ price.textContent=won(after); hint.textContent='일시납 · 지원 후 금액'; }
-  else { price.innerHTML=won(udakWon10(after*PHONE_MONTH_RATE[m]/m))+'<small>/월</small>'; hint.textContent=m+'개월 할부'+(inst?'':' 기준')+' · 기기값, 할부 이자 포함'; }
+  else { price.innerHTML=won(monthlyOf(after,m))+'<small>/월</small>'; hint.textContent=m+'개월 할부'+(inst?'':' 기준')+' · 기기값, 할부 이자 포함'; }
 }
 // v20261009: '변경' → 카드 안 편집(컬러·용량·통신사·할부) + '저장하기'. 예전처럼 아래 칸(rf-pick)을 펼치지 않음
 //  · 고르는 동안 위 요약·예상 월 납부금액이 바로 바뀌어 보이고, '저장하기'를 눌러야 신청서·위 카드·하단 버튼에 반영
@@ -3039,7 +3054,7 @@ window.rfFullPriceRender=function(){
   var price=document.getElementById('rfFullPrice'), hint=document.getElementById('rfFullHint');
   var parts=[cap+(capV?'':' 기준')];
   if(m===0){ price.textContent=won(after); parts.push('일시납 · 지원 후 금액'); }
-  else { price.innerHTML=won(udakWon10(after*PHONE_MONTH_RATE[m]/m))+'<small>/월</small>'; parts.push(m+'개월 할부'+(inst?'':' 기준')+' · 할부이자 포함'); }
+  else { price.innerHTML=won(monthlyOf(after,m))+'<small>/월</small>'; parts.push(m+'개월 할부'+(inst?'':' 기준')+' · 할부이자 포함'); }
   parts.push((car==='LG U+'?'기기변경':'번호이동')+' 지원금 '+(sub/10000)+'만원 적용');
   hint.textContent=parts.join(' · ');
   row.hidden=false;
