@@ -487,6 +487,7 @@ function mdFollow(prev){
 }
 function manwon(n){ return n%10000===0?(n/10000).toLocaleString('ko-KR')+'만원':won(n); }
 var KKI='<svg class="kk" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.6c-5.2 0-9.4 3.3-9.4 7.4 0 2.6 1.7 4.9 4.3 6.2l-.9 3.3c-.1.3.3.6.6.4l3.9-2.6c.5.1 1 .1 1.5.1 5.2 0 9.4-3.3 9.4-7.4S17.2 3.6 12 3.6z"/></svg>';
+var PHI='<svg class="cs-phi" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>';
 function cgrid(label, key, items, cur, m, n, hint){
   return '<div class="cpick"><div class="cpick-l">'+label+'</div><div class="cgrid" style="--n:'+n+'">'+items.map(function(x){
     return '<button type="button" class="cg'+(String(x[0])===String(cur)?' on':'')+(x[2]?' dis':'')+'" data-calc="'+key+'" data-v="'+esc(x[0])+'" data-model="'+esc(m.id)+'"'+(x[2]?' disabled':'')+'>'+esc(x[1])+'</button>';
@@ -1028,7 +1029,12 @@ function renderModel(id, keepRecent){
   body+=step('price', '내 가격 확인', '내 예상 가격을 확인하세요', '', (soNow?'<div class="so-notice">'+(SO(m)?'현재 일시품절입니다':'선택하신 '+esc(selRow.cap||'옵션')+' 은(는) 일시품절입니다')+'. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
     '<div class="ptable" id="ucatPrice">'+rows+'</div>'+guideHtml(m)+
     '<div class="md-chips">'+(isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):(gg==='phone'&&cst&&cst.c)?'':'<span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span>')+'<span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>', '');
-  body+=step('go', '카톡·전화 상담', '마음에 드시면 아래 버튼으로 상담을 신청하세요', '', '<ul class="mstep-how"><li><b>카톡 상담</b><span>고객 정보를 남기면 카카오톡으로 바로 상담</span></li><li><b>상담 신청</b><span>조건 확인 후 전화로 5분 상담</span></li></ul>', nowKey==='go'?'<em class="mstep-go">이제 신청만 남았어요</em>':'');
+  // 20261019 마지막 단계: 레퍼런스 카드 그대로 — '원하시는 방법의 상담을 선택해 주세요!' + [카톡 상담] [전화 상담] (누르면 하단 버튼과 똑같이 열림)
+  body+=step('go', '카톡·전화 상담', '<em>원하시는 방법의</em><br>상담을 선택해 주세요!', '',
+    '<div class="mstep-cs">'+
+      '<button type="button" class="cs-kk" data-qk="'+esc(m.id)+'">'+KKI+'카톡 상담</button><p>카카오톡에서 메시지를 보내주시면 상담이 시작됩니다.</p>'+
+      '<button type="button" class="cs-ph" data-open="consult" data-model="'+esc(m.id)+'">'+PHI+'전화 상담</button><p>고객 정보를 남겨주시면 담당자가 전화로 안내해 드립니다.</p>'+
+    '</div>', '<em class="mstep-cs-tag">상담 방법 선택</em>', 'cs');
   // 위 안내: 고른 단계는 ✓, 지금 할 단계는 분홍 — 누르면 그 단계로 이동
   var guide=steps.length>2?'<div class="mguide"><b>이 순서대로 하시면 돼요</b><ol>'+steps.map(function(s,i){ return '<li class="'+(s.ok?'ok':'')+(s.now?' on':'')+'" data-mg="'+s.k+'"><i>'+(s.ok?'✓':(i+1))+'</i>'+esc(s.t)+'</li>'; }).join('')+'</ol></div>':'';
   // 하단 고정: 지금 상태 한 줄 + [카톡 상담] [상담 신청]

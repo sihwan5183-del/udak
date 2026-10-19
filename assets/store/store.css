@@ -1517,3 +1517,19 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .kkd-s{margin-top:10px;font-size:11.5px;color:var(--sub);line-height:1.45;word-break:keep-all}
 .kkd-ph{margin-top:6px;font-size:11.5px;color:var(--mute)}
 .kkd-ph b{color:var(--ink2)}
+/* 20261019 마지막 단계 카드 (레퍼런스): 분홍 테두리 + 연분홍 배경 + 바깥 은은한 테두리 / 제목 앞부분 분홍 / 오른쪽 '상담 방법 선택' / [카톡 상담] [전화 상담] + 설명 */
+.mstep.cs{margin:22px -4px 6px;padding:16px 14px;border:2px solid var(--pink);border-radius:18px;background:#FFF6FA;box-shadow:0 0 0 6px rgba(230,0,126,.07);animation:none}
+.mstep.cs .mstep-h{align-items:center;gap:10px}
+.mstep.cs .mstep-h>b{width:28px;height:28px;font-size:15px;font-weight:900;background:var(--pink);margin-top:0}
+.mstep.cs .mstep-h span{font-size:17.5px;font-weight:900;line-height:1.35;letter-spacing:-.03em;color:var(--ink)}
+.mstep.cs .mstep-h span em{font-style:normal;color:var(--pink)}
+.mstep-cs-tag{flex:none;font-style:normal;font-size:12.5px;font-weight:800;color:#fff;background:var(--pink);border-radius:999px;padding:6px 12px;white-space:nowrap;letter-spacing:-.02em}
+.mstep-cs{display:grid;grid-template-columns:116px 1fr;gap:9px 12px;align-items:center;margin-top:14px}
+.mstep-cs button{height:42px;border-radius:999px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:15px;font-weight:900;letter-spacing:-.02em;white-space:nowrap;cursor:pointer}
+.mstep-cs .cs-kk{background:#FEE500;color:#191919}
+.mstep-cs .cs-kk .kk{width:21px;height:21px;fill:#191919}
+.mstep-cs .cs-ph{background:var(--pink);color:#fff}
+.mstep-cs .cs-ph .cs-phi{width:19px;height:19px;fill:#fff;background:none}
+.mstep-cs p{margin:0;font-size:12.5px;font-weight:500;line-height:1.45;color:var(--ink2);word-break:keep-all}
+@media (max-width:374px){.mstep.cs .mstep-h span{font-size:16.5px}.mstep-cs-tag{font-size:12px;padding:6px 10px}}
+@media (max-width:340px){.mstep-cs-tag{display:none}.mstep-cs{grid-template-columns:104px 1fr}.mstep-cs button{font-size:14px}}
