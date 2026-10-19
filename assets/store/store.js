@@ -1506,15 +1506,15 @@ function apPhoneHtml(){
   }
   return h;
 }
-// 20261019 받는 방법: 택배(당일 발송) / 매장에서 받기 — 상담 방법(전화·카톡)과는 따로 고르는 칸.
-//  매장에서 받기 → 어디서 오세요(구·동, 고객이 직접 적음 → 그 동네 기준으로 가까운 매장 정렬 + 거리·교통비 분석용) → 수령 매장(현재 위치로도 정렬 가능) → 고른 매장 주소·거리·길찾기
+// 20261019 받는 방법: 택배(당일 발송) / 매장에서 수령하기 — 상담 방법(전화·카톡)과는 따로 고르는 칸.
+//  매장에서 수령하기 → 어디서 오세요(구·동, 고객이 직접 적음 → 그 동네 기준으로 가까운 매장 정렬 + 거리·교통비 분석용) → 수령 매장(현재 위치로도 정렬 가능) → 고른 매장 주소·거리·길찾기
 var TRUCK_I='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 6.5h11v9.5h-11zM13.5 9.5h4l3 3.5v3h-7"/><circle cx="6.5" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/></svg>';
 function apRecvHtml(){
   if(!AP.phone || AP.pick) return '';
   var h='<div class="qk-car" id="apRecvRow"><div class="qk-l">받는 방법 <span class="req">*</span></div>'+
     '<div class="cgrid ap-recv" style="--n:2">'+
       '<button type="button" class="cg'+(AP.recv==='courier'?' on':'')+'" data-ap="recv" data-v="courier">'+TRUCK_I+'택배 · 당일 발송</button>'+
-      '<button type="button" class="cg'+(AP.recv==='store'?' on':'')+'" data-ap="recv" data-v="store">'+PIN_I+'매장에서 받기</button></div>';
+      '<button type="button" class="cg'+(AP.recv==='store'?' on':'')+'" data-ap="recv" data-v="store">'+PIN_I+'매장에서 수령하기</button></div>';
   if(AP.recv==='store'){
     var list=S.stores.filter(function(s){return s&&s.nm});
     var opt=function(s){ var d=storeDist(s); return '<option value="'+esc(s.nm)+'"'+(s.nm===AP.store?' selected':'')+'>'+esc(s.nm)+(d!=null?' ('+distTxt(d)+')':'')+'</option>'; };
@@ -1725,7 +1725,7 @@ function apSumHtml(){
   return h+'</section>';
 }
 function apInfoHtml(){
-  return '<div class="ap-info" id="consultForm">'+   // 20261019: '방문 매장'은 위 '받는 방법 → 매장에서 받기'로 옮김
+  return '<div class="ap-info" id="consultForm">'+   // 20261019: '방문 매장'은 위 '받는 방법 → 매장에서 수령하기'로 옮김
     '<div class="ff"><label>이름 <span class="req">*</span></label><input type="text" id="mUserName" placeholder="이름을 입력해 주세요" autocomplete="name"></div>'+
     '<div class="ff"><label>연락처 <span class="req">*</span></label><div class="phone3"><input type="text" id="mPhone1" value="010" readonly tabindex="-1"><span>-</span><input type="tel" id="mPhone2" maxlength="4" inputmode="numeric" placeholder="0000"><span>-</span><input type="tel" id="mPhone3" maxlength="4" inputmode="numeric" placeholder="0000"></div></div>'+
     '<div class="ff"><label>생년월일 <span class="req">*</span></label><input type="text" id="mUserBirth" inputmode="numeric" maxlength="8" placeholder="예: 940101"></div>'+
@@ -1786,7 +1786,7 @@ function openApply(el, mode){
   var id=el&&el.getAttribute&&(el.getAttribute('data-model')||el.getAttribute('data-qk')), m=id&&byId(id);
   apSetFrom(m); AP.mode=mode||'';
   // 20261017: 매장찾기에서 '방문 예약 상담 신청하기'로 들어오면 고른 매장을 신청서까지 가져감 (목록 버튼은 매장 미정)
-  var stn=el&&el.getAttribute&&el.getAttribute('data-store'); if(stn!=null){ AP.visit=true; AP.store=stn; AP.recv='store'; }   // 20261019: '매장에서 받기'로 미리 골라 둠
+  var stn=el&&el.getAttribute&&el.getAttribute('data-store'); if(stn!=null){ AP.visit=true; AP.store=stn; AP.recv='store'; }   // 20261019: '매장에서 수령하기'로 미리 골라 둠
   apValidate();
   if(location.hash==='#/apply'){ renderApply(true); window.scrollTo(0,0); } else location.hash='#/apply';
 }
@@ -1909,9 +1909,9 @@ function apSubmit(mode){
   var apm=apPhone(); if(apm && colorsOf(apm).length>1 && !AP.color){ alert('컬러를 선택해 주세요.'); var acr=$('#apColorRow'); if(acr) acr.scrollIntoView({block:'center',behavior:'smooth'}); return; }   // 20261019: 컬러도 필수
   if(!AP.phone){ alert('휴대폰을 선택해 주세요.'); window.scrollTo({top:0,behavior:'smooth'}); return; }
   if(!AP.carrier && AP.phone!=='none'){ alert('현재 사용 중인 통신사를 선택해 주세요.'); return; }
-  // 20261019 받는 방법 (택배 / 매장에서 받기) — 매장이면 수령 매장 + 어디서 오세요도 필수
+  // 20261019 받는 방법 (택배 / 매장에서 수령하기) — 매장이면 수령 매장 + 어디서 오세요도 필수
   var rr=$('#apRecvRow');
-  if(!AP.recv){ alert('받는 방법을 선택해 주세요. (택배 · 당일 발송 / 매장에서 받기)'); if(rr) rr.scrollIntoView({block:'center',behavior:'smooth'}); return; }
+  if(!AP.recv){ alert('받는 방법을 선택해 주세요. (택배 · 당일 발송 / 매장에서 수령하기)'); if(rr) rr.scrollIntoView({block:'center',behavior:'smooth'}); return; }
   if(AP.recv==='store'){
     if(!String(AP.from||'').trim()){ alert('어디서 오시는지 동네를 적어 주세요. (예: 구리 인창동)'); var fi=$('#mFromIn'); if(fi) fi.focus(); return; }
     if(!AP.store){ alert('수령할 매장을 선택해 주세요.'); if(rr) rr.scrollIntoView({block:'center',behavior:'smooth'}); return; }
