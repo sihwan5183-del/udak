@@ -1203,13 +1203,18 @@ var PIN_I='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-
 function storeLL(s){ if(s && s.lat && s.lng) return [+s.lat, +s.lng]; return STORE_GEO[String((s&&s.addr)||'').trim()]||null; }
 function kmBetween(a,b){ var r=Math.PI/180, dLa=(b[0]-a[0])*r, dLo=(b[1]-a[1])*r, x=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin(dLo/2)*Math.sin(dLo/2); return 12742*Math.asin(Math.min(1,Math.sqrt(x))); }
 function storeDist(s){ var ll=MYPOS&&storeLL(s); return ll?kmBetween(MYPOS,ll):null; }
+function distBand(km){ return km<1?'1km 이내':km<3?'1~3km':km<5?'3~5km':km<10?'5~10km':km<20?'10~20km':'20km 이상'; }
 function distTxt(km){ return km<1?Math.max(10,Math.round(km*100)*10)+'m':(km<10?km.toFixed(1):String(Math.round(km)))+'km'; }
 function findNear(){
   var redraw=function(){ if($('#sheet').classList.contains('show') && $('#nearBtn')) openSheet(sheetStore()); };
   if(!navigator.geolocation){ NEAR_ERR='이 브라우저에서는 위치를 확인할 수 없어요.'; redraw(); return; }
   var b=$('#nearBtn'); if(b){ b.disabled=true; var bs=b.querySelector('span'); if(bs) bs.textContent='내 위치 확인 중…'; }
-  navigator.geolocation.getCurrentPosition(function(p){ MYPOS=[p.coords.latitude, p.coords.longitude]; NEAR_ERR=''; redraw(); },
-    function(er){ NEAR_ERR=(er&&er.code===1)?'위치 권한이 꺼져 있어요. 브라우저(앱) 설정에서 위치를 허용한 뒤 다시 눌러 주세요.':'위치를 확인하지 못했어요. 잠시 후 다시 눌러 주세요.'; redraw(); },
+  // 이탈 분석 기록: 가장 가까운 매장 + 거리대만 남김 (위치 좌표·이름·번호는 남기지 않음) — '어느 매장 근처, 얼마나 먼 고객이 찾는지' 수요 파악용
+  var logEv=function(n,d){ try{ if(typeof window.udakEv==='function') window.udakEv(n,d); }catch(x){} };
+  navigator.geolocation.getCurrentPosition(function(p){ MYPOS=[p.coords.latitude, p.coords.longitude]; NEAR_ERR='';
+      var best=null; S.stores.forEach(function(s){ if(!s||!s.nm) return; var d=storeDist(s); if(d!=null&&(!best||d<best.d)) best={nm:s.nm,d:d}; });
+      if(best) logEv('store_near', best.nm+' · '+distBand(best.d)); redraw(); },
+    function(er){ logEv('store_near_fail', (er&&er.code===1)?'위치 거부':'위치 확인 실패'); NEAR_ERR=(er&&er.code===1)?'위치 권한이 꺼져 있어요. 브라우저(앱) 설정에서 위치를 허용한 뒤 다시 눌러 주세요.':'위치를 확인하지 못했어요. 잠시 후 다시 눌러 주세요.'; redraw(); },
     {enableHighAccuracy:false, timeout:10000, maximumAge:300000});
 }
 function storeItem(s, km, top){

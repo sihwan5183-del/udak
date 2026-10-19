@@ -35,7 +35,7 @@
     // 표본과 상관없이 항상 기록하는 것 — 신청 흐름·막힘
     var ALWAYS={ submit_send:1, lead:1, submit_fail:1, alert:1 };
     // 스토어는 방문자 전원의 들어옴·나감 요약·신청서 단계·신청 버튼·전화/카톡 문의를 남김 (자세한 누름·구간은 표본만)
-    if(STORE){ ALWAYS.view=1; ALWAYS.exit=1; ALWAYS.form_step=1; ALWAYS.submit_click=1; ALWAYS.call=1; ALWAYS.kakao=1; ALWAYS.qk_open=1; }
+    if(STORE){ ALWAYS.view=1; ALWAYS.exit=1; ALWAYS.form_step=1; ALWAYS.submit_click=1; ALWAYS.call=1; ALWAYS.kakao=1; ALWAYS.qk_open=1; ALWAYS.store_near=1; ALWAYS.store_near_fail=1; }   // 20261019: 매장찾기 '가까운 매장' — 가장 가까운 매장 + 거리대만 (좌표·개인정보 없음)
     var qs=new URLSearchParams(location.search);
     if(qs.get('internal')==='1'){ try{ localStorage.setItem('udak_internal','1'); }catch(e){} }
     if(qs.get('internal')==='0'){ try{ localStorage.removeItem('udak_internal'); }catch(e){} }
@@ -91,6 +91,7 @@
       }catch(e){}
     }
     setInterval(function(){ flush(false); }, 20000);
+    window.udakEv=function(n,d){ ev(n,d); };   // 20261019: 스토어 화면에서 직접 남기는 기록 (매장찾기 가까운 매장 등)
 
     // ── 페이지별로 보는 구간·버튼
     var txt=function(el){ return (el.textContent||'').replace(/\s+/g,' ').trim().slice(0,40); };
