@@ -1198,43 +1198,70 @@ var STORE_GEO={
   '구리시 경춘로 239':[37.601591,127.141744], '남양주시 퇴계원읍 퇴계원로 64':[37.651000,127.146000], '남양주시 진접읍 해밀예당3로 57':[37.714891,127.199508],
   '남양주시 오남읍 진건오남로 639':[37.689304,127.210191], '남양주시 진접읍 장현로 83':[37.717946,127.181589], '남양주시 화도읍 마석중앙로 65':[37.652500,127.306000]
 };
-var MYPOS=null, NEAR_ERR='';
+var MYPOS=null, MYPOS_L='내 위치', NEAR_ERR='', NEARQ='', GEOC={}, FROMLL=null, FROMQ='';   // MYPOS: 지금 기준 위치(내 위치 또는 고객이 적은 동네) · FROMLL: 신청서 '어디서 오세요'로 찾은 위치
 var PIN_I='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>';
 function storeLL(s){ if(s && s.lat && s.lng) return [+s.lat, +s.lng]; return STORE_GEO[String((s&&s.addr)||'').trim()]||null; }
 function kmBetween(a,b){ var r=Math.PI/180, dLa=(b[0]-a[0])*r, dLo=(b[1]-a[1])*r, x=Math.sin(dLa/2)*Math.sin(dLa/2)+Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin(dLo/2)*Math.sin(dLo/2); return 12742*Math.asin(Math.min(1,Math.sqrt(x))); }
 function storeDist(s){ var ll=MYPOS&&storeLL(s); return ll?kmBetween(MYPOS,ll):null; }
 function distBand(km){ return km<1?'1km 이내':km<3?'1~3km':km<5?'3~5km':km<10?'5~10km':km<20?'10~20km':'20km 이상'; }
 function distTxt(km){ return km<1?Math.max(10,Math.round(km*100)*10)+'m':(km<10?km.toFixed(1):String(Math.round(km)))+'km'; }
+// 20261019 걸리는 시간 어림값 — 직선거리 ×1.3(실제 길), 1.2km 안쪽은 걸어서(시속 4.5km), 그 밖은 차로(평균 시속 24km + 출발·주차 4분). 정확한 시간은 카카오맵 길찾기로
+function tripTxt(km){ var r=km*1.3; return km<1.2?'걸어서 약 '+Math.max(1,Math.round(r/4.5*60))+'분':'차로 약 '+Math.round(4+r/24*60)+'분'; }
+function kakaoTo(s){ var ll=storeLL(s); return ll?'https://map.kakao.com/link/to/'+encodeURIComponent(s.nm)+','+ll[0]+','+ll[1]:'https://map.naver.com/p/search/'+encodeURIComponent(s.addr||s.nm); }
+function nearestStore(){ var best=null; S.stores.forEach(function(s){ if(!s||!s.nm) return; var d=storeDist(s); if(d!=null&&(!best||d<best.d)) best={nm:s.nm, d:d}; }); return best; }
+// 이탈 분석 기록: 가장 가까운 매장 + 거리대만 (위치 좌표·이름·번호는 남기지 않음) — '어느 매장 근처, 얼마나 먼 고객이 찾는지' 수요 파악용
+function nearLog(n,d){ try{ if(typeof window.udakEv==='function') window.udakEv(n,d); }catch(x){} }
+// 동네·주소 → 위치 (OpenStreetMap 무료 주소 검색 · 같은 말은 한 번만 물어봄 · 고객 이름·번호는 안 보냄)
+function geoFind(q, cb){
+  q=String(q||'').trim(); if(!q){ cb(null); return; }
+  if(Object.prototype.hasOwnProperty.call(GEOC,q)){ cb(GEOC[q]); return; }
+  fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=kr&accept-language=ko&viewbox=126.6,37.95,127.75,37.15&q='+encodeURIComponent(q))
+    .then(function(r){ return r.ok?r.json():[]; })
+    .then(function(j){ var g=(j&&j[0])?[+j[0].lat, +j[0].lon]:null; GEOC[q]=g; cb(g); })
+    .catch(function(){ cb(null); });
+}
+function storeSheetRedraw(){ if($('#sheet').classList.contains('show') && $('#nearBtn')) openSheet(sheetStore()); }
+// 매장찾기 '내 위치에서 가까운 매장 찾기' (GPS)
 function findNear(){
-  var redraw=function(){ if($('#sheet').classList.contains('show') && $('#nearBtn')) openSheet(sheetStore()); };
-  if(!navigator.geolocation){ NEAR_ERR='이 브라우저에서는 위치를 확인할 수 없어요.'; redraw(); return; }
+  if(!navigator.geolocation){ NEAR_ERR='이 브라우저에서는 위치를 확인할 수 없어요.'; storeSheetRedraw(); return; }
   var b=$('#nearBtn'); if(b){ b.disabled=true; var bs=b.querySelector('span'); if(bs) bs.textContent='내 위치 확인 중…'; }
-  // 이탈 분석 기록: 가장 가까운 매장 + 거리대만 남김 (위치 좌표·이름·번호는 남기지 않음) — '어느 매장 근처, 얼마나 먼 고객이 찾는지' 수요 파악용
-  var logEv=function(n,d){ try{ if(typeof window.udakEv==='function') window.udakEv(n,d); }catch(x){} };
-  navigator.geolocation.getCurrentPosition(function(p){ MYPOS=[p.coords.latitude, p.coords.longitude]; NEAR_ERR='';
-      var best=null; S.stores.forEach(function(s){ if(!s||!s.nm) return; var d=storeDist(s); if(d!=null&&(!best||d<best.d)) best={nm:s.nm,d:d}; });
-      if(best) logEv('store_near', best.nm+' · '+distBand(best.d)); redraw(); },
-    function(er){ logEv('store_near_fail', (er&&er.code===1)?'위치 거부':'위치 확인 실패'); NEAR_ERR=(er&&er.code===1)?'위치 권한이 꺼져 있어요. 브라우저(앱) 설정에서 위치를 허용한 뒤 다시 눌러 주세요.':'위치를 확인하지 못했어요. 잠시 후 다시 눌러 주세요.'; redraw(); },
+  navigator.geolocation.getCurrentPosition(function(p){ MYPOS=[p.coords.latitude, p.coords.longitude]; MYPOS_L='내 위치'; NEAR_ERR='';
+      var best=nearestStore(); if(best) nearLog('store_near', best.nm+' · '+distBand(best.d)); storeSheetRedraw(); },
+    function(er){ nearLog('store_near_fail', (er&&er.code===1)?'위치 거부':'위치 확인 실패'); NEAR_ERR=(er&&er.code===1)?'위치 권한이 꺼져 있어요. 동네 이름으로 찾아 주세요.':'위치를 확인하지 못했어요. 동네 이름으로 찾아 주세요.'; storeSheetRedraw(); },
     {enableHighAccuracy:false, timeout:10000, maximumAge:300000});
+}
+// 20261019 매장찾기 '동네로 찾기' — 회사에 있어도 집 기준으로 (예: 구리 인창동)
+function findNearQ(){
+  var inp=$('#nearQ'), q=inp?inp.value.trim():''; if(!q){ if(inp) inp.focus(); return; }
+  NEARQ=q; var b=$('[data-near-q]'); if(b){ b.disabled=true; b.textContent='찾는 중…'; }
+  geoFind(q, function(g){
+    if(g){ MYPOS=g; MYPOS_L=q; NEAR_ERR=''; var best=nearestStore(); if(best) nearLog('store_near', best.nm+' · '+distBand(best.d)+' · 동네 검색'); }
+    else NEAR_ERR='‘'+q+'’ 위치를 찾지 못했어요. 동 이름으로 적어 주세요. (예: 인창동)';
+    storeSheetRedraw();
+  });
 }
 function storeItem(s, km, top){
   var i=S.stores.indexOf(s);
   var th=String(s.img||'').split(',')[0].trim();
   return '<div class="store-li'+(th?' has-th':'')+'" data-store-i="'+i+'" role="button">'+(th?'<div class="sl-th">'+im(th,'','',s.nm)+'</div>':'')+'<div class="sl-r"><b>'+esc(s.nm)+(km!=null?'<em class="sl-km'+(top?' top':'')+'">'+(top?'가장 가까움 · ':'')+distTxt(km)+'</em>':'')+'</b><a class="sl-map" href="https://map.naver.com/p/search/'+encodeURIComponent(s.addr||s.nm)+'" target="_blank" rel="noopener">지도</a></div><div>'+esc(s.addr||'')+'</div>'+
+    (km!=null?'<div class="sl-trip">'+esc(MYPOS_L)+'에서 '+tripTxt(km)+'</div>':'')+
     (s.tel?'<div><a href="tel:'+esc(s.tel)+'" style="color:var(--pink);font-weight:700">'+esc(s.tel)+'</a></div>':'')+'<span class="sl-go">자세히 '+CHEV_I+'</span></div>';
 }
-// 매장 상세 (사진은 관리자에서 매장별 img 추가 시 표시)
+// 매장 상세 (사진은 관리자에서 매장별 img 추가 시 표시) — 20261019: 지도(위치) + 거리·걸리는 시간 + 길찾기
 function sheetStoreOne(s){
-  var b=S.biz||{}, map='https://map.naver.com/p/search/'+encodeURIComponent(s.addr||s.nm);
+  var b=S.biz||{}, map='https://map.naver.com/p/search/'+encodeURIComponent(s.addr||s.nm), ll=storeLL(s), d=storeDist(s);
+  var mapv=ll?'<a class="st-mapv" href="https://map.kakao.com/link/map/'+encodeURIComponent(s.nm)+','+ll[0]+','+ll[1]+'" target="_blank" rel="noopener" aria-label="'+esc(s.nm)+' 지도 크게 보기">'+
+      '<iframe src="https://www.openstreetmap.org/export/embed.html?bbox='+(ll[1]-0.006).toFixed(6)+'%2C'+(ll[0]-0.0035).toFixed(6)+'%2C'+(ll[1]+0.006).toFixed(6)+'%2C'+(ll[0]+0.0035).toFixed(6)+'&amp;layer=mapnik&amp;marker='+ll[0]+'%2C'+ll[1]+'" loading="lazy" tabindex="-1" title="'+esc(s.nm)+' 위치"></iframe><span>지도 크게 보기</span></a>':'';
   return '<button class="st-back" type="button" data-go="store">‹ 매장 목록</button>'+
     (function(){ var ims=String(s.img||'').split(',').map(function(x){return x.trim()}).filter(Boolean); if(!ims.length) return '';
       return '<div class="st-gal'+(ims.length>1?' multi':'')+'">'+ims.map(function(x){ return '<div class="st-img">'+im(x,'',true,s.nm)+'</div>'; }).join('')+'</div>'+(ims.length>1?'<div class="st-gal-n">옆으로 넘겨서 '+ims.length+'장 보기</div>':''); })()+
     '<h3>'+esc(s.nm)+'</h3><div class="st-rows">'+
     '<div><span>주소</span><b>'+esc(s.addr||'-')+'</b></div>'+
-    (storeDist(s)!=null?'<div><span>거리</span><b>내 위치에서 약 '+distTxt(storeDist(s))+'</b></div>':'')+
+    (d!=null?'<div><span>거리</span><b>'+esc(MYPOS_L)+'에서 약 '+distTxt(d)+' · '+tripTxt(d)+'</b></div>':'')+
     '<div><span>영업시간</span><b>'+esc(s.hours||b.hours||'상담 시 안내')+'</b></div>'+
     '<div><span>전화</span><b>'+(s.tel?'<a href="tel:'+esc(s.tel)+'">'+esc(s.tel)+'</a>':'<a href="tel:'+esc(S.tel)+'">'+esc(S.tel)+' (대표)</a>')+'</b></div></div>'+
-    '<a class="st-map" href="'+map+'" target="_blank" rel="noopener">네이버 지도로 보기 '+CHEV_I+'</a>'+
+    mapv+
+    '<div class="st-mapb"><a class="go" href="'+kakaoTo(s)+'" target="_blank" rel="noopener">'+PIN_I+'길찾기</a><a href="'+map+'" target="_blank" rel="noopener">네이버 지도로 보기</a></div>'+
     (S.storeNote?'<div class="todo" style="margin-top:12px">'+esc(S.storeNote)+'</div>':'')+
     '<button class="cta" data-open="consult" data-store="'+esc(s.nm)+'">'+esc(s.nm)+' 방문 예약 상담 신청하기</button>';
 }
@@ -1242,11 +1269,14 @@ function sheetStore(){
   var list=S.stores.filter(function(s){return s&&s.nm});
   var seoul=list.filter(function(s){return /^서울/.test(s.addr||'')}), gg=list.filter(function(s){return !/^서울/.test(s.addr||'')});
   var it=function(s){ return storeItem(s); };
-  // 20261019: '내 위치에서 가까운 매장 찾기' — 누르면 위치 허용 → 가까운 순으로 다시 정렬 + 거리 표시
+  // 20261019: '내 위치에서 가까운 매장 찾기'(GPS) 또는 '동네로 찾기'(집 기준 등) → 가까운 순 + 거리·걸리는 시간
   var near=MYPOS?list.map(function(s){ return {s:s, d:storeDist(s)}; }).sort(function(a,b){ return (a.d==null?1e9:a.d)-(b.d==null?1e9:b.d); }):null;
-  var nb=list.length?'<button type="button" class="near-btn'+(MYPOS?' on':'')+'" id="nearBtn" data-near>'+PIN_I+'<span>'+(MYPOS?'내 위치 다시 찾기':'내 위치에서 가까운 매장 찾기')+'</span></button>'+(NEAR_ERR?'<div class="near-err">'+esc(NEAR_ERR)+'</div>':''):'';
+  var gps=MYPOS&&MYPOS_L==='내 위치';
+  var nb=list.length?'<button type="button" class="near-btn'+(gps?' on':'')+'" id="nearBtn" data-near>'+PIN_I+'<span>'+(gps?'내 위치 다시 찾기':'내 위치에서 가까운 매장 찾기')+'</span></button>'+
+    '<div class="near-q"><input type="text" id="nearQ" maxlength="40" placeholder="동네로 찾기 (예: 구리 인창동)" value="'+esc(NEARQ)+'" enterkeyhint="search"><button type="button" data-near-q>찾기</button></div>'+
+    (NEAR_ERR?'<div class="near-err">'+esc(NEAR_ERR)+'</div>':'')+'<div class="near-src">주소 검색 © OpenStreetMap</div>':'';
   return '<h3>매장찾기 <small style="font-size:13px;color:var(--sub);font-weight:600">서울·경기 '+list.length+'곳</small></h3>'+nb+
-    (list.length?(near?'<div class="sl-g">내 위치에서 가까운 순</div>'+near.map(function(x,i){ return storeItem(x.s, x.d, i===0&&x.d!=null); }).join('')
+    (list.length?(near?'<div class="sl-g">'+esc(MYPOS_L)+'에서 가까운 순</div>'+near.map(function(x,i){ return storeItem(x.s, x.d, i===0&&x.d!=null); }).join('')
       :(seoul.length?'<div class="sl-g">서울</div>'+seoul.map(it).join(''):'')+(gg.length?'<div class="sl-g">경기</div>'+gg.map(it).join(''):''))
       :'<div class="todo">가까운 매장은 상담 시 안내드립니다.</div>')+
     (S.storeNote?'<div class="todo" style="margin-top:10px">'+esc(S.storeNote)+'</div>':'')+
@@ -1477,7 +1507,7 @@ function apPhoneHtml(){
   return h;
 }
 // 20261019 받는 방법: 택배(당일 발송) / 매장에서 받기 — 상담 방법(전화·카톡)과는 따로 고르는 칸.
-//  매장에서 받기 → 수령 매장(가까운 매장 찾기로 가까운 순 정렬) + 어디서 오세요(구·동, 고객이 직접 적음 → 거리·교통비 분석용)
+//  매장에서 받기 → 어디서 오세요(구·동, 고객이 직접 적음 → 그 동네 기준으로 가까운 매장 정렬 + 거리·교통비 분석용) → 수령 매장(현재 위치로도 정렬 가능) → 고른 매장 주소·거리·길찾기
 var TRUCK_I='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 6.5h11v9.5h-11zM13.5 9.5h4l3 3.5v3h-7"/><circle cx="6.5" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/></svg>';
 function apRecvHtml(){
   if(!AP.phone || AP.pick) return '';
@@ -1490,22 +1520,34 @@ function apRecvHtml(){
     var opt=function(s){ var d=storeDist(s); return '<option value="'+esc(s.nm)+'"'+(s.nm===AP.store?' selected':'')+'>'+esc(s.nm)+(d!=null?' ('+distTxt(d)+')':'')+'</option>'; };
     var opts=MYPOS?list.map(function(s){ return {s:s, d:storeDist(s)}; }).sort(function(a,b){ return (a.d==null?1e9:a.d)-(b.d==null?1e9:b.d); }).map(function(x){ return opt(x.s); }).join('')
       :[['서울',list.filter(function(s){return /^서울/.test(s.addr||'')})],['경기',list.filter(function(s){return !/^서울/.test(s.addr||'')})]].map(function(g){ return g[1].length?'<optgroup label="'+g[0]+'">'+g[1].map(opt).join('')+'</optgroup>':''; }).join('');
-    h+='<div class="ap-recv-f"><div class="qk-l"><span>수령 매장 <span class="req">*</span></span><button type="button" class="ap-near'+(MYPOS?' on':'')+'" data-ap-near>'+PIN_I+'<span>'+(MYPOS?'가까운 순으로 보는 중':'가까운 매장 찾기')+'</span></button></div>'+
-      '<select class="ap-sel" id="mStoreSel"><option value="">매장을 골라 주세요</option>'+opts+'</select>'+(NEAR_ERR?'<div class="near-err">'+esc(NEAR_ERR)+'</div>':'')+'</div>'+
-      '<div class="ap-recv-f"><div class="qk-l"><span>어디서 오세요? <span class="req">*</span></span></div><input type="text" class="ap-in" id="mFromIn" maxlength="40" placeholder="예: 중랑구 면목동" value="'+esc(AP.from||'')+'"></div>';
+    var sel=AP.store?list.filter(function(s){ return s.nm===AP.store; })[0]:null, sd=sel?storeDist(sel):null, gps=MYPOS&&MYPOS_L==='내 위치';
+    h+='<div class="ap-recv-f"><div class="qk-l"><span>어디서 오세요? <span class="req">*</span></span></div>'+
+        '<div class="ap-from"><input type="text" class="ap-in" id="mFromIn" maxlength="40" placeholder="예: 구리 인창동" value="'+esc(AP.from||'')+'" enterkeyhint="search"><button type="button" class="ap-from-b" data-ap-from>가까운 매장 찾기</button></div></div>'+
+      '<div class="ap-recv-f"><div class="qk-l"><span>수령 매장 <span class="req">*</span></span><button type="button" class="ap-near'+(gps?' on':'')+'" data-ap-near>'+PIN_I+'<span>현재 위치로 찾기</span></button></div>'+
+        '<select class="ap-sel" id="mStoreSel"><option value="">매장을 골라 주세요</option>'+opts+'</select>'+(NEAR_ERR?'<div class="near-err">'+esc(NEAR_ERR)+'</div>':'')+
+        (sel?'<div class="ap-st-info"><b>'+esc(sel.nm)+'</b> · '+esc(sel.addr||'')+(sd!=null?'<br>'+esc(MYPOS_L)+'에서 약 '+distTxt(sd)+' · '+tripTxt(sd):'')+'<a href="'+kakaoTo(sel)+'" target="_blank" rel="noopener">길찾기</a></div>':'')+
+        (MYPOS&&!gps?'<div class="near-src">주소 검색 © OpenStreetMap</div>':'')+'</div>';
   }
   return h+'</div>';
 }
-// 가장 가까운 매장 (MYPOS 있을 때)
-function nearestStore(){ var best=null; S.stores.forEach(function(s){ if(!s||!s.nm) return; var d=storeDist(s); if(d!=null&&(!best||d<best.d)) best={nm:s.nm, d:d}; }); return best; }
-function nearLog(n,d){ try{ if(typeof window.udakEv==='function') window.udakEv(n,d); }catch(x){} }
-// 신청서 '가까운 매장 찾기' — 위치 허용하면 매장 목록을 가까운 순으로, 매장을 아직 안 골랐으면 가장 가까운 매장을 골라 둠
+// 신청서 '어디서 오세요' → 그 동네 기준으로 가까운 매장 (회사에 있어도 집 기준으로 고를 수 있게). 매장을 아직 안 골랐으면 가장 가까운 매장을 골라 둠
+function apFromFind(){
+  var fi=$('#mFromIn'); if(fi && AP) AP.from=fi.value;
+  var q=String((AP&&AP.from)||'').trim(); if(!q){ if(fi) fi.focus(); return; }
+  var b=$('[data-ap-from]'); if(b){ b.disabled=true; b.textContent='찾는 중…'; }
+  geoFind(q, function(g){
+    if(g){ MYPOS=g; MYPOS_L=q; FROMLL=g; FROMQ=q; NEAR_ERR=''; var best=nearestStore(); if(best){ nearLog('store_near', best.nm+' · '+distBand(best.d)+' · 동네 검색'); if(AP && !AP.store) AP.store=best.nm; } }
+    else NEAR_ERR='‘'+q+'’ 위치를 찾지 못했어요. 동 이름으로 적어 주세요. (예: 인창동)';
+    apRefresh();
+  });
+}
+// 신청서 '현재 위치로 찾기' — 위치 허용하면 매장 목록을 가까운 순으로, 매장을 아직 안 골랐으면 가장 가까운 매장을 골라 둠
 function apNear(){
   if(!navigator.geolocation){ NEAR_ERR='이 브라우저에서는 위치를 확인할 수 없어요.'; apRefresh(); return; }
   var b=$('[data-ap-near]'); if(b){ b.disabled=true; var bs=b.querySelector('span'); if(bs) bs.textContent='내 위치 확인 중…'; }
-  navigator.geolocation.getCurrentPosition(function(p){ MYPOS=[p.coords.latitude, p.coords.longitude]; NEAR_ERR='';
+  navigator.geolocation.getCurrentPosition(function(p){ MYPOS=[p.coords.latitude, p.coords.longitude]; MYPOS_L='내 위치'; NEAR_ERR='';
       var best=nearestStore(); if(best){ nearLog('store_near', best.nm+' · '+distBand(best.d)); if(AP && !AP.store) AP.store=best.nm; } apRefresh(); },
-    function(er){ nearLog('store_near_fail', (er&&er.code===1)?'위치 거부':'위치 확인 실패'); NEAR_ERR=(er&&er.code===1)?'위치 권한이 꺼져 있어요. 매장을 직접 골라 주세요.':'위치를 확인하지 못했어요. 매장을 직접 골라 주세요.'; apRefresh(); },
+    function(er){ nearLog('store_near_fail', (er&&er.code===1)?'위치 거부':'위치 확인 실패'); NEAR_ERR=(er&&er.code===1)?'위치 권한이 꺼져 있어요. 동네를 적고 찾거나 매장을 직접 골라 주세요.':'위치를 확인하지 못했어요. 동네를 적고 찾거나 매장을 직접 골라 주세요.'; apRefresh(); },
     {enableHighAccuracy:false, timeout:10000, maximumAge:300000});
 }
 // 신청서 금액: 월 기기 할부금 + 총 기기 지원금만 (통신 요금 합친 금액은 안 보여 줌)
@@ -1790,7 +1832,11 @@ function apPayload(o){
   if(AP.recv==='store' || (AP.visit && AP.recv!=='courier')){ body.visit_store=AP.store||'미정'; snapshot.visitStore=AP.store||'미정'; }   // 20261017: CRM에 '📍OO점 방문'으로 표시
   // 20261019 받는 방법: 택배 / 매장 수령 (+ 매장 수령이면 고객이 적은 출발 동네 — CRM 메모 맨 앞에도 붙임)
   snapshot.recv=AP.recv==='store'?'매장 수령':AP.recv==='courier'?'택배':null;
-  if(AP.recv==='store' && String(AP.from||'').trim()){ snapshot.from=String(AP.from).trim().slice(0,40); body.memo='[매장 수령 · 출발 동네] '+snapshot.from+(body.memo?' / '+body.memo:''); }
+  if(AP.recv==='store' && String(AP.from||'').trim()){ snapshot.from=String(AP.from).trim().slice(0,40);
+    // 고객이 적은 동네를 찾아 둔 경우(가까운 매장 찾기)만 → 고른 매장까지 직선거리(km) — 교통비·거리 분석용 (현재 위치(GPS)는 저장 안 함)
+    var fst=S.stores.filter(function(x){ return x&&x.nm===AP.store; })[0], fll=fst&&storeLL(fst), fkm=(FROMLL && FROMQ===snapshot.from && fll)?Math.round(kmBetween(FROMLL,fll)*10)/10:null;
+    if(fkm!=null) snapshot.fromKm=fkm;
+    body.memo='[매장 수령 · 출발 동네] '+snapshot.from+(fkm!=null?' → '+AP.store+' 약 '+fkm+'km':'')+(body.memo?' / '+body.memo:''); }
   if(typeof window.udakMetaIds==='function'){ var mi=window.udakMetaIds(); Object.keys(mi).forEach(function(k){ body[k]=mi[k]; }); }
   return {body:body, snapshot:snapshot};
 }
@@ -1867,8 +1913,8 @@ function apSubmit(mode){
   var rr=$('#apRecvRow');
   if(!AP.recv){ alert('받는 방법을 선택해 주세요. (택배 · 당일 발송 / 매장에서 받기)'); if(rr) rr.scrollIntoView({block:'center',behavior:'smooth'}); return; }
   if(AP.recv==='store'){
+    if(!String(AP.from||'').trim()){ alert('어디서 오시는지 동네를 적어 주세요. (예: 구리 인창동)'); var fi=$('#mFromIn'); if(fi) fi.focus(); return; }
     if(!AP.store){ alert('수령할 매장을 선택해 주세요.'); if(rr) rr.scrollIntoView({block:'center',behavior:'smooth'}); return; }
-    if(!String(AP.from||'').trim()){ alert('어디서 오시는지 동네를 적어 주세요. (예: 중랑구 면목동)'); var fi=$('#mFromIn'); if(fi) fi.focus(); return; }
   }
   if(!name){ alert('이름을 입력해주세요.'); return; }
   if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해주세요.'); return; }
@@ -1963,7 +2009,9 @@ document.addEventListener('click',function(e){
   if(t.closest('[data-qx]')){ e.preventDefault(); var qi=$('#qnaQ'); if(qi){ qi.value=''; QQ=''; qi.parentNode.classList.remove('on'); $('.qna-cats').classList.remove('qdim'); $('#qnaList').innerHTML=qnaList(); qi.focus(); } return; }
   var qc=t.closest('[data-qcat]'); if(qc){ e.preventDefault(); QCAT=+qc.getAttribute('data-qcat'); var qi2=$('#qnaQ'); if(qi2){ qi2.value=''; QQ=''; qi2.parentNode.classList.remove('on'); $('.qna-cats').classList.remove('qdim'); } $$('.qna-cats button').forEach(function(x){ x.classList.toggle('on',x===qc); }); $('#qnaList').innerHTML=qnaList(); qc.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); return; }
   if(t.closest('[data-near]')){ e.preventDefault(); findNear(); return; }
-  if(t.closest('[data-ap-near]')){ e.preventDefault(); apNear(); return; }   // 20261019 신청서 '가까운 매장 찾기'   // 20261019 매장찾기: 내 위치에서 가까운 매장
+  if(t.closest('[data-ap-near]')){ e.preventDefault(); apNear(); return; }
+  if(t.closest('[data-near-q]')){ e.preventDefault(); findNearQ(); return; }   // 20261019 매장찾기 '동네로 찾기'
+  if(t.closest('[data-ap-from]')){ e.preventDefault(); apFromFind(); return; }   // 20261019 신청서 '어디서 오세요' → 가까운 매장   // 20261019 신청서 '가까운 매장 찾기'   // 20261019 매장찾기: 내 위치에서 가까운 매장
   var sti=t.closest('[data-store-i]'); if(sti && !t.closest('a')){ e.preventDefault(); var so=S.stores[+sti.getAttribute('data-store-i')]; if(so){ openSheet(sheetStoreOne(so)); } return; }
   var g=t.closest('[data-go]'); if(g){e.preventDefault();act(g.getAttribute('data-go'),g);return}
   var c=t.closest('[data-cat]'); if(c){location.hash='#/cat/'+c.getAttribute('data-cat');return}
@@ -1982,9 +2030,14 @@ document.addEventListener('input',function(e){
   else if(id==='mDeviceSearch'){ var qv=e.target.value.toLowerCase().replace(/\s/g,''), al={'아이폰':'iphone','갤럭시':'','플립':'flip','폴드':'fold','울트라':'ultra'};
     $$('#apList .ap-li').forEach(function(li){ var nm=li.getAttribute('data-nm')||'', q2=qv; Object.keys(al).forEach(function(a){ if(al[a]) q2=q2.split(a).join(al[a]); }); li.hidden=!!qv && nm.indexOf(qv)<0 && (!q2||nm.indexOf(q2)<0); }); }
 });
+document.addEventListener('keydown',function(e){   // 20261019: 동네 칸에서 엔터 = 찾기
+  if(e.key!=='Enter' || !e.target) return;
+  if(e.target.id==='nearQ'){ e.preventDefault(); findNearQ(); }
+  else if(e.target.id==='mFromIn'){ e.preventDefault(); apFromFind(); }
+});
 document.addEventListener('change',function(e){
   if(e.target.id==='mPlanSel'){ AP.tier=e.target.value; apRefresh(); return; }
-  if(e.target.id==='mStoreSel'){ AP.store=e.target.value; return; }
+  if(e.target.id==='mStoreSel'){ AP.store=e.target.value; apRefresh(); return; }   // 20261019: 고른 매장 주소·거리·길찾기 줄도 바꿔 그림
   if(e.target.id==='apTvTier'){ AP.tvTier=e.target.value; apRefresh(); return; }
   var cs=e.target.closest&&e.target.closest('[data-calc-sel]');
   if(cs){ var mid=cs.getAttribute('data-model'); if(cs.getAttribute('data-calc-sel')==='tier') TIER[mid]=cs.value; var y=window.scrollY; renderModel(mid,true); window.scrollTo(0,y); return; }
