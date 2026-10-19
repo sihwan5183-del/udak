@@ -2138,10 +2138,15 @@ renderHome();
 //   (#/model/fold8 주소를 광고에 바로 넣으면 메타가 # 뒤에 광고 정보를 붙여 화면·기록이 깨질 수 있어 이 방식으로)
 (function(){ try{
   var mq=new URLSearchParams(location.search).get('m');
-  if(!EDIT && mq && /^[\w-]{1,40}$/.test(mq) && (!location.hash || location.hash==='#')){   // 처음 들어올 때만 (홈에서 새로고침하면 홈 그대로)
-    var base=location.pathname+location.search;
+  if(!EDIT && mq && /^[\w-]{1,40}(,[\w-]{1,40}){0,5}$/.test(mq) && (!location.hash || location.hash==='#')){   // 처음 들어올 때만 (홈에서 새로고침하면 홈 그대로)
+    var base=location.pathname+location.search, ids=mq.split(','), to='#/model/'+ids[0];
+    if(ids.length>1){   // 20261019: 모델 여러 개 → 그 모델만 모아 보기 (예: ?m=iphone18pro,iphone18promax → 아이폰 18프로·프로맥스, 탭은 '아이폰')
+      var ms=ids.map(byId), ck='all';
+      CAT_TABS.forEach(function(t){ if(ck==='all' && t.k!=='all' && t.k!=='zero' && ms.every(function(m){ return m && m.cat && m.cat.indexOf(t.k)>-1; })) ck=t.k; });
+      to='#/cat/'+ck+'/'+ids.join(',');
+    }
     history.replaceState(null,'',base+'#/');
-    history.pushState(null,'',base+'#/model/'+mq);
+    history.pushState(null,'',base+to);
   }
 }catch(e){} })();
 route();
