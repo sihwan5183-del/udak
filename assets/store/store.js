@@ -506,9 +506,73 @@ function calcPickers(m, r, st){
   return {car:car, rest:h};   // 20261019: 통신사 / 나머지 따로
 }
 var MSTIP={};   // 상세 계산 박스 ? 설명 열림
+/* 20261019 상세 가격 (휴대폰): '싸 보이게' — 기기값(월 기기 할부금)을 맨 앞에, 받는 혜택(총 기기 지원금)을 크게.
+   통신 요금까지 합친 금액은 맨 아래 '월 예상 납부금액'에 (처음엔 펼쳐 둠). TV프리·워치·태블릿은 기존 배치 그대로 */
+var PVOFF=false;   // 맨 아래 '월 예상 납부금액' 접힘 여부 (처음엔 펼침)
+var PVI={
+  phone:'<svg viewBox="0 0 24 40"><rect x="2" y="2" width="20" height="36" rx="4.5"/><path d="M9.5 6h5"/></svg>',
+  gift:'<svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8c-1.5-3-5.5-3.5-5.5-1S9 8 12 8c3 0 7-.5 5.5-2.5S13.5 5 12 8z"/></svg>',
+  coin:'<svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg>',
+  doc:'<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>',
+  bars:'<svg viewBox="0 0 24 24"><path d="M4 20h16M7 17v-6M11 17V6M15 17V9M19 17v-4"/></svg>',
+  cal:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4M9 14h.01M12 14h.01M15 14h.01"/></svg>',
+  down:'<svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></svg>',
+  ck:'<svg viewBox="0 0 24 24"><path d="m6.5 12.5 3.6 3.6 7.4-8"/></svg>',
+  chev:'<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>'
+};
+function pvTip(k,t){ return '<button type="button" class="tipb'+(MSTIP[k]?' on':'')+'" data-ms-tip="'+k+'" aria-label="설명 보기">?</button>'+(MSTIP[k]?'<div class="tip-bub">'+t+'</div>':''); }
+function pvRow(l,v,cls){ return '<div class="pv-r'+(cls?' '+cls:'')+'"><span>'+l+'</span><b>'+v+'</b></div>'; }
+function pvCk(t){ return '<li><i>'+PVI.ck+'</i><span>'+t+'</span></li>'; }
+function pvPhone(m, r, st){
+  var c=st.c, tn=typeNm(st), mm=st.months, sel=st.method==='sel', out=num(c.out)||0;
+  var monthly=mm===0?0:(st.monthly||0), fee=st.feeAfter||0, total=monthly+fee;
+  var sup=Math.max(0,out-st.after), pct=out?Math.floor(sup/out*100):0, selCut=(sel&&st.fee)?st.fee-st.feeAfter:0;
+  // ① 월 기기 할부금 — 기기값만 (할부이자 포함)
+  var lab, big, sub;
+  if(st.after===0){ lab='월 기기 할부금'; big='0원'; sub='할부금 없이 이용하실 수 있어요'; }
+  else if(mm===0){ lab='기기값 (일시납)'; big=won(st.after); sub='한 번에 결제 · 할부이자 없음'; }
+  else { lab='월 기기 할부금'; big=won(monthly)+'<small> / 월</small>'; sub=mm+'개월 할부 · 할부이자 포함 · 기기값만'; }
+  var hc=[]; if(selCut) hc.push('통신 요금도 매달 '+won(selCut)+' 할인 (선택약정)');
+  if(st.fee&&st.fee>LOW_FEE) hc.push('6개월 후 월 '+won(LOW_FEE)+' 이상 요금제로 변경 가능');
+  hc.push('제휴카드·부가서비스 의무가입 없음');
+  var h='<div class="ms-detail pv">'+
+    '<div class="pv-card pv-hero"><div class="pv-hl"><div class="pv-ch">'+lab+pvTip('pv1', mm===0?'지원 후 기기값을 한 번에 결제하는 금액이에요. 통신 요금은 따로예요.':'지원 후 기기값을 '+mm+'개월로 나눈 금액이에요. 할부이자(연 5.9%)가 포함돼 있고, 통신 요금은 따로예요.')+'</div>'+
+      '<div class="pv-v">'+big+'</div><div class="pv-s">'+sub+'</div></div>'+
+      (pct>0?'<div class="pv-hr"><i class="pv-ph">'+PVI.phone+'</i><div class="pv-bub"><span>출고가 대비</span><b>'+(st.after===0?'전액 지원':pct+'% 할인')+'</b></div></div>':'')+
+      '<ul class="pv-ck">'+hc.map(pvCk).join('')+'</ul></div>';
+  // ② 총 기기 지원금 · ③ 지원 후 기기값
+  var rs='';
+  if(!sel&&c.pub) rs+=pvRow('공시지원금'+(tn?' ('+tn+')':''), won(c.pub));
+  if(c.our) rs+=pvRow('추가 지원금 <small>(유플러스 다이렉트)</small>', won(c.our));
+  if(selCut) rs+=pvRow('통신 요금 25% 할인 <small>(선택약정 · 공시지원금 대신)</small>', '매달 '+won(selCut), 'fee');
+  h+='<div class="pv-grid">'+
+    '<div class="pv-card"><div class="pv-ch"><i class="pv-ic">'+PVI.gift+'</i>총 기기 지원금'+pvTip('pv2', sel?'선택약정은 공시지원금 대신 매달 통신 요금을 25% 할인받아요. 유플러스 다이렉트 추가 지원금은 그대로 받으세요.':'공시지원금은 통신사가, 추가 지원금은 유플러스 다이렉트가 드리는 기기값 지원이에요.')+'</div>'+
+      '<div class="pv-n pink">'+won(sup)+'<small>지원</small></div>'+(rs?'<div class="pv-box pink">'+rs+'</div>':'')+'</div>'+
+    '<div class="pv-card"><div class="pv-ch"><i class="pv-ic">'+PVI.coin+'</i>지원 후 기기값'+pvTip('pv3','출고가에서 총 기기 지원금을 뺀 금액이에요. 이 금액을 할부로 나눠 내요.')+'</div>'+
+      '<div class="pv-n">'+wz(st.after)+'</div><div class="pv-box">'+pvRow('출고가',won(out))+pvRow('− 총 기기 지원금',won(sup),'minus')+'</div></div></div>';
+  // ④ 혜택 적용 조건 — 요금제는 고른 요금제 따라
+  var cd=[]; if(st.t&&st.t.fee) cd.push('월 '+won(st.t.fee)+' 요금제<br>6개월 유지');
+  if(st.fee&&st.fee>LOW_FEE) cd.push('6개월 후 월 '+won(LOW_FEE)+' 이상<br>요금제로 변경 가능');
+  cd.push('제휴카드<br>의무가입 없음'); cd.push('부가서비스<br>의무가입 없음');
+  h+='<div class="pv-card"><div class="pv-ch"><i class="pv-ic">'+PVI.doc+'</i>혜택 적용 조건'+pvTip('pv4','지원금은 고르신 요금제를 6개월 유지하는 조건이에요. 6개월 뒤에는 월 '+won(LOW_FEE)+' 이상 요금제로 자유롭게 바꾸실 수 있어요.')+'</div>'+
+    '<ul class="pv-cond">'+cd.map(pvCk).join('')+'</ul></div>';
+  // ⑤ 월 예상 납부금액 (통신 요금 포함) — 맨 아래, 처음엔 펼침. '7개월 차부터'는 지금처럼 85·95 요금제만
+  if(fee){
+    var low=(st.fee<=95000&&st.fee>LOW_FEE)?monthly+(sel?Math.round(LOW_FEE*0.75):LOW_FEE):null;
+    var feeT='통신 요금 '+won(fee)+(sel?' (25% 할인)':'');
+    var f1=mm===0?feeT+' · 기기값은 일시납':'기기 할부금 '+won(monthly)+' + '+feeT;
+    h+='<div class="pv-card pv-more'+(PVOFF?' off':'')+'"><button type="button" class="pv-mh" data-pv-x><i class="pv-ic">'+PVI.bars+'</i><span>월 예상 납부금액<small>통신 요금 포함</small></span><i class="pv-chev">'+PVI.chev+'</i></button>'+
+      '<div class="pv-mb"><p class="pv-ms">기기 할부금과 통신 요금을 합친 금액이에요.</p><div class="pv-flow'+(low!=null?'':' solo')+'">'+
+        '<div class="pv-f"><i>'+PVI.cal+'</i><div><span>'+(low!=null?'처음 6개월':'고르신 요금제 기준')+'</span><b>'+won(total)+'<small> / 월</small></b><em>'+f1+'</em></div></div>'+
+        (low!=null?'<div class="pv-f"><i>'+PVI.down+'</i><div><span>7개월 차부터</span><b>'+won(low)+'<small> / 월</small></b><em>예: 월 '+won(LOW_FEE)+' 요금제 이용 시</em></div></div>':'')+
+      '</div><p class="pv-fn">이후 납부 금액은 사용하시는 요금제와 결합 할인에 따라 달라질 수 있어요.</p></div></div>';
+  }
+  return h+'</div>';
+}
 function calcBox(m, r, st){
   var out=num(r.out);
   if(!st.c) return crow('출고가','',out!=null?won(out):'상담 시 안내');
+  if(st.g==='phone') return pvPhone(m, r, st);   // 20261019: 휴대폰은 '기기값 앞 · 혜택 크게' 배치
   var tv=st.g==='tvfree', c=st.c, tn=typeNm(st), mm=tv?0:st.months, monthly=mm===0?0:(st.monthly||0), fee=tv?TV_FEE:(st.feeAfter||0), total=monthly+fee;
   var tipB=function(k,t){ return '<button type="button" class="tipb'+(MSTIP[k]?' on':'')+'" data-ms-tip="'+k+'" aria-label="설명 보기">?</button>'+(MSTIP[k]?'<div class="tip-bub">'+t+'</div>':''); };
   var line=function(l,v,cls){ return '<div class="ms-r'+(cls?' '+cls:'')+'"><span>'+l+'</span><b>'+v+'</b></div>'; };
@@ -965,7 +1029,7 @@ function renderModel(id, keepRecent){
   if(PK.rest) body+='<div class="mstep-sub">'+(restPick?'<div class="mstep-note">'+(gg==='phone'?'요금제·할인 방식·할부는 가장 많이 고르는 조건으로 맞춰 놨어요. <b>그대로 두셔도 돼요.</b>':'아래 조건은 가장 많이 고르는 조건으로 맞춰 놨어요. <b>그대로 두셔도 돼요.</b>')+'</div>':'')+PK.rest+'</div>';
   body+=step('price', '내 가격 확인', '내 예상 가격을 확인하세요', '', (soNow?'<div class="so-notice">'+(SO(m)?'현재 일시품절입니다':'선택하신 '+esc(selRow.cap||'옵션')+' 은(는) 일시품절입니다')+'. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
     '<div class="ptable" id="ucatPrice">'+rows+'</div>'+guideHtml(m)+
-    '<div class="md-chips">'+(isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):'<span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span>')+'<span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>', '');
+    '<div class="md-chips">'+(isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):(gg==='phone'&&cst&&cst.c)?'':'<span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span>')+'<span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>', '');
   body+=step('go', '카톡·전화 상담', '마음에 드시면 아래 버튼으로 상담을 신청하세요', '', '<ul class="mstep-how"><li><b>카톡 상담</b><span>고객 정보를 남기면 카카오톡으로 바로 상담</span></li><li><b>상담 신청</b><span>조건 확인 후 전화로 5분 상담</span></li></ul>', nowKey==='go'?'<em class="mstep-go">이제 신청만 남았어요</em>':'');
   // 위 안내: 고른 단계는 ✓, 지금 할 단계는 분홍 — 누르면 그 단계로 이동
   var guide=steps.length>2?'<div class="mguide"><b>이 순서대로 하시면 돼요</b><ol>'+steps.map(function(s,i){ return '<li class="'+(s.ok?'ok':'')+(s.now?' on':'')+'" data-mg="'+s.k+'"><i>'+(s.ok?'✓':(i+1))+'</i>'+esc(s.t)+'</li>'; }).join('')+'</ol></div>':'';
@@ -1746,6 +1810,7 @@ document.addEventListener('click',function(e){
     return; }
   if(t.closest('[data-privacy]')){ e.preventDefault(); $('#privacyTxt').classList.toggle('on'); return; }
   if(t.closest('#ticket') && (t.closest('.x') || t.closest('.ok') || t.id==='ticket')){ closeTicket(); return; }
+  if(t.closest('[data-pv-x]')){ e.preventDefault(); PVOFF=!PVOFF; var pvm=t.closest('.pv-more'); if(pvm) pvm.classList.toggle('off', PVOFF); return; }
   var mt=t.closest('[data-ms-tip]');
   if(mt){ e.preventDefault(); var mk=mt.getAttribute('data-ms-tip'); MSTIP[mk]=!MSTIP[mk]; var hm=location.hash.match(/#\/model\/([^/?]+)/); if(hm){ var y=window.scrollY; renderModel(hm[1],true); window.scrollTo(0,y); } return; }
   var cb=t.closest('[data-calc]');

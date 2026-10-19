@@ -1414,3 +1414,74 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .mguide li.ok i{background:#F3B7D3;font-size:10px}
 .mguide li.on{color:var(--pink);font-weight:800}
 .mguide li.on i{box-shadow:0 0 0 3px rgba(230,0,126,.18)}
+/* 20261019 상세 가격(휴대폰): 기기값 앞 · 혜택 크게 — ① 월 기기 할부금 ② 총 기기 지원금 ③ 지원 후 기기값 ④ 혜택 적용 조건 ⑤ 월 예상 납부금액 */
+.pv{display:flex;flex-direction:column;gap:10px}
+.pv-card{border:1px solid var(--line);border-radius:16px;padding:14px 13px;background:#fff;min-width:0}
+.pv-ch{display:flex;align-items:center;flex-wrap:wrap;gap:5px;font-size:14px;font-weight:900;color:var(--ink);line-height:1.3}
+.pv-ic{flex:none;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-style:normal}
+.pv-ic svg,.pv-f>i svg{fill:none;stroke:var(--pink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pv-ic svg{width:21px;height:21px}
+.pv .tipb{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;margin-left:2px;border-radius:50%;border:1.3px solid #B7BCC4;background:#fff;color:#8C9099;font-size:10px;font-weight:900;line-height:1;padding:0}
+.pv .tipb.on{background:var(--pink);border-color:var(--pink);color:#fff}
+.pv .tip-bub{flex-basis:100%;margin:4px 0 2px;padding:7px 9px;border-radius:9px;background:#FFF4F9;border:1px solid #F3C4DA;font-size:11.5px;font-weight:600;line-height:1.45;color:var(--ink2)}
+/* ① 월 기기 할부금 */
+.pv-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:8px;align-items:center}
+.pv-hl{min-width:0}
+.pv-v{margin-top:6px;font-size:clamp(30px,9vw,42px);font-weight:900;color:var(--pink);letter-spacing:-.035em;line-height:1.05;white-space:nowrap}
+.pv-v small{font-size:15px;font-weight:800;letter-spacing:0;margin-left:2px}
+.pv-s{margin-top:7px;font-size:12px;color:var(--sub);line-height:1.4;word-break:keep-all}
+.pv-hr{display:flex;align-items:center;gap:9px}
+.pv-ph{display:flex;font-style:normal}
+.pv-ph svg{width:26px;height:43px;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round}
+.pv-bub{position:relative;padding:7px 11px;border-radius:12px;background:var(--pink-50);border:1px solid #F7C6DD;text-align:center;white-space:nowrap}
+.pv-bub:before{content:'';position:absolute;left:-6px;top:50%;width:10px;height:10px;background:var(--pink-50);border-left:1px solid #F7C6DD;border-bottom:1px solid #F7C6DD;transform:translateY(-50%) rotate(45deg)}
+.pv-bub span{display:block;font-size:11px;font-weight:700;color:var(--ink2)}
+.pv-bub b{display:block;margin-top:1px;font-size:18px;font-weight:900;color:var(--pink);letter-spacing:-.02em}
+.pv-ck{grid-column:1/-1;list-style:none;margin:12px 0 0;padding:11px 0 0;border-top:1px dashed #E3E5EA}
+.pv-ck li,.pv-cond li{display:flex;align-items:flex-start;gap:7px;font-size:12.5px;font-weight:600;color:var(--ink2);line-height:1.45;word-break:keep-all}
+.pv-ck li+li{margin-top:6px}
+.pv-ck i,.pv-cond i{flex:none;width:18px;height:18px;border-radius:50%;background:var(--pink);display:inline-flex;align-items:center;justify-content:center;margin-top:1px;font-style:normal}
+.pv-ck i svg,.pv-cond i svg{width:12px;height:12px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+/* ② 총 기기 지원금 · ③ 지원 후 기기값 */
+.pv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pv-n{margin-top:8px;font-size:clamp(22px,6.4vw,27px);font-weight:900;color:var(--ink);letter-spacing:-.03em;line-height:1.1;white-space:nowrap}
+.pv-n.pink{color:var(--pink)}
+.pv-n small{font-size:15px;font-weight:900;color:var(--ink);margin-left:4px;letter-spacing:0}
+.pv-box{margin-top:10px;padding:7px 10px;border-radius:12px;background:#F6F7F9}
+.pv-box.pink{background:#FFF4F9}
+.pv-r{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;font-size:12.5px;color:var(--ink2)}
+.pv-r+.pv-r{border-top:1px solid rgba(17,19,24,.06)}
+.pv-r span{min-width:0;line-height:1.35;word-break:keep-all}
+.pv-r span small{display:block;font-size:11px;color:var(--sub)}
+.pv-r b{flex:none;font-size:13.5px;font-weight:800;color:var(--ink);white-space:nowrap}
+.pv-box.pink .pv-r b{color:var(--pink)}
+.pv-r.minus span,.pv-r.minus b{color:var(--pink)}
+.pv-r.fee b{font-size:12.5px}
+/* ④ 혜택 적용 조건 */
+.pv-cond{list-style:none;margin:11px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px 8px}
+/* ⑤ 월 예상 납부금액 (접기) */
+.pv-more{padding:0}
+.pv-mh{width:100%;display:flex;align-items:center;gap:6px;padding:14px 13px;font-size:14px;font-weight:900;color:var(--ink);text-align:left;background:none}
+.pv-mh>span{flex:1;min-width:0}
+.pv-mh small{font-size:11.5px;font-weight:700;color:var(--sub);margin-left:6px}
+.pv-chev{display:flex;font-style:normal}
+.pv-chev svg{width:20px;height:20px;fill:none;stroke:var(--ink2);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s;transform:rotate(180deg)}
+.pv-more.off .pv-chev svg{transform:none}
+.pv-more.off .pv-mb{display:none}
+.pv-mb{padding:0 13px 13px}
+.pv-ms{margin:-6px 0 10px;font-size:12px;color:var(--sub)}
+.pv-flow{display:grid;grid-template-columns:1fr 1fr;padding:12px 10px;border-radius:12px;background:#F6F7F9}
+.pv-flow.solo{grid-template-columns:1fr}
+.pv-f{display:flex;gap:8px;align-items:flex-start;min-width:0}
+.pv-f+.pv-f{border-left:1px solid #E3E5EA;padding-left:10px;margin-left:10px}
+.pv-f>i{flex:none;width:30px;height:30px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-style:normal}
+.pv-f>i svg{width:16px;height:16px}
+.pv-f>div{min-width:0}
+.pv-f span{display:block;font-size:12px;font-weight:800;color:var(--ink)}
+.pv-f b{display:block;margin-top:2px;font-size:clamp(17px,5vw,20px);font-weight:900;color:var(--ink);white-space:nowrap;letter-spacing:-.02em}
+.pv-f b small{font-size:11px;font-weight:800;letter-spacing:0}
+.pv-f em{display:block;margin-top:3px;font-style:normal;font-size:11px;color:var(--sub);line-height:1.4;word-break:keep-all}
+.pv-fn{margin:8px 0 0;font-size:10.5px;color:var(--mute);line-height:1.45}
+@media (max-width:480px){ .pv-grid{grid-template-columns:1fr} }
+@media (max-width:420px){ .pv-f>i{display:none} .pv-f+.pv-f{padding-left:10px;margin-left:10px} }
+@media (max-width:374px){ .pv-ph{display:none} .pv-bub b{font-size:16px} }
