@@ -1404,7 +1404,7 @@ function act(go, el){
    · 상품 상세에서 '이 조건으로' 누르면 고른 휴대폰·용량·컬러·통신사·요금제·할부가 그대로 들어옴
    ========================================================= */
 var AP=null;
-function apInit(){ return {phone:'',cap:0,color:'',carrier:'',tier:'',method:'',months:24,watch:'',tablet:'',tv:'',tvTier:'',tvType:'old',tvFix:false,tvOk:false,pick:false,note:'',open:{}}; }
+function apInit(){ return {recv:'',store:'',from:'',phone:'',cap:0,color:'',carrier:'',tier:'',method:'',months:24,watch:'',tablet:'',tv:'',tvTier:'',tvType:'old',tvFix:false,tvOk:false,pick:false,note:'',open:{}}; }
 function brandOf(m){ return (m && (/iphone|ipad|watchse|apple/i.test(m.id) || m.cat.indexOf('iphone')>-1)) ? 'apple' : 'samsung'; }
 var AP_SLOTS=[['watch','워치','watch'],['tablet','태블릿','tablet'],['tv','TV프리','tvfree']];
 function apPhone(){ return AP.phone && AP.phone!=='later' ? byId(AP.phone) : null; }
@@ -1475,6 +1475,38 @@ function apPhoneHtml(){
     h+='<div class="qk-car"><div class="qk-l">지금 쓰는 통신사 <span class="req">*</span></div>'+apChips('carrier',CARRIERS.map(function(c){return [c,c]}),AP.carrier,4)+'</div>';
   }
   return h;
+}
+// 20261019 받는 방법: 택배(당일 발송) / 매장에서 받기 — 상담 방법(전화·카톡)과는 따로 고르는 칸.
+//  매장에서 받기 → 수령 매장(가까운 매장 찾기로 가까운 순 정렬) + 어디서 오세요(구·동, 고객이 직접 적음 → 거리·교통비 분석용)
+var TRUCK_I='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 6.5h11v9.5h-11zM13.5 9.5h4l3 3.5v3h-7"/><circle cx="6.5" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/></svg>';
+function apRecvHtml(){
+  if(!AP.phone || AP.pick) return '';
+  var h='<div class="qk-car" id="apRecvRow"><div class="qk-l">받는 방법 <span class="req">*</span></div>'+
+    '<div class="cgrid ap-recv" style="--n:2">'+
+      '<button type="button" class="cg'+(AP.recv==='courier'?' on':'')+'" data-ap="recv" data-v="courier">'+TRUCK_I+'택배 · 당일 발송</button>'+
+      '<button type="button" class="cg'+(AP.recv==='store'?' on':'')+'" data-ap="recv" data-v="store">'+PIN_I+'매장에서 받기</button></div>';
+  if(AP.recv==='store'){
+    var list=S.stores.filter(function(s){return s&&s.nm});
+    var opt=function(s){ var d=storeDist(s); return '<option value="'+esc(s.nm)+'"'+(s.nm===AP.store?' selected':'')+'>'+esc(s.nm)+(d!=null?' ('+distTxt(d)+')':'')+'</option>'; };
+    var opts=MYPOS?list.map(function(s){ return {s:s, d:storeDist(s)}; }).sort(function(a,b){ return (a.d==null?1e9:a.d)-(b.d==null?1e9:b.d); }).map(function(x){ return opt(x.s); }).join('')
+      :[['서울',list.filter(function(s){return /^서울/.test(s.addr||'')})],['경기',list.filter(function(s){return !/^서울/.test(s.addr||'')})]].map(function(g){ return g[1].length?'<optgroup label="'+g[0]+'">'+g[1].map(opt).join('')+'</optgroup>':''; }).join('');
+    h+='<div class="ap-recv-f"><div class="qk-l"><span>수령 매장 <span class="req">*</span></span><button type="button" class="ap-near'+(MYPOS?' on':'')+'" data-ap-near>'+PIN_I+'<span>'+(MYPOS?'가까운 순으로 보는 중':'가까운 매장 찾기')+'</span></button></div>'+
+      '<select class="ap-sel" id="mStoreSel"><option value="">매장을 골라 주세요</option>'+opts+'</select>'+(NEAR_ERR?'<div class="near-err">'+esc(NEAR_ERR)+'</div>':'')+'</div>'+
+      '<div class="ap-recv-f"><div class="qk-l"><span>어디서 오세요? <span class="req">*</span></span></div><input type="text" class="ap-in" id="mFromIn" maxlength="40" placeholder="예: 중랑구 면목동" value="'+esc(AP.from||'')+'"></div>';
+  }
+  return h+'</div>';
+}
+// 가장 가까운 매장 (MYPOS 있을 때)
+function nearestStore(){ var best=null; S.stores.forEach(function(s){ if(!s||!s.nm) return; var d=storeDist(s); if(d!=null&&(!best||d<best.d)) best={nm:s.nm, d:d}; }); return best; }
+function nearLog(n,d){ try{ if(typeof window.udakEv==='function') window.udakEv(n,d); }catch(x){} }
+// 신청서 '가까운 매장 찾기' — 위치 허용하면 매장 목록을 가까운 순으로, 매장을 아직 안 골랐으면 가장 가까운 매장을 골라 둠
+function apNear(){
+  if(!navigator.geolocation){ NEAR_ERR='이 브라우저에서는 위치를 확인할 수 없어요.'; apRefresh(); return; }
+  var b=$('[data-ap-near]'); if(b){ b.disabled=true; var bs=b.querySelector('span'); if(bs) bs.textContent='내 위치 확인 중…'; }
+  navigator.geolocation.getCurrentPosition(function(p){ MYPOS=[p.coords.latitude, p.coords.longitude]; NEAR_ERR='';
+      var best=nearestStore(); if(best){ nearLog('store_near', best.nm+' · '+distBand(best.d)); if(AP && !AP.store) AP.store=best.nm; } apRefresh(); },
+    function(er){ nearLog('store_near_fail', (er&&er.code===1)?'위치 거부':'위치 확인 실패'); NEAR_ERR=(er&&er.code===1)?'위치 권한이 꺼져 있어요. 매장을 직접 골라 주세요.':'위치를 확인하지 못했어요. 매장을 직접 골라 주세요.'; apRefresh(); },
+    {enableHighAccuracy:false, timeout:10000, maximumAge:300000});
 }
 // 신청서 금액: 월 기기 할부금 + 총 기기 지원금만 (통신 요금 합친 금액은 안 보여 줌)
 function apPriceHtml(){
@@ -1651,16 +1683,14 @@ function apSumHtml(){
   return h+'</section>';
 }
 function apInfoHtml(){
-  return '<div class="ap-info" id="consultForm">'+
-    (AP&&AP.visit?'<div class="ff"><label>방문 매장</label><select id="mStoreSel"><option value="">매장을 골라 주세요</option>'+
-      S.stores.filter(function(s){return s&&s.nm}).map(function(s){ return '<option value="'+esc(s.nm)+'"'+(s.nm===AP.store?' selected':'')+'>'+esc(s.nm)+'</option>'; }).join('')+'</select></div>':'')+
+  return '<div class="ap-info" id="consultForm">'+   // 20261019: '방문 매장'은 위 '받는 방법 → 매장에서 받기'로 옮김
     '<div class="ff"><label>이름 <span class="req">*</span></label><input type="text" id="mUserName" placeholder="이름을 입력해 주세요" autocomplete="name"></div>'+
     '<div class="ff"><label>연락처 <span class="req">*</span></label><div class="phone3"><input type="text" id="mPhone1" value="010" readonly tabindex="-1"><span>-</span><input type="tel" id="mPhone2" maxlength="4" inputmode="numeric" placeholder="0000"><span>-</span><input type="tel" id="mPhone3" maxlength="4" inputmode="numeric" placeholder="0000"></div></div>'+
     '<div class="ff"><label>생년월일 <span class="req">*</span></label><input type="text" id="mUserBirth" inputmode="numeric" maxlength="8" placeholder="예: 940101"></div>'+
     '<div class="ff"><label>전달사항</label><textarea id="mUserNote" rows="3" maxlength="500" placeholder="요청사항을 적어주세요 (선택)"></textarea></div>'+
     '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히 보기 ›</button></label>'+
     '<div class="privacy-txt" id="privacyTxt">유플러스 다이렉트(이하 "회사")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
-    '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사<br>· 목적: 온라인 상담 신청 접수, 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
+    '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사, 받는 방법(매장에서 받는 경우 수령 매장·출발 동네)<br>· 목적: 온라인 상담 신청 접수, 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
     '동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.</div></div>';
 }
 // 20261016: 신청 버튼 2개 — 상담 예약(전화) / 카톡 예약(신청서는 똑같이 CRM에 저장 + 우리 카카오톡 상담 채널 열기, CRM엔 '카톡 상담 요청'으로 표시)
@@ -1685,7 +1715,7 @@ function renderApply(full){
     // 20261019: 카드 하나에 — 고른 휴대폰·금액·컬러·통신사 → 고객 정보 → 버튼 (카톡 간편 신청창처럼)
     $('#apBody').innerHTML='<section class="ap-sec ap-one"><div id="apCond"></div><div id="apSum"></div>'+apInfoHtml()+apBtnsHtml()+'</section>';
   }
-  $('#apCond').innerHTML=apPhoneHtml()+(apAddOn()?apPlanHtml():'')+apAddHtml();
+  $('#apCond').innerHTML=apPhoneHtml()+(apAddOn()?apPlanHtml():'')+apAddHtml()+apRecvHtml();   // 20261019: 맨 끝에 '받는 방법'
   $('#apSum').innerHTML=(!apPhone()&&(AP.tv||AP.watch||AP.tablet))?apSumHtml():'';   // 금액표는 TV프리만 신청할 때만 (휴대폰은 위에 월 기기 할부금·총 기기 지원금)
   $('#apBar').innerHTML=apBarHtml();
   Array.prototype.forEach.call(document.querySelectorAll('#apBody .ap-h > b'),function(b,i){ b.textContent=(i<9?'0':'')+(i+1); });
@@ -1714,7 +1744,7 @@ function openApply(el, mode){
   var id=el&&el.getAttribute&&(el.getAttribute('data-model')||el.getAttribute('data-qk')), m=id&&byId(id);
   apSetFrom(m); AP.mode=mode||'';
   // 20261017: 매장찾기에서 '방문 예약 상담 신청하기'로 들어오면 고른 매장을 신청서까지 가져감 (목록 버튼은 매장 미정)
-  var stn=el&&el.getAttribute&&el.getAttribute('data-store'); if(stn!=null){ AP.visit=true; AP.store=stn; }
+  var stn=el&&el.getAttribute&&el.getAttribute('data-store'); if(stn!=null){ AP.visit=true; AP.store=stn; AP.recv='store'; }   // 20261019: '매장에서 받기'로 미리 골라 둠
   apValidate();
   if(location.hash==='#/apply'){ renderApply(true); window.scrollTo(0,0); } else location.hash='#/apply';
 }
@@ -1757,7 +1787,10 @@ function apPayload(o){
     home_tv:tvx?(tvx.id==='tvfree5'?'프리5':tvx.id==='ipada16'?'아이패드':tvx.nm):null, snapshot:snapshot};
   // 20261016: 카톡 예약으로 신청 → CRM '카톡 상담 요청' (전화 전에 문자·카톡으로 먼저 케어)
   snapshot.consult=kakao?'카톡':'전화'; if(kakao) body.consult_channel='카톡';
-  if(AP.visit){ body.visit_store=AP.store||'미정'; snapshot.visitStore=AP.store||'미정'; }   // 20261017: CRM에 '📍OO점 방문'으로 표시
+  if(AP.recv==='store' || (AP.visit && AP.recv!=='courier')){ body.visit_store=AP.store||'미정'; snapshot.visitStore=AP.store||'미정'; }   // 20261017: CRM에 '📍OO점 방문'으로 표시
+  // 20261019 받는 방법: 택배 / 매장 수령 (+ 매장 수령이면 고객이 적은 출발 동네 — CRM 메모 맨 앞에도 붙임)
+  snapshot.recv=AP.recv==='store'?'매장 수령':AP.recv==='courier'?'택배':null;
+  if(AP.recv==='store' && String(AP.from||'').trim()){ snapshot.from=String(AP.from).trim().slice(0,40); body.memo='[매장 수령 · 출발 동네] '+snapshot.from+(body.memo?' / '+body.memo:''); }
   if(typeof window.udakMetaIds==='function'){ var mi=window.udakMetaIds(); Object.keys(mi).forEach(function(k){ body[k]=mi[k]; }); }
   return {body:body, snapshot:snapshot};
 }
@@ -1830,6 +1863,13 @@ function apSubmit(mode){
   var apm=apPhone(); if(apm && colorsOf(apm).length>1 && !AP.color){ alert('컬러를 선택해 주세요.'); var acr=$('#apColorRow'); if(acr) acr.scrollIntoView({block:'center',behavior:'smooth'}); return; }   // 20261019: 컬러도 필수
   if(!AP.phone){ alert('휴대폰을 선택해 주세요.'); window.scrollTo({top:0,behavior:'smooth'}); return; }
   if(!AP.carrier && AP.phone!=='none'){ alert('현재 사용 중인 통신사를 선택해 주세요.'); return; }
+  // 20261019 받는 방법 (택배 / 매장에서 받기) — 매장이면 수령 매장 + 어디서 오세요도 필수
+  var rr=$('#apRecvRow');
+  if(!AP.recv){ alert('받는 방법을 선택해 주세요. (택배 · 당일 발송 / 매장에서 받기)'); if(rr) rr.scrollIntoView({block:'center',behavior:'smooth'}); return; }
+  if(AP.recv==='store'){
+    if(!AP.store){ alert('수령할 매장을 선택해 주세요.'); if(rr) rr.scrollIntoView({block:'center',behavior:'smooth'}); return; }
+    if(!String(AP.from||'').trim()){ alert('어디서 오시는지 동네를 적어 주세요. (예: 중랑구 면목동)'); var fi=$('#mFromIn'); if(fi) fi.focus(); return; }
+  }
   if(!name){ alert('이름을 입력해주세요.'); return; }
   if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해주세요.'); return; }
   if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해주세요.'); return; }
@@ -1922,7 +1962,8 @@ document.addEventListener('click',function(e){
   var o=t.closest('[data-open]'); if(o){e.preventDefault();act(o.getAttribute('data-open'),o);return}
   if(t.closest('[data-qx]')){ e.preventDefault(); var qi=$('#qnaQ'); if(qi){ qi.value=''; QQ=''; qi.parentNode.classList.remove('on'); $('.qna-cats').classList.remove('qdim'); $('#qnaList').innerHTML=qnaList(); qi.focus(); } return; }
   var qc=t.closest('[data-qcat]'); if(qc){ e.preventDefault(); QCAT=+qc.getAttribute('data-qcat'); var qi2=$('#qnaQ'); if(qi2){ qi2.value=''; QQ=''; qi2.parentNode.classList.remove('on'); $('.qna-cats').classList.remove('qdim'); } $$('.qna-cats button').forEach(function(x){ x.classList.toggle('on',x===qc); }); $('#qnaList').innerHTML=qnaList(); qc.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); return; }
-  if(t.closest('[data-near]')){ e.preventDefault(); findNear(); return; }   // 20261019 매장찾기: 내 위치에서 가까운 매장
+  if(t.closest('[data-near]')){ e.preventDefault(); findNear(); return; }
+  if(t.closest('[data-ap-near]')){ e.preventDefault(); apNear(); return; }   // 20261019 신청서 '가까운 매장 찾기'   // 20261019 매장찾기: 내 위치에서 가까운 매장
   var sti=t.closest('[data-store-i]'); if(sti && !t.closest('a')){ e.preventDefault(); var so=S.stores[+sti.getAttribute('data-store-i')]; if(so){ openSheet(sheetStoreOne(so)); } return; }
   var g=t.closest('[data-go]'); if(g){e.preventDefault();act(g.getAttribute('data-go'),g);return}
   var c=t.closest('[data-cat]'); if(c){location.hash='#/cat/'+c.getAttribute('data-cat');return}
@@ -1936,6 +1977,7 @@ document.addEventListener('input',function(e){
   if(id==='mPhone2'||id==='mPhone3'||id==='qkP2'||id==='qkP3'){ e.target.value=e.target.value.replace(/\D/g,'').slice(0,4); if((id==='mPhone2'||id==='qkP2')&&e.target.value.length===4){ var n=$(id==='qkP2'?'#qkP3':'#mPhone3'); if(n) n.focus(); } }
   else if(id==='mUserBirth'||id==='qkBirth'){ e.target.value=e.target.value.replace(/\D/g,'').slice(0,8); }
   else if(id==='mUserName'||id==='qkName'){ e.target.value=e.target.value.replace(/[0-9]/g,''); }
+  else if(id==='mFromIn'){ if(AP) AP.from=e.target.value; }   // 20261019 매장 수령 '어디서 오세요' (다시 그려도 안 지워지게)
   else if(id==='q'){ renderSearch(e.target.value); }
   else if(id==='mDeviceSearch'){ var qv=e.target.value.toLowerCase().replace(/\s/g,''), al={'아이폰':'iphone','갤럭시':'','플립':'flip','폴드':'fold','울트라':'ultra'};
     $$('#apList .ap-li').forEach(function(li){ var nm=li.getAttribute('data-nm')||'', q2=qv; Object.keys(al).forEach(function(a){ if(al[a]) q2=q2.split(a).join(al[a]); }); li.hidden=!!qv && nm.indexOf(qv)<0 && (!q2||nm.indexOf(q2)<0); }); }
