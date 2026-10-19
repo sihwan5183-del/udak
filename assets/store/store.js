@@ -1721,6 +1721,17 @@ window.addEventListener('scroll',onScroll,{passive:true});
 window.addEventListener('hashchange',route);
 bindHeroSwipe();
 renderHome();
+// 20261019: 광고 주소 galaxy_z8?m=fold8 → 그 상품 상세로 바로 열림 (뒤로 가기는 홈으로).
+//   메타가 주소 뒤에 붙이는 광고 정보(utm·fbclid)는 ? 뒤에 그대로 남아서 CRM·기록에 정상으로 잡힘
+//   (#/model/fold8 주소를 광고에 바로 넣으면 메타가 # 뒤에 광고 정보를 붙여 화면·기록이 깨질 수 있어 이 방식으로)
+(function(){ try{
+  var mq=new URLSearchParams(location.search).get('m');
+  if(!EDIT && mq && /^[\w-]{1,40}$/.test(mq) && (!location.hash || location.hash==='#')){   // 처음 들어올 때만 (홈에서 새로고침하면 홈 그대로)
+    var base=location.pathname+location.search;
+    history.replaceState(null,'',base+'#/');
+    history.pushState(null,'',base+'#/model/'+mq);
+  }
+}catch(e){} })();
 route();
 if(EDIT) document.body.classList.add('edit','editing');
 load().then(function(){ if(!EDIT) live(); if(window.__stReady) window.__stReady(); });
