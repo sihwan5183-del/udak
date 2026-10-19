@@ -679,7 +679,7 @@ function renderDeal(){
       return '<a class="dl-c" href="#/model/'+esc(x.m.id)+'" data-edit="deal" data-mid="'+esc(x.m.id)+'"><div class="dl-c-h"><span class="dl-c-img">'+im(mImg(x.m),'','',x.m.nm)+'</span><b>'+esc(x.m.nm)+'</b></div>'+
         (x.mnp!=null?'<div class="dl-c-m"><small>번호이동</small><em>'+wz(x.mnp)+'</em></div>':'<div class="dl-c-m"><small>구매가</small><em class="ask">상담 시 안내</em></div>')+
         (x.chg!=null?'<div class="dl-c-c">기기변경 '+wz(x.chg)+'</div>':'')+'</a>';
-    }).join('')+'</div>'+(it.some(function(x){return x.mnp!=null||x.chg!=null})?'<div class="dl-note">구매 가능 금액 · 월 115,000원 이상 요금제 6개월 유지 기준</div>':'')+'</div>';
+    }).join('')+'</div></div>';   // 20261019: 카드 아래 '구매 가능 금액 · 월 115,000원 이상 요금제 6개월 유지 기준' 문구 뺌 (기준이 맞지 않음)
   $('#heroDots').innerHTML='';
   return true;
 }
