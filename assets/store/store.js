@@ -1020,12 +1020,11 @@ function renderModel(id, keepRecent){
   var step=function(key, short, title, sub, inner, chip, cls){ var ok=!!done[key], now=(key===nowKey); steps.push({k:key, t:short, ok:ok, now:now});
     return '<div class="mstep'+(now?' now':'')+(ok?' ok':'')+(cls?' '+cls:'')+'" data-step="'+key+'"><div class="mstep-h"><b>'+(ok?'✓':steps.length)+'</b><div><span>'+title+'</span>'+(sub?'<small>'+sub+'</small>':'')+'</div>'+(chip||'')+'</div>'+inner+'</div>'; };
   var chipOf=function(key, val, dflt){ return done[key]?'<em class="mstep-ok">✓ '+esc(val)+'</em>':key===nowKey?'<em class="mstep-go">골라 주세요</em>':dflt?'<em class="mstep-df">기본</em>':''; };
-  if(cN) body+=step('color', '컬러', '원하는 컬러를 골라 주세요', done.color?'':'지금은 기본 컬러(<b>'+esc(colNm)+'</b>)로 보여 드려요. 원하시는 컬러를 눌러 주세요', colorPicker(m), chipOf('color', colNm, true), done.color?'':'dflt');
-  if(oN) body+=step('cap', oL, '원하는 '+esc(oL)+eul(oL)+' 골라 주세요', done.cap?'':'<b>'+esc(capNm)+'</b>'+ro(capNm)+' 골라 뒀어요. 원하시는 '+esc(oL)+eul(oL)+' 눌러 주세요', optPicker(m), chipOf('cap', capNm, true), done.cap?'':'dflt');
-  if(PK.car) body+=step('car', '통신사', '지금 쓰는 통신사를 골라 주세요', '통신사에 따라 번호이동·기기변경 가격이 달라져요', PK.car, chipOf('car', carNm, false));
-  // 고를 칸(요금제·할인·할부)이 있을 때만 '그대로 두셔도 돼요' 안내 (TV프리는 가입 조건 안내뿐이라 안 붙임)
-  var restPick=/class="(cgrid|csel)/.test(PK.rest||'');
-  if(PK.rest) body+='<div class="mstep-sub">'+(restPick?'<div class="mstep-note">'+(gg==='phone'?'요금제·할인 방식·할부는 가장 많이 고르는 조건으로 맞춰 놨어요. <b>그대로 두셔도 돼요.</b>':'아래 조건은 가장 많이 고르는 조건으로 맞춰 놨어요. <b>그대로 두셔도 돼요.</b>')+'</div>':'')+PK.rest+'</div>';
+  // 20261019 단계 아래 설명 문구(기본값 안내·통신사 안내·'그대로 두셔도 돼요')는 전부 뺌 — 제목 + 고르는 칸만
+  if(cN) body+=step('color', '컬러', '원하는 컬러를 골라 주세요', '', colorPicker(m), chipOf('color', colNm, true), done.color?'':'dflt');
+  if(oN) body+=step('cap', oL, '원하는 '+esc(oL)+eul(oL)+' 골라 주세요', '', optPicker(m), chipOf('cap', capNm, true), done.cap?'':'dflt');
+  if(PK.car) body+=step('car', '통신사', '지금 쓰는 통신사를 골라 주세요', '', PK.car, chipOf('car', carNm, false));
+  if(PK.rest) body+='<div class="mstep-sub">'+PK.rest+'</div>';
   body+=step('price', '내 가격 확인', '내 예상 가격을 확인하세요', '', (soNow?'<div class="so-notice">'+(SO(m)?'현재 일시품절입니다':'선택하신 '+esc(selRow.cap||'옵션')+' 은(는) 일시품절입니다')+'. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
     '<div class="ptable" id="ucatPrice">'+rows+'</div>'+guideHtml(m)+
     '<div class="md-chips">'+(isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):(gg==='phone'&&cst&&cst.c)?'':'<span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span>')+'<span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>', '');
