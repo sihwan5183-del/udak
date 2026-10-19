@@ -1435,12 +1435,10 @@ function kakaoDone(ph, kw){
   if(KK && IS_MOBILE) setTimeout(function(){ location.href=KK; }, 250);   // 폰: 메타 신청 신호가 나갈 틈만 두고 바로 카카오톡으로 (20261019: 0.4초 → 0.25초)
 }
 function closeKakaoDone(){ var el=$('#kkDone'); if(el) el.classList.remove('on'); document.body.style.overflow=''; if(location.hash==='#/apply'){ AP=apInit(); location.hash='#/'; } }
-function showTicket(ph){
+function showTicket(){
+  // 20261019 사장님: 그림의 '010-XXXX-XXXX 번호로'는 "영업사원이 010 일반 번호로 전화 드리니 받아 달라"는 뜻 — 고객이 적은 번호를 그 자리에 넣으면 안 된다 (그림 글자 그대로)
   var t=$('#ticket'), o=$('#tkPh'); t.classList.add('on'); document.body.style.overflow='hidden';
-  // 20261016: 이미지의 '010-XXXX-XXXX 번호로' 자리에 고객이 적은 번호 (번호가 없으면 이미지 그대로)
-  if(o){ if(ph){ o.innerHTML='<b>'+esc(ph)+'</b> 번호로'; o.hidden=false;
-      var tw=t.querySelector('.tw'); if(tw && !(window.CSS&&CSS.supports&&CSS.supports('font-size','1cqw'))) o.style.fontSize=(tw.clientWidth*0.0454)+'px'; }
-    else o.hidden=true; }
+  if(o) o.hidden=true;
 }
 function closeTicket(){ $('#ticket').classList.remove('on'); document.body.style.overflow=''; if(location.hash==='#/apply'){ AP=apInit(); location.hash='#/'; } }
 
@@ -1972,7 +1970,7 @@ function apSubmit(mode){
   fetch(SB_URL,{method:'POST',keepalive:kakao,headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
   .then(function(res){
     if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead',{content_name:kakao?'카톡 예약 신청':'상담 예약 신청'}); reset();
-      if(kakao) kakaoDone(body.phone, kw); else showTicket(body.phone); }   // 카톡 예약은 카카오톡 채팅방으로
+      if(kakao) kakaoDone(body.phone, kw); else showTicket(); }   // 카톡 예약은 카카오톡 채팅방으로
     else { kwX(); reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해주세요.'); }); }
   }).catch(function(e){ console.error(e); kwX(); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.'); });
 }
