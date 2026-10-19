@@ -553,7 +553,7 @@ function pvPhone(m, r, st){
   // ④ 꼭 확인해 주세요 (20261019 레퍼런스) — 통신사 조건 · 약정 · 요금제 유지. 통신사 조건은 번호이동/기기변경, 요금제는 고른 요금제 따라
   var mu=[[st.type==='chg'?'LG U+ 통신사 유지 조건 (기기변경)':'LG U+ 통신사 변경 조건 (번호이동)',''], ['약정 기간 2년','']];
   if(st.t&&st.t.fee) mu.push(['6개월간 '+won(st.t.fee)+' 이상 요금제 사용', st.t.fee>LOW_FEE?'이후에는 '+won(LOW_FEE)+' 이상 요금제로 변경 가능':'']);
-  h+='<div class="pv-must"><h4>꼭 확인해 주세요</h4><ol>'+mu.map(function(x,i){ return '<li><i>'+(i+1)+'</i><div><b>'+x[0]+'</b>'+(x[1]?'<small>'+x[1]+'</small>':'')+'</div></li>'; }).join('')+'</ol></div>';
+  h+='<div class="pv-must"><h4>혜택 받기 전, 꼭 확인해 주세요!</h4><ol>'+mu.map(function(x,i){ return '<li><i>'+(i+1)+'</i><div><b>'+x[0]+'</b>'+(x[1]?'<small>'+x[1]+'</small>':'')+'</div></li>'; }).join('')+'</ol></div>';
   // ⑤ 월 예상 납부금액 (통신 요금 포함) — 맨 아래, 처음엔 접힘. '7개월 차부터'는 지금처럼 85·95 요금제만
   if(fee){
     var low=(st.fee<=95000&&st.fee>LOW_FEE)?monthly+(sel?Math.round(LOW_FEE*0.75):LOW_FEE):null;
