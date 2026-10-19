@@ -1495,3 +1495,9 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .pv-must li>div{min-width:0}
 .pv-must b{display:block;font-size:15px;font-weight:500;color:#333D4B;line-height:1.45;word-break:keep-all}
 .pv-must small{display:block;margin-top:2px;font-size:12.5px;color:#8B95A1;line-height:1.45;word-break:keep-all}
+/* 20261019 컬러 필수: 카톡 간편 창 컬러 고르기 · 신청서 컬러 '골라 주세요' */
+.qk-cc{display:flex;flex-wrap:wrap;gap:7px}
+.qk-cc button{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 12px 0 8px;border-radius:999px;border:1.5px solid #E3E5EA;background:#fff;font-size:13px;font-weight:700;color:var(--ink2)}
+.qk-cc button i{width:20px;height:20px;border-radius:50%;background:var(--c);border:1px solid rgba(0,0,0,.12);box-shadow:inset 0 0 0 2px #fff;font-style:normal}
+.qk-cc button.on{border-color:var(--pink);color:var(--pink);background:var(--pink-50)}
+.ap-need .ap-l b{color:var(--pink)}

@@ -133,7 +133,7 @@
            ['wear','#wearSec'],['gift','#giftSec'],['rank','#rankSec'],['pick','#pickSec']],
       click:[['#mSubmitBtn','submit_click',function(){ return '상담 예약'; }],['#mKakaoBtn','submit_click',function(){ return '카톡 예약'; }],
              // v20261019: 상세 하단 [카톡 상담] → 카톡 간편 신청창, 그 안의 '카톡으로 상담 시작하기'
-             ['#qkBtn','submit_click',function(){ return '카톡 간편'; }],['[data-qk]','qk_open',attr('data-qk')],['[data-qk-car]','qk_car',attr('data-qk-car')],
+             ['#qkBtn','submit_click',function(){ return '카톡 간편'; }],['[data-qk]','qk_open',attr('data-qk')],['[data-qk-car]','qk_car',attr('data-qk-car')],['[data-qk-col]','qk_col',attr('data-qk-col')],
              ['[data-ap-pick]','ap_pick',attr('data-ap-pick')],
              ['[data-ap]','ap',function(el){ return el.getAttribute('data-ap')+'='+(el.getAttribute('data-v')||''); }],
              ['[data-ap-act]','ap_act',attr('data-ap-act')],

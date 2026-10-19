@@ -1019,7 +1019,7 @@ function renderModel(id, keepRecent){
   var step=function(key, short, title, sub, inner, chip, cls){ var ok=!!done[key], now=(key===nowKey); steps.push({k:key, t:short, ok:ok, now:now});
     return '<div class="mstep'+(now?' now':'')+(ok?' ok':'')+(cls?' '+cls:'')+'" data-step="'+key+'"><div class="mstep-h"><b>'+(ok?'✓':steps.length)+'</b><div><span>'+title+'</span>'+(sub?'<small>'+sub+'</small>':'')+'</div>'+(chip||'')+'</div>'+inner+'</div>'; };
   var chipOf=function(key, val, dflt){ return done[key]?'<em class="mstep-ok">✓ '+esc(val)+'</em>':key===nowKey?'<em class="mstep-go">골라 주세요</em>':dflt?'<em class="mstep-df">기본</em>':''; };
-  if(cN) body+=step('color', '컬러', '원하는 컬러를 골라 주세요', done.color?'':'<b>'+esc(colNm)+'</b>'+ro(colNm)+' 골라 뒀어요. 원하시는 컬러를 눌러 주세요', colorPicker(m), chipOf('color', colNm, true), done.color?'':'dflt');
+  if(cN) body+=step('color', '컬러', '원하는 컬러를 골라 주세요', done.color?'':'지금은 기본 컬러(<b>'+esc(colNm)+'</b>)로 보여 드려요. 원하시는 컬러를 눌러 주세요', colorPicker(m), chipOf('color', colNm, true), done.color?'':'dflt');
   if(oN) body+=step('cap', oL, '원하는 '+esc(oL)+eul(oL)+' 골라 주세요', done.cap?'':'<b>'+esc(capNm)+'</b>'+ro(capNm)+' 골라 뒀어요. 원하시는 '+esc(oL)+eul(oL)+' 눌러 주세요', optPicker(m), chipOf('cap', capNm, true), done.cap?'':'dflt');
   if(PK.car) body+=step('car', '통신사', '지금 쓰는 통신사를 골라 주세요', '통신사에 따라 번호이동·기기변경 가격이 달라져요', PK.car, chipOf('car', carNm, false));
   // 고를 칸(요금제·할인·할부)이 있을 때만 '그대로 두셔도 돼요' 안내 (TV프리는 가입 조건 안내뿐이라 안 붙임)
@@ -1386,7 +1386,7 @@ function apChips(key, items, cur, n){
 function apPhoneHtml(){
   var m=apPhone(), h='<section class="ap-sec"><div class="ap-h"><b>01</b>'+(AP.phone&&!AP.pick?'선택한 휴대폰':'휴대폰')+'</div>';
   if((AP.phone && !AP.pick)){
-    var os0=m?optsOf(m):[], cs0=m?colorsOf(m):[], capNm=os0[AP.cap]&&os0[AP.cap].nm!=='기본'?os0[AP.cap].nm:'', colNm=AP.color||(cs0.length===1?cs0[0].nm:(cs0[0]&&cs0[0].nm)||'');
+    var os0=m?optsOf(m):[], cs0=m?colorsOf(m):[], capNm=os0[AP.cap]&&os0[AP.cap].nm!=='기본'?os0[AP.cap].nm:'', colNm=AP.color||(cs0.length===1?cs0[0].nm:'');
     var pills=[capNm,colNm].filter(Boolean);
     h+='<div class="ap-dev"><div class="ap-dev-img">'+(m?im(apColorImg(m),'',true,m.nm):'')+'</div><div class="ap-dev-t"><b>'+esc(m?m.nm:(AP.phone==='none'?'휴대폰은 바꾸지 않아요':'상담 후 결정할게요'))+'</b>'+
       (m?'<span>'+esc(m.ds||'')+'</span>':(AP.phone==='none'?'<span>TV프리만 신청해요</span>':'<span>상담하면서 함께 골라 드릴게요</span>'))+
@@ -1401,11 +1401,12 @@ function apPhoneHtml(){
       // 20261016: '상담 후 결정할게요' 줄 삭제 (휴대폰은 꼭 골라서 신청)
       (AP.tv&&AP.tvType==='old'?'<div class="ap-li later" data-nm="휴대폰변경없음tv프리만"><b>휴대폰은 바꾸지 않아요 (TV프리만)</b><button type="button" class="ap-pick" data-ap-pick="none">선택하기</button></div>':'')+'</div>';
   }
-  if(m && !AP.pick && AP.optOpen){
+  if(m && !AP.pick && colorsOf(m).length>1 && !AP.color) AP.colOpen=true;   // 20261019: 컬러 안 골랐으면 컬러 칸을 펼쳐서 꼭 고르게 (고른 뒤에도 펼친 채로)
+  if(m && !AP.pick && (AP.optOpen||AP.colOpen)){
     var os=optsOf(m), cs=colorsOf(m);
-    if(os.length>1) h+='<div class="ap-f"><div class="ap-l">'+esc(optLabel(m))+'</div>'+apChips('cap',os.map(function(o,i){return [i,o.nm+(o.row&&o.row.so?' (품절)':'')]}),AP.cap,Math.min(os.length,4))+'</div>';
-    if(cs.length>1){ var cur=AP.color||cs[0].nm;
-      h+='<div class="ap-f"><div class="ap-l">컬러 <b>'+esc(cur)+'</b></div><div class="cpick-row">'+cs.map(function(c){
+    if(AP.optOpen && os.length>1) h+='<div class="ap-f"><div class="ap-l">'+esc(optLabel(m))+'</div>'+apChips('cap',os.map(function(o,i){return [i,o.nm+(o.row&&o.row.so?' (품절)':'')]}),AP.cap,Math.min(os.length,4))+'</div>';
+    if(cs.length>1){ var cur=AP.color||'';
+      h+='<div class="ap-f'+(cur?'':' ap-need')+'" id="apColorRow"><div class="ap-l">컬러 <b>'+(cur?esc(cur):'골라 주세요')+'</b></div><div class="cpick-row">'+cs.map(function(c){
         return '<button type="button" class="sw'+(c.nm===cur?' on':'')+'" data-ap="color" data-v="'+esc(c.nm)+'" aria-label="'+esc(c.nm)+'" style="--c:'+esc(c.hex||'#ddd')+'"></button>'; }).join('')+'</div></div>'; }
   }
   return h+'</section>';
@@ -1677,17 +1678,19 @@ function apPayload(o){
   return {body:body, snapshot:snapshot};
 }
 // 20261019: 상세 [카톡 상담] — 이름·연락처·동의만 받고 CRM에 '카톡 상담 요청'으로 저장한 뒤 우리 카카오톡 채널로
-var QK={m:'', car:''};
+var QK={m:'', car:'', col:''};
 var QK_PV='유플러스 다이렉트(이하 "회사")는 카카오톡 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
   '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사<br>· 목적: 카카오톡·전화 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
   '동의를 거부할 권리가 있으며, 거부 시 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.';
 function sheetQuickKakao(m){
   var p=priceOf(m, optsOf(m).length?(OPT[m.id]||0):null), st=p.kind==='sheet'?calcState(m,p.row):null;
-  var cs=colorsOf(m), col=PICK[m.id]||(cs.length>1?(cs[0]&&cs[0].nm):''), os=optsOf(m), cap=os.length>1?os[OPT[m.id]||0].nm:'';
+  var cs=colorsOf(m), col=PICK[m.id]||(cs.length===1?cs[0].nm:''), os=optsOf(m), cap=os.length>1?os[OPT[m.id]||0].nm:'';
   var hasCar=!!((SEL[m.id]||{}).carrier), needCar=kindOf(m)!=='tvfree';   // 통신사는 신청서처럼 필수 (TV프리만 제외)
+  var needCol=qkNeedCol(m);   // 20261019: 컬러를 직접 안 골랐으면 여기서 꼭 고르게 (안 고르면 CRM 컬러 칸이 비어서 들어옴)
   return '<h3>카톡으로 상담받기</h3>'+
     '<div class="qk-sub">고객 정보를 남겨 주시면 <b>유플러스 다이렉트 카카오톡 상담 채널</b>로 바로 연결돼요. 고르신 조건은 상담사에게 같이 전달돼요.</div>'+
     '<div class="qk-pick"><b>'+esc([m.nm, col, cap].filter(Boolean).join(' · '))+'</b>'+(st&&st.c?'<span>'+esc(st.g==='tvfree'?'TV프리 약정 36개월':calcSummary(st))+'</span>':'')+'</div>'+
+    (needCol?'<div class="qk-car qk-col"><div class="qk-l">컬러 <span class="req">*</span></div><div class="qk-cc">'+cs.map(function(c){ return '<button type="button" class="'+(QK.col===c.nm?'on':'')+'" data-qk-col="'+esc(c.nm)+'"><i style="--c:'+esc(c.hex||'#ddd')+'"></i>'+esc(c.nm)+'</button>'; }).join('')+'</div></div>':'')+
     (needCar&&!hasCar?'<div class="qk-car"><div class="qk-l">지금 쓰는 통신사 <span class="req">*</span></div><div class="cgrid" style="--n:4">'+CARRIERS.map(function(cn){ return '<button type="button" class="cg'+(QK.car===cn?' on':'')+'" data-qk-car="'+esc(cn)+'">'+esc(cn)+'</button>'; }).join('')+'</div></div>':'')+
     '<div class="ff"><label>이름 <span class="req">*</span></label><input type="text" id="qkName" placeholder="이름을 입력해 주세요" autocomplete="name"></div>'+
     '<div class="ff"><label>연락처 <span class="req">*</span></label><div class="phone3"><input type="text" value="010" readonly tabindex="-1"><span>-</span><input type="tel" id="qkP2" maxlength="4" inputmode="numeric" placeholder="0000"><span>-</span><input type="tel" id="qkP3" maxlength="4" inputmode="numeric" placeholder="0000"></div></div>'+
@@ -1697,13 +1700,15 @@ function sheetQuickKakao(m){
     '<button type="button" class="cta cta-kakao qk-btn" id="qkBtn">'+KKI+'<span>카톡으로 상담 시작하기</span></button>'+
     '<div class="qk-foot">누르시면 신청이 접수되고 카카오톡 상담 채널이 열려요.</div>';
 }
-function openQuickKakao(mid){ var m=byId(mid); if(!m) return; QK={m:mid, car:''}; openSheet(sheetQuickKakao(m)); }
+function qkNeedCol(m){ return kindOf(m)==='phone' && colorsOf(m).length>1 && !PICK[m.id]; }
+function openQuickKakao(mid){ var m=byId(mid); if(!m) return; QK={m:mid, car:'', col:''}; openSheet(sheetQuickKakao(m)); }
 function qkSubmit(){
   if(EDIT){ alert('관리자 화면에서는 신청이 저장되지 않습니다.'); return; }
   var m=byId(QK.m); if(!m) return;
   var name=$('#qkName').value.trim(), phone='010'+$('#qkP2').value.replace(/\D/g,'')+$('#qkP3').value.replace(/\D/g,''), birth=birth8($('#qkBirth').value);
   var qk=kindOf(m), car=QK.car||(SEL[m.id]||{}).carrier||'';
-  // 고객 정보는 신청서와 똑같이 전부 필수 — 하나라도 없으면 접수 안 됨
+  // 고객 정보는 신청서와 똑같이 전부 필수 — 하나라도 없으면 접수 안 됨 (컬러 → 통신사 → 이름 → 연락처 → 생년월일 → 동의)
+  if(qkNeedCol(m) && !QK.col){ alert('컬러를 선택해 주세요.'); return; }
   if(qk!=='tvfree' && !car){ alert('현재 사용 중인 통신사를 선택해 주세요.'); return; }
   if(!name){ alert('이름을 입력해주세요.'); return; }
   if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해주세요.'); return; }
@@ -1713,6 +1718,7 @@ function qkSubmit(){
   var btn=$('#qkBtn'); if(!btn||btn.disabled) return;
   // 상세에서 고른 컬러·용량·통신사·요금제·할인·할부 그대로
   //  (신청서 규칙 apValidate 는 안 씀 — 워치·태블릿은 '휴대폰과 함께'일 때만 남기는 규칙이라 보던 상품이 빠져 버림)
+  if(QK.col) PICK[m.id]=QK.col;   // 창에서 고른 컬러 → 상세에도 '✓ 고름'으로
   apSetFrom(m); if(QK.car) AP.carrier=QK.car;
   var notes=[];
   if(qk==='watch'||qk==='tablet'){ var qcs=colorsOf(m), qos=optsOf(m); notes.push('보던 상품: '+[m.nm, PICK[m.id]||(qcs.length===1?qcs[0].nm:''), qos.length>1?qos[OPT[m.id]||0].nm:''].filter(function(x){ return x && x!=='기본'; }).join(' · ')); }
@@ -1739,6 +1745,7 @@ function apSubmit(mode){
   var kakao=(mode==='kakao');
   if(EDIT){ alert('관리자 화면에서는 신청이 저장되지 않습니다.'); return; }
   var name=$('#mUserName').value.trim(), phone='010'+$('#mPhone2').value.replace(/\D/g,'')+$('#mPhone3').value.replace(/\D/g,''), birth=birth8($('#mUserBirth').value), memo=$('#mUserNote').value.trim();
+  var apm=apPhone(); if(apm && colorsOf(apm).length>1 && !AP.color){ alert('컬러를 선택해 주세요.'); var acr=$('#apColorRow'); if(acr) acr.scrollIntoView({block:'center',behavior:'smooth'}); return; }   // 20261019: 컬러도 필수
   if(!AP.phone){ alert('휴대폰을 선택해 주세요.'); window.scrollTo({top:0,behavior:'smooth'}); return; }
   if(!AP.carrier && AP.phone!=='none'){ alert('현재 사용 중인 통신사를 선택해 주세요.'); return; }
   if(!name){ alert('이름을 입력해주세요.'); return; }
@@ -1775,6 +1782,7 @@ document.addEventListener('click',function(e){
   if(t.closest('#mKakaoBtn')){ e.preventDefault(); apSubmit('kakao'); return; }
   if(t.closest('#qkBtn')){ e.preventDefault(); qkSubmit(); return; }
   var qkb=t.closest('[data-qk]'); if(qkb){ e.preventDefault(); openQuickKakao(qkb.getAttribute('data-qk')); return; }
+  var qkl=t.closest('[data-qk-col]'); if(qkl){ e.preventDefault(); QK.col=qkl.getAttribute('data-qk-col'); $$('[data-qk-col]').forEach(function(x){ x.classList.toggle('on', x===qkl); }); return; }
   var qkc=t.closest('[data-qk-car]'); if(qkc){ e.preventDefault(); var qv=qkc.getAttribute('data-qk-car'); QK.car=(QK.car===qv?'':qv); $$('[data-qk-car]').forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-qk-car')===QK.car); }); return; }
   if(t.closest('[data-qk-pv]')){ e.preventDefault(); var qp=$('#qkPv'); if(qp) qp.classList.toggle('on'); return; }
   var mgi=t.closest('[data-mg]'); if(mgi){ e.preventDefault(); var ms=$('#mdBody .mstep[data-step="'+mgi.getAttribute('data-mg')+'"]'), mh=$('#v-model .subhead'); if(ms) window.scrollTo({top:ms.getBoundingClientRect().top+window.scrollY-(mh?mh.offsetHeight:0)-8, behavior:'smooth'}); return; }
