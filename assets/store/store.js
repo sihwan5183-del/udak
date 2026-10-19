@@ -551,8 +551,9 @@ function pvPhone(m, r, st){
     '<div class="pv-card"><div class="pv-ch"><i class="pv-ic">'+PVI.coin+'</i>지원 후 기기값'+pvTip('pv3','출고가에서 총 기기 지원금을 뺀 금액이에요. 이 금액을 할부로 나눠 내요.')+'</div>'+
       '<div class="pv-n">'+wz(st.after)+'</div><div class="pv-box">'+pvRow('출고가',won(out))+pvRow('− 총 기기 지원금',won(sup),'minus')+'</div></div></div>';
   // ④ 꼭 확인해 주세요 (20261019 레퍼런스) — 통신사 조건 · 약정 · 요금제 유지. 통신사 조건은 번호이동/기기변경, 요금제는 고른 요금제 따라
-  var mu=[[st.type==='chg'?'LG U+ 통신사 유지 조건 (기기변경)':'LG U+ 통신사 변경 조건 (번호이동)',''], ['약정 기간 2년','']];
-  if(st.t&&st.t.fee) mu.push(['6개월간 '+won(st.t.fee)+' 이상 요금제 사용', st.t.fee>LOW_FEE?'이후에는 '+won(LOW_FEE)+' 이상 요금제로 변경 가능':'']);
+  var mu=[]; if(st.t&&st.t.fee) mu.push(['6개월간 '+won(st.t.fee)+' 이상 요금제 사용', st.t.fee>LOW_FEE?'이후에는 '+won(LOW_FEE)+' 이상 요금제로 변경 가능':'']);
+  mu.push(['약정 기간 2년','']);
+  if(st.type!=='chg') mu.push(['LG U+ 통신사 변경 조건 (번호이동)','']);   // 기기변경(LG U+ 고객)은 따로 안내 안 함
   h+='<div class="pv-must"><h4>혜택 받기 전, 꼭 확인해 주세요!</h4><ol>'+mu.map(function(x,i){ return '<li><i>'+(i+1)+'</i><div><b>'+x[0]+'</b>'+(x[1]?'<small>'+x[1]+'</small>':'')+'</div></li>'; }).join('')+'</ol></div>';
   // ⑤ 월 예상 납부금액 (통신 요금 포함) — 맨 아래, 처음엔 접힘. '7개월 차부터'는 지금처럼 85·95 요금제만
   if(fee){
@@ -1304,6 +1305,24 @@ function submitConsult(){
     else { reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해주세요.'); }); }
   }).catch(function(e){ console.error(e); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.'); });
 }
+// 20261019 카톡 상담 접수 뒤 — 폰: 곧바로 카카오톡 앱 채팅방으로 / PC: '카카오톡 채팅방 열기' 버튼(새 창)
+//  (PC 웹에선 채팅창이 안 뜨고 PC·폰 카카오톡 앱으로 넘어가서 '안 열린 것처럼' 보였음. 채팅방에 고객이 먼저 한마디 남겨야 우리가 답할 수 있음)
+var IS_MOBILE=/Android|iPhone|iPad|iPod|Mobile|Instagram|FBAN|FBAV|KAKAOTALK|NAVER/i.test(navigator.userAgent||'')||((navigator.maxTouchPoints||0)>1&&/Macintosh/.test(navigator.userAgent||''));
+function kakaoUrl(){ return String(S.kakao||'').replace(/^http:\/\//,'https://'); }
+function kakaoDone(ph){
+  var KK=kakaoUrl(), el=$('#kkDone');
+  if(!el){ document.body.insertAdjacentHTML('beforeend','<div class="kkd" id="kkDone" role="dialog" aria-modal="true"></div>'); el=$('#kkDone'); }
+  el.innerHTML='<div class="kkd-w"><button type="button" class="kkd-x" data-kkd-x aria-label="닫기">×</button>'+
+    '<div class="kkd-ic">'+KKI+'</div><h3>카카오톡 상담 접수 완료</h3>'+
+    '<p class="kkd-t">유플러스 다이렉트 카카오톡 채널 <b>‘UDak’</b> 채팅방에서 바로 상담해 드려요.</p>'+
+    '<div class="kkd-tip">채팅방에 <b>“상담 신청했어요”</b> 한마디 남겨 주시면<br>더 빨리 답해 드려요.</div>'+
+    (KK?'<a class="kkd-go" href="'+esc(KK)+'"'+(IS_MOBILE?'':' target="_blank" rel="noopener"')+'>'+KKI+'<span>카카오톡 채팅방 열기</span></a>':'')+
+    '<p class="kkd-s">'+(IS_MOBILE?'카카오톡이 바로 열리지 않으면 위 버튼을 눌러 주세요.':'PC에서는 PC 카카오톡(또는 휴대폰 카카오톡)에 채팅방이 열려요.')+'</p>'+
+    (ph?'<p class="kkd-ph"><b>'+esc(ph)+'</b> 번호로 접수됐어요</p>':'')+'</div>';
+  el.classList.add('on'); document.body.style.overflow='hidden';
+  if(KK && IS_MOBILE) setTimeout(function(){ location.href=KK; }, 400);   // 폰: 메타 신청 신호가 나갈 틈만 두고 바로 카카오톡으로
+}
+function closeKakaoDone(){ var el=$('#kkDone'); if(el) el.classList.remove('on'); document.body.style.overflow=''; if(location.hash==='#/apply'){ AP=apInit(); location.hash='#/'; } }
 function showTicket(ph){
   var t=$('#ticket'), o=$('#tkPh'); t.classList.add('on'); document.body.style.overflow='hidden';
   // 20261016: 이미지의 '010-XXXX-XXXX 번호로' 자리에 고객이 적은 번호 (번호가 없으면 이미지 그대로)
@@ -1725,11 +1744,9 @@ function qkSubmit(){
   var body=apPayload({name:name, phone:phone, birth:birth, memo:notes.length?'[카톡 간편 신청] '+notes.join(' / '):null, kakao:true, source:'상세 화면 카톡 상담'}).body;
   var lb=btn.querySelector('span'), lb0=lb?lb.textContent:''; btn.disabled=true; if(lb) lb.textContent='접수 중...';
   var reset=function(){ btn.disabled=false; if(lb) lb.textContent=lb0; };
-  var KK=String(S.kakao||'').replace(/^http:\/\//,'https://');
   fetch(SB_URL,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
   .then(function(res){
-    if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead',{content_name:'카톡 상담 (상세)'}); reset(); closeSheet(); showTicket(body.phone);
-      if(KK) setTimeout(function(){ location.href=KK; }, 1500); }   // 접수 팝업을 잠깐 보여 준 뒤 카카오톡 채널로
+    if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead',{content_name:'카톡 상담 (상세)'}); reset(); closeSheet(); kakaoDone(body.phone); }
     else { reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해주세요.'); }); }
   }).catch(function(e){ console.error(e); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.'); });
 }
@@ -1759,12 +1776,11 @@ function apSubmit(mode){
   var reset=function(){ btns.forEach(function(b){ b.disabled=false; }); if(lbl) lbl.textContent=lbl0; };
   // 카톡 예약: 신청서를 먼저 CRM에 저장하고 → 메타 신청 신호 → 완료 팝업 → 잠시 뒤 우리 카카오톡 상담 채널로 이동
   //  (인스타·페북 앱 안 브라우저는 새 창을 못 띄우고 지금 화면을 바꿔 버려서, 먼저 열면 저장·메타 신호가 끊길 수 있음)
-  var KK=String(S.kakao||'').replace(/^http:\/\//,'https://');
   var body=apPayload({name:name, phone:phone, birth:birth, memo:memo, kakao:kakao, source:'온라인 상담 신청'}).body;
   fetch(SB_URL,{method:'POST',keepalive:kakao,headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
   .then(function(res){
-    if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead',{content_name:kakao?'카톡 예약 신청':'상담 예약 신청'}); reset(); showTicket(body.phone);
-      if(kakao && KK) setTimeout(function(){ location.href=KK; }, 1500); }   // 접수 팝업을 잠깐 보여 준 뒤 카카오톡 채널로
+    if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead',{content_name:kakao?'카톡 예약 신청':'상담 예약 신청'}); reset();
+      if(kakao) kakaoDone(body.phone); else showTicket(body.phone); }   // 카톡 예약은 카카오톡 채팅방 안내로
     else { reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해주세요.'); }); }
   }).catch(function(e){ console.error(e); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.'); });
 }
@@ -1816,6 +1832,7 @@ document.addEventListener('click',function(e){
     return; }
   if(t.closest('[data-privacy]')){ e.preventDefault(); $('#privacyTxt').classList.toggle('on'); return; }
   if(t.closest('#ticket') && (t.closest('.x') || t.closest('.ok') || t.id==='ticket')){ closeTicket(); return; }
+  if(t.closest('[data-kkd-x]') || t.id==='kkDone'){ e.preventDefault(); closeKakaoDone(); return; }
   if(t.closest('[data-pv-x]')){ e.preventDefault(); PVOFF=!PVOFF; var pvm=t.closest('.pv-more'); if(pvm) pvm.classList.toggle('off', PVOFF); return; }
   var mt=t.closest('[data-ms-tip]');
   if(mt){ e.preventDefault(); var mk=mt.getAttribute('data-ms-tip'); MSTIP[mk]=!MSTIP[mk]; var hm=location.hash.match(/#\/model\/([^/?]+)/); if(hm){ var y=window.scrollY; renderModel(hm[1],true); window.scrollTo(0,y); } return; }
