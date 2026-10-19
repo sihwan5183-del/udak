@@ -475,6 +475,16 @@ function crow(label, sub, val, was, cls){
 }
 function payHint(st){ if(st.after===0) return '할부금 없이 이용하실 수 있어요'; return st.months===0?'일시납 · 기기값 기준':(st.mm+'개월 할부 · 기기값 기준, '+(st.noint?'이자 없음':'할부이자 포함')); }
 function eul(w){ var s=String(w||''), ch=s.charCodeAt(s.length-1); return (ch>=0xAC00&&ch<=0xD7A3&&(ch-0xAC00)%28)?'을':'를'; }
+function ro(w){ var s=String(w||''), ch=s.charCodeAt(s.length-1); if(ch>=0xAC00&&ch<=0xD7A3){ var jj=(ch-0xAC00)%28; return (jj===0||jj===8)?'로':'으로'; } return '로'; }
+function mdNowKey(){ var e=$('#mdBody .mstep.now'); return e?e.getAttribute('data-step'):''; }
+// 고르고 나면 다음 단계로 따라감: 다음 단계가 하단 버튼에 가려 있으면 보이게 살짝 내림, 통신사까지 고르면 '내 가격'으로 (아래로만)
+function mdFollow(prev){
+  var nw=$('#mdBody .mstep.now'), key=nw?nw.getAttribute('data-step'):''; if(!nw||key===prev) return;
+  var hd=$('#v-model .subhead'), top=(hd?hd.getBoundingClientRect().bottom:0)+8, bar=$('#mdBar'), bot=window.innerHeight-(bar?bar.offsetHeight:0)-8;
+  var el=key==='go'?($('#mdBody .mstep[data-step="price"]')||nw):nw, r=el.getBoundingClientRect(), dy=0;
+  if(key==='go') dy=r.top-top; else if(r.bottom>bot) dy=Math.min(r.bottom-bot, r.top-top);
+  if(dy>4) window.scrollBy({top:dy, behavior:'smooth'});
+}
 function manwon(n){ return n%10000===0?(n/10000).toLocaleString('ko-KR')+'만원':won(n); }
 var KKI='<svg class="kk" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.6c-5.2 0-9.4 3.3-9.4 7.4 0 2.6 1.7 4.9 4.3 6.2l-.9 3.3c-.1.3.3.6.6.4l3.9-2.6c.5.1 1 .1 1.5.1 5.2 0 9.4-3.3 9.4-7.4S17.2 3.6 12 3.6z"/></svg>';
 function cgrid(label, key, items, cur, m, n, hint){
@@ -934,22 +944,31 @@ function renderModel(id, keepRecent){
   var pc=colorsOf(m).filter(function(c){return c.nm===PICK[m.id]})[0];
   var PK=(pickers&&typeof pickers==='object')?pickers:{car:'',rest:pickers||''}, gg=selRow?selRow.g:'';
   var soNow=SO(m)||(selRow&&selRow.so), needCar=!!PK.car && !((SEL[m.id]||{}).carrier);
-  // 20261019 행동 유도: '이 순서대로 하시면 돼요' + 단계 번호 + 지금 할 차례 반짝임 (통신사를 안 골랐으면 통신사, 골랐으면 상담 신청)
-  var opt=colorPicker(m)+optPicker(m), cN=colorsOf(m).length>1, oN=optsOf(m).length>1;
-  var optNm=cN&&oN?'컬러·'+optLabel(m):cN?'컬러':optLabel(m);
+  // 20261019 행동 유도: '이 순서대로 하시면 돼요' + 컬러 → 용량 → 통신사를 한 단계씩
+  //  · 컬러·용량은 기본값을 골라 두되 '기본'으로 보여 줌 (점선 + 기본 표시) — 고객이 직접 누르면 ✓ 로 바뀜
+  //  · 지금 할 차례(반짝임)는 고객이 고를 때마다 다음 단계로 넘어감. 앞으로만 — 뒤 단계를 먼저 고르면 앞 단계로 되돌아가지 않음
+  var mcs=colorsOf(m), mos=optsOf(m), cN=mcs.length>1, oN=mos.length>1, oL=optLabel(m);
+  var colNm=PICK[m.id]||(mcs[0]&&mcs[0].nm)||'', capNm=oN?((mos[OPT[m.id]||0]||{}).nm||''):'', carNm=(SEL[m.id]||{}).carrier||'';
+  var order=[]; if(cN) order.push('color'); if(oN) order.push('cap'); if(PK.car) order.push('car');
+  var done={color:!!PICK[m.id], cap:!!OPTT[m.id], car:!!carNm}, last=-1;
+  order.forEach(function(k,i){ if(done[k]) last=i; });
+  var nowKey=order[last+1]||'go';
   var steps=[], body='';
-  var step=function(key, short, title, sub, inner, now, go){ steps.push(short);
-    return '<div class="mstep'+(now?' now':'')+'" data-step="'+key+'"><div class="mstep-h"><b>'+steps.length+'</b><div><span>'+title+'</span>'+(sub?'<small>'+sub+'</small>':'')+'</div>'+(now&&go?'<em class="mstep-go">'+go+'</em>':'')+'</div>'+inner+'</div>'; };
-  if(opt) body+=step('opt', optNm, '원하는 '+esc(optNm)+eul(optNm)+' 골라 주세요', '', opt, false);
-  if(PK.car) body+=step('car', '통신사', '지금 쓰는 통신사를 골라 주세요', '통신사에 따라 번호이동·기기변경 가격이 달라져요', PK.car, needCar, '먼저 골라 주세요');
+  var step=function(key, short, title, sub, inner, chip, cls){ var ok=!!done[key], now=(key===nowKey); steps.push({k:key, t:short, ok:ok, now:now});
+    return '<div class="mstep'+(now?' now':'')+(ok?' ok':'')+(cls?' '+cls:'')+'" data-step="'+key+'"><div class="mstep-h"><b>'+(ok?'✓':steps.length)+'</b><div><span>'+title+'</span>'+(sub?'<small>'+sub+'</small>':'')+'</div>'+(chip||'')+'</div>'+inner+'</div>'; };
+  var chipOf=function(key, val, dflt){ return done[key]?'<em class="mstep-ok">✓ '+esc(val)+'</em>':key===nowKey?'<em class="mstep-go">골라 주세요</em>':dflt?'<em class="mstep-df">기본</em>':''; };
+  if(cN) body+=step('color', '컬러', '원하는 컬러를 골라 주세요', done.color?'':'<b>'+esc(colNm)+'</b>'+ro(colNm)+' 골라 뒀어요. 원하시는 컬러를 눌러 주세요', colorPicker(m), chipOf('color', colNm, true), done.color?'':'dflt');
+  if(oN) body+=step('cap', oL, '원하는 '+esc(oL)+eul(oL)+' 골라 주세요', done.cap?'':'<b>'+esc(capNm)+'</b>'+ro(capNm)+' 골라 뒀어요. 원하시는 '+esc(oL)+eul(oL)+' 눌러 주세요', optPicker(m), chipOf('cap', capNm, true), done.cap?'':'dflt');
+  if(PK.car) body+=step('car', '통신사', '지금 쓰는 통신사를 골라 주세요', '통신사에 따라 번호이동·기기변경 가격이 달라져요', PK.car, chipOf('car', carNm, false));
   // 고를 칸(요금제·할인·할부)이 있을 때만 '그대로 두셔도 돼요' 안내 (TV프리는 가입 조건 안내뿐이라 안 붙임)
   var restPick=/class="(cgrid|csel)/.test(PK.rest||'');
   if(PK.rest) body+='<div class="mstep-sub">'+(restPick?'<div class="mstep-note">'+(gg==='phone'?'요금제·할인 방식·할부는 가장 많이 고르는 조건으로 맞춰 놨어요. <b>그대로 두셔도 돼요.</b>':'아래 조건은 가장 많이 고르는 조건으로 맞춰 놨어요. <b>그대로 두셔도 돼요.</b>')+'</div>':'')+PK.rest+'</div>';
   body+=step('price', '내 가격 확인', '내 예상 가격을 확인하세요', '', (soNow?'<div class="so-notice">'+(SO(m)?'현재 일시품절입니다':'선택하신 '+esc(selRow.cap||'옵션')+' 은(는) 일시품절입니다')+'. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
     '<div class="ptable" id="ucatPrice">'+rows+'</div>'+guideHtml(m)+
-    '<div class="md-chips">'+(isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):'<span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span>')+'<span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>', false);
-  body+=step('go', '카톡·전화 상담', '마음에 드시면 아래 버튼으로 상담을 신청하세요', '', '<ul class="mstep-how"><li><b>카톡 상담</b><span>고객 정보를 남기면 카카오톡으로 바로 상담</span></li><li><b>상담 신청</b><span>조건 확인 후 전화로 5분 상담</span></li></ul>', !needCar, '이제 신청만 남았어요');
-  var guide=steps.length>2?'<div class="mguide"><b>이 순서대로 하시면 돼요</b><ol>'+steps.map(function(s,i){ return '<li><i>'+(i+1)+'</i>'+esc(s)+'</li>'; }).join('')+'</ol></div>':'';
+    '<div class="md-chips">'+(isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):'<span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span>')+'<span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>', '');
+  body+=step('go', '카톡·전화 상담', '마음에 드시면 아래 버튼으로 상담을 신청하세요', '', '<ul class="mstep-how"><li><b>카톡 상담</b><span>고객 정보를 남기면 카카오톡으로 바로 상담</span></li><li><b>상담 신청</b><span>조건 확인 후 전화로 5분 상담</span></li></ul>', nowKey==='go'?'<em class="mstep-go">이제 신청만 남았어요</em>':'');
+  // 위 안내: 고른 단계는 ✓, 지금 할 단계는 분홍 — 누르면 그 단계로 이동
+  var guide=steps.length>2?'<div class="mguide"><b>이 순서대로 하시면 돼요</b><ol>'+steps.map(function(s,i){ return '<li class="'+(s.ok?'ok':'')+(s.now?' on':'')+'" data-mg="'+s.k+'"><i>'+(s.ok?'✓':(i+1))+'</i>'+esc(s.t)+'</li>'; }).join('')+'</ol></div>':'';
   // 하단 고정: 지금 상태 한 줄 + [카톡 상담] [상담 신청]
   var bt;
   if(soNow) bt='<b>일시품절</b> · 상담 신청하시면 입고 즉시 안내드려요';
@@ -966,6 +985,7 @@ function renderModel(id, keepRecent){
 }
 
 var PICK={};   // 상세에서 고른 컬러 (모델별)
+var OPTT={};   // 상세에서 고객이 직접 고른 용량 (모델별) — 기본값과 구분
 function optPicker(m){
   var os=optsOf(m); if(os.length<2) return '';
   var cur=OPT[m.id]||0;
@@ -1695,6 +1715,7 @@ document.addEventListener('click',function(e){
   var qkb=t.closest('[data-qk]'); if(qkb){ e.preventDefault(); openQuickKakao(qkb.getAttribute('data-qk')); return; }
   var qkc=t.closest('[data-qk-car]'); if(qkc){ e.preventDefault(); var qv=qkc.getAttribute('data-qk-car'); QK.car=(QK.car===qv?'':qv); $$('[data-qk-car]').forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-qk-car')===QK.car); }); return; }
   if(t.closest('[data-qk-pv]')){ e.preventDefault(); var qp=$('#qkPv'); if(qp) qp.classList.toggle('on'); return; }
+  var mgi=t.closest('[data-mg]'); if(mgi){ e.preventDefault(); var ms=$('#mdBody .mstep[data-step="'+mgi.getAttribute('data-mg')+'"]'), mh=$('#v-model .subhead'); if(ms) window.scrollTo({top:ms.getBoundingClientRect().top+window.scrollY-(mh?mh.offsetHeight:0)-8, behavior:'smooth'}); return; }
   var mgo=t.closest('[data-md-go]'); if(mgo){ e.preventDefault(); var gs=$('#mdBody .mstep[data-step="'+mgo.getAttribute('data-md-go')+'"]'); if(gs) gs.scrollIntoView({behavior:'smooth',block:'center'}); return; }   // 하단 '통신사를 고르면…' 누르면 그 단계로
   if(t.closest('[data-maxv]')){ e.preventDefault(); MAXV=!MAXV; try{ sessionStorage.setItem('st_maxv',MAXV?'1':'0'); }catch(x){} refresh(); return; }
   var so=t.closest('[data-sort-open]');
@@ -1730,15 +1751,14 @@ document.addEventListener('click',function(e){
   var cb=t.closest('[data-calc]');
   if(cb){ e.preventDefault(); e.stopPropagation(); if(cb.disabled) return; var mid=cb.getAttribute('data-model'), k=cb.getAttribute('data-calc'), v=cb.getAttribute('data-v'), sel=SEL[mid]||(SEL[mid]={});
     if(k==='tier') TIER[mid]=v; else if(k==='months') sel.months=+v; else sel[k]=v;
-    var y=window.scrollY; renderModel(mid,true); window.scrollTo(0,y); return; }
+    var pn=mdNowKey(), y=window.scrollY; renderModel(mid,true); window.scrollTo(0,y); if(k==='carrier') mdFollow(pn); return; }
   var op=t.closest('[data-opt-pick]');
-  if(op){ e.preventDefault(); e.stopPropagation(); OPT[op.getAttribute('data-model')]=+op.getAttribute('data-opt-pick'); var y2=window.scrollY; renderModel(op.getAttribute('data-model'),true); window.scrollTo(0,y2); return; }
+  if(op){ e.preventDefault(); e.stopPropagation(); var omid=op.getAttribute('data-model'); OPT[omid]=+op.getAttribute('data-opt-pick'); OPTT[omid]=true;
+    var pn2=mdNowKey(), y2=window.scrollY; renderModel(omid,true); window.scrollTo(0,y2); mdFollow(pn2); return; }
   var vb=t.closest('[data-video]'); if(vb){ e.preventDefault(); openVideo(vb.getAttribute('data-video')); return; }
   var cp=t.closest('[data-color-pick]');
-  if(cp){ e.preventDefault(); e.stopPropagation(); var mm=byId(cp.getAttribute('data-model')), nm=cp.getAttribute('data-color-pick'), cc=colorsOf(mm).filter(function(c){return c.nm===nm})[0];
-    PICK[mm.id]=nm; $$('[data-color-pick]').forEach(function(b){b.classList.toggle('on',b===cp)}); $('#cpickName').textContent=nm;
-    if(cc&&cc.img) $('#mdImg').innerHTML=im(cc.img,'',true,mm.nm)+(SO(mm)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'');
-    var cb=$('.ucard-cta'); if(cb) cb.setAttribute('data-color',nm); return; }
+  if(cp){ e.preventDefault(); e.stopPropagation(); var mm=byId(cp.getAttribute('data-model')), nm=cp.getAttribute('data-color-pick');
+    PICK[mm.id]=nm; var pn3=mdNowKey(), y3=window.scrollY; renderModel(mm.id,true); window.scrollTo(0,y3); mdFollow(pn3); return; }   // 20261019: 단계 표시(✓)도 같이 바뀌게 다시 그림
   var w=t.closest('[data-wish]');
   if(w){e.preventDefault();e.stopPropagation();var id=w.getAttribute('data-wish'),l=store.get('wish',[]),i=l.indexOf(id);
     if(i>-1)l.splice(i,1);else l.unshift(id);store.set('wish',l);

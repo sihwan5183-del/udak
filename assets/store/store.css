@@ -1400,3 +1400,17 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .md-bar-t[data-md-go]{cursor:pointer}
 .md-bar-t[data-md-go] b{text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--pink)}
 .qk-l .req{color:var(--pink)}
+/* 20261019 행동 유도 2차: 컬러 → 용량 → 통신사 한 단계씩 · 기본값은 '기본'(점선) · 고르면 ✓ */
+.mstep.ok .mstep-h>b{background:var(--pink);font-size:12px}
+.mstep-ok{flex:none;font-style:normal;font-size:11px;font-weight:800;color:var(--pink);background:var(--pink-50);border:1px solid #F7C6DD;border-radius:999px;padding:2px 8px;margin-top:1px;white-space:nowrap;max-width:46%;overflow:hidden;text-overflow:ellipsis}
+.mstep-df{flex:none;font-style:normal;font-size:11px;font-weight:700;color:var(--sub);background:#F2F3F5;border-radius:999px;padding:3px 8px;margin-top:1px;white-space:nowrap}
+.mstep-h small b{color:var(--ink2);font-weight:800}
+.mstep.dflt .cpick .sw.on{outline-style:dashed}
+.mstep.dflt .cpick .opt.on{border-style:dashed;background:#fff;position:relative}
+.mstep.dflt .cpick .opt.on:after{content:'기본';position:absolute;top:-8px;right:6px;font-size:10px;font-weight:800;line-height:1;padding:3px 5px;border-radius:999px;background:var(--pink);color:#fff}
+.mstep.dflt #cpickName:after{content:' (기본)';font-weight:600;color:var(--sub)}
+.mguide li{cursor:pointer}
+.mguide li.ok{color:var(--mute)}
+.mguide li.ok i{background:#F3B7D3;font-size:10px}
+.mguide li.on{color:var(--pink);font-weight:800}
+.mguide li.on i{box-shadow:0 0 0 3px rgba(230,0,126,.18)}
