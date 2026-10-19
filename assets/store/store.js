@@ -1323,7 +1323,7 @@ function kakaoDone(ph, kw){
     '<p class="kkd-t">유플러스 다이렉트 카카오톡 채널 <b>‘UDak’</b> 채팅방에서 바로 상담해 드려요.</p>'+
     '<div class="kkd-tip">채팅방에 <b>“상담 신청했어요”</b> 한마디 남겨 주시면<br>더 빨리 답해 드려요.</div>'+
     (KK?'<a class="kkd-go" href="'+esc(KK)+'"'+(IS_MOBILE?'':' target="_blank" rel="noopener"')+'>'+KKI+'<span>카카오톡 채팅방 열기</span></a>':'')+
-    '<p class="kkd-s">'+(IS_MOBILE?'카카오톡이 바로 열리지 않으면 위 버튼을 눌러 주세요.':sent?'새 창에서 카카오톡 채팅방을 열었어요. 안 보이면 위 버튼을 눌러 주세요.':'PC에서는 PC 카카오톡(또는 휴대폰 카카오톡)에 채팅방이 열려요.')+'</p>'+
+    '<p class="kkd-s">'+(IS_MOBILE?'카카오톡이 바로 열리지 않으면 위 버튼을 눌러 주세요.':sent?'휴대폰·PC 카카오톡에 UDak 채팅방이 열려요. 새 창이 안 보이면 위 버튼을 눌러 주세요.':'PC에서는 PC 카카오톡(또는 휴대폰 카카오톡)에 채팅방이 열려요.')+'</p>'+
     (ph?'<p class="kkd-ph"><b>'+esc(ph)+'</b> 번호로 접수됐어요</p>':'')+'</div>';
   el.classList.add('on'); document.body.style.overflow='hidden';
   if(KK && IS_MOBILE) setTimeout(function(){ location.href=KK; }, 250);   // 폰: 메타 신청 신호가 나갈 틈만 두고 바로 카카오톡으로 (20261019: 0.4초 → 0.25초)
