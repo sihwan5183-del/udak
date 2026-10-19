@@ -1407,40 +1407,54 @@ function apChips(key, items, cur, n){
   return '<div class="cgrid" style="--n:'+n+'">'+items.map(function(x){
     return '<button type="button" class="cg'+(String(x[0])===String(cur)?' on':'')+(x[2]?' dis':'')+'" data-ap="'+key+'" data-v="'+esc(x[0])+'"'+(x[2]?' disabled':'')+'>'+esc(x[1])+'</button>'; }).join('')+'</div>';
 }
+// 20261019 신청서 간단하게 (카톡 간편 신청창처럼): 고른 휴대폰 + 월 기기 할부금·총 기기 지원금 → 컬러·용량·통신사 → 고객 정보 → 버튼
+//  요금제·할인 방식·할부는 상세에서 고른 그대로 (화면엔 '…기준' 한 줄만). 워치·태블릿 함께 구매를 켜 둔 때만 예전처럼 요금제 칸이 나옴
 function apPhoneHtml(){
-  var m=apPhone(), h='<section class="ap-sec"><div class="ap-h"><b>01</b>'+(AP.phone&&!AP.pick?'선택한 휴대폰':'휴대폰')+'</div>';
+  var m=apPhone(), h='';
   if((AP.phone && !AP.pick)){
     var os0=m?optsOf(m):[], cs0=m?colorsOf(m):[], capNm=os0[AP.cap]&&os0[AP.cap].nm!=='기본'?os0[AP.cap].nm:'', colNm=AP.color||(cs0.length===1?cs0[0].nm:'');
-    var pills=[capNm,colNm].filter(Boolean);
-    h+='<div class="ap-dev"><div class="ap-dev-img">'+(m?im(apColorImg(m),'',true,m.nm):'')+'</div><div class="ap-dev-t"><b>'+esc(m?m.nm:(AP.phone==='none'?'휴대폰은 바꾸지 않아요':'상담 후 결정할게요'))+'</b>'+
-      (m?'<span>'+esc(m.ds||'')+'</span>':(AP.phone==='none'?'<span>TV프리만 신청해요</span>':'<span>상담하면서 함께 골라 드릴게요</span>'))+
-      (pills.length&&(os0.length>1||cs0.length>1)?'<button type="button" class="ap-opt" data-ap-act="opts">'+pills.map(esc).join('<i></i>')+'</button>':(pills.length?'<span class="ap-opt">'+pills.map(esc).join('<i></i>')+'</span>':''))+
-      '</div><button type="button" class="ap-chg" data-ap-act="change">변경하기 <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button></div>';
+    var sub=m?[colNm,capNm].filter(Boolean).join(' · '):(AP.phone==='none'?'TV프리만 신청해요':'상담하면서 함께 골라 드릴게요');
+    h+='<div class="ap1-pick"><div class="ap1-dev"><div class="ap1-img">'+(m?im(apColorImg(m),'',true,m.nm):'')+'</div>'+
+      '<div class="ap1-t"><b>'+esc(m?m.nm:(AP.phone==='none'?'휴대폰은 바꾸지 않아요':'상담 후 결정할게요'))+'</b>'+(sub?'<span>'+esc(sub)+'</span>':'')+'</div>'+
+      '<button type="button" class="ap1-chg" data-ap-act="change">변경</button></div>'+(m?apPriceHtml():'')+'</div>';
   } else {
     var list=models().filter(function(x){return !x.hidden&&kindOf(x)==='phone'});
-    h+='<label class="ap-search"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="mDeviceSearch" placeholder="모델명을 검색하세요 (예: S26, 아이폰)" autocomplete="off"></label>'+
+    h+='<div class="qk-l">휴대폰 <span class="req">*</span></div>'+
+      '<label class="ap-search"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="mDeviceSearch" placeholder="모델명을 검색하세요 (예: S26, 아이폰)" autocomplete="off"></label>'+
       '<div class="ap-list" id="apList">'+list.map(function(x){
         return '<div class="ap-li" data-nm="'+esc((x.nm+' '+x.id).toLowerCase().replace(/\s/g,''))+'"><div class="ap-li-img">'+im(mImg(x),'','',x.nm)+'</div><b>'+esc(x.nm)+(SO(x)?' <small>일시품절</small>':'')+'</b>'+
           '<button type="button" class="ap-pick'+(x.id===AP.phone?' on':'')+'" data-ap-pick="'+esc(x.id)+'">'+(x.id===AP.phone?'선택됨':'선택하기')+'</button></div>'; }).join('')+
       // 20261016: '상담 후 결정할게요' 줄 삭제 (휴대폰은 꼭 골라서 신청)
       (AP.tv&&AP.tvType==='old'?'<div class="ap-li later" data-nm="휴대폰변경없음tv프리만"><b>휴대폰은 바꾸지 않아요 (TV프리만)</b><button type="button" class="ap-pick" data-ap-pick="none">선택하기</button></div>':'')+'</div>';
   }
-  if(m && !AP.pick && colorsOf(m).length>1 && !AP.color) AP.colOpen=true;   // 20261019: 컬러 안 골랐으면 컬러 칸을 펼쳐서 꼭 고르게 (고른 뒤에도 펼친 채로)
-  if(m && !AP.pick && (AP.optOpen||AP.colOpen)){
+  if(m && !AP.pick){
     var os=optsOf(m), cs=colorsOf(m);
-    if(AP.optOpen && os.length>1) h+='<div class="ap-f"><div class="ap-l">'+esc(optLabel(m))+'</div>'+apChips('cap',os.map(function(o,i){return [i,o.nm+(o.row&&o.row.so?' (품절)':'')]}),AP.cap,Math.min(os.length,4))+'</div>';
-    if(cs.length>1){ var cur=AP.color||'';
-      h+='<div class="ap-f'+(cur?'':' ap-need')+'" id="apColorRow"><div class="ap-l">컬러 <b>'+(cur?esc(cur):'골라 주세요')+'</b></div><div class="cpick-row">'+cs.map(function(c){
-        return '<button type="button" class="sw'+(c.nm===cur?' on':'')+'" data-ap="color" data-v="'+esc(c.nm)+'" aria-label="'+esc(c.nm)+'" style="--c:'+esc(c.hex||'#ddd')+'"></button>'; }).join('')+'</div></div>'; }
+    // 컬러는 꼭 직접 고르게 (안 고르면 신청 안 됨) — 카톡 간편 신청창과 같은 모양
+    if(cs.length>1) h+='<div class="qk-car qk-col" id="apColorRow"><div class="qk-l">컬러 <span class="req">*</span></div><div class="qk-cc">'+cs.map(function(c){
+        return '<button type="button" class="'+(AP.color===c.nm?'on':'')+'" data-ap="color" data-v="'+esc(c.nm)+'"><i style="--c:'+esc(c.hex||'#ddd')+'"></i>'+esc(c.nm)+'</button>'; }).join('')+'</div></div>';
+    if(os.length>1) h+='<div class="qk-car"><div class="qk-l">'+esc(optLabel(m))+'</div>'+apChips('cap',os.map(function(o,i){return [i,o.nm+(o.row&&o.row.so?' (품절)':'')]}),AP.cap,Math.min(os.length,4))+'</div>';
+    h+='<div class="qk-car"><div class="qk-l">지금 쓰는 통신사 <span class="req">*</span></div>'+apChips('carrier',CARRIERS.map(function(c){return [c,c]}),AP.carrier,4)+'</div>';
   }
-  return h+'</section>';
+  return h;
+}
+// 신청서 금액: 월 기기 할부금 + 총 기기 지원금만 (통신 요금 합친 금액은 안 보여 줌)
+function apPriceHtml(){
+  var pc=apPhoneCalc();
+  if(!pc) return '<div class="ap1-price"><div class="ap1-ask">가격은 상담 시 안내드려요</div></div>';
+  var out=num(pc.c.out)||0, sup=Math.max(0,out-pc.after), mm=pc.mm, lab, big, sub;
+  if(pc.after===0){ lab='월 기기 할부금'; big='0원'; sub='할부금 없음'; }
+  else if(mm===0){ lab='기기값 (일시납)'; big=won(pc.after); sub='한 번에 결제'; }
+  else { lab='월 기기 할부금'; big=won(pc.monthly)+'<small> / 월</small>'; sub=mm+'개월 할부 · 할부이자 포함'; }
+  return '<div class="ap1-price">'+
+    '<div class="ap1-r"><span>'+lab+'<small>'+sub+'</small></span><b class="ap1-v">'+big+'</b></div>'+
+    '<div class="ap1-r"><span>총 기기 지원금</span><b>'+won(sup)+'<small> 지원</small></b></div>'+
+    '<div class="ap1-base">'+esc([pc.type==='chg'?'기기변경':'번호이동', tierTitle(pc.t), pc.method==='sel'?'선택약정':'공시지원금'].join(' · '))+' 기준</div></div>';
 }
 function apColorImg(m){ var cs=colorsOf(m), c=cs.filter(function(x){return x.nm===AP.color})[0]||cs[0]; return (c&&c.img)||mImg(m); }
 function apPlanHtml(){
   if(AP.phone==='none') return '';
   var ts=tiersOf('phone'), t=apTier(), pc=apPhoneCalc(), h='<section class="ap-sec"><div class="ap-h"><b>02</b>신청 내용</div>';
-  h+='<div class="ap-f ap-row"><div class="ap-l">사용 통신사</div><div class="ap-r">'+apChips('carrier',CARRIERS.map(function(c){return [c,c]}),AP.carrier,4)+'</div>'+
-    '</div>';
+  // 20261019: 통신사는 위(컬러·용량 아래)에서 고름 — 이 칸은 워치·태블릿 함께 구매를 켜 둔 때만 나옴
   h+='<div class="ap-f ap-row"><div class="ap-l">요금제</div><div class="ap-r"><select class="csel" id="mPlanSel">'+ts.map(function(x){ return '<option value="'+esc(x.k)+'"'+(t&&x.k===t.k?' selected':'')+'>'+esc(tierTitle(x))+'</option>'; }).join('')+'</select>'+
     '<div class="cpick-hint">'+PLAN_NOTE+'</div>'+apPerk(t)+'</div></div>';
   h+='<div class="ap-f ap-row"><div class="ap-l">할인 방식</div><div class="ap-r">'+apChips('method',[['pub','공시지원금',pc&&!pc.c.pub],['sel','선택약정 (요금 25%↓)']],pc?pc.method:(AP.method||'pub'),2)+(pc&&adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)?'<div class="cpick-hint">'+adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)+'</div>':'')+'</div></div>';
@@ -1598,7 +1612,7 @@ function apSumHtml(){
   return h+'</section>';
 }
 function apInfoHtml(){
-  return '<section class="ap-sec ap-info" id="consultForm"><div class="ap-h"><b>05</b>고객 정보</div>'+
+  return '<div class="ap-info" id="consultForm">'+
     (AP&&AP.visit?'<div class="ff"><label>방문 매장</label><select id="mStoreSel"><option value="">매장을 골라 주세요</option>'+
       S.stores.filter(function(s){return s&&s.nm}).map(function(s){ return '<option value="'+esc(s.nm)+'"'+(s.nm===AP.store?' selected':'')+'>'+esc(s.nm)+'</option>'; }).join('')+'</select></div>':'')+
     '<div class="ff"><label>이름 <span class="req">*</span></label><input type="text" id="mUserName" placeholder="이름을 입력해 주세요" autocomplete="name"></div>'+
@@ -1608,7 +1622,7 @@ function apInfoHtml(){
     '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히 보기 ›</button></label>'+
     '<div class="privacy-txt" id="privacyTxt">유플러스 다이렉트(이하 "회사")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
     '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사<br>· 목적: 온라인 상담 신청 접수, 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
-    '동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.</div></section>';
+    '동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.</div></div>';
 }
 // 20261016: 신청 버튼 2개 — 상담 예약(전화) / 카톡 예약(신청서는 똑같이 CRM에 저장 + 우리 카카오톡 상담 채널 열기, CRM엔 '카톡 상담 요청'으로 표시)
 function apBtnsHtml(){
@@ -1618,16 +1632,21 @@ function apBtnsHtml(){
   '</div>';
 }
 function apBarHtml(){
-  var t=apSummary().total;
-  return '<div class="ap-bar-t">'+(t?'예상 월 <b>'+won(t)+'</b>':'조건을 골라 주세요')+'</div><button type="button" class="ap-bar-b" data-ap-act="go">신청서 작성</button>';
+  // 20261019: 휴대폰은 월 기기 할부금 + 지원금만 (통신 요금 합친 금액 X). TV프리만 신청할 땐 예전처럼 예상 월 금액
+  var pc=apPhoneCalc(), t;
+  if(pc){ var sup=Math.max(0,(num(pc.c.out)||0)-pc.after);
+    t=(pc.after===0?'월 기기 할부금 <b>0원</b>':pc.mm===0?'기기값 <b>'+won(pc.after)+'</b>':'월 기기 할부금 <b>'+won(pc.monthly)+'</b>')+(sup>0?'<em>총 '+manwon(sup)+' 지원</em>':''); }
+  else { var tot=apSummary().total; t=tot?'예상 월 <b>'+won(tot)+'</b>':'조건을 골라 주세요'; }
+  return '<div class="ap-bar-t">'+t+'</div><button type="button" class="ap-bar-b" data-ap-act="go">신청서 작성</button>';
 }
 function renderApply(full){
   if(!AP) AP=apInit();
   if(full || !$('#apCond')){
-    $('#apBody').innerHTML='<div id="apCond"></div>'+apInfoHtml()+'<div id="apSum"></div>'+apBtnsHtml();   // 20261016: 고객 정보 → 예상 월 납부금액 → 버튼 순서
+    // 20261019: 카드 하나에 — 고른 휴대폰·금액·컬러·통신사 → 고객 정보 → 버튼 (카톡 간편 신청창처럼)
+    $('#apBody').innerHTML='<section class="ap-sec ap-one"><div id="apCond"></div><div id="apSum"></div>'+apInfoHtml()+apBtnsHtml()+'</section>';
   }
-  $('#apCond').innerHTML=apPhoneHtml()+apPlanHtml()+apAddHtml();
-  $('#apSum').innerHTML=apSumHtml();
+  $('#apCond').innerHTML=apPhoneHtml()+(apAddOn()?apPlanHtml():'')+apAddHtml();
+  $('#apSum').innerHTML=(!apPhone()&&(AP.tv||AP.watch||AP.tablet))?apSumHtml():'';   // 금액표는 TV프리만 신청할 때만 (휴대폰은 위에 월 기기 할부금·총 기기 지원금)
   $('#apBar').innerHTML=apBarHtml();
   Array.prototype.forEach.call(document.querySelectorAll('#apBody .ap-h > b'),function(b,i){ b.textContent=(i<9?'0':'')+(i+1); });
   AP.note='';
