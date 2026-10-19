@@ -2101,7 +2101,9 @@ function live(){
   if(!window.EventSource) return;
   try{
     var es=new EventSource(DB+'/store.json');
-    var on=function(ev){ try{ var x=JSON.parse(ev.data); if(x && x.path==='/'){ apply(x.data); } else { load(); } }catch(e){} };
+    // 20261019: 관리자 저장은 바뀐 칸만 보내는 방식(patch)이라 — 통째로 다시 받아서 반영.
+    //   (예전엔 바뀐 칸만으로 화면을 다시 그려서, 손님이 보고 있던 화면의 가격이 '상담 시 안내'로 바뀌던 문제)
+    var on=function(ev){ try{ var x=JSON.parse(ev.data); if(ev.type==='put' && x && x.path==='/'){ apply(x.data); } else { load(); } }catch(e){} };
     es.addEventListener('put',on); es.addEventListener('patch',on);
   }catch(e){}
 }
