@@ -3,13 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<script>
+// 20261019: 스토어 공식 주소는 /store — 예전 주소(/galaxy_z8 · /galaxy)로 들어와도 주소창만 /store 로 바꿈
+//  (다시 불러오지 않음 · 광고 정보 ?utm·fbclid 와 # 화면은 그대로 · 지금 광고 주소 /galaxy_z8 도 그대로 열림)
+(function(){ try{ if(/^\/(galaxy_z8(\.html)?|galaxy|store\/)$/.test(location.pathname)) history.replaceState(history.state,'','/store'+location.search+location.hash); }catch(e){} })();
+</script>
 <script src="/assets/udak-block.js?v=20261007"></script>
 <title>유플러스 다이렉트 — LG U+ 공식파트너 온라인 스토어</title>
 <meta name="description" content="유플러스 공식파트너사 유플러스 다이렉트. 제휴카드·부가서비스 의무가입 없이, 보이는 가격 그대로. 당일 택배 발송.">
 <meta property="og:title" content="유플러스 다이렉트 — LG U+ 공식파트너 온라인 스토어">
 <meta property="og:description" content="제휴카드·부가서비스 의무가입 없이, 보이는 가격 그대로. 당일 택배 발송.">
 <meta property="og:image" content="https://raw.githubusercontent.com/sihwan5183-del/udak/main/assets/banner-0804-arrival.jpg">
-<meta property="og:url" content="https://landing.uplusdak.com/galaxy_z8">
+<meta property="og:url" content="https://landing.uplusdak.com/store">
+<link rel="canonical" href="https://landing.uplusdak.com/store">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ffffff">

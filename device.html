@@ -290,7 +290,7 @@ function udakMetaIds(){
 </head><body>
 
 <div class="dtopbar">
-  <a class="dtopbar-back" href="/galaxy_z8">‹ 목록으로</a>
+  <a class="dtopbar-back" href="/store">‹ 목록으로</a>
 </div>
 
 <div class="dwrap" id="dContent">
@@ -665,7 +665,7 @@ function renderPage(){
   const id=params.get('id');
   const d=ucatDevices.find(x=>x.id===id);
   if(!d){
-    document.getElementById('dContent').innerHTML='<div class="dempty">기기를 찾을 수 없습니다.<br><a href="/galaxy_z8" style="color:#E91E8C;font-weight:700;">목록으로 돌아가기</a></div>';
+    document.getElementById('dContent').innerHTML='<div class="dempty">기기를 찾을 수 없습니다.<br><a href="/store" style="color:#E91E8C;font-weight:700;">목록으로 돌아가기</a></div>';
     return;
   }
   // v20261005: 요금제는 85 자동 선택 (지금 요금제가 하나뿐) — 고객이 따로 누르지 않아도 선택된 걸로 봄

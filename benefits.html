@@ -101,7 +101,7 @@ button{font-family:inherit;}
 <body>
 
 <div class="btopbar onsite-hide">
-  <a class="btopbar-back" href="/galaxy_z8">‹ 돌아가기</a>
+  <a class="btopbar-back" href="/store">‹ 돌아가기</a>
 </div>
 <script>if(new URLSearchParams(location.search).get('onsite')==='1'){document.querySelectorAll('.onsite-hide').forEach(function(el){el.style.display='none';});}</script>
 
@@ -353,7 +353,7 @@ window.shSelect=function(i){
 window.shGoReserve=function(){
   var cur=SH_CATEGORIES[shState.active];
   var onsiteQs=new URLSearchParams(location.search).get('onsite')==='1'?'&onsite=1':'';
-  window.location.href='/galaxy_z8?smartHomeInterest='+encodeURIComponent(cur.title)+onsiteQs;
+  window.location.href='/store?smartHomeInterest='+encodeURIComponent(cur.title)+onsiteQs;
 };
 
 (function(){
