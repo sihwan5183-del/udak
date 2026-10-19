@@ -125,6 +125,7 @@ img{display:block;max-width:100%}
 .pills{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
 .pill{font-size:10.5px;font-weight:700;color:var(--pink);background:var(--pink-50);border:1px solid var(--pink-100);
   padding:2px 7px;border-radius:5px;white-space:nowrap}
+.pills .pill{white-space:normal;line-height:1.35;word-break:keep-all}   /* 20261019: '보호필름 · 투명케이스 · 고속충전기 제공'처럼 긴 문구는 카드 안에서 줄바꿈 */
 
 /* ---------- 9. 최근 본 / 기기값 0원 (쿠팡이츠 가로 카드) ---------- */
 .hcards{gap:10px;padding:0 16px 6px}

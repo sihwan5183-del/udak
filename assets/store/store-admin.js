@@ -298,7 +298,7 @@ document.addEventListener('click',function(e){
     if(!nm){ alert('모델 이름을 입력해 주세요.'); return; }
     if(!/^[a-z0-9][a-z0-9-]*$/.test(id)){ alert('영문 코드는 영어 소문자·숫자·하이픈(-)만 쓸 수 있어요. (예: a57, zflip7)'); return; }
     if(T.byId(id)){ alert('이미 있는 코드예요. 다른 코드를 써주세요.'); return; }
-    T.S.models.push({id:id, nm:nm, ds:'', cat:[], tags:['기기값 할인','사은품 증정'], price:{}, cards:[], hidden:true});
+    T.S.models.push({id:id, nm:nm, ds:'', cat:[], tags:['기기값 할인','보호필름 · 투명케이스 · 고속충전기 제공'], price:{}, cards:[], hidden:true});
     commit('모델을 추가했어요 (숨김 상태)').then(function(){ openEditor('model:'+id); }); return;
   }
   if(act==='newhero'){ T.S.hero.push({k:'',t:'새 슬라이드',s:'',img:null,go:'',hidden:true}); commit('슬라이드를 추가했어요 (숨김 상태)').then(function(){ openEditor('hero:'+(T.S.hero.length-1)); }); return; }

@@ -31,13 +31,13 @@ var DEFAULT = {
   models:[
     {id:'iphone18pro',    nm:'아이폰 18프로',     cat:['iphone','zero'], ds:'프로가 하는 프로의 선택',      tags:['기기값 0원','최대 지원금']},
     {id:'iphone18promax', nm:'아이폰 18프로맥스', cat:['iphone','zero'], ds:'더 커진 프로의 등장',          tags:['기기값 0원','최대 지원금']},
-    {id:'s26',            nm:'갤럭시 S26',        cat:['galaxy'],        ds:'새로운 AI, 새로운 일상',       tags:['기기값 할인','사은품 증정']},
-    {id:'s26plus',        nm:'갤럭시 S26+',       cat:['galaxy'],        ds:'더 커진 화면, 더 강한 성능',   tags:['기기값 할인','사은품 증정']},
-    {id:'s26ultra',       nm:'갤럭시 S26 울트라', cat:['galaxy'],        ds:'AI 카메라의 새로운 기준',      tags:['기기값 할인','사은품 증정']},
+    {id:'s26',            nm:'갤럭시 S26',        cat:['galaxy'],        ds:'새로운 AI, 새로운 일상',       tags:['기기값 할인','보호필름 · 투명케이스 · 고속충전기 제공']},
+    {id:'s26plus',        nm:'갤럭시 S26+',       cat:['galaxy'],        ds:'더 커진 화면, 더 강한 성능',   tags:['기기값 할인','보호필름 · 투명케이스 · 고속충전기 제공']},
+    {id:'s26ultra',       nm:'갤럭시 S26 울트라', cat:['galaxy'],        ds:'AI 카메라의 새로운 기준',      tags:['기기값 할인','보호필름 · 투명케이스 · 고속충전기 제공']},
     {id:'iphone17',       nm:'아이폰17',          cat:['iphone','zero'], ds:'새로운 컬러, 더 특별하게',     tags:['기기값 0원','최대 지원금']},
-    {id:'flip8',          nm:'플립 8',            cat:['fold'],          ds:'한 손에 들어오는 혁신',        tags:['기기값 할인','사은품 증정']},
-    {id:'fold8ultra',     nm:'폴드 8 울트라',     cat:['fold'],          ds:'가장 강력한 폴더블 경험',      tags:['기기값 할인','사은품 증정']},
-    {id:'fold8',          nm:'폴드 8',            cat:['fold'],          ds:'더 넓은 세상, 더 많은 가능성', tags:['기기값 할인','사은품 증정']},
+    {id:'flip8',          nm:'플립 8',            cat:['fold'],          ds:'한 손에 들어오는 혁신',        tags:['기기값 할인','보호필름 · 투명케이스 · 고속충전기 제공']},
+    {id:'fold8ultra',     nm:'폴드 8 울트라',     cat:['fold'],          ds:'가장 강력한 폴더블 경험',      tags:['기기값 할인','보호필름 · 투명케이스 · 고속충전기 제공']},
+    {id:'fold8',          nm:'폴드 8',            cat:['fold'],          ds:'더 넓은 세상, 더 많은 가능성', tags:['기기값 할인','보호필름 · 투명케이스 · 고속충전기 제공']},
     // 워치·태블릿·TV프리: 가격은 아래 pricing(가격표)에서 관리
     {id:'watchultra2', nm:'갤럭시 워치 울트라2', cat:['watch'], ds:'티타늄으로 완성한 아웃도어 워치', tags:['이통사 지원금','스마트기기']},
     {id:'watch9',      nm:'갤럭시 워치9',       cat:['watch'], ds:'매일 함께하는 건강 파트너',       tags:['이통사 지원금','스마트기기']},
@@ -388,8 +388,10 @@ function priceOf(m, oi){
   return {out:num(p.out), mnp:mnp, chg:chg, v:v};
 }
 // 태그: '기기값 0원' 같은 0원 문구는 지금 보는 가격이 실제로 0원일 때만 노출
+// 20261019: '사은품 증정' 표현은 전부 실제 드리는 것으로 (관리자에 예전 문구가 남아 있어도 화면엔 이렇게)
+var GIFT_TXT='보호필름 · 투명케이스 · 고속충전기 제공';
 function tagsOf(m){
-  var t=arr(m&&m.tags); if(!t.length) return t;
+  var t=arr(m&&m.tags).map(function(x){ return /사은품\s*증정/.test(String(x))?GIFT_TXT:x; }); if(!t.length) return t;
   var p=priceOf(m), zero = p.v===0 || (p.kind==='hidden' && m.cat.indexOf('zero')>-1);
   return zero ? t : t.filter(function(x){ return !/(^|[^0-9,])0원|공짜/.test(String(x)); });
 }
@@ -414,7 +416,7 @@ function stripOf(m){
   if(pp.kind==='sheet'){
     if(pp.g==='second') return pp.sub?('휴대폰과 함께 구매 시 '+won(pp.sub)+' 할인'):'휴대폰과 함께 구매 시 혜택';
     if(pp.g==='tvfree') return pp.v===0?(TV_WHO+' · 기기값 0원'):pp.sub?(TV_WHO+' · '+won(pp.sub)+' 할인'):'TV프리 상담 가능';
-    var lead=(MNP?'번호이동':'기기변경')+' 시 ', tail=tagsOf(m)[1]?' + '+tagsOf(m)[1]:'';
+    var t1=tagsOf(m)[1], lead=(MNP?'번호이동':'기기변경')+' 시 ', tail=t1&&t1!==GIFT_TXT?' + '+t1:'';
     if(pp.v===0) return lead+'기기값 0원'+tail;
     var pct=pctOf(pp); if(pct>0) return lead+'기기값 '+pct+'% 할인'+tail;
   }
@@ -787,7 +789,7 @@ function bigcard(m){
     '<div class="row1"><h3 class="ucard-name">'+esc(m.nm)+'</h3><span class="bdg">'+(SO(m)?'일시품절':'당일발송')+'</span><span class="eta">'+esc(badgeOf(m))+'</span></div>'+
     (pb||'<div class="meta">'+(meta.length?meta.join(' · '):'가격은 상담 시 안내드립니다')+'</div>')+
     '<div class="chips">'+(isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):'<span class="chip">제휴카드 X</span><span class="chip">부가서비스 X</span>')+'<span class="chip gray">5분 상담</span></div>'+
-    '<div class="stamp">'+(SO(m)?'입고 알림 상담 신청 가능':'구매 시 투명케이스 · 보호필름 · 충전기 제공')+'</div></a>';
+    '<div class="stamp">'+(SO(m)?'입고 알림 상담 신청 가능':'구매 시 보호필름 · 투명케이스 · 고속충전기 제공')+'</div></a>';
 }
 function smallCircles(list){
   return list.map(function(m){return '<a class="m'+(SO(m)?' soldout':'')+hidCls(m)+'" style="flex:0 0 76px;display:flex;flex-direction:column;align-items:center;gap:6px" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="cir">'+im(mImg(m),'','',m.nm)+'</div><span>'+esc(m.nm)+'</span></a>'}).join('');
@@ -1012,7 +1014,7 @@ function sheetGuide(){
     '<div class="gd-note"><div class="gd-note-h"><i>!</i>꼭 확인해 주세요</div><ul>'+
       '<li>월 <em>85,000원</em> 요금제를 <em>6개월 이상 유지</em>하는 조건입니다. 6개월 이후에는 월 47,000원 이상 요금제로 자유롭게 변경하실 수 있습니다.</li>'+
       '<li>제휴카드 및 부가서비스 <em>의무 가입 없이</em> 진행됩니다.</li>'+
-      '<li>구매 시 <em>투명 케이스, 보호필름, 충전기</em>를 함께 드립니다.</li></ul></div>'+
+      '<li>구매 시 <em>보호필름, 투명케이스, 고속충전기</em>를 함께 드립니다.</li></ul></div>'+
     '<button class="cta gd-cta c-guide" data-open="consult">온라인 상담 신청하기 <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
 }
 function sheetSoon(){
