@@ -1560,3 +1560,4 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 #v-apply .ap-one .ap-btns{margin:16px 0 0}
 #v-apply .ap-one .ap-sec{margin:14px 0 0;padding:0;border:0;border-radius:0}
 .ap-bar-t em{display:block;font-style:normal;font-size:12px;font-weight:800;color:var(--pink);margin-top:1px}
+#v-apply .ap-btns .cta-kakao:first-child{margin-top:0}

@@ -1314,18 +1314,19 @@ function submitConsult(){
 //  (PC 웹에선 채팅창이 안 뜨고 PC·폰 카카오톡 앱으로 넘어가서 '안 열린 것처럼' 보였음. 채팅방에 고객이 먼저 한마디 남겨야 우리가 답할 수 있음)
 var IS_MOBILE=/Android|iPhone|iPad|iPod|Mobile|Instagram|FBAN|FBAV|KAKAOTALK|NAVER/i.test(navigator.userAgent||'')||((navigator.maxTouchPoints||0)>1&&/Macintosh/.test(navigator.userAgent||''));
 function kakaoUrl(){ return String(S.kakao||'').replace(/^http:\/\//,'https://'); }
-function kakaoDone(ph){
-  var KK=kakaoUrl(), el=$('#kkDone');
+function kakaoDone(ph, kw){
+  var KK=kakaoUrl(), el=$('#kkDone'), sent=false;
+  if(kw && KK){ try{ kw.opener=null; kw.location.replace(KK); sent=true; }catch(x){ sent=false; } }   // PC: 미리 열어 둔 새 창 → 카카오톡 채팅방
   if(!el){ document.body.insertAdjacentHTML('beforeend','<div class="kkd" id="kkDone" role="dialog" aria-modal="true"></div>'); el=$('#kkDone'); }
   el.innerHTML='<div class="kkd-w"><button type="button" class="kkd-x" data-kkd-x aria-label="닫기">×</button>'+
     '<div class="kkd-ic">'+KKI+'</div><h3>카카오톡 상담 접수 완료</h3>'+
     '<p class="kkd-t">유플러스 다이렉트 카카오톡 채널 <b>‘UDak’</b> 채팅방에서 바로 상담해 드려요.</p>'+
     '<div class="kkd-tip">채팅방에 <b>“상담 신청했어요”</b> 한마디 남겨 주시면<br>더 빨리 답해 드려요.</div>'+
     (KK?'<a class="kkd-go" href="'+esc(KK)+'"'+(IS_MOBILE?'':' target="_blank" rel="noopener"')+'>'+KKI+'<span>카카오톡 채팅방 열기</span></a>':'')+
-    '<p class="kkd-s">'+(IS_MOBILE?'카카오톡이 바로 열리지 않으면 위 버튼을 눌러 주세요.':'PC에서는 PC 카카오톡(또는 휴대폰 카카오톡)에 채팅방이 열려요.')+'</p>'+
+    '<p class="kkd-s">'+(IS_MOBILE?'카카오톡이 바로 열리지 않으면 위 버튼을 눌러 주세요.':sent?'새 창에서 카카오톡 채팅방을 열었어요. 안 보이면 위 버튼을 눌러 주세요.':'PC에서는 PC 카카오톡(또는 휴대폰 카카오톡)에 채팅방이 열려요.')+'</p>'+
     (ph?'<p class="kkd-ph"><b>'+esc(ph)+'</b> 번호로 접수됐어요</p>':'')+'</div>';
   el.classList.add('on'); document.body.style.overflow='hidden';
-  if(KK && IS_MOBILE) setTimeout(function(){ location.href=KK; }, 400);   // 폰: 메타 신청 신호가 나갈 틈만 두고 바로 카카오톡으로
+  if(KK && IS_MOBILE) setTimeout(function(){ location.href=KK; }, 250);   // 폰: 메타 신청 신호가 나갈 틈만 두고 바로 카카오톡으로 (20261019: 0.4초 → 0.25초)
 }
 function closeKakaoDone(){ var el=$('#kkDone'); if(el) el.classList.remove('on'); document.body.style.overflow=''; if(location.hash==='#/apply'){ AP=apInit(); location.hash='#/'; } }
 function showTicket(ph){
@@ -1626,6 +1627,7 @@ function apInfoHtml(){
 }
 // 20261016: 신청 버튼 2개 — 상담 예약(전화) / 카톡 예약(신청서는 똑같이 CRM에 저장 + 우리 카카오톡 상담 채널 열기, CRM엔 '카톡 상담 요청'으로 표시)
 function apBtnsHtml(){
+  if(AP && AP.mode==='kakao') return '<div class="ap-btns"><button type="button" class="cta cta-kakao" id="mKakaoBtn">'+KKI+'<span class="rf-submit-label">카톡으로 상담 시작하기</span></button></div>';
   return '<div class="ap-btns">'+
     '<button type="button" class="cta" id="mSubmitBtn"><span class="rf-submit-label">상담 예약 신청하기</span> <svg class="cta-ar" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>'+
     '<button type="button" class="cta cta-kakao" id="mKakaoBtn"><svg class="kk" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.6c-5.2 0-9.4 3.3-9.4 7.4 0 2.6 1.7 4.9 4.3 6.2l-.9 3.3c-.1.3.3.6.6.4l3.9-2.6c.5.1 1 .1 1.5.1 5.2 0 9.4-3.3 9.4-7.4S17.2 3.6 12 3.6z"/></svg><span class="rf-submit-label">카톡 예약 신청하기</span></button>'+
@@ -1669,9 +1671,10 @@ function apSetFrom(m){
     else AP[k]=m.id;
   }
 }
-function openApply(el){
-  var id=el&&el.getAttribute&&el.getAttribute('data-model'), m=id&&byId(id);
-  apSetFrom(m);
+// 20261019: [카톡 상담]도 전화 상담과 같은 신청서 — mode 'kakao' 면 맨 아래 버튼만 '카톡으로 상담 시작하기' (신청만 카톡으로)
+function openApply(el, mode){
+  var id=el&&el.getAttribute&&(el.getAttribute('data-model')||el.getAttribute('data-qk')), m=id&&byId(id);
+  apSetFrom(m); AP.mode=mode||'';
   // 20261017: 매장찾기에서 '방문 예약 상담 신청하기'로 들어오면 고른 매장을 신청서까지 가져감 (목록 버튼은 매장 미정)
   var stn=el&&el.getAttribute&&el.getAttribute('data-store'); if(stn!=null){ AP.visit=true; AP.store=stn; }
   apValidate();
@@ -1800,13 +1803,16 @@ function apSubmit(mode){
   var reset=function(){ btns.forEach(function(b){ b.disabled=false; }); if(lbl) lbl.textContent=lbl0; };
   // 카톡 예약: 신청서를 먼저 CRM에 저장하고 → 메타 신청 신호 → 완료 팝업 → 잠시 뒤 우리 카카오톡 상담 채널로 이동
   //  (인스타·페북 앱 안 브라우저는 새 창을 못 띄우고 지금 화면을 바꿔 버려서, 먼저 열면 저장·메타 신호가 끊길 수 있음)
-  var body=apPayload({name:name, phone:phone, birth:birth, memo:memo, kakao:kakao, source:'온라인 상담 신청'}).body;
+  var body=apPayload({name:name, phone:phone, birth:birth, memo:memo, kakao:kakao, source:(AP&&AP.mode==='kakao')?'상세 화면 카톡 상담':'온라인 상담 신청'}).body;
+  // 20261019 PC: 누르는 순간 새 창을 먼저 열어 두고(팝업 차단 안 걸리게) 저장되면 그 창을 바로 카카오톡 채팅방으로 → 버튼 한 번에 채팅까지
+  var kw=null; if(kakao && !IS_MOBILE && kakaoUrl()){ try{ kw=window.open('', '_blank'); if(kw) kw.document.write('<title>카카오톡 채팅방 여는 중</title><p style="font:15px sans-serif;padding:24px;color:#555">카카오톡 채팅방을 여는 중이에요…</p>'); }catch(x){ kw=null; } }
+  var kwX=function(){ try{ if(kw) kw.close(); }catch(x){} };
   fetch(SB_URL,{method:'POST',keepalive:kakao,headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
   .then(function(res){
     if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead',{content_name:kakao?'카톡 예약 신청':'상담 예약 신청'}); reset();
-      if(kakao) kakaoDone(body.phone); else showTicket(body.phone); }   // 카톡 예약은 카카오톡 채팅방 안내로
-    else { reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해주세요.'); }); }
-  }).catch(function(e){ console.error(e); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.'); });
+      if(kakao) kakaoDone(body.phone, kw); else showTicket(body.phone); }   // 카톡 예약은 카카오톡 채팅방으로
+    else { kwX(); reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해주세요.'); }); }
+  }).catch(function(e){ console.error(e); kwX(); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.'); });
 }
 
 /* ---------------- 이벤트 ---------------- */
@@ -1821,7 +1827,7 @@ document.addEventListener('click',function(e){
   if(t.closest('#mSubmitBtn')){ e.preventDefault(); apSubmit(); return; }
   if(t.closest('#mKakaoBtn')){ e.preventDefault(); apSubmit('kakao'); return; }
   if(t.closest('#qkBtn')){ e.preventDefault(); qkSubmit(); return; }
-  var qkb=t.closest('[data-qk]'); if(qkb){ e.preventDefault(); openQuickKakao(qkb.getAttribute('data-qk')); return; }
+  var qkb=t.closest('[data-qk]'); if(qkb){ e.preventDefault(); closeSheet(); openApply(qkb, 'kakao'); return; }   // 20261019: 카톡 상담도 같은 신청서로 (예전 카톡 간편 신청창 openQuickKakao 는 안 씀)
   var qkl=t.closest('[data-qk-col]'); if(qkl){ e.preventDefault(); QK.col=qkl.getAttribute('data-qk-col'); $$('[data-qk-col]').forEach(function(x){ x.classList.toggle('on', x===qkl); }); return; }
   var qkc=t.closest('[data-qk-car]'); if(qkc){ e.preventDefault(); var qv=qkc.getAttribute('data-qk-car'); QK.car=(QK.car===qv?'':qv); $$('[data-qk-car]').forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-qk-car')===QK.car); }); return; }
   if(t.closest('[data-qk-pv]')){ e.preventDefault(); var qp=$('#qkPv'); if(qp) qp.classList.toggle('on'); return; }
