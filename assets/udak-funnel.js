@@ -35,7 +35,8 @@
     // 표본과 상관없이 항상 기록하는 것 — 신청 흐름·막힘
     var ALWAYS={ submit_send:1, lead:1, submit_fail:1, alert:1 };
     // 스토어는 방문자 전원의 들어옴·나감 요약·신청서 단계·신청 버튼·전화/카톡 문의를 남김 (자세한 누름·구간은 표본만)
-    if(STORE){ ALWAYS.view=1; ALWAYS.exit=1; ALWAYS.form_step=1; ALWAYS.submit_click=1; ALWAYS.call=1; ALWAYS.kakao=1; ALWAYS.qk_open=1; ALWAYS.store_near=1; ALWAYS.store_near_fail=1; }   // 20261019: 매장찾기 '가까운 매장' — 가장 가까운 매장 + 거리대만 (좌표·개인정보 없음)
+    if(STORE){ ALWAYS.view=1; ALWAYS.exit=1; ALWAYS.form_step=1; ALWAYS.submit_click=1; ALWAYS.call=1; ALWAYS.kakao=1; ALWAYS.qk_open=1; ALWAYS.store_near=1; ALWAYS.store_near_fail=1;   // 20261019: 매장찾기 '가까운 매장' — 가장 가까운 매장 + 거리대만 (좌표·개인정보 없음)
+      ALWAYS.detail_exit=1; ALWAYS.ap=1; ALWAYS.ap_pick=1; ALWAYS.ap_act=1; }   // 20261019: 상세 위치별 요약(아래 10번) · 신청서에서 고른 것(받는 방법 등)은 전원
     var qs=new URLSearchParams(location.search);
     if(qs.get('internal')==='1'){ try{ localStorage.setItem('udak_internal','1'); }catch(e){} }
     if(qs.get('internal')==='0'){ try{ localStorage.removeItem('udak_internal'); }catch(e){} }
@@ -75,7 +76,7 @@
         if(onceKey!==undefined){ var k=name+'|'+onceKey; if(done[k]) return; done[k]=1; }
         metaStage(name, detail);
         if(!sampled && !ALWAYS[name]) return; // 표본 밖 방문은 행동 기록을 남기지 않음 (픽셀 신호는 위에서 이미 보냄)
-        q.push({ sid:sid, page:PAGE, event:String(name).slice(0,40), detail:(detail==null?null:String(detail).slice(0,300)),
+        q.push({ sid:sid, page:PAGE, event:String(name).slice(0,40), detail:(detail==null?null:String(detail).slice(0,name==='detail_exit'?600:300)),
           sec:Math.round((Date.now()-t0)/1000), vw:(window.innerWidth||null),
           utm_source:src.s||null, utm_campaign:src.c||null, utm_content:src.a||null, fbclid:!!src.f, internal:internal });
         if(q.length>=20) flush(false);
@@ -192,15 +193,72 @@
       if(p.length>room) p='…'+p.slice(p.length-room+1);
       return head+p;
     }
+    // ── 10) v20261019 스토어 상세 화면: 위치(구간)별로 어디까지 봤고 · 어디에 오래 머물렀고 · 어디서 나갔고 · 뭘 눌렀는지 (전원)
+    //   상세 화면을 떠날 때(다른 화면으로 가거나 페이지를 나갈 때) detail_exit 한 줄. 예:
+    //   'fold8#1 | 52s | 끝 상담선택 | 마지막 할부금 | 사진3 컬러4 통신사9 할부금20 지원금6 | 바 번호이동 · 기기값 … | 누름 컬러:크림>통신사:SKT>카톡상담'
+    //   · 끝 = 가장 아래까지 본 위치 · 마지막 = 나갈 때 보고 있던 위치 · 위치 뒤 숫자 = 그 위치를 보고 있던 초 · 바 = 아래 고정 줄(고른 조건·가격)
+    var MD_SECS=[['사진','.md-img'],['이름','.md-h'],['순서','.mguide'],['컬러','.mstep[data-step="color"]'],['용량','.mstep[data-step="cap"]'],['통신사','.mstep[data-step="car"]'],
+      ['요금제','.mstep-sub'],['할부금','.pv-hero'],['지원금','.pv-grid'],['꼭확인','.pv-must'],['월납부','.pv-more'],['가격','.ms-detail:not(.pv)'],['가이드','.guide'],['상담선택','.mstep.cs']];
+    var MD=null, mdN=0;
+    function mdStart(k){ MD=(k.indexOf('model:')===0)?{id:k.slice(6), n:++mdN, t:Date.now(), sec:{}, max:-1, last:'', taps:[]}:null; if(MD) setTimeout(function(){ mdLook(false); }, 600); }
+    function mdLook(add){
+      try{
+        if(!MD) return; var body=document.getElementById('mdBody'); if(!body) return;
+        var vh=window.innerHeight||0, bar=document.getElementById('mdBar'), bt=bar?bar.getBoundingClientRect().top:vh, bottom=(bt>0&&bt<vh)?bt:vh;
+        var sh=document.querySelector('#v-model .subhead'), top=sh?Math.max(0,sh.getBoundingClientRect().bottom):0, best=null, bestD=1e9;
+        var line=top+(bottom-top)*0.45;   // 읽는 줄: 화면 가운데보다 조금 위
+        var sH=Math.max(document.documentElement.scrollHeight, document.body?document.body.scrollHeight:0);
+        if((window.scrollY||window.pageYOffset)+vh>=sH-4) line=bottom-8;   // 맨 아래까지 내렸으면 맨 아래 보이는 위치를 보고 있는 것
+        for(var i=0;i<MD_SECS.length;i++){
+          var el=body.querySelector(MD_SECS[i][1]); if(!el) continue;
+          var r=el.getBoundingClientRect(), v=Math.min(r.bottom,bottom)-Math.max(r.top,top); if(v<=0) continue;
+          if(v>=Math.min(r.height,bottom-top)*0.5 && i>MD.max) MD.max=i;   // 반 이상 보였으면 '봤다'
+          var d=line<r.top?r.top-line:line>r.bottom?line-r.bottom:0;          // 읽는 줄에 걸친 위치 = 지금 보는 곳
+          if(d<bestD){ bestD=d; best=MD_SECS[i][0]; }
+        }
+        if(best){ MD.last=best; if(add) MD.sec[best]=(MD.sec[best]||0)+1; }
+      }catch(e){}
+    }
+    function mdDesc(){
+      var secs=MD_SECS.map(function(p){ return MD.sec[p[0]]?p[0]+MD.sec[p[0]]:''; }).filter(Boolean).join(' ');
+      var b=document.querySelector('#mdBar .md-bar-t'), bt=b?(b.textContent||'').replace(/\s+/g,' ').trim().slice(0,60):'';
+      return MD.id+'#'+MD.n+' | '+Math.round((Date.now()-MD.t)/1000)+'s | 끝 '+(MD.max>=0?MD_SECS[MD.max][0]:'-')+' | 마지막 '+(MD.last||'-')+' | '+(secs||'-')+(bt?' | 바 '+bt:'')+(MD.taps.length?' | 누름 '+MD.taps.join('>'):'');
+    }
+    function mdTap(s){ if(!MD||!s) return; MD.taps.push(String(s).slice(0,24)); if(MD.taps.length>14) MD.taps.shift(); }
+    function mdTapOf(t){
+      var el;
+      if((el=t.closest('[data-color-pick]'))) return '컬러:'+el.getAttribute('data-color-pick');
+      if((el=t.closest('[data-opt-pick]'))) return '용량:'+(el.textContent||'').replace(/품절/,'').trim();
+      if((el=t.closest('[data-calc]'))){ var c=el.getAttribute('data-calc'), v=el.getAttribute('data-v')||''; return ({carrier:'통신사',method:'할인',months:'할부'}[c]||c)+':'+({pub:'공시',sel:'선약','0':'일시납'}[v]||v); }
+      if((el=t.closest('[data-qk]'))) return el.closest('#mdBar')?'카톡상담(아래)':'카톡상담';
+      if((el=t.closest('[data-open]'))) return el.getAttribute('data-open')==='consult'?(el.closest('#mdBar')?'상담신청(아래)':el.closest('.tabbar')?'상담신청(탭)':'전화상담'):'열기:'+el.getAttribute('data-open');
+      if((el=t.closest('[data-mg]'))) return '순서:'+el.getAttribute('data-mg');
+      if((el=t.closest('[data-md-go]'))) return '아래글';
+      if((el=t.closest('[data-pv-x]'))) return '월납부열기';
+      if((el=t.closest('[data-ms-tip]'))) return '설명:'+el.getAttribute('data-ms-tip');
+      if((el=t.closest('[data-wish]'))) return '찜';
+      if((el=t.closest('[data-back]'))) return '뒤로';
+      if((el=t.closest('[data-home]'))) return '홈';
+      if((el=t.closest('.tabbar a'))) return '탭:'+(el.getAttribute('data-tab')||'');
+      if((el=t.closest('.side-quick a, .sq-hit'))) return /tel:/.test(el.getAttribute('href')||'')?'옆전화':'옆카톡';
+      if((el=t.closest('#mdImg'))) return '사진';
+      return null;
+    }
+    function mdEnd(){ if(MD){ mdLook(false); ev('detail_exit', mdDesc()); } }
     if(STORE){
-      scrStart();
+      scrStart(); mdStart(cur.k);
       ev('screen', cur.k+' ← (처음)');   // 처음 화면 (광고에서 바로 상세로 들어온 경우도 PriceCheck 가 가게)
       window.addEventListener('hashchange', function(){
         var k=scrKey(); if(cur && k===cur.k) return;
         var prev=scrDesc(); if(prev){ path.push(prev); if(path.length>40) path.shift(); }
-        scrStart();
+        mdEnd(); MD=null;
+        scrStart(); mdStart(k);
         ev('screen', k+' ← '+(prev||'-'));
       });
+      setInterval(function(){ if(MD && document.visibilityState==='visible') mdLook(true); }, 1000);
+      window.addEventListener('scroll', function(){ if(!MD || mdLook._t) return; mdLook._t=setTimeout(function(){ mdLook._t=null; mdLook(false); }, 250); }, {passive:true});
+      document.addEventListener('click', function(e){ try{ if(MD && e.target && e.target.closest) mdTap(mdTapOf(e.target)); }catch(x){} }, true);
+      document.addEventListener('change', function(e){ try{ var el=e.target; if(MD && el && el.getAttribute && el.getAttribute('data-calc-sel')==='tier'){ var o=el.selectedOptions&&el.selectedOptions[0]; mdTap('요금제:'+((o&&o.textContent)||el.value).replace(/\s+/g,'')); } }catch(x){} }, true);
       document.addEventListener('input', formSoon, true);
       document.addEventListener('change', formSoon, true);
       document.addEventListener('click', formSoon, true);
@@ -276,7 +334,7 @@
     // 8) 나감 — 마지막으로 어디까지 내렸는지
     var left=false;
     function leave(){ if(left) return; left=true;
-      if(STORE){ try{ formCheck(); }catch(e){} ev('exit', exitDetail()); }   // 스토어: 몇 초 · 신청서 어디까지 · 거쳐 간 화면 (전원)
+      if(STORE){ try{ formCheck(); }catch(e){} try{ mdEnd(); }catch(e){} ev('exit', exitDetail()); }   // 스토어: 몇 초 · 신청서 어디까지 · 거쳐 간 화면 (전원) + 상세 화면이면 위치별 요약
       else ev('leave', Math.round(maxS));
       flush(true); }
     window.addEventListener('pagehide', leave);
