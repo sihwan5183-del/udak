@@ -507,8 +507,8 @@ function calcPickers(m, r, st){
 }
 var MSTIP={};   // 상세 계산 박스 ? 설명 열림
 /* 20261019 상세 가격 (휴대폰): '싸 보이게' — 기기값(월 기기 할부금)을 맨 앞에, 받는 혜택(총 기기 지원금)을 크게.
-   통신 요금까지 합친 금액은 맨 아래 '월 예상 납부금액'에 (처음엔 펼쳐 둠). TV프리·워치·태블릿은 기존 배치 그대로 */
-var PVOFF=false;   // 맨 아래 '월 예상 납부금액' 접힘 여부 (처음엔 펼침)
+   통신 요금까지 합친 금액은 맨 아래 '월 예상 납부금액'에 (처음엔 접어 둠). TV프리·워치·태블릿은 기존 배치 그대로 */
+var PVOFF=true;    // 맨 아래 '월 예상 납부금액' 접힘 여부 — 처음엔 접어 둠 (20261019 요청)
 var PVI={
   phone:'<svg viewBox="0 0 24 40"><rect x="2" y="2" width="20" height="36" rx="4.5"/><path d="M9.5 6h5"/></svg>',
   gift:'<svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8c-1.5-3-5.5-3.5-5.5-1S9 8 12 8c3 0 7-.5 5.5-2.5S13.5 5 12 8z"/></svg>',
@@ -556,7 +556,7 @@ function pvPhone(m, r, st){
   cd.push('제휴카드<br>의무가입 없음'); cd.push('부가서비스<br>의무가입 없음');
   h+='<div class="pv-card"><div class="pv-ch"><i class="pv-ic">'+PVI.doc+'</i>혜택 적용 조건'+pvTip('pv4','지원금은 고르신 요금제를 6개월 유지하는 조건이에요. 6개월 뒤에는 월 '+won(LOW_FEE)+' 이상 요금제로 자유롭게 바꾸실 수 있어요.')+'</div>'+
     '<ul class="pv-cond">'+cd.map(pvCk).join('')+'</ul></div>';
-  // ⑤ 월 예상 납부금액 (통신 요금 포함) — 맨 아래, 처음엔 펼침. '7개월 차부터'는 지금처럼 85·95 요금제만
+  // ⑤ 월 예상 납부금액 (통신 요금 포함) — 맨 아래, 처음엔 접힘. '7개월 차부터'는 지금처럼 85·95 요금제만
   if(fee){
     var low=(st.fee<=95000&&st.fee>LOW_FEE)?monthly+(sel?Math.round(LOW_FEE*0.75):LOW_FEE):null;
     var feeT='통신 요금 '+won(fee)+(sel?' (25% 할인)':'');
