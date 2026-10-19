@@ -94,6 +94,24 @@
     setInterval(function(){ flush(false); }, 20000);
     window.udakEv=function(n,d){ ev(n,d); };   // 20261019: 스토어 화면에서 직접 남기는 기록 (매장찾기 가까운 매장 등)
 
+    // 11) v20261019 메타 '번호이동' 신호 — 메타가 번호이동 손님 위주로 찾게 하려고 (LG U+ 기기변경·내부 방문은 안 보냄)
+    //   MnpSelect: 이 방문에서 처음 고른 통신사가 SKT·KT·알뜰폰일 때 한 번 (처음에 LG U+ 를 고른 방문은 안 보냄 — 기존 고객이 둘러보는 경우)
+    //   MnpLead:   번호이동 접수가 들어갔을 때 (스토어 페이지에서 부름). 기존 Lead 신호는 그대로
+    window.udakMeta=function(name, params){
+      try{
+        if(internal || typeof window.fbq!=='function') return;
+        var p={ landing:PAGE }; if(params) for(var k in params) if(params[k]) p[k]=params[k];
+        window.fbq('trackCustom', name, p);
+      }catch(e){}
+    };
+    function carPick(el){
+      try{
+        var cv=el.getAttribute('data-qk-car')||el.getAttribute('data-v')||''; if(!cv) return;
+        var first=sget('udak_car1'); if(first) return; sset('udak_car1', cv);   // 이 방문에서 처음 고른 통신사만 봄
+        if(cv!=='LG U+') window.udakMeta('MnpSelect', { carrier:cv, model:el.getAttribute('data-model')||'' });
+      }catch(e){}
+    }
+
     // ── 페이지별로 보는 구간·버튼
     var txt=function(el){ return (el.textContent||'').replace(/\s+/g,' ').trim().slice(0,40); };
     var lbl=function(el){ return el.getAttribute('aria-label')||txt(el); };
@@ -288,6 +306,7 @@
       try{
         var t=e.target; if(!t||!t.closest) return;
         var hit=false;
+        if(STORE){ var ce=t.closest('[data-calc="carrier"],[data-ap="carrier"],[data-qk-car]'); if(ce) carPick(ce); }   // 11) 번호이동 신호
         for(var i=0;i<cfg.click.length;i++){
           var c=cfg.click[i], el=t.closest(c[0]);
           if(el){ ev(c[1], c[2]?c[2](el):null); hit=true;

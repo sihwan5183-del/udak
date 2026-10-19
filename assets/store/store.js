@@ -444,6 +444,8 @@ function curTier(m, g, r){ if(g==='tvfree'&&r) return tvTier(r); var ts=r?rowTie
 var RATE={24:1.0626,30:1.0781,36:1.0935};   // 할부이자 포함 계수 (휴대폰·워치·태블릿 동일)
 var SEL={};                                  // 모델별 고른 조건 {carrier, method, months}
 var CARRIERS=['SKT','KT','LG U+','알뜰폰'];
+// 20261019 메타 '번호이동 접수' 신호(MnpLead): 지금 통신사가 SKT·KT·알뜰폰(=번호이동)인 접수만 — 기기변경(LG U+)·TV프리만은 안 보냄. 기존 Lead 는 그대로
+function mnpLead(b){ try{ var c=b&&b.carrier, sn=b&&b.snapshot, mnp=sn?(sn.jointype==='번호이동'):(!!c && c!=='LG U+'); if(mnp && window.udakMeta) window.udakMeta('MnpLead', {carrier:c, model:(b.device_interest||'')}); }catch(e){} }
 // 원 단위 정리: 1원 자리가 8·9면 10원 올림, 그 밖엔 버림 (아이폰 듀오 랜딩과 같은 규칙)
 function won10(n){ n=Math.round(Number(n)||0); var x=((n%10)+10)%10; return x>=8?n+(10-x):n-x; }
 function noInterest(r){ return r.model==='tvfree5'; }   // TV프리는 이자 없이 그냥 나누기
@@ -1412,7 +1414,7 @@ function submitConsult(){
   if(typeof window.udakMetaIds==='function'){ var mi=window.udakMetaIds(); Object.keys(mi).forEach(function(k){ body[k]=mi[k]; }); }
   fetch(SB_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
   .then(function(res){
-    if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead'); reset(); closeSheet(); showTicket(); }
+    if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead'); mnpLead(body); reset(); closeSheet(); showTicket(); }
     else { reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해주세요.'); }); }
   }).catch(function(e){ console.error(e); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.'); });
 }
@@ -1926,7 +1928,7 @@ function qkSubmit(){
   var reset=function(){ btn.disabled=false; if(lb) lb.textContent=lb0; };
   fetch(SB_URL,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
   .then(function(res){
-    if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead',{content_name:'카톡 상담 (상세)'}); reset(); closeSheet(); kakaoDone(body.phone); }
+    if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead',{content_name:'카톡 상담 (상세)'}); mnpLead(body); reset(); closeSheet(); kakaoDone(body.phone); }
     else { reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해주세요.'); }); }
   }).catch(function(e){ console.error(e); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.'); });
 }
@@ -1969,7 +1971,7 @@ function apSubmit(mode){
   var kwX=function(){ try{ if(kw) kw.close(); }catch(x){} };
   fetch(SB_URL,{method:'POST',keepalive:kakao,headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
   .then(function(res){
-    if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead',{content_name:kakao?'카톡 예약 신청':'상담 예약 신청'}); reset();
+    if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead',{content_name:kakao?'카톡 예약 신청':'상담 예약 신청'}); mnpLead(body); reset();
       if(kakao) kakaoDone(body.phone, kw); else showTicket(); }   // 카톡 예약은 카카오톡 채팅방으로
     else { kwX(); reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해주세요.'); }); }
   }).catch(function(e){ console.error(e); kwX(); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.'); });
