@@ -474,14 +474,17 @@ function crow(label, sub, val, was, cls){
   return '<div class="cr'+(cls?' '+cls:'')+'"><div class="cr-l"><span>'+label+'</span>'+(sub?'<small>'+sub+'</small>':'')+'</div><div class="cr-v"><b>'+val+'</b>'+(was?'<s>'+was+'</s>':'')+'</div></div>';
 }
 function payHint(st){ if(st.after===0) return '할부금 없이 이용하실 수 있어요'; return st.months===0?'일시납 · 기기값 기준':(st.mm+'개월 할부 · 기기값 기준, '+(st.noint?'이자 없음':'할부이자 포함')); }
+function eul(w){ var s=String(w||''), ch=s.charCodeAt(s.length-1); return (ch>=0xAC00&&ch<=0xD7A3&&(ch-0xAC00)%28)?'을':'를'; }
+function manwon(n){ return n%10000===0?(n/10000).toLocaleString('ko-KR')+'만원':won(n); }
+var KKI='<svg class="kk" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.6c-5.2 0-9.4 3.3-9.4 7.4 0 2.6 1.7 4.9 4.3 6.2l-.9 3.3c-.1.3.3.6.6.4l3.9-2.6c.5.1 1 .1 1.5.1 5.2 0 9.4-3.3 9.4-7.4S17.2 3.6 12 3.6z"/></svg>';
 function cgrid(label, key, items, cur, m, n, hint){
   return '<div class="cpick"><div class="cpick-l">'+label+'</div><div class="cgrid" style="--n:'+n+'">'+items.map(function(x){
     return '<button type="button" class="cg'+(String(x[0])===String(cur)?' on':'')+(x[2]?' dis':'')+'" data-calc="'+key+'" data-v="'+esc(x[0])+'" data-model="'+esc(m.id)+'"'+(x[2]?' disabled':'')+'>'+esc(x[1])+'</button>';
   }).join('')+'</div>'+(hint?'<div class="cpick-hint">'+hint+'</div>':'')+'</div>';
 }
 function calcPickers(m, r, st){
-  var g=r.g, h='';
-  if(g==='phone') h+=cgrid('사용 통신사','carrier',CARRIERS.map(function(c){return [c,c]}),st.s.carrier||'',m,4,
+  var g=r.g, h='', car='';
+  if(g==='phone') car=cgrid('사용 통신사','carrier',CARRIERS.map(function(c){return [c,c]}),st.s.carrier||'',m,4,
     '');
   var ts=g==='tvfree'?[]:rowTiers(r);
   if(g==='tvfree') h+=tvCondHtml();
@@ -490,7 +493,7 @@ function calcPickers(m, r, st){
   if(g==='phone'&&st.c) h+=cgrid('할인 방식','method',[['pub','공시지원금',!st.c.pub],['sel','선택약정 (요금 25%↓)']],st.method,m,2,
     !st.c.pub?'이 조건은 공시지원금이 없어 선택약정으로 계산돼요':adviceTxt(cmpMethod(st.c,st.fee,st.months),st.method));
   if(g!=='tvfree') h+=cgrid('할부 개월','months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(st.months),m,4,'');
-  return h;
+  return {car:car, rest:h};   // 20261019: 통신사 / 나머지 따로
 }
 var MSTIP={};   // 상세 계산 박스 ? 설명 열림
 function calcBox(m, r, st){
@@ -929,14 +932,37 @@ function renderModel(id, keepRecent){
   }
   $('#mdTitle').textContent=m.nm;
   var pc=colorsOf(m).filter(function(c){return c.nm===PICK[m.id]})[0];
+  var PK=(pickers&&typeof pickers==='object')?pickers:{car:'',rest:pickers||''}, gg=selRow?selRow.g:'';
+  var soNow=SO(m)||(selRow&&selRow.so), needCar=!!PK.car && !((SEL[m.id]||{}).carrier);
+  // 20261019 행동 유도: '이 순서대로 하시면 돼요' + 단계 번호 + 지금 할 차례 반짝임 (통신사를 안 골랐으면 통신사, 골랐으면 상담 신청)
+  var opt=colorPicker(m)+optPicker(m), cN=colorsOf(m).length>1, oN=optsOf(m).length>1;
+  var optNm=cN&&oN?'컬러·'+optLabel(m):cN?'컬러':optLabel(m);
+  var steps=[], body='';
+  var step=function(key, short, title, sub, inner, now, go){ steps.push(short);
+    return '<div class="mstep'+(now?' now':'')+'" data-step="'+key+'"><div class="mstep-h"><b>'+steps.length+'</b><div><span>'+title+'</span>'+(sub?'<small>'+sub+'</small>':'')+'</div>'+(now&&go?'<em class="mstep-go">'+go+'</em>':'')+'</div>'+inner+'</div>'; };
+  if(opt) body+=step('opt', optNm, '원하는 '+esc(optNm)+eul(optNm)+' 골라 주세요', '', opt, false);
+  if(PK.car) body+=step('car', '통신사', '지금 쓰는 통신사를 골라 주세요', '통신사에 따라 번호이동·기기변경 가격이 달라져요', PK.car, needCar, '먼저 골라 주세요');
+  // 고를 칸(요금제·할인·할부)이 있을 때만 '그대로 두셔도 돼요' 안내 (TV프리는 가입 조건 안내뿐이라 안 붙임)
+  var restPick=/class="(cgrid|csel)/.test(PK.rest||'');
+  if(PK.rest) body+='<div class="mstep-sub">'+(restPick?'<div class="mstep-note">'+(gg==='phone'?'요금제·할인 방식·할부는 가장 많이 고르는 조건으로 맞춰 놨어요. <b>그대로 두셔도 돼요.</b>':'아래 조건은 가장 많이 고르는 조건으로 맞춰 놨어요. <b>그대로 두셔도 돼요.</b>')+'</div>':'')+PK.rest+'</div>';
+  body+=step('price', '내 가격 확인', '내 예상 가격을 확인하세요', '', (soNow?'<div class="so-notice">'+(SO(m)?'현재 일시품절입니다':'선택하신 '+esc(selRow.cap||'옵션')+' 은(는) 일시품절입니다')+'. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
+    '<div class="ptable" id="ucatPrice">'+rows+'</div>'+guideHtml(m)+
+    '<div class="md-chips">'+(isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):'<span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span>')+'<span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>', false);
+  body+=step('go', '카톡·전화 상담', '마음에 드시면 아래 버튼으로 상담을 신청하세요', '', '<ul class="mstep-how"><li><b>카톡 상담</b><span>이름·연락처만 남기면 카카오톡으로 바로 상담</span></li><li><b>상담 신청</b><span>조건 확인 후 전화로 5분 상담</span></li></ul>', !needCar, '이제 신청만 남았어요');
+  var guide=steps.length>2?'<div class="mguide"><b>이 순서대로 하시면 돼요</b><ol>'+steps.map(function(s,i){ return '<li><i>'+(i+1)+'</i>'+esc(s)+'</li>'; }).join('')+'</ol></div>':'';
+  // 하단 고정: 지금 상태 한 줄 + [카톡 상담] [상담 신청]
+  var bt;
+  if(soNow) bt='<b>일시품절</b> · 상담 신청하시면 입고 즉시 안내드려요';
+  else if(needCar) bt='지금 쓰는 <b>통신사</b>를 고르면 내 가격이 바로 나와요';
+  else if(p.kind==='sheet' && cst && cst.c){ var sup=(num(p.row.out)||0)-cst.after; bt=(typeNm(cst)?esc(typeNm(cst))+' · ':'')+'기기값 <b>'+(cst.after===0?'0원':won(cst.after))+'</b>'+(sup>0?' · 지원 <em>'+manwon(sup)+'</em>':''); }
+  else bt='카톡이나 전화로 <b>편하게 상담</b>받으세요';
   $('#mdBody').innerHTML='<div class="ucard" data-edit="model:'+esc(m.id)+'"><div class="md-img" id="mdImg">'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(SO(m)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>'+
     '<h2 class="md-h ucard-name">'+esc(m.nm)+'</h2><p style="color:var(--sub);margin-top:4px">'+esc(m.ds)+'</p>'+
     '<div class="pills" style="margin-top:10px">'+tagsOf(m).map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div>'+
-    colorPicker(m)+optPicker(m)+pickers+
-    (SO(m)||(selRow&&selRow.so)?'<div class="so-notice">'+(SO(m)?'현재 일시품절입니다':'선택하신 '+esc(selRow.cap||'옵션')+' 은(는) 일시품절입니다')+'. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
-    '<div class="ptable" id="ucatPrice">'+rows+''+'</div>'+guideHtml(m)+
-    '<div class="md-chips">'+(isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):'<span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span>')+'<span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>'+
-    '<button class="cta ucard-cta" data-open="consult" data-model="'+esc(m.id)+'" data-color="'+esc(PICK[m.id]||'')+'" data-opt="'+esc(optsOf(m).length?optsOf(m)[OPT[m.id]||0].nm:'')+'">'+(SO(m)||(selRow&&selRow.so)?'입고 알림 상담 신청하기':(selRow?'이 조건으로 온라인 상담 신청하기 ›':'온라인 상담 신청하기'))+'</button></div>';
+    guide+body+'</div>'+
+    '<div class="md-bar" id="mdBar"><div class="md-bar-t"'+(needCar&&!soNow?' data-md-go="car"':'')+'>'+bt+'</div><div class="md-bar-b">'+
+      '<button type="button" class="mb-kk" data-qk="'+esc(m.id)+'">'+KKI+'카톡 상담</button>'+
+      '<button type="button" class="mb-ap" data-open="consult" data-model="'+esc(m.id)+'">'+(soNow?'입고 알림 신청':'상담 신청')+'</button></div></div>';
 }
 
 var PICK={};   // 상세에서 고른 컬러 (모델별)
@@ -971,10 +997,11 @@ function route(){
   else {
     $('#v-home').classList.add('on');renderRecent();renderPick();
     requestAnimationFrame(function(){window.scrollTo(0,homeScroll)});onScroll();
-    setTab('home'); document.body.classList.remove('no-sq'); return;
+    setTab('home'); document.body.classList.remove('no-sq'); document.body.classList.remove('md-on'); return;
   }
   window.scrollTo(0,0); $('#topbar').classList.remove('show'); setTab(tab);
   document.body.classList.toggle('no-sq', v==='model'||v==='apply');
+  document.body.classList.toggle('md-on', v==='model');   // 20261019: 상세는 탭바 대신 [카톡 상담][상담 신청] 고정
 }
 function setTab(t){ $$('.tabbar a').forEach(function(a){a.classList.toggle('on',a.getAttribute('data-tab')===t)}); }
 // 데이터가 바뀌었을 때 지금 보고 있는 화면을 스크롤 유지한 채 다시 그림
@@ -1508,33 +1535,25 @@ window.udakFormState=function(){
       tel:(dl('#mPhone2')+dl('#mPhone3'))>=8, birth:dl('#mUserBirth')>=6, agree:!!($('#mPrivacyCheck')&&$('#mPrivacyCheck').checked) };
   }catch(x){ return null; }
 };
-function openApply(el){
-  var id=el&&el.getAttribute&&el.getAttribute('data-model'), m=id&&byId(id);
+function apSetFrom(m){
   AP=apInit();
   if(m){ var k=kindOf(m);
     if(k==='phone'){ AP.phone=m.id; AP.cap=OPT[m.id]||0; AP.color=PICK[m.id]||''; var s=SEL[m.id]||{}; AP.carrier=s.carrier||''; AP.method=s.method||''; if(s.months!=null) AP.months=s.months; AP.tier=TIER[m.id]||''; }
     else if(k==='tvfree'){ AP.tv=m.id; AP.tvTier=TIER[m.id]||''; AP.tvType=tvTypeOf((SEL[m.id]||{}).tvtype); AP.tvFix=true; var ts0=SEL[m.id]||{}; if(ts0.months!=null) AP.months=ts0.months; if(AP.tvType==='old') AP.phone='none'; }
     else AP[k]=m.id;
   }
+}
+function openApply(el){
+  var id=el&&el.getAttribute&&el.getAttribute('data-model'), m=id&&byId(id);
+  apSetFrom(m);
   // 20261017: 매장찾기에서 '방문 예약 상담 신청하기'로 들어오면 고른 매장을 신청서까지 가져감 (목록 버튼은 매장 미정)
   var stn=el&&el.getAttribute&&el.getAttribute('data-store'); if(stn!=null){ AP.visit=true; AP.store=stn; }
   apValidate();
   if(location.hash==='#/apply'){ renderApply(true); window.scrollTo(0,0); } else location.hash='#/apply';
 }
-function apSubmit(mode){
-  var kakao=(mode==='kakao');
-  if(EDIT){ alert('관리자 화면에서는 신청이 저장되지 않습니다.'); return; }
-  var name=$('#mUserName').value.trim(), phone='010'+$('#mPhone2').value.replace(/\D/g,'')+$('#mPhone3').value.replace(/\D/g,''), birth=birth8($('#mUserBirth').value), memo=$('#mUserNote').value.trim();
-  if(!AP.phone){ alert('휴대폰을 선택해 주세요.'); window.scrollTo({top:0,behavior:'smooth'}); return; }
-  if(!AP.carrier && AP.phone!=='none'){ alert('현재 사용 중인 통신사를 선택해 주세요.'); return; }
-  if(!name){ alert('이름을 입력해주세요.'); return; }
-  if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해주세요.'); return; }
-  if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해주세요.'); return; }
-  var t=new Date(), bY=+birth.slice(0,4), bM=+birth.slice(4,6), bD=+birth.slice(6,8);
-  if(birth.length!==8||bY<1900||bY>t.getFullYear()||bM<1||bM>12||bD<1||bD>31){ alert('생년월일을 정확히 입력해주세요. (예: 940101)'); return; }
-  var age=t.getFullYear()-bY; if(t.getMonth()+1<bM||(t.getMonth()+1===bM&&t.getDate()<bD)) age--;
-  if(age<19){ alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 신청해 주세요.'); return; }
-  if(!$('#mPrivacyCheck').checked){ alert('개인정보 수집 및 이용에 동의해주세요.'); return; }
+// 20261019: 신청 저장 내용 만들기 (신청서 · 상세 카톡 간편 신청 공통) — AP(고른 조건) 기준. 통신사 미선택(카톡 간편)이면 가입유형은 비움
+function apPayload(o){
+  var name=o.name, phone=o.phone, birth=o.birth||null, memo=o.memo||'', kakao=!!o.kakao;
   var m=apPhone(), os=m?optsOf(m):[], cap=os[AP.cap]?os[AP.cap].nm:null, cs=m?colorsOf(m):[], color=AP.color||(cs.length>1?'':(cs[0]&&cs[0].nm))||null;
   if(cap==='기본') cap=null;
   var tt=apTier(), SM=apSummary(), pc=SM.pc, type=AP.carrier==='LG U+'?'기기변경':'번호이동', pv=PV()||{};
@@ -1554,7 +1573,7 @@ function apSubmit(mode){
   var cm=pc?cmpMethod(pc.c,pc.fee,AP.months):null;
   var tvx=AP.tv&&byId(AP.tv), wx=AP.watch&&byId(AP.watch), tbx=AP.tablet&&byId(AP.tablet);
   var noPh=AP.phone==='none';
-  var snapshot={v:2, source:'온라인 상담 신청', jointype:noPh?null:type, carrier:AP.carrier||null, device:m?m.nm:(AP.phone==='none'?'휴대폰 변경 없음 (TV프리만)':'상담 후 결정'), storage:cap, color:color,
+  var snapshot={v:2, source:o.source||'온라인 상담 신청', jointype:(noPh||!AP.carrier)?null:type, carrier:AP.carrier||null, device:m?m.nm:(AP.phone==='none'?'휴대폰 변경 없음 (TV프리만)':'상담 후 결정'), storage:cap, color:color,
     plan:tt&&!noPh?{name:tt.title||tierTitle(tt), price:tt.fee||null, group:tt.grp||null}:null,
     discount:noPh?null:pc?(pc.method==='sel'?'선택약정':'공시지원금'):(AP.method==='sel'?'선택약정':'공시지원금'),
     fee:fee, feeNote:null, subsidy:subsidy, subsidyNote:noPh?'TV프리 약정 36개월':AP.months===0?'일시납':'할부 '+AP.months+'개월 · 연 5.9%',
@@ -1564,13 +1583,6 @@ function apSubmit(mode){
     advice:cm&&cm.diff>=1000?(cm.best==='pub'?'공시지원금':'선택약정')+' 쪽이 24개월 기준 약 '+won(Math.round(cm.diff/1000)*1000)+' 저렴':null,
     tvJoin:tvx?'U+ 기존 고객 (인터넷TV 1년 이상~2년 미만 이용 · 500MB 이상)':null,
     policy:{id:pv.id||null, from:pv.from||null, memo:pv.memo||null}, submittedAt:new Date().toISOString()};
-  var btn=$(kakao?'#mKakaoBtn':'#mSubmitBtn'), btns=$$('#mSubmitBtn,#mKakaoBtn'); if(!btn||btn.disabled) return;
-  var lbl=btn.querySelector('.rf-submit-label'), lbl0=lbl?lbl.textContent:'';
-  btns.forEach(function(b){ b.disabled=true; }); if(lbl) lbl.textContent='신청 중...';
-  var reset=function(){ btns.forEach(function(b){ b.disabled=false; }); if(lbl) lbl.textContent=lbl0; };
-  // 카톡 예약: 신청서를 먼저 CRM에 저장하고 → 메타 신청 신호 → 완료 팝업 → 잠시 뒤 우리 카카오톡 상담 채널로 이동
-  //  (인스타·페북 앱 안 브라우저는 새 창을 못 띄우고 지금 화면을 바꿔 버려서, 먼저 열면 저장·메타 신호가 끊길 수 있음)
-  var KK=String(S.kakao||'').replace(/^http:\/\//,'https://');
   var body={name:name, phone:phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7), carrier:AP.carrier, channel:window.PAGE_CHANNEL||'메타', utm_campaign:window.PAGE_UTM_CAMPAIGN||null,
     device_interest:m?m.nm:(AP.phone==='none'?'휴대폰 변경 없음 (TV프리만)':'상담 후 결정'), capacity:cap, product_color:color, birth_date:birth, memo:memo||null, status:'신규',
     subscription_type:!AP.carrier?null:AP.carrier==='LG U+'?'기기변경':'MNP('+AP.carrier+')', rate_plan:AP.phone==='none'?null:tt?(tt.title||tierTitle(tt)):null,
@@ -1580,6 +1592,77 @@ function apSubmit(mode){
   snapshot.consult=kakao?'카톡':'전화'; if(kakao) body.consult_channel='카톡';
   if(AP.visit){ body.visit_store=AP.store||'미정'; snapshot.visitStore=AP.store||'미정'; }   // 20261017: CRM에 '📍OO점 방문'으로 표시
   if(typeof window.udakMetaIds==='function'){ var mi=window.udakMetaIds(); Object.keys(mi).forEach(function(k){ body[k]=mi[k]; }); }
+  return {body:body, snapshot:snapshot};
+}
+// 20261019: 상세 [카톡 상담] — 이름·연락처·동의만 받고 CRM에 '카톡 상담 요청'으로 저장한 뒤 우리 카카오톡 채널로
+var QK={m:'', car:''};
+var QK_PV='유플러스 다이렉트(이하 "회사")는 카카오톡 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
+  '· 항목: 이름, 전화번호, 희망기종, 현재 통신사<br>· 목적: 카카오톡·전화 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
+  '동의를 거부할 권리가 있으며, 거부 시 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.';
+function sheetQuickKakao(m){
+  var p=priceOf(m, optsOf(m).length?(OPT[m.id]||0):null), st=p.kind==='sheet'?calcState(m,p.row):null;
+  var cs=colorsOf(m), col=PICK[m.id]||(cs.length>1?(cs[0]&&cs[0].nm):''), os=optsOf(m), cap=os.length>1?os[OPT[m.id]||0].nm:'';
+  var hasCar=!!((SEL[m.id]||{}).carrier), phone=kindOf(m)==='phone';
+  return '<h3>카톡으로 상담받기</h3>'+
+    '<div class="qk-sub">이름·연락처만 남겨 주시면 <b>유플러스 다이렉트 카카오톡 상담 채널</b>로 바로 연결돼요. 고르신 조건은 상담사에게 같이 전달돼요.</div>'+
+    '<div class="qk-pick"><b>'+esc([m.nm, col, cap].filter(Boolean).join(' · '))+'</b>'+(st&&st.c?'<span>'+esc(st.g==='tvfree'?'TV프리 약정 36개월':calcSummary(st))+'</span>':'')+'</div>'+
+    (phone&&!hasCar?'<div class="qk-car"><div class="qk-l">지금 쓰는 통신사 <small>(선택)</small></div><div class="cgrid" style="--n:4">'+CARRIERS.map(function(cn){ return '<button type="button" class="cg'+(QK.car===cn?' on':'')+'" data-qk-car="'+esc(cn)+'">'+esc(cn)+'</button>'; }).join('')+'</div></div>':'')+
+    '<div class="ff"><label>이름 <span class="req">*</span></label><input type="text" id="qkName" placeholder="이름을 입력해 주세요" autocomplete="name"></div>'+
+    '<div class="ff"><label>연락처 <span class="req">*</span></label><div class="phone3"><input type="text" value="010" readonly tabindex="-1"><span>-</span><input type="tel" id="qkP2" maxlength="4" inputmode="numeric" placeholder="0000"><span>-</span><input type="tel" id="qkP3" maxlength="4" inputmode="numeric" placeholder="0000"></div></div>'+
+    '<label class="agree"><input type="checkbox" id="qkAgree"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-qk-pv>자세히 보기 ›</button></label>'+
+    '<div class="privacy-txt" id="qkPv">'+QK_PV+'</div>'+
+    '<button type="button" class="cta cta-kakao qk-btn" id="qkBtn">'+KKI+'<span>카톡으로 상담 시작하기</span></button>'+
+    '<div class="qk-foot">누르시면 신청이 접수되고 카카오톡 상담 채널이 열려요.</div>';
+}
+function openQuickKakao(mid){ var m=byId(mid); if(!m) return; QK={m:mid, car:''}; openSheet(sheetQuickKakao(m)); }
+function qkSubmit(){
+  if(EDIT){ alert('관리자 화면에서는 신청이 저장되지 않습니다.'); return; }
+  var m=byId(QK.m); if(!m) return;
+  var name=$('#qkName').value.trim(), phone='010'+$('#qkP2').value.replace(/\D/g,'')+$('#qkP3').value.replace(/\D/g,'');
+  if(!name){ alert('이름을 입력해주세요.'); return; }
+  if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해주세요.'); return; }
+  if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해주세요.'); return; }
+  if(!$('#qkAgree').checked){ alert('개인정보 수집 및 이용에 동의해주세요.'); return; }
+  var btn=$('#qkBtn'); if(!btn||btn.disabled) return;
+  // 상세에서 고른 컬러·용량·통신사·요금제·할인·할부 그대로
+  //  (신청서 규칙 apValidate 는 안 씀 — 워치·태블릿은 '휴대폰과 함께'일 때만 남기는 규칙이라 보던 상품이 빠져 버림)
+  apSetFrom(m); if(QK.car) AP.carrier=QK.car;
+  var qk=kindOf(m), notes=[];
+  if(qk==='phone' && !AP.carrier) notes.push('통신사 미선택 (번호이동 기준 가격 보고 신청)');
+  if(qk==='watch'||qk==='tablet'){ var qcs=colorsOf(m), qos=optsOf(m); notes.push('보던 상품: '+[m.nm, PICK[m.id]||(qcs.length===1?qcs[0].nm:''), qos.length>1?qos[OPT[m.id]||0].nm:''].filter(function(x){ return x && x!=='기본'; }).join(' · ')); }
+  var body=apPayload({name:name, phone:phone, birth:null, memo:notes.length?'[카톡 간편 신청] '+notes.join(' / '):null, kakao:true, source:'상세 화면 카톡 상담'}).body;
+  var lb=btn.querySelector('span'), lb0=lb?lb.textContent:''; btn.disabled=true; if(lb) lb.textContent='접수 중...';
+  var reset=function(){ btn.disabled=false; if(lb) lb.textContent=lb0; };
+  var KK=String(S.kakao||'').replace(/^http:\/\//,'https://');
+  fetch(SB_URL,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
+  .then(function(res){
+    if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead',{content_name:'카톡 상담 (상세)'}); reset(); closeSheet(); showTicket(body.phone);
+      if(KK) setTimeout(function(){ location.href=KK; }, 1500); }   // 접수 팝업을 잠깐 보여 준 뒤 카카오톡 채널로
+    else { reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해주세요.'); }); }
+  }).catch(function(e){ console.error(e); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.'); });
+}
+function apSubmit(mode){
+  var kakao=(mode==='kakao');
+  if(EDIT){ alert('관리자 화면에서는 신청이 저장되지 않습니다.'); return; }
+  var name=$('#mUserName').value.trim(), phone='010'+$('#mPhone2').value.replace(/\D/g,'')+$('#mPhone3').value.replace(/\D/g,''), birth=birth8($('#mUserBirth').value), memo=$('#mUserNote').value.trim();
+  if(!AP.phone){ alert('휴대폰을 선택해 주세요.'); window.scrollTo({top:0,behavior:'smooth'}); return; }
+  if(!AP.carrier && AP.phone!=='none'){ alert('현재 사용 중인 통신사를 선택해 주세요.'); return; }
+  if(!name){ alert('이름을 입력해주세요.'); return; }
+  if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해주세요.'); return; }
+  if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해주세요.'); return; }
+  var t=new Date(), bY=+birth.slice(0,4), bM=+birth.slice(4,6), bD=+birth.slice(6,8);
+  if(birth.length!==8||bY<1900||bY>t.getFullYear()||bM<1||bM>12||bD<1||bD>31){ alert('생년월일을 정확히 입력해주세요. (예: 940101)'); return; }
+  var age=t.getFullYear()-bY; if(t.getMonth()+1<bM||(t.getMonth()+1===bM&&t.getDate()<bD)) age--;
+  if(age<19){ alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 신청해 주세요.'); return; }
+  if(!$('#mPrivacyCheck').checked){ alert('개인정보 수집 및 이용에 동의해주세요.'); return; }
+  var btn=$(kakao?'#mKakaoBtn':'#mSubmitBtn'), btns=$$('#mSubmitBtn,#mKakaoBtn'); if(!btn||btn.disabled) return;
+  var lbl=btn.querySelector('.rf-submit-label'), lbl0=lbl?lbl.textContent:'';
+  btns.forEach(function(b){ b.disabled=true; }); if(lbl) lbl.textContent='신청 중...';
+  var reset=function(){ btns.forEach(function(b){ b.disabled=false; }); if(lbl) lbl.textContent=lbl0; };
+  // 카톡 예약: 신청서를 먼저 CRM에 저장하고 → 메타 신청 신호 → 완료 팝업 → 잠시 뒤 우리 카카오톡 상담 채널로 이동
+  //  (인스타·페북 앱 안 브라우저는 새 창을 못 띄우고 지금 화면을 바꿔 버려서, 먼저 열면 저장·메타 신호가 끊길 수 있음)
+  var KK=String(S.kakao||'').replace(/^http:\/\//,'https://');
+  var body=apPayload({name:name, phone:phone, birth:birth, memo:memo, kakao:kakao, source:'온라인 상담 신청'}).body;
   fetch(SB_URL,{method:'POST',keepalive:kakao,headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
   .then(function(res){
     if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead',{content_name:kakao?'카톡 예약 신청':'상담 예약 신청'}); reset(); showTicket(body.phone);
@@ -1599,6 +1682,11 @@ document.addEventListener('click',function(e){
   if(t.closest('.sheet-x')||t.closest('[data-close-sheet]')){ e.preventDefault(); closeSheet(); return; }
   if(t.closest('#mSubmitBtn')){ e.preventDefault(); apSubmit(); return; }
   if(t.closest('#mKakaoBtn')){ e.preventDefault(); apSubmit('kakao'); return; }
+  if(t.closest('#qkBtn')){ e.preventDefault(); qkSubmit(); return; }
+  var qkb=t.closest('[data-qk]'); if(qkb){ e.preventDefault(); openQuickKakao(qkb.getAttribute('data-qk')); return; }
+  var qkc=t.closest('[data-qk-car]'); if(qkc){ e.preventDefault(); var qv=qkc.getAttribute('data-qk-car'); QK.car=(QK.car===qv?'':qv); $$('[data-qk-car]').forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-qk-car')===QK.car); }); return; }
+  if(t.closest('[data-qk-pv]')){ e.preventDefault(); var qp=$('#qkPv'); if(qp) qp.classList.toggle('on'); return; }
+  var mgo=t.closest('[data-md-go]'); if(mgo){ e.preventDefault(); var gs=$('#mdBody .mstep[data-step="'+mgo.getAttribute('data-md-go')+'"]'); if(gs) gs.scrollIntoView({behavior:'smooth',block:'center'}); return; }   // 하단 '통신사를 고르면…' 누르면 그 단계로
   if(t.closest('[data-maxv]')){ e.preventDefault(); MAXV=!MAXV; try{ sessionStorage.setItem('st_maxv',MAXV?'1':'0'); }catch(x){} refresh(); return; }
   var so=t.closest('[data-sort-open]');
   if(so){ e.preventDefault(); sortPop(so); return; }
@@ -1659,9 +1747,9 @@ document.addEventListener('click',function(e){
 });
 document.addEventListener('input',function(e){
   var id=e.target.id;
-  if(id==='mPhone2'||id==='mPhone3'){ e.target.value=e.target.value.replace(/\D/g,'').slice(0,4); if(id==='mPhone2'&&e.target.value.length===4){ var n=$('#mPhone3'); if(n) n.focus(); } }
+  if(id==='mPhone2'||id==='mPhone3'||id==='qkP2'||id==='qkP3'){ e.target.value=e.target.value.replace(/\D/g,'').slice(0,4); if((id==='mPhone2'||id==='qkP2')&&e.target.value.length===4){ var n=$(id==='qkP2'?'#qkP3':'#mPhone3'); if(n) n.focus(); } }
   else if(id==='mUserBirth'){ e.target.value=e.target.value.replace(/\D/g,'').slice(0,8); }
-  else if(id==='mUserName'){ e.target.value=e.target.value.replace(/[0-9]/g,''); }
+  else if(id==='mUserName'||id==='qkName'){ e.target.value=e.target.value.replace(/[0-9]/g,''); }
   else if(id==='q'){ renderSearch(e.target.value); }
   else if(id==='mDeviceSearch'){ var qv=e.target.value.toLowerCase().replace(/\s/g,''), al={'아이폰':'iphone','갤럭시':'','플립':'flip','폴드':'fold','울트라':'ultra'};
     $$('#apList .ap-li').forEach(function(li){ var nm=li.getAttribute('data-nm')||'', q2=qv; Object.keys(al).forEach(function(a){ if(al[a]) q2=q2.split(a).join(al[a]); }); li.hidden=!!qv && nm.indexOf(qv)<0 && (!q2||nm.indexOf(q2)<0); }); }

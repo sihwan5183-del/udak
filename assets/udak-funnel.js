@@ -35,7 +35,7 @@
     // 표본과 상관없이 항상 기록하는 것 — 신청 흐름·막힘
     var ALWAYS={ submit_send:1, lead:1, submit_fail:1, alert:1 };
     // 스토어는 방문자 전원의 들어옴·나감 요약·신청서 단계·신청 버튼·전화/카톡 문의를 남김 (자세한 누름·구간은 표본만)
-    if(STORE){ ALWAYS.view=1; ALWAYS.exit=1; ALWAYS.form_step=1; ALWAYS.submit_click=1; ALWAYS.call=1; ALWAYS.kakao=1; }
+    if(STORE){ ALWAYS.view=1; ALWAYS.exit=1; ALWAYS.form_step=1; ALWAYS.submit_click=1; ALWAYS.call=1; ALWAYS.kakao=1; ALWAYS.qk_open=1; }
     var qs=new URLSearchParams(location.search);
     if(qs.get('internal')==='1'){ try{ localStorage.setItem('udak_internal','1'); }catch(e){} }
     if(qs.get('internal')==='0'){ try{ localStorage.removeItem('udak_internal'); }catch(e){} }
@@ -53,7 +53,7 @@
       galaxy_z8:{ price:{'see:catalog':1, card_carrier:1, card_color:1, card_cta:1, form_carrier:1, calc_more:1}, form:{cta_bottom:1, card_cta:1, form_start:1, form_edit:1, form_carrier:1} },
       device:{ price:{'see:price_detail':1, carrier:1, color:1}, form:{consult_btn:1, order_btn:1, form_start:1} },
       // v20261016 스토어: 상세 화면(가격·계산기)을 본 사람 → PriceCheck, 신청서 화면을 연 사람 → FormOpen
-      store:{ price:{'screen:model':1, calc:1, pick:1}, form:{'screen:apply':1, form_start:1, submit_click:1} }
+      store:{ price:{'screen:model':1, calc:1, pick:1}, form:{'screen:apply':1, form_start:1, submit_click:1, qk_open:1} }
     };
     STAGE.apple=STAGE.galaxy_z8;   // v20261008: /apple (아이폰 18 Pro 랜딩)은 갤럭시 랜딩과 같은 구성
     var stageSent={};
@@ -132,6 +132,8 @@
       see:[['hero','#hero'],['models','#models'],['quick','#quick'],['trust','#trust'],['popular','#popSec'],['recent','#recentSec'],['zero','#zeroSec'],
            ['wear','#wearSec'],['gift','#giftSec'],['rank','#rankSec'],['pick','#pickSec']],
       click:[['#mSubmitBtn','submit_click',function(){ return '상담 예약'; }],['#mKakaoBtn','submit_click',function(){ return '카톡 예약'; }],
+             // v20261019: 상세 하단 [카톡 상담] → 카톡 간편 신청창, 그 안의 '카톡으로 상담 시작하기'
+             ['#qkBtn','submit_click',function(){ return '카톡 간편'; }],['[data-qk]','qk_open',attr('data-qk')],['[data-qk-car]','qk_car',attr('data-qk-car')],
              ['[data-ap-pick]','ap_pick',attr('data-ap-pick')],
              ['[data-ap]','ap',function(el){ return el.getAttribute('data-ap')+'='+(el.getAttribute('data-v')||''); }],
              ['[data-ap-act]','ap_act',attr('data-ap-act')],
@@ -161,8 +163,8 @@
 
     // ── 스토어: 화면마다 머문 초·내린 %, 신청서 진행 단계, 나갈 때 요약
     var cur=null, path=[], steps={};
-    var STEPS=['open','phone','carrier','name','tel','birth','agree','submit','lead'];
-    var STEP_KO={open:'신청서',phone:'휴대폰',carrier:'통신사',name:'이름',tel:'연락처',birth:'생년월일',agree:'동의',submit:'신청누름',lead:'접수완료'};
+    var STEPS=['kk','open','phone','carrier','name','tel','birth','agree','submit','lead'];
+    var STEP_KO={kk:'카톡간편창',open:'신청서',phone:'휴대폰',carrier:'통신사',name:'이름',tel:'연락처',birth:'생년월일',agree:'동의',submit:'신청누름',lead:'접수완료'};
     function pctNow(){
       var h=Math.max(document.documentElement.scrollHeight, document.body?document.body.scrollHeight:0);
       return h?Math.min(100,((window.scrollY||window.pageYOffset)+window.innerHeight)/h*100):0;
@@ -229,7 +231,10 @@
         var hit=false;
         for(var i=0;i<cfg.click.length;i++){
           var c=cfg.click[i], el=t.closest(c[0]);
-          if(el){ ev(c[1], c[2]?c[2](el):null); hit=true; if(STORE && c[1]==='submit_click'){ formCheck(); steps.submit=1; } break; }
+          if(el){ ev(c[1], c[2]?c[2](el):null); hit=true;
+            if(STORE && c[1]==='submit_click'){ if(c[0]!=='#qkBtn') formCheck(); steps.submit=1; }
+            if(STORE && c[1]==='qk_open') steps.kk=1;   // v20261019: 상세 [카톡 상담] 간편 신청창을 엶
+            break; }
         }
         var a=t.closest('a[href]'), h=a?(a.getAttribute('href')||''):'';
         if(!hit && a){ if(/^tel:/.test(h)) ev('call'); else if(/pf\.kakao\.com/.test(h)) ev('kakao'); }
@@ -240,11 +245,11 @@
     }, true);
 
     // 5) 신청서 칸을 처음 건드림 (칸마다 한 번) — 어느 칸에서 멈추는지 보기 위함
-    //    신청서 칸만 신청서 시작으로 셈 (아이폰 rf*, 갤럭시 m*, 상세 dr*) — 소개 영상 진행바·상세 계산기 칸은 제외
+    //    신청서 칸만 신청서 시작으로 셈 (아이폰 rf*, 갤럭시 m*, 상세 dr*, 스토어 카톡 간편 qk*) — 소개 영상 진행바·상세 계산기 칸은 제외
     document.addEventListener('focusin', function(e){
       var el=e.target; if(!el||!/^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName)) return;
       var id=el.id||el.name; if(!id) return;
-      if(/^(rf|dr|m[A-Z])/.test(id)) ev('form_start', id, 'x');
+      if(/^(rf|dr|m[A-Z]|qk[A-Z])/.test(id)) ev('form_start', id, 'x');
       ev('field', id, id);
     }, true);
 
