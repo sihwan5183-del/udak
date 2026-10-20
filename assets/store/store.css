@@ -1649,3 +1649,7 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .pv-sr b.pink{color:var(--pink)}
 .pv-must1{display:flex;align-items:center;gap:8px;padding:2px 2px 0;font-size:13px;font-weight:600;color:var(--ink2);line-height:1.45;word-break:keep-all}
 .pv-must1 b{flex:none;font-size:11px;font-weight:800;color:#4E5968;background:#F2F4F6;border-radius:999px;padding:3px 8px}
+/* 20261020 '상담' 단계 버튼이 화면에 보이면 하단 고정 줄(카톡 상담·전화 상담)은 아래로 숨김 — 같은 버튼 두 줄 안 보이게 */
+.md-bar{transition:transform .25s ease,opacity .25s ease}
+body.cs-vis .md-bar{transform:translate(-50%,110%);opacity:0;pointer-events:none}
+.mb-ap .cs-phi{flex:none;width:18px;height:18px;fill:#fff}

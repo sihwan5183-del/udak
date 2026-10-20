@@ -1039,7 +1039,9 @@ function renderModel(id, keepRecent){
     '</div>', '', 'cs');
   // 20261020 위 '이 순서대로 하시면 돼요 ①컬러 ②용량 …' 줄은 뺌 — 단계마다 번호가 이미 있음 (이틀간 126명 중 누른 사람 0명)
   var guide='';
-  // 하단 고정: 지금 상태 한 줄 + [카톡 상담] [상담 신청]
+  // 하단 고정: 지금 상태 한 줄 + [카톡 상담] [전화 상담]
+  //  20261020 사장님: 아래 '상담' 단계 [카톡 상담][전화 상담]과 하단 [카톡 상담][상담 신청]이 같이 떠서 이상함
+  //   → 하단 버튼 이름도 '전화 상담'(같은 신청서가 열림)으로 맞추고, '상담' 단계 버튼이 화면에 보이면 하단 고정 줄은 숨김 (csWatch)
   var bt;
   if(soNow) bt='<b>일시품절</b> · 지금은 신청할 수 없어요';
   else if(needCar) bt='현재 이용 중인 <b>통신사</b>를 고르면 내 가격이 바로 나와요';
@@ -1052,7 +1054,20 @@ function renderModel(id, keepRecent){
     guide+body+'</div>'+
     '<div class="md-bar" id="mdBar"><div class="md-bar-t"'+(needCar&&!soNow?' data-md-go="car"':'')+'>'+bt+'</div><div class="md-bar-b">'+
       '<button type="button" class="mb-kk" data-qk="'+esc(m.id)+'"'+soDis+'>'+KKI+'카톡 상담</button>'+
-      '<button type="button" class="mb-ap" data-open="consult" data-model="'+esc(m.id)+'"'+soDis+'>'+(soNow?'일시품절':'상담 신청')+'</button></div></div>';
+      '<button type="button" class="mb-ap" data-open="consult" data-model="'+esc(m.id)+'"'+soDis+'>'+(soNow?'일시품절':PHI+'전화 상담')+'</button></div></div>';
+  csWatch();
+}
+// 20261020 '상담' 단계 버튼 줄이 화면(하단 고정 줄 위쪽)에 들어오면 하단 고정 줄을 숨김 — 같은 버튼이 두 줄로 안 보이게. 다시 위로 올리면 나타남
+var CS_IO=null;
+function csWatch(){
+  try{
+    if(CS_IO){ CS_IO.disconnect(); CS_IO=null; }
+    var el=$('#mdBody .mstep-cs');
+    if(!el || !('IntersectionObserver' in window)){ document.body.classList.remove('cs-vis'); return; }
+    var bar=$('#mdBar'), bh=Math.max(bar?bar.offsetHeight:0, 96);
+    CS_IO=new IntersectionObserver(function(es){ var e=es[es.length-1]; document.body.classList.toggle('cs-vis', !!(e&&e.isIntersecting)); }, {rootMargin:'0px 0px -'+bh+'px 0px', threshold:0});
+    CS_IO.observe(el);
+  }catch(e){}
 }
 
 var PICK={};   // 상세에서 고른 컬러 (모델별)
@@ -1089,11 +1104,12 @@ function route(){
   else {
     $('#v-home').classList.add('on');renderRecent();renderPick();
     requestAnimationFrame(function(){window.scrollTo(0,homeScroll)});onScroll();
-    setTab('home'); document.body.classList.remove('no-sq'); document.body.classList.remove('md-on'); return;
+    setTab('home'); document.body.classList.remove('no-sq'); document.body.classList.remove('md-on'); document.body.classList.remove('cs-vis'); return;
   }
   window.scrollTo(0,0); $('#topbar').classList.remove('show'); setTab(tab);
   document.body.classList.toggle('no-sq', v==='model'||v==='apply');
-  document.body.classList.toggle('md-on', v==='model');   // 20261019: 상세는 탭바 대신 [카톡 상담][상담 신청] 고정
+  document.body.classList.toggle('md-on', v==='model');   // 20261019: 상세는 탭바 대신 [카톡 상담][전화 상담] 고정
+  if(v!=='model') document.body.classList.remove('cs-vis');
 }
 function setTab(t){ $$('.tabbar a').forEach(function(a){a.classList.toggle('on',a.getAttribute('data-tab')===t)}); }
 // 데이터가 바뀌었을 때 지금 보고 있는 화면을 스크롤 유지한 채 다시 그림
