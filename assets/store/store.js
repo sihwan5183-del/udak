@@ -437,7 +437,7 @@ function pline(t,sm,v){ return '<div class="r pr2"><span>'+t+(sm?'<small>'+esc(s
 var TIER={};   // 상세에서 고른 요금제 (모델별)
 function tierLabel(t){ return t.fee?Number(t.fee).toLocaleString('ko-KR'):t.nm; }
 function tierTitle(t){ return t.title?t.title+(t.fee?' (월 '+won(t.fee)+')':''):(t.fee?'월 '+won(t.fee)+' 요금제':t.nm); }
-var PLAN_NOTE='요금제는 6개월 후부터 47,000원 요금제 이상으로 자유롭게 변경 가능합니다.';
+var PLAN_NOTE='';   // 20261020 '요금제는 6개월 후부터 47,000원 …' 안내는 뺌 (고객 입장에선 장벽 — 사장님 지시)
 // 이 줄에서 쓰는 요금제 — 워치·탭처럼 구분 없는 줄은 첫 요금제 칸 하나만
 function rowTiers(r){ return tiersOf(r.g); }
 // TV프리: 집 인터넷 500MB·1GB 고객 모두 같은 조건(기기값 0원) — 고객이 고르지 않고 가장 좋은 조건으로 계산
@@ -505,7 +505,7 @@ function calcPickers(m, r, st){
   var ts=g==='tvfree'?[]:rowTiers(r);
   if(g==='tvfree') h+=tvCondHtml();
   if(ts.length>1) h+='<div class="cpick"><div class="cpick-l">'+(g==='tvfree'?'집 인터넷':'요금제')+'</div><select class="csel" data-calc-sel="tier" data-model="'+esc(m.id)+'">'+ts.map(function(t){
-      return '<option value="'+esc(t.k)+'"'+(st.t&&st.t.k===t.k?' selected':'')+'>'+esc(tierTitle(t))+'</option>'; }).join('')+'</select>'+(g==='phone'?'<div class="cpick-hint">'+PLAN_NOTE+'</div>':'')+'</div>';
+      return '<option value="'+esc(t.k)+'"'+(st.t&&st.t.k===t.k?' selected':'')+'>'+esc(tierTitle(t))+'</option>'; }).join('')+'</select>'+(g==='phone'&&PLAN_NOTE?'<div class="cpick-hint">'+PLAN_NOTE+'</div>':'')+'</div>';
   if(g==='phone'&&st.c) h+=cgrid('할인 방식','method',[['pub','공시지원금',!st.c.pub],['sel','선택약정 (요금 25%↓)']],st.method,m,2,
     !st.c.pub?'이 조건은 공시지원금이 없어 선택약정으로 계산돼요':adviceTxt(cmpMethod(st.c,st.fee,st.months),st.method));
   if(g!=='tvfree') h+=cgrid('할부 개월','months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(st.months),m,4,'');
@@ -539,7 +539,6 @@ function pvPhone(m, r, st){
   else if(mm===0){ lab='기기값 (일시납)'; big=won(st.after); sub='한 번에 결제 · 할부이자 없음'; }
   else { lab='월 기기 할부금'; big=won(monthly)+'<small> / 월</small>'; sub=mm+'개월 할부 · 할부이자 포함 · 기기값만'; }
   var hc=[]; if(selCut) hc.push('통신 요금도 매달 '+won(selCut)+' 할인 (선택약정)');
-  if(st.fee&&st.fee>LOW_FEE) hc.push('6개월 후 월 '+won(LOW_FEE)+' 이상 요금제로 변경 가능');
   hc.push('제휴카드·부가서비스 의무가입 없음');
   var h='<div class="ms-detail pv">'+
     '<div class="pv-card pv-hero"><div class="pv-hl"><div class="pv-ch">'+lab+pvTip('pv1', mm===0?'지원 후 기기값을 한 번에 결제하는 금액이에요. 통신 요금은 따로예요.':'지원 후 기기값을 '+mm+'개월로 나눈 금액이에요. 할부이자(연 5.9%)가 포함돼 있고, 통신 요금은 따로예요.')+'</div>'+
@@ -557,9 +556,9 @@ function pvPhone(m, r, st){
     '<div class="pv-card"><div class="pv-ch"><i class="pv-ic">'+PVI.coin+'</i>지원 후 기기값'+pvTip('pv3','출고가에서 총 기기 지원금을 뺀 금액이에요. 이 금액을 할부로 나눠 내요.')+'</div>'+
       '<div class="pv-n">'+wz(st.after)+'</div><div class="pv-box">'+pvRow('출고가',won(out))+pvRow('− 총 기기 지원금',won(sup),'minus')+'</div></div></div>';
   // ④ 꼭 확인해 주세요 (20261019 레퍼런스) — 통신사 조건 · 약정 · 요금제 유지. 통신사 조건은 번호이동/기기변경, 요금제는 고른 요금제 따라
-  var mu=[]; if(st.t&&st.t.fee) mu.push(['6개월간 '+won(st.t.fee)+' 이상 요금제 사용', st.t.fee>LOW_FEE?'이후에는 '+won(LOW_FEE)+' 이상 요금제로 변경 가능':'']);
+  var mu=[]; if(st.t&&st.t.fee) mu.push(['6개월간 '+won(st.t.fee)+' 이상 요금제 사용', '']);   // 20261020 '이후에는 47,000원 …' 뺌
   mu.push(['약정 기간 2년','']);
-  if(st.type!=='chg') mu.push(['LG U+ 통신사 변경 조건 (번호이동)','']);   // 기기변경(LG U+ 고객)은 따로 안내 안 함
+  // 20261020 'LG U+ 통신사 변경 조건 (번호이동)' 줄은 뺌 (고객 입장에선 장벽 — 사장님 지시)
   h+='<div class="pv-must"><h4>혜택 받기 전, 꼭 확인해 주세요!</h4><ol>'+mu.map(function(x,i){ return '<li><i>'+(i+1)+'</i><div><b>'+x[0]+'</b>'+(x[1]?'<small>'+x[1]+'</small>':'')+'</div></li>'; }).join('')+'</ol></div>';
   // ⑤ 월 예상 납부금액 (통신 요금 포함) — 맨 아래, 처음엔 접힘. '7개월 차부터'는 지금처럼 85·95 요금제만
   if(fee){
@@ -1614,7 +1613,7 @@ function apPlanHtml(){
   var ts=tiersOf('phone'), t=apTier(), pc=apPhoneCalc(), h='<section class="ap-sec"><div class="ap-h"><b>02</b>신청 내용</div>';
   // 20261019: 통신사는 위(컬러·용량 아래)에서 고름 — 이 칸은 워치·태블릿 함께 구매를 켜 둔 때만 나옴
   h+='<div class="ap-f ap-row"><div class="ap-l">요금제</div><div class="ap-r"><select class="csel" id="mPlanSel">'+ts.map(function(x){ return '<option value="'+esc(x.k)+'"'+(t&&x.k===t.k?' selected':'')+'>'+esc(tierTitle(x))+'</option>'; }).join('')+'</select>'+
-    '<div class="cpick-hint">'+PLAN_NOTE+'</div>'+apPerk(t)+'</div></div>';
+    (PLAN_NOTE?'<div class="cpick-hint">'+PLAN_NOTE+'</div>':'')+apPerk(t)+'</div></div>';
   h+='<div class="ap-f ap-row"><div class="ap-l">할인 방식</div><div class="ap-r">'+apChips('method',[['pub','공시지원금',pc&&!pc.c.pub],['sel','선택약정 (요금 25%↓)']],pc?pc.method:(AP.method||'pub'),2)+(pc&&adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)?'<div class="cpick-hint">'+adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)+'</div>':'')+'</div></div>';
   h+='<div class="ap-f ap-row"><div class="ap-l">할부 개월</div><div class="ap-r">'+apChips('months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(AP.months),4)+'</div></div>';
   return h+'</section>';
