@@ -150,7 +150,7 @@
     var attr=function(n){ return function(el){ return el.getAttribute(n); }; };
     CFG.store={
       see:[['hero','#hero'],['models','#models'],['quick','#quick'],['trust','#trust'],['popular','#popSec'],['recent','#recentSec'],['zero','#zeroSec'],
-           ['wear','#wearSec'],['gift','#giftSec'],['rank','#rankSec'],['pick','#pickSec']],
+           ['wear','#wearSec'],['gift','#giftSec'],['rank','#rankSec'],['pick','#pickHead']],   // 20261020 'pick'은 구역이 화면보다 길어 25%가 한 번에 안 보임 → 구역 제목으로 봄
       click:[['#mSubmitBtn','submit_click',function(){ return '상담 예약'; }],['#mKakaoBtn','submit_click',function(){ return '카톡 예약'; }],
              // v20261019: 상세 하단 [카톡 상담] → 카톡 간편 신청창, 그 안의 '카톡으로 상담 시작하기'
              ['#qkBtn','submit_click',function(){ return '카톡 간편'; }],['[data-qk]','qk_open',attr('data-qk')],['[data-qk-car]','qk_car',attr('data-qk-car')],['[data-qk-col]','qk_col',attr('data-qk-col')],
@@ -215,8 +215,9 @@
     //   상세 화면을 떠날 때(다른 화면으로 가거나 페이지를 나갈 때) detail_exit 한 줄. 예:
     //   'fold8#1 | 52s | 끝 상담선택 | 마지막 할부금 | 사진3 컬러4 통신사9 할부금20 지원금6 | 바 번호이동 · 기기값 … | 누름 컬러:크림>통신사:SKT>카톡상담'
     //   · 끝 = 가장 아래까지 본 위치 · 마지막 = 나갈 때 보고 있던 위치 · 위치 뒤 숫자 = 그 위치를 보고 있던 초 · 바 = 아래 고정 줄(고른 조건·가격)
-    var MD_SECS=[['사진','.md-img'],['이름','.md-h'],['순서','.mguide'],['컬러','.mstep[data-step="color"]'],['용량','.mstep[data-step="cap"]'],['통신사','.mstep[data-step="car"]'],
-      ['요금제','.mstep-sub'],['할부금','.pv-hero'],['지원금','.pv-grid'],['꼭확인','.pv-must'],['월납부','.pv-more'],['가격','.ms-detail:not(.pv)'],['가이드','.guide'],['상담선택','.mstep.cs']];
+    // 20261020: 상세 정리 — '순서'(이 순서대로 하시면 돼요) 줄 없앰 · 지원금/꼭확인은 새로 바뀐 칸(.pv-sum/.pv-must1)
+    var MD_SECS=[['사진','.md-img'],['이름','.md-h'],['컬러','.mstep[data-step="color"]'],['용량','.mstep[data-step="cap"]'],['통신사','.mstep[data-step="car"]'],
+      ['요금제','.mstep-sub'],['할부금','.pv-hero'],['지원금','.pv-sum'],['꼭확인','.pv-must1'],['월납부','.pv-more'],['가격','.ms-detail:not(.pv)'],['가이드','.guide'],['상담선택','.mstep.cs']];
     var MD=null, mdN=0;
     function mdStart(k){ MD=(k.indexOf('model:')===0)?{id:k.slice(6), n:++mdN, t:Date.now(), sec:{}, max:-1, last:'', taps:[]}:null; if(MD) setTimeout(function(){ mdLook(false); }, 600); }
     function mdLook(add){

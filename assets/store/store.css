@@ -1616,3 +1616,36 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .ap-pick[disabled]{background:#EEF0F3;color:#9AA0A9;cursor:not-allowed}
 .md-bar-b button[disabled],.mstep-cs button[disabled]{background:#E5E7EB!important;color:#9AA0A9!important;box-shadow:none!important;cursor:not-allowed}
 .md-bar-b button[disabled] svg,.mstep-cs button[disabled] svg{fill:#9AA0A9!important;opacity:.7}
+/* 20261020 깔끔하게 (사장님: 구질구질한 부분 정리) */
+/* 첫 화면: 당일 발송 안내 한 줄 */
+.shipbar{margin:12px 16px 2px}
+.shp1{display:flex;align-items:center;gap:8px;padding:11px 12px 11px 13px;border-radius:14px;background:#F7F8FA;cursor:pointer}
+.shp1>svg{flex:none;width:18px;height:18px;fill:none;stroke:#E8197F;stroke-width:2.2;stroke-linecap:round}
+.shp1-t{flex:1;min-width:0;font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.35;letter-spacing:-.02em;word-break:keep-all}
+.shp1-t b{font-weight:800}
+.shp1-t em{font-style:normal;font-weight:800;color:#E8197F;white-space:nowrap}
+.shp1-t b{white-space:nowrap}
+.shp1-cd{flex:none;padding:4px 9px;border-radius:999px;background:#FDEEF5;color:#E8197F;font-size:12px;font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums}
+/* 첫 화면: 신뢰 띠 숨김 · 바로가기 5개 이하면 한 줄 꽉 차게 */
+.trust[hidden]{display:none}
+.quick.q-fit{overflow:visible}
+.quick.q-fit a{flex:1 1 0;min-width:0;padding:0 4px}
+/* 상세: 이름표 없는 고르기 칸 (컬러·용량·통신사) */
+#v-model .cpick.nol{grid-template-columns:minmax(0,1fr)}
+#v-model .cpick.nol .cpick-row{padding-top:0}
+/* 상세: 상담 단계 — 다른 단계와 같은 크기 제목 + 버튼 2개 나란히 */
+.mstep.cs .mstep-h{align-items:flex-start;gap:8px}
+.mstep.cs .mstep-h>b{width:22px;height:22px;font-size:12px;font-weight:800;margin-top:1px}
+.mstep.cs .mstep-h span{font-size:14.5px;font-weight:800;line-height:1.4;letter-spacing:0}
+.mstep-cs{grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.mstep-cs button{height:46px}
+/* 상세 가격: 지원금 두 줄 · 조건 한 줄 */
+.pv-sum{padding:2px 13px}
+.pv-sr{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0}
+.pv-sr+.pv-sr{border-top:1px solid #F0F1F4}
+.pv-sr span{min-width:0;font-size:14px;font-weight:800;color:var(--ink);line-height:1.35;word-break:keep-all}
+.pv-sr small{display:block;margin-top:2px;font-size:11.5px;font-weight:600;color:var(--sub)}
+.pv-sr b{flex:none;font-size:clamp(17px,5vw,19px);font-weight:900;color:var(--ink);white-space:nowrap;letter-spacing:-.02em}
+.pv-sr b.pink{color:var(--pink)}
+.pv-must1{display:flex;align-items:center;gap:8px;padding:2px 2px 0;font-size:13px;font-weight:600;color:var(--ink2);line-height:1.45;word-break:keep-all}
+.pv-must1 b{flex:none;font-size:11px;font-weight:800;color:#4E5968;background:#F2F4F6;border-radius:999px;padding:3px 8px}

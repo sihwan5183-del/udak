@@ -494,20 +494,21 @@ function manwon(n){ return n%10000===0?(n/10000).toLocaleString('ko-KR')+'만원
 var KKI='<svg class="kk" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.6c-5.2 0-9.4 3.3-9.4 7.4 0 2.6 1.7 4.9 4.3 6.2l-.9 3.3c-.1.3.3.6.6.4l3.9-2.6c.5.1 1 .1 1.5.1 5.2 0 9.4-3.3 9.4-7.4S17.2 3.6 12 3.6z"/></svg>';
 var PHI='<svg class="cs-phi" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>';
 function cgrid(label, key, items, cur, m, n, hint){
-  return '<div class="cpick"><div class="cpick-l">'+label+'</div><div class="cgrid" style="--n:'+n+'">'+items.map(function(x){
+  // 20261020: 이름표가 비면(단계 제목과 같은 말이면) 이름표 칸 없이 버튼만 꽉 차게
+  return '<div class="cpick'+(label?'':' nol')+'">'+(label?'<div class="cpick-l">'+label+'</div>':'')+'<div class="cgrid" style="--n:'+n+'">'+items.map(function(x){
     return '<button type="button" class="cg'+(String(x[0])===String(cur)?' on':'')+(x[2]?' dis':'')+'" data-calc="'+key+'" data-v="'+esc(x[0])+'" data-model="'+esc(m.id)+'"'+(x[2]?' disabled':'')+'>'+esc(x[1])+'</button>';
   }).join('')+'</div>'+(hint?'<div class="cpick-hint">'+hint+'</div>':'')+'</div>';
 }
 function calcPickers(m, r, st){
   var g=r.g, h='', car='';
-  if(g==='phone') car=cgrid('사용 통신사','carrier',CARRIERS.map(function(c){return [c,c]}),st.s.carrier||'',m,4,
-    '');
+  if(g==='phone') car=cgrid('','carrier',CARRIERS.map(function(c){return [c,c]}),st.s.carrier||'',m,4,
+    '');   // 20261020 '사용 통신사' 이름표 뺌 — 단계 제목 '지금 쓰는 통신사'와 같은 말
   var ts=g==='tvfree'?[]:rowTiers(r);
   if(g==='tvfree') h+=tvCondHtml();
   if(ts.length>1) h+='<div class="cpick"><div class="cpick-l">'+(g==='tvfree'?'집 인터넷':'요금제')+'</div><select class="csel" data-calc-sel="tier" data-model="'+esc(m.id)+'">'+ts.map(function(t){
       return '<option value="'+esc(t.k)+'"'+(st.t&&st.t.k===t.k?' selected':'')+'>'+esc(tierTitle(t))+'</option>'; }).join('')+'</select>'+(g==='phone'&&PLAN_NOTE?'<div class="cpick-hint">'+PLAN_NOTE+'</div>':'')+'</div>';
   if(g==='phone'&&st.c) h+=cgrid('할인 방식','method',[['pub','공시지원금',!st.c.pub],['sel','선택약정 (요금 25%↓)']],st.method,m,2,
-    !st.c.pub?'이 조건은 공시지원금이 없어 선택약정으로 계산돼요':adviceTxt(cmpMethod(st.c,st.fee,st.months),st.method));
+    !st.c.pub?'공시지원금이 없어 선택약정으로 계산돼요':adviceTxt(cmpMethod(st.c,st.fee,st.months),st.method));
   if(g!=='tvfree') h+=cgrid('할부 개월','months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(st.months),m,4,'');
   return {car:car, rest:h};   // 20261019: 통신사 / 나머지 따로
 }
@@ -535,31 +536,31 @@ function pvPhone(m, r, st){
   var sup=Math.max(0,out-st.after), pct=out?Math.floor(sup/out*100):0, selCut=(sel&&st.fee)?st.fee-st.feeAfter:0;
   // ① 월 기기 할부금 — 기기값만 (할부이자 포함)
   var lab, big, sub;
-  if(st.after===0){ lab='월 기기 할부금'; big='0원'; sub='할부금 없이 이용하실 수 있어요'; }
-  else if(mm===0){ lab='기기값 (일시납)'; big=won(st.after); sub='한 번에 결제 · 할부이자 없음'; }
-  else { lab='월 기기 할부금'; big=won(monthly)+'<small> / 월</small>'; sub=mm+'개월 할부 · 할부이자 포함 · 기기값만'; }
+  // 20261020 깔끔하게: 아랫줄 설명은 '24개월 · 이자 포함'만 (0원·일시납은 이름표로 충분해서 없음), 물음표(?) 설명 버튼 뺌
+  if(st.after===0){ lab='월 기기 할부금'; big='0원'; sub=''; }
+  else if(mm===0){ lab='기기값 (일시납)'; big=won(st.after); sub=''; }
+  else { lab='월 기기 할부금'; big=won(monthly)+'<small> / 월</small>'; sub=mm+'개월 · 이자 포함'; }
   var hc=[]; if(selCut) hc.push('통신 요금도 매달 '+won(selCut)+' 할인 (선택약정)');
   hc.push('제휴카드·부가서비스 의무가입 없음');
   var h='<div class="ms-detail pv">'+
-    '<div class="pv-card pv-hero"><div class="pv-hl"><div class="pv-ch">'+lab+pvTip('pv1', mm===0?'지원 후 기기값을 한 번에 결제하는 금액이에요. 통신 요금은 따로예요.':'지원 후 기기값을 '+mm+'개월로 나눈 금액이에요. 할부이자(연 5.9%)가 포함돼 있고, 통신 요금은 따로예요.')+'</div>'+
-      '<div class="pv-v">'+big+'</div><div class="pv-s">'+sub+'</div></div>'+
+    '<div class="pv-card pv-hero"><div class="pv-hl"><div class="pv-ch">'+lab+'</div>'+
+      '<div class="pv-v">'+big+'</div>'+(sub?'<div class="pv-s">'+sub+'</div>':'')+'</div>'+
       (pct>0?'<div class="pv-hr"><i class="pv-ph">'+PVI.phone+'</i><div class="pv-bub"><span>출고가 대비</span><b>'+(st.after===0?'전액 지원':pct+'% 할인')+'</b></div></div>':'')+
       '<ul class="pv-ck">'+hc.map(pvCk).join('')+'</ul></div>';
-  // ② 총 기기 지원금 · ③ 지원 후 기기값
-  var rs='';
-  if(!sel&&c.pub) rs+=pvRow('공시지원금'+(tn?' ('+tn+')':''), won(c.pub));
-  if(c.our) rs+=pvRow('추가 지원금 <small>(유플러스 다이렉트)</small>', won(c.our));
-  if(selCut) rs+=pvRow('통신 요금 25% 할인 <small>(선택약정 · 공시지원금 대신)</small>', '매달 '+won(selCut), 'fee');
-  h+='<div class="pv-grid">'+
-    '<div class="pv-card"><div class="pv-ch"><i class="pv-ic">'+PVI.gift+'</i>총 기기 지원금'+pvTip('pv2', sel?'선택약정은 공시지원금 대신 매달 통신 요금을 25% 할인받아요. 유플러스 다이렉트 추가 지원금은 그대로 받으세요.':'공시지원금은 통신사가, 추가 지원금은 유플러스 다이렉트가 드리는 기기값 지원이에요.')+'</div>'+
-      '<div class="pv-n pink">'+won(sup)+'<small>지원</small></div>'+(rs?'<div class="pv-box pink">'+rs+'</div>':'')+'</div>'+
-    '<div class="pv-card"><div class="pv-ch"><i class="pv-ic">'+PVI.coin+'</i>지원 후 기기값'+pvTip('pv3','출고가에서 총 기기 지원금을 뺀 금액이에요. 이 금액을 할부로 나눠 내요.')+'</div>'+
-      '<div class="pv-n">'+wz(st.after)+'</div><div class="pv-box">'+pvRow('출고가',won(out))+pvRow('− 총 기기 지원금',won(sup),'minus')+'</div></div></div>';
-  // ④ 꼭 확인해 주세요 (20261019 레퍼런스) — 통신사 조건 · 약정 · 요금제 유지. 통신사 조건은 번호이동/기기변경, 요금제는 고른 요금제 따라
-  var mu=[]; if(st.t&&st.t.fee) mu.push(['6개월간 '+won(st.t.fee)+' 이상 요금제 사용', '']);   // 20261020 '이후에는 47,000원 …' 뺌
-  mu.push(['약정 기간 2년','']);
-  // 20261020 'LG U+ 통신사 변경 조건 (번호이동)' 줄은 뺌 (고객 입장에선 장벽 — 사장님 지시)
-  h+='<div class="pv-must"><h4>혜택 받기 전, 꼭 확인해 주세요!</h4><ol>'+mu.map(function(x,i){ return '<li><i>'+(i+1)+'</i><div><b>'+x[0]+'</b>'+(x[1]?'<small>'+x[1]+'</small>':'')+'</div></li>'; }).join('')+'</ol></div>';
+  // ② 총 기기 지원금 · ③ 지원 후 기기값 — 20261020 깔끔하게: 상자 2개(계산표) → 두 줄
+  //    '총 기기 지원금 (공시 50만 + 추가 70만) … 120만원' / '지원 후 기기값 (출고가 …) … 1,078,100원'
+  var parts=[]; if(!sel&&c.pub) parts.push(['공시',c.pub]); if(c.our) parts.push(['추가',c.our]);
+  var rnd=parts.every(function(x){ return x[1]%10000===0; });
+  var how=parts.length>1?parts.map(function(x){ return x[0]+' '+(rnd?(x[1]/10000).toLocaleString('ko-KR')+'만':won(x[1])); }).join(' + ')
+    :parts.length?(parts[0][0]==='공시'?'공시지원금':'유플러스 다이렉트 추가 지원'):'';
+  h+='<div class="pv-card pv-sum">'+
+    (sup>0?'<div class="pv-sr"><span>총 기기 지원금'+(how?'<small>'+how+'</small>':'')+'</span><b class="pink">'+manwon(sup)+'</b></div>':'')+
+    '<div class="pv-sr"><span>지원 후 기기값<small>출고가 '+won(out)+'</small></span><b>'+wz(st.after)+'</b></div></div>';
+  // ④ 혜택 조건 — 20261020 깔끔하게: 제목·번호 목록 → 한 줄 '조건 85,000원 이상 요금제 6개월 · 약정 2년' (조건은 남겨야 개통할 때 말이 안 나옴)
+  //    ('이후에는 47,000원 …'·'LG U+ 통신사 변경 조건 (번호이동)'은 20261020 사장님 지시로 이미 뺌)
+  var mu=[]; if(st.t&&st.t.fee) mu.push(won(st.t.fee)+' 이상 요금제 6개월');
+  mu.push('약정 2년');
+  h+='<div class="pv-must1"><b>조건</b><span>'+mu.join(' · ')+'</span></div>';
   // ⑤ 월 예상 납부금액(통신 요금 포함) 카드는 뺌 — 20261020 사장님 지시 (통신 요금 합친 금액은 고객 입장에선 진입장벽)
   return h+'</div>';
 }
@@ -646,18 +647,13 @@ function renderShip(){
   var el=$('#shipBar'); if(!el) return;
   var sh=S.ship||{}; clearInterval(shipTimer);
   if(!sh.on && !EDIT){ el.hidden=true; return; } el.hidden=false;
-  var st=shipState(), clock='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.2 1.8"/></svg>', chev='<svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>';
-  var head=st.today
-    ? '<div class="shp-l1">'+clock+'오늘 <em>'+cutLabel()+'까지</em> 구매확정</div><div class="shp-l2"><em>당일 택배</em> 발송</div>'+
-      '<div class="shp-cd"><span class="shp-cl">발송 마감까지</span><span class="shp-box" id="shipCd">'+cdBoxes(st.left)+'</span></div>'
-    : '<div class="shp-l1">'+clock+'지금 구매확정하시면</div><div class="shp-l2 sm"><em>'+st.when+'</em> 택배 발송</div>'+
-      '<div class="shp-cd off"><span class="shp-cl">'+st.when+' '+cutLabel()+' 마감 · 순차 발송</span></div>';
-  var steps=[['ico-form','온라인 신청'],['ico-call','5분 상담'],['ico-ship',(st.today?'당일':st.when)+' 발송']];
-  el.innerHTML='<div class="shp" data-go="guide"><div class="shp-top"><div class="shp-txt">'+head+'</div>'+
-      '<img class="shp-truck" src="/assets/store/ship/truck.webp" alt="" loading="eager"></div>'+
-    '<div class="shp-steps">'+steps.map(function(x){ return '<div class="shp-st"><span class="shp-ic"><img src="/assets/store/ship/'+x[0]+'.webp" alt=""></span><span>'+x[1]+'</span></div>'; }).join('<i class="shp-ar">'+chev+'</i>')+
-      '<span class="shp-div"></span><span class="shp-guide">구매 가이드'+chev+'</span></div></div>';
-  if(st.today) shipTimer=setInterval(function(){ var s2=shipState(), c2=$('#shipCd'); if(!s2.today||!c2){ renderShip(); return; } c2.innerHTML=cdBoxes(s2.left); },1000);
+  // 20261020 깔끔하게: 큰 카드(트럭 그림·마감 시/분/초·신청 순서·구매 가이드) → 한 줄
+  //   '오후 3시까지 구매확정 시 오늘 발송 [2시간 14분 남음]' · 마감 뒤엔 '지금 구매확정 시 내일 발송' (누르면 구매 가이드는 그대로 열림)
+  var st=shipState(), clock='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.2 1.8"/></svg>';
+  var left=function(t){ var h=Math.floor(t/3600), mi=Math.floor(t%3600/60); return t<60?'곧 마감':(h?h+'시간 ':'')+(mi||!h?mi+'분 ':'')+'남음'; };
+  var txt=st.today?'<b>'+cutLabel()+'</b>까지 구매확정 시 <em>오늘 발송</em>':'지금 구매확정 시 <em>'+st.when+' 발송</em>';
+  el.innerHTML='<div class="shp1" data-go="guide">'+clock+'<span class="shp1-t">'+txt+'</span>'+(st.today?'<span class="shp1-cd" id="shipCd">'+left(st.left)+'</span>':'')+'</div>';
+  if(st.today) shipTimer=setInterval(function(){ var s2=shipState(), c2=$('#shipCd'); if(!s2.today||!c2){ renderShip(); return; } c2.textContent=left(s2.left); },15000);
 }
 function renderDeal(){
   var D=S.deal, sub=$('#dealSubs'), hero=document.querySelector('.hero');
@@ -725,12 +721,14 @@ function renderModels(){
   $('#models').innerHTML=list.slice(0,5).map(function(m){return circle(m,true)}).join('')+'<div class="row2">'+list.slice(5).map(function(m){return circle(m,true)}).join('')+'</div>';
 }
 function renderQuick(){
+  $('#quick').classList.toggle('q-fit', vis(S.quick).length<=5);   // 20261020: 5개 이하면 한 줄에 꽉 차게 (옆으로 밀지 않음)
   $('#quick').innerHTML=vis(S.quick).map(function(q){
     var i=S.quick.indexOf(q);
     return '<a class="'+hidCls(q).trim()+'" data-go="'+esc(q.go||'')+'" data-edit="quick:'+i+'" style="--qc:'+esc(q.c)+';--qbg:'+esc(q.bg)+';--qb:'+esc(q.b)+'"><span class="qi"><svg viewBox="0 0 24 24">'+(QI[q.ic]||QI.star)+'</svg></span><span>'+esc(q.nm)+'</span></a>';
   }).join('');
 }
 function renderTrust(){
+  $('#trust').hidden=!vis(S.trust).length;   // 20261020: 항목을 다 숨기면 회색 띠도 안 보이게
   $('#trust').innerHTML=vis(S.trust).map(function(t){
     var i=S.trust.indexOf(t);
     return '<div class="it'+hidCls(t)+'" data-edit="trust:'+i+'"><svg viewBox="0 0 24 24">'+(TI[t.ic]||TI.headset)+'</svg><div><b>'+esc(t.b)+'</b><small>'+esc(t.s)+'</small></div></div>';
@@ -1019,23 +1017,27 @@ function renderModel(id, keepRecent){
   var steps=[], body='';
   var step=function(key, short, title, sub, inner, chip, cls){ var ok=!!done[key], now=(key===nowKey); steps.push({k:key, t:short, ok:ok, now:now});
     return '<div class="mstep'+(now?' now':'')+(ok?' ok':'')+(cls?' '+cls:'')+'" data-step="'+key+'"><div class="mstep-h"><b>'+(ok?'✓':steps.length)+'</b><div><span>'+title+'</span>'+(sub?'<small>'+sub+'</small>':'')+'</div>'+(chip||'')+'</div>'+inner+'</div>'; };
-  var chipOf=function(key, val, dflt){ return done[key]?'<em class="mstep-ok">✓ '+esc(val)+'</em>':key===nowKey?'<em class="mstep-go">골라 주세요</em>':dflt?'<em class="mstep-df">기본</em>':''; };
+  var chipOf=function(key, val, dflt){ return done[key]?'<em class="mstep-ok">✓ '+esc(val)+'</em>':key===nowKey?'<em class="mstep-go">골라 주세요</em>':dflt?'<em class="mstep-df">기본'+(key==='color'&&val?' · '+esc(val):'')+'</em>':''; };   // 20261020 컬러 이름표를 뺀 대신 기본 컬러 이름은 여기 표시
   // 20261019 단계 아래 설명 문구(기본값 안내·통신사 안내·'그대로 두셔도 돼요')는 전부 뺌 — 제목 + 고르는 칸만
-  if(cN) body+=step('color', '컬러', '원하는 컬러를 골라 주세요', '', colorPicker(m), chipOf('color', colNm, true), done.color?'':'dflt');
-  if(oN) body+=step('cap', oL, '원하는 '+esc(oL)+eul(oL)+' 골라 주세요', '', optPicker(m), chipOf('cap', capNm, true), done.cap?'':'dflt');
-  if(PK.car) body+=step('car', '통신사', '지금 쓰는 통신사를 골라 주세요', '', PK.car, chipOf('car', carNm, false));
+  // 20261020 깔끔하게: 단계 제목은 짧게(컬러 / 용량 / 지금 쓰는 통신사 / 내 가격 / 상담), 칸 안 이름표(컬러·용량·사용 통신사)는 뺌
+  if(cN) body+=step('color', '컬러', '컬러', '', colorPicker(m), chipOf('color', colNm, true), done.color?'':'dflt');
+  if(oN) body+=step('cap', oL, esc(oL), '', optPicker(m), chipOf('cap', capNm, true), done.cap?'':'dflt');
+  if(PK.car) body+=step('car', '통신사', '지금 쓰는 통신사', '', PK.car, chipOf('car', carNm, false));
   if(PK.rest) body+='<div class="mstep-sub">'+PK.rest+'</div>';
-  body+=step('price', '내 가격 확인', '내 예상 가격을 확인하세요', '', (soNow?'<div class="so-notice">'+(SO(m)?'현재 일시품절이에요. 지금은 신청할 수 없어요.':'선택하신 '+esc(selRow.cap||'옵션')+'은(는) 일시품절이에요.')+'</div>':'')+
+  // 20261020 '당일 택배 발송 · 5분 상담' 칩 뺌 (첫 화면·신청서와 같은 말) — TV프리 대상 조건 칩, 워치·태블릿 '의무가입 X' 칩은 그대로
+  var mdc=isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):(gg==='phone'&&cst&&cst.c)?'':'<span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span>';
+  body+=step('price', '내 가격', '내 가격', '', (soNow?'<div class="so-notice">'+(SO(m)?'현재 일시품절이에요. 지금은 신청할 수 없어요.':'선택하신 '+esc(selRow.cap||'옵션')+'은(는) 일시품절이에요.')+'</div>':'')+
     '<div class="ptable" id="ucatPrice">'+rows+'</div>'+guideHtml(m)+
-    '<div class="md-chips">'+(isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):(gg==='phone'&&cst&&cst.c)?'':'<span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span>')+'<span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>', '');
-  // 20261019 마지막 단계: 레퍼런스 카드 그대로 — '원하시는 방법의 상담을 선택해 주세요!' + [카톡 상담] [전화 상담] (누르면 하단 버튼과 똑같이 열림)
-  body+=step('go', '카톡·전화 상담', '<em>원하시는 방법의</em><br>상담을 선택해 주세요!', '',
+    (mdc?'<div class="md-chips">'+mdc+'</div>':''), '');
+  // 마지막 단계: [카톡 상담] [전화 상담] (누르면 하단 버튼과 똑같이 열림)
+  //  20261020 깔끔하게: 제목 '원하시는 방법의 상담을 선택해 주세요!' → '상담', '상담 방법 선택' 표시·버튼 밑 설명 두 문장 뺌 — 버튼만
+  body+=step('go', '상담', '상담', '',
     '<div class="mstep-cs">'+
-      '<button type="button" class="cs-kk" data-qk="'+esc(m.id)+'"'+soDis+'>'+KKI+'카톡 상담</button><p>카카오톡에서 메시지를 보내주시면 상담이 시작됩니다.</p>'+
-      '<button type="button" class="cs-ph" data-open="consult" data-model="'+esc(m.id)+'"'+soDis+'>'+PHI+'전화 상담</button><p>고객 정보를 남겨주시면 담당자가 전화로 안내해 드립니다.</p>'+
-    '</div>', '<em class="mstep-cs-tag">상담 방법 선택</em>', 'cs');
-  // 위 안내: 고른 단계는 ✓, 지금 할 단계는 분홍 — 누르면 그 단계로 이동
-  var guide=steps.length>2?'<div class="mguide"><b>이 순서대로 하시면 돼요</b><ol>'+steps.map(function(s,i){ return '<li class="'+(s.ok?'ok':'')+(s.now?' on':'')+'" data-mg="'+s.k+'"><i>'+(s.ok?'✓':(i+1))+'</i>'+esc(s.t)+'</li>'; }).join('')+'</ol></div>':'';
+      '<button type="button" class="cs-kk" data-qk="'+esc(m.id)+'"'+soDis+'>'+KKI+'카톡 상담</button>'+
+      '<button type="button" class="cs-ph" data-open="consult" data-model="'+esc(m.id)+'"'+soDis+'>'+PHI+'전화 상담</button>'+
+    '</div>', '', 'cs');
+  // 20261020 위 '이 순서대로 하시면 돼요 ①컬러 ②용량 …' 줄은 뺌 — 단계마다 번호가 이미 있음 (이틀간 126명 중 누른 사람 0명)
+  var guide='';
   // 하단 고정: 지금 상태 한 줄 + [카톡 상담] [상담 신청]
   var bt;
   if(soNow) bt='<b>일시품절</b> · 지금은 신청할 수 없어요';
@@ -1043,7 +1045,8 @@ function renderModel(id, keepRecent){
   else if(p.kind==='sheet' && cst && cst.c){ var sup=(num(p.row.out)||0)-cst.after; bt=(typeNm(cst)?esc(typeNm(cst))+' · ':'')+'기기값 <b>'+(cst.after===0?'0원':won(cst.after))+'</b>'+(sup>0?' · 지원 <em>'+manwon(sup)+'</em>':''); }
   else bt='카톡이나 전화로 <b>편하게 상담</b>받으세요';
   $('#mdBody').innerHTML='<div class="ucard" data-edit="model:'+esc(m.id)+'"><div class="md-img" id="mdImg">'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(SO(m)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>'+
-    '<h2 class="md-h ucard-name">'+esc(m.nm)+'</h2><p style="color:var(--sub);margin-top:4px">'+esc(m.ds)+'</p>'+
+    // 20261020 휴대폰 소개 문구('더 넓은 세상, 더 많은 가능성' 등)는 뺌 — 워치·태블릿·TV프리는 무슨 상품인지 알려 주는 말이라 그대로
+    '<h2 class="md-h ucard-name">'+esc(m.nm)+'</h2>'+(isWear(m)&&m.ds?'<p style="color:var(--sub);margin-top:4px">'+esc(m.ds)+'</p>':'')+
     '<div class="pills" style="margin-top:10px">'+tagsOf(m).map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div>'+
     guide+body+'</div>'+
     '<div class="md-bar" id="mdBar"><div class="md-bar-t"'+(needCar&&!soNow?' data-md-go="car"':'')+'>'+bt+'</div><div class="md-bar-b">'+
@@ -1056,7 +1059,7 @@ var OPTT={};   // 상세에서 고객이 직접 고른 용량 (모델별) — �
 function optPicker(m){
   var os=optsOf(m); if(os.length<2) return '';
   var cur=OPT[m.id]||0;
-  return '<div class="cpick"><div class="cpick-l">'+esc(optLabel(m))+'</div><div class="cpick-row">'+os.map(function(o,i){
+  return '<div class="cpick nol"><div class="cpick-row">'+os.map(function(o,i){   // 20261020 '용량' 이름표 뺌 (단계 제목과 같은 말)
     var so=o.row&&o.row.so;
     return '<button type="button" class="opt'+(i===cur?' on':'')+(so?' so':'')+'" data-opt-pick="'+i+'" data-model="'+esc(m.id)+'"'+(so&&!EDIT?' disabled':'')+'>'+esc(o.nm)+(so?' <small>품절</small>':'')+'</button>';
   }).join('')+'</div></div>';
@@ -1064,7 +1067,7 @@ function optPicker(m){
 function colorPicker(m){
   var cs=colorsOf(m); if(cs.length<2) return '';
   var cur=PICK[m.id]||cs[0].nm;
-  return '<div class="cpick"><div class="cpick-l">컬러 <b id="cpickName">'+esc(cur)+'</b></div><div class="cpick-row">'+cs.map(function(c){
+  return '<div class="cpick nol"><div class="cpick-row">'+cs.map(function(c){   // 20261020 '컬러 라벤더' 이름표 뺌 — 고르면 제목 옆에 ✓ 라벤더
     return '<button type="button" class="sw'+(c.nm===cur?' on':'')+'" data-color-pick="'+esc(c.nm)+'" data-model="'+esc(m.id)+'" aria-label="'+esc(c.nm)+'" style="--c:'+esc(c.hex||'#ddd')+'"></button>';
   }).join('')+'</div></div>';
 }
@@ -1655,7 +1658,8 @@ function adviceTxt(cm, cur){
   if(!cm) return '';
   var d=Math.round(cm.diff/1000)*1000;
   if(d<1000) return '<b class="adv">두 방식 금액이 거의 같아요</b>';
-  return '<b class="adv"><i>💡</i><span>이 조건에선 <em>'+(cm.best==='pub'?'공시지원금':'선택약정')+'</em>이 24개월 기준 약 '+won(d)+' 더 저렴해요'+(cur&&cur!==cm.best?' · 눌러서 바꿔 보세요':'')+'</span></b>';
+  // 20261020 깔끔하게: '이 조건에선 … 24개월 기준 약 …' → '… 2년간 … 더 저렴해요' (월 차이로 오해 안 하게 '2년간'은 남김)
+  return '<b class="adv"><i>💡</i><span><em>'+(cm.best==='pub'?'공시지원금':'선택약정')+'</em>이 2년간 '+won(d)+' 더 저렴해요'+(cur&&cur!==cm.best?' · 눌러서 바꿔 보세요':'')+'</span></b>';
 }
 // 신청 영수증 계산 (화면·신청서 저장 공용)
 function apSummary(){
