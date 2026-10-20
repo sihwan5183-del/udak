@@ -10,7 +10,7 @@
     h2=Math.imul(h2^(h2>>>16),2246822507); h2^=Math.imul(h1^(h1>>>13),3266489909);
     return (4294967296*(2097151&h2)+(h1>>>0)).toString(36);
   }
-  var PHONE=['1cvrjvx4x47','185f1rvsi5e'];   // 차단 번호 2개 (2026-10-07 기준)
+  var PHONE=['1cvrjvx4x47','185f1rvsi5e','1sr0xzogibg'];   // 차단 번호 3개 (2026-10-07 2개 · 2026-10-20 1개 추가)
   var FBP=['1iowvp8txp'];                    // 차단 고객 브라우저 1개 (10/5~6 갤럭시 신청 3건)
   window.udakBlocked=function(p){ try{ return PHONE.indexOf(cyrb53(String(p||'').replace(/\D/g,''),7))>-1; }catch(e){ return false; } };
   try{
