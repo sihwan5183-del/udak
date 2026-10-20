@@ -1601,9 +1601,13 @@ function apPriceHtml(){
   return '<div class="ap1-price">'+
     '<div class="ap1-r"><span>'+lab+'<small>'+sub+'</small></span><b class="ap1-v">'+big+'</b></div>'+
     '<div class="ap1-r"><span>총 기기 지원금</span><b>'+won(sup)+'<small> 지원</small></b></div>'+
-    // 20261020 사장님: 지원금 맨 밑에 '원금 − 지원금 = 남은 기기값' 계산을 보여 줌 (지원금이 있을 때만)
-    (sup>0&&out?'<div class="ap1-eq"><div><span>원금</span><b>'+won(out)+'</b></div><div><span>− 지원금</span><b>'+won(sup)+'</b></div>'+
-      '<div class="sum"><span>= 남은 기기값</span><b>'+wz(pc.after)+'</b></div></div>':'')+
+    // 20261020 사장님: 지원금 맨 밑에 계산 — '[제품명] 기기값 − 공시지원금 − 유플러스 다이렉트 지원금 = 남은 기기값' (지원금이 있을 때만)
+    //   선택약정이면 공시지원금 줄 없음 · 두 줄 합이 늘 (기기값 − 남은 기기값)과 맞게 나눔
+    (sup>0&&out?(function(){ var pubA=pc.method==='pub'?Math.min(pc.c.pub||0, sup):0, ourA=sup-pubA;
+      return '<div class="ap1-eq"><div><span>'+esc(pc.m.nm)+' 기기값</span><b>'+won(out)+'</b></div>'+
+        (pubA>0?'<div><span>− 공시지원금</span><b>'+won(pubA)+'</b></div>':'')+
+        (ourA>0?'<div><span>− 유플러스 다이렉트 지원금</span><b>'+won(ourA)+'</b></div>':'')+
+        '<div class="sum"><span>= 남은 기기값</span><b>'+wz(pc.after)+'</b></div></div>'; })():'')+
     '<div class="ap1-base">'+esc([pc.type==='chg'?'기기변경':'번호이동', tierTitle(pc.t), pc.method==='sel'?'선택약정':'공시지원금'].join(' · '))+' 기준</div></div>';
 }
 function apColorImg(m){ var cs=colorsOf(m), c=cs.filter(function(x){return x.nm===AP.color})[0]||cs[0]; return (c&&c.img)||mImg(m); }
