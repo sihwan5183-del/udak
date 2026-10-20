@@ -1020,10 +1020,10 @@ function renderModel(id, keepRecent){
   // 20261020 컬러 이름표를 뺀 대신 기본 컬러 이름은 여기 표시 · ask: 제목이 이미 '…해 주세요'면 '골라 주세요' 표시는 안 붙임(같은 말 두 번)
   var chipOf=function(key, val, dflt, ask){ return done[key]?'<em class="mstep-ok">✓ '+esc(val)+'</em>':key===nowKey?(ask?'<em class="mstep-go">골라 주세요</em>':''):dflt?'<em class="mstep-df">기본'+(key==='color'&&val?' · '+esc(val):'')+'</em>':''; };
   // 20261019 단계 아래 설명 문구(기본값 안내·통신사 안내·'그대로 두셔도 돼요')는 전부 뺌 — 제목 + 고르는 칸만
-  // 20261020 단계 제목 (사장님 문구): 컬러를 골라 주세요 / 용량을 선택해 주세요 / 현재 이용 중인 통신사 / 내 가격 / 상담 — 칸 안 이름표(컬러·용량·사용 통신사)는 뺌
+  // 20261020 단계 제목 (사장님 문구): 컬러를 골라 주세요 / 용량을 선택해 주세요 / 현재 이용 중인 통신사를 선택해 주세요 / 내 가격 / 상담 — 칸 안 이름표(컬러·용량·사용 통신사)는 뺌
   if(cN) body+=step('color', '컬러', '컬러를 골라 주세요', '', colorPicker(m), chipOf('color', colNm, true, false), done.color?'':'dflt');
   if(oN) body+=step('cap', oL, esc(oL)+eul(oL)+' 선택해 주세요', '', optPicker(m), chipOf('cap', capNm, true, false), done.cap?'':'dflt');
-  if(PK.car) body+=step('car', '통신사', '현재 이용 중인 통신사', '', PK.car, chipOf('car', carNm, false, true));
+  if(PK.car) body+=step('car', '통신사', '현재 이용 중인 통신사를 선택해 주세요', '', PK.car, chipOf('car', carNm, false, false));
   if(PK.rest) body+='<div class="mstep-sub">'+PK.rest+'</div>';
   // 20261020 '당일 택배 발송 · 5분 상담' 칩 뺌 (첫 화면·신청서와 같은 말) — TV프리 대상 조건 칩, 워치·태블릿 '의무가입 X' 칩은 그대로
   var mdc=isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):(gg==='phone'&&cst&&cst.c)?'':'<span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span>';
