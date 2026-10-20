@@ -341,6 +341,9 @@ function rowCalc(r, type, tier){
   return {out:out, our:our, pub:pub, sel:sel, pb:pb, v:(pb!=null?Math.min(pb,sel):sel), fee:tier.fee||null};
 }
 function SO(m){ if(!m) return false; if(m.soldout) return true; var rs=sheetRows(m); return rs.length>0 && rs.every(function(r){return r.so}); }
+// 20261020 품절이면 신청 못 하게 (사장님 지시): 용량별 품절 여부 / 판매 중인 첫 용량 (없으면 -1)
+function optSO(m,i){ var o=m?optsOf(m)[i||0]:null; return !!(o&&o.row&&o.row.so); }
+function firstOkOpt(m){ var os=m?optsOf(m):[]; for(var i=0;i<os.length;i++){ if(!(os[i].row&&os[i].row.so)) return i; } return -1; }
 function wz(n){ return n===0?'0원':won(n); }
 
 /* 가격: 번호이동/기기변경 중 지금 보는 가격 */
@@ -410,7 +413,7 @@ function badgeOf(m){
   return tagsOf(m)[0]||'';
 }
 function stripOf(m){
-  if(SO(m)) return '일시품절 · 입고 알림 상담 가능';
+  if(SO(m)) return '일시품절';
   if(m.strip && !(/(^|[^0-9,])0원|공짜/.test(m.strip) && priceOf(m).v!==0)) return m.strip;
   var pp=priceOf(m);
   if(pp.kind==='sheet'){
@@ -868,7 +871,7 @@ function bigcard(m){
     '<div class="row1"><h3 class="ucard-name">'+esc(m.nm)+'</h3><span class="bdg">'+(SO(m)?'일시품절':'당일발송')+'</span><span class="eta">'+esc(badgeOf(m))+'</span></div>'+
     (pb||'<div class="meta">'+(meta.length?meta.join(' · '):'가격은 상담 시 안내드립니다')+'</div>')+
     '<div class="chips">'+(isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):'<span class="chip">제휴카드 X</span><span class="chip">부가서비스 X</span>')+'<span class="chip gray">5분 상담</span></div>'+
-    '<div class="stamp">'+(SO(m)?'입고 알림 상담 신청 가능':'구매 시 보호필름 · 투명케이스 · 고속충전기 제공')+'</div></a>';
+    '<div class="stamp">'+(SO(m)?'현재 일시품절':'구매 시 보호필름 · 투명케이스 · 고속충전기 제공')+'</div></a>';
 }
 function smallCircles(list){
   return list.map(function(m){return '<a class="m'+(SO(m)?' soldout':'')+hidCls(m)+'" style="flex:0 0 76px;display:flex;flex-direction:column;align-items:center;gap:6px" href="#/model/'+esc(m.id)+'" data-edit="model:'+esc(m.id)+'"><div class="cir">'+im(mImg(m),'','',m.nm)+'</div><span>'+esc(m.nm)+'</span></a>'}).join('');
@@ -997,6 +1000,7 @@ function renderModel(id, keepRecent){
   if(!keepRecent){ var r=store.get('recent',[]).filter(function(x){return x!==id}); r.unshift(id); store.set('recent',r.slice(0,10)); }
   var srs=sheetRows(m), selRow=null, rows='', pickers='';
   if(srs.length && (OPT[m.id]==null || !srs[OPT[m.id]])) OPT[m.id]=Math.max(0, srs.indexOf(priceOf(m).row));
+  if(!EDIT && optSO(m,OPT[m.id])){ var fo=firstOkOpt(m); if(fo>=0) OPT[m.id]=fo; }   // 20261020 품절 용량은 못 고름
   var p=priceOf(m, optsOf(m).length?(OPT[m.id]||0):null);
   if(p.kind==='sheet'){ selRow=p.row; var cst=calcState(m,p.row); pickers=calcPickers(m,p.row,cst); rows=calcBox(m,p.row,cst); }
   else if(p.kind==='hidden'){ rows='<div class="r hi"><span>가격</span><b>상담 시 안내</b></div>'; }
@@ -1013,6 +1017,7 @@ function renderModel(id, keepRecent){
   var pc=colorsOf(m).filter(function(c){return c.nm===PICK[m.id]})[0];
   var PK=(pickers&&typeof pickers==='object')?pickers:{car:'',rest:pickers||''}, gg=selRow?selRow.g:'';
   var soNow=SO(m)||(selRow&&selRow.so), needCar=!!PK.car && !((SEL[m.id]||{}).carrier);
+  var soDis=(soNow&&!EDIT)?' disabled':'';   // 20261020 품절이면 카톡·전화 상담 버튼 막음
   // 20261019 행동 유도: '이 순서대로 하시면 돼요' + 컬러 → 용량 → 통신사를 한 단계씩
   //  · 컬러·용량은 기본값을 골라 두되 '기본'으로 보여 줌 (점선 + 기본 표시) — 고객이 직접 누르면 ✓ 로 바뀜
   //  · 지금 할 차례(반짝임)는 고객이 고를 때마다 다음 단계로 넘어감. 앞으로만 — 뒤 단계를 먼저 고르면 앞 단계로 되돌아가지 않음
@@ -1031,20 +1036,20 @@ function renderModel(id, keepRecent){
   if(oN) body+=step('cap', oL, '원하는 '+esc(oL)+eul(oL)+' 골라 주세요', '', optPicker(m), chipOf('cap', capNm, true), done.cap?'':'dflt');
   if(PK.car) body+=step('car', '통신사', '지금 쓰는 통신사를 골라 주세요', '', PK.car, chipOf('car', carNm, false));
   if(PK.rest) body+='<div class="mstep-sub">'+PK.rest+'</div>';
-  body+=step('price', '내 가격 확인', '내 예상 가격을 확인하세요', '', (soNow?'<div class="so-notice">'+(SO(m)?'현재 일시품절입니다':'선택하신 '+esc(selRow.cap||'옵션')+' 은(는) 일시품절입니다')+'. 상담 신청해 주시면 입고 즉시 안내드립니다.</div>':'')+
+  body+=step('price', '내 가격 확인', '내 예상 가격을 확인하세요', '', (soNow?'<div class="so-notice">'+(SO(m)?'현재 일시품절이에요. 지금은 신청할 수 없어요.':'선택하신 '+esc(selRow.cap||'옵션')+'은(는) 일시품절이에요.')+'</div>':'')+
     '<div class="ptable" id="ucatPrice">'+rows+'</div>'+guideHtml(m)+
     '<div class="md-chips">'+(isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):(gg==='phone'&&cst&&cst.c)?'':'<span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span>')+'<span class="chip gray">당일 택배 발송</span><span class="chip gray">5분 상담</span></div>', '');
   // 20261019 마지막 단계: 레퍼런스 카드 그대로 — '원하시는 방법의 상담을 선택해 주세요!' + [카톡 상담] [전화 상담] (누르면 하단 버튼과 똑같이 열림)
   body+=step('go', '카톡·전화 상담', '<em>원하시는 방법의</em><br>상담을 선택해 주세요!', '',
     '<div class="mstep-cs">'+
-      '<button type="button" class="cs-kk" data-qk="'+esc(m.id)+'">'+KKI+'카톡 상담</button><p>카카오톡에서 메시지를 보내주시면 상담이 시작됩니다.</p>'+
-      '<button type="button" class="cs-ph" data-open="consult" data-model="'+esc(m.id)+'">'+PHI+'전화 상담</button><p>고객 정보를 남겨주시면 담당자가 전화로 안내해 드립니다.</p>'+
+      '<button type="button" class="cs-kk" data-qk="'+esc(m.id)+'"'+soDis+'>'+KKI+'카톡 상담</button><p>카카오톡에서 메시지를 보내주시면 상담이 시작됩니다.</p>'+
+      '<button type="button" class="cs-ph" data-open="consult" data-model="'+esc(m.id)+'"'+soDis+'>'+PHI+'전화 상담</button><p>고객 정보를 남겨주시면 담당자가 전화로 안내해 드립니다.</p>'+
     '</div>', '<em class="mstep-cs-tag">상담 방법 선택</em>', 'cs');
   // 위 안내: 고른 단계는 ✓, 지금 할 단계는 분홍 — 누르면 그 단계로 이동
   var guide=steps.length>2?'<div class="mguide"><b>이 순서대로 하시면 돼요</b><ol>'+steps.map(function(s,i){ return '<li class="'+(s.ok?'ok':'')+(s.now?' on':'')+'" data-mg="'+s.k+'"><i>'+(s.ok?'✓':(i+1))+'</i>'+esc(s.t)+'</li>'; }).join('')+'</ol></div>':'';
   // 하단 고정: 지금 상태 한 줄 + [카톡 상담] [상담 신청]
   var bt;
-  if(soNow) bt='<b>일시품절</b> · 상담 신청하시면 입고 즉시 안내드려요';
+  if(soNow) bt='<b>일시품절</b> · 지금은 신청할 수 없어요';
   else if(needCar) bt='지금 쓰는 <b>통신사</b>를 고르면 내 가격이 바로 나와요';
   else if(p.kind==='sheet' && cst && cst.c){ var sup=(num(p.row.out)||0)-cst.after; bt=(typeNm(cst)?esc(typeNm(cst))+' · ':'')+'기기값 <b>'+(cst.after===0?'0원':won(cst.after))+'</b>'+(sup>0?' · 지원 <em>'+manwon(sup)+'</em>':''); }
   else bt='카톡이나 전화로 <b>편하게 상담</b>받으세요';
@@ -1053,8 +1058,8 @@ function renderModel(id, keepRecent){
     '<div class="pills" style="margin-top:10px">'+tagsOf(m).map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div>'+
     guide+body+'</div>'+
     '<div class="md-bar" id="mdBar"><div class="md-bar-t"'+(needCar&&!soNow?' data-md-go="car"':'')+'>'+bt+'</div><div class="md-bar-b">'+
-      '<button type="button" class="mb-kk" data-qk="'+esc(m.id)+'">'+KKI+'카톡 상담</button>'+
-      '<button type="button" class="mb-ap" data-open="consult" data-model="'+esc(m.id)+'">'+(soNow?'입고 알림 신청':'상담 신청')+'</button></div></div>';
+      '<button type="button" class="mb-kk" data-qk="'+esc(m.id)+'"'+soDis+'>'+KKI+'카톡 상담</button>'+
+      '<button type="button" class="mb-ap" data-open="consult" data-model="'+esc(m.id)+'"'+soDis+'>'+(soNow?'일시품절':'상담 신청')+'</button></div></div>';
 }
 
 var PICK={};   // 상세에서 고른 컬러 (모델별)
@@ -1064,7 +1069,7 @@ function optPicker(m){
   var cur=OPT[m.id]||0;
   return '<div class="cpick"><div class="cpick-l">'+esc(optLabel(m))+'</div><div class="cpick-row">'+os.map(function(o,i){
     var so=o.row&&o.row.so;
-    return '<button type="button" class="opt'+(i===cur?' on':'')+(so?' so':'')+'" data-opt-pick="'+i+'" data-model="'+esc(m.id)+'">'+esc(o.nm)+(so?' <small>품절</small>':'')+'</button>';
+    return '<button type="button" class="opt'+(i===cur?' on':'')+(so?' so':'')+'" data-opt-pick="'+i+'" data-model="'+esc(m.id)+'"'+(so&&!EDIT?' disabled':'')+'>'+esc(o.nm)+(so?' <small>품절</small>':'')+'</button>';
   }).join('')+'</div></div>';
 }
 function colorPicker(m){
@@ -1481,6 +1486,7 @@ function apNeed(m){ var g=GUIDE[m.id]; return g&&g.fee ? g.plan : (kindOf(m)==='
 // 함께 구매할 수 없는 이유 (없으면 '')
 function apReason(m){
   var k=kindOf(m), ph=apPhone(), t=apTier(), fee=(t&&t.fee)||0;
+  if(SO(m) && !EDIT) return '일시품절이에요';   // 20261020
   if(k==='tvfree') return '';
   if(k==='tablet' && ph && brandOf(ph)==='apple') return '갤럭시 휴대폰과 함께 구매할 때 선택할 수 있어요';
   if(k==='watch' && ph && brandOf(ph)!==brandOf(m)) return brandOf(ph)==='apple' ? '아이폰은 애플워치와 함께 구매할 수 있어요' : '갤럭시 휴대폰은 갤럭시 워치와 함께 구매할 수 있어요';
@@ -1488,6 +1494,7 @@ function apReason(m){
   return '';
 }
 function apValidate(){
+  var pm0=apPhone(); if(pm0 && !EDIT){ if(SO(pm0)){ AP.phone=''; AP.cap=0; AP.color=''; } else if(optSO(pm0,AP.cap)){ var fo=firstOkOpt(pm0); if(fo>=0) AP.cap=fo; } }   // 20261020 품절은 신청 못 함
   if(!apAddOn()){ AP.watch=''; AP.tablet=''; if(!AP.tvFix){ AP.tv=''; AP.tvOk=false; } }
   if(AP.phone==='none' && !(AP.tv && AP.tvType==='old')) AP.phone='';
   var notes=[];
@@ -1530,7 +1537,7 @@ function apPhoneHtml(){
       '<label class="ap-search"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="mDeviceSearch" placeholder="모델명을 검색하세요 (예: S26, 아이폰)" autocomplete="off"></label>'+
       '<div class="ap-list" id="apList">'+list.map(function(x){
         return '<div class="ap-li" data-nm="'+esc((x.nm+' '+x.id).toLowerCase().replace(/\s/g,''))+'"><div class="ap-li-img">'+im(mImg(x),'','',x.nm)+'</div><b>'+esc(x.nm)+(SO(x)?' <small>일시품절</small>':'')+'</b>'+
-          '<button type="button" class="ap-pick'+(x.id===AP.phone?' on':'')+'" data-ap-pick="'+esc(x.id)+'">'+(x.id===AP.phone?'선택됨':'선택하기')+'</button></div>'; }).join('')+
+          '<button type="button" class="ap-pick'+(x.id===AP.phone?' on':'')+'" data-ap-pick="'+esc(x.id)+'"'+(SO(x)&&!EDIT?' disabled':'')+'>'+(SO(x)&&!EDIT?'일시품절':(x.id===AP.phone?'선택됨':'선택하기'))+'</button></div>'; }).join('')+
       // 20261016: '상담 후 결정할게요' 줄 삭제 (휴대폰은 꼭 골라서 신청)
       (AP.tv&&AP.tvType==='old'?'<div class="ap-li later" data-nm="휴대폰변경없음tv프리만"><b>휴대폰은 바꾸지 않아요 (TV프리만)</b><button type="button" class="ap-pick" data-ap-pick="none">선택하기</button></div>':'')+'</div>';
   }
@@ -1539,7 +1546,7 @@ function apPhoneHtml(){
     // 컬러는 꼭 직접 고르게 (안 고르면 신청 안 됨) — 카톡 간편 신청창과 같은 모양
     if(cs.length>1) h+='<div class="qk-car qk-col" id="apColorRow"><div class="qk-l">컬러 <span class="req">*</span></div><div class="qk-cc">'+cs.map(function(c){
         return '<button type="button" class="'+(AP.color===c.nm?'on':'')+'" data-ap="color" data-v="'+esc(c.nm)+'"><i style="--c:'+esc(c.hex||'#ddd')+'"></i>'+esc(c.nm)+'</button>'; }).join('')+'</div></div>';
-    if(os.length>1) h+='<div class="qk-car"><div class="qk-l">'+esc(optLabel(m))+'</div>'+apChips('cap',os.map(function(o,i){return [i,o.nm+(o.row&&o.row.so?' (품절)':'')]}),AP.cap,Math.min(os.length,4))+'</div>';
+    if(os.length>1) h+='<div class="qk-car"><div class="qk-l">'+esc(optLabel(m))+'</div>'+apChips('cap',os.map(function(o,i){ var so=!!(o.row&&o.row.so); return [i,o.nm+(so?' (품절)':''),so&&!EDIT]; }),AP.cap,Math.min(os.length,4))+'</div>';
     h+='<div class="qk-car"><div class="qk-l">지금 쓰는 통신사 <span class="req">*</span></div>'+apChips('carrier',CARRIERS.map(function(c){return [c,c]}),AP.carrier,4)+'</div>';
   }
   return h;
@@ -1946,6 +1953,7 @@ function apSubmit(mode){
   var name=$('#mUserName').value.trim(), phone='010'+$('#mPhone2').value.replace(/\D/g,'')+$('#mPhone3').value.replace(/\D/g,''), birth=birth8($('#mUserBirth').value), memo=$('#mUserNote').value.trim();
   var apm=apPhone(); if(apm && colorsOf(apm).length>1 && !AP.color){ alert('컬러를 선택해 주세요.'); var acr=$('#apColorRow'); if(acr) acr.scrollIntoView({block:'center',behavior:'smooth'}); return; }   // 20261019: 컬러도 필수
   if(!AP.phone){ alert('휴대폰을 선택해 주세요.'); window.scrollTo({top:0,behavior:'smooth'}); return; }
+  if(apm && (SO(apm) || optSO(apm,AP.cap))){ alert('선택하신 '+apm.nm+(SO(apm)?'':' '+optsOf(apm)[AP.cap].nm)+'은(는) 일시품절이라 신청할 수 없어요.'+(SO(apm)?' 다른 휴대폰을 골라 주세요.':' 다른 '+optLabel(apm)+'을(를) 골라 주세요.')); apValidate(); apRefresh(); return; }   // 20261020 품절은 신청 못 함
   if(!AP.carrier && AP.phone!=='none'){ alert('현재 사용 중인 통신사를 선택해 주세요.'); return; }
   // 20261019 받는 방법 (택배 / 매장에서 수령하기) — 매장이면 수령 매장 + 어디서 오세요도 필수
   var rr=$('#apRecvRow');
@@ -1989,7 +1997,7 @@ document.addEventListener('click',function(e){
   if(t.closest('#mSubmitBtn')){ e.preventDefault(); apSubmit(); return; }
   if(t.closest('#mKakaoBtn')){ e.preventDefault(); apSubmit('kakao'); return; }
   if(t.closest('#qkBtn')){ e.preventDefault(); qkSubmit(); return; }
-  var qkb=t.closest('[data-qk]'); if(qkb){ e.preventDefault(); closeSheet(); openApply(qkb, 'kakao'); return; }   // 20261019: 카톡 상담도 같은 신청서로 (예전 카톡 간편 신청창 openQuickKakao 는 안 씀)
+  var qkb=t.closest('[data-qk]'); if(qkb){ e.preventDefault(); if(qkb.disabled) return; closeSheet(); openApply(qkb, 'kakao'); return; }   // 20261019: 카톡 상담도 같은 신청서로 (예전 카톡 간편 신청창 openQuickKakao 는 안 씀)
   var qkl=t.closest('[data-qk-col]'); if(qkl){ e.preventDefault(); QK.col=qkl.getAttribute('data-qk-col'); $$('[data-qk-col]').forEach(function(x){ x.classList.toggle('on', x===qkl); }); return; }
   var qkc=t.closest('[data-qk-car]'); if(qkc){ e.preventDefault(); var qv=qkc.getAttribute('data-qk-car'); QK.car=(QK.car===qv?'':qv); $$('[data-qk-car]').forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-qk-car')===QK.car); }); return; }
   if(t.closest('[data-qk-pv]')){ e.preventDefault(); var qp=$('#qkPv'); if(qp) qp.classList.toggle('on'); return; }
@@ -2008,7 +2016,7 @@ document.addEventListener('click',function(e){
     if(ak==='tvType'){ AP.tvOk=false; if(av==='old'&&!AP.phone) AP.phone='none'; if(av!=='old'&&AP.phone==='none') AP.phone=''; }
     apRefresh(); return; }
   var app=t.closest('[data-ap-pick]');
-  if(app){ e.preventDefault(); var pv=app.getAttribute('data-ap-pick'); if(pv!==AP.phone){ AP.cap=0; AP.color=''; if(pv!=='later'){ var pm=byId(pv), prs=sheetRows(pm); if(prs.length){ var pp=priceOf(pm); AP.cap=Math.max(0,prs.indexOf(pp.row)); } } }
+  if(app){ e.preventDefault(); if(app.disabled) return; var pv=app.getAttribute('data-ap-pick'); if(pv!==AP.phone){ AP.cap=0; AP.color=''; if(pv!=='later'){ var pm=byId(pv), prs=sheetRows(pm); if(prs.length){ var pp=priceOf(pm); AP.cap=Math.max(0,prs.indexOf(pp.row)); if(optSO(pm,AP.cap)){ var fo2=firstOkOpt(pm); if(fo2>=0) AP.cap=fo2; } } } }
     AP.phone=pv; AP.pick=false; apRefresh(); return; }
   var apt=t.closest('[data-ap-tip]');
   if(apt){ e.preventDefault(); AP.tip=AP.tip||{}; var tk=apt.getAttribute('data-ap-tip'); AP.tip[tk]=!AP.tip[tk]; apRefresh(); return; }
@@ -2033,7 +2041,7 @@ document.addEventListener('click',function(e){
     if(k==='tier') TIER[mid]=v; else if(k==='months') sel.months=+v; else sel[k]=v;
     var pn=mdNowKey(), y=window.scrollY; renderModel(mid,true); window.scrollTo(0,y); if(k==='carrier') mdFollow(pn); return; }
   var op=t.closest('[data-opt-pick]');
-  if(op){ e.preventDefault(); e.stopPropagation(); var omid=op.getAttribute('data-model'); OPT[omid]=+op.getAttribute('data-opt-pick'); OPTT[omid]=true;
+  if(op){ e.preventDefault(); e.stopPropagation(); if(op.disabled) return; var omid=op.getAttribute('data-model'); OPT[omid]=+op.getAttribute('data-opt-pick'); OPTT[omid]=true;
     var pn2=mdNowKey(), y2=window.scrollY; renderModel(omid,true); window.scrollTo(0,y2); mdFollow(pn2); return; }
   var vb=t.closest('[data-video]'); if(vb){ e.preventDefault(); openVideo(vb.getAttribute('data-video')); return; }
   var cp=t.closest('[data-color-pick]');
@@ -2043,7 +2051,7 @@ document.addEventListener('click',function(e){
   if(w){e.preventDefault();e.stopPropagation();var id=w.getAttribute('data-wish'),l=store.get('wish',[]),i=l.indexOf(id);
     if(i>-1)l.splice(i,1);else l.unshift(id);store.set('wish',l);
     $$('[data-wish="'+id+'"]').forEach(function(b){b.classList.toggle('on',i<0)}); if($('#v-wish').classList.contains('on'))renderWish(); return}
-  var o=t.closest('[data-open]'); if(o){e.preventDefault();act(o.getAttribute('data-open'),o);return}
+  var o=t.closest('[data-open]'); if(o){e.preventDefault();if(o.disabled)return;act(o.getAttribute('data-open'),o);return}
   if(t.closest('[data-qx]')){ e.preventDefault(); var qi=$('#qnaQ'); if(qi){ qi.value=''; QQ=''; qi.parentNode.classList.remove('on'); $('.qna-cats').classList.remove('qdim'); $('#qnaList').innerHTML=qnaList(); qi.focus(); } return; }
   var qc=t.closest('[data-qcat]'); if(qc){ e.preventDefault(); QCAT=+qc.getAttribute('data-qcat'); var qi2=$('#qnaQ'); if(qi2){ qi2.value=''; QQ=''; qi2.parentNode.classList.remove('on'); $('.qna-cats').classList.remove('qdim'); } $$('.qna-cats button').forEach(function(x){ x.classList.toggle('on',x===qc); }); $('#qnaList').innerHTML=qnaList(); qc.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); return; }
   if(t.closest('[data-near]')){ e.preventDefault(); findNear(); return; }

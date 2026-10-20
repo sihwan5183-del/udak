@@ -1611,3 +1611,8 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .ss-geo{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:44px;margin:8px 0 2px;border-radius:12px;background:var(--ink);color:#fff;font-size:14px;font-weight:800;cursor:pointer}
 .ss-geo svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .ss-geo:disabled{opacity:.7}
+/* 20261020 품절이면 신청 못 하게 — 막힌 버튼은 회색 */
+.cpick .opt[disabled]{cursor:not-allowed;background:#F7F8FA}
+.ap-pick[disabled]{background:#EEF0F3;color:#9AA0A9;cursor:not-allowed}
+.md-bar-b button[disabled],.mstep-cs button[disabled]{background:#E5E7EB!important;color:#9AA0A9!important;box-shadow:none!important;cursor:not-allowed}
+.md-bar-b button[disabled] svg,.mstep-cs button[disabled] svg{fill:#9AA0A9!important;opacity:.7}
