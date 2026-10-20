@@ -1647,3 +1647,9 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .md-bar-b.one{grid-template-columns:1fr}
 /* 20261020 하단 한 줄 '번호이동 공시지원금 104,000원 S26 구매 가능' — 긴 이름(아이폰 18프로맥스 등)도 '구매 가능'이 잘리지 않게 두 줄까지 */
 .md-bar-t.buy{white-space:normal;word-break:keep-all;line-height:1.4;font-size:13px;color:var(--ink2)}
+/* 20261020 신청서: 지원금 맨 밑 '원금 − 지원금 = 남은 기기값' */
+.ap1-eq{margin:4px 0 6px;padding:8px 11px;border-radius:11px;background:#F7F8FA}
+.ap1-eq>div{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:3px 0;font-size:12.5px;color:var(--sub)}
+.ap1-eq b{font-size:13px;font-weight:700;color:var(--ink2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.ap1-eq .sum{margin-top:3px;padding-top:7px;border-top:1px solid #E6E8EC;color:var(--ink);font-weight:800}
+.ap1-eq .sum b{font-size:14.5px;font-weight:900;color:var(--ink)}
