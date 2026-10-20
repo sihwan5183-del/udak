@@ -34,9 +34,10 @@
     function sset(k,v){ try{ sessionStorage.setItem(k,v); }catch(e){} }
     var sid=sget('udak_sid');
     if(!sid){ sid=(Date.now().toString(36)+Math.random().toString(36).slice(2,10)).slice(0,24); sset('udak_sid',sid); }
-    // 표본: 이 방문(세션)이 행동 기록 대상인지 — 10명 중 1명. 한 번 정하면 그 방문 동안(상세 페이지로 넘어가도) 유지
-    var SAMPLE_1_IN=10, sampled=sget('udak_sampled');
-    if(sampled!=='1' && sampled!=='0'){ sampled=(Math.random()*SAMPLE_1_IN<1)?'1':'0'; sset('udak_sampled',sampled); }
+    // 표본: 이 방문(세션)이 행동 기록 대상인지 — 한 번 정하면 그 방문 동안(상세 페이지로 넘어가도) 유지
+    //  20261020 사장님: 10명 중 1명 → 10명 중 3명 (스토어 하루 150명 안팎이라 저장 공간·속도 부담 거의 없음. 이날부터 표본 행동 기록 수가 약 3배)
+    var SAMPLE_RATE=0.3, sampled=sget('udak_sampled');
+    if(sampled!=='1' && sampled!=='0'){ sampled=(Math.random()<SAMPLE_RATE)?'1':'0'; sset('udak_sampled',sampled); }
     sampled=(sampled==='1');
     // 표본과 상관없이 항상 기록하는 것 — 신청 흐름·막힘
     var ALWAYS={ submit_send:1, lead:1, submit_fail:1, alert:1 };
