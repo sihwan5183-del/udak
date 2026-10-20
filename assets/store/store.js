@@ -560,17 +560,7 @@ function pvPhone(m, r, st){
   mu.push(['약정 기간 2년','']);
   // 20261020 'LG U+ 통신사 변경 조건 (번호이동)' 줄은 뺌 (고객 입장에선 장벽 — 사장님 지시)
   h+='<div class="pv-must"><h4>혜택 받기 전, 꼭 확인해 주세요!</h4><ol>'+mu.map(function(x,i){ return '<li><i>'+(i+1)+'</i><div><b>'+x[0]+'</b>'+(x[1]?'<small>'+x[1]+'</small>':'')+'</div></li>'; }).join('')+'</ol></div>';
-  // ⑤ 월 예상 납부금액 (통신 요금 포함) — 맨 아래, 처음엔 접힘. '7개월 차부터'는 지금처럼 85·95 요금제만
-  if(fee){
-    var low=(st.fee<=95000&&st.fee>LOW_FEE)?monthly+(sel?Math.round(LOW_FEE*0.75):LOW_FEE):null;
-    var feeT='통신 요금 '+won(fee)+(sel?' (25% 할인)':'');
-    var f1=mm===0?feeT+' · 기기값은 일시납':'기기 할부금 '+won(monthly)+' + '+feeT;
-    h+='<div class="pv-card pv-more'+(PVOFF?' off':'')+'"><button type="button" class="pv-mh" data-pv-x><i class="pv-ic">'+PVI.bars+'</i><span>월 예상 납부금액<small>통신 요금 포함</small></span><i class="pv-chev">'+PVI.chev+'</i></button>'+
-      '<div class="pv-mb"><p class="pv-ms">기기 할부금과 통신 요금을 합친 금액이에요.</p><div class="pv-flow'+(low!=null?'':' solo')+'">'+
-        '<div class="pv-f"><i>'+PVI.cal+'</i><div><span>'+(low!=null?'처음 6개월':'고르신 요금제 기준')+'</span><b>'+won(total)+'<small> / 월</small></b><em>'+f1+'</em></div></div>'+
-        (low!=null?'<div class="pv-f"><i>'+PVI.down+'</i><div><span>7개월 차부터</span><b>'+won(low)+'<small> / 월</small></b><em>예: 월 '+won(LOW_FEE)+' 요금제 이용 시</em></div></div>':'')+
-      '</div><p class="pv-fn">이후 납부 금액은 사용하시는 요금제와 결합 할인에 따라 달라질 수 있어요.</p></div></div>';
-  }
+  // ⑤ 월 예상 납부금액(통신 요금 포함) 카드는 뺌 — 20261020 사장님 지시 (통신 요금 합친 금액은 고객 입장에선 진입장벽)
   return h+'</div>';
 }
 function calcBox(m, r, st){
