@@ -12,7 +12,13 @@
                     · form_step(신청서 단계: 신청서 열기 → 휴대폰 → 통신사 → 이름 → 연락처 → 생년월일 → 동의, 단계마다 한 번)
                     · submit_click(상담 예약 / 카톡 예약 누름) · call · kakao
      · 표본(10명 중 1명)만: screen(화면 이동) · see(홈 구간) · 버튼 누름 · 칸 누름
-     · 메타 단계 신호: 상세 화면(가격) → PriceCheck, 신청서 화면 → FormOpen */
+     · 메타 단계 신호: 상세 화면(가격) → PriceCheck, 신청서 화면 → FormOpen
+   v20261020 스토어: 홈·목록에서 누른 것도 방문자 전원 기록 — 따로 줄을 늘리지 않고 나갈 때 요약(exit)의 화면별 [ ] 안에 붙임
+     · 예: 'home 12s 40% [특가:s26] > model:s26 56s 100% > home 5s 30% [기기변경>최대혜택:켬>인기:s26ultra]'
+     · 상세 화면에서 누른 것은 원래대로 detail_exit '누름'에 (중복 안 함)
+     · exit 한 줄 최대 600자 (detail_exit 와 같음) — DB 입력 규칙도 600자로 맞춤
+       (전엔 규칙이 300자라 300자 넘는 상세 요약이 든 묶음이 통째로 거절 → 오래 본 손님 기록이 빠졌음)
+     · 표본 기록에 '최대 혜택 기준으로 보기'(maxv) · 정렬(sort) 누름 추가 */
 (function(){
   try{
     var S=document.currentScript;
@@ -76,7 +82,7 @@
         if(onceKey!==undefined){ var k=name+'|'+onceKey; if(done[k]) return; done[k]=1; }
         metaStage(name, detail);
         if(!sampled && !ALWAYS[name]) return; // 표본 밖 방문은 행동 기록을 남기지 않음 (픽셀 신호는 위에서 이미 보냄)
-        q.push({ sid:sid, page:PAGE, event:String(name).slice(0,40), detail:(detail==null?null:String(detail).slice(0,name==='detail_exit'?600:300)),
+        q.push({ sid:sid, page:PAGE, event:String(name).slice(0,40), detail:(detail==null?null:String(detail).slice(0,(name==='detail_exit'||name==='exit')?600:300)),
           sec:Math.round((Date.now()-t0)/1000), vw:(window.innerWidth||null),
           utm_source:src.s||null, utm_campaign:src.c||null, utm_content:src.a||null, fbclid:!!src.f, internal:internal });
         if(q.length>=20) flush(false);
@@ -160,6 +166,7 @@
              ['[data-calc]','calc',function(el){ return (el.getAttribute('data-model')||'')+' '+el.getAttribute('data-calc')+'='+(el.getAttribute('data-v')||''); }],
              ['[data-opt-pick],[data-color-pick]','pick',function(el){ return (el.getAttribute('data-model')||'')+' '+(el.getAttribute('data-color-pick')||txt(el)); }],
              ['[data-wish]','wish',attr('data-wish')],
+             ['[data-maxv]','maxv',function(el){ return el.classList.contains('on')?'끔':'켬'; }],['[data-sort]','sort',attr('data-sort')],   // 20261020
              ['[data-mnp]','mnp',function(el){ return el.getAttribute('data-mnp')==='1'?'번호이동':'기기변경'; }],
              ['[data-open]','open',function(el){ return el.getAttribute('data-open')+(el.getAttribute('data-model')?' '+el.getAttribute('data-model'):''); }],
              ['[data-go]','go',attr('data-go')],['[data-cat]','cat',attr('data-cat')],['[data-video]','video',attr('data-video')],
@@ -189,7 +196,7 @@
       var h=Math.max(document.documentElement.scrollHeight, document.body?document.body.scrollHeight:0);
       return h?Math.min(100,((window.scrollY||window.pageYOffset)+window.innerHeight)/h*100):0;
     }
-    function scrDesc(){ return cur?(cur.k+' '+Math.round((Date.now()-cur.t)/1000)+'s '+Math.round(cur.s)+'%'):''; }
+    function scrDesc(){ return cur?(cur.k+' '+Math.round((Date.now()-cur.t)/1000)+'s '+Math.round(cur.s)+'%'+(cur.taps.length?' ['+(cur.tcut?'…':'')+cur.taps.join('>')+']':'')):''; }
     function step(n, extra){ if(steps[n]) return; steps[n]=1; ev('form_step', n+(extra?' '+extra:'')); }
     function formCheck(){
       var f=null; try{ f=(typeof window.udakFormState==='function')?window.udakFormState():null; }catch(e){}
@@ -200,14 +207,14 @@
     var fcT=null;
     function formSoon(){ if(!cur || cur.k!=='apply') return; clearTimeout(fcT); fcT=setTimeout(formCheck, 700); }
     function scrStart(){
-      var c0=cur={k:scrKey(), t:Date.now(), s:0};
+      var c0=cur={k:scrKey(), t:Date.now(), s:0, taps:[]};
       // 화면이 그려지고 스크롤 위치가 잡힌 뒤에 첫 위치를 잼 (짧은 화면은 안 내려도 끝까지 보임)
       setTimeout(function(){ if(cur===c0){ var p0=pctNow(); if(p0>cur.s) cur.s=p0; } }, 500);
       if(cur.k==='apply') formCheck();
     }
     function progress(){ var r=[]; STEPS.forEach(function(k){ if(steps[k]) r.push(STEP_KO[k]); }); return r.length?r.join('>'):'안 엶'; }
     function exitDetail(){
-      var p=path.concat([scrDesc()]).join(' > '), head=app+(os?' '+os:'')+' | 신청서 '+progress()+' | ', room=300-head.length;
+      var p=path.concat([scrDesc()]).join(' > '), head=app+(os?' '+os:'')+' | 신청서 '+progress()+' | ', room=600-head.length;
       if(p.length>room) p='…'+p.slice(p.length-room+1);
       return head+p;
     }
@@ -264,6 +271,35 @@
       return null;
     }
     function mdEnd(){ if(MD){ mdLook(false); ev('detail_exit', mdDesc()); } }
+    // ── 12) v20261020 스토어 홈·목록 화면에서 누른 것 (전원) — 나갈 때 요약(exit)의 그 화면 뒤 [ ] 안에 순서대로
+    //   상세 화면은 위 10번 detail_exit '누름'에 이미 있어서 여기선 뺌. 화면마다 최근 8개까지 (넘치면 앞에 …)
+    var SEC_KO={hero:'배너',models:'모델',quick:'바로가기',trust:'신뢰',popSec:'인기',recentSec:'최근',zeroSec:'0원',wearSec:'워치',giftSec:'선물',
+      rankSec:'순위',pickSec:'목록','v-cat':'분류목록','v-search':'검색','v-wish':'찜'};
+    function secOf(el){ var s=el.closest('#hero,#models,#quick,#trust,#popSec,#recentSec,#zeroSec,#wearSec,#giftSec,#rankSec,#pickSec,#v-cat,#v-search,#v-wish'); return s?(SEC_KO[s.id]||s.id):''; }
+    function goKey(g){ return String(g||'').replace(/^#\/?/,'').replace(/^model\//,''); }
+    function tapOf(t){
+      var el, s;
+      if((el=t.closest('[data-maxv]'))) return '최대혜택:'+(el.classList.contains('on')?'끔':'켬');   // 누르는 순간(바뀌기 전) 켜져 있으면 → 끔
+      if((el=t.closest('[data-mnp]'))) return el.getAttribute('data-mnp')==='1'?'번호이동':'기기변경';
+      if((el=t.closest('[data-sort]'))) return '정렬:'+el.getAttribute('data-sort');
+      if((el=t.closest('[data-sort-open]'))) return '정렬열기';
+      if((el=t.closest('[data-cat]'))) return '분류:'+el.getAttribute('data-cat');
+      if((el=t.closest('.dl-c'))) return '특가:'+(el.getAttribute('data-mid')||'');
+      if((el=t.closest('a[href^="#/model/"]'))){ s=secOf(el); return (s?s+':':'')+goKey(el.getAttribute('href')); }
+      if((el=t.closest('[data-go]'))){ s=secOf(el); return (s||'이동')+':'+goKey(el.getAttribute('data-go')); }
+      if((el=t.closest('[data-video]'))) return '영상';
+      if((el=t.closest('[data-store-i]'))) return '매장';
+      if((el=t.closest('a[href^="tel:"]'))) return '전화';
+      if((el=t.closest('a[href*="pf.kakao.com"]'))) return '카톡';
+      return mdTapOf(t);   // 뒤로·홈·아래 탭·상담 버튼 등 공통
+    }
+    function scrTap(e){
+      try{
+        if(!cur || cur.k.indexOf('model:')===0 || !e.target || !e.target.closest) return;
+        var s=tapOf(e.target); if(!s) return;
+        cur.taps.push(String(s).slice(0,22)); if(cur.taps.length>8){ cur.taps.shift(); cur.tcut=true; }
+      }catch(x){}
+    }
     if(STORE){
       scrStart(); mdStart(cur.k);
       ev('screen', cur.k+' ← (처음)');   // 처음 화면 (광고에서 바로 상세로 들어온 경우도 PriceCheck 가 가게)
@@ -277,6 +313,7 @@
       setInterval(function(){ if(MD && document.visibilityState==='visible') mdLook(true); }, 1000);
       window.addEventListener('scroll', function(){ if(!MD || mdLook._t) return; mdLook._t=setTimeout(function(){ mdLook._t=null; mdLook(false); }, 250); }, {passive:true});
       document.addEventListener('click', function(e){ try{ if(MD && e.target && e.target.closest) mdTap(mdTapOf(e.target)); }catch(x){} }, true);
+      document.addEventListener('click', scrTap, true);   // 12) 홈·목록 화면 누름
       document.addEventListener('change', function(e){ try{ var el=e.target; if(MD && el && el.getAttribute && el.getAttribute('data-calc-sel')==='tier'){ var o=el.selectedOptions&&el.selectedOptions[0]; mdTap('요금제:'+((o&&o.textContent)||el.value).replace(/\s+/g,'')); } }catch(x){} }, true);
       document.addEventListener('input', formSoon, true);
       document.addEventListener('change', formSoon, true);
