@@ -481,12 +481,14 @@ function crow(label, sub, val, was, cls){
 function payHint(st){ if(st.after===0) return '할부금 없이 이용하실 수 있어요'; return st.months===0?'일시납 · 기기값 기준':(st.mm+'개월 할부 · 기기값 기준, '+(st.noint?'이자 없음':'할부이자 포함')); }
 function eul(w){ var s=String(w||''), ch=s.charCodeAt(s.length-1); return (ch>=0xAC00&&ch<=0xD7A3&&(ch-0xAC00)%28)?'을':'를'; }
 function ro(w){ var s=String(w||''), ch=s.charCodeAt(s.length-1); if(ch>=0xAC00&&ch<=0xD7A3){ var jj=(ch-0xAC00)%28; return (jj===0||jj===8)?'로':'으로'; } return '로'; }
-function mdNowKey(){ var e=$('#mdBody .mstep.now'); return e?e.getAttribute('data-step'):''; }
+var MD_NOW='';   // 상세에서 지금 할 단계 (color·cap·car, 다 고르면 'go') — 20261020 마지막 '상담' 단계 카드를 빼서 화면 대신 여기에 둠
+function mdNowKey(){ return MD_NOW; }
 // 고르고 나면 다음 단계로 따라감: 다음 단계가 하단 버튼에 가려 있으면 보이게 살짝 내림, 통신사까지 고르면 '내 가격'으로 (아래로만)
 function mdFollow(prev){
-  var nw=$('#mdBody .mstep.now'), key=nw?nw.getAttribute('data-step'):''; if(!nw||key===prev) return;
+  var key=MD_NOW; if(!key||key===prev) return;
+  var nw=key==='go'?$('#mdBody .mstep[data-step="price"]'):$('#mdBody .mstep[data-step="'+key+'"]'); if(!nw) return;
   var hd=$('#v-model .subhead'), top=(hd?hd.getBoundingClientRect().bottom:0)+8, bar=$('#mdBar'), bot=window.innerHeight-(bar?bar.offsetHeight:0)-8;
-  var el=key==='go'?($('#mdBody .mstep[data-step="price"]')||nw):nw, r=el.getBoundingClientRect(), dy=0;
+  var el=nw, r=el.getBoundingClientRect(), dy=0;
   if(key==='go') dy=r.top-top; else if(r.bottom>bot) dy=Math.min(r.bottom-bot, r.top-top);
   if(dy>4) window.scrollBy({top:dy, behavior:'smooth'});
 }
@@ -1030,44 +1032,29 @@ function renderModel(id, keepRecent){
   body+=step('price', '내 가격', '내 가격', '', (soNow?'<div class="so-notice">'+(SO(m)?'현재 일시품절이에요. 지금은 신청할 수 없어요.':'선택하신 '+esc(selRow.cap||'옵션')+'은(는) 일시품절이에요.')+'</div>':'')+
     '<div class="ptable" id="ucatPrice">'+rows+'</div>'+guideHtml(m)+
     (mdc?'<div class="md-chips">'+mdc+'</div>':''), '');
-  // 마지막 단계: [카톡 상담] [전화 상담] (누르면 하단 버튼과 똑같이 열림)
-  //  20261020 깔끔하게: 제목 '원하시는 방법의 상담을 선택해 주세요!' → '상담', '상담 방법 선택' 표시·버튼 밑 설명 두 문장 뺌 — 버튼만
-  body+=step('go', '상담', '상담', '',
-    '<div class="mstep-cs">'+
-      '<button type="button" class="cs-kk" data-qk="'+esc(m.id)+'"'+soDis+'>'+KKI+'카톡 상담</button>'+
-      '<button type="button" class="cs-ph" data-open="consult" data-model="'+esc(m.id)+'"'+soDis+'>'+PHI+'전화 상담</button>'+
-    '</div>', '', 'cs');
+  // 20261020 사장님: 카톡 상담은 하나도 안 들어옴 → 카톡 상담 버튼은 빼고 '[제품명] 상담 신청하기' 하나만 (하단 고정)
+  //   그래서 마지막 '상담' 단계 카드([카톡 상담][전화 상담])도 뺌 — 같은 버튼이 두 번 안 보이게. 단계는 컬러 → 용량 → 통신사 → 내 가격
+  MD_NOW=nowKey;   // 다 고르면 'go' → 내 가격으로 내려 줌 (mdFollow)
   // 20261020 위 '이 순서대로 하시면 돼요 ①컬러 ②용량 …' 줄은 뺌 — 단계마다 번호가 이미 있음 (이틀간 126명 중 누른 사람 0명)
   var guide='';
-  // 하단 고정: 지금 상태 한 줄 + [카톡 상담] [전화 상담]
-  //  20261020 사장님: 아래 '상담' 단계 [카톡 상담][전화 상담]과 하단 [카톡 상담][상담 신청]이 같이 떠서 이상함
-  //   → 하단 버튼 이름도 '전화 상담'(같은 신청서가 열림)으로 맞추고, '상담' 단계 버튼이 화면에 보이면 하단 고정 줄은 숨김 (csWatch)
-  var bt;
+  // 하단 고정: 지금 상태 한 줄 + [제품명 상담 신청하기]
+  var bt, btBuy=false, shortNm=m.nm.replace(/^갤럭시\s+/,'');
   if(soNow) bt='<b>일시품절</b> · 지금은 신청할 수 없어요';
   else if(needCar) bt='현재 이용 중인 <b>통신사</b>를 고르면 내 가격이 바로 나와요';
-  else if(p.kind==='sheet' && cst && cst.c){ var sup=(num(p.row.out)||0)-cst.after; bt=(typeNm(cst)?esc(typeNm(cst))+' · ':'')+'기기값 <b>'+(cst.after===0?'0원':won(cst.after))+'</b>'+(sup>0?' · 지원 <em>'+manwon(sup)+'</em>':''); }
-  else bt='카톡이나 전화로 <b>편하게 상담</b>받으세요';
+  else if(p.kind==='sheet' && cst && cst.c){ var sup=(num(p.row.out)||0)-cst.after;
+    // 20261020 사장님 문구: 휴대폰은 '고른 이통사(번호이동·기기변경) 혜택(공시지원금·선택약정) 금액 제품명 구매 가능'
+    //   예) 번호이동 공시지원금 104,000원 S26 구매 가능 — 금액은 지원 후 기기값, 제품명은 '갤럭시' 뺀 짧은 이름
+    if(gg==='phone' && typeNm(cst)){ btBuy=true;
+      bt=esc(typeNm(cst))+' '+(cst.method==='sel'?'선택약정':'공시지원금')+' <em>'+(cst.after===0?'0원':won(cst.after))+'</em> <b>'+esc(shortNm)+'</b> 구매 가능'; }
+    else bt=(typeNm(cst)?esc(typeNm(cst))+' · ':'')+'기기값 <b>'+(cst.after===0?'0원':won(cst.after))+'</b>'+(sup>0?' · 지원 <em>'+manwon(sup)+'</em>':''); }
+  else bt='상담 신청하시면 <b>내 가격</b>을 안내해 드려요';
   $('#mdBody').innerHTML='<div class="ucard" data-edit="model:'+esc(m.id)+'"><div class="md-img" id="mdImg">'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(SO(m)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>'+
     // 20261020 휴대폰 소개 문구('더 넓은 세상, 더 많은 가능성' 등)는 뺌 — 워치·태블릿·TV프리는 무슨 상품인지 알려 주는 말이라 그대로
     '<h2 class="md-h ucard-name">'+esc(m.nm)+'</h2>'+(isWear(m)&&m.ds?'<p style="color:var(--sub);margin-top:4px">'+esc(m.ds)+'</p>':'')+
     '<div class="pills" style="margin-top:10px">'+tagsOf(m).map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div>'+
     guide+body+'</div>'+
-    '<div class="md-bar" id="mdBar"><div class="md-bar-t"'+(needCar&&!soNow?' data-md-go="car"':'')+'>'+bt+'</div><div class="md-bar-b">'+
-      '<button type="button" class="mb-kk" data-qk="'+esc(m.id)+'"'+soDis+'>'+KKI+'카톡 상담</button>'+
-      '<button type="button" class="mb-ap" data-open="consult" data-model="'+esc(m.id)+'"'+soDis+'>'+(soNow?'일시품절':PHI+'전화 상담')+'</button></div></div>';
-  csWatch();
-}
-// 20261020 '상담' 단계 버튼 줄이 화면(하단 고정 줄 위쪽)에 들어오면 하단 고정 줄을 숨김 — 같은 버튼이 두 줄로 안 보이게. 다시 위로 올리면 나타남
-var CS_IO=null;
-function csWatch(){
-  try{
-    if(CS_IO){ CS_IO.disconnect(); CS_IO=null; }
-    var el=$('#mdBody .mstep-cs');
-    if(!el || !('IntersectionObserver' in window)){ document.body.classList.remove('cs-vis'); return; }
-    var bar=$('#mdBar'), bh=Math.max(bar?bar.offsetHeight:0, 96);
-    CS_IO=new IntersectionObserver(function(es){ var e=es[es.length-1]; document.body.classList.toggle('cs-vis', !!(e&&e.isIntersecting)); }, {rootMargin:'0px 0px -'+bh+'px 0px', threshold:0});
-    CS_IO.observe(el);
-  }catch(e){}
+    '<div class="md-bar" id="mdBar"><div class="md-bar-t'+(btBuy?' buy':'')+'"'+(needCar&&!soNow?' data-md-go="car"':'')+'>'+bt+'</div><div class="md-bar-b one">'+
+      '<button type="button" class="mb-ap" data-open="consult" data-model="'+esc(m.id)+'"'+soDis+'>'+(soNow?'일시품절':esc(shortNm)+' 상담 신청하기')+'</button></div></div>';
 }
 
 var PICK={};   // 상세에서 고른 컬러 (모델별)
@@ -1104,12 +1091,11 @@ function route(){
   else {
     $('#v-home').classList.add('on');renderRecent();renderPick();
     requestAnimationFrame(function(){window.scrollTo(0,homeScroll)});onScroll();
-    setTab('home'); document.body.classList.remove('no-sq'); document.body.classList.remove('md-on'); document.body.classList.remove('cs-vis'); return;
+    setTab('home'); document.body.classList.remove('no-sq'); document.body.classList.remove('md-on'); return;
   }
   window.scrollTo(0,0); $('#topbar').classList.remove('show'); setTab(tab);
   document.body.classList.toggle('no-sq', v==='model'||v==='apply');
-  document.body.classList.toggle('md-on', v==='model');   // 20261019: 상세는 탭바 대신 [카톡 상담][전화 상담] 고정
-  if(v!=='model') document.body.classList.remove('cs-vis');
+  document.body.classList.toggle('md-on', v==='model');   // 20261019: 상세는 탭바 대신 하단 고정 버튼 (20261020: '[제품명] 상담 신청하기' 하나)
 }
 function setTab(t){ $$('.tabbar a').forEach(function(a){a.classList.toggle('on',a.getAttribute('data-tab')===t)}); }
 // 데이터가 바뀌었을 때 지금 보고 있는 화면을 스크롤 유지한 채 다시 그림
@@ -1793,9 +1779,9 @@ function apInfoHtml(){
 // 20261016: 신청 버튼 2개 — 상담 예약(전화) / 카톡 예약(신청서는 똑같이 CRM에 저장 + 우리 카카오톡 상담 채널 열기, CRM엔 '카톡 상담 요청'으로 표시)
 function apBtnsHtml(){
   if(AP && AP.mode==='kakao') return '<div class="ap-btns"><button type="button" class="cta cta-kakao" id="mKakaoBtn">'+KKI+'<span class="rf-submit-label">카톡으로 상담 시작하기</span></button></div>';
+  // 20261020 사장님: 카톡 상담은 하나도 안 들어옴 → 신청서도 '카톡 예약 신청하기' 버튼은 빼고 '상담 예약 신청하기' 하나만
   return '<div class="ap-btns">'+
     '<button type="button" class="cta" id="mSubmitBtn"><span class="rf-submit-label">상담 예약 신청하기</span> <svg class="cta-ar" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>'+
-    '<button type="button" class="cta cta-kakao" id="mKakaoBtn"><svg class="kk" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.6c-5.2 0-9.4 3.3-9.4 7.4 0 2.6 1.7 4.9 4.3 6.2l-.9 3.3c-.1.3.3.6.6.4l3.9-2.6c.5.1 1 .1 1.5.1 5.2 0 9.4-3.3 9.4-7.4S17.2 3.6 12 3.6z"/></svg><span class="rf-submit-label">카톡 예약 신청하기</span></button>'+
   '</div>';
 }
 function apBarHtml(){

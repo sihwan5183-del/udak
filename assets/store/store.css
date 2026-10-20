@@ -1633,12 +1633,6 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 /* 상세: 이름표 없는 고르기 칸 (컬러·용량·통신사) */
 #v-model .cpick.nol{grid-template-columns:minmax(0,1fr)}
 #v-model .cpick.nol .cpick-row{padding-top:0}
-/* 상세: 상담 단계 — 다른 단계와 같은 크기 제목 + 버튼 2개 나란히 */
-.mstep.cs .mstep-h{align-items:flex-start;gap:8px}
-.mstep.cs .mstep-h>b{width:22px;height:22px;font-size:12px;font-weight:800;margin-top:1px}
-.mstep.cs .mstep-h span{font-size:14.5px;font-weight:800;line-height:1.4;letter-spacing:0}
-.mstep-cs{grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-.mstep-cs button{height:46px}
 /* 상세 가격: 지원금 두 줄 · 조건 한 줄 */
 .pv-sum{padding:2px 13px}
 .pv-sr{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0}
@@ -1649,7 +1643,7 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .pv-sr b.pink{color:var(--pink)}
 .pv-must1{display:flex;align-items:center;gap:8px;padding:2px 2px 0;font-size:13px;font-weight:600;color:var(--ink2);line-height:1.45;word-break:keep-all}
 .pv-must1 b{flex:none;font-size:11px;font-weight:800;color:#4E5968;background:#F2F4F6;border-radius:999px;padding:3px 8px}
-/* 20261020 '상담' 단계 버튼이 화면에 보이면 하단 고정 줄(카톡 상담·전화 상담)은 아래로 숨김 — 같은 버튼 두 줄 안 보이게 */
-.md-bar{transition:transform .25s ease,opacity .25s ease}
-body.cs-vis .md-bar{transform:translate(-50%,110%);opacity:0;pointer-events:none}
-.mb-ap .cs-phi{flex:none;width:18px;height:18px;fill:#fff}
+/* 20261020 상세 하단: 카톡 상담 빼고 '[제품명] 상담 신청하기' 버튼 하나만 (마지막 '상담' 단계 카드도 뺌) */
+.md-bar-b.one{grid-template-columns:1fr}
+/* 20261020 하단 한 줄 '번호이동 공시지원금 104,000원 S26 구매 가능' — 긴 이름(아이폰 18프로맥스 등)도 '구매 가능'이 잘리지 않게 두 줄까지 */
+.md-bar-t.buy{white-space:normal;word-break:keep-all;line-height:1.4;font-size:13px;color:var(--ink2)}
