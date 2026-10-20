@@ -502,7 +502,7 @@ function cgrid(label, key, items, cur, m, n, hint){
 function calcPickers(m, r, st){
   var g=r.g, h='', car='';
   if(g==='phone') car=cgrid('','carrier',CARRIERS.map(function(c){return [c,c]}),st.s.carrier||'',m,4,
-    '');   // 20261020 '사용 통신사' 이름표 뺌 — 단계 제목 '지금 쓰는 통신사'와 같은 말
+    '');   // 20261020 '사용 통신사' 이름표 뺌 — 단계 제목 '현재 이용 중인 통신사'와 같은 말
   var ts=g==='tvfree'?[]:rowTiers(r);
   if(g==='tvfree') h+=tvCondHtml();
   if(ts.length>1) h+='<div class="cpick"><div class="cpick-l">'+(g==='tvfree'?'집 인터넷':'요금제')+'</div><select class="csel" data-calc-sel="tier" data-model="'+esc(m.id)+'">'+ts.map(function(t){
@@ -1017,12 +1017,13 @@ function renderModel(id, keepRecent){
   var steps=[], body='';
   var step=function(key, short, title, sub, inner, chip, cls){ var ok=!!done[key], now=(key===nowKey); steps.push({k:key, t:short, ok:ok, now:now});
     return '<div class="mstep'+(now?' now':'')+(ok?' ok':'')+(cls?' '+cls:'')+'" data-step="'+key+'"><div class="mstep-h"><b>'+(ok?'✓':steps.length)+'</b><div><span>'+title+'</span>'+(sub?'<small>'+sub+'</small>':'')+'</div>'+(chip||'')+'</div>'+inner+'</div>'; };
-  var chipOf=function(key, val, dflt){ return done[key]?'<em class="mstep-ok">✓ '+esc(val)+'</em>':key===nowKey?'<em class="mstep-go">골라 주세요</em>':dflt?'<em class="mstep-df">기본'+(key==='color'&&val?' · '+esc(val):'')+'</em>':''; };   // 20261020 컬러 이름표를 뺀 대신 기본 컬러 이름은 여기 표시
+  // 20261020 컬러 이름표를 뺀 대신 기본 컬러 이름은 여기 표시 · ask: 제목이 이미 '…해 주세요'면 '골라 주세요' 표시는 안 붙임(같은 말 두 번)
+  var chipOf=function(key, val, dflt, ask){ return done[key]?'<em class="mstep-ok">✓ '+esc(val)+'</em>':key===nowKey?(ask?'<em class="mstep-go">골라 주세요</em>':''):dflt?'<em class="mstep-df">기본'+(key==='color'&&val?' · '+esc(val):'')+'</em>':''; };
   // 20261019 단계 아래 설명 문구(기본값 안내·통신사 안내·'그대로 두셔도 돼요')는 전부 뺌 — 제목 + 고르는 칸만
-  // 20261020 깔끔하게: 단계 제목은 짧게(컬러 / 용량 / 지금 쓰는 통신사 / 내 가격 / 상담), 칸 안 이름표(컬러·용량·사용 통신사)는 뺌
-  if(cN) body+=step('color', '컬러', '컬러', '', colorPicker(m), chipOf('color', colNm, true), done.color?'':'dflt');
-  if(oN) body+=step('cap', oL, esc(oL), '', optPicker(m), chipOf('cap', capNm, true), done.cap?'':'dflt');
-  if(PK.car) body+=step('car', '통신사', '지금 쓰는 통신사', '', PK.car, chipOf('car', carNm, false));
+  // 20261020 단계 제목 (사장님 문구): 컬러를 골라 주세요 / 용량을 선택해 주세요 / 현재 이용 중인 통신사 / 내 가격 / 상담 — 칸 안 이름표(컬러·용량·사용 통신사)는 뺌
+  if(cN) body+=step('color', '컬러', '컬러를 골라 주세요', '', colorPicker(m), chipOf('color', colNm, true, false), done.color?'':'dflt');
+  if(oN) body+=step('cap', oL, esc(oL)+eul(oL)+' 선택해 주세요', '', optPicker(m), chipOf('cap', capNm, true, false), done.cap?'':'dflt');
+  if(PK.car) body+=step('car', '통신사', '현재 이용 중인 통신사', '', PK.car, chipOf('car', carNm, false, true));
   if(PK.rest) body+='<div class="mstep-sub">'+PK.rest+'</div>';
   // 20261020 '당일 택배 발송 · 5분 상담' 칩 뺌 (첫 화면·신청서와 같은 말) — TV프리 대상 조건 칩, 워치·태블릿 '의무가입 X' 칩은 그대로
   var mdc=isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):(gg==='phone'&&cst&&cst.c)?'':'<span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span>';
@@ -1041,7 +1042,7 @@ function renderModel(id, keepRecent){
   // 하단 고정: 지금 상태 한 줄 + [카톡 상담] [상담 신청]
   var bt;
   if(soNow) bt='<b>일시품절</b> · 지금은 신청할 수 없어요';
-  else if(needCar) bt='지금 쓰는 <b>통신사</b>를 고르면 내 가격이 바로 나와요';
+  else if(needCar) bt='현재 이용 중인 <b>통신사</b>를 고르면 내 가격이 바로 나와요';
   else if(p.kind==='sheet' && cst && cst.c){ var sup=(num(p.row.out)||0)-cst.after; bt=(typeNm(cst)?esc(typeNm(cst))+' · ':'')+'기기값 <b>'+(cst.after===0?'0원':won(cst.after))+'</b>'+(sup>0?' · 지원 <em>'+manwon(sup)+'</em>':''); }
   else bt='카톡이나 전화로 <b>편하게 상담</b>받으세요';
   $('#mdBody').innerHTML='<div class="ucard" data-edit="model:'+esc(m.id)+'"><div class="md-img" id="mdImg">'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(SO(m)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>'+
@@ -1119,13 +1120,13 @@ window.__stClose=closeSheet;
 
 function sheetContact(){
   return '<h3>무엇이든 물어보세요</h3><div class="contact-btns"><a href="tel:'+esc(S.tel)+'">📞 전화 상담</a><a class="kakao" href="'+esc(S.kakao)+'" target="_blank" rel="noopener">💬 카톡 문의</a></div>'+
-    '<div class="todo" style="margin-top:12px">고객센터 '+esc(S.tel)+'<br>상담 신청서를 남겨주시면 순서대로 연락드립니다.</div>'+
+    '<div class="todo" style="margin-top:12px">고객센터 '+esc(S.tel)+'<br>상담 신청서를 남겨 주시면 순서대로 연락드립니다.</div>'+
     '<button class="cta" data-open="consult">온라인 상담 신청하기</button>';
 }
 function sheetGuide(){
   var st=[
     ['모델·조건 선택','원하시는 휴대폰, 요금제, 할인 방식을 선택하시면 <br class="gd-br">예상 월 납부금액을 바로 확인하실 수 있습니다.'],
-    ['온라인 상담 신청서 작성','이름, 연락처, 생년월일을 남겨주시면 상담 신청이 완료됩니다.'],
+    ['온라인 상담 신청서 작성','이름, 연락처, 생년월일을 남겨 주시면 상담 신청이 완료됩니다.'],
     ['상담 진행','상담사가 연락드려 최종 금액과 진행 조건을 안내해 드립니다. <br class="gd-br">고객님께서 동의하실 때만 진행됩니다.'],
     ['개통 및 수령','당일 택배로 받아보시거나 가까운 매장에서 개통 및 수령하실 수 있습니다.']];
   return '<h3 class="gd-t">구매 가이드</h3><ol class="gd-steps">'+st.map(function(x,i){ return '<li><span class="gd-n">'+(i+1)+'</span><div><b>'+x[0]+'</b><p>'+x[1]+'</p></div></li>'; }).join('')+'</ol>'+
@@ -1136,7 +1137,7 @@ function sheetGuide(){
     '<button class="cta gd-cta c-guide" data-open="consult">온라인 상담 신청하기 <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
 }
 function sheetSoon(){
-  return '<div class="soon-box"><div class="soon-ic">🛠</div><b>현재 준비중이에요!</b><p>더 좋은 혜택으로 곧 찾아올게요.</p></div><button class="cta" type="button" data-close-sheet>확인</button>';
+  return '<div class="soon-box"><div class="soon-ic">🛠</div><b>현재 준비 중이에요!</b><p>더 좋은 혜택으로 곧 찾아올게요.</p></div><button class="cta" type="button" data-close-sheet>확인</button>';
 }
 function sheetSubsidy(){
   var gift='<svg viewBox="0 0 24 24"><rect x="3.5" y="8.5" width="17" height="4" rx="1"/><path d="M5 12.5v7.5h14v-7.5M12 8.5V20M12 8.5c-1.6-3.6-6-4-6-1.4 0 1.6 2.6 1.4 6 1.4zM12 8.5c1.6-3.6 6-4 6-1.4 0 1.6-2.6 1.4-6 1.4z"/></svg>';
@@ -1146,7 +1147,7 @@ function sheetSubsidy(){
     '<div class="gd-sub">제휴카드 · 부가서비스 의무 가입 없이 진행됩니다.</div>'+
     '<button class="cta gd-cta c-sub" data-go="#/cat/all">지원금 받는 모델 보러가기 <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>';
 }
-var QNA=[["가격·가입 조건", [["제휴카드나 부가서비스에 꼭 가입해야 하나요?", "아니요. 제휴카드 및 부가서비스 의무가입 없이 진행됩니다."], ["표시된 금액은 어떻게 계산되나요?", "선택하신 모델, 가입유형, 요금제, 할인 방식 등을 기준으로 예상 금액을 안내해드립니다."], ["요금제는 얼마나 유지해야 하나요?", "월 85,000원 요금제를 6개월 이상 유지하는 조건입니다. 이후에는 월 47,000원 이상 요금제로 변경하실 수 있습니다."], ["6개월 이후에는 꼭 요금제를 변경해야 하나요?", "아닙니다. 현재 요금제를 계속 이용하시거나, 조건 충족 후 월 47,000원 이상 요금제로 변경하실 수 있습니다."], ["공시지원금과 선택약정은 무엇이 다른가요?", "공시지원금은 휴대폰 기기값을 할인받는 방식이며, 선택약정은 월 통신요금의 25%를 할인받는 방식입니다. 신청 화면에서 조건별 예상 금액을 비교하실 수 있습니다."], ["번호이동과 기기변경은 어떤 차이인가요?", "SKT·KT·알뜰폰에서 LG U+로 변경하시면 번호이동, 현재 LG U+를 이용 중이시면 기기변경으로 진행됩니다."], ["번호이동을 하면 전화번호도 변경되나요?", "아닙니다. 사용 중인 전화번호를 유지하면서 통신사만 LG U+로 변경하는 방식입니다."], ["왜 번호이동과 기기변경 가격이 다른가요?", "가입유형에 따라 적용되는 지원 조건이 달라 휴대폰 구매금액에 차이가 있을 수 있습니다."], ["월 예상 납부금에는 무엇이 포함되나요?", "선택하신 조건 기준의 휴대폰 기기 할부금과 월 통신요금을 합산하여 안내해드립니다."], ["휴대폰 가격과 월 납부금은 왜 다르게 보이나요?", "휴대폰 가격은 단말기 구매금액이며, 월 예상 납부금은 기기 할부금과 통신요금을 합산한 금액입니다."], ["할부기간을 선택할 수 있나요?", "신청 화면에서 제공되는 할부기간 중 원하는 조건을 선택하실 수 있습니다."], ["일시불로 구매할 수도 있나요?", "가능한 결제 방식은 선택하신 모델과 조건에 따라 상담 시 확인해드립니다."], ["조건을 바꾸면 예상 금액도 달라지나요?", "네. 가입유형, 요금제, 할인 방식, 할부기간 등에 따라 예상 금액이 달라질 수 있습니다."]]], ["상담·신청", [["상담 신청을 하면 바로 구매가 진행되나요?", "상담 신청 후 담당자가 선택하신 조건과 예상 금액을 다시 안내해드립니다. 상담 내용을 확인한 뒤 다음 절차가 진행됩니다."], ["상담은 얼마나 걸리나요?", "기본적인 조건 안내는 약 5분 내외로 진행되며, 문의내용에 따라 상담시간이 달라질 수 있습니다."], ["전화 상담이 필요한 이유가 무엇인가요?", "선택하신 모델과 가입조건, 요금제, 예상 금액 등 신청 내용을 정확하게 확인하기 위해 상담을 진행합니다."], ["온라인으로 어떻게 신청하나요?", "원하는 휴대폰과 가입조건을 선택한 뒤 이름, 연락처 등 상담에 필요한 정보를 입력해주시면 됩니다."], ["입력한 조건은 상담할 때 다시 확인해주나요?", "네. 고객님이 선택하신 모델, 가입유형, 요금제, 할인 방식 등을 기준으로 상담을 진행합니다."], ["상담 신청 전에 예상 금액을 확인할 수 있나요?", "네. 모델과 가입조건을 선택하시면 예상 월 납부금과 적용 가능한 지원금 정보를 확인하실 수 있습니다."], ["상담할 때 다른 모델도 함께 물어볼 수 있나요?", "네. 상담 시 다른 모델이나 조건도 함께 문의하실 수 있습니다."], ["온라인 상담 신청은 언제든 할 수 있나요?", "페이지에서 상담 신청을 접수하실 수 있으며, 상담은 운영시간 내 순차적으로 진행됩니다."], ["이름, 연락처, 생년월일은 왜 필요한가요?", "상담 및 가입조건 확인을 위해 필요한 정보를 받고 있습니다. 자세한 내용은 개인정보 수집 및 이용 동의를 확인해주세요."], ["전달사항에는 무엇을 적으면 되나요?", "원하는 연락시간, 색상, 용량, 문의사항 등 상담 시 참고가 필요한 내용을 자유롭게 남겨주시면 됩니다."]]], ["배송·수령", [["휴대폰은 어떻게 받을 수 있나요?", "상담 완료 후 선택하신 모델의 진행 가능 여부와 수령 방법을 안내해드립니다."], ["택배로 받을 수 있나요?", "네. 택배 수령이 가능한 경우 상담 과정에서 배송 절차를 안내해드립니다."], ["매장에서 직접 받을 수도 있나요?", "서울·경기 내 이용 가능한 지정매장의 경우 방문 수령 가능 여부를 상담 시 확인해드립니다."], ["원하는 색상과 용량을 선택할 수 있나요?", "신청 화면에서 선택 가능한 색상과 용량을 확인하실 수 있습니다."], ["선택한 색상이나 용량이 없는 경우에는 어떻게 하나요?", "상담 시 진행 가능한 색상과 용량을 확인하여 안내해드립니다."], ["휴대폰은 언제 받을 수 있나요?", "모델, 색상, 용량, 재고 상황 및 진행 절차에 따라 수령 일정이 달라질 수 있으며 상담 시 안내해드립니다."], ["유심이나 eSIM도 안내받을 수 있나요?", "네. 가입유형과 이용하실 휴대폰에 따라 필요한 유심 또는 eSIM 절차를 안내해드립니다."], ["온라인으로 구매하고 매장에서 도움을 받을 수도 있나요?", "서울·경기 내 지정매장에서 지원 가능한 업무에 한해 방문 안내를 받으실 수 있습니다."], ["데이터 이전도 가능한가요?", "서울·경기 지정매장 방문 시 지원 가능한 범위 내에서 데이터 이전 및 초기 설정을 도와드립니다."], ["초기 설정도 도움받을 수 있나요?", "지정매장 방문 시 지원 가능한 범위 내에서 기본적인 휴대폰 설정을 도와드립니다."]]], ["지원금·혜택", [["휴대폰 구매 시 제공되는 혜택이 있나요?", "모델과 진행 중인 행사에 따라 제공되는 혜택을 상품 페이지에서 확인하실 수 있습니다."], ["투명케이스·보호필름·충전기 혜택은 어떻게 확인하나요?", "해당 혜택이 적용되는 모델은 상품 페이지에 별도로 표시됩니다."], ["지원금 혜택은 어떤 조건으로 받을 수 있나요?", "모델, 가입유형, 요금제 등에 따라 적용되는 지원금이 달라질 수 있으며 신청 화면에서 예상 금액을 확인하실 수 있습니다."], ["번호이동과 기기변경 모두 지원금이 있나요?", "번호이동과 기기변경 각각 적용 가능한 조건에 따라 예상 지원금이 안내됩니다."], ["지원금은 모든 모델이 동일한가요?", "아닙니다. 모델과 가입유형, 요금제 등에 따라 적용되는 지원금이 다를 수 있습니다."], ["지원금이 가장 큰 모델을 볼 수 있나요?", "상품 목록과 지원금 혜택 메뉴에서 현재 조건이 좋은 모델을 확인하실 수 있습니다."], ["기기값 0원 모델은 어떤 의미인가요?", "안내된 조건을 적용했을 때 휴대폰 기기값이 0원으로 계산되는 모델을 의미합니다. 세부 적용 조건은 상품 페이지에서 확인하실 수 있습니다."], ["사은품은 모든 모델에 제공되나요?", "모델 및 행사에 따라 제공 여부와 구성이 다를 수 있으며 적용되는 혜택은 상품 페이지에 표시됩니다."], ["TV프리 혜택은 누가 받을 수 있나요?", "안내된 인터넷·TV 이용조건을 충족하는 고객님을 대상으로 제공되는 혜택입니다. 대상 여부는 상담 시 확인해드립니다."], ["인터넷·TV를 이용 중인데 추가 혜택을 확인할 수 있나요?", "네. 현재 이용 중인 U+ 인터넷·TV 조건을 알려주시면 적용 가능한 혜택이 있는지 확인해드립니다."], ["워치나 태블릿 혜택도 있나요?", "진행 중인 행사 및 적용 모델에 따라 관련 혜택이 있는 경우 상품 페이지에서 안내해드립니다."]]], ["가입 가능 여부", [["알뜰폰을 사용 중인데 번호이동할 수 있나요?", "네. 알뜰폰에서 LG U+로 번호이동 신청이 가능합니다."], ["현재 LG U+를 사용 중인데 신청할 수 있나요?", "네. LG U+ 이용 고객님은 기기변경 조건으로 확인하실 수 있습니다."], ["SKT를 사용 중인데 신청할 수 있나요?", "네. SKT를 이용 중이시면 LG U+ 번호이동 조건으로 확인하실 수 있습니다."], ["KT를 사용 중인데 신청할 수 있나요?", "네. KT를 이용 중이시면 LG U+ 번호이동 조건으로 확인하실 수 있습니다."], ["미성년자도 신청할 수 있나요?", "미성년자는 가입 과정에서 법정대리인 확인 및 필요한 절차가 추가될 수 있습니다."], ["가족 명의로 신청할 수 있나요?", "가입자 명의에 따라 필요한 본인확인 절차가 있으므로 상담 시 확인해드립니다."], ["외국인도 신청할 수 있나요?", "가입에 필요한 본인확인 조건 등에 따라 가능 여부가 달라질 수 있어 상담을 통해 확인해드립니다."], ["법인 또는 사업자 명의도 가능한가요?", "명의 유형에 따라 필요한 절차가 달라질 수 있어 상담을 통해 확인해드립니다."]]], ["현재 이용 중인 휴대폰·약정", [["기존 휴대폰 할부금이 남아 있어도 새 휴대폰을 신청할 수 있나요?", "기존 휴대폰의 할부 상태와 별개로 새로운 휴대폰 가입조건을 확인하실 수 있습니다. 기존 단말 관련 금액은 현재 이용 중인 통신사를 통해 확인해주세요."], ["현재 약정이 남아 있는데 신청할 수 있나요?", "현재 약정 상태에 따라 조건이 달라질 수 있으므로 상담 시 현재 이용 중인 조건을 함께 확인해주세요."], ["기존 휴대폰을 꼭 반납해야 하나요?", "별도의 반납 조건이 안내되지 않은 상품은 휴대폰 반납을 전제로 하지 않습니다."], ["기존에 사용하던 유심을 계속 사용할 수 있나요?", "가입유형과 휴대폰 모델에 따라 달라질 수 있으며 상담 시 안내해드립니다."], ["선택약정을 이용 중인데 기기변경할 수 있나요?", "현재 약정 상태와 가입조건에 따라 확인이 필요하며 상담 시 안내해드립니다."], ["현재 사용 중인 요금제를 그대로 사용할 수 있나요?", "상품별로 적용되는 요금제 조건이 다를 수 있으며 신청 화면에서 선택 가능한 요금제를 확인하실 수 있습니다."]]], ["요금제", [["왜 특정 요금제를 일정 기간 사용해야 하나요?", "안내된 휴대폰 가격과 지원금이 해당 요금제 및 유지조건을 기준으로 적용되기 때문입니다."], ["6개월 이후에는 어떤 요금제로 변경할 수 있나요?", "안내된 조건 기준으로 월 47,000원 이상 요금제로 변경하실 수 있습니다."], ["요금제를 계속 85,000원으로 사용해도 되나요?", "네. 원하시는 경우 현재 요금제를 계속 이용하실 수 있습니다."], ["요금제 변경은 어디에서 하나요?", "요금제 변경 가능 시점 이후 LG U+ 고객센터 및 이용 가능한 채널에서 변경하실 수 있습니다."], ["선택한 요금제에 따라 휴대폰 가격도 달라지나요?", "네. 요금제에 따라 적용 가능한 지원금과 예상 구매금액이 달라질 수 있습니다."]]], ["기타", [["상담 가능한 시간은 언제인가요?", "상담 운영시간 내 접수 건부터 순차적으로 안내해드립니다."], ["상품마다 가격이 다른 이유는 무엇인가요?", "모델별 출고가와 가입유형, 요금제, 할인 방식, 적용 가능한 지원조건이 서로 다르기 때문입니다."], ["같은 휴대폰인데 조건에 따라 금액이 달라지는 이유는 무엇인가요?", "번호이동·기기변경 여부, 요금제, 공시지원금·선택약정 등 선택하신 조건에 따라 예상 금액이 달라집니다."], ["가장 저렴한 조건은 어떻게 확인하나요?", "상품 페이지에서 가입조건을 변경해보시면 조건별 예상 금액을 비교하실 수 있습니다."], ["인기 모델은 어디에서 확인하나요?", "홈 화면의 인기모델 및 추천 목록에서 확인하실 수 있습니다."], ["기기값 0원 모델만 따로 볼 수 있나요?", "네. 기기값 0원 메뉴에서 해당 조건의 모델을 모아 확인하실 수 있습니다."], ["원하는 휴대폰을 빠르게 찾는 방법이 있나요?", "검색창 또는 상단 모델 카테고리를 이용하시면 원하는 모델을 빠르게 확인하실 수 있습니다."], ["조건이 어려운데 직접 비교해주실 수 있나요?", "네. 상담 신청 시 현재 사용 중인 통신사와 원하는 모델을 알려주시면 조건 비교를 도와드립니다."]]]];
+var QNA=[["가격·가입 조건", [["제휴카드나 부가서비스에 꼭 가입해야 하나요?", "아니요. 제휴카드 및 부가서비스 의무가입 없이 진행됩니다."], ["표시된 금액은 어떻게 계산되나요?", "선택하신 모델, 가입유형, 요금제, 할인 방식 등을 기준으로 예상 금액을 안내해 드립니다."], ["요금제는 얼마나 유지해야 하나요?", "월 85,000원 요금제를 6개월 이상 유지하는 조건입니다. 이후에는 월 47,000원 이상 요금제로 변경하실 수 있습니다."], ["6개월 이후에는 꼭 요금제를 변경해야 하나요?", "아닙니다. 현재 요금제를 계속 이용하시거나, 조건 충족 후 월 47,000원 이상 요금제로 변경하실 수 있습니다."], ["공시지원금과 선택약정은 무엇이 다른가요?", "공시지원금은 휴대폰 기기값을 할인받는 방식이며, 선택약정은 월 통신요금의 25%를 할인받는 방식입니다. 신청 화면에서 조건별 예상 금액을 비교하실 수 있습니다."], ["번호이동과 기기변경은 어떤 차이인가요?", "SKT·KT·알뜰폰에서 LG U+로 변경하시면 번호이동, 현재 LG U+를 이용 중이시면 기기변경으로 진행됩니다."], ["번호이동을 하면 전화번호도 변경되나요?", "아닙니다. 사용 중인 전화번호를 유지하면서 통신사만 LG U+로 변경하는 방식입니다."], ["왜 번호이동과 기기변경 가격이 다른가요?", "가입유형에 따라 적용되는 지원 조건이 달라 휴대폰 구매금액에 차이가 있을 수 있습니다."], ["월 예상 납부금에는 무엇이 포함되나요?", "선택하신 조건 기준의 휴대폰 기기 할부금과 월 통신요금을 합산하여 안내해 드립니다."], ["휴대폰 가격과 월 납부금은 왜 다르게 보이나요?", "휴대폰 가격은 단말기 구매금액이며, 월 예상 납부금은 기기 할부금과 통신요금을 합산한 금액입니다."], ["할부기간을 선택할 수 있나요?", "신청 화면에서 제공되는 할부기간 중 원하는 조건을 선택하실 수 있습니다."], ["일시불로 구매할 수도 있나요?", "가능한 결제 방식은 선택하신 모델과 조건에 따라 상담 시 확인해 드립니다."], ["조건을 바꾸면 예상 금액도 달라지나요?", "네. 가입유형, 요금제, 할인 방식, 할부기간 등에 따라 예상 금액이 달라질 수 있습니다."]]], ["상담·신청", [["상담 신청을 하면 바로 구매가 진행되나요?", "상담 신청 후 담당자가 선택하신 조건과 예상 금액을 다시 안내해 드립니다. 상담 내용을 확인한 뒤 다음 절차가 진행됩니다."], ["상담은 얼마나 걸리나요?", "기본적인 조건 안내는 약 5분 내외로 진행되며, 문의내용에 따라 상담시간이 달라질 수 있습니다."], ["전화 상담이 필요한 이유가 무엇인가요?", "선택하신 모델과 가입조건, 요금제, 예상 금액 등 신청 내용을 정확하게 확인하기 위해 상담을 진행합니다."], ["온라인으로 어떻게 신청하나요?", "원하는 휴대폰과 가입조건을 선택한 뒤 이름, 연락처 등 상담에 필요한 정보를 입력해 주시면 됩니다."], ["입력한 조건은 상담할 때 다시 확인해주나요?", "네. 고객님이 선택하신 모델, 가입유형, 요금제, 할인 방식 등을 기준으로 상담을 진행합니다."], ["상담 신청 전에 예상 금액을 확인할 수 있나요?", "네. 모델과 가입조건을 선택하시면 예상 월 납부금과 적용 가능한 지원금 정보를 확인하실 수 있습니다."], ["상담할 때 다른 모델도 함께 물어볼 수 있나요?", "네. 상담 시 다른 모델이나 조건도 함께 문의하실 수 있습니다."], ["온라인 상담 신청은 언제든 할 수 있나요?", "페이지에서 상담 신청을 접수하실 수 있으며, 상담은 운영시간 내 순차적으로 진행됩니다."], ["이름, 연락처, 생년월일은 왜 필요한가요?", "상담 및 가입조건 확인을 위해 필요한 정보를 받고 있습니다. 자세한 내용은 개인정보 수집 및 이용 동의를 확인해 주세요."], ["전달사항에는 무엇을 적으면 되나요?", "원하는 연락시간, 색상, 용량, 문의사항 등 상담 시 참고가 필요한 내용을 자유롭게 남겨 주시면 됩니다."]]], ["배송·수령", [["휴대폰은 어떻게 받을 수 있나요?", "상담 완료 후 선택하신 모델의 진행 가능 여부와 수령 방법을 안내해 드립니다."], ["택배로 받을 수 있나요?", "네. 택배 수령이 가능한 경우 상담 과정에서 배송 절차를 안내해 드립니다."], ["매장에서 직접 받을 수도 있나요?", "서울·경기 내 이용 가능한 지정매장의 경우 방문 수령 가능 여부를 상담 시 확인해 드립니다."], ["원하는 색상과 용량을 선택할 수 있나요?", "신청 화면에서 선택 가능한 색상과 용량을 확인하실 수 있습니다."], ["선택한 색상이나 용량이 없는 경우에는 어떻게 하나요?", "상담 시 진행 가능한 색상과 용량을 확인하여 안내해 드립니다."], ["휴대폰은 언제 받을 수 있나요?", "모델, 색상, 용량, 재고 상황 및 진행 절차에 따라 수령 일정이 달라질 수 있으며 상담 시 안내해 드립니다."], ["유심이나 eSIM도 안내받을 수 있나요?", "네. 가입유형과 이용하실 휴대폰에 따라 필요한 유심 또는 eSIM 절차를 안내해 드립니다."], ["온라인으로 구매하고 매장에서 도움을 받을 수도 있나요?", "서울·경기 내 지정매장에서 지원 가능한 업무에 한해 방문 안내를 받으실 수 있습니다."], ["데이터 이전도 가능한가요?", "서울·경기 지정매장 방문 시 지원 가능한 범위 내에서 데이터 이전 및 초기 설정을 도와드립니다."], ["초기 설정도 도움받을 수 있나요?", "지정매장 방문 시 지원 가능한 범위 내에서 기본적인 휴대폰 설정을 도와드립니다."]]], ["지원금·혜택", [["휴대폰 구매 시 제공되는 혜택이 있나요?", "모델과 진행 중인 행사에 따라 제공되는 혜택을 상품 페이지에서 확인하실 수 있습니다."], ["투명케이스·보호필름·충전기 혜택은 어떻게 확인하나요?", "해당 혜택이 적용되는 모델은 상품 페이지에 별도로 표시됩니다."], ["지원금 혜택은 어떤 조건으로 받을 수 있나요?", "모델, 가입유형, 요금제 등에 따라 적용되는 지원금이 달라질 수 있으며 신청 화면에서 예상 금액을 확인하실 수 있습니다."], ["번호이동과 기기변경 모두 지원금이 있나요?", "번호이동과 기기변경 각각 적용 가능한 조건에 따라 예상 지원금이 안내됩니다."], ["지원금은 모든 모델이 동일한가요?", "아닙니다. 모델과 가입유형, 요금제 등에 따라 적용되는 지원금이 다를 수 있습니다."], ["지원금이 가장 큰 모델을 볼 수 있나요?", "상품 목록과 지원금 혜택 메뉴에서 현재 조건이 좋은 모델을 확인하실 수 있습니다."], ["기기값 0원 모델은 어떤 의미인가요?", "안내된 조건을 적용했을 때 휴대폰 기기값이 0원으로 계산되는 모델을 의미합니다. 세부 적용 조건은 상품 페이지에서 확인하실 수 있습니다."], ["사은품은 모든 모델에 제공되나요?", "모델 및 행사에 따라 제공 여부와 구성이 다를 수 있으며 적용되는 혜택은 상품 페이지에 표시됩니다."], ["TV프리 혜택은 누가 받을 수 있나요?", "안내된 인터넷·TV 이용조건을 충족하는 고객님을 대상으로 제공되는 혜택입니다. 대상 여부는 상담 시 확인해 드립니다."], ["인터넷·TV를 이용 중인데 추가 혜택을 확인할 수 있나요?", "네. 현재 이용 중인 U+ 인터넷·TV 조건을 알려 주시면 적용 가능한 혜택이 있는지 확인해 드립니다."], ["워치나 태블릿 혜택도 있나요?", "진행 중인 행사 및 적용 모델에 따라 관련 혜택이 있는 경우 상품 페이지에서 안내해 드립니다."]]], ["가입 가능 여부", [["알뜰폰을 사용 중인데 번호이동할 수 있나요?", "네. 알뜰폰에서 LG U+로 번호이동 신청이 가능합니다."], ["현재 LG U+를 사용 중인데 신청할 수 있나요?", "네. LG U+ 이용 고객님은 기기변경 조건으로 확인하실 수 있습니다."], ["SKT를 사용 중인데 신청할 수 있나요?", "네. SKT를 이용 중이시면 LG U+ 번호이동 조건으로 확인하실 수 있습니다."], ["KT를 사용 중인데 신청할 수 있나요?", "네. KT를 이용 중이시면 LG U+ 번호이동 조건으로 확인하실 수 있습니다."], ["미성년자도 신청할 수 있나요?", "미성년자는 가입 과정에서 법정대리인 확인 및 필요한 절차가 추가될 수 있습니다."], ["가족 명의로 신청할 수 있나요?", "가입자 명의에 따라 필요한 본인확인 절차가 있으므로 상담 시 확인해 드립니다."], ["외국인도 신청할 수 있나요?", "가입에 필요한 본인확인 조건 등에 따라 가능 여부가 달라질 수 있어 상담을 통해 확인해 드립니다."], ["법인 또는 사업자 명의도 가능한가요?", "명의 유형에 따라 필요한 절차가 달라질 수 있어 상담을 통해 확인해 드립니다."]]], ["현재 이용 중인 휴대폰·약정", [["기존 휴대폰 할부금이 남아 있어도 새 휴대폰을 신청할 수 있나요?", "기존 휴대폰의 할부 상태와 별개로 새로운 휴대폰 가입조건을 확인하실 수 있습니다. 기존 단말 관련 금액은 현재 이용 중인 통신사를 통해 확인해 주세요."], ["현재 약정이 남아 있는데 신청할 수 있나요?", "현재 약정 상태에 따라 조건이 달라질 수 있으므로 상담 시 현재 이용 중인 조건을 함께 확인해 주세요."], ["기존 휴대폰을 꼭 반납해야 하나요?", "별도의 반납 조건이 안내되지 않은 상품은 휴대폰 반납을 전제로 하지 않습니다."], ["기존에 사용하던 유심을 계속 사용할 수 있나요?", "가입유형과 휴대폰 모델에 따라 달라질 수 있으며 상담 시 안내해 드립니다."], ["선택약정을 이용 중인데 기기변경할 수 있나요?", "현재 약정 상태와 가입조건에 따라 확인이 필요하며 상담 시 안내해 드립니다."], ["현재 사용 중인 요금제를 그대로 사용할 수 있나요?", "상품별로 적용되는 요금제 조건이 다를 수 있으며 신청 화면에서 선택 가능한 요금제를 확인하실 수 있습니다."]]], ["요금제", [["왜 특정 요금제를 일정 기간 사용해야 하나요?", "안내된 휴대폰 가격과 지원금이 해당 요금제 및 유지조건을 기준으로 적용되기 때문입니다."], ["6개월 이후에는 어떤 요금제로 변경할 수 있나요?", "안내된 조건 기준으로 월 47,000원 이상 요금제로 변경하실 수 있습니다."], ["요금제를 계속 85,000원으로 사용해도 되나요?", "네. 원하시는 경우 현재 요금제를 계속 이용하실 수 있습니다."], ["요금제 변경은 어디에서 하나요?", "요금제 변경 가능 시점 이후 LG U+ 고객센터 및 이용 가능한 채널에서 변경하실 수 있습니다."], ["선택한 요금제에 따라 휴대폰 가격도 달라지나요?", "네. 요금제에 따라 적용 가능한 지원금과 예상 구매금액이 달라질 수 있습니다."]]], ["기타", [["상담 가능한 시간은 언제인가요?", "상담 운영시간 내 접수 건부터 순차적으로 안내해 드립니다."], ["상품마다 가격이 다른 이유는 무엇인가요?", "모델별 출고가와 가입유형, 요금제, 할인 방식, 적용 가능한 지원조건이 서로 다르기 때문입니다."], ["같은 휴대폰인데 조건에 따라 금액이 달라지는 이유는 무엇인가요?", "번호이동·기기변경 여부, 요금제, 공시지원금·선택약정 등 선택하신 조건에 따라 예상 금액이 달라집니다."], ["가장 저렴한 조건은 어떻게 확인하나요?", "상품 페이지에서 가입조건을 변경해보시면 조건별 예상 금액을 비교하실 수 있습니다."], ["인기 모델은 어디에서 확인하나요?", "홈 화면의 인기모델 및 추천 목록에서 확인하실 수 있습니다."], ["기기값 0원 모델만 따로 볼 수 있나요?", "네. 기기값 0원 메뉴에서 해당 조건의 모델을 모아 확인하실 수 있습니다."], ["원하는 휴대폰을 빠르게 찾는 방법이 있나요?", "검색창 또는 상단 모델 카테고리를 이용하시면 원하는 모델을 빠르게 확인하실 수 있습니다."], ["조건이 어려운데 직접 비교해주실 수 있나요?", "네. 상담 신청 시 현재 사용 중인 통신사와 원하는 모델을 알려 주시면 조건 비교를 도와드립니다."]]]];
 var QCAT=0, QQ='';
 // 검색: 질문·답변 전체에서 찾기 (비슷한 말도 함께 — 예: 배송 → 택배·수령)
 var QSYN={'배송':['택배','수령'],'택배':['배송','수령'],'수령':['배송','택배'],'가격':['금액','기기값'],'금액':['가격'],'요금':['요금제'],'할부':['할부기간','일시불'],'지원금':['혜택','공시'],'사은품':['혜택','케이스','필름','충전기'],'약정':['선택약정'],'매장':['방문','지정매장'],'상담':['신청'],'유심':['eSIM'],'번호':['번호이동'],'tv':['TV프리','인터넷']};
@@ -1369,7 +1370,7 @@ function sheetConsult(modelId, colorNm, optNm){
     '<div class="ff" id="mBundleWrap">'+bundleHtml(byId(modelId))+'</div>'+
     '<div class="ff" id="mOptWrap"'+(optOpts(byId(modelId))?'':' hidden')+'><label id="mOptLbl">'+esc(byId(modelId)?optLabel(byId(modelId)):'사이즈')+'</label><select id="mOptSel">'+optOpts(byId(modelId),optNm)+'</select></div>'+
     '<div class="ff" id="mColorWrap"'+(colorOpts(byId(modelId))?'':' hidden')+'><label>희망 컬러</label><select id="mColorSel">'+colorOpts(byId(modelId),colorNm)+'</select></div>'+
-    '<div class="ff"><label>전달사항</label><textarea id="mUserNote" rows="3" maxlength="500" placeholder="요청사항을 적어주세요"></textarea></div>'+
+    '<div class="ff"><label>전달사항</label><textarea id="mUserNote" rows="3" maxlength="500" placeholder="요청사항을 적어 주세요"></textarea></div>'+
     '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히</button></label>'+
     '<div class="privacy-txt" id="privacyTxt">유플러스 다이렉트(이하 "회사")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
     '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사<br>· 목적: 온라인 상담 신청 접수, 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
@@ -1384,18 +1385,18 @@ function submitConsult(){
   var phone='010'+$('#mPhone2').value.replace(/\D/g,'')+$('#mPhone3').value.replace(/\D/g,'');
   var birth=birth8($('#mUserBirth').value);
   var carrier=$('#mCarrierSel').value, device=$('#mDeviceSelect').value, memo=$('#mUserNote').value.trim();
-  if(!name){ alert('이름을 입력해주세요.'); return; }
-  if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해주세요.'); return; }
-  if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해주세요.'); return; }
+  if(!name){ alert('이름을 입력해 주세요.'); return; }
+  if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해 주세요.'); return; }
+  if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해 주세요.'); return; }
   var t=new Date(), bY=+birth.slice(0,4), bM=+birth.slice(4,6), bD=+birth.slice(6,8);
-  if(birth.length!==8||bY<1900||bY>t.getFullYear()||bM<1||bM>12||bD<1||bD>31){ alert('생년월일을 정확히 입력해주세요. (예: 940101)'); return; }
+  if(birth.length!==8||bY<1900||bY>t.getFullYear()||bM<1||bM>12||bD<1||bD>31){ alert('생년월일을 정확히 입력해 주세요. (예: 940101)'); return; }
   var age=t.getFullYear()-bY; if(t.getMonth()+1<bM||(t.getMonth()+1===bM&&t.getDate()<bD)) age--;
   if(age<19){ alert('미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 신청해 주세요.'); return; }
-  if(!carrier){ alert('현재 통신사를 선택해주세요.'); return; }
-  if(!device){ alert('관심 기기를 선택해주세요.'); return; }
+  if(!carrier){ alert('현재 이용 중인 통신사를 선택해 주세요.'); return; }
+  if(!device){ alert('관심 기기를 선택해 주세요.'); return; }
   var bPhone=$('#mBundlePhone'), bList=$$('#mBundleWrap select[data-bslot]').filter(function(x){return x.id!=='mBundlePhone'&&x.value}).map(function(x){return x.getAttribute('data-bslot')+': '+x.value});
   if(bPhone && !bPhone.value){ alert('워치·태블릿 혜택은 휴대폰과 함께 구매할 때 적용돼요.\n함께 구매할 휴대폰을 선택해 주세요.'); return; }
-  if(!$('#mPrivacyCheck').checked){ alert('개인정보 수집 및 이용에 동의해주세요.'); return; }
+  if(!$('#mPrivacyCheck').checked){ alert('개인정보 수집 및 이용에 동의해 주세요.'); return; }
   var btn=$('#mSubmitBtn'); if(btn.disabled) return; btn.disabled=true; btn.firstChild.textContent='신청 중...';
   var reset=function(){ btn.disabled=false; btn.firstChild.textContent='온라인 상담 신청하기'; };
   var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
@@ -1412,8 +1413,8 @@ function submitConsult(){
   fetch(SB_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
   .then(function(res){
     if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead'); mnpLead(body); reset(); closeSheet(); showTicket(); }
-    else { reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해주세요.'); }); }
-  }).catch(function(e){ console.error(e); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.'); });
+    else { reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해 주세요.'); }); }
+  }).catch(function(e){ console.error(e); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해 주세요.'); });
 }
 // 20261019 카톡 상담 접수 뒤 — 폰: 곧바로 카카오톡 앱 채팅방으로 / PC: '카카오톡 채팅방 열기' 버튼(새 창)
 //  (PC 웹에선 채팅창이 안 뜨고 PC·폰 카카오톡 앱으로 넘어가서 '안 열린 것처럼' 보였음. 채팅방에 고객이 먼저 한마디 남겨야 우리가 답할 수 있음)
@@ -1539,7 +1540,7 @@ function apPhoneHtml(){
     if(cs.length>1) h+='<div class="qk-car qk-col" id="apColorRow"><div class="qk-l">컬러 <span class="req">*</span></div><div class="qk-cc">'+cs.map(function(c){
         return '<button type="button" class="'+(AP.color===c.nm?'on':'')+'" data-ap="color" data-v="'+esc(c.nm)+'"><i style="--c:'+esc(c.hex||'#ddd')+'"></i>'+esc(c.nm)+'</button>'; }).join('')+'</div></div>';
     if(os.length>1) h+='<div class="qk-car"><div class="qk-l">'+esc(optLabel(m))+'</div>'+apChips('cap',os.map(function(o,i){ var so=!!(o.row&&o.row.so); return [i,o.nm+(so?' (품절)':''),so&&!EDIT]; }),AP.cap,Math.min(os.length,4))+'</div>';
-    h+='<div class="qk-car"><div class="qk-l">지금 쓰는 통신사 <span class="req">*</span></div>'+apChips('carrier',CARRIERS.map(function(c){return [c,c]}),AP.carrier,4)+'</div>';
+    h+='<div class="qk-car"><div class="qk-l">현재 이용 중인 통신사 <span class="req">*</span></div>'+apChips('carrier',CARRIERS.map(function(c){return [c,c]}),AP.carrier,4)+'</div>';
   }
   return h;
 }
@@ -1767,7 +1768,7 @@ function apInfoHtml(){
     '<div class="ff"><label>이름 <span class="req">*</span></label><input type="text" id="mUserName" placeholder="이름을 입력해 주세요" autocomplete="name"></div>'+
     '<div class="ff"><label>연락처 <span class="req">*</span></label><div class="phone3"><input type="text" id="mPhone1" value="010" readonly tabindex="-1"><span>-</span><input type="tel" id="mPhone2" maxlength="4" inputmode="numeric" placeholder="0000"><span>-</span><input type="tel" id="mPhone3" maxlength="4" inputmode="numeric" placeholder="0000"></div></div>'+
     '<div class="ff"><label>생년월일 <span class="req">*</span></label><input type="text" id="mUserBirth" inputmode="numeric" maxlength="8" placeholder="예: 940101"></div>'+
-    '<div class="ff"><label>전달사항</label><textarea id="mUserNote" rows="3" maxlength="500" placeholder="요청사항을 적어주세요 (선택)"></textarea></div>'+
+    '<div class="ff"><label>전달사항</label><textarea id="mUserNote" rows="3" maxlength="500" placeholder="요청사항을 적어 주세요 (선택)"></textarea></div>'+
     '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히 보기 ›</button></label>'+
     '<div class="privacy-txt" id="privacyTxt">유플러스 다이렉트(이하 "회사")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
     '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사, 받는 방법(매장에서 받는 경우 수령 매장·출발 동네)<br>· 목적: 온라인 상담 신청 접수, 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
@@ -1892,7 +1893,7 @@ function sheetQuickKakao(m){
     '<div class="qk-sub">고객 정보를 남겨 주시면 <b>유플러스 다이렉트 카카오톡 상담 채널</b>로 바로 연결돼요. 고르신 조건은 상담사에게 같이 전달돼요.</div>'+
     '<div class="qk-pick"><b>'+esc([m.nm, col, cap].filter(Boolean).join(' · '))+'</b>'+(st&&st.c?'<span>'+esc(st.g==='tvfree'?'TV프리 약정 36개월':calcSummary(st))+'</span>':'')+'</div>'+
     (needCol?'<div class="qk-car qk-col"><div class="qk-l">컬러 <span class="req">*</span></div><div class="qk-cc">'+cs.map(function(c){ return '<button type="button" class="'+(QK.col===c.nm?'on':'')+'" data-qk-col="'+esc(c.nm)+'"><i style="--c:'+esc(c.hex||'#ddd')+'"></i>'+esc(c.nm)+'</button>'; }).join('')+'</div></div>':'')+
-    (needCar&&!hasCar?'<div class="qk-car"><div class="qk-l">지금 쓰는 통신사 <span class="req">*</span></div><div class="cgrid" style="--n:4">'+CARRIERS.map(function(cn){ return '<button type="button" class="cg'+(QK.car===cn?' on':'')+'" data-qk-car="'+esc(cn)+'">'+esc(cn)+'</button>'; }).join('')+'</div></div>':'')+
+    (needCar&&!hasCar?'<div class="qk-car"><div class="qk-l">현재 이용 중인 통신사 <span class="req">*</span></div><div class="cgrid" style="--n:4">'+CARRIERS.map(function(cn){ return '<button type="button" class="cg'+(QK.car===cn?' on':'')+'" data-qk-car="'+esc(cn)+'">'+esc(cn)+'</button>'; }).join('')+'</div></div>':'')+
     '<div class="ff"><label>이름 <span class="req">*</span></label><input type="text" id="qkName" placeholder="이름을 입력해 주세요" autocomplete="name"></div>'+
     '<div class="ff"><label>연락처 <span class="req">*</span></label><div class="phone3"><input type="text" value="010" readonly tabindex="-1"><span>-</span><input type="tel" id="qkP2" maxlength="4" inputmode="numeric" placeholder="0000"><span>-</span><input type="tel" id="qkP3" maxlength="4" inputmode="numeric" placeholder="0000"></div></div>'+
     '<div class="ff"><label>생년월일 <span class="req">*</span></label><input type="text" id="qkBirth" inputmode="numeric" maxlength="8" placeholder="예: 940101"></div>'+
@@ -1910,12 +1911,12 @@ function qkSubmit(){
   var qk=kindOf(m), car=QK.car||(SEL[m.id]||{}).carrier||'';
   // 고객 정보는 신청서와 똑같이 전부 필수 — 하나라도 없으면 접수 안 됨 (컬러 → 통신사 → 이름 → 연락처 → 생년월일 → 동의)
   if(qkNeedCol(m) && !QK.col){ alert('컬러를 선택해 주세요.'); return; }
-  if(qk!=='tvfree' && !car){ alert('현재 사용 중인 통신사를 선택해 주세요.'); return; }
-  if(!name){ alert('이름을 입력해주세요.'); return; }
-  if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해주세요.'); return; }
-  if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해주세요.'); return; }
+  if(qk!=='tvfree' && !car){ alert('현재 이용 중인 통신사를 선택해 주세요.'); return; }
+  if(!name){ alert('이름을 입력해 주세요.'); return; }
+  if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해 주세요.'); return; }
+  if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해 주세요.'); return; }
   var be=birthErr(birth); if(be){ alert(be); return; }
-  if(!$('#qkAgree').checked){ alert('개인정보 수집 및 이용에 동의해주세요.'); return; }
+  if(!$('#qkAgree').checked){ alert('개인정보 수집 및 이용에 동의해 주세요.'); return; }
   var btn=$('#qkBtn'); if(!btn||btn.disabled) return;
   // 상세에서 고른 컬러·용량·통신사·요금제·할인·할부 그대로
   //  (신청서 규칙 apValidate 는 안 씀 — 워치·태블릿은 '휴대폰과 함께'일 때만 남기는 규칙이라 보던 상품이 빠져 버림)
@@ -1929,13 +1930,13 @@ function qkSubmit(){
   fetch(SB_URL,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
   .then(function(res){
     if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead',{content_name:'카톡 상담 (상세)'}); mnpLead(body); reset(); closeSheet(); kakaoDone(body.phone); }
-    else { reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해주세요.'); }); }
-  }).catch(function(e){ console.error(e); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.'); });
+    else { reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해 주세요.'); }); }
+  }).catch(function(e){ console.error(e); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해 주세요.'); });
 }
 // 생년월일 확인 (신청서 · 카톡 간편 신청 공통) — 문제 있으면 안내 문구, 괜찮으면 ''
 function birthErr(birth){
   var t=new Date(), bY=+birth.slice(0,4), bM=+birth.slice(4,6), bD=+birth.slice(6,8);
-  if(birth.length!==8||bY<1900||bY>t.getFullYear()||bM<1||bM>12||bD<1||bD>31) return '생년월일을 정확히 입력해주세요. (예: 940101)';
+  if(birth.length!==8||bY<1900||bY>t.getFullYear()||bM<1||bM>12||bD<1||bD>31) return '생년월일을 정확히 입력해 주세요. (예: 940101)';
   var age=t.getFullYear()-bY; if(t.getMonth()+1<bM||(t.getMonth()+1===bM&&t.getDate()<bD)) age--;
   if(age<19) return '미성년자 고객님 안내\n\n미성년자 고객님은 개통 시 본인 신분증 확인과\n법정대리인 동의가 필수입니다.\n보호자와 함께 신청해 주세요.';
   return '';
@@ -1947,7 +1948,7 @@ function apSubmit(mode){
   var apm=apPhone(); if(apm && colorsOf(apm).length>1 && !AP.color){ alert('컬러를 선택해 주세요.'); var acr=$('#apColorRow'); if(acr) acr.scrollIntoView({block:'center',behavior:'smooth'}); return; }   // 20261019: 컬러도 필수
   if(!AP.phone){ alert('휴대폰을 선택해 주세요.'); window.scrollTo({top:0,behavior:'smooth'}); return; }
   if(apm && (SO(apm) || optSO(apm,AP.cap))){ alert('선택하신 '+apm.nm+(SO(apm)?'':' '+optsOf(apm)[AP.cap].nm)+'은(는) 일시품절이라 신청할 수 없어요.'+(SO(apm)?' 다른 휴대폰을 골라 주세요.':' 다른 '+optLabel(apm)+'을(를) 골라 주세요.')); apValidate(); apRefresh(); return; }   // 20261020 품절은 신청 못 함
-  if(!AP.carrier && AP.phone!=='none'){ alert('현재 사용 중인 통신사를 선택해 주세요.'); return; }
+  if(!AP.carrier && AP.phone!=='none'){ alert('현재 이용 중인 통신사를 선택해 주세요.'); return; }
   // 20261019 받는 방법 (택배 / 매장에서 수령하기) — 매장이면 수령 매장 + 어디서 오세요도 필수
   var rr=$('#apRecvRow');
   if(!AP.recv){ alert('받는 방법을 선택해 주세요. (택배 · 당일 발송 / 매장에서 수령하기)'); if(rr) rr.scrollIntoView({block:'center',behavior:'smooth'}); return; }
@@ -1955,11 +1956,11 @@ function apSubmit(mode){
     if(!String(AP.from||'').trim()){ alert('어디서 오시는지 동네를 적어 주세요. (예: 구리 인창동)'); var fi=$('#mFromIn'); if(fi) fi.focus(); return; }
     if(!AP.store){ alert('수령할 매장을 선택해 주세요.'); if(rr) rr.scrollIntoView({block:'center',behavior:'smooth'}); return; }
   }
-  if(!name){ alert('이름을 입력해주세요.'); return; }
-  if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해주세요.'); return; }
-  if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해주세요.'); return; }
+  if(!name){ alert('이름을 입력해 주세요.'); return; }
+  if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해 주세요.'); return; }
+  if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해 주세요.'); return; }
   var be=birthErr(birth); if(be){ alert(be); return; }
-  if(!$('#mPrivacyCheck').checked){ alert('개인정보 수집 및 이용에 동의해주세요.'); return; }
+  if(!$('#mPrivacyCheck').checked){ alert('개인정보 수집 및 이용에 동의해 주세요.'); return; }
   var btn=$(kakao?'#mKakaoBtn':'#mSubmitBtn'), btns=$$('#mSubmitBtn,#mKakaoBtn'); if(!btn||btn.disabled) return;
   var lbl=btn.querySelector('.rf-submit-label'), lbl0=lbl?lbl.textContent:'';
   btns.forEach(function(b){ b.disabled=true; }); if(lbl) lbl.textContent='신청 중...';
@@ -1974,8 +1975,8 @@ function apSubmit(mode){
   .then(function(res){
     if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead',{content_name:kakao?'카톡 예약 신청':'상담 예약 신청'}); mnpLead(body); reset();
       if(kakao) kakaoDone(body.phone, kw); else showTicket(); }   // 카톡 예약은 카카오톡 채팅방으로
-    else { kwX(); reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해주세요.'); }); }
-  }).catch(function(e){ console.error(e); kwX(); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.'); });
+    else { kwX(); reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해 주세요.'); }); }
+  }).catch(function(e){ console.error(e); kwX(); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해 주세요.'); });
 }
 
 /* ---------------- 이벤트 ---------------- */
