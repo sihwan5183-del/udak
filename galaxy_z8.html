@@ -4,9 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <script>
-// 20261019: 스토어 공식 주소는 /store — 예전 주소(/galaxy_z8 · /galaxy)로 들어와도 주소창만 /store 로 바꿈
+// 20261019: 스토어 공식 주소는 /store — 예전 주소(/galaxy_z8 · /galaxy)·첫 주소(/)로 들어와도 주소창만 /store 로 바꿈
 //  (다시 불러오지 않음 · 광고 정보 ?utm·fbclid 와 # 화면은 그대로 · 지금 광고 주소 /galaxy_z8 도 그대로 열림)
-(function(){ try{ if(/^\/(galaxy_z8(\.html)?|galaxy|store\/)$/.test(location.pathname)) history.replaceState(history.state,'','/store'+location.search+location.hash); }catch(e){} })();
+(function(){ try{
+  var p=location.pathname, q=location.search;
+  // 20261021: 첫 주소(landing.uplusdak.com)도 스토어를 바로 보여 줌 — 예전 첫 화면 페이지(udak_landing)처럼 광고 표시가 없으면 '직접 방문'으로 남김
+  if(p==='/'){ if(!q) q='?utm_source=direct&utm_medium=root'; history.replaceState(history.state,'','/store'+q+location.hash); }
+  else if(/^\/(galaxy_z8(\.html)?|galaxy|store\/)$/.test(p)) history.replaceState(history.state,'','/store'+q+location.hash);
+}catch(e){} })();
 </script>
 <script src="/assets/udak-block.js?v=20261020b"></script>
 <title>유플러스 다이렉트 — LG U+ 공식파트너 온라인 스토어</title>
@@ -19,6 +24,9 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ffffff">
+<!-- 20261021 검색엔진 소유 확인 (지우면 확인이 풀림) -->
+<meta name="google-site-verification" content="88o-YgLUt052_QyZBvqFaP90ESrbMGVhHKOuvvqM3Xk">
+<style>.seo-sum{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}</style>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="preconnect" href="https://udak-c6832-default-rtdb.firebaseio.com">
 <link rel="preconnect" href="https://ebggtghzqtxfylbhqfoh.supabase.co" crossorigin>
@@ -69,7 +77,27 @@ window.STORE_CFG = {mode:'view'};
 </head>
 <body>
 <div id="storeRoot"></div>
-<script src="/assets/store/store.js?v=20261020l"></script>
+<!-- 20261021 검색엔진용 글 요약: 스토어 화면은 스크립트로 그려져서 원본에 글이 없음 → 검색엔진(특히 네이버)이 읽어 갈 요약.
+     손님 화면엔 안 보이고, 스토어 화면이 뜨면 store.js 가 지움. 판매 모델이 바뀌면 아래 목록도 같이 고칠 것 -->
+<div id="seoSummary" class="seo-sum">
+  <h1>유플러스 다이렉트(유닥) — LG U+ 공식파트너 온라인 스토어</h1>
+  <p>유플러스 공식파트너사 유플러스 다이렉트. LG U+ 최초의 온라인 대리점. 제휴카드·부가서비스 의무가입 없이, 보이는 가격 그대로. 오후 3시까지 구매확정 시 당일 택배 발송.</p>
+  <h2>판매 중인 휴대폰 (번호이동 · 기기변경)</h2>
+  <ul>
+    <li><a href="/store?m=s26">갤럭시 S26</a></li>
+    <li><a href="/store?m=s26plus">갤럭시 S26+</a></li>
+    <li><a href="/store?m=s26ultra">갤럭시 S26 울트라</a></li>
+    <li><a href="/store?m=fold8">갤럭시 Z 폴드 8</a></li>
+    <li><a href="/store?m=fold8ultra">갤럭시 Z 폴드 8 울트라</a></li>
+    <li><a href="/store?m=flip8">갤럭시 Z 플립 8</a></li>
+    <li><a href="/store?m=iphone18pro">아이폰 18 프로</a></li>
+    <li><a href="/store?m=iphone18promax">아이폰 18 프로맥스</a></li>
+    <li><a href="/store?m=iphone17">아이폰 17</a></li>
+  </ul>
+  <p>워치 · 태블릿 · U+ tv 프리도 함께 구매할 수 있어요. 5분 상담, 서울·경기 매장 방문 수령 가능.</p>
+  <p><a href="/about">왜 유플러스 다이렉트인가요?</a></p>
+</div>
+<script src="/assets/store/store.js?v=20261021a"></script>
 <!-- 이탈 분석(익명, 개인정보 없음) -->
 <script src="/assets/udak-funnel.js?v=20261020c" data-page="galaxy_z8" defer></script>
 </body>

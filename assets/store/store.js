@@ -694,7 +694,7 @@ function renderHero(){
     var real=S.hero.indexOf(h);
     return '<a class="slide'+(h.full?' full':'')+hidCls(h)+'" data-go="'+esc(h.go||'')+'" data-edit="hero:'+real+'">'+
       '<div class="slide-txt"><div class="k">'+k+'</div>'+(h.t?'<div class="t">'+esc(h.t)+'</div>':'')+(h.s?'<div class="s">'+esc(h.s)+'</div>':'')+heroSup(h.sup)+'</div>'+
-      im(h.img,'slide-img',true,'')+'</a>';
+      im(h.img,'slide-img',true,h.img?String((h.k||'')+' '+(h.t||'')).trim():'')+'</a>';
   }).join('');
   $('#heroDots').innerHTML = list.length>1 ? list.map(function(_,i){return '<i'+(i?'':' class="on"')+'></i>'}).join('') : '';
   heroIdx=0; heroGo(0); heroAuto();
@@ -742,7 +742,7 @@ function renderPromo(){
   el.className='promo'+(p.full?' full':'')+hidCls(p);
   el.setAttribute('data-go',p.go||'');
   el.innerHTML='<div class="pt"><span class="tag">'+esc(p.tag)+'</span><h3>'+esc(p.t)+'</h3><p>'+esc(p.s)+'</p><span class="btn">자세히 보기 '+
-    '<svg class="ico" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="m9 6 6 6-6 6"/></svg></span></div>'+im(p.img,'pimg','','');
+    '<svg class="ico" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="m9 6 6 6-6 6"/></svg></span></div>'+im(p.img,'pimg','',p.img?String((p.tag||'')+' '+(p.t||'')).trim():'');
 }
 function secHead(k, more){
   var s=S.sec[k]||{};
@@ -2135,6 +2135,7 @@ window.STORE = {
 
 /* 시작 */
 var ROOT=document.getElementById('storeRoot')||document.body;
+try{ var SEOS=document.getElementById('seoSummary'); if(SEOS) SEOS.parentNode.removeChild(SEOS); }catch(e){}   // 20261021 검색엔진용 글 요약은 화면이 뜨면 지움 (galaxy_z8.html)
 ROOT.insertAdjacentHTML('afterbegin', MARKUP);
 // 온라인 상담 신청 페이지
 $('#app').insertAdjacentHTML('beforeend','<main class="view" id="v-apply"><div class="subhead"><button data-back><svg class="ico" viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button><h1>온라인 상담 신청서</h1><button data-home aria-label="홈으로"><svg class="ico" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg></button></div><div id="apBody"></div><div class="ap-bar" id="apBar"></div></main>');

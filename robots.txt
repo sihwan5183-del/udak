@@ -1,0 +1,9 @@
+# 20261021 검색엔진 안내: 스토어·소개 페이지는 수집 허용, 관리자·예전 보관 페이지는 제외
+User-agent: *
+Allow: /
+Disallow: /apple
+Disallow: /udak_admin
+Disallow: /allinone_admin
+Disallow: /*_prev
+
+Sitemap: https://landing.uplusdak.com/sitemap.xml
