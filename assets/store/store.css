@@ -1655,3 +1655,20 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .ap1-eq .sum b{font-size:14.5px;font-weight:900;color:var(--ink)}
 /* 20261021 휴대폰 상세: 통신사 → 내 가격 → 컬러 → 용량 — 통신사를 고르기 전 '내 가격' 자리 */
 #v-model .pv-wait{margin-top:10px;padding:16px 14px;border:1.5px dashed var(--line);border-radius:14px;background:#fafafb;color:var(--sub);font-size:14px;font-weight:600;line-height:1.5;text-align:center;word-break:keep-all}
+/* 20261021 사장님(2차): 상세는 통신사 → 내 가격 → 신청 / 신청서는 ① 컬러·용량 ② 고객 정보 */
+#v-model .pv-s1{color:var(--ink2);font-weight:700}
+#v-apply .ap1-mini{padding:10px 12px}
+#v-apply .ap1-mini .ap1-img{width:46px;height:46px}
+#v-apply .ap1-mp{flex:none;text-align:right;margin-right:4px;line-height:1.25}
+#v-apply .ap1-mp b{display:block;font-size:16px;font-weight:900;color:var(--pink)}
+#v-apply .ap1-mp small{display:block;font-size:11px;font-weight:700;color:var(--sub)}
+#v-apply .ap-stp{display:flex;align-items:center;gap:8px;margin-top:18px;font-size:15.5px;font-weight:800;color:var(--ink);word-break:keep-all}
+#v-apply .ap-stp b{flex:none;width:22px;height:22px;border-radius:50%;background:var(--pink);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center}
+#v-apply .ap-stp + .qk-car{margin-top:10px}
+#v-apply .ap-info .ap-stp{margin-bottom:2px}
+#v-apply .qk-col.need{padding:10px 10px 12px;margin-left:-10px;margin-right:-10px;border:1.5px solid var(--pink);border-radius:12px;background:#FFF7FB}
+#v-apply .need-t{font-style:normal;font-size:12px;font-weight:700;color:var(--pink);margin-left:6px}
+#v-apply .ap-recv-mini{display:flex;align-items:center;gap:8px;margin-top:14px;padding:10px 12px;border-radius:10px;background:#F6F7F9;font-size:13px;color:var(--ink2)}
+#v-apply .ap-recv-mini svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;flex:none}
+.ap-bar-t small{font-size:11px;font-weight:700;color:var(--sub)}
+#v-model .pv-s .nw{white-space:nowrap}
