@@ -2,6 +2,8 @@
 /phone  /phone_landing.html  200
 /store  /galaxy_z8.html  200
 /store/  /galaxy_z8.html  200
+/shop  /shop.html  200
+/shop/  /shop.html  200
 /galaxy  /galaxy_z8.html  200
 /z8  /store?utm_source=x&utm_medium=organic  302
 /z8-onsite  /store?onsite=1&utm_source=onsite&utm_medium=field  302
