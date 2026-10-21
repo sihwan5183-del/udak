@@ -1132,13 +1132,28 @@ function renderModel(id, keepRecent){
   else bt='상담 신청하시면 <b>내 가격</b>을 안내해 드려요';
   $('#mdBody').innerHTML='<div class="ucard" data-edit="model:'+esc(m.id)+'"><div class="md-img" id="mdImg">'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(SO(m)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>'+
     // 20261020 휴대폰 소개 문구('더 넓은 세상, 더 많은 가능성' 등)는 뺌 — 워치·태블릿·TV프리는 무슨 상품인지 알려 주는 말이라 그대로
-    '<h2 class="md-h ucard-name">'+esc(m.nm)+'</h2>'+(isWear(m)&&m.ds?'<p style="color:var(--sub);margin-top:4px">'+esc(m.ds)+'</p>':'')+
-    '<div class="pills" style="margin-top:10px">'+tagsOf(m).map(function(t){return '<span class="pill">'+esc(t)+'</span>'}).join('')+'</div>'+
+    // 20261021 사장님(GPT 안에서 가져옴): 이름 옆 컬러 점(어떤 색이 있는지만 — 고르는 건 신청서) · 혜택 글씨 칩 → 아이콘 칸
+    '<div class="md-hrow"><h2 class="md-h ucard-name">'+esc(m.nm)+'</h2>'+colDots(m)+'</div>'+(isWear(m)&&m.ds?'<p style="color:var(--sub);margin-top:4px">'+esc(m.ds)+'</p>':'')+
+    benTiles(m)+
     guide+body+'</div>'+
     '<div class="md-bar" id="mdBar"><div class="md-bar-t'+(btBuy?' buy':'')+'"'+(needCar&&!soNow?' data-md-go="car"':'')+'>'+bt+'</div><div class="md-bar-b one">'+
-      '<button type="button" class="mb-ap" data-open="consult" data-model="'+esc(m.id)+'"'+soDis+'>'+(soNow?'일시품절':esc(shortNm)+' 상담 신청하기')+'</button></div></div>';
+      '<button type="button" class="mb-ap" data-open="consult" data-model="'+esc(m.id)+'"'+soDis+'>'+(soNow?'일시품절':esc(shortNm)+' 상담 신청하기<svg class="cta-ar" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>')+'</button></div></div>';   // 20261021 GPT 안: 버튼 끝 '>' 표시
 }
 
+// 20261021 사장님(GPT 안에서 가져옴): 상세 이름 밑 혜택 → 아이콘 칸 (기기값 할인 / 보호필름·케이스 / 고속충전기 제공)
+//   '보호필름 · 투명케이스 · 고속충전기 제공' 한 줄은 두 칸으로 나눔 (GPT 안 글자 그대로) · 그 밖의 혜택 글자는 그대로 한 칸씩
+var BEN_I={gift:PVI.gift, shield:'<svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 9.5 4-1.2 7-5.1 7-9.5V6z"/></svg>',
+  bolt:'<svg viewBox="0 0 24 24"><path d="M13 2 5 13.5h6L10 22l8-11.5h-6z"/></svg>', ck:'<svg viewBox="0 0 24 24"><path d="m6.5 12.5 3.6 3.6 7.4-8"/></svg>'};
+function benTiles(m){
+  var ts=[]; tagsOf(m).forEach(function(t){
+    if(t===GIFT_TXT){ ts.push(['shield','보호필름·케이스']); ts.push(['bolt','고속충전기 제공']); }
+    else ts.push([/할인|0원|지원/.test(t)?'gift':'ck', t]); });
+  if(!ts.length) return '';
+  return '<div class="md-ben" style="--n:'+Math.min(ts.length,3)+'">'+ts.map(function(x){ return '<div class="mb-t"><i>'+BEN_I[x[0]]+'</i><span>'+esc(x[1])+'</span></div>'; }).join('')+'</div>';
+}
+// 이름 옆 컬러 점 — 보여 주기만 (컬러는 신청서 ①에서 고름). 4색 넘으면 이름 없이 점만
+function colDots(m){ var cs=colorsOf(m); if(cs.length<2) return ''; var wn=cs.length<=4;
+  return '<div class="md-cols'+(wn?'':' nn')+'">'+cs.map(function(c){ return '<span class="mc" title="'+esc(c.nm)+'"><i style="--c:'+esc(c.hex||'#ddd')+'"></i>'+(wn?'<em>'+esc(c.nm)+'</em>':'')+'</span>'; }).join('')+'</div>'; }
 var PICK={};   // 상세에서 고른 컬러 (모델별)
 var OPTT={};   // 상세에서 고객이 직접 고른 용량 (모델별) — 기본값과 구분
 function optPicker(m){
@@ -1637,7 +1652,7 @@ function apPhoneHtml(){
     if(os.length>1) h+='<div class="qk-car"><div class="qk-l">'+esc(optLabel(m))+'</div>'+apChips('cap',os.map(function(o,i){ var so=!!(o.row&&o.row.so); return [i,o.nm+(so?' (품절)':''),so&&!EDIT]; }),AP.cap,Math.min(os.length,4))+'</div>';
     if(AP.wpromo){ var wcs=colorsOf(byId(AP.wpromo.watch)||{id:''}); if(wcs.length>1) h+='<div class="qk-car qk-col"><div class="qk-l">워치 컬러 <small>(선택)</small></div><div class="qk-cc">'+wcs.map(function(c){
         return '<button type="button" class="'+(AP.wcolor===c.nm?'on':'')+'" data-ap="wcolor" data-v="'+esc(c.nm)+'"><i style="--c:'+esc(c.hex||'#ddd')+'"></i>'+esc(c.nm)+'</button>'; }).join('')+'</div></div>'; }
-    if(!AP.carrier) h+='<div class="qk-car"><div class="qk-l">현재 이용 중인 통신사 <span class="req">*</span></div>'+apChips('carrier',CARRIERS.map(function(c){return [c,c]}),AP.carrier,4)+'</div>';
+    if(!AP.carrier) h+='<div class="qk-car" id="apCarRow"><div class="qk-l">현재 이용 중인 통신사 <span class="req">*</span></div>'+apChips('carrier',CARRIERS.map(function(c){return [c,c]}),AP.carrier,4)+'</div>';
   }
   return h;
 }
@@ -1868,25 +1883,29 @@ function apInfoHtml(){
     '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히 보기 ›</button></label>'+
     '<div class="privacy-txt" id="privacyTxt">유플러스 다이렉트(이하 "회사")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
     '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사, 받는 방법(매장에서 받는 경우 수령 매장·출발 동네)<br>· 목적: 온라인 상담 신청 접수, 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
-    '동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.</div></div>';
+    '동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.</div>'+
+    // 20261021 사장님(GPT 안에서 가져옴): 신청 버튼 위 안내 — '누르면 바로 결제되나?' 걱정 줄이기 (확인 화면은 따로 안 둠)
+    '<div class="ap-guide"><b><i>i</i>상담 신청 안내</b><ul><li>상담 신청은 구매 확정이나 결제가 아닙니다.</li><li>전문 상담사가 고객님께 연락드려 최종 조건을 안내해 드립니다.</li></ul></div></div>';
 }
 // 20261016: 신청 버튼 2개 — 상담 예약(전화) / 카톡 예약(신청서는 똑같이 CRM에 저장 + 우리 카카오톡 상담 채널 열기, CRM엔 '카톡 상담 요청'으로 표시)
 function apBtnsHtml(){
   if(AP && AP.mode==='kakao') return '<div class="ap-btns"><button type="button" class="cta cta-kakao" id="mKakaoBtn">'+KKI+'<span class="rf-submit-label">카톡으로 상담 시작하기</span></button></div>';
   // 20261020 사장님: 카톡 상담은 하나도 안 들어옴 → 신청서도 '카톡 예약 신청하기' 버튼은 빼고 '상담 예약 신청하기' 하나만
-  return '<div class="ap-btns">'+
-    '<button type="button" class="cta" id="mSubmitBtn"><span class="rf-submit-label">상담 예약 신청하기</span> <svg class="cta-ar" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>'+
-  '</div>';
+  // 20261021 사장님(GPT 안에서 가져옴): 그 '상담 예약 신청하기'는 본문 맨 아래 대신 아래 고정 줄 버튼으로 옮김 (늘 보이게) — apBarHtml
+  return '';
 }
 function apBarHtml(){
   // 20261019: 휴대폰은 월 기기 할부금 + 지원금만 (통신 요금 합친 금액 X). TV프리만 신청할 땐 예전처럼 예상 월 금액
-  var pc=apPhoneCalc(), t;
-  if(pc){ var sup=Math.max(0,(num(pc.c.out)||0)-pc.after);
-    // 20261021 사장님(3차): '월 기기값'을 앞에 + 월 요금 (요금제까지 합친 금액은 크게 안 보여 줌)
-    var fe=apMonthFee(pc);
-    t=(pc.mm===0?'기기값 <b>'+wz(pc.after)+'</b>':'월 기기값 <b>'+wz(pc.monthly||0)+'</b>')+(fe!=null?' <small>+ 월 요금 '+won(fe)+'</small>':'')+(sup>0?'<em>총 '+manwon(sup)+' 지원</em>':''); }
+  // 20261021 사장님(GPT 안에서 가져옴): 아래 고정 줄 = 상세 아래 줄과 같은 말('번호이동 공시지원금 1,078,100원 폴드 8 구매 가능') + 바로 [상담 예약 신청하기]
+  //   (예전 [신청서 작성]은 입력칸으로 내려가기만 했고, 진짜 신청 버튼은 맨 아래에 따로 있었음)
+  var pc=apPhoneCalc(), m=apPhone(), t, kk=!!(AP&&AP.mode==='kakao');
+  if(pc && m){ var sn=m.nm.replace(/^갤럭시\s+/,'');
+    t=!AP.carrier?'현재 이용 중인 <b>통신사</b>를 고르면 내 가격이 바로 나와요':
+      '<span class="nw">'+(pc.type==='chg'?'기기변경':'번호이동')+' '+(pc.method==='sel'?'선택약정':'공시지원금')+'</span> <b class="nw">'+wz(pc.after)+'</b><br><span class="nw"><i>'+esc(sn)+(AP.wpromo?' + '+esc(wpShort(AP.wpromo)):'')+'</i> 구매 가능</span>'; }
+  else if(m) t='상담 신청하시면 <b>내 가격</b>을 안내해 드려요';
   else { var tot=apSummary().total; t=tot?'예상 월 <b>'+won(tot)+'</b>':'조건을 골라 주세요'; }
-  return '<div class="ap-bar-t">'+t+'</div><button type="button" class="ap-bar-b" data-ap-act="go">신청서 작성</button>';
+  return '<div class="ap-bar-t">'+t+'</div>'+(kk?'<button type="button" class="ap-bar-b" data-ap-act="go">신청서 작성</button>':
+    '<button type="button" class="ap-bar-b" id="mSubmitBtn"><span class="rf-submit-label">상담 신청하기</span><svg class="cta-ar" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>');   // GPT 안 글자 그대로 '상담 신청하기 >'
 }
 function renderApply(full){
   if(!AP) AP=apInit();
@@ -2050,13 +2069,15 @@ function apSubmit(mode){
   var apm=apPhone(); if(apm && colorsOf(apm).length>1 && !AP.color){ alert('컬러를 선택해 주세요.'); var acr=$('#apColorRow'); if(acr) acr.scrollIntoView({block:'center',behavior:'smooth'}); return; }   // 20261019: 컬러도 필수
   if(!AP.phone){ alert('휴대폰을 선택해 주세요.'); window.scrollTo({top:0,behavior:'smooth'}); return; }
   if(apm && (SO(apm) || optSO(apm,AP.cap))){ alert('선택하신 '+apm.nm+(SO(apm)?'':' '+optsOf(apm)[AP.cap].nm)+'은(는) 일시품절이라 신청할 수 없어요.'+(SO(apm)?' 다른 휴대폰을 골라 주세요.':' 다른 '+optLabel(apm)+'을(를) 골라 주세요.')); apValidate(); apRefresh(); return; }   // 20261020 품절은 신청 못 함
-  if(!AP.carrier && AP.phone!=='none'){ alert('현재 이용 중인 통신사를 선택해 주세요.'); return; }
+  // 20261021: 신청 버튼이 아래 고정 줄로 가서 다 안 채우고 누를 수 있음 → 안내 뒤 빠진 칸으로 데려감
+  var go=function(s){ var el=$(s); if(!el) return; try{ el.scrollIntoView({block:'center',behavior:'smooth'}); if(el.focus) el.focus({preventScroll:true}); }catch(x){} };
+  if(!AP.carrier && AP.phone!=='none'){ alert('현재 이용 중인 통신사를 선택해 주세요.'); go('#apCarRow'); return; }
   // 20261021: '받는 방법' 확인은 뺌 (신청서에 칸이 없음 — 택배·매장 수령은 상담 때 정함)
-  if(!name){ alert('이름을 입력해 주세요.'); return; }
-  if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해 주세요.'); return; }
+  if(!name){ alert('이름을 입력해 주세요.'); go('#mUserName'); return; }
+  if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해 주세요.'); go($('#mPhone2').value.replace(/\D/g,'').length<4?'#mPhone2':'#mPhone3'); return; }
   if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해 주세요.'); return; }
-  var be=birthErr(birth); if(be){ alert(be); return; }
-  if(!$('#mPrivacyCheck').checked){ alert('개인정보 수집 및 이용에 동의해 주세요.'); return; }
+  var be=birthErr(birth); if(be){ alert(be); go('#mUserBirth'); return; }
+  if(!$('#mPrivacyCheck').checked){ alert('개인정보 수집 및 이용에 동의해 주세요.'); go('#mPrivacyCheck'); return; }
   var btn=$(kakao?'#mKakaoBtn':'#mSubmitBtn'), btns=$$('#mSubmitBtn,#mKakaoBtn'); if(!btn||btn.disabled) return;
   var lbl=btn.querySelector('.rf-submit-label'), lbl0=lbl?lbl.textContent:'';
   btns.forEach(function(b){ b.disabled=true; }); if(lbl) lbl.textContent='신청 중...';
@@ -2194,8 +2215,10 @@ function apply(d){
   S=normalize(d);
   refresh();
 }
+var CFG_PRE=(!EDIT && window.__stCfg && typeof window.__stCfg.then==='function')?window.__stCfg:null;   // 20261021: galaxy_z8.html 맨 위에서 미리 받기 시작한 설정 (처음 한 번만 씀)
 function load(){
-  return fetch(DB+'/store.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(d){ CFG_WAIT=false; apply(d); return d; }).catch(function(){ cfgDone(); return null; });
+  var p=CFG_PRE||fetch(DB+'/store.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}); CFG_PRE=null;
+  return p.then(function(d){ CFG_WAIT=false; apply(d); return d; }).catch(function(){ cfgDone(); return null; });
 }
 function live(){
   if(!window.EventSource) return;
