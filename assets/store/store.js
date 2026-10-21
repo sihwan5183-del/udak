@@ -607,11 +607,12 @@ function pvPhone(m, r, st){
       (pct>0?'<div class="pv-hr"><i class="pv-ph">'+PVI.phone+'</i><div class="pv-bub"><span>출고가 대비</span><b>'+(st.after===0?'전액 지원':pct+'% 할인')+'</b></div></div>':'')+
       '<ul class="pv-ck">'+hc.map(pvCk).join('')+'</ul></div>';
   // ② 총 기기 지원금 · ③ 지원 후 기기값 — 20261020 깔끔하게: 상자 2개(계산표) → 두 줄
-  //    '총 기기 지원금 (공시 50만 + 추가 70만) … 120만원' / '지원 후 기기값 (출고가 …) … 1,078,100원'
-  var parts=[]; if(!sel&&c.pub) parts.push(['공시',c.pub]); if(c.our) parts.push(['추가',c.our]);
+  //    '총 기기 지원금 (공시 50만 + 유플러스 다이렉트 지원금 70만) … 120만원' / '지원 후 기기값 (출고가 …) … 1,078,100원'
+  //    20261022 사장님: '추가' → '유플러스 다이렉트 지원금' (줄이 넘치면 ' + ' 자리에서만 끊김)
+  var parts=[]; if(!sel&&c.pub) parts.push(['공시',c.pub]); if(c.our) parts.push(['유플러스 다이렉트 지원금',c.our]);
   var rnd=parts.every(function(x){ return x[1]%10000===0; });
-  var how=parts.length>1?parts.map(function(x){ return x[0]+' '+(rnd?(x[1]/10000).toLocaleString('ko-KR')+'만':won(x[1])); }).join(' + ')
-    :parts.length?(parts[0][0]==='공시'?'공시지원금':'유플러스 다이렉트 추가 지원'):'';
+  var how=parts.length>1?parts.map(function(x){ return (x[0]+' '+(rnd?(x[1]/10000).toLocaleString('ko-KR')+'만':won(x[1]))).replace(/ /g,'&nbsp;'); }).join(' + ')
+    :parts.length?(parts[0][0]==='공시'?'공시지원금':'유플러스 다이렉트 지원금'):'';
   h+='<div class="pv-card pv-sum">'+
     (sup>0?'<div class="pv-sr"><span>총 기기 지원금'+(how?'<small>'+how+'</small>':'')+'</span><b class="pink">'+manwon(sup)+'</b></div>':'')+
     '<div class="pv-sr"><span>지원 후 기기값<small>출고가 '+won(out)+'</small></span><b>'+wz(st.after)+'</b></div>'+
@@ -653,7 +654,7 @@ function calcBox(m, r, st){
   var ben=line('출고가',won(c.out));
   if(tv){ if(c.out>st.after) ben+=line('유플러스 다이렉트 지원금','-'+won(c.out-st.after),'minus'); }
   else if(st.method==='pub'&&c.pub) ben+=line((st.g==='phone'?'공시지원금':st.g==='tvfree'?'기존 고객 지원금':'이통사 지원금')+(tn?' ('+tn+')':''),'-'+won(c.pub),'minus');
-  if(c.our&&!tv) ben+=line('추가 지원금 (유플러스 다이렉트)','-'+won(c.our),'minus');
+  if(c.our&&!tv) ben+=line('유플러스 다이렉트 지원금','-'+won(c.our),'minus');   // 20261022 사장님: '추가 지원금' → '유플러스 다이렉트 지원금'
   ben+=line('지원 후 기기값',wz(st.after),'sum');
   h+='<div class="ms-grid">'+
     '<div class="ms-card"><div class="ms-ch"><i class="ic won">₩</i>월 납부 구성'+tipB('mon','기기 할부금은 할부이자(연 5.9%)가 포함된 금액이에요. 통신 요금은 고르신 요금제 기준이에요.')+'</div>'+mon+'</div>'+
@@ -1871,7 +1872,7 @@ function apSumHtml(){
   if(BA){
     BA.dev.forEach(function(x){
       if(x.l==='출고가') ben+=line('출고가',won(x.a));
-      else if(x.cls==='minus') ben+=line((x.l==='유플러스 다이렉트 지원금'&&BA.sk!=='tv'?'추가 지원금 (유플러스 다이렉트)':esc(x.l)+(x.sub?' ('+esc(x.sub)+')':'')),'-'+won(-x.a),'minus');
+      else if(x.cls==='minus') ben+=line((x.l==='유플러스 다이렉트 지원금'&&BA.sk!=='tv'?'유플러스 다이렉트 지원금':esc(x.l)+(x.sub?' ('+esc(x.sub)+')':'')),'-'+won(-x.a),'minus');
     });
     ben+=line('지원 후 기기값',wz(BA.after),'sum');
   } else ben+='<div class="ms-ask">기기값은 상담 시 안내드려요</div>';
