@@ -237,6 +237,10 @@ var lastStamp = 0;
 //   실제 설정(가격 공개·가격표)을 받기 전엔 기본값(가격 비공개)으로 상세를 그려서 생김 → 받기 전엔 상세를 빈 틀로만 두고, 받으면 한 번에 그림
 var CFG_WAIT = !EDIT;
 function cfgDone(){ if(!CFG_WAIT) return; CFG_WAIT=false; refresh(); }   // 못 받았거나 너무 늦으면 기본값으로라도 그림
+// 20261022 사장님: 홈 '이번주 특가' 등에 '상담 시 안내'가 잠깐 떴다가 가격으로 바뀌던 것 — 기본값은 '가격 비공개'라서 생김
+//   → 설정(가격표)을 받기 전엔 가격 자리를 회색 줄로만 두고, 받으면 바로 가격
+function prWait(){ return CFG_WAIT && !EDIT; }
+var PR_SK='<i class="pr-sk"></i>';
 
 function normalize(d){
   var o = clone(DEFAULT);
@@ -408,6 +412,7 @@ function tagsOf(m){
   return zero ? t : t.filter(function(x){ return !/(^|[^0-9,])0원|공짜/.test(String(x)); });
 }
 function priceLine(m){
+  if(prWait()) return '<div class="pr">'+PR_SK+'</div>';   // 20261022 설정 받기 전엔 가격 자리 회색 줄 ('상담 시 안내'·혜택 글자가 잠깐 뜨지 않게)
   var p=priceOf(m);
   if(p.v==null) return '<div class="pr" style="font-size:14px">'+esc(tagsOf(m)[0]||'상담 시 안내')+'</div>';
   return '<div class="pr price-row">'+wz(p.v)+(p.from?'<span style="font-size:12px;color:var(--sub);font-weight:600">~</span>':'')+(p.out&&p.out>p.v?'<s>'+won(p.out)+'</s>':'')+'</div>'+
@@ -729,8 +734,9 @@ function renderDeal(){
   $('#heroTrack').innerHTML='<div class="deal-box" data-edit="deal"><div class="dl-head"><h3 class="dl-ttl"><span>'+(tt.length?tt.join(' ')+' ':'')+'<em>'+tl+'</em></span></h3><i class="dl-sep"></i><span class="dl-date">'+weekRange()+'</span></div>'+
     '<div class="dl-grid">'+it.map(function(x){
       return '<a class="dl-c" href="#/model/'+esc(x.m.id)+'" data-edit="deal" data-mid="'+esc(x.m.id)+'"><div class="dl-c-h"><span class="dl-c-img">'+im(mImg(x.m),'','',x.m.nm)+'</span><b>'+esc(x.m.nm)+'</b></div>'+
+        (prWait()?'<div class="dl-c-m"><small>번호이동</small><em>'+PR_SK+'</em></div><div class="dl-c-c"><i class="pr-sk s"></i></div>':   // 설정 받기 전: 가격 자리 회색 줄
         (x.mnp!=null?'<div class="dl-c-m"><small>번호이동</small><em>'+wz(x.mnp)+'</em></div>':'<div class="dl-c-m"><small>구매가</small><em class="ask">상담 시 안내</em></div>')+
-        (x.chg!=null?'<div class="dl-c-c">기기변경 '+wz(x.chg)+'</div>':'')+'</a>';
+        (x.chg!=null?'<div class="dl-c-c">기기변경 '+wz(x.chg)+'</div>':''))+'</a>';
     }).join('')+'</div></div>';   // 20261019: 카드 아래 '구매 가능 금액 · 월 115,000원 이상 요금제 6개월 유지 기준' 문구 뺌 (기준이 맞지 않음)
   $('#heroDots').innerHTML='';
   return true;
@@ -918,7 +924,7 @@ function bigcard(m){
     '<button class="heart'+(wish?' on':'')+'" data-wish="'+esc(m.id)+'" aria-label="찜">'+HEART+'</button>'+
     '<div class="strip">'+esc(stripOf(m))+'</div></div>'+
     '<div class="row1"><h3 class="ucard-name">'+esc(m.nm)+'</h3><span class="bdg">'+(SO(m)?'일시품절':'당일발송')+'</span><span class="eta">'+esc(badgeOf(m))+'</span></div>'+
-    (pb||'<div class="meta">'+(meta.length?meta.join(' · '):'가격은 상담 시 안내드립니다')+'</div>')+
+    (prWait()?'<div class="meta">'+PR_SK+'</div>':pb||'<div class="meta">'+(meta.length?meta.join(' · '):'가격은 상담 시 안내드립니다')+'</div>')+   // 20261022 설정 받기 전엔 회색 줄
     '<div class="chips">'+(isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):'<span class="chip">제휴카드 X</span><span class="chip">부가서비스 X</span>')+'<span class="chip gray">5분 상담</span></div>'+
     '<div class="stamp">'+(SO(m)?'현재 일시품절':'구매 시 보호필름 · 투명케이스 · 고속충전기 제공')+'</div></a>';
 }
@@ -1049,7 +1055,7 @@ function renderModel(id, keepRecent){
   // 20261021(2차) 사장님: '컬러부터 나오는 게 애초에 안 보였으면' — 설정(가격표)을 받기 전이라도 휴대폰은 처음부터 '통신사 → 내 가격' 화면을 그대로 그림
   //   가격은 통신사를 골라야 보이는 거라 첫 화면은 설정 없이도 똑같음 → 설정이 오면 같은 화면을 다시 그릴 뿐 (중간 화면 없음)
   //   휴대폰이 아닌 상품(워치·태블릿·TV프리)이나 기본값에 없는 모델만 받기 전 잠깐 빈 틀 (사진 자리 · 이름 · 회색 줄)
-  var PRE=CFG_WAIT&&!EDIT;
+  var PRE=CFG_WAIT&&!EDIT;   // 20261022 사장님: 단계 이름 '내 가격' → '나에게 맞는 혜택' (안내 문구 속 '내 가격'도 같이)
   if(PRE){ var m0=byId(id); if(!(m0 && !m0.hidden && kindOf(m0)==='phone')){ $('#mdTitle').textContent=m0?m0.nm:'';
     $('#mdBody').innerHTML='<div class="ucard md-skel"><div class="md-img"></div><div class="md-rest"><h2 class="md-h ucard-name">'+esc(m0?m0.nm:'')+'</h2><div class="sk-l"></div><div class="sk-b"></div><div class="sk-b"></div></div></div>'; return; } }
   var m=byId(id); if(!m||(m.hidden&&!EDIT)){location.hash='#/';return}
@@ -1106,7 +1112,7 @@ function renderModel(id, keepRecent){
     // ① 통신사 ② 내 가격(고르기 전엔 자리만) → 아래 [상담 신청하기] — 요금제·할인 방식·할부 개월은 가격 바로 밑에서 바꿈
     body+=step('car', '통신사', '현재 이용 중인 통신사를 선택해 주세요.', '', PK.car, chipOf('car', carNm, false, false));
     var wait=(needCar||PRE)&&!EDIT;   // 관리자 화면은 통신사를 안 골라도 가격 칸을 그대로 보여 줌 (편집용) · PRE: 설정 받기 전에 통신사를 먼저 누른 경우
-    body+=step('price', '내 가격', '내 가격', '', wait?(soHtml||'<div class="pv-wait">'+(needCar?'통신사를 고르면 여기에 내 가격이 바로 나와요':'내 가격을 불러오고 있어요')+'</div>'):
+    body+=step('price', '나에게 맞는 혜택', '나에게 맞는 혜택', '', wait?(soHtml||'<div class="pv-wait">'+(needCar?'통신사를 고르면 여기에 나에게 맞는 혜택이 바로 나와요':'나에게 맞는 혜택을 불러오고 있어요')+'</div>'):
       soHtml+(PK.promo||'')+'<div class="ptable" id="ucatPrice">'+rows+'</div>'+(PK.rest?'<div class="mstep-sub">'+PK.rest+'</div>':'')+guideHtml(m)+
       (mdc?'<div class="md-chips">'+mdc+'</div>':''), '');
     if(EDIT){ if(colorStep) body+=colorStep(); if(capStep) body+=capStep(); }
@@ -1114,7 +1120,7 @@ function renderModel(id, keepRecent){
     if(colorStep) body+=colorStep();
     if(capStep) body+=capStep();
     if(PK.rest) body+='<div class="mstep-sub">'+PK.rest+'</div>';
-    body+=step('price', '내 가격', '내 가격', '', soHtml+'<div class="ptable" id="ucatPrice">'+rows+'</div>'+guideHtml(m)+
+    body+=step('price', '나에게 맞는 혜택', '나에게 맞는 혜택', '', soHtml+'<div class="ptable" id="ucatPrice">'+rows+'</div>'+guideHtml(m)+
       (mdc?'<div class="md-chips">'+mdc+'</div>':''), '');
   }
   // 20261020 사장님: 카톡 상담은 하나도 안 들어옴 → 카톡 상담 버튼은 빼고 '[제품명] 상담 신청하기' 하나만 (하단 고정)
@@ -1126,8 +1132,8 @@ function renderModel(id, keepRecent){
   // 하단 고정: 지금 상태 한 줄 + [제품명 상담 신청하기]
   var bt, btBuy=false, shortNm=m.nm.replace(/^갤럭시\s+/,'');
   if(soNow) bt='<b>일시품절</b> · 지금은 신청할 수 없어요';
-  else if(needCar) bt='현재 이용 중인 <b>통신사</b>를 고르면 내 가격이 바로 나와요';
-  else if(PRE) bt='<b>내 가격</b>을 불러오고 있어요';   // 설정 받기 전에 통신사를 먼저 누른 경우 (보통 1초 안)
+  else if(needCar) bt='현재 이용 중인 <b>통신사</b>를 고르면 나에게 맞는 혜택이 바로 나와요';
+  else if(PRE) bt='<b>나에게 맞는 혜택</b>을 불러오고 있어요';   // 설정 받기 전에 통신사를 먼저 누른 경우 (보통 1초 안)
   else if(p.kind==='sheet' && cst && cst.c){ var sup=(num(p.row.out)||0)-cst.after;
     // 20261020 사장님 문구: 휴대폰은 '고른 이통사(번호이동·기기변경) 혜택(공시지원금·선택약정) 금액 제품명 구매 가능'
     //   예) 번호이동 공시지원금 104,000원 S26 구매 가능 — 금액은 지원 후 기기값, 제품명은 '갤럭시' 뺀 짧은 이름
@@ -1135,7 +1141,7 @@ function renderModel(id, keepRecent){
       var wpb=wpFor(m), wpbOn=!!(wpb&&cst.t&&cst.t.k===wpb.b);   // 20261021 B면 '폴드 8 + 워치9'
       bt=esc(typeNm(cst))+' '+(cst.method==='sel'?'선택약정':'공시지원금')+' <em>'+(cst.after===0?'0원':won(cst.after))+'</em> <b>'+esc(shortNm)+(wpbOn?' + '+esc(wpShort(wpb)):'')+'</b> 구매 가능'; }
     else bt=(typeNm(cst)?esc(typeNm(cst))+' · ':'')+'기기값 <b>'+(cst.after===0?'0원':won(cst.after))+'</b>'+(sup>0?' · 지원 <em>'+manwon(sup)+'</em>':''); }
-  else bt='상담 신청하시면 <b>내 가격</b>을 안내해 드려요';
+  else bt='상담 신청하시면 <b>나에게 맞는 혜택</b>을 안내해 드려요';
   $('#mdBody').innerHTML='<div class="ucard" data-edit="model:'+esc(m.id)+'"><div class="md-img" id="mdImg">'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(SO(m)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>'+
     // 20261020 휴대폰 소개 문구('더 넓은 세상, 더 많은 가능성' 등)는 뺌 — 워치·태블릿·TV프리는 무슨 상품인지 알려 주는 말이라 그대로
     // 20261021 사장님(GPT 안에서 가져옴): 이름 옆 컬러 점 · 혜택 글씨 칩 → 아이콘 칸
@@ -1910,9 +1916,9 @@ function apBarHtml(){
   //   (예전 [신청서 작성]은 입력칸으로 내려가기만 했고, 진짜 신청 버튼은 맨 아래에 따로 있었음)
   var pc=apPhoneCalc(), m=apPhone(), t, kk=!!(AP&&AP.mode==='kakao');
   if(pc && m){ var sn=m.nm.replace(/^갤럭시\s+/,'');
-    t=!AP.carrier?'현재 이용 중인 <b>통신사</b>를 고르면 내 가격이 바로 나와요':
+    t=!AP.carrier?'현재 이용 중인 <b>통신사</b>를 고르면 나에게 맞는 혜택이 바로 나와요':
       '<span class="nw">'+(pc.type==='chg'?'기기변경':'번호이동')+' '+(pc.method==='sel'?'선택약정':'공시지원금')+'</span> <b class="nw">'+wz(pc.after)+'</b><br><span class="nw"><i>'+esc(sn)+(AP.wpromo?' + '+esc(wpShort(AP.wpromo)):'')+'</i> 구매 가능</span>'; }
-  else if(m) t='상담 신청하시면 <b>내 가격</b>을 안내해 드려요';
+  else if(m) t='상담 신청하시면 <b>나에게 맞는 혜택</b>을 안내해 드려요';
   else { var tot=apSummary().total; t=tot?'예상 월 <b>'+won(tot)+'</b>':'조건을 골라 주세요'; }
   return '<div class="ap-bar-t">'+t+'</div>'+(kk?'<button type="button" class="ap-bar-b" data-ap-act="go">신청서 작성</button>':
     '<button type="button" class="ap-bar-b" id="mSubmitBtn"><span class="rf-submit-label">상담 신청하기</span><svg class="cta-ar" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>');   // GPT 안 글자 그대로 '상담 신청하기 >'

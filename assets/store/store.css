@@ -1737,3 +1737,9 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 #v-model .md-hrow{align-items:center;margin-top:18px}
 #v-model .md-hrow .md-h{margin-top:0}
 #v-model .md-cols{padding:4px 4px 0 0}
+/* 20261022 사장님: 설정(가격표)을 받기 전 가격 자리 — 회색 줄 (예전엔 '상담 시 안내'가 잠깐 떴다가 가격으로 바뀜) */
+.pr-sk{display:inline-block;vertical-align:middle;width:64px;height:14px;border-radius:6px;background:#EEF0F3;animation:mdsk 1.1s ease-in-out infinite}
+.pr-sk.s{width:86px;height:11px}
+.dl-c-m em .pr-sk{width:76px;height:18px}
+/* 20261022: '…나에게 맞는 혜택이 바로 나와요' 안내가 아주 작은 폰(320px)에서 잘리지 않게 — 넘치면 두 줄로 */
+.md-bar-t[data-md-go]{white-space:normal;word-break:keep-all;line-height:1.35}
