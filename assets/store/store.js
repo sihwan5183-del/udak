@@ -233,6 +233,10 @@ var GROUPS=['phone','second','tvfree'];   // 휴대폰 / 세컨드(워치·태�
 var S = normalize(null);
 var MNP = true;        // '번호이동 가격' 체크
 var lastStamp = 0;
+// 20261021 사장님: 광고로 상세에 바로 들어오면 '컬러 → 1초 뒤 통신사'로 화면이 바뀌던 문제 —
+//   실제 설정(가격 공개·가격표)을 받기 전엔 기본값(가격 비공개)으로 상세를 그려서 생김 → 받기 전엔 상세를 빈 틀로만 두고, 받으면 한 번에 그림
+var CFG_WAIT = !EDIT;
+function cfgDone(){ if(!CFG_WAIT) return; CFG_WAIT=false; refresh(); }   // 못 받았거나 너무 늦으면 기본값으로라도 그림
 
 function normalize(d){
   var o = clone(DEFAULT);
@@ -1040,8 +1044,11 @@ function renderWish(){
 }
 /* 모델 상세 */
 function renderModel(id, keepRecent){
-  var m=byId(id); if(!m||(m.hidden&&!EDIT)){location.hash='#/';return}
   if(!keepRecent){ var r=store.get('recent',[]).filter(function(x){return x!==id}); r.unshift(id); store.set('recent',r.slice(0,10)); }
+  // 20261021: 설정 받기 전엔 빈 틀만 (사진 자리 · 이름 · 회색 줄) — 받으면 refresh()가 통신사 → 내 가격 순서로 한 번에 그림
+  if(CFG_WAIT){ var m0=byId(id); $('#mdTitle').textContent=m0?m0.nm:'';
+    $('#mdBody').innerHTML='<div class="ucard md-skel"><div class="md-img"></div><h2 class="md-h ucard-name">'+esc(m0?m0.nm:'')+'</h2><div class="sk-l"></div><div class="sk-b"></div><div class="sk-b"></div></div>'; return; }
+  var m=byId(id); if(!m||(m.hidden&&!EDIT)){location.hash='#/';return}
   var srs=sheetRows(m), selRow=null, rows='', pickers='';
   if(srs.length && (OPT[m.id]==null || !srs[OPT[m.id]])) OPT[m.id]=Math.max(0, srs.indexOf(priceOf(m).row));
   if(!EDIT && optSO(m,OPT[m.id])){ var fo=firstOkOpt(m); if(fo>=0) OPT[m.id]=fo; }   // 20261020 품절 용량은 못 고름
@@ -2188,7 +2195,7 @@ function apply(d){
   refresh();
 }
 function load(){
-  return fetch(DB+'/store.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(d){ apply(d); return d; }).catch(function(){ return null; });
+  return fetch(DB+'/store.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(d){ CFG_WAIT=false; apply(d); return d; }).catch(function(){ cfgDone(); return null; });
 }
 function live(){
   if(!window.EventSource) return;
@@ -2245,5 +2252,6 @@ renderHome();
 }catch(e){} })();
 route();
 if(EDIT) document.body.classList.add('edit','editing');
+if(CFG_WAIT) setTimeout(cfgDone, 5000);   // 20261021: 설정이 5초 넘게 안 오면 기본값으로 그림
 load().then(function(){ if(!EDIT) live(); if(window.__stReady) window.__stReady(); });
 })();

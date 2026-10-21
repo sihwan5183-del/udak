@@ -1691,3 +1691,8 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 /* 20261021(3차): A/B 칸 '월 기기값' 밑 '+ 월 요금' 줄 · 내 가격 '+ 월 요금 … = 합산 …' 의 합산 금액 */
 #v-model .wp-c em small{display:block;margin-top:1px;font-size:11.5px;font-weight:700;color:var(--sub)}
 #v-model .pv-s1 b{color:var(--ink);font-weight:900}
+/* 20261021 상세: 설정을 받기 전 잠깐 보이는 빈 틀 (사진 자리 · 이름 · 회색 줄) — 받으면 통신사 → 내 가격으로 한 번에 */
+#v-model .md-skel .sk-l,#v-model .md-skel .sk-b{background:#EEF0F3;animation:mdsk 1.1s ease-in-out infinite}
+#v-model .md-skel .sk-l{height:14px;width:62%;border-radius:7px;margin-top:22px}
+#v-model .md-skel .sk-b{height:52px;border-radius:12px;margin-top:12px}
+@keyframes mdsk{50%{opacity:.45}}
