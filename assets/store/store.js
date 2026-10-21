@@ -325,8 +325,8 @@ function verAt(day, p){
 }
 function PV(){ return verAt(todayKST()); }
 function plansOf(g){ return (S.pricing.plans[g])||[]; }
-// 20261021 사장님: 휴대폰 요금제에서 105·115는 뺌 — 상세 요금제 고르기·가격 계산·신청서 모두 (관리자 가격표 편집(store-price.js)엔 그대로 남음)
-var TIER_OFF={t105:1, t115:1};
+// 20261021 사장님: 휴대폰 요금제에서 105·115·130은 뺌 (85·95만) — 상세 요금제 고르기·가격 계산·신청서 모두 (관리자 가격표 편집(store-price.js)엔 그대로 남음)
+var TIER_OFF={t105:1, t115:1, t130:1};
 function tiersOf(g){ var ts=(S.pricing.tiers[g])||[]; return g==='phone'?ts.filter(function(t){ return !TIER_OFF[t.k]; }):ts; }
 function baseTier(g, P){ P=P||S.pricing; var ts=P.tiers[g]||[]; return ts.filter(function(t){return t.k===P.base[g]})[0]||ts[0]||null; }
 // 가격표에 이 모델 줄이 있는지 (공개 여부와 상관없이)
@@ -362,7 +362,10 @@ function optLabel(m){
 }
 // 카드 가격 기준: 기본은 기준 요금제(85), '최대 혜택 기준으로 보기'를 켜면 115,000원 이상 요금제 중 가장 싼 조건
 var MAXV=false; try{ MAXV=sessionStorage.getItem('st_maxv')==='1'; }catch(e){}
-function maxBar(){ return '<button type="button" class="maxv'+(MAXV?' on':'')+'" data-maxv><span class="mv-sw"><i></i></span>최대 혜택 기준으로 보기</button>'+
+// 20261021: 요금제가 85·95만 남아 '최대 혜택(월 115,000원 이상 요금제)' 기준이 없어짐 → 그런 요금제가 다시 생길 때만 버튼을 보여 주고 계산에도 씀
+function maxOk(){ return tiersOf('phone').some(function(t){ return (t.fee||0)>=115000; }); }
+function maxOn(){ return MAXV && maxOk(); }
+function maxBar(){ if(!maxOk()) return ''; return '<button type="button" class="maxv'+(MAXV?' on':'')+'" data-maxv><span class="mv-sw"><i></i></span>최대 혜택 기준으로 보기</button>'+
   (MAXV?'<div class="maxv-note">최대 혜택 기준인 <b>월 115,000원 이상 요금제를 6개월 이상 유지</b>하는 조건일 때의 혜택이에요.</div>':''); }
 function priceOf(m, oi){
   if(priceHidden(m)) return {kind:'hidden', v:null, out:null};   // 가격 비공개: 예전 가격 대신 '상담 시 안내'
@@ -370,7 +373,7 @@ function priceOf(m, oi){
   if(rs.length){
     var g=rs[0].g, pk=baseTier(g), type=curType(g), r=null, c=null, ct=null;
     // 카드·목록 가격: 휴대폰은 요금제 중 가장 싸게 살 수 있는 조건(최대 지원) 기준 — 조건은 카드에 함께 표시
-    var best=function(x){ if(g!=='phone'||!MAXV) return {c:rowCalc(x,type,pk),t:pk}; var b=null; tiersOf(g).forEach(function(t){ var cx=rowCalc(x,type,t); if(cx&&(!b||cx.v<b.c.v)) b={c:cx,t:t}; }); return b||{c:null,t:pk}; };
+    var best=function(x){ if(g!=='phone'||!maxOn()) return {c:rowCalc(x,type,pk),t:pk}; var b=null; tiersOf(g).forEach(function(t){ var cx=rowCalc(x,type,t); if(cx&&(!b||cx.v<b.c.v)) b={c:cx,t:t}; }); return b||{c:null,t:pk}; };
     if(oi!=null && rs[oi]){ r=rs[oi]; var b0=best(r); c=b0.c; ct=b0.t; }
     else {
       var anyOn=rs.some(function(x){return !x.so});
@@ -528,16 +531,18 @@ function tierTotal(m, r, tk){
   var type=s.carrier?(s.carrier==='LG U+'?'chg':'mnp'):(MNP?'mnp':'chg'), c=rowCalc(r,type,t); if(!c) return null;
   var method=(s.method==='sel'||!c.pub)?'sel':'pub', after=(method==='pub'&&c.pb!=null)?c.pb:c.sel, mm=s.months==null?24:s.months;
   var monthly=mm===0?0:won10(after*RATE[mm]/mm), fee=t.fee?(method==='sel'?Math.round(t.fee*0.75):t.fee):0;
-  return {total:monthly+fee, monthly:monthly, fee:fee, after:after, t:t};
+  return {total:monthly+fee, monthly:monthly, fee:fee, after:after, t:t, mm:mm};
 }
 function wpPickHtml(m, r, st, w){
   var on=(st.t&&st.t.k)===w.b, ta=tierTotal(m,r,w.a), tb=tierTotal(m,r,w.b), wr=wpRow(w), wout=wr?num(wr.out):null;
-  var amt=function(x,lf){ return x?'월 '+won(x.total+(lf||0)):''; };
+  // 20261021 사장님(3차): A/B 칸도 '월 기기값'을 앞에, 밑에 '+ 월 요금' (요금제까지 합친 14만원대 금액은 크게 안 보여 줌) · 일시납이면 매달은 요금만
+  var amt=function(x,lf){ if(!x) return ''; if(x.mm===0) return '월 요금 '+won(x.fee+(lf||0));
+    return '월 '+won(x.monthly)+'<small>+ 월 요금 '+won(x.fee)+(lf?' + 워치 이용료 '+won(lf):'')+'</small>'; };
   return '<div class="wp">'+
     '<button type="button" class="wp-c'+(on?'':' on')+'" data-calc="tier" data-v="'+esc(w.a)+'" data-model="'+esc(m.id)+'"><span class="wp-k">A</span><b>'+esc(tierNmOf(w.a))+' 요금제</b><small>'+esc(m.nm)+'</small><em>'+amt(ta)+'</em></button>'+
     '<button type="button" class="wp-c wp-b'+(on?' on':'')+'" data-calc="tier" data-v="'+esc(w.b)+'" data-model="'+esc(m.id)+'"><span class="wp-k">B</span><b>'+esc(tierNmOf(w.b))+' 요금제</b>'+
       '<small>+ '+esc(wpName(w))+(wout?' <s>'+won(wout)+'</s>':'')+' <i>'+wz(w.price||0)+'</i></small><em>'+amt(tb, tb?wpLineFee(w,tb.t.fee):0)+'</em>'+
-      '<span class="wp-tag">한 단계 높이고 '+esc(wpShort(w))+' 혜택 받기</span></button>'+
+      '<span class="wp-tag">한 단계 높이고 '+esc(wpShort(w)).replace(/ /g,'&nbsp;')+'&nbsp;혜택&nbsp;받기</span></button>'+   // 좁은 화면에선 '한 단계 높이고 / 워치9 혜택 받기'로만 끊김
   '</div>';
 }
 function calcPickers(m, r, st){
@@ -584,11 +589,12 @@ function pvPhone(m, r, st){
   // 20261021 사장님: 큰 숫자는 '요금제까지 합친 월 금액' — 매달 내는 돈 = 휴대폰 할부금 + 요금제 (선택약정이면 할인된 요금)
   //   바로 밑에 어떻게 합쳐졌는지 한 줄 (광고에 쓴 할부금 숫자도 여기서 보임) · 그 밑에 용량 기준·할부 개월
   var capTxt=(optsOf(m).length>1&&r.cap)?r.cap+' 기준':'';
-  var feeTxt='요금제 '+won(fee)+(sel?' (25% 할인)':'');
-  if(!fee){ lab=mm===0?'기기값 (일시납)':'월 기기 할부금'; big=mm===0||st.after===0?wz(st.after):won(monthly)+'<small> / 월</small>'; sub=mm===0?'':mm+'개월 · 이자 포함'; }
-  else if(mm===0){ lab='매달 내는 돈 (요금제)'; big=won(fee)+'<small> / 월</small>'; sub='기기값은 '+(st.after===0?'0원':won(st.after)+' 한 번에 결제'); sub2=capTxt; }
-  else { lab='매달 내는 돈 (요금제 포함)'; big=won(total)+'<small> / 월</small>'; sub='<span class="nw">휴대폰 할부금 '+won(monthly)+'</span> <span class="nw">+ '+feeTxt+'</span>'+(wlf?' <span class="nw">+ 워치 이용료 '+won(wlf)+'</span>':'');
-    sub2=[capTxt, mm+'개월 할부 · 이자 포함'].filter(Boolean).join(' · '); }
+  // 20261021 사장님(3차): 큰 숫자는 다시 '월 기기값'(할부금) — 요금제까지 합친 14만원대 금액이 크게 나오면 진입장벽
+  //   바로 밑에 '+ 월 요금 85,000원 = 합산 132,730원' 한 줄 · 그 밑에 용량 기준·할부 개월 / 일시납이면 기기값 + 월 요금
+  var feeTxt='<span class="nw">+ 월 요금 '+won(fee)+(sel?' (25% 할인)':'')+'</span>'+(wlf?' <span class="nw">+ 워치 이용료 '+won(wlf)+'</span>':'');
+  if(mm===0){ lab='기기값 (일시납)'; big=wz(st.after); sub=fee?feeTxt:''; sub2=capTxt; }
+  else { lab='월 기기값 (할부이자 포함)'; big=wz(monthly)+'<small> / 월</small>'; sub=fee?feeTxt+' <span class="nw">= 합산 <b>'+won(total)+'</b></span>':'';
+    sub2=[capTxt, mm+'개월 할부'].filter(Boolean).join(' · '); }
   var hc=[]; if(selCut) hc.push('통신 요금도 매달 '+won(selCut)+' 할인 (선택약정)');
   hc.push('제휴카드·부가서비스 의무가입 없음');
   var h='<div class="ms-detail pv">'+
@@ -665,7 +671,7 @@ function dealPrice(m,type){
   var best=null, g=rs[0].g, bt=baseTier(g);
   // 20261016: 이번주 특가는 카드와 같은 기준 요금제(85) 가격 — 예전엔 요금제 중 가장 싼 값(115 기준)이 잡혔음.
   //           카드처럼 '최대 혜택 기준으로 보기'를 켰을 때만 요금제 중 가장 싼 값
-  rs.forEach(function(r){ (g==='phone'&&bt&&!MAXV?[bt]:tiersOf(g)).forEach(function(t){ var c=rowCalc(r,type,t); if(c && c.v!=null && (best==null || c.v<best)) best=c.v; }); });
+  rs.forEach(function(r){ (g==='phone'&&bt&&!maxOn()?[bt]:tiersOf(g)).forEach(function(t){ var c=rowCalc(r,type,t); if(c && c.v!=null && (best==null || c.v<best)) best=c.v; }); });
   return best;
 }
 function dealItems(){
@@ -938,7 +944,7 @@ function sortList(list){
   return list.slice().sort(function(a,b){ var sa=SO(a)?1:0, sb=SO(b)?1:0; if(sa!==sb) return sa-sb; var d=key(a)-key(b); return d||idx[a.id]-idx[b.id]; });
 }
 function sortedCards(list){
-  document.querySelectorAll('[data-maxwrap]').forEach(function(w){ w.innerHTML=maxBar(); });
+  document.querySelectorAll('[data-maxwrap]').forEach(function(w){ w.innerHTML=maxBar(); w.hidden=!maxOk(); });
   document.querySelectorAll('.sort-lbl').forEach(function(lb){ lb.textContent=SORTS.filter(function(x){return x[0]===SORT})[0][1]; });
   return sortList(list).map(function(m){
     var h=bigcard(m), r=SORT==='sales'&&!isWear(m)&&RANK&&RANK[m.id];
@@ -1595,9 +1601,10 @@ function apPhoneHtml(){
     var os0=m?optsOf(m):[], cs0=m?colorsOf(m):[], capNm=os0[AP.cap]&&os0[AP.cap].nm!=='기본'?os0[AP.cap].nm:'', colNm=AP.color||(cs0.length===1?cs0[0].nm:'');
     // 20261021 사장님(2차): 신청서는 ① 컬러·용량 ② 고객 정보 두 칸만 — 위엔 고른 휴대폰 한 줄 + 요금제 포함 월 금액만
     //   (기기값 계산 내역은 상세 '내 가격'에서 이미 봄 — 그래서 큰 금액표는 뺌)
-    var pc0=m?apPhoneCalc():null, typ=AP.carrier?(AP.carrier+' '+(AP.carrier==='LG U+'?'기기변경':'번호이동')):'', tot0=apMonthTotal(pc0);
+    var pc0=m?apPhoneCalc():null, typ=AP.carrier?(AP.carrier+' '+(AP.carrier==='LG U+'?'기기변경':'번호이동')):'', fee0=apMonthFee(pc0);
     var sub=m?[capNm,typ,AP.wpromo?tierNmOf(AP.wpromo.b)+' 요금제':''].filter(Boolean).join(' · '):(AP.phone==='none'?'TV프리만 신청해요':'상담하면서 함께 골라 드릴게요');
-    var pr=pc0?'<div class="ap1-mp"><b>'+(tot0!=null?'월 '+won(tot0):wz(pc0.after))+'</b>'+(tot0!=null?'<small>'+(pc0.mm===0?'요금제 · 기기값 일시납':'요금제 포함')+'</small>':'')+'</div>'
+    // 20261021 사장님(3차): 큰 금액은 '월 기기값', 밑에 '+ 월 요금' (요금제까지 합친 금액은 크게 안 보여 줌) · 일시납이면 기기값
+    var pr=pc0?'<div class="ap1-mp"><b>'+(pc0.mm===0?'기기값 '+wz(pc0.after):'월 '+wz(pc0.monthly||0))+'</b>'+(fee0!=null?'<small>+ 월 요금 '+won(fee0)+'</small>':'')+'</div>'
       :m?'<div class="ap1-mp"><small>가격은 상담 때 안내</small></div>':'';
     h+='<div class="ap1-pick ap1-mini"><div class="ap1-dev"><div class="ap1-img">'+(m?im(apColorImg(m),'',true,m.nm):'')+'</div>'+
       '<div class="ap1-t"><b>'+esc(m?m.nm:(AP.phone==='none'?'휴대폰은 바꾸지 않아요':'상담 후 결정할게요'))+(AP.wpromo?'<em class="ap1-wp">+ '+esc(wpName(AP.wpromo))+' '+wz(AP.wpromo.price||0)+'</em>':'')+'</b>'+(sub?'<span>'+esc(sub)+'</span>':'')+'</div>'+pr+
@@ -1629,6 +1636,8 @@ function apPhoneHtml(){
 }
 // 신청서 위 한 줄·아래 고정 줄: 요금제까지 합친 월 금액 (할부금 + 요금제, 일시납이면 요금제만) — 요금제 금액이 없으면 null
 function apMonthTotal(pc){ if(!pc || !pc.fee) return null; return (pc.mm===0?0:(pc.monthly||0))+(pc.feeAfter||0)+(AP&&AP.wpromo?wpLineFee(AP.wpromo,pc.fee):0); }
+// 20261021(3차): 매달 내는 요금만 (요금제 — 선택약정이면 할인된 금액 + 워치 이용료가 있으면 더함) — 요금제 금액이 없으면 null
+function apMonthFee(pc){ if(!pc || !pc.fee) return null; return (pc.feeAfter||0)+(AP&&AP.wpromo?wpLineFee(AP.wpromo,pc.fee):0); }
 // 20261019 받는 방법: 택배(당일 발송) / 매장에서 수령하기 — 상담 방법(전화·카톡)과는 따로 고르는 칸.
 //  매장에서 수령하기 → 어디서 오세요(구·동, 고객이 직접 적음 → 그 동네 기준으로 가까운 매장 정렬 + 거리·교통비 분석용) → 수령 매장(현재 위치로도 정렬 가능) → 고른 매장 주소·거리·길찾기
 var TRUCK_I='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 6.5h11v9.5h-11zM13.5 9.5h4l3 3.5v3h-7"/><circle cx="6.5" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/></svg>';
@@ -1866,8 +1875,9 @@ function apBarHtml(){
   // 20261019: 휴대폰은 월 기기 할부금 + 지원금만 (통신 요금 합친 금액 X). TV프리만 신청할 땐 예전처럼 예상 월 금액
   var pc=apPhoneCalc(), t;
   if(pc){ var sup=Math.max(0,(num(pc.c.out)||0)-pc.after);
-    var tot=apMonthTotal(pc);   // 20261021 사장님: 요금제까지 합친 월 금액
-    t=(tot!=null?'매달 <b>'+won(tot)+'</b> <small>'+(pc.mm===0?'요금제 · 기기값 일시납':'요금제 포함')+'</small>':pc.after===0?'월 기기 할부금 <b>0원</b>':pc.mm===0?'기기값 <b>'+won(pc.after)+'</b>':'월 기기 할부금 <b>'+won(pc.monthly)+'</b>')+(sup>0?'<em>총 '+manwon(sup)+' 지원</em>':''); }
+    // 20261021 사장님(3차): '월 기기값'을 앞에 + 월 요금 (요금제까지 합친 금액은 크게 안 보여 줌)
+    var fe=apMonthFee(pc);
+    t=(pc.mm===0?'기기값 <b>'+wz(pc.after)+'</b>':'월 기기값 <b>'+wz(pc.monthly||0)+'</b>')+(fe!=null?' <small>+ 월 요금 '+won(fe)+'</small>':'')+(sup>0?'<em>총 '+manwon(sup)+' 지원</em>':''); }
   else { var tot=apSummary().total; t=tot?'예상 월 <b>'+won(tot)+'</b>':'조건을 골라 주세요'; }
   return '<div class="ap-bar-t">'+t+'</div><button type="button" class="ap-bar-b" data-ap-act="go">신청서 작성</button>';
 }
