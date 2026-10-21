@@ -325,7 +325,9 @@ function verAt(day, p){
 }
 function PV(){ return verAt(todayKST()); }
 function plansOf(g){ return (S.pricing.plans[g])||[]; }
-function tiersOf(g){ return (S.pricing.tiers[g])||[]; }
+// 20261021 사장님: 휴대폰 요금제에서 105·115는 뺌 — 상세 요금제 고르기·가격 계산·신청서 모두 (관리자 가격표 편집(store-price.js)엔 그대로 남음)
+var TIER_OFF={t105:1, t115:1};
+function tiersOf(g){ var ts=(S.pricing.tiers[g])||[]; return g==='phone'?ts.filter(function(t){ return !TIER_OFF[t.k]; }):ts; }
 function baseTier(g, P){ P=P||S.pricing; var ts=P.tiers[g]||[]; return ts.filter(function(t){return t.k===P.base[g]})[0]||ts[0]||null; }
 // 가격표에 이 모델 줄이 있는지 (공개 여부와 상관없이)
 function inSheet(m){ var v=PV(); return !!(v&&m&&v.rows.some(function(r){return r.model===m.id})); }
@@ -603,7 +605,8 @@ function pvPhone(m, r, st){
   h+='<div class="pv-card pv-sum">'+
     (sup>0?'<div class="pv-sr"><span>총 기기 지원금'+(how?'<small>'+how+'</small>':'')+'</span><b class="pink">'+manwon(sup)+'</b></div>':'')+
     '<div class="pv-sr"><span>지원 후 기기값<small>출고가 '+won(out)+'</small></span><b>'+wz(st.after)+'</b></div>'+
-    (wpc?'<div class="pv-sr pv-wp"><span>'+esc(wpName(wpw))+'<small>'+esc(tierNmOf(wpw.b))+' 요금제 혜택 · 워치 이용료 '+(wlf?'월 '+won(wlf):'0원')+'</small></span><b><s>'+won(wpc.c.out)+'</s> '+wz(wpc.after)+'</b></div>':'')+'</div>';
+    // 20261021 사장님: 워치는 계산식 없이 '529,100원 → 0원'만 + 안내는 '*셀룰러 제품입니다. 24개월 약정 제품입니다.' 두 마디만 (줄이 넘치면 문장 사이에서만 끊김)
+    (wpc?'<div class="pv-sr pv-wp"><span>'+esc(wpName(wpw))+'<small>*셀룰러&nbsp;제품입니다. 24개월&nbsp;약정&nbsp;제품입니다.</small></span><b><s>'+won(wpc.c.out)+'</s> '+wz(wpc.after)+'</b></div>':'')+'</div>';
   // ④ 혜택 조건 — 20261020 깔끔하게: 제목·번호 목록 → 한 줄 '조건 85,000원 이상 요금제 6개월 · 약정 2년' (조건은 남겨야 개통할 때 말이 안 나옴)
   //    ('이후에는 47,000원 …'·'LG U+ 통신사 변경 조건 (번호이동)'은 20261020 사장님 지시로 이미 뺌)
   var mu=[]; if(st.t&&st.t.fee) mu.push(won(st.t.fee)+' 이상 요금제 6개월');
@@ -1761,10 +1764,12 @@ function apSummary(){
   } else if(m){ var r0=rec('휴대폰',m.nm,'phone',m); r0.ask=true; row(r0.mon,'예상 금액',null,'',null,'','상담 시 안내'); }
   if(apTvOn() || AP.wpromo) AP_SLOTS.forEach(function(s){
     if(!apAddOn() && s[0]!=='tv' && !(s[0]==='watch' && AP.wpromo)) return;
-    var x=AP[s[0]]&&byId(AP[s[0]]); if(!x) return; var r=rec(s[1],(AP.wpromo&&x.id===AP.wpromo.watch)?wpName(AP.wpromo):x.nm,s[0],x), ac=apAddCalc(x);
+    var x=AP[s[0]]&&byId(AP[s[0]]); if(!x) return; var isWp=!!(AP.wpromo&&x.id===AP.wpromo.watch), r=rec(s[1],isWp?wpName(AP.wpromo):x.nm,s[0],x), ac=apAddCalc(x);
     if(!ac){ r.ask=true; row(r.dev,'기기값',null,'',null,'','상담 시 안내'); }
     else {
-      if(s[0]==='tv'){ row(r.dev,'출고가',ac.c.out); if(ac.c.out>ac.after) row(r.dev,'유플러스 다이렉트 지원금',-(ac.c.out-ac.after),'',null,'minus'); r.sup=ac.c.out-ac.after; r.after=ac.after; r.cs=Math.min(ac.c.pb!=null?ac.c.pub:0,r.sup); r.os=r.sup-r.cs; r.csNm='기존 고객 지원금'; row(r.dev,'지원 후 기기값',ac.after,r.sup?'총 '+won(r.sup)+' 지원':'',null,'sum'); }
+      // 20261021 사장님: 워치 혜택은 계산식 없이 '출고가 529,100 → 0원'만 — 이통사·우리 지원금으로 나누지 않고 지원금 합계에도 안 넣음 (CRM 카드도 이 한 줄)
+      if(isWp){ r.promo=true; row(r.dev,'출고가',ac.c.out); row(r.dev,'지원 후 기기값',ac.after,'',null,'sum'); r.after=ac.after; }
+      else if(s[0]==='tv'){ row(r.dev,'출고가',ac.c.out); if(ac.c.out>ac.after) row(r.dev,'유플러스 다이렉트 지원금',-(ac.c.out-ac.after),'',null,'minus'); r.sup=ac.c.out-ac.after; r.after=ac.after; r.cs=Math.min(ac.c.pb!=null?ac.c.pub:0,r.sup); r.os=r.sup-r.cs; r.csNm='기존 고객 지원금'; row(r.dev,'지원 후 기기값',ac.after,r.sup?'총 '+won(r.sup)+' 지원':'',null,'sum'); }
       else dev(r, ac.c, ac.c.pb!=null?ac.c.pub:0, '이통사 지원금', '', ac.after);
       if(s[0]==='tv'){ if(ac.after>0){ r.up+=ac.after; row(r.mon,'기기값',ac.after,'별도'); } }
       else if(AP.months===0){ r.up+=ac.after; row(r.mon,'기기값 일시납',ac.after,'한 번에 결제해요'); }
@@ -1919,6 +1924,7 @@ function apPayload(o){
     if(r.cs!=null){ o.carrierSupport=r.cs; o.ourSupport=r.os; o.carrierLabel=r.csNm;
       if(r.sk==='tv'){ var sp=[]; o.subsidy.forEach(function(x){ if(x.label==='유플러스 다이렉트 지원금') return; sp.push(x);
         if(x.label==='출고가'){ if(r.cs) sp.push({label:r.csNm, amount:-r.cs}); if(r.os) sp.push({label:'유플러스 다이렉트 지원금', amount:-r.os}); } }); o.subsidy=sp; } }
+    if(r.promo) o.promo=true;   // 20261021 워치 혜택(폴드8 B) — CRM 카드에서 '출고가 → 0원' 한 줄로
     return o; };
   var A=SM.recs.filter(function(r){return r.sk==='phone'})[0], addRecs=SM.recs.filter(function(r){return r.sk!=='phone'});
   var tvTierNm=function(){ return '집 인터넷 500MB 이상'; };
