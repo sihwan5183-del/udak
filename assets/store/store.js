@@ -1487,7 +1487,7 @@ function sheetConsult(modelId, colorNm, optNm){
     '<div class="ff" id="mColorWrap"'+(colorOpts(byId(modelId))?'':' hidden')+'><label>희망 컬러</label><select id="mColorSel">'+colorOpts(byId(modelId),colorNm)+'</select></div>'+
     '<div class="ff"><label>전달사항</label><textarea id="mUserNote" rows="3" maxlength="500" placeholder="요청사항을 적어 주세요"></textarea></div>'+
     '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히</button></label>'+
-    '<div class="privacy-txt" id="privacyTxt">유플러스 다이렉트(이하 "회사")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
+    '<div class="privacy-txt" id="privacyTxt">유플러스 다이렉트(이하 "유닥")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
     '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사<br>· 목적: 온라인 상담 신청 접수, 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
     '동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.</div>'+
     '<button type="button" class="cta" id="mSubmitBtn"><span class="rf-submit-label">온라인 상담 신청하기</span></button></section>';
@@ -1897,7 +1897,7 @@ function apInfoHtml(){
     '<div class="ff"><label>생년월일 <span class="req">*</span></label><input type="text" id="mUserBirth" inputmode="numeric" maxlength="8" placeholder="예: 940101"></div>'+
     '<div class="ff" style="display:none"><label>전달사항</label><textarea id="mUserNote" rows="3" maxlength="500"></textarea></div>'+
     '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히 보기 ›</button></label>'+
-    '<div class="privacy-txt" id="privacyTxt">유플러스 다이렉트(이하 "회사")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
+    '<div class="privacy-txt" id="privacyTxt">유플러스 다이렉트(이하 "유닥")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
     '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사, 받는 방법(매장에서 받는 경우 수령 매장·출발 동네)<br>· 목적: 온라인 상담 신청 접수, 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
     '동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.</div>'+
     // 20261021 사장님(GPT 안에서 가져옴): 신청 버튼 위 안내 — '누르면 바로 결제되나?' 걱정 줄이기 (확인 화면은 따로 안 둠)
@@ -2018,7 +2018,7 @@ function apPayload(o){
 }
 // 20261019: 상세 [카톡 상담] — 이름·연락처·동의만 받고 CRM에 '카톡 상담 요청'으로 저장한 뒤 우리 카카오톡 채널로
 var QK={m:'', car:'', col:''};
-var QK_PV='유플러스 다이렉트(이하 "회사")는 카카오톡 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
+var QK_PV='유플러스 다이렉트(이하 "유닥")는 카카오톡 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
   '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사<br>· 목적: 카카오톡·전화 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
   '동의를 거부할 권리가 있으며, 거부 시 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.';
 function sheetQuickKakao(m){
