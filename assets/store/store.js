@@ -1045,9 +1045,12 @@ function renderWish(){
 /* 모델 상세 */
 function renderModel(id, keepRecent){
   if(!keepRecent){ var r=store.get('recent',[]).filter(function(x){return x!==id}); r.unshift(id); store.set('recent',r.slice(0,10)); }
-  // 20261021: 설정 받기 전엔 빈 틀만 (사진 자리 · 이름 · 회색 줄) — 받으면 refresh()가 통신사 → 내 가격 순서로 한 번에 그림
-  if(CFG_WAIT){ var m0=byId(id); $('#mdTitle').textContent=m0?m0.nm:'';
-    $('#mdBody').innerHTML='<div class="ucard md-skel"><div class="md-img"></div><h2 class="md-h ucard-name">'+esc(m0?m0.nm:'')+'</h2><div class="sk-l"></div><div class="sk-b"></div><div class="sk-b"></div></div>'; return; }
+  // 20261021(2차) 사장님: '컬러부터 나오는 게 애초에 안 보였으면' — 설정(가격표)을 받기 전이라도 휴대폰은 처음부터 '통신사 → 내 가격' 화면을 그대로 그림
+  //   가격은 통신사를 골라야 보이는 거라 첫 화면은 설정 없이도 똑같음 → 설정이 오면 같은 화면을 다시 그릴 뿐 (중간 화면 없음)
+  //   휴대폰이 아닌 상품(워치·태블릿·TV프리)이나 기본값에 없는 모델만 받기 전 잠깐 빈 틀 (사진 자리 · 이름 · 회색 줄)
+  var PRE=CFG_WAIT&&!EDIT;
+  if(PRE){ var m0=byId(id); if(!(m0 && !m0.hidden && kindOf(m0)==='phone')){ $('#mdTitle').textContent=m0?m0.nm:'';
+    $('#mdBody').innerHTML='<div class="ucard md-skel"><div class="md-img"></div><h2 class="md-h ucard-name">'+esc(m0?m0.nm:'')+'</h2><div class="sk-l"></div><div class="sk-b"></div><div class="sk-b"></div></div>'; return; } }
   var m=byId(id); if(!m||(m.hidden&&!EDIT)){location.hash='#/';return}
   var srs=sheetRows(m), selRow=null, rows='', pickers='';
   if(srs.length && (OPT[m.id]==null || !srs[OPT[m.id]])) OPT[m.id]=Math.max(0, srs.indexOf(priceOf(m).row));
@@ -1067,6 +1070,7 @@ function renderModel(id, keepRecent){
   $('#mdTitle').textContent=m.nm;
   var pc=colorsOf(m).filter(function(c){return c.nm===PICK[m.id]})[0];
   var PK=(pickers&&typeof pickers==='object')?pickers:{car:'',rest:pickers||''}, gg=selRow?selRow.g:'';
+  if(PRE) PK={car:cgrid('','carrier',CARRIERS.map(function(c){return [c,c]}),(SEL[m.id]||{}).carrier||'',m,4,''), rest:'', promo:''};   // 설정 받기 전: 통신사 칸은 그대로, 가격은 받으면
   var soNow=SO(m)||(selRow&&selRow.so), needCar=!!PK.car && !((SEL[m.id]||{}).carrier);
   var soDis=(soNow&&!EDIT)?' disabled':'';   // 20261020 품절이면 카톡·전화 상담 버튼 막음
   // 20261019 행동 유도: '이 순서대로 하시면 돼요' + 컬러 → 용량 → 통신사를 한 단계씩
@@ -1100,8 +1104,8 @@ function renderModel(id, keepRecent){
   if(carFirst){
     // ① 통신사 ② 내 가격(고르기 전엔 자리만) → 아래 [상담 신청하기] — 요금제·할인 방식·할부 개월은 가격 바로 밑에서 바꿈
     body+=step('car', '통신사', '현재 이용 중인 통신사를 선택해 주세요.', '', PK.car, chipOf('car', carNm, false, false));
-    var wait=needCar&&!EDIT;   // 관리자 화면은 통신사를 안 골라도 가격 칸을 그대로 보여 줌 (편집용)
-    body+=step('price', '내 가격', '내 가격', '', wait?(soHtml||'<div class="pv-wait">통신사를 고르면 여기에 내 가격이 바로 나와요</div>'):
+    var wait=(needCar||PRE)&&!EDIT;   // 관리자 화면은 통신사를 안 골라도 가격 칸을 그대로 보여 줌 (편집용) · PRE: 설정 받기 전에 통신사를 먼저 누른 경우
+    body+=step('price', '내 가격', '내 가격', '', wait?(soHtml||'<div class="pv-wait">'+(needCar?'통신사를 고르면 여기에 내 가격이 바로 나와요':'내 가격을 불러오고 있어요')+'</div>'):
       soHtml+(PK.promo||'')+'<div class="ptable" id="ucatPrice">'+rows+'</div>'+(PK.rest?'<div class="mstep-sub">'+PK.rest+'</div>':'')+guideHtml(m)+
       (mdc?'<div class="md-chips">'+mdc+'</div>':''), '');
     if(EDIT){ if(colorStep) body+=colorStep(); if(capStep) body+=capStep(); }
@@ -1122,6 +1126,7 @@ function renderModel(id, keepRecent){
   var bt, btBuy=false, shortNm=m.nm.replace(/^갤럭시\s+/,'');
   if(soNow) bt='<b>일시품절</b> · 지금은 신청할 수 없어요';
   else if(needCar) bt='현재 이용 중인 <b>통신사</b>를 고르면 내 가격이 바로 나와요';
+  else if(PRE) bt='<b>내 가격</b>을 불러오고 있어요';   // 설정 받기 전에 통신사를 먼저 누른 경우 (보통 1초 안)
   else if(p.kind==='sheet' && cst && cst.c){ var sup=(num(p.row.out)||0)-cst.after;
     // 20261020 사장님 문구: 휴대폰은 '고른 이통사(번호이동·기기변경) 혜택(공시지원금·선택약정) 금액 제품명 구매 가능'
     //   예) 번호이동 공시지원금 104,000원 S26 구매 가능 — 금액은 지원 후 기기값, 제품명은 '갤럭시' 뺀 짧은 이름
