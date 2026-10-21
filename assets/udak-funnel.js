@@ -224,10 +224,12 @@
     //   'fold8#1 | 52s | 끝 상담선택 | 마지막 할부금 | 사진3 컬러4 통신사9 할부금20 지원금6 | 바 번호이동 · 기기값 … | 누름 컬러:크림>통신사:SKT>카톡상담'
     //   · 끝 = 가장 아래까지 본 위치 · 마지막 = 나갈 때 보고 있던 위치 · 위치 뒤 숫자 = 그 위치를 보고 있던 초 · 바 = 아래 고정 줄(고른 조건·가격)
     // 20261020: 상세 정리 — '순서'(이 순서대로 하시면 돼요) 줄 없앰 · 지원금/꼭확인은 새로 바뀐 칸(.pv-sum/.pv-must1)
-    var MD_SECS=[['사진','.md-img'],['이름','.md-h'],['컬러','.mstep[data-step="color"]'],['용량','.mstep[data-step="cap"]'],['통신사','.mstep[data-step="car"]'],
-      ['요금제','.mstep-sub'],['할부금','.pv-hero'],['지원금','.pv-sum'],['꼭확인','.pv-must1'],['월납부','.pv-more'],['가격','.ms-detail:not(.pv)'],['가이드','.guide'],['상담선택','.mstep.cs']];
+    // 20261021: 휴대폰 상세 순서가 통신사 → 내 가격 → 컬러 → 용량으로 바뀜 — '끝'은 목록 순서가 아니라 화면에서 가장 아래 있는 본 칸으로 셈
+    //   '가격대기' = 통신사를 고르기 전 '내 가격' 자리(점선 칸)
+    var MD_SECS=[['사진','.md-img'],['이름','.md-h'],['통신사','.mstep[data-step="car"]'],['가격대기','.pv-wait'],['할부금','.pv-hero'],['지원금','.pv-sum'],['꼭확인','.pv-must1'],
+      ['요금제','.mstep-sub'],['월납부','.pv-more'],['가격','.ms-detail:not(.pv)'],['가이드','.guide'],['컬러','.mstep[data-step="color"]'],['용량','.mstep[data-step="cap"]'],['상담선택','.mstep.cs']];
     var MD=null, mdN=0;
-    function mdStart(k){ MD=(k.indexOf('model:')===0)?{id:k.slice(6), n:++mdN, t:Date.now(), sec:{}, max:-1, last:'', taps:[]}:null; if(MD) setTimeout(function(){ mdLook(false); }, 600); }
+    function mdStart(k){ MD=(k.indexOf('model:')===0)?{id:k.slice(6), n:++mdN, t:Date.now(), sec:{}, maxY:-1, maxNm:'', last:'', taps:[]}:null; if(MD) setTimeout(function(){ mdLook(false); }, 600); }
     function mdLook(add){
       try{
         if(!MD) return; var body=document.getElementById('mdBody'); if(!body) return;
@@ -239,7 +241,7 @@
         for(var i=0;i<MD_SECS.length;i++){
           var el=body.querySelector(MD_SECS[i][1]); if(!el) continue;
           var r=el.getBoundingClientRect(), v=Math.min(r.bottom,bottom)-Math.max(r.top,top); if(v<=0) continue;
-          if(v>=Math.min(r.height,bottom-top)*0.5 && i>MD.max) MD.max=i;   // 반 이상 보였으면 '봤다'
+          if(v>=Math.min(r.height,bottom-top)*0.5){ var yy=r.top+(window.scrollY||window.pageYOffset||0); if(yy>MD.maxY){ MD.maxY=yy; MD.maxNm=MD_SECS[i][0]; } }   // 반 이상 보였으면 '봤다' — 그중 화면에서 가장 아래 칸이 '끝'
           var d=line<r.top?r.top-line:line>r.bottom?line-r.bottom:0;          // 읽는 줄에 걸친 위치 = 지금 보는 곳
           if(d<bestD){ bestD=d; best=MD_SECS[i][0]; }
         }
@@ -249,7 +251,7 @@
     function mdDesc(){
       var secs=MD_SECS.map(function(p){ return MD.sec[p[0]]?p[0]+MD.sec[p[0]]:''; }).filter(Boolean).join(' ');
       var b=document.querySelector('#mdBar .md-bar-t'), bt=b?(b.textContent||'').replace(/\s+/g,' ').trim().slice(0,60):'';
-      return MD.id+'#'+MD.n+' | '+Math.round((Date.now()-MD.t)/1000)+'s | 끝 '+(MD.max>=0?MD_SECS[MD.max][0]:'-')+' | 마지막 '+(MD.last||'-')+' | '+(secs||'-')+(bt?' | 바 '+bt:'')+(MD.taps.length?' | 누름 '+MD.taps.join('>'):'');
+      return MD.id+'#'+MD.n+' | '+Math.round((Date.now()-MD.t)/1000)+'s | 끝 '+(MD.maxNm||'-')+' | 마지막 '+(MD.last||'-')+' | '+(secs||'-')+(bt?' | 바 '+bt:'')+(MD.taps.length?' | 누름 '+MD.taps.join('>'):'');
     }
     function mdTap(s){ if(!MD||!s) return; MD.taps.push(String(s).slice(0,24)); if(MD.taps.length>14) MD.taps.shift(); }
     function mdTapOf(t){

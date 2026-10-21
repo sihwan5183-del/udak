@@ -446,7 +446,7 @@ function curTier(m, g, r){ if(g==='tvfree'&&r) return tvTier(r); var ts=r?rowTie
 /* ---------- 상세 계산기: 컬러·용량 → 통신사 → 요금제 → 할인 방식 → 할부 → 예상 월 납부금액 ---------- */
 var RATE={24:1.0626,30:1.0781,36:1.0935};   // 할부이자 포함 계수 (휴대폰·워치·태블릿 동일)
 var SEL={};                                  // 모델별 고른 조건 {carrier, method, months}
-var CARRIERS=['SKT','KT','LG U+','알뜰폰'];
+var CARRIERS=['SKT','KT','알뜰폰','LG U+'];   // 20261021 사장님 순서: SKT / KT / 알뜰 / U+ (상세·신청서 모두 같은 순서)
 // 20261019 메타 '번호이동 접수' 신호(MnpLead): 지금 통신사가 SKT·KT·알뜰폰(=번호이동)인 접수만 — 기기변경(LG U+)·TV프리만은 안 보냄. 기존 Lead 는 그대로
 function mnpLead(b){ try{ var c=b&&b.carrier, sn=b&&b.snapshot, mnp=sn?(sn.jointype==='번호이동'):(!!c && c!=='LG U+'); if(mnp && window.udakMeta) window.udakMeta('MnpLead', {carrier:c, model:(b.device_interest||'')}); }catch(e){} }
 // 원 단위 정리: 1원 자리가 8·9면 10원 올림, 그 밖엔 버림 (아이폰 듀오 랜딩과 같은 규칙)
@@ -486,10 +486,12 @@ function mdNowKey(){ return MD_NOW; }
 // 고르고 나면 다음 단계로 따라감: 다음 단계가 하단 버튼에 가려 있으면 보이게 살짝 내림, 통신사까지 고르면 '내 가격'으로 (아래로만)
 function mdFollow(prev){
   var key=MD_NOW; if(!key||key===prev) return;
-  var nw=key==='go'?$('#mdBody .mstep[data-step="price"]'):$('#mdBody .mstep[data-step="'+key+'"]'); if(!nw) return;
+  // 20261021: 통신사를 처음 고르면 언제나 '내 가격'을 화면 위로 (휴대폰은 통신사 → 내 가격 → 컬러 → 용량)
+  var toPrice=(key==='go'||prev==='car');
+  var nw=toPrice?$('#mdBody .mstep[data-step="price"]'):$('#mdBody .mstep[data-step="'+key+'"]'); if(!nw) return;
   var hd=$('#v-model .subhead'), top=(hd?hd.getBoundingClientRect().bottom:0)+8, bar=$('#mdBar'), bot=window.innerHeight-(bar?bar.offsetHeight:0)-8;
   var el=nw, r=el.getBoundingClientRect(), dy=0;
-  if(key==='go') dy=r.top-top; else if(r.bottom>bot) dy=Math.min(r.bottom-bot, r.top-top);
+  if(toPrice) dy=r.top-top; else if(r.bottom>bot) dy=Math.min(r.bottom-bot, r.top-top);
   if(dy>4) window.scrollBy({top:dy, behavior:'smooth'});
 }
 function manwon(n){ return n%10000===0?(n/10000).toLocaleString('ko-KR')+'만원':won(n); }
@@ -1012,10 +1014,15 @@ function renderModel(id, keepRecent){
   //  · 지금 할 차례(반짝임)는 고객이 고를 때마다 다음 단계로 넘어감. 앞으로만 — 뒤 단계를 먼저 고르면 앞 단계로 되돌아가지 않음
   var mcs=colorsOf(m), mos=optsOf(m), cN=mcs.length>1, oN=mos.length>1, oL=optLabel(m);
   var colNm=PICK[m.id]||(mcs[0]&&mcs[0].nm)||'', capNm=oN?((mos[OPT[m.id]||0]||{}).nm||''):'', carNm=(SEL[m.id]||{}).carrier||'';
-  var order=[]; if(cN) order.push('color'); if(oN) order.push('cap'); if(PK.car) order.push('car');
+  // 20261021 사장님: 휴대폰은 들어오자마자 통신사부터 → 고르면 바로 내 가격 → 그다음 컬러·용량
+  //   (폴드8 광고: 상세를 연 111명 중 47명이 가격을 못 보고 나감 — 컬러·용량·통신사를 다 지나야 가격이 있었음)
+  //   통신사 칸이 없는 상품(워치·태블릿·TV프리 등)은 예전 순서 그대로: 컬러 → 용량 → 가격
+  var carFirst=!!PK.car;
+  var order=[]; if(carFirst) order.push('car'); if(cN) order.push('color'); if(oN) order.push('cap');
   var done={color:!!PICK[m.id], cap:!!OPTT[m.id], car:!!carNm}, last=-1;
   order.forEach(function(k,i){ if(done[k]) last=i; });
   var nowKey=order[last+1]||'go';
+  if(carFirst && !done.car) nowKey='car';   // 통신사를 안 골랐으면 언제나 통신사가 먼저 (컬러를 먼저 눌러도)
   var steps=[], body='';
   var step=function(key, short, title, sub, inner, chip, cls){ var ok=!!done[key], now=(key===nowKey); steps.push({k:key, t:short, ok:ok, now:now});
     return '<div class="mstep'+(now?' now':'')+(ok?' ok':'')+(cls?' '+cls:'')+'" data-step="'+key+'"><div class="mstep-h"><b>'+(ok?'✓':steps.length)+'</b><div><span>'+title+'</span>'+(sub?'<small>'+sub+'</small>':'')+'</div>'+(chip||'')+'</div>'+inner+'</div>'; };
@@ -1023,17 +1030,30 @@ function renderModel(id, keepRecent){
   var chipOf=function(key, val, dflt, ask){ return done[key]?'<em class="mstep-ok">✓ '+esc(val)+'</em>':key===nowKey?(ask?'<em class="mstep-go">골라 주세요</em>':''):dflt?'<em class="mstep-df">기본'+(key==='color'&&val?' · '+esc(val):'')+'</em>':''; };
   // 20261019 단계 아래 설명 문구(기본값 안내·통신사 안내·'그대로 두셔도 돼요')는 전부 뺌 — 제목 + 고르는 칸만
   // 20261020 단계 제목 (사장님 문구, 온점까지): 컬러를 선택해 주세요. / 용량을 선택해 주세요. / 현재 이용 중인 통신사를 선택해 주세요. / 내 가격 — 칸 안 이름표(컬러·용량·사용 통신사)는 뺌
-  if(cN) body+=step('color', '컬러', '컬러를 선택해 주세요.', '', colorPicker(m), chipOf('color', colNm, true, false), done.color?'':'dflt');
-  if(oN) body+=step('cap', oL, esc(oL)+eul(oL)+' 선택해 주세요.', '', optPicker(m), chipOf('cap', capNm, true, false), done.cap?'':'dflt');
-  if(PK.car) body+=step('car', '통신사', '현재 이용 중인 통신사를 선택해 주세요.', '', PK.car, chipOf('car', carNm, false, false));
-  if(PK.rest) body+='<div class="mstep-sub">'+PK.rest+'</div>';
   // 20261020 '당일 택배 발송 · 5분 상담' 칩 뺌 (첫 화면·신청서와 같은 말) — TV프리 대상 조건 칩, 워치·태블릿 '의무가입 X' 칩은 그대로
   var mdc=isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):(gg==='phone'&&cst&&cst.c)?'':'<span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span>';
-  body+=step('price', '내 가격', '내 가격', '', (soNow?'<div class="so-notice">'+(SO(m)?'현재 일시품절이에요. 지금은 신청할 수 없어요.':'선택하신 '+esc(selRow.cap||'옵션')+'은(는) 일시품절이에요.')+'</div>':'')+
-    '<div class="ptable" id="ucatPrice">'+rows+'</div>'+guideHtml(m)+
-    (mdc?'<div class="md-chips">'+mdc+'</div>':''), '');
+  var soHtml=soNow?'<div class="so-notice">'+(SO(m)?'현재 일시품절이에요. 지금은 신청할 수 없어요.':'선택하신 '+esc(selRow.cap||'옵션')+'은(는) 일시품절이에요.')+'</div>':'';
+  var colorStep=cN?step.bind(null,'color', '컬러', '컬러를 선택해 주세요.', '', colorPicker(m), chipOf('color', colNm, true, false), done.color?'':'dflt'):null;
+  var capStep=oN?step.bind(null,'cap', oL, esc(oL)+eul(oL)+' 선택해 주세요.', '', optPicker(m), chipOf('cap', capNm, true, false), done.cap?'':'dflt'):null;
+  if(carFirst){
+    // ① 통신사 ② 내 가격(고르기 전엔 자리만) ③ 컬러 ④ 용량 — 요금제·할인 방식·할부 개월은 가격 바로 밑에서 바꿈
+    body+=step('car', '통신사', '현재 이용 중인 통신사를 선택해 주세요.', '', PK.car, chipOf('car', carNm, false, false));
+    var wait=needCar&&!EDIT;   // 관리자 화면은 통신사를 안 골라도 가격 칸을 그대로 보여 줌 (편집용)
+    body+=step('price', '내 가격', '내 가격', '', wait?(soHtml||'<div class="pv-wait">통신사를 고르면 여기에 내 가격이 바로 나와요</div>'):
+      soHtml+'<div class="ptable" id="ucatPrice">'+rows+'</div>'+(PK.rest?'<div class="mstep-sub">'+PK.rest+'</div>':'')+guideHtml(m)+
+      (mdc?'<div class="md-chips">'+mdc+'</div>':''), '');
+    if(colorStep) body+=colorStep();
+    if(capStep) body+=capStep();
+  } else {
+    if(colorStep) body+=colorStep();
+    if(capStep) body+=capStep();
+    if(PK.rest) body+='<div class="mstep-sub">'+PK.rest+'</div>';
+    body+=step('price', '내 가격', '내 가격', '', soHtml+'<div class="ptable" id="ucatPrice">'+rows+'</div>'+guideHtml(m)+
+      (mdc?'<div class="md-chips">'+mdc+'</div>':''), '');
+  }
   // 20261020 사장님: 카톡 상담은 하나도 안 들어옴 → 카톡 상담 버튼은 빼고 '[제품명] 상담 신청하기' 하나만 (하단 고정)
-  //   그래서 마지막 '상담' 단계 카드([카톡 상담][전화 상담])도 뺌 — 같은 버튼이 두 번 안 보이게. 단계는 컬러 → 용량 → 통신사 → 내 가격
+  //   그래서 마지막 '상담' 단계 카드([카톡 상담][전화 상담])도 뺌 — 같은 버튼이 두 번 안 보이게.
+  //   단계: 휴대폰은 통신사 → 내 가격 → 컬러 → 용량 (20261021) · 그 밖의 상품은 컬러 → 용량 → 내 가격
   MD_NOW=nowKey;   // 다 고르면 'go' → 내 가격으로 내려 줌 (mdFollow)
   // 20261020 위 '이 순서대로 하시면 돼요 ①컬러 ②용량 …' 줄은 뺌 — 단계마다 번호가 이미 있음 (이틀간 126명 중 누른 사람 0명)
   var guide='';

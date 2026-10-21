@@ -1653,3 +1653,5 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .ap1-eq b{font-size:13px;font-weight:700;color:var(--ink2);white-space:nowrap;font-variant-numeric:tabular-nums}
 .ap1-eq .sum{margin-top:3px;padding-top:7px;border-top:1px solid #E6E8EC;color:var(--ink);font-weight:800}
 .ap1-eq .sum b{font-size:14.5px;font-weight:900;color:var(--ink)}
+/* 20261021 휴대폰 상세: 통신사 → 내 가격 → 컬러 → 용량 — 통신사를 고르기 전 '내 가격' 자리 */
+#v-model .pv-wait{margin-top:10px;padding:16px 14px;border:1.5px dashed var(--line);border-radius:14px;background:#fafafb;color:var(--sub);font-size:14px;font-weight:600;line-height:1.5;text-align:center;word-break:keep-all}
