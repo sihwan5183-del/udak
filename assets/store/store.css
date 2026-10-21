@@ -1733,3 +1733,7 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 #v-model .md-cols .mc{background:none;border:0;padding:0;margin:0;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
 #v-model .md-cols .mc.on i{box-shadow:inset 0 0 0 1px rgba(0,0,0,.13),0 0 0 2px #fff,0 0 0 3.5px var(--pink)}
 #v-model .md-cols .mc.on em{color:var(--ink);font-weight:800}
+/* 20261022 사장님: 컬러 점(특히 고른 점의 분홍 테두리)이 사진 칸 아래 끝에 붙어 겹쳐 보이던 것 — 이름 줄을 사진에서 띄우고 이름·컬러 점을 가운데 맞춤 */
+#v-model .md-hrow{align-items:center;margin-top:18px}
+#v-model .md-hrow .md-h{margin-top:0}
+#v-model .md-cols{padding:4px 4px 0 0}
