@@ -1050,7 +1050,7 @@ function renderModel(id, keepRecent){
   //   휴대폰이 아닌 상품(워치·태블릿·TV프리)이나 기본값에 없는 모델만 받기 전 잠깐 빈 틀 (사진 자리 · 이름 · 회색 줄)
   var PRE=CFG_WAIT&&!EDIT;
   if(PRE){ var m0=byId(id); if(!(m0 && !m0.hidden && kindOf(m0)==='phone')){ $('#mdTitle').textContent=m0?m0.nm:'';
-    $('#mdBody').innerHTML='<div class="ucard md-skel"><div class="md-img"></div><h2 class="md-h ucard-name">'+esc(m0?m0.nm:'')+'</h2><div class="sk-l"></div><div class="sk-b"></div><div class="sk-b"></div></div>'; return; } }
+    $('#mdBody').innerHTML='<div class="ucard md-skel"><div class="md-img"></div><div class="md-rest"><h2 class="md-h ucard-name">'+esc(m0?m0.nm:'')+'</h2><div class="sk-l"></div><div class="sk-b"></div><div class="sk-b"></div></div></div>'; return; } }
   var m=byId(id); if(!m||(m.hidden&&!EDIT)){location.hash='#/';return}
   var srs=sheetRows(m), selRow=null, rows='', pickers='';
   if(srs.length && (OPT[m.id]==null || !srs[OPT[m.id]])) OPT[m.id]=Math.max(0, srs.indexOf(priceOf(m).row));
@@ -1137,10 +1137,11 @@ function renderModel(id, keepRecent){
   else bt='상담 신청하시면 <b>내 가격</b>을 안내해 드려요';
   $('#mdBody').innerHTML='<div class="ucard" data-edit="model:'+esc(m.id)+'"><div class="md-img" id="mdImg">'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(SO(m)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>'+
     // 20261020 휴대폰 소개 문구('더 넓은 세상, 더 많은 가능성' 등)는 뺌 — 워치·태블릿·TV프리는 무슨 상품인지 알려 주는 말이라 그대로
-    // 20261021 사장님(GPT 안에서 가져옴): 이름 옆 컬러 점(어떤 색이 있는지만 — 고르는 건 신청서) · 혜택 글씨 칩 → 아이콘 칸
-    '<div class="md-hrow"><h2 class="md-h ucard-name">'+esc(m.nm)+'</h2>'+colDots(m)+'</div>'+(isWear(m)&&m.ds?'<p style="color:var(--sub);margin-top:4px">'+esc(m.ds)+'</p>':'')+
+    // 20261021 사장님(GPT 안에서 가져옴): 이름 옆 컬러 점 · 혜택 글씨 칩 → 아이콘 칸
+    // 20261021(3차) 사장님: 휴대폰 사진 밑은 전부 15% 작게 (여백 있어 보이게) — .md-rest 한 덩어리로 묶어 줄임 (사진·아래 고정 버튼은 그대로)
+    '<div class="md-rest"><div class="md-hrow"><h2 class="md-h ucard-name">'+esc(m.nm)+'</h2>'+colDots(m)+'</div>'+(isWear(m)&&m.ds?'<p style="color:var(--sub);margin-top:4px">'+esc(m.ds)+'</p>':'')+
     benTiles(m)+
-    guide+body+'</div>'+
+    guide+body+'</div></div>'+
     '<div class="md-bar" id="mdBar"><div class="md-bar-t'+(btBuy?' buy':'')+'"'+(needCar&&!soNow?' data-md-go="car"':'')+'>'+bt+'</div><div class="md-bar-b one">'+
       '<button type="button" class="mb-ap" data-open="consult" data-model="'+esc(m.id)+'"'+soDis+'>'+(soNow?'일시품절':esc(shortNm)+' 상담 신청하기<svg class="cta-ar" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>')+'</button></div></div>';   // 20261021 GPT 안: 버튼 끝 '>' 표시
 }
@@ -1156,9 +1157,12 @@ function benTiles(m){
   if(!ts.length) return '';
   return '<div class="md-ben" style="--n:'+Math.min(ts.length,3)+'">'+ts.map(function(x){ return '<div class="mb-t"><i>'+BEN_I[x[0]]+'</i><span>'+esc(x[1])+'</span></div>'; }).join('')+'</div>';
 }
-// 이름 옆 컬러 점 — 보여 주기만 (컬러는 신청서 ①에서 고름). 4색 넘으면 이름 없이 점만
-function colDots(m){ var cs=colorsOf(m); if(cs.length<2) return ''; var wn=cs.length<=4;
-  return '<div class="md-cols'+(wn?'':' nn')+'">'+cs.map(function(c){ return '<span class="mc" title="'+esc(c.nm)+'"><i style="--c:'+esc(c.hex||'#ddd')+'"></i>'+(wn?'<em>'+esc(c.nm)+'</em>':'')+'</span>'; }).join('')+'</div>'; }
+// 이름 옆 컬러 점 — 4색 넘으면 이름 없이 점만
+// 20261021(3차) 사장님: 컬러 점을 누르면 위 휴대폰 사진이 그 색으로 바뀜 (고른 색은 신청서 컬러에도 미리 들어감 — 상세 컬러 고르기와 같은 동작)
+var CPRE={};   // 모델별 컬러 사진 미리 받아 둠 (누르면 바로 바뀌게)
+function colDots(m){ var cs=colorsOf(m); if(cs.length<2) return ''; var wn=cs.length<=4, cur=PICK[m.id]||cs[0].nm;
+  if(!CPRE[m.id] && !EDIT){ CPRE[m.id]=1; cs.forEach(function(c){ if(c.img){ try{ (new Image()).src=imgSrc(c.img); }catch(x){} } }); }
+  return '<div class="md-cols'+(wn?'':' nn')+'">'+cs.map(function(c){ return '<button type="button" class="mc'+(c.nm===cur?' on':'')+'" data-color-pick="'+esc(c.nm)+'" data-model="'+esc(m.id)+'" aria-label="'+esc(c.nm)+'"><i style="--c:'+esc(c.hex||'#ddd')+'"></i>'+(wn?'<em>'+esc(c.nm)+'</em>':'')+'</button>'; }).join('')+'</div>'; }
 var PICK={};   // 상세에서 고른 컬러 (모델별)
 var OPTT={};   // 상세에서 고객이 직접 고른 용량 (모델별) — 기본값과 구분
 function optPicker(m){

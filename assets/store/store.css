@@ -1728,3 +1728,8 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 #v-apply .ap-bar-b:disabled{opacity:.6}
 /* ③ 상세 사진 칸을 조금 낮게 (정사각 → 4:3) — 휴대폰 첫 화면에서 '통신사 고르기' 버튼까지 아래 고정 줄에 안 가리고 보이게 */
 #v-model .md-img{aspect-ratio:4/3}
+/* 20261021(3차) 사장님: 상세 휴대폰 사진 밑은 전부 15% 작게 (여백 있어 보이게 — 사진·아래 고정 버튼은 그대로) · 컬러 점 누르면 사진 색 바뀜 */
+#v-model .md-rest{zoom:.85}
+#v-model .md-cols .mc{background:none;border:0;padding:0;margin:0;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#v-model .md-cols .mc.on i{box-shadow:inset 0 0 0 1px rgba(0,0,0,.13),0 0 0 2px #fff,0 0 0 3.5px var(--pink)}
+#v-model .md-cols .mc.on em{color:var(--ink);font-weight:800}
