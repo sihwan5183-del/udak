@@ -192,6 +192,28 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .four h3{margin-top:15px;font-size:16px;font-weight:800;letter-spacing:-.02em}
 .four .t{margin-top:3px;line-height:1.5;font-size:12px;color:var(--sub)}
 
+/* 면접 장소 */
+.place{display:grid;grid-template-columns:1fr 1.25fr;margin-top:14px;overflow:hidden}
+.place-info{padding:26px 24px 24px}
+.place-info h3{margin-top:10px;font-size:18px;font-weight:800;letter-spacing:-.02em}
+.place .addr{margin-top:10px;font-size:15px;font-weight:700}
+.place .addr2{margin-top:2px;font-size:13px;color:var(--sub)}
+.place .sta{margin-top:10px;font-size:12.5px;font-weight:600;color:var(--blue)}
+.place-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.btn-sm{display:inline-flex;align-items:center;gap:5px;height:38px;padding:0 13px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:13px;font-weight:700;color:var(--ink2)}
+.btn-sm svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-sm.pk{background:var(--pink);border-color:var(--pink);color:#fff}
+.btn-sm.pk:hover{background:var(--pink-d)}
+.place-map{position:relative;display:block;min-height:250px;border-left:1px solid var(--line);background:#eef2f6}
+.place-map iframe{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none}
+.place-map span{position:absolute;right:10px;bottom:10px;padding:6px 10px;border-radius:7px;background:rgba(255,255,255,.95);box-shadow:0 1px 3px rgba(20,44,82,.18);font-size:12px;font-weight:700;color:var(--ink)}
+.ap-l h3.mt{margin-top:20px}
+.ap-l .lnk{color:var(--blue);font-weight:700;text-decoration:underline;text-underline-offset:2px;white-space:nowrap}
+.done-place{margin:22px auto 0;max-width:420px;padding:16px;border-radius:12px;background:var(--soft);display:flex;flex-direction:column;align-items:center;gap:6px}
+.done-place b{font-size:13px;font-weight:800}
+.done-place span{font-size:13px;color:var(--ink2)}
+.done-place .btn-sm{margin-top:6px}
+
 /* 회사 줄 */
 .co{border-top:1px solid var(--line2);border-bottom:1px solid var(--line2)}
 .co-in{min-height:91px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:16px;padding-bottom:16px}
@@ -294,6 +316,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .pay-tbl{padding:26px 20px 22px}
   .three>.card{min-height:0}
   .four{grid-template-columns:1fr 1fr;gap:10px}
+  .place{grid-template-columns:1fr}
+  .place-info{padding:22px 20px 20px}
+  .place-map{min-height:210px;border-left:0;border-top:1px solid var(--line)}
   .four>.card{padding:22px 16px 20px}
   .co-in{flex-direction:column;align-items:flex-start;gap:12px}
   .apply{padding:56px 0 110px}
@@ -476,8 +501,23 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <div class="four">
       <div class="card"><p class="no">01</p><h3>면접 신청</h3><p class="t">아래 간단한 정보를 제출</p></div>
       <div class="card"><p class="no">02</p><h3>일정 조율</h3><p class="t">담당자가 개별 연락</p></div>
-      <div class="card"><p class="no">03</p><h3>면접 진행</h3><p class="t">일정 및 장소 별도 안내</p></div>
+      <div class="card"><p class="no">03</p><h3>면접 진행</h3><p class="t">구리 갈매 사무실에서 진행</p></div>
       <div class="card"><p class="no">04</p><h3>최종 결과 안내</h3><p class="t">합격 여부 개별 안내</p></div>
+    </div>
+    <div class="card place" id="place">
+      <div class="place-info">
+        <p class="no">면접 장소</p>
+        <h3>구리 갈매 사무실</h3>
+        <p class="addr">경기 구리시 갈매순환로 188</p>
+        <p class="addr2">힐스테이트 갈매역 스칸센(A그룹) A동 7층 705호</p>
+        <p class="sta">경춘선 갈매역에서 약 700m</p>
+        <div class="place-btns">
+          <a class="btn-sm pk" href="https://map.kakao.com/link/to/%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%95%EB%B3%B4%ED%86%B5%EC%8B%A0%20%EA%B0%88%EB%A7%A4%20%EC%82%AC%EB%AC%B4%EC%8B%A4,37.636059,127.122177" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>카카오맵 길찾기</a>
+          <a class="btn-sm" href="https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%20%EA%B5%AC%EB%A6%AC%EC%8B%9C%20%EA%B0%88%EB%A7%A4%EC%88%9C%ED%99%98%EB%A1%9C%20188" target="_blank" rel="noopener">네이버 지도</a>
+          <button type="button" class="btn-sm" id="copyAddr" data-addr="경기 구리시 갈매순환로 188 (갈매동, 힐스테이트갈매역스칸센(A그룹)) A동 7층 705호">주소 복사</button>
+        </div>
+      </div>
+      <a class="place-map" href="https://map.kakao.com/link/map/%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%95%EB%B3%B4%ED%86%B5%EC%8B%A0%20%EA%B0%88%EB%A7%A4%20%EC%82%AC%EB%AC%B4%EC%8B%A4,37.636059,127.122177" target="_blank" rel="noopener" aria-label="면접 장소 지도 크게 보기"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=127.1132%2C37.6320%2C127.1312%2C37.6400&amp;layer=mapnik&amp;marker=37.636059%2C127.122177" loading="lazy" tabindex="-1" title="면접 장소(구리 갈매 사무실) 지도"></iframe><span>지도 크게 보기</span></a>
     </div>
   </div>
 </section>
@@ -498,6 +538,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
       <hr>
       <h3>근무지 배치 안내</h3>
       <p class="t">희망 근무지역 위주로 근무하지만, 근로 조건상 다른 매장에서 근무할 수도 있습니다. (단, 최대한 배려해 드립니다.)</p>
+      <h3 class="mt">면접 장소</h3>
+      <p class="t">구리 갈매 사무실 · 경기 구리시 갈매순환로 188, 힐스테이트 갈매역 스칸센(A그룹) A동 7층 705호 <a class="lnk" href="#place">위치·길찾기</a></p>
     </div>
 
     <div>
@@ -541,6 +583,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
         <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg></div>
         <h3>면접 신청이 접수됐어요</h3>
         <p>확인 후 담당자가 남겨 주신 연락처로 면접 일정을 안내해 드릴게요.</p>
+        <div class="done-place"><b>면접 장소</b><span>구리 갈매 사무실 · 경기 구리시 갈매순환로 188 A동 7층 705호</span><a class="btn-sm pk" href="https://map.kakao.com/link/to/%EC%8B%A0%EC%84%B8%EA%B3%84%EC%A0%95%EB%B3%B4%ED%86%B5%EC%8B%A0%20%EA%B0%88%EB%A7%A4%20%EC%82%AC%EB%AC%B4%EC%8B%A4,37.636059,127.122177" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>카카오맵 길찾기</a></div>
       </div>
     </div>
   </div>
@@ -582,15 +625,15 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     ['경기','하남시','미사역점','하남시 미사강변동로 70'],
     ['경기','성남시','금광동 E편한세상점','성남시 중원구 광명로 337']
   ].map(function(a){ return {r:a[0], d:a[1], n:a[2], a:a[3]}; });
-  /* 매장 위치(위도·경도) — 유닥 스토어(assets/store/store.js STORE_GEO)와 같은 값 (OpenStreetMap 기준) */
+  /* 매장 위치(위도·경도) — 유닥 스토어(assets/store/store.js STORE_GEO) 값 기준, 자양번영로 42·도봉로 187·퇴계원로 64는 카카오맵 주소 검색 값으로 보정(20261022) */
   var GEO={
     '서울시 광진구 능동로 95':[37.533913,127.067926], '서울시 광진구 천호대로 573':[37.556583,127.081845], '서울시 광진구 천호대로 548':[37.556827,127.078992],
-    '서울시 광진구 자양번영로 42':[37.531000,127.075000], '서울시 성동구 아차산로 96':[37.544554,127.054421], '서울시 성동구 용답동 58-1':[37.561333,127.058015],
+    '서울시 광진구 자양번영로 42':[37.533313,127.075950], '서울시 성동구 아차산로 96':[37.544554,127.054421], '서울시 성동구 용답동 58-1':[37.561333,127.058015],
     '서울시 중랑구 사가정로52길 5':[37.580390,127.087632], '서울시 중랑구 동일로 917':[37.611436,127.077608], '서울시 동대문구 장한로 3':[37.562410,127.065380],
-    '서울시 강북구 미아동 202-11':[37.631950,127.024080], '서울시 강북구 도봉로 187':[37.628000,127.025800], '서울시 도봉구 도당로 2':[37.658330,127.035268],
+    '서울시 강북구 미아동 202-11':[37.631950,127.024080], '서울시 강북구 도봉로 187':[37.625421,127.026185], '서울시 도봉구 도당로 2':[37.658330,127.035268],
     '서울시 도봉구 쌍문동 88-144':[37.648664,127.034736], '서울시 강동구 올림픽로 769':[37.549967,127.127179], '서울시 강동구 양재대로 1465':[37.536854,127.139488],
     '하남시 미사강변동로 70':[37.561315,127.194177], '성남시 중원구 광명로 337':[37.446430,127.165925],
-    '구리시 경춘로 239':[37.601591,127.141744], '남양주시 퇴계원읍 퇴계원로 64':[37.651000,127.146000], '남양주시 진접읍 해밀예당3로 57':[37.714891,127.199508],
+    '구리시 경춘로 239':[37.601591,127.141744], '남양주시 퇴계원읍 퇴계원로 64':[37.652223,127.142724], '남양주시 진접읍 해밀예당3로 57':[37.714891,127.199508],
     '남양주시 오남읍 진건오남로 639':[37.689304,127.210191], '남양주시 진접읍 장현로 83':[37.717946,127.181589], '남양주시 화도읍 마석중앙로 65':[37.652500,127.306000]
   };
   var DIST_SHORT={'서울':'광진·성동·동대문·중랑·강북·도봉·강동','경기':'구리·남양주·하남·성남'};
@@ -710,6 +753,13 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   nameEl.addEventListener('input', function(){ setFieldErr('f-name', false); });
   areaEl.addEventListener('change', function(){ setFieldErr('f-area', false); });
   agreeEl.addEventListener('change', function(){ setFieldErr('f-agree', false); });
+  /* 면접 장소 주소 복사 */
+  $('copyAddr').addEventListener('click', function(){
+    var b=this, t=b.getAttribute('data-addr');
+    var ok=function(){ b.textContent='복사했어요'; setTimeout(function(){ b.textContent='주소 복사'; }, 1800); };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok, function(){ fallback(); }); } else fallback();
+    function fallback(){ var ta=document.createElement('textarea'); ta.value=t; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); ok(); }catch(e){} ta.remove(); }
+  });
   $('pvBtn').addEventListener('click', function(){ var t=$('pvTxt'), open=t.hidden; t.hidden=!open; this.setAttribute('aria-expanded', open?'true':'false'); this.textContent=open?'닫기':'보기'; });
   function source(){
     var s=[], qs=new URLSearchParams(location.search);
