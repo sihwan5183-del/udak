@@ -186,7 +186,8 @@
       var h=location.hash.replace(/^#\/?/,'').split('/'), v=h[0]||'home';
       if(v==='cat') return 'cat:'+(h[1]||'all')+(h[2]?'/'+h[2]:'');
       if(v==='model'){ var id=h[1]||''; try{ id=decodeURIComponent(id); }catch(e){} return 'model:'+id; }
-      if(v==='t' && h[1]) return 'tab:'+h[1];   // 20261022 사장님: /shop 위 탭 화면 (tab:deal 이번주 특가 · tab:rank 인기 모델 · tab:zero 기기값 0원 · tab:tv TV프리)
+      if(v==='t' && h[1]) return 'tab:'+h[1]+(h[1]==='list'&&h[2]?'/'+h[2]:'');   // 20261022 사장님: /shop 위 탭 화면 (tab:deal 특가 · tab:rank 인기 모델 · tab:event 혜택/이벤트 · tab:ai AI추천 · tab:list/종류 분류 목록)
+      if(v==='c') return 'cmenu'+(h[1]?':'+h[1]:'');   // 20261022 사장님: /shop 카테고리 화면 (cmenu:대분류)
       return /^(search|wish|apply)$/.test(v)?v:'home';
     }
     ev('view', (PAGE==='device'?(qs.get('id')||'')+' | ':'')+(STORE?scrKey()+' | ':'')+(ref||'-')+' | '+app+(os?' '+os:''));
@@ -280,8 +281,8 @@
     //   상세 화면은 위 10번 detail_exit '누름'에 이미 있어서 여기선 뺌. 화면마다 최근 8개까지 (넘치면 앞에 …)
     // 20261022 사장님: /shop 홈 '이번주 특가'(oyDealSec) 누름도 스토어처럼 '특가:모델'로
     var SEC_KO={hero:'배너',models:'모델',quick:'바로가기',trust:'신뢰',popSec:'인기',recentSec:'최근',zeroSec:'0원',wearSec:'워치',giftSec:'선물',
-      rankSec:'순위',pickSec:'목록',oyDealSec:'특가',oyTabDeal:'특가탭',oyTabRank:'인기탭',oyTabZero:'0원탭',oyTabTv:'TV탭','v-cat':'분류목록','v-search':'검색','v-wish':'찜'};
-    function secOf(el){ var s=el.closest('#hero,#models,#quick,#trust,#popSec,#recentSec,#zeroSec,#wearSec,#giftSec,#rankSec,#pickSec,#oyDealSec,#oyTabDeal,#oyTabRank,#oyTabZero,#oyTabTv,#v-cat,#v-search,#v-wish'); return s?(SEC_KO[s.id]||s.id):''; }
+      rankSec:'순위',pickSec:'목록',oyDealSec:'특가',oyTabDeal:'특가탭',oyTabRank:'인기탭',oyTabZero:'0원탭',oyTabTv:'TV탭',oyTabEvent:'혜택탭',oyTabAi:'AI탭',oyTabList:'분류목록',oyTabCat:'카테고리','v-cat':'분류목록','v-search':'검색','v-wish':'찜'};
+    function secOf(el){ var s=el.closest('#hero,#models,#quick,#trust,#popSec,#recentSec,#zeroSec,#wearSec,#giftSec,#rankSec,#pickSec,#oyDealSec,#oyTabDeal,#oyTabRank,#oyTabZero,#oyTabTv,#oyTabEvent,#oyTabAi,#oyTabList,#oyTabCat,#v-cat,#v-search,#v-wish'); return s?(SEC_KO[s.id]||s.id):''; }
     function goKey(g){ return String(g||'').replace(/^#\/?/,'').replace(/^model\//,''); }
     function tapOf(t){
       var el, s;

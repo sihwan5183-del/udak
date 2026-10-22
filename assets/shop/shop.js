@@ -1,14 +1,18 @@
 /* =========================================================
    /shop — 올리브영 배치로 바꾼 스토어 (20261022 사장님 실험 페이지 landing.uplusdak.com/shop)
-   · 스토어 엔진(store.js)은 그대로 쓰고 '홈 화면 + 위 탭 화면 + 하단 탭'만 이 파일이 그림
-     → 상세·신청서·검색·찜·카테고리·팝업·가격 계산·신청 저장(유닥 시트)은 /store 와 똑같음
+   · 스토어 엔진(store.js)은 그대로 쓰고 '홈 화면 + 위 탭 화면 + 카테고리 + 하단 탭'만 이 파일이 그림
+     → 상세·신청서·검색·찜·팝업·가격 계산·신청 저장(유닥 시트)은 /store 와 똑같음
        (신청 경로 표시만 '온라인 상담 신청 · /shop' 처럼 뒤에 /shop 이 붙음 — shop.html 의 srcTag)
-   · 사장님이 보낸 올리브영 화면(2026-10-22, 화면 폭 402) 그대로:
-       위 탭 = 홈 · 이번주 특가(올리브영 '오특') · 인기 모델('랭킹') · 기기값 0원('세일') · TV프리('이벤트')
-              — 탭 이름은 스토어에 있는 이름, 우리에게 없는 기획전·이벤트·AI픽은 뺌 / 홈의 '피부고민'·'성분별' 구역은 뺌
-       퀵메뉴 이름 한 줄 (휴대폰은 '아이폰'·'갤럭시'를 뺀 이름, 유닥 멤버십 · 특별 혜택) · 하단 탭 6개
-   · 화면 주소: 홈 #/ · 이번주 특가 #/t/deal · 인기 모델 #/t/rank · 기기값 0원 #/t/zero · TV프리 #/t/tv
-   · 문구는 관리자(스토어 설정)·스토어에 있는 그대로 — 새 문구를 지어 넣지 않음
+   · 20261022 사장님: 카테고리는 대 > 중 > 소 로 갈 수 있게 — 올리브영 배치를 기준으로 통신업에 맞게
+       위 탭(올리브영 홈·오특·랭킹·세일·기획전·이벤트·AI픽 자리)
+         = 홈 · 특가(이번주 특가 + 기기값 0원 합침) · 인기 모델 · 혜택/이벤트 · AI추천
+           (+ 사전예약: 따로 떨어진 탭 — 캠페인 있을 때만 PRE 를 켬)
+       하단 '카테고리'(올리브영 카테고리 화면) = 대분류 → 중분류 → 소분류
+         휴대폰 → 아이폰·갤럭시 S·폴더블 → 모델 / TV프리 → 모델 / 혜택 → 지원금·특별 혜택·결합할인·멤버십
+         / 이용안내 → 구매 가이드·자주 묻는 질문(→ 질문 종류)·매장·전화·카톡·고객 후기
+   · 화면 주소: 홈 #/ · 특가 #/t/deal · 인기 모델 #/t/rank · 혜택/이벤트 #/t/event · AI추천 #/t/ai
+               카테고리 #/c(/대분류) · 분류 목록 #/t/list/종류(/모델,모델) — 예전 #/t/zero → 특가, #/t/tv → 혜택/이벤트
+   · 문구는 관리자(스토어 설정)·스토어에 있는 그대로 (새로 넣은 말: 탭 이름 '특가'·'혜택/이벤트'·'AI추천', 카테고리 이름, AI추천 상황 문구 — 사장님 확인용)
    · 설정(가격표·노출)을 받기 전엔 회색 자리만 — 다른 내용이 잠깐 떴다가 바뀌지 않게
    ========================================================= */
 (function(){
@@ -20,12 +24,16 @@ var SVG_PLUS='<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1.25v7.5M1
 var SVG_CHEV='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
 var SVG_HEART='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg>';
 var SVG_FORM='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12l2 2 4-4"/></svg>';
+var SVG_BACK='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
+var SVG_R='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+var SVG_UP='<svg viewBox="0 0 24 10" aria-hidden="true"><path d="M2 8.5 12 2.5l10 6"/></svg>';
+var SVG_SPARK='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0c.4 3.9 2.1 6.6 8 8-5.9 1.4-7.6 4.1-8 8-.4-3.9-2.1-6.6-8-8C5.9 6.6 7.6 3.9 8 0z"/></svg>';
 
-/* 하단 탭 6개 (올리브영: 홈 · 카테고리 · 발견 · 올영매장 · 좋아요 · 마이) */
+/* 하단 탭 6개 (올리브영: 홈 · 카테고리 · 발견 · 올영매장 · 좋아요 · 마이) — 카테고리는 /shop 카테고리 화면(#/c) */
 var TABBAR=
 '<nav class="tabbar oy-tab" id="tabbar">'+
   '<a href="#/" data-tab="home"><svg class="ico" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></svg>홈</a>'+
-  '<a href="#/cat/all" data-tab="cat"><svg class="ico" viewBox="0 0 24 24"><path d="M3.5 5.5h17M3.5 12h17M3.5 18.5h17"/></svg>카테고리</a>'+
+  '<a href="#/c" data-tab="cat"><svg class="ico" viewBox="0 0 24 24"><path d="M3.5 5.5h17M3.5 12h17M3.5 18.5h17"/></svg>카테고리</a>'+
   '<a href="#/search" data-tab="search"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>검색</a>'+
   '<a href="javascript:void 0" data-open="store" data-tab="store"><svg class="ico" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>매장</a>'+
   '<a href="#/wish" data-tab="wish"><svg class="ico" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg>찜</a>'+
@@ -35,14 +43,21 @@ var TABBAR=
 var HOME=
 '<main class="view on oy" id="v-home">'+
   '<div class="oy-top">'+
+    /* 로고줄 — 20261022 사장님: 우리 로고(유플러스 다이렉트 + U+ 상자, 링크 공유 그림과 같은 것) · 아래로 내리면 숨고 올리면 나옴 (올리브영) */
     '<header class="oy-hd">'+
-      '<a class="oy-logo" href="#/" data-home><img src="/assets/shop/logo-mark.png" alt="" width="34" height="22"><span>유플러스 다이렉트</span></a>'+
+      '<a class="oy-logo" href="#/" data-home aria-label="유플러스 다이렉트 홈"><img src="/assets/shop/logo-shop.png" alt="유플러스 다이렉트" width="159" height="22"></a>'+
       '<div class="oy-hd-r">'+
         '<button type="button" class="oy-ib" data-go="search" aria-label="검색">'+SVG_SEARCH+'</button>'+
         '<button type="button" class="oy-ib" data-open="noti" aria-label="알림">'+SVG_BELL+'<i class="dot-new"></i></button>'+
       '</div>'+
     '</header>'+
     '<nav class="oy-gnb" id="oyGnb" aria-label="메뉴"></nav>'+
+    /* 카테고리·분류 목록 화면 윗줄: (뒤로) 제목 · 검색 */
+    '<div class="oy-subhd">'+
+      '<button type="button" class="oy-ib oy-back" data-back aria-label="뒤로">'+SVG_BACK+'</button>'+
+      '<h1 class="oy-subhd-t" id="oySubT"></h1>'+
+      '<button type="button" class="oy-ib" data-go="search" aria-label="검색">'+SVG_SEARCH+'</button>'+
+    '</div>'+
   '</div>'+
   /* ── 홈 ── */
   '<div class="oy-pane" data-pane="home" id="oyPaneHome">'+
@@ -57,11 +72,14 @@ var HOME=
     '<section class="oy-sec" id="oyDealSec"><div class="oy-sec-h"><h2 id="oyDealT"></h2><span class="oy-sec-d" id="oyDealD"></span></div><div class="oy-big" id="oyDeal"></div></section>'+
     '<section class="oy-sec" id="zeroSec"><div class="oy-sec-h"><h2 id="oyZeroT"></h2></div><div class="oy-grid" id="oyZero"></div></section>'+
   '</div>'+
-  /* ── 이번주 특가 (올리브영 '오특') ── */
+  /* ── 특가 (올리브영 '오특'): 이번주 특가 → 기기값 0원 → 휴대폰 전체 2열 ── */
   '<div class="oy-pane" data-pane="deal" id="oyTabDeal" hidden>'+
-    '<div class="oy-hl" id="oyDlHl"></div>'+
-    '<div class="oy-th"><h2 id="oyDlT"></h2></div>'+
-    '<div class="oy-list" id="oyDlList"></div>'+
+    '<div class="oy-dw" id="oyDlWeek">'+
+      '<div class="oy-hl" id="oyDlHl"></div>'+
+      '<div class="oy-th"><h2 id="oyDlT"></h2></div>'+
+      '<div class="oy-list" id="oyDlList"></div>'+
+    '</div>'+
+    '<section class="oy-dz" id="oyDlZero" hidden><div class="oy-th"><h2 id="oyDzT"></h2></div><div class="oy-list" id="oyDzList"></div></section>'+
     '<section class="oy-sec"><div class="oy-sec-h oy-dl-h"><h2 id="oyDlGT"></h2><span class="oy-sort-w" id="oyDlSort"></span></div><div class="oy-chips" id="oyDlChips"></div><div class="oy-g2" id="oyDlGrid"></div></section>'+
   '</div>'+
   /* ── 인기 모델 (올리브영 '랭킹') ── */
@@ -71,34 +89,55 @@ var HOME=
     '<div class="oy-frow"><span class="oy-frow-l" id="oyRkNote"></span><span class="oy-frow-r" id="oyRkMnp"></span></div>'+
     '<div class="oy-g2" id="oyRkGrid"></div>'+
   '</div>'+
-  /* ── 기기값 0원 (올리브영 '세일') ── */
-  '<div class="oy-pane" data-pane="zero" id="oyTabZero" hidden>'+
-    '<div class="oy-sec-h oy-zt-h"><h2 id="oyZtT"></h2></div>'+
-    '<div class="oy-chips" id="oyZtChips"></div>'+
-    '<div class="oy-grid oy-zt-grid" id="oyZtGrid"></div>'+
-  '</div>'+
-  /* ── TV프리 (올리브영 '이벤트') ── */
-  '<div class="oy-pane" data-pane="tv" id="oyTabTv" hidden>'+
-    '<section class="oy-ev" aria-label="TV프리"><div class="oy-ev-track" id="oyEv"></div></section>'+
+  /* ── 혜택/이벤트 (올리브영 '이벤트'): TV프리 큰 카드 → 혜택 바로가기 알약 → TV프리 대상 안내 ── */
+  '<div class="oy-pane" data-pane="event" id="oyTabEvent" hidden>'+
+    '<section class="oy-ev" id="oyEvSec" aria-label="혜택"><div class="oy-ev-track" id="oyEv"></div></section>'+
     '<div class="oy-pills" id="oyEvPills"></div>'+
     '<div class="oy-ev-more" id="oyEvMore"></div>'+
+  '</div>'+
+  /* ── AI추천 (올리브영 'AI픽'): 상황 카드 → 맞는 모델 ── */
+  '<div class="oy-pane" data-pane="ai" id="oyTabAi" hidden><div class="oy-aif" id="oyAi"></div></div>'+
+  /* ── 분류 목록 (카테고리 중분류 · 바로가기에서 들어옴) ── */
+  '<div class="oy-pane" data-pane="list" id="oyTabList" hidden>'+
+    '<div class="oy-chips oy-ls-chips" id="oyLsChips"></div>'+
+    '<div class="oy-frow oy-ls-row"><span class="oy-frow-l" id="oyLsCnt"></span><span class="oy-sort-w" id="oyLsSort"></span></div>'+
+    '<div class="oy-g2" id="oyLsGrid"></div>'+
+  '</div>'+
+  /* ── 카테고리 (올리브영 카테고리 화면): 왼쪽 대분류 · 오른쪽 중분류 → 소분류 ── */
+  '<div class="oy-pane" data-pane="cat" id="oyTabCat" hidden>'+
+    '<div class="oy-cp"><nav class="oy-cl" aria-label="대분류"><div class="oy-cl-in" id="oyCl"></div></nav><div class="oy-cr" id="oyCr"></div></div>'+
   '</div>'+
   '<footer class="foot" id="foot"></footer>'+
 '</main>';
 
 var A=null;   // 스토어 엔진이 넘겨주는 도구 묶음 (store.js SKIN_API) — 가격 계산·모델·문구는 /store 와 같은 함수
 var BD={i:0, n:0, timer:null, t2:null, drag:null, moved:false};                 // 띠배너
-var PANE='home', POPCAT='all', DLCAT='all', RKCAT='all', ZTCAT='all', CD=null, bound=false;
+var PANE='home', POPCAT='all', DLCAT='all', RKCAT='all', CD=null, bound=false;
+// 사전예약 탭 — 20261022 사장님: '사전예약'은 따로 떨어진 카테고리. 캠페인이 있을 때만 on:true + href(캠페인 랜딩 주소)를 넣으면 '홈' 다음에 나옴
+var PRE={on:false, nm:'사전예약', href:''};
 // 메인 배너 바탕: 올리브영 배너처럼 사진 느낌의 진한 색 + 흰 글자 (아래쪽은 shop.css 에서 어둡게)
 var BN_BG=['linear-gradient(160deg,#BCC9EF 0%,#7E92D4 100%)','linear-gradient(160deg,#EFC8DC 0%,#C48BB4 100%)','linear-gradient(160deg,#CEC6F1 0%,#8E81D2 100%)','linear-gradient(160deg,#F3CCD3 0%,#D68C9E 100%)'];
 var BC_BG=['linear-gradient(165deg,#7B6BDF 0%,#4B3BAE 100%)','linear-gradient(165deg,#4F87EE 0%,#2350C2 100%)','linear-gradient(165deg,#EC6D99 0%,#BF3A6B 100%)'];
 // TV프리 카드: 올리브영 이벤트 카드처럼 진한 바탕 + 흰 글자 (사진은 흰 둥근 칸 안 — TV프리5 사진은 바탕이 흰색)
 var EV_BG=['linear-gradient(165deg,#8E9BDD 0%,#5562B3 100%)','linear-gradient(165deg,#B59BDD 0%,#7756B0 100%)','linear-gradient(165deg,#86B4DE 0%,#4B78B3 100%)'];
+// AI추천 카드 바탕 (올리브영 AI픽은 사진 — 우리는 진한 색 + 제품 사진, 흰 글자)
+var AI_BG=['linear-gradient(172deg,#A9B4E8 0%,#6672C4 100%)','linear-gradient(172deg,#E6B6D0 0%,#B56F9C 100%)','linear-gradient(172deg,#B7AFEA 0%,#7768C4 100%)','linear-gradient(172deg,#A6C6E8 0%,#5B87BE 100%)'];
 var BD_BG={ship:'#FFF0F7', truck:'#FFF0F7', headset:'#F0FBF5', cardx:'#F2F6FF', docx:'#F6F2FF'};
 var BD_C={headset:'#22B573', cardx:'#2563EB', docx:'#7C3AED', truck:'#E6007E'};
 // 퀵메뉴 한 줄 이름 (20261022 사장님이 고른 것): 휴대폰은 '아이폰'·'갤럭시'를 뺀 이름, 바로가기는 이 두 개만 줄임
 var QSHORT={'유닥 멤버십 가입':'유닥 멤버십', '다이렉트 특별 혜택':'특별 혜택'};
 function shortNm(nm){ return String(nm||'').replace(/^(아이폰|갤럭시)\s+/,''); }
+// AI추천 1차 (20261022 사장님: 올리브영 'AI픽' 배치) — 상황 → 지금 파는 모델 (숨김·품절·이미 나온 모델은 건너뛰고 다음 후보)
+//   ※ 상황 문구는 임시(사장님 확인 필요). 지금은 정해 둔 순서대로 고르는 방식 — 진짜 AI 연결은 사장님 OK 후
+var AI_PICKS=[
+  {t:'큰 화면을 원한다면',             ids:['iphone18promax','s26ultra','fold8ultra']},
+  {t:'사진을 많이 찍는다면',           ids:['s26ultra','iphone18pro']},
+  {t:'접는 폰이 궁금하다면',           ids:['fold8','fold8ultra']},
+  {t:'작게 접어서 들고 다니려면',       ids:['flip8']},
+  {t:'아이폰을 원한다면',              ids:['iphone18pro','iphone17','iphone18promax']},
+  {t:'기기값 부담을 줄이고 싶다면',     cheap:true},
+  {t:'U+ 인터넷TV를 이용하고 있다면',   tv:true}
+];
 
 function $(s){ return document.querySelector(s); }
 function E(s){ return A.esc(s); }
@@ -120,41 +159,58 @@ function dealTitle(){ return String((A.S.deal||{}).title||'이번주 특가').re
 function catNm(k){ var t=A.CAT_TABS.filter(function(x){ return x.k===k; })[0]; return t?t.nm:k; }
 function catsOf(list){ return A.CAT_TABS.filter(function(t){ return t.k!=='all' && t.k!=='zero' && list.some(function(m){ return m.cat.indexOf(t.k)>-1; }); }); }
 function zeroList(){ var L=A.S.lists||{}; return (L.zero&&L.zero.length)?A.pickList('zero'):A.models().filter(function(m){ return m.cat.indexOf('zero')>-1; }); }
+function zeroOn(){ return A.secOn('zero') && zeroList().length>0; }
 function tvList(){ return A.models().filter(function(m){ return A.isTv(m); }); }
 function dealIds(){ var D=A.S.deal||{}; return D.on?A.dealItems().map(function(x){ return x.m.id; }):[]; }
+function quickBy(go){ return A.vis(A.S.quick||[]).filter(function(q){ return q.go===go; })[0]||null; }
+function qNm(go, def){ var q=quickBy(go); return (q&&q.nm)||def; }
+// 혜택/이벤트 알약: 관리자 퀵메뉴의 '다이렉트 특별 혜택 · 지원금 혜택 · 유닥 멤버십 가입 · 구매 가이드 · QNA' (이름·아이콘·색 그대로)
+function evPills(){ return ['special','subsidy','soon','guide','qna'].map(quickBy).filter(Boolean); }
+// '#/cat/종류(/모델,모델)' (스토어 카테고리 주소 — 관리자 바로가기·배너·팝업 버튼) → /shop 분류 목록 '#/t/list/…'
+function catToList(h){ var m=String(h||'').match(/^#\/cat\/([\w-]+)?(?:\/([\w,-]+))?/); return '#/t/list/'+((m&&m[1])||'all')+(m&&m[2]?'/'+m[2]:''); }
 
-/* ---------- 위 탭: 홈 · 이번주 특가 · 인기 모델 · 기기값 0원 · TV프리 (내용이 없는 탭은 숨김) ---------- */
+/* ---------- 위 탭: 홈 · (사전예약) · 특가 · 인기 모델 · 혜택/이벤트 · AI추천 (내용이 없는 탭은 숨김) ---------- */
 function tabs(wait){
-  if(wait) return [{k:'home', nm:'홈', href:'#/'}];
   var out=[{k:'home', nm:'홈', href:'#/'}];
-  if(dealIds().length) out.push({k:'deal', nm:dealTitle(), href:'#/t/deal'});
-  if(A.phones().length) out.push({k:'rank', nm:(A.vis(A.S.quick||[]).filter(function(q){ return q.go==='popular'; })[0]||{}).nm||'인기 모델', href:'#/t/rank'});
-  if(A.secOn('zero') && zeroList().length) out.push({k:'zero', nm:catNm('zero'), href:'#/t/zero'});
-  if(tvList().length) out.push({k:'tv', nm:catNm('tvfree'), href:'#/t/tv'});
+  if(wait) return out;
+  if(PRE.on && PRE.href) out.push({k:'pre', nm:PRE.nm, href:PRE.href});
+  if(dealIds().length || zeroOn()) out.push({k:'deal', nm:'특가', href:'#/t/deal'});
+  if(A.phones().length) out.push({k:'rank', nm:qNm('popular','인기 모델'), href:'#/t/rank'});
+  if(tvList().length || evPills().length) out.push({k:'event', nm:'혜택/이벤트', href:'#/t/event'});
+  if(A.phones().length) out.push({k:'ai', nm:'AI추천', href:'#/t/ai'});
   return out;
 }
-function paneOfHash(){ var m=String(location.hash||'').match(/^#\/t\/(deal|rank|zero|tv)\b/); return m?m[1]:'home'; }
-// 지금 보여 줄 화면: 주소(#/t/…) 기준 — 설정을 받은 뒤 내용이 없는 탭이면 홈 (받기 전엔 주소대로 회색 자리)
-function pickPane(wait){ var p=paneOfHash(); if(!wait && !tabs(false).some(function(t){ return t.k===p; })) p='home'; return p; }
+function paneOfHash(){
+  var h=String(location.hash||'');
+  if(/^#\/c(\/|$)/.test(h)) return 'cat';
+  var m=h.match(/^#\/t\/(deal|rank|event|ai|list|zero|tv)\b/); if(!m) return 'home';
+  return {zero:'deal', tv:'event'}[m[1]]||m[1];   // 예전 주소(기기값 0원 · TV프리 탭) → 합쳐진 탭
+}
+// 지금 보여 줄 화면: 주소 기준 — 설정을 받은 뒤 내용이 없는 탭이면 홈 (받기 전엔 주소대로 회색 자리)
+function pickPane(wait){ var p=paneOfHash(); if(p==='cat'||p==='list') return p; if(!wait && !tabs(false).some(function(t){ return t.k===p; })) p='home'; return p; }
 function renderGnb(wait){
-  var h=tabs(wait).map(function(t){ var on=t.k===PANE; return '<a href="'+t.href+'"'+(t.k==='home'?' data-home':'')+(on?' class="on" aria-current="page"':'')+'>'+E(t.nm)+'</a>'; }).join('');
-  if(wait) h+=sk('70px','16px','4px')+sk('58px','16px','4px')+sk('68px','16px','4px')+sk('48px','16px','4px');
+  var h=tabs(wait).map(function(t){ var on=t.k===PANE; return '<a href="'+E(t.href)+'"'+(t.k==='home'?' data-home':'')+(on?' class="on" aria-current="page"':'')+'>'+E(t.nm)+'</a>'; }).join('');
+  if(wait) h+=sk('34px','16px','4px')+sk('68px','16px','4px')+sk('84px','16px','4px')+sk('52px','16px','4px');
   put($('#oyGnb'), h);
 }
 function showPane(){
-  var p=PANE;
+  var p=PANE, sub=p==='cat'||p==='list';
   Array.prototype.forEach.call(document.querySelectorAll('#v-home .oy-pane'),function(el){ el.hidden=el.getAttribute('data-pane')!==p; });
-  var top=$('.oy-top'); if(top) top.classList.toggle('ln', p!=='home');   // 탭 화면은 탭 메뉴 아래 줄 (올리브영과 같음)
+  var top=$('.oy-top');
+  if(top){ top.classList.toggle('ln', p!=='home'); top.classList.toggle('sub', sub); top.classList.toggle('subc', p==='cat'); if(sub) top.classList.remove('hide'); }   // 탭 화면은 탭 메뉴 아래 줄 (올리브영과 같음)
+  var v=$('#v-home'); if(v) v.classList.toggle('oy-catv', p==='cat');   // 카테고리 화면은 맨 아래 정보 숨김
+  if(p==='cat') put($('#oySubT'),'카테고리'); else if(p==='list') put($('#oySubT'),E(lsTitle(lsOfHash())));
+  tabOn(sub?'cat':'home');
   if(p==='rank' && A && A.RANK==null && !A.prWait()) A.loadRank();
   if(p==='home') carLayout(BN,null);
-  if(p==='tv') carLayout(EV,null);
+  if(p==='event') carLayout(EV,null);
 }
 
 /* ---------- 넘기는 배너 (메인 배너 · TV프리 카드) — 가운데 1장 + 양옆 살짝 ---------- */
 // 자리(d): 0 = 가운데, -1/+1 = 양옆(작게 살짝 보임), 그 밖 = 화면 밖
 function Car(o){ return {o:o, i:0, lo:-1, n:0, timer:null, drag:null, moved:false}; }
 var BN=Car({track:'#oyBn', cnt:'#oyBnCnt', w:.92, gap:.0144, s:.88, pane:'home'});   // 메인 배너: 화면 폭 92% · 옆 88%
-var EV=Car({track:'#oyEv', cnt:null, w:.8067, gap:.0257, s:.849, pane:'tv'});         // TV프리: 화면 폭 80.67% · 옆 85% (올리브영 이벤트 탭)
+var EV=Car({track:'#oyEv', cnt:null, w:.8067, gap:.0257, s:.849, pane:'event'});      // 혜택/이벤트(TV프리 카드): 화면 폭 80.67% · 옆 85% (올리브영 이벤트 탭)
 function carGeo(c){ var t=$(c.o.track), W=t?t.clientWidth:0; return {W:W, w:W*c.o.w, gap:W*c.o.gap, sw:W*c.o.w*c.o.s}; }
 function carPos(c,g,d){ if(d===0) return {x:(g.W-g.w)/2, s:1}; var cx=g.W/2+(d>0?1:-1)*(g.w/2+g.gap+g.sw/2+(Math.abs(d)-1)*(g.sw+g.gap)); return {x:cx-g.w/2, s:c.o.s}; }
 function carPut(c,el,g,d,anim,dx){
@@ -314,14 +370,6 @@ function card(m){
   return '<a class="oy-card'+(so?' so':'')+'" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"><span class="oy-card-im">'+img(A.mImg(m),'oy-card-img',false)+'<i class="oy-dim"></i>'+(so?'<i class="oy-so">일시품절</i>':'')+'</span>'+
     '<span class="oy-card-nm">'+E(m.nm)+'</span>'+pr+'</a>';
 }
-// 3열 카드 — 기기값 0원 탭 (올리브영 세일: 이름 · 원래 가격(줄) · 할인율 + 가격 · 태그)
-function cardSale(m){
-  var so=A.SO(m), p=priceOf(m), h='';
-  if(p.ask!=null) h='<span class="oy-card-pr"><span class="oy-ask">'+E(p.ask)+'</span></span>';
-  else h=(p.out&&p.out>p.v?'<s class="oy-card-s">'+E(A.won(p.out))+'</s>':'')+'<span class="oy-card-pr">'+(p.pct>0?'<em>'+p.pct+'%</em>':'')+vHtml(p.v,p.from)+'</span>';
-  return '<a class="oy-card oy-cs'+(so?' so':'')+'" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"><span class="oy-card-im">'+img(A.mImg(m),'oy-card-img',false)+'<i class="oy-dim"></i>'+(so?'<i class="oy-so">일시품절</i>':'')+'</span>'+
-    '<span class="oy-card-nm">'+E(m.nm)+'</span>'+h+tagsHtml(m,2)+'</a>';
-}
 // 2열 카드 — 이번주 특가 · 인기 모델 탭 (올리브영 오특·랭킹: 사진(순위) · 이름 2줄 · 원래 가격(줄) · 할인율 + 가격 · 태그 · 찜/신청)
 function card2(m, rank){
   var so=A.SO(m), p=priceOf(m), h='';
@@ -380,30 +428,48 @@ function renderZero(wait){
   put($('#oyZero'), list.map(card).join(''));
 }
 
-/* ---------- 탭: 이번주 특가 (올리브영 '오특': 가운데 제목 · 목록 · 2열 + 정렬) ---------- */
+
+/* ---------- 탭: 특가 (올리브영 '오특': 가운데 제목 · 이번주 특가 목록 → 기기값 0원 목록 → 휴대폰 전체 2열 + 정렬) ---------- */
+// 20261022 사장님: '기기값 0원'과 '이번주 특가'를 한 탭으로 합침 (0원 목록은 관리자 '기기값 0원 모아보기' 그대로)
+function liRow(m, prHtml, sub){
+  var so=A.SO(m);
+  return '<div class="oy-li'+(so?' so':'')+'"><a class="oy-li-a" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"><span class="oy-li-im">'+img(A.mImg(m),'oy-card-img',false)+'<i class="oy-dim"></i>'+(so?'<i class="oy-so">일시품절</i>':'')+'</span>'+
+    '<span class="oy-li-tx"><span class="oy-li-nm">'+E(m.nm)+'</span>'+prHtml+tagsHtml(m,0,true)+(sub||'')+'</span></a>'+iconsHtml(m)+'</div>';
+}
 function renderTabDeal(wait){
-  if(wait){ put($('#oyDlHl'),sk('120px','20px')); put($('#oyDlT'),sk('150px','18px')); put($('#oyDlList'),'<div class="oy-li"><span class="oy-li-im oy-skb"></span><span class="oy-li-tx">'+sk('80%','13px','4px')+'</span></div>');
+  if(wait){ $('#oyDlWeek').hidden=false; $('#oyDlZero').hidden=true;
+    put($('#oyDlHl'),sk('120px','20px')); put($('#oyDlT'),sk('150px','18px')); put($('#oyDlList'),'<div class="oy-li"><span class="oy-li-im oy-skb"></span><span class="oy-li-tx">'+sk('80%','13px','4px')+'</span></div>');
     put($('#oyDlGT'),sk('150px','18px')); put($('#oyDlSort'),''); put($('#oyDlChips'),''); put($('#oyDlGrid'),skCards2(4)); return; }
   var it=(A.S.deal||{}).on?A.dealItems():[];
+  $('#oyDlWeek').hidden=!it.length;
   put($('#oyDlHl'), '<b>'+E(dealTitle())+'</b>');
   put($('#oyDlT'), E(A.weekRange()));
   put($('#oyDlList'), it.map(function(x){
-    var m=x.m, so=A.SO(m), out=A.priceOf(m).out, h;
+    var m=x.m, out=A.priceOf(m).out, h;
     if(x.mnp!=null){ var pct=(out&&out>x.mnp&&x.mnp>0)?Math.round((out-x.mnp)/out*100):0;   // 스토어 카드와 같은 할인율 계산 (출고가 대비)
       h='<span class="oy-card-pr">'+(pct>0?'<em>'+pct+'%</em>':'')+'<span class="oy-v">'+(x.mnp===0?'0':n0(x.mnp))+'<small>원</small></span>'+(out&&out>x.mnp?'<s>'+E(A.won(out))+'</s>':'')+'</span>'; }
     else h='<span class="oy-card-pr"><span class="oy-ask">상담 시 안내</span></span>';
-    return '<div class="oy-li'+(so?' so':'')+'"><a class="oy-li-a" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"><span class="oy-li-im">'+img(A.mImg(m),'oy-card-img',false)+'<i class="oy-dim"></i>'+(so?'<i class="oy-so">일시품절</i>':'')+'</span>'+
-      '<span class="oy-li-tx"><span class="oy-li-nm">'+E(m.nm)+'</span>'+h+tagsHtml(m,0,true)+
-      (x.mnp!=null?'<span class="oy-li-sub"><span>번호이동 기준</span>'+(x.chg!=null?' · <span>기기변경 '+E(A.wz(x.chg))+'</span>':'')+'</span>':'')+'</span></a>'+iconsHtml(m)+'</div>';
+    return liRow(m, h, x.mnp!=null?'<span class="oy-li-sub"><span>번호이동 기준</span>'+(x.chg!=null?' · <span>기기변경 '+E(A.wz(x.chg))+'</span>':'')+'</span>':'');
+  }).join(''));
+  // 기기값 0원 (관리자 '기기값 0원 모아보기' 목록 · 제목 그대로)
+  var zl=zeroOn()?zeroList():[];
+  $('#oyDlZero').hidden=!zl.length;
+  put($('#oyDzT'), E((A.S.sec.zero||{}).t||catNm('zero')));
+  put($('#oyDzList'), zl.map(function(m){
+    var p=priceOf(m), h, st=A.SO(m)?'':A.stripOf(m);
+    if(p.ask!=null) h='<span class="oy-card-pr"><span class="oy-ask">'+E(p.ask)+'</span></span>';
+    else h='<span class="oy-card-pr">'+(p.pct>0?'<em>'+p.pct+'%</em>':'')+vHtml(p.v,p.from)+(p.out&&p.out>p.v?'<s>'+E(A.won(p.out))+'</s>':'')+'</span>';
+    return liRow(m, h, st?'<span class="oy-li-sub"><span>'+E(st)+'</span></span>':'');
   }).join(''));
   // 아래 2열: 스토어 '내게 맞는 휴대폰 찾기'(휴대폰 전체) + 스토어 정렬(추천순·낮은가격순·높은가격순·판매량순)
   var ph=A.phones(), cats=catsOf(ph); if(DLCAT!=='all' && !cats.some(function(t){ return t.k===DLCAT; })) DLCAT='all';
-  var sl=(A.SORTS.filter(function(s){ return s[0]===A.SORT; })[0]||A.SORTS[0])[1];
   put($('#oyDlGT'), E((A.S.sec.pick||{}).t||''));
-  put($('#oyDlSort'), '<button type="button" class="oy-sort" data-sort-open><span class="sort-lbl">'+E(sl)+'</span>'+SVG_CHEV+'</button>');
+  put($('#oyDlSort'), sortBtn());
   put($('#oyDlChips'), mnpPill()+(cats.length>1?chipsHtml(cats,DLCAT,'data-dl-cat'):''));
   put($('#oyDlGrid'), A.sortList(byCat(ph,DLCAT)).map(function(m){ return card2(m,0); }).join(''));
 }
+function sortBtn(){ var sl=(A.SORTS.filter(function(s){ return s[0]===A.SORT; })[0]||A.SORTS[0])[1]; return '<button type="button" class="oy-sort" data-sort-open><span class="sort-lbl">'+E(sl)+'</span>'+SVG_CHEV+'</button>'; }
+
 
 /* ---------- 탭: 인기 모델 (올리브영 '랭킹': 순위 번호 2열 — 스토어 판매량순(최근 30일 온라인 개통 기준)) ---------- */
 function rankList(){
@@ -429,33 +495,119 @@ function renderTabRank(wait){
   put($('#oyRkGrid'), byCat(list,RKCAT).map(function(m,i){ return card2(m,i+1); }).join(''));
 }
 
-/* ---------- 탭: 기기값 0원 (올리브영 '세일': 제목 · 칩 · 3열) — 스토어 '기기값 0원' 목록과 같음 ---------- */
-function renderTabZero(wait){
-  if(wait){ put($('#oyZtT'),sk('150px','18px')); put($('#oyZtChips'),sk('56px','32px','16px')+sk('64px','32px','16px')); put($('#oyZtGrid'),skCards(3)); return; }
-  var list=zeroList(), cats=catsOf(list); if(ZTCAT!=='all' && !cats.some(function(t){ return t.k===ZTCAT; })) ZTCAT='all';
-  put($('#oyZtT'), E((A.S.sec.zero||{}).t||catNm('zero')));
-  put($('#oyZtChips'), chipsHtml(cats,ZTCAT,'data-zt-cat'));
-  put($('#oyZtGrid'), byCat(list,ZTCAT).map(cardSale).join(''));
-}
 
-/* ---------- 탭: TV프리 (올리브영 '이벤트': 큰 카드 넘기기 + 바로가기 알약 + 대상 안내) ---------- */
-function renderTabTv(wait){
-  if(wait){ clearInterval(EV.timer); EV.n=0; put($('#oyEv'),'<span class="oy-evc oy-evc-sk"></span>'); put($('#oyEvPills'),''); put($('#oyEvMore'),''); return; }
+/* ---------- 탭: 혜택/이벤트 (올리브영 '이벤트': 큰 카드 넘기기 + 바로가기 알약 + 대상 안내) ---------- */
+function renderTabEvent(wait){
+  if(wait){ clearInterval(EV.timer); EV.n=0; $('#oyEvSec').hidden=false; put($('#oyEv'),'<span class="oy-evc oy-evc-sk"></span>'); put($('#oyEvPills'),''); put($('#oyEvMore'),''); return; }
   var list=tvList(), n=list.length, show=n===2?list.concat(list):list;   // 20261022 사장님: 2장이면 양옆이 다 보이게 한 번 더 붙임 (올리브영처럼 좌우 카드)
-  carSet(EV, show.map(function(m,i){
+  $('#oyEvSec').hidden=!n;
+  if(n) carSet(EV, show.map(function(m,i){
     var b=A.badgeOf(m), k=i%n;
     return '<a class="oy-evc" href="#/model/'+E(m.id)+'" data-i="'+i+'" style="background:'+EV_BG[k%EV_BG.length]+'"><span class="oy-evc-fr">'+img(A.mImg(m),'oy-evc-im',true)+'</span>'+(b?'<i class="oy-evc-b">'+E(b)+'</i>':'')+
       '<span class="oy-evc-t"><b>'+E(m.nm)+'</b><span>'+E(A.stripOf(m))+'</span><small><em>'+two(k+1)+'</em><i></i>'+two(n)+'</small></span></a>';
   }).join(''), show.length, n);
-  // 알약: 관리자 퀵메뉴의 '다이렉트 특별 혜택 · 구매 가이드 · QNA' (이름·아이콘·색 그대로)
-  var q=A.vis(A.S.quick||[]), pills=['special','guide','qna'].map(function(g){ return q.filter(function(x){ return x.go===g; })[0]; }).filter(Boolean);
-  put($('#oyEvPills'), pills.map(function(x){
+  else { clearInterval(EV.timer); put($('#oyEv'),''); }
+  put($('#oyEvPills'), evPills().map(function(x){
     return '<a class="oy-pill" href="javascript:void 0" data-go="'+E(x.go)+'"><i style="background:'+E(x.bg||'#F4F5F7')+'"><svg viewBox="0 0 24 24" aria-hidden="true" style="stroke:'+E(x.c||'#131518')+'">'+(A.QI[x.ic]||A.QI.star)+'</svg></i>'+E(x.nm)+'</a>';
   }).join(''));
-  put($('#oyEvMore'), A.tvCondHtml());
+  put($('#oyEvMore'), n?A.tvCondHtml():'');
 }
 
-/* ---------- 손가락으로 넘기기 · 칩 · 전체보기 · 화면 탭 바꾸기 (한 번만 묶음) ---------- */
+/* ---------- 탭: AI추천 (올리브영 'AI픽': 상황 꼬리표 · 큰 글씨 · 사진 · 아래 흰 상품 카드) ---------- */
+function aiList(){
+  var used={}, vis=A.models(), out=[];
+  var ok=function(m){ return m && vis.indexOf(m)>-1 && !A.SO(m) && !used[m.id]; };
+  AI_PICKS.forEach(function(p){
+    var m=null;
+    if(p.tv) m=tvList().filter(ok)[0]||null;
+    else if(p.cheap){   // 지금 가격(번호이동/기기변경 선택 기준)이 가장 낮은 휴대폰 (0원·가격 비공개 제외)
+      var c=A.phones().filter(ok).map(function(x){ return {m:x, v:A.priceOf(x).v}; }).filter(function(x){ return x.v!=null && x.v>0; }).sort(function(a,b){ return a.v-b.v; })[0];
+      m=c?c.m:null;
+    } else m=(p.ids||[]).map(A.byId).filter(ok)[0]||null;
+    if(m){ used[m.id]=1; out.push({t:p.t, m:m}); }
+  });
+  return out;
+}
+function renderTabAi(wait){
+  if(wait){ put($('#oyAi'),'<div class="oy-ai oy-skb"></div>'); return; }
+  put($('#oyAi'), aiList().map(function(x,i){
+    var m=x.m, p=priceOf(m), pr, st=A.stripOf(m);
+    if(p.ask!=null) pr='<span class="oy-card-pr"><span class="oy-ask">'+E(p.ask)+'</span></span>';
+    else pr=(p.out&&p.out>p.v?'<s class="oy-card-s">'+E(A.won(p.out))+'</s>':'')+'<span class="oy-card-pr">'+(p.pct>0?'<em>'+p.pct+'%</em>':'')+vHtml(p.v,p.from)+'</span>';
+    return '<article class="oy-ai" style="background:'+AI_BG[i%AI_BG.length]+'">'+
+      '<span class="oy-ai-tag">'+SVG_SPARK+E(x.t)+'</span>'+
+      '<b class="oy-ai-h">'+E(m.ds||m.nm)+'</b>'+(st?'<span class="oy-ai-s">'+E(st)+'</span>':'')+
+      '<a class="oy-ai-im" href="#/model/'+E(m.id)+'" tabindex="-1" aria-hidden="true">'+img(A.mImg(m),'oy-ai-img',i<2)+'</a>'+
+      '<div class="oy-ai-p"><i class="oy-ai-hd">'+SVG_UP+'</i>'+
+        '<a class="oy-ai-pa" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"><span class="oy-ai-pim">'+img(A.mImg(m),'oy-card-img',false)+'</span>'+
+        '<span class="oy-ai-pt"><b>'+E(m.nm)+'</b>'+pr+'</span></a>'+iconsHtml(m)+'</div>'+
+    '</article>';
+  }).join(''));
+}
+
+/* ---------- 분류 목록 (카테고리 중분류 → 2열 · 정렬) — #/t/list/종류(/모델,모델) ---------- */
+function lsOfHash(){ var m=String(location.hash||'').match(/^#\/t\/list\/([\w-]+)(?:\/([\w,-]+))?/); return {k:m?m[1]:'all', ids:m&&m[2]?m[2].split(','):null}; }
+function lsModels(L){
+  var vis=A.models();
+  if(L.ids) return L.ids.map(A.byId).filter(function(m){ return m && vis.indexOf(m)>-1; });
+  if(L.k==='all') return A.phones();
+  if(L.k==='zero') return zeroList();
+  return vis.filter(function(m){ return m.cat.indexOf(L.k)>-1; });
+}
+function lsTitle(L){ return L.k==='all'?'휴대폰':catNm(L.k); }
+function renderList(wait){
+  var L=lsOfHash();
+  if(wait){ put($('#oyLsChips'),sk('150px','32px','16px')+sk('56px','32px','16px')+sk('64px','32px','16px')); put($('#oyLsCnt'),sk('64px','13px','4px')); put($('#oyLsSort'),''); put($('#oyLsGrid'),skCards2(4)); return; }
+  var list=lsModels(L), ph=['all','iphone','galaxy','fold'].indexOf(L.k)>-1, cats=ph&&!L.ids?catsOf(A.phones()):[];
+  var tv=list.length && list.every(function(m){ return A.isTv(m); });   // TV프리는 번호이동/기기변경 구분 없음
+  var ch=(tv?'':mnpPill())+(cats.length>1?chipsHtml(cats,L.k,'data-ls-cat'):'');
+  $('#oyLsChips').hidden=!ch; put($('#oyLsChips'), ch);
+  put($('#oyLsCnt'), '전체 <b>'+list.length+'</b>개');
+  put($('#oyLsSort'), list.length>1?sortBtn():'');
+  put($('#oyLsGrid'), A.sortList(list).map(function(m){ return card2(m,0); }).join(''));
+}
+
+/* ---------- 카테고리 (대분류 → 중분류 → 소분류) — #/c/대분류 ---------- */
+function catTree(){
+  var T=[], ph=A.phones(), tv=tvList(), wr=A.wears().filter(function(m){ return !A.isTv(m); });
+  if(ph.length) T.push({k:'phone', nm:'휴대폰', sub:catsOf(ph).map(function(c){ return {nm:c.nm, href:'#/t/list/'+c.k, ms:byCat(ph,c.k)}; })});
+  if(tv.length) T.push({k:'tv', nm:catNm('tvfree'), sub:[{nm:catNm('tvfree'), href:'#/t/list/tvfree', ms:tv}].concat(quickBy('special')?[{nm:qNm('special','다이렉트 특별 혜택'), go:'special'}]:[])});
+  if(wr.length) T.push({k:'wear', nm:'워치·태블릿', sub:catsOf(wr).map(function(c){ return {nm:c.nm, href:'#/t/list/'+c.k, ms:byCat(wr,c.k)}; })});   // 지금은 숨김 — 다시 켜면 자동으로 나옴
+  var gifts=A.secOn('gifts')?A.vis(A.S.gifts||[]):[], bf=[];
+  if(quickBy('subsidy')) bf.push({nm:qNm('subsidy','지원금 혜택'), go:'subsidy'});
+  if(tv.length && quickBy('special')) bf.push({nm:qNm('special','다이렉트 특별 혜택'), go:'special'});
+  bf.push({nm:'결합할인', go:'soon', soon:1});
+  bf.push({nm:QSHORT['유닥 멤버십 가입'], go:'soon', soon:1, items:gifts.map(function(g){ return {nm:g.nm, go:g.go||'soon'}; })});
+  T.push({k:'benefit', nm:'혜택', sub:bf});
+  var qn=(A.QNA||[]).map(function(c){ return c[0]; });
+  T.push({k:'guide', nm:'이용안내', sub:[
+    {nm:qNm('guide','구매 가이드'), go:'guide'},
+    {nm:'자주 묻는 질문', go:'qna', qcats:qn},
+    {nm:qNm('store','매장 방문하기'), go:'store'},
+    {nm:'전화·카톡 문의', go:'contact'},
+    {nm:'고객 후기', go:'soon', soon:1}
+  ]});
+  return T;
+}
+function cmHtml(s){
+  var h;
+  if(s.href) h='<a class="oy-cm-h" href="'+E(s.href)+'"><b>'+E(s.nm)+'</b><span class="oy-cm-all">전체보기'+SVG_R+'</span></a>';
+  else h='<a class="oy-cm-h" href="javascript:void 0" data-go="'+E(s.go)+'"><b>'+E(s.nm)+(s.soon?'<i class="oy-soon">준비중</i>':'')+'</b>'+SVG_R+'</a>';
+  var b='';
+  if(s.ms) b='<div class="oy-ct">'+s.ms.map(function(m){ var so=A.SO(m);
+      return '<a href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"><span class="oy-ct-im">'+img(A.mImg(m),'oy-ct-img',false)+(so?'<i class="oy-so">품절</i>':'')+'</span><span class="oy-ct-t">'+E(shortNm(m.nm))+'</span></a>'; }).join('')+'</div>';
+  else if(s.qcats && s.qcats.length) b='<div class="oy-csl">'+s.qcats.map(function(n,i){ return '<a href="javascript:void 0" data-shop-qcat="'+i+'">'+E(n)+'</a>'; }).join('')+'</div>';
+  else if(s.items && s.items.length) b='<div class="oy-csl">'+s.items.map(function(x){ return '<a href="javascript:void 0" data-go="'+E(x.go)+'">'+E(x.nm)+'</a>'; }).join('')+'</div>';
+  return '<div class="oy-cm">'+h+b+'</div>';
+}
+function renderCat(wait){
+  if(wait){ put($('#oyCl'),'<button type="button" class="on">'+sk('48px','15px','4px')+'</button><button type="button">'+sk('40px','15px','4px')+'</button><button type="button">'+sk('34px','15px','4px')+'</button>'); put($('#oyCr'),'<div class="oy-cm">'+sk('70%','16px','4px')+'</div>'); return; }
+  var T=catTree(), want=(String(location.hash||'').match(/^#\/c\/([\w-]+)/)||[])[1], g=T.filter(function(x){ return x.k===want; })[0]||T[0];
+  put($('#oyCl'), T.map(function(x){ var on=x===g; return '<button type="button" data-cg="'+E(x.k)+'"'+(on?' class="on" aria-current="true"':'')+'>'+E(x.nm)+'</button>'; }).join(''));
+  put($('#oyCr'), g?g.sub.map(cmHtml).join(''):'');
+}
+
+/* ---------- 손가락으로 넘기기 · 칩 · 화면 바꾸기 (한 번만 묶음) ---------- */
 function swipe(el, st, onMove, onEnd){
   if(!el) return;
   el.addEventListener('touchstart',function(e){ var t=e.touches[0]; st.drag={x:t.clientX, y:t.clientY, dx:0, h:null}; st.moved=false; },{passive:true});
@@ -470,38 +622,63 @@ function swipe(el, st, onMove, onEnd){
 }
 function carSwipe(c){ swipe($(c.o.track), c, function(dx){ carLayout(c,null,dx); }, function(dx){ if(dx<=-40) carGo(c,1); else if(dx>=40) carGo(c,-1); else carLayout(c,0); carAuto(c); }); }
 function tabOn(k){ Array.prototype.forEach.call(document.querySelectorAll('.tabbar a'),function(a){ a.classList.toggle('on', a.getAttribute('data-tab')===k); }); }
+// 로고줄: 아래로 내리면 숨고(탭 메뉴만 남음) 위로 올리면 다시 나옴 — 올리브영과 같음 (카테고리·분류 목록 화면은 그대로)
+var HY=0, HACC=0;
+function hdScroll(){
+  var top=$('.oy-top'); if(!top) return;
+  var y=window.scrollY||window.pageYOffset||0, d=y-HY; HY=y;
+  if(!homeOn() || top.classList.contains('sub') || y<=48){ HACC=0; top.classList.remove('hide'); return; }
+  if((d>0 && HACC<0) || (d<0 && HACC>0)) HACC=0;
+  HACC+=d;
+  if(HACC>10) top.classList.add('hide'); else if(HACC<-10) top.classList.remove('hide');
+}
+// 예전 주소 '#/t/zero'(기기값 0원 탭)로 들어오면 특가 탭의 '기기값 0원' 목록으로
+function goZero(){ if(!/^#\/t\/zero\b/.test(location.hash)) return; setTimeout(function(){ var el=$('#oyDlZero'); if(el && !el.hidden) window.scrollTo(0, el.getBoundingClientRect().top+window.scrollY-$('#oyGnb').offsetHeight-4); },60); }
 function bindOnce(){
   if(bound) return; bound=true;
   carSwipe(BN); carSwipe(EV);
   swipe($('#oyBand'), BD, function(dx){ bdShow(false,dx); }, function(dx){ if(dx<=-40) bdGo(1); else if(dx>=40) bdGo(-1); else bdShow(true); });
   $('#oyBnAll').addEventListener('click',function(e){ e.preventDefault(); bnAll(); });
+  window.addEventListener('scroll',hdScroll,{passive:true});
   document.addEventListener('click',function(e){
     var t=e.target; if(!t || !t.closest) return;
     var c=t.closest('[data-shop-cat]'); if(c){ e.preventDefault(); POPCAT=c.getAttribute('data-shop-cat'); renderPop(false); return; }
     c=t.closest('[data-dl-cat]'); if(c){ e.preventDefault(); DLCAT=c.getAttribute('data-dl-cat'); renderTabDeal(false); return; }
     c=t.closest('[data-rk-cat]'); if(c){ e.preventDefault(); RKCAT=c.getAttribute('data-rk-cat'); renderTabRank(false); return; }
-    c=t.closest('[data-zt-cat]'); if(c){ e.preventDefault(); ZTCAT=c.getAttribute('data-zt-cat'); renderTabZero(false); return; }
+    c=t.closest('[data-ls-cat]'); if(c){ e.preventDefault(); location.replace('#/t/list/'+c.getAttribute('data-ls-cat')); return; }   // 분류 목록 칩: 같은 화면에서 종류만 바꿈 (뒤로 가기가 쌓이지 않게)
+    c=t.closest('[data-cg]'); if(c){ e.preventDefault(); location.replace('#/c/'+c.getAttribute('data-cg')); return; }             // 카테고리 왼쪽 대분류
+    c=t.closest('[data-shop-qcat]'); if(c){   // 이용안내 > 자주 묻는 질문 > 질문 종류 → 그 종류로 펼친 '자주 묻는 질문'
+      e.preventDefault(); var qi=c.getAttribute('data-shop-qcat'); A.act('qna');
+      setTimeout(function(){ var b=document.querySelector('.qna-cats [data-qcat="'+qi+'"]'); if(b) b.click(); },30); return; }
   });
   document.addEventListener('click',function(e){
     var t=e.target; if(!t || !t.closest) return;
+    var tr=t.closest('#oyBn,#oyEv,#oyBand'); if(tr && (tr.id==='oyBn'?BN:tr.id==='oyEv'?EV:BD).moved) return;   // 넘기다 손 뗀 건 누른 걸로 안 침
+    // 스토어 카테고리 주소(#/cat/…: 관리자 바로가기·배너·팝업 버튼) → /shop 분류 목록
+    var g=t.closest('a[href^="#/cat/"],[data-go^="#/cat/"]');
+    if(g){ e.preventDefault(); e.stopPropagation(); A.closeSheet(); location.hash=catToList(g.getAttribute('data-go')||g.getAttribute('href')); return; }
     // 바로가기 '인기 모델'(popular) → 위 탭 '인기 모델' 화면 (스토어는 판매량순 목록으로 감)
-    var g=t.closest('#v-home [data-go="popular"]');
+    g=t.closest('#v-home [data-go="popular"]');
     if(g && tabs(false).some(function(x){ return x.k==='rank'; })){ e.preventDefault(); e.stopPropagation(); A.closeSheet(); location.hash='#/t/rank'; return; }
-    // 바로가기 '구역으로 이동'(sec:…) — 위에 붙은 상단(로고줄+탭 메뉴)에 제목이 가리지 않게 그만큼 덜 내림
+    // 바로가기 '구역으로 이동'(sec:…) — 위에 붙은 탭 메뉴에 제목이 가리지 않게 그만큼 덜 내림 (내려가면 로고줄은 숨음)
     g=t.closest('#v-home [data-go^="sec:"]'); if(!g) return;
     var id={zero:'zeroSec', pop:'popSec'}[g.getAttribute('data-go').slice(4)], el=id && document.getElementById(id); if(!el || el.hidden) return;
     e.preventDefault(); e.stopPropagation();
     if(PANE!=='home'){ location.hash='#/'; return; }
-    var top=$('.oy-top'); window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-(top?top.offsetHeight:0)-4, behavior:'smooth'});
+    window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-$('#oyGnb').offsetHeight-4, behavior:'smooth'});
   },true);
   var rt=null; window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(function(){ carLayout(BN,null); carLayout(EV,null); },120); });
-  // 화면 바뀔 때: 위 탭 화면 바꾸기 · 카테고리 화면이면 아래 '카테고리' 탭 켜기 (스토어가 화면을 바꾼 다음에 맞춤)
+  // 화면 바뀔 때: 위 탭 · 카테고리 · 분류 목록 화면 바꾸기 (스토어가 화면을 바꾼 다음에 맞춤)
   window.addEventListener('hashchange',function(){ requestAnimationFrame(function(){
-    if(/^#\/cat\//.test(location.hash)) tabOn('cat');
+    if(/^#\/cat\//.test(location.hash)){ location.replace(catToList(location.hash)); return; }   // 스토어 카테고리 주소로 바로 들어온 경우
     if(!homeOn()) return;
-    var p=pickPane(A.prWait());
-    if(p!==PANE){ PANE=p; renderGnb(A.prWait()); showPane(); window.scrollTo(0,0); }
+    var wait=A.prWait(), p=pickPane(wait);
+    if(p==='list') renderList(wait);
+    if(p==='cat') renderCat(wait);
+    if(p!==PANE){ PANE=p; renderGnb(wait); showPane(); $('.oy-top').classList.remove('hide'); window.scrollTo(0,0); }
+    else if(p==='list' || p==='cat'){ showPane(); if(p==='cat') window.scrollTo(0,0); }
     else { carLayout(BN,null); carLayout(EV,null); }
+    goZero();
   }); });
 }
 
@@ -509,13 +686,14 @@ function bindOnce(){
 function render(api){
   A=api; var wait=api.prWait();
   bindOnce();
+  if(/^#\/cat\//.test(location.hash)) location.replace(catToList(location.hash));   // 스토어 카테고리 주소로 바로 들어온 경우 → 분류 목록
   PANE=pickPane(wait);
   renderGnb(wait);
   renderBanner(wait); renderQuick(wait); renderBand(wait); renderPop(wait); renderDeal(wait); renderZero(wait);
-  renderTabDeal(wait); renderTabRank(wait); renderTabZero(wait); renderTabTv(wait);
+  renderTabDeal(wait); renderTabRank(wait); renderTabEvent(wait); renderTabAi(wait); renderList(wait); renderCat(wait);
   showPane();
   api.renderFoot();
-  if(/^#\/cat\//.test(location.hash)) setTimeout(function(){ tabOn('cat'); },0);
+  goZero();
 }
 
 window.STORE_CFG=window.STORE_CFG||{};

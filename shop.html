@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <!-- 20261022 사장님: 실험 페이지 /shop — 올리브영 모바일 홈 배치로 바꾼 스토어 홈 (검색 노출 안 됨)
-     홈 화면만 assets/shop/(shop.js·shop.css)이 그리고, 상세·신청서·검색·찜·가격 계산·신청 저장은 /store 와 같은 store.js
+     홈·위 탭 화면·카테고리만 assets/shop/(shop.js·shop.css)이 그리고, 상세·신청서·검색·찜·가격 계산·신청 저장은 /store 와 같은 store.js
      신청은 /store 와 같은 유닥 시트로 들어가고, 신청 경로에 ' · /shop' 이 붙어 구분됨 · 이탈 기록은 page='shop' -->
 <meta name="robots" content="noindex,nofollow">
 <script>
@@ -24,7 +24,7 @@ try{ window.__stCfg=fetch('https://udak-c6832-default-rtdb.firebaseio.com/store.
 <link rel="preconnect" href="https://pf.kakao.com">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="/assets/store/store.css?v=20261022d">
-<link rel="stylesheet" href="/assets/shop/shop.css?v=20261022c">
+<link rel="stylesheet" href="/assets/shop/shop.css?v=20261022d">
 <!-- Meta Pixel -->
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
@@ -70,9 +70,9 @@ window.STORE_CFG = {mode:'view', srcTag:'/shop'};
 </head>
 <body>
 <div id="storeRoot"></div>
-<script src="/assets/shop/shop.js?v=20261022c"></script>
-<script src="/assets/store/store.js?v=20261022g"></script>
+<script src="/assets/shop/shop.js?v=20261022d"></script>
+<script src="/assets/store/store.js?v=20261022h"></script>
 <!-- 이탈 분석(익명, 개인정보 없음) — page='shop' 으로 따로 기록 -->
-<script src="/assets/udak-funnel.js?v=20261022b" data-page="shop" defer></script>
+<script src="/assets/udak-funnel.js?v=20261022c" data-page="shop" defer></script>
 </body>
 </html>

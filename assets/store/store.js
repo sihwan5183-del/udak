@@ -2274,7 +2274,8 @@ var SKIN_API = SKIN ? {
   QI:QI, TI:TI, CAT_TABS:CAT_TABS, renderFoot:renderFoot, openSheet:openSheet, closeSheet:closeSheet, act:act, refresh:refresh,
   // 20261022 사장님: /shop 위 탭 화면(이번주 특가·인기 모델·기기값 0원·TV프리) — 정렬·판매 순위·찜·TV프리 대상 안내도 스토어 것 그대로
   sortList:sortList, SORTS:SORTS, get SORT(){ return SORT; }, loadRank:loadRank, get RANK(){ return RANK; },
-  wished:function(id){ return store.get('wish',[]).indexOf(id)>-1; }, tvCondHtml:tvCondHtml, TV_WHO:TV_WHO
+  wished:function(id){ return store.get('wish',[]).indexOf(id)>-1; }, tvCondHtml:tvCondHtml, TV_WHO:TV_WHO,
+  QNA:QNA   // 20261022 사장님: /shop 카테고리 '이용안내 > 자주 묻는 질문 > 질문 종류'
 } : null;
 
 /* 관리자 화면에서 쓰는 내부 함수 묶음 */
