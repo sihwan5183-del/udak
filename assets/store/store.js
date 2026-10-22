@@ -9,12 +9,17 @@
 'use strict';
 var CFG = window.STORE_CFG || {};
 var EDIT = CFG.mode === 'edit';
+// 20261022 사장님: /shop(올리브영 배치 실험 페이지)은 이 스토어 엔진에 '홈 화면'만 바꿔 끼움 (assets/shop/shop.js 가 CFG.skin 을 넘김)
+//   상세·신청서·검색·찜·팝업·가격 계산·신청 저장은 /store 와 똑같음. /store·/apple 은 CFG.skin 이 없어서 아무것도 안 바뀜
+var SKIN = (!EDIT && CFG.skin && typeof CFG.skin.render==='function') ? CFG.skin : null;
 var DB = 'https://udak-c6832-default-rtdb.firebaseio.com';
 var IMG = '/assets/store/';
 var GH = 'https://api.github.com/repos/sihwan5183-del/udak/contents/assets/store/';
 var FOLDERS = ['hero','model','card','promo','gift'];
 
 var MARKUP = "<!-- 스크롤 시 나타나는 상단바 (쿠팡이츠 방식) -->\n<header class=\"topbar\" id=\"topbar\">\n  <button class=\"lbl\" data-open=\"store\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>매장찾기<svg class=\"ico chev\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n  <button data-go=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button>\n  <button style=\"position:relative;display:flex\" data-open=\"noti\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8\"/><path d=\"M10.3 21a1.9 1.9 0 0 0 3.4 0\"/></svg><i class=\"dot-new\"></i></button>\n</header>\n<div class=\"app\" id=\"app\">\n<!-- ===================== 홈 ===================== -->\n<main class=\"view on\" id=\"v-home\">\n  <!-- 1. 히어로 -->\n  <section class=\"hero\" id=\"hero\">\n    <div class=\"hero-top\">\n      <div class=\"brand\" id=\"brand\" data-edit=\"brand\"></div>\n      <div class=\"hero-r\">\n        <div class=\"uplus-logo\">U<sup>+</sup></div>\n        <div class=\"hero-icons\">\n          <button data-go=\"search\" aria-label=\"검색\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button>\n          <button data-open=\"noti\" aria-label=\"알림\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8\"/><path d=\"M10.3 21a1.9 1.9 0 0 0 3.4 0\"/></svg><i class=\"dot-new\"></i></button>\n        </div>\n      </div>\n    </div>\n    <div class=\"hero-track\" id=\"heroTrack\"></div>\n    <div class=\"dots\" id=\"heroDots\"></div>\n    <div class=\"deal-subs\" id=\"dealSubs\"></div>\n  </section>\n  <!-- 2. 당일 출발 안내 (온라인 구매 과정 + 마감 카운트다운) -->\n  <div class=\"shipbar\" id=\"shipBar\" data-edit=\"ship\"></div>\n  <!-- 3. 검색 -->\n  <label class=\"search\" data-go=\"search\">\n    <svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg>\n    <input type=\"text\" placeholder=\"어떤 휴대폰을 찾고 계세요?\" readonly tabindex=\"-1\">\n  </label>\n  <!-- 4. 모델 원형 아이콘 -->\n  <nav class=\"models\" id=\"models\"></nav>\n  <!-- 5. 퀵메뉴 -->\n  <nav class=\"quick hscroll\" id=\"quick\"></nav>\n  <!-- 6. 신뢰 스트립 -->\n  <div class=\"trust hscroll\" id=\"trust\"></div>\n  <!-- 7. 프로모 배너 -->\n  <a class=\"promo\" id=\"promo\" data-edit=\"promo\"></a>\n  <!-- 8. 많이 찾아요 -->\n  <section class=\"sec\" id=\"popSec\">\n    <div id=\"popHead\"></div>\n    <div class=\"popgrid\" id=\"popgrid\"></div>\n  </section>\n  <div class=\"divider\" style=\"margin-top:16px\"></div>\n  <!-- ===== 여기부터 쿠팡이츠 모티브 섹션 ===== -->\n  <!-- 9-1. 최근 본 모델 (본 게 없으면 숨김) -->\n  <section class=\"sec\" id=\"recentSec\" hidden>\n    <div id=\"recentHead\"></div>\n    <div class=\"hcards hscroll\" id=\"recent\"></div>\n  </section>\n  <!-- 9-2. 기기값 0원 모아보기 -->\n  <section class=\"sec zero-sec\" id=\"zeroSec\">\n    <div id=\"zeroHead\"></div>\n    <div class=\"hcards hscroll\" id=\"zero\"></div>\n  </section>\n  <section class=\"sec\" id=\"wearSec\">\n    <div id=\"wearHead\"></div>\n    <div class=\"hcards hscroll\" id=\"wear\"></div>\n  </section>\n  <div class=\"divider\"></div>\n  <!-- 10-1. 한정 사은품 -->\n  <section class=\"sec\" id=\"giftSec\">\n    <div id=\"giftHead\"></div>\n    <div class=\"dcards hscroll\" id=\"gifts\"></div>\n  </section>\n  <!-- 10-2. 우리 동네 인기 모델 -->\n  <section class=\"sec\" id=\"rankSec\">\n    <div id=\"rankHead\"></div>\n    <div class=\"dcards hscroll\" id=\"rank\"></div>\n  </section>\n  <div class=\"divider\" style=\"margin-top:16px\"></div>\n  <!-- 11. 골라보는 휴대폰 -->\n  <section class=\"sec ucat-wrap\" id=\"pickSec\" style=\"padding-bottom:0\">\n    <div id=\"pickHead\"></div>\n    <nav class=\"models hscroll\" id=\"pickCircles\" style=\"display:flex;gap:4px;padding:0 10px 6px\"></nav>\n    <div class=\"filters\">\n      <div class=\"seg\" data-seg></div><div class=\"maxv-wrap\" data-maxwrap></div>\n      <button class=\"fbtn\" type=\"button\" data-sort-open><span class=\"sort-lbl\">추천순</span> <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n      <button class=\"fbtn\">필터 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"M4 6h16M7 12h10M10 18h4\"/></svg></button>\n    </div>\n    <div class=\"adlabel\">추천 리스트</div>\n    <div id=\"bigList\"></div>\n  </section>\n  <footer class=\"foot\" id=\"foot\" data-edit=\"foot\"></footer>\n</main>\n<!-- ===================== 카테고리 (쿠팡이츠 '한식' 화면) ===================== -->\n<main class=\"view\" id=\"v-cat\">\n  <div class=\"subhead\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button><h1 id=\"catTitle\">전체</h1><span class=\"sh-r\"><button data-home aria-label=\"홈으로\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M3 10.5 12 3l9 7.5\"/><path d=\"M5 9.5V20h5v-6h4v6h5V9.5\"/></svg></button><button data-go=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button></span></div>\n  <div class=\"sticky-tabs\"><nav class=\"ctabs hscroll\" id=\"catTabs\"></nav></div>\n  <nav class=\"hscroll\" id=\"catCircles\" style=\"display:flex;gap:4px;padding:14px 10px 6px\"></nav>\n  <div class=\"filters\">\n    <div class=\"seg\" data-seg></div><div class=\"maxv-wrap\" data-maxwrap></div>\n    <button class=\"fbtn\" type=\"button\" data-sort-open><span class=\"sort-lbl\">추천순</span> <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n    <button class=\"fbtn\">필터 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"M4 6h16M7 12h10M10 18h4\"/></svg></button>\n  </div>\n  <div class=\"adlabel\">추천 리스트</div>\n  <div id=\"catList\"></div>\n</main>\n<!-- ===================== 검색 ===================== -->\n<main class=\"view\" id=\"v-search\">\n  <div class=\"subhead\" style=\"gap:4px;justify-content:flex-start\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button>\n    <label class=\"search\" style=\"margin:0;flex:1;height:40px\"><svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg><input id=\"q\" type=\"search\" autocomplete=\"off\" placeholder=\"모델명을 입력하세요 (예: 폴드, 아이폰)\"></label></div>\n  <div class=\"s-modes\" id=\"sModes\"><button type=\"button\" data-smode=\"phone\">휴대폰</button><button type=\"button\" data-smode=\"store\">매장</button></div>\n  <div class=\"results\" id=\"results\"></div>\n</main>\n<!-- ===================== 찜한 모델 ===================== -->\n<main class=\"view\" id=\"v-wish\">\n  <div class=\"subhead\"><span style=\"width:40px\"></span><h1>찜한 모델</h1><span style=\"width:40px\"></span></div>\n  <div id=\"wishList\"></div>\n</main>\n<!-- ===================== 모델 상세 (다음 단계) ===================== -->\n<main class=\"view\" id=\"v-model\">\n  <div class=\"subhead\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button><h1 id=\"mdTitle\"></h1><button data-home aria-label=\"홈으로\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M3 10.5 12 3l9 7.5\"/><path d=\"M5 9.5V20h5v-6h4v6h5V9.5\"/></svg></button></div>\n  <div id=\"mdBody\" style=\"padding:0 16px 20px\"></div>\n</main>\n</div><!-- /app -->\n<!-- 하단 탭바 -->\n<nav class=\"tabbar\" id=\"tabbar\">\n  <a href=\"#/\" data-tab=\"home\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z\"/></svg>홈</a>\n  <a href=\"#/search\" data-tab=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg>검색</a>\n  <a href=\"#/wish\" data-tab=\"wish\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z\"/></svg>찜</a>\n  <a href=\"javascript:void 0\" data-open=\"consult\" data-tab=\"consult\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2\"/><path d=\"M9 4h6v3H9zM9 12l2 2 4-4\"/></svg>상담신청</a>\n  <a href=\"javascript:void 0\" data-open=\"store\" data-tab=\"store\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>매장</a>\n</nav>\n<div class=\"dim\" id=\"dim\"></div>\n<div class=\"sheet\" id=\"sheet\"><button type=\"button\" class=\"sheet-x\" aria-label=\"닫기\">×</button><div id=\"sheetBody\"></div></div>";
+// 20261022 /shop: 홈 화면(#v-home) 자리만 skin 이 준 화면으로 바꿈 — 나머지 화면(목록·검색·찜·상세·신청서)은 그대로
+if(SKIN && SKIN.home) MARKUP = MARKUP.replace(/<main class="view on" id="v-home">[\s\S]*?<\/main>/, function(){ return SKIN.home; });
 
 /* ---------------- 기본 데이터 (파이어베이스가 비어 있을 때) ---------------- */
 var DEFAULT = {
@@ -781,6 +786,7 @@ function heroGo(n){
 function heroAuto(){ clearInterval(heroTimer); heroTimer=setInterval(function(){ if(!(EDIT&&editing)) heroGo(heroIdx+1); },4000); }
 function bindHeroSwipe(){
   var track=$('#heroTrack'), sx=null, dx=0, moved=false;
+  if(!track) return;   // 20261022 /shop 홈엔 이 히어로가 없음
   track.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;dx=0;moved=false;clearInterval(heroTimer)},{passive:true});
   track.addEventListener('touchmove',function(e){if(sx===null)return;dx=e.touches[0].clientX-sx;if(Math.abs(dx)>8)moved=true;
     track.style.transition='none';track.style.transform='translateX(calc('+(-heroIdx*100)+'% + '+dx+'px))'},{passive:true});
@@ -1013,6 +1019,7 @@ function openVideo(k){
 }
 function syncMnp(){ $$('[data-seg]').forEach(function(x){ x.innerHTML=segBtns(); }); }
 function renderHome(){
+  if(SKIN){ try{ SKIN.render(SKIN_API); }catch(e){ try{ console.error(e); }catch(x){} } syncMnp(); return; }   // 20261022 /shop 홈
   renderHero(); renderShip(); renderModels(); renderQuick(); renderTrust(); renderPromo(); renderPop(); renderRecent();
   renderZero(); renderWear(); renderGifts(); renderRank(); renderPick(); renderFoot(); syncMnp();
 }
@@ -1209,7 +1216,7 @@ function route(){
   else if(v==='wish'){renderWish();$('#v-wish').classList.add('on');tab='wish'}
   else if(v==='apply'){renderApply(true);$('#v-apply').classList.add('on');tab='consult'}
   else {
-    $('#v-home').classList.add('on');renderRecent();renderPick();
+    $('#v-home').classList.add('on'); if(!SKIN){ renderRecent(); renderPick(); }
     requestAnimationFrame(function(){window.scrollTo(0,homeScroll)});onScroll();
     setTab('home'); document.body.classList.remove('no-sq'); document.body.classList.remove('md-on'); return;
   }
@@ -1231,6 +1238,7 @@ function refresh(){
   window.scrollTo(0,y);
 }
 function onScroll(){
+  if(SKIN) return;   // 20261022 /shop
   var home=$('#v-home').classList.contains('on'), h=$('#hero').offsetHeight;
   $('#topbar').classList.toggle('show',home && window.scrollY>h+40);
 }
@@ -1994,7 +2002,7 @@ function apPayload(o){
   var cm=pc?cmpMethod(pc.c,pc.fee,AP.months):null;
   var tvx=AP.tv&&byId(AP.tv), wx=AP.watch&&byId(AP.watch), tbx=AP.tablet&&byId(AP.tablet);
   var noPh=AP.phone==='none';
-  var snapshot={v:2, source:o.source||'온라인 상담 신청', jointype:(noPh||!AP.carrier)?null:type, carrier:AP.carrier||null, device:m?m.nm:(AP.phone==='none'?'휴대폰 변경 없음 (TV프리만)':'상담 후 결정'), storage:cap, color:color,
+  var snapshot={v:2, source:(o.source||'온라인 상담 신청')+(CFG.srcTag?' · '+CFG.srcTag:''), jointype:(noPh||!AP.carrier)?null:type, carrier:AP.carrier||null, device:m?m.nm:(AP.phone==='none'?'휴대폰 변경 없음 (TV프리만)':'상담 후 결정'), storage:cap, color:color,
     plan:tt&&!noPh?{name:tt.title||tierTitle(tt), price:tt.fee||null, group:tt.grp||null}:null,
     discount:noPh?null:pc?(pc.method==='sel'?'선택약정':'공시지원금'):(AP.method==='sel'?'선택약정':'공시지원금'),
     fee:fee, feeNote:null, subsidy:subsidy, subsidyNote:noPh?'TV프리 약정 36개월':AP.months===0?'일시납':'할부 '+AP.months+'개월 · 연 5.9%',
@@ -2253,6 +2261,16 @@ function live(){
     es.addEventListener('put',on); es.addEventListener('patch',on);
   }catch(e){}
 }
+
+/* 20261022 /shop 홈(skin)이 쓰는 도구 묶음 — 가격 계산·모델·문구는 /store 와 같은 함수를 그대로 씀 */
+var SKIN_API = SKIN ? {
+  get S(){ return S; }, get MNP(){ return MNP; }, EDIT:EDIT,
+  models:models, phones:phones, wears:wears, byId:byId, vis:vis, hidCls:hidCls, secOn:secOn, pickList:pickList,
+  priceOf:priceOf, pctOf:pctOf, badgeOf:badgeOf, stripOf:stripOf, tagsOf:tagsOf, SO:SO, isTv:isTv, isWear:isWear,
+  dealItems:dealItems, weekRange:weekRange, shipState:shipState, cutLabel:cutLabel, prWait:prWait, PR_SK:PR_SK,
+  mImg:mImg, colorsOf:colorsOf, imgSrc:imgSrc, im:im, esc:esc, won:won, wz:wz,
+  QI:QI, TI:TI, CAT_TABS:CAT_TABS, renderFoot:renderFoot, openSheet:openSheet, closeSheet:closeSheet, act:act, refresh:refresh
+} : null;
 
 /* 관리자 화면에서 쓰는 내부 함수 묶음 */
 window.STORE = {

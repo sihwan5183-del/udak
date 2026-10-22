@@ -157,7 +157,8 @@
     var attr=function(n){ return function(el){ return el.getAttribute(n); }; };
     CFG.store={
       see:[['hero','#hero'],['models','#models'],['quick','#quick'],['trust','#trust'],['popular','#popSec'],['recent','#recentSec'],['zero','#zeroSec'],
-           ['wear','#wearSec'],['gift','#giftSec'],['rank','#rankSec'],['pick','#pickHead']],   // 20261020 'pick'은 구역이 화면보다 길어 25%가 한 번에 안 보임 → 구역 제목으로 봄
+           ['wear','#wearSec'],['gift','#giftSec'],['rank','#rankSec'],['pick','#pickHead'],
+           ['deal','#oyDealSec']],   // 20261020 'pick'은 구역이 화면보다 길어 25%가 한 번에 안 보임 → 구역 제목으로 봄 · 20261022 사장님: /shop 홈 '이번주 특가' 구역
       click:[['#mSubmitBtn','submit_click',function(){ return '상담 예약'; }],['#mKakaoBtn','submit_click',function(){ return '카톡 예약'; }],
              // v20261019: 상세 하단 [카톡 상담] → 카톡 간편 신청창, 그 안의 '카톡으로 상담 시작하기'
              ['#qkBtn','submit_click',function(){ return '카톡 간편'; }],['[data-qk]','qk_open',attr('data-qk')],['[data-qk-car]','qk_car',attr('data-qk-car')],['[data-qk-col]','qk_col',attr('data-qk-col')],
@@ -276,9 +277,10 @@
     function mdEnd(){ if(MD){ mdLook(false); ev('detail_exit', mdDesc()); } }
     // ── 12) v20261020 스토어 홈·목록 화면에서 누른 것 (전원) — 나갈 때 요약(exit)의 그 화면 뒤 [ ] 안에 순서대로
     //   상세 화면은 위 10번 detail_exit '누름'에 이미 있어서 여기선 뺌. 화면마다 최근 8개까지 (넘치면 앞에 …)
+    // 20261022 사장님: /shop 홈 '이번주 특가'(oyDealSec) 누름도 스토어처럼 '특가:모델'로
     var SEC_KO={hero:'배너',models:'모델',quick:'바로가기',trust:'신뢰',popSec:'인기',recentSec:'최근',zeroSec:'0원',wearSec:'워치',giftSec:'선물',
-      rankSec:'순위',pickSec:'목록','v-cat':'분류목록','v-search':'검색','v-wish':'찜'};
-    function secOf(el){ var s=el.closest('#hero,#models,#quick,#trust,#popSec,#recentSec,#zeroSec,#wearSec,#giftSec,#rankSec,#pickSec,#v-cat,#v-search,#v-wish'); return s?(SEC_KO[s.id]||s.id):''; }
+      rankSec:'순위',pickSec:'목록',oyDealSec:'특가','v-cat':'분류목록','v-search':'검색','v-wish':'찜'};
+    function secOf(el){ var s=el.closest('#hero,#models,#quick,#trust,#popSec,#recentSec,#zeroSec,#wearSec,#giftSec,#rankSec,#pickSec,#oyDealSec,#v-cat,#v-search,#v-wish'); return s?(SEC_KO[s.id]||s.id):''; }
     function goKey(g){ return String(g||'').replace(/^#\/?/,'').replace(/^model\//,''); }
     function tapOf(t){
       var el, s;
