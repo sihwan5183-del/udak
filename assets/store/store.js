@@ -714,13 +714,20 @@ function renderShip(){
   var el=$('#shipBar'); if(!el) return;
   var sh=S.ship||{}; clearInterval(shipTimer);
   if(!sh.on && !EDIT){ el.hidden=true; return; } el.hidden=false;
-  // 20261020 깔끔하게: 큰 카드(트럭 그림·마감 시/분/초·신청 순서·구매 가이드) → 한 줄
-  //   '오후 3시까지 구매확정 시 오늘 발송 [2시간 14분 남음]' · 마감 뒤엔 '지금 구매확정 시 내일 발송' (누르면 구매 가이드는 그대로 열림)
-  var st=shipState(), clock='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.2 1.8"/></svg>';
-  var left=function(t){ var h=Math.floor(t/3600), mi=Math.floor(t%3600/60); return t<60?'곧 마감':(h?h+'시간 ':'')+(mi||!h?mi+'분 ':'')+'남음'; };
-  var txt=st.today?'<b>'+cutLabel()+'</b>까지 구매확정 시 <em>오늘 발송</em>':'지금 구매확정 시 <em>'+st.when+' 발송</em>';
-  el.innerHTML='<div class="shp1" data-go="guide">'+clock+'<span class="shp1-t">'+txt+'</span>'+(st.today?'<span class="shp1-cd" id="shipCd">'+left(st.left)+'</span>':'')+'</div>';
-  if(st.today) shipTimer=setInterval(function(){ var s2=shipState(), c2=$('#shipCd'); if(!s2.today||!c2){ renderShip(); return; } c2.textContent=left(s2.left); },15000);
+  // 20261022 사장님: '택배 사진(트럭) 보이던 거 어디 갔어' — 10/20 한 줄로 줄였던 첫 화면 당일 발송 카드를 예전 그대로 되돌림
+  //   (트럭 사진 · 발송 마감까지 시/분/초 · 온라인 신청 → 5분 상담 → 당일 발송 · 구매 가이드)
+  var st=shipState(), clock='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.2 1.8"/></svg>', chev='<svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>';
+  var head=st.today
+    ? '<div class="shp-l1">'+clock+'오늘 <em>'+cutLabel()+'까지</em> 구매확정</div><div class="shp-l2"><em>당일 택배</em> 발송</div>'+
+      '<div class="shp-cd"><span class="shp-cl">발송 마감까지</span><span class="shp-box" id="shipCd">'+cdBoxes(st.left)+'</span></div>'
+    : '<div class="shp-l1">'+clock+'지금 구매확정하시면</div><div class="shp-l2 sm"><em>'+st.when+'</em> 택배 발송</div>'+
+      '<div class="shp-cd off"><span class="shp-cl">'+st.when+' '+cutLabel()+' 마감 · 순차 발송</span></div>';
+  var steps=[['ico-form','온라인 신청'],['ico-call','5분 상담'],['ico-ship',(st.today?'당일':st.when)+' 발송']];
+  el.innerHTML='<div class="shp" data-go="guide"><div class="shp-top"><div class="shp-txt">'+head+'</div>'+
+      '<img class="shp-truck" src="/assets/store/ship/truck.webp" alt="" loading="eager"></div>'+
+    '<div class="shp-steps">'+steps.map(function(x){ return '<div class="shp-st"><span class="shp-ic"><img src="/assets/store/ship/'+x[0]+'.webp" alt=""></span><span>'+x[1]+'</span></div>'; }).join('<i class="shp-ar">'+chev+'</i>')+
+      '<span class="shp-div"></span><span class="shp-guide">구매 가이드'+chev+'</span></div></div>';
+  if(st.today) shipTimer=setInterval(function(){ var s2=shipState(), c2=$('#shipCd'); if(!s2.today||!c2){ renderShip(); return; } c2.innerHTML=cdBoxes(s2.left); },1000);
 }
 function renderDeal(){
   var D=S.deal, sub=$('#dealSubs'), hero=document.querySelector('.hero');
