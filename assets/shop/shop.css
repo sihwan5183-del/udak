@@ -1,7 +1,9 @@
 /* =========================================================
-   /shop — 올리브영 배치 홈 (20261022 사장님 실험 페이지 landing.uplusdak.com/shop)
-   · store.css 다음에 읽음 — 홈 화면(.oy)·하단 탭만 바뀌고, 상세·신청서·검색·찜 화면은 /store 와 같음
-   · 칸 크기·간격 = 올리브영 모바일 홈 실측 (화면 폭 390 기준). 배너·띠배너는 화면 폭(--W, 최대 480)에 맞춰 같은 비율로
+   /shop — 올리브영 배치 (20261022 사장님 실험 페이지 landing.uplusdak.com/shop)
+   · store.css 다음에 읽음 — 홈·위 탭 화면(.oy)·하단 탭만 바뀌고, 상세·신청서·검색·찜·카테고리 화면은 /store 와 같음
+   · 칸 크기·간격 = 올리브영 모바일 실측 (홈: 화면 폭 390 · 위 탭 화면: 사장님 휴대폰 화면 폭 402)
+     배너·띠배너·TV프리 카드는 화면 폭(--W, 최대 480)에 맞춰 같은 비율로
+   · 색: 할인율 #FF5961 · 글자 #131417 · 원래 가격 #9299A0 · 태그 바탕 #F0F1F4 (올리브영 화면에서 뽑음)
    ========================================================= */
 :root{--tabh:51px}
 .topbar{display:none!important}   /* 스크롤하면 내려오던 상단바 대신 .oy-top 이 위에 붙어 있음 */
@@ -21,11 +23,13 @@
 .oy-ib{position:relative;width:40px;height:40px;display:flex;align-items:center;justify-content:center}
 .oy-ib svg{width:22px;height:22px;fill:none;stroke:#131518;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .oy-ib .dot-new{top:10px;right:10px;width:5px;height:5px;background:#E8212E}
-.oy-gnb{display:flex;justify-content:space-between;gap:12px;height:44px;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+.oy-gnb{display:flex;justify-content:space-between;gap:12px;height:44px;padding:0 16px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid transparent}
 .oy-gnb::-webkit-scrollbar{display:none}
 .oy-gnb a{flex:none;display:flex;align-items:center;border-bottom:2px solid transparent;font-size:16px;line-height:19px;font-weight:400;color:#6B7280;white-space:nowrap}
 .oy-gnb a.on{border-bottom-color:#131518;font-weight:700;color:#131518}
 .oy-gnb .oy-sk{flex:none;align-self:center}
+/* 홈이 아닌 탭 화면은 탭 메뉴 아래 줄 (올리브영 #D9DDE0) */
+.oy-top.ln .oy-gnb{border-bottom-color:#D9DDE0}
 
 /* ---------- 메인 배너: 92% × 74.67% · 모서리 5.33% · 양옆 88% ---------- */
 .oy-bn{position:relative;padding-top:8px;overflow:hidden}
@@ -52,7 +56,7 @@
 .oy-bn-all{position:absolute;left:calc(var(--W)*.859);top:calc(8px + var(--W)*.6231);z-index:2;width:32px;height:32px;border-radius:4px;display:flex;align-items:center;justify-content:center}
 .oy-bn-all svg{width:10px;height:10px;fill:none;stroke:#131518;stroke-width:1.4;stroke-linecap:round}
 
-/* ---------- 퀵메뉴 2줄: 칸 60 · 아이콘 52 · 글자 11 (화면 폭 400 이상 68·60) ---------- */
+/* ---------- 퀵메뉴 2줄: 칸 60 · 아이콘 52 · 이름 11 한 줄 (화면 폭 400 이상 68·60) ---------- */
 .oy-qm{margin-top:8px}
 .oy-qm-sc{display:grid;row-gap:12px;padding:8px 0 28px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .oy-qm-sc::-webkit-scrollbar{display:none}
@@ -62,15 +66,10 @@
 .oy-qi-im{width:100%;height:100%;object-fit:contain;padding:4px;mix-blend-mode:multiply}
 .oy-qi-ic .ph-soft{width:100%;height:100%;padding:0;background:none}
 .oy-qi-ic svg{width:26px;height:26px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.oy-qi-t{margin-top:6px;width:60px;height:26px;font-size:11px;line-height:13px;color:#3A3E45;text-align:center;word-break:keep-all;overflow:hidden;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.oy-qi-t{display:block;margin-top:6px;width:100%;height:13px;font-size:11px;line-height:13px;color:#3A3E45;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .oy-qi-t .oy-sk{display:block;margin:1px auto 0}
 .oy-so{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;background:rgba(17,19,24,.5);color:#fff;font-size:11px;font-weight:900;font-style:normal}
-@media (min-width:400px){
-  .oy-qi{flex-basis:68px;width:68px}
-  .oy-qi-ic{width:60px;height:60px}
-  .oy-qi-t{width:68px}
-}
+/* 20261022: 사장님 휴대폰(화면 폭 402) 올리브영도 아이콘 52 · 칸 간격 68 그대로 — 폭 400 이상에서 키우던 것 뺌 */
 
 /* ---------- 띠배너: 92% × 21.33% · 모서리 4 · 아래 점 (켜진 점 16×6) ---------- */
 .oy-band-vp{margin:0 calc(var(--W)*.04);border-radius:4px;overflow:hidden;transform:translateZ(0)}
@@ -94,7 +93,7 @@
 /* ---------- 섹션: 사이 48 · 제목 18 (위 17 · 옆 15 · 아래 16) ---------- */
 .oy-sec{margin-top:48px}
 .oy-sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding:17px 15px 16px}
-.oy-sec-h h2{min-width:0;font-size:18px;line-height:22px;font-weight:700;letter-spacing:-.02em;color:#131518}
+.oy-sec-h h2,.oy-th h2{min-width:0;font-size:18px;line-height:22px;font-weight:700;letter-spacing:-.02em;color:#131518}
 .oy-sec-d{flex:none;font-size:13px;line-height:18px;color:#6B7280}
 /* 칩: 높이 32 · 둥글기 16 · 사이 8 */
 .oy-chips{display:flex;align-items:flex-start;gap:8px;height:33px;padding:0 15px;overflow-x:auto;scrollbar-width:none}
@@ -105,39 +104,124 @@
 .oy-flt button.on{color:#131518;font-weight:700}
 .oy-flt i{width:1px;height:10px;background:#DADDE0}
 .oy-flt svg{width:12px;height:12px;fill:none;stroke:#6B7280;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.oy-chip{flex:none;height:32px;padding:0 17px;border:1px solid #DADDE0;border-radius:16px;background:#fff;color:#6B7280;font-size:13px;line-height:16px;white-space:nowrap;letter-spacing:-.02em}
-.oy-chip.on{background:#131518;border-color:#131518;color:#fff}
+.oy-chip{flex:none;height:32px;padding:0 17px;border:1px solid #DADDE0;border-radius:16px;background:#fff;color:#747D86;font-size:13px;line-height:16px;white-space:nowrap;letter-spacing:-.02em}
+.oy-chip.on{background:#131417;border-color:#131417;color:#fff}
 /* 상품 3열: 옆 15 · 사이 7.5 · 줄 사이 29 */
 .oy-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:7.5px;row-gap:29px;padding:0 15px}
-.oy-chips+.oy-grid{margin-top:20px}
-.oy-card{display:flex;flex-direction:column;min-width:0;color:#131518}
-.oy-card-im{position:relative;display:block;aspect-ratio:1/1;border-radius:4px;overflow:hidden;background:#F4F5F7}
+.oy-chips+.oy-grid,.oy-chips+.oy-g2{margin-top:20px}
+.oy-card{display:flex;flex-direction:column;min-width:0;color:#131417}
+.oy-card-im,.oy-c2-im,.oy-li-im{position:relative;display:block;aspect-ratio:1/1;border-radius:4px;overflow:hidden;background:#F4F5F7}
 .oy-card-img{display:block;width:100%;height:100%;object-fit:contain;padding:9%;mix-blend-mode:multiply}
-.oy-card-im .ph-soft{width:100%;height:100%}
+.oy-card-im .ph-soft,.oy-c2-im .ph-soft,.oy-li-im .ph-soft{width:100%;height:100%}
 .oy-dim{position:absolute;inset:0;background:rgba(32,40,51,.04);pointer-events:none}
-.oy-card .oy-so{font-size:13px}
+.oy-card .oy-so,.oy-c2 .oy-so,.oy-li .oy-so{font-size:13px}
 .oy-card-nm{margin-top:11px;padding-right:8px;height:32px;font-size:13px;line-height:16px;overflow:hidden;word-break:keep-all;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .oy-card-pr{margin-top:5px;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:4px;font-size:14px;line-height:17px;font-weight:700}
-.oy-card-pr em{font-style:normal;color:#E8212E}
+.oy-card-pr em{font-style:normal;color:#FF5961}
 .oy-card-nm .oy-sk,.oy-card-pr .oy-sk{display:block}
 .oy-v{white-space:nowrap}
 .oy-v small{font-size:13px}
 .oy-v i{font-style:normal;font-size:11px;margin-left:1px}
 .oy-ask{font-size:13px;font-weight:600;color:#4B5563}
-.oy-card-s{margin-top:1px;font-size:11px;line-height:13px;color:#6B7280}
+.oy-card-s{margin-top:1px;font-size:11px;line-height:13px;color:#9299A0}
 .oy-card-c{margin-top:2px;font-size:11px;line-height:13px;color:#4B5563}
-/* 큰 카드 (이번주 특가): 360 × 287 · 모서리 8 · 사이 16 */
+/* 큰 카드 (이번주 특가 · 올리브영 Weekly Special): 360 × 287 · 모서리 8 · 사이 16 · 가운데 흰 글자 */
 .oy-big{display:flex;flex-direction:column;gap:16px;padding:0 15px}
-.oy-bc{position:relative;display:block;width:100%;aspect-ratio:360/287;border-radius:8px;overflow:hidden;color:#131518}
-.oy-bc-im{position:absolute;left:0;right:0;top:4%;height:63%;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.oy-bc{position:relative;display:block;width:100%;aspect-ratio:360/287;border-radius:8px;overflow:hidden;color:#fff}
+.oy-bc::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 52%,rgba(0,0,0,.22) 100%);pointer-events:none}
+.oy-bc-im{position:absolute;left:0;right:0;top:5%;height:62%;display:flex;align-items:center;justify-content:center;pointer-events:none}
 .oy-bc-img{width:auto;max-width:86%;height:100%;object-fit:contain}
 .oy-bc-im .ph-soft{display:none}
-.oy-bc-t{position:absolute;left:15px;right:15px;top:70.4%;font-size:20px;line-height:24px;font-weight:700;letter-spacing:-.03em}
-.oy-bc-d{position:absolute;left:15px;right:15px;top:83.6%;font-size:14px;line-height:17px;color:#374151;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.oy-bc-d em{font-style:normal;font-weight:800;color:#C4006B}
+.oy-bc-t{position:absolute;z-index:1;left:15px;right:15px;top:70.4%;font-size:20px;line-height:24px;font-weight:700;letter-spacing:-.03em;text-align:center;color:#fff}
+.oy-bc-d{position:absolute;z-index:1;left:15px;right:15px;top:83.6%;font-size:14px;line-height:17px;color:rgba(255,255,255,.92);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oy-bc-d em{font-style:normal;font-weight:800;color:#fff}
 .oy-bc-d em.ask{font-weight:700}
 .oy-so-l{font-size:16px}
+
+/* ---------- 태그 · 찜/신청 아이콘 (올리브영 오늘드림·BEST 자리: 당일발송 · 제휴카드 X · 부가서비스 X) ---------- */
+.oy-tags{display:flex;flex-wrap:wrap;gap:4px}
+.oy-tags i{font-style:normal;height:16px;padding:0 4px;border-radius:2px;background:#F0F1F4;color:#616870;font-size:11px;line-height:16px;letter-spacing:-.02em;white-space:nowrap}
+.oy-tags i.p{color:#E6007E}
+.oy-tags i.r{background:#FF5961;color:#fff}
+.oy-ics{display:flex;gap:16px}
+.oy-ics button{width:22px;height:22px;padding:0;display:flex;align-items:center;justify-content:center}
+.oy-ics svg{width:21px;height:21px;fill:none;stroke:#9299A0;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.oy-heart.on svg{fill:#FF5961;stroke:#FF5961}
+
+/* ---------- 이번주 특가 탭 (올리브영 '오특') ---------- */
+.oy-hl{padding:36px 15px 0;text-align:center}
+.oy-hl b{font-size:18px;line-height:22px;font-weight:700;letter-spacing:-.02em;color:#131417;padding:0 5px;
+  background:linear-gradient(transparent 42%,#E5F0D6 42%);-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.oy-th{padding:32px 15px 15px}
+.oy-list{display:flex;flex-direction:column;gap:20px}
+.oy-li{display:flex;align-items:flex-start;gap:12px;padding:0 15px}
+.oy-li-a{flex:1;min-width:0;display:flex;gap:16px;color:#131417}
+.oy-li-im{flex:none;width:124px;height:124px;border-radius:6px}
+.oy-li-tx{flex:1;min-width:0;display:flex;flex-direction:column;padding-top:12px}
+.oy-li-nm{font-size:13px;line-height:16px;overflow:hidden;word-break:keep-all;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.oy-li .oy-card-pr{margin-top:8px}
+.oy-li .oy-card-pr s{font-size:13px;font-weight:400;color:#9299A0}
+.oy-li .oy-tags{margin-top:9px}
+.oy-li-sub{margin-top:10px;font-size:12px;line-height:15px;color:#9299A0}
+.oy-li-sub span{white-space:nowrap}
+.oy-li .oy-ics{flex:none;flex-direction:column;gap:20px;padding-top:30px}
+.oy-sort-w{position:relative;flex:none}
+.oy-sort{display:flex;align-items:center;gap:2px;height:22px;font-size:14px;color:#747D86;letter-spacing:-.02em}
+.oy-sort svg{width:14px;height:14px;fill:none;stroke:#747D86;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.oy-sort-w .sortpop{right:0;left:auto!important}
+/* 2열 카드 (오특 '오늘의 특가' · 랭킹): 옆 15 · 사이 9.33 · 줄 사이 31 · 사진 모서리 6 */
+.oy-g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:9.33px;row-gap:31px;padding:0 15px}
+.oy-c2{display:flex;flex-direction:column;min-width:0}
+.oy-c2-a{display:flex;flex-direction:column;color:#131417}
+.oy-c2-im{border-radius:6px}
+.oy-c2 .oy-card-nm{margin-top:14px;padding-right:4px}
+.oy-c2 .oy-card-s{margin-top:8px;font-size:12px;line-height:14px}
+.oy-c2 .oy-card-pr{margin-top:2px}
+.oy-c2 .oy-tags{margin-top:8px}
+.oy-c2 .oy-ics{margin-top:13px}
+.oy-rk{position:absolute;left:0;top:0;z-index:1;width:22px;height:22px;display:flex;align-items:center;justify-content:center;background:#131417;color:#fff;font-size:14px;font-weight:700;font-style:normal}
+
+/* ---------- 인기 모델 탭 (올리브영 '랭킹') ---------- */
+.oy-sub{display:flex;align-items:center;height:45px;padding:0 15px;border-bottom:1px solid #D9DDE0}
+.oy-sub b{font-size:16px;line-height:19px;font-weight:700;color:#131417}
+.oy-rk-chips{margin-top:10px}
+.oy-frow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:19px 15px 20px}
+.oy-frow-l{font-size:13px;line-height:16px;color:#98A1A8;min-width:0}
+.oy-frow-r{display:flex;gap:14px;flex:none}
+.oy-frow-r button{font-size:15px;line-height:18px;color:#98A1A8;letter-spacing:-.02em}
+.oy-frow-r button.on{color:#131417;font-weight:700}
+
+/* ---------- 기기값 0원 탭 (올리브영 '세일') ---------- */
+.oy-zt-h{padding-top:27px}
+.oy-cs .oy-card-nm{margin-top:12px}
+.oy-cs .oy-card-s{margin-top:8px;font-size:12px;line-height:13px}
+.oy-cs .oy-card-pr{margin-top:2px}
+.oy-cs .oy-tags{margin-top:8px}
+
+/* ---------- TV프리 탭 (올리브영 '이벤트'): 카드 80.67% × 107.56% · 옆 85% · 모서리 16 ---------- */
+.oy-ev{position:relative;padding-top:15px;overflow:hidden}
+.oy-ev-track{position:relative;height:calc(var(--W)*1.0756);touch-action:pan-y}
+.oy-evc{position:absolute;left:0;top:0;display:block;width:calc(var(--W)*.8067);height:100%;border-radius:16px;overflow:hidden;color:#131417;
+  opacity:0;transform-origin:50% 50%;transition:transform .45s cubic-bezier(.2,.7,.2,1);will-change:transform;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.oy-evc.ok{opacity:1}
+.oy-evc.nt{transition:none}
+.oy-evc-sk{opacity:1;left:calc(var(--W)*.0967);background:#EEF0F3;animation:mdsk 1.1s ease-in-out infinite}
+.oy-evc-im{position:absolute;left:50%;top:13%;height:50%;width:auto;max-width:84%;object-fit:contain;transform:translateX(-50%);pointer-events:none;-webkit-user-drag:none;mix-blend-mode:multiply}
+.oy-evc .ph-soft{display:none}
+.oy-evc-b{position:absolute;top:15px;right:15px;z-index:1;height:21px;padding:0 8px;border-radius:11px;background:rgba(19,20,23,.55);color:#fff;font-size:12px;line-height:21px;font-weight:700;font-style:normal}
+.oy-evc-t{position:absolute;left:16px;right:16px;bottom:18px;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center}
+.oy-evc-t b{font-size:21px;line-height:25px;font-weight:700;letter-spacing:-.03em;word-break:keep-all;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.oy-evc-t span{margin-top:13px;font-size:14px;line-height:17px;color:#4B5563}
+.oy-evc-t small{display:flex;align-items:center;margin-top:15px;font-size:12.5px;line-height:15px;color:#4B5563;font-variant-numeric:tabular-nums}
+.oy-evc-t small em{font-style:normal;color:#131417}
+.oy-evc-t small i{width:1px;height:8px;margin:0 7px;background:rgba(19,20,23,.3)}
+.oy-pills{display:flex;gap:7px;padding:29px 15px 0;overflow-x:auto;scrollbar-width:none}
+.oy-pills::-webkit-scrollbar{display:none}
+.oy-pill{flex:none;display:flex;align-items:center;gap:11px;height:40px;padding:0 16px 0 6px;border:1px solid #D9DDE0;border-radius:20px;font-size:15px;font-weight:700;color:#131417;white-space:nowrap;letter-spacing:-.02em}
+.oy-pill i{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+.oy-pill svg{width:17px;height:17px;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.oy-ev-more{padding:32px 15px 0}
 
 /* ---------- 맨 아래 정보 (스토어와 같은 내용 · 밝은 회색) ---------- */
 .oy .foot{margin-top:48px}
@@ -155,9 +239,9 @@
 .oy .sf-bot{padding-top:12px}
 .oy .sf-p a{font-weight:600;color:#4B5563}
 
-/* ---------- 하단 탭 51: 아이콘 21 · 글자 10 ---------- */
-.tabbar{border-top:1px solid #ECEEF1}
-.tabbar a{justify-content:flex-start;gap:6px;padding-top:6px;font-size:10px;line-height:11px;font-weight:400;color:#3A3E45;letter-spacing:-.02em}
+/* ---------- 하단 탭 6개 (51): 아이콘 21 · 글자 10 ---------- */
+.tabbar{grid-template-columns:repeat(6,1fr);border-top:1px solid #ECEEF1}
+.tabbar a{justify-content:flex-start;gap:6px;padding-top:6px;font-size:10px;line-height:11px;font-weight:400;color:#3A3E45;letter-spacing:-.02em;white-space:nowrap}
 .tabbar a .ico{width:21px;height:21px;stroke:#131518;stroke-width:1.8}
 .tabbar a.on{color:#131518;font-weight:600}
 .tabbar a.on .ico{stroke-width:2.1}
