@@ -155,28 +155,35 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .rows dd span{display:block;font-size:12px;line-height:18px;color:var(--sub);margin-top:1px}
 
 /* 급여 · 성장 */
-.pay{display:grid;grid-template-columns:429fr 525fr;gap:18px;margin-top:28px}
-.pay-navy{background:var(--navy);color:#fff;border-radius:16px;padding:30px 30px;display:flex;flex-direction:column;justify-content:center}
-.pay-navy .hl{align-self:flex-start;margin-bottom:14px;padding:6px 12px;border-radius:999px;background:var(--pink);color:#fff;font-size:12.5px;line-height:18px;font-weight:800;letter-spacing:-.01em}
-.pay-navy .k{line-height:18px;font-size:12.5px;font-weight:700;color:#b7d7f1}
-.pay-navy .k b{font-weight:800;color:#fff}
-.pay-navy .v{margin-top:10px;font-size:52px;line-height:1.1;font-weight:800;letter-spacing:-.04em}
-.pay-navy .v small{font-size:18px;font-weight:800;margin-left:6px;letter-spacing:-.02em}
-.pay-navy .n{margin-top:16px;font-size:12px;line-height:1.75;color:#fff;opacity:.92}
-.pay-tbl{padding:27px 24px 26px}
-.pr{padding:16px 0 14px;border-top:1px solid var(--line2)}
-.pr:first-of-type{border-top:0;padding-top:0;margin-top:33px}
-.pr .r1{line-height:22px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.pr .r1 b{font-size:14.5px;font-weight:700}
-.pr .r1 strong{font-size:15px;font-weight:800;color:#183f6b;white-space:nowrap}
-.pr .r2{margin-top:15px;line-height:17px;font-size:11.5px;color:var(--sub)}
-.pay-more{margin-top:15px;font-size:12px;line-height:1.65;color:var(--sub)}
-.grow{margin-top:24px;padding:18px 20px 20px}
-.grow h3{font-size:15px;font-weight:800}
-.path{display:flex;flex-wrap:wrap;align-items:center;gap:10px 13px;margin-top:13px;list-style:none}
-.path li{display:flex;align-items:center;gap:13px}
-.path li+li::before{content:"→";color:#9aa4b2;font-size:13px;font-family:system-ui,-apple-system,sans-serif}
-.path span{display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:8px;background:var(--pill);font-size:13px;font-weight:700}
+/* 급여 안내 — 사장님 시안(직급별 급여 안내) 배치 그대로. +@ 는 +α(=인센티브) */
+.pay-eb{display:flex;align-items:center;gap:10px;font-size:15px;line-height:20px;font-weight:700;color:var(--pink);letter-spacing:-.01em}
+.pay-eb::before{content:"";width:33px;height:2px;background:var(--pink)}
+.pay-h2{margin-top:8px;font-size:44px;line-height:1.25;font-weight:800;letter-spacing:-.035em;color:var(--ink)}
+.pay-sub{margin-top:6px;font-size:19px;line-height:1.5;color:#5b6676;letter-spacing:-.02em}
+.pay-sub b{font-weight:800;color:var(--pink)}
+.pay2{display:grid;grid-template-columns:758fr 767fr;gap:14px;margin-top:20px}
+.pay-avg{display:flex;flex-direction:column;justify-content:center;padding:30px 26px;border-radius:12px;background:#fdf1f6;border:1px solid #fae3ed}
+.pay-avg .pill{align-self:flex-start;display:inline-flex;align-items:center;height:33px;padding:0 17px;border-radius:999px;background:var(--pink);color:#fff;font-size:17px;font-weight:800;letter-spacing:-.02em}
+.pay-avg .num{margin-top:12px;font-size:clamp(40px,6.15vw,63px);line-height:1.15;font-weight:800;letter-spacing:-.045em;color:var(--pink);white-space:nowrap}
+.pay-avg .bar{position:relative;margin-top:18px;height:1px;border:0;background:rgba(22,35,52,.1);overflow:visible}
+.pay-avg .bar::before{content:"";position:absolute;left:0;top:-1px;width:43px;height:2px;background:var(--pink)}
+.pay-avg .txt{margin-top:20px;font-size:17px;line-height:27px;color:#5b6676;letter-spacing:-.02em}
+.pay-rank{padding:16px 18px 11px;border-radius:12px}
+.pay-rank h3{padding:0 8px;font-size:22px;line-height:28px;font-weight:800;letter-spacing:-.035em}
+.ranks{margin-top:6px}
+.ranks>div{display:flex;align-items:center;justify-content:space-between;gap:12px;height:40.5px;padding:0 9px 0 8px;border-top:1px solid var(--line2)}
+.ranks>div:first-child{border-top:0}
+.ranks dt{font-size:17.5px;font-weight:600;letter-spacing:-.025em;color:#1f2a3a}
+.ranks dd{font-size:20px;font-weight:800;letter-spacing:-.03em;color:var(--ink);white-space:nowrap}
+.rank-note{display:flex;align-items:center;gap:14px;margin:8px -4px 0;padding:9px 14px 9px 16px;border-radius:9px;background:#f3f5f9;font-size:13px;line-height:19px;color:#5b6676;letter-spacing:-.02em}
+.rank-note .ico{flex:0 0 16px;height:16px;border:1.5px solid var(--pink);border-radius:50%;color:var(--pink);font-size:10.5px;font-weight:800;line-height:13px;text-align:center}
+.gp{display:flex;align-items:center;margin-top:15px;min-height:78px;padding:0 24px 0 22px;border-radius:12px}
+.gp h3{flex:0 0 125px;font-size:22px;font-weight:800;letter-spacing:-.035em}
+.gp-path{flex:1;display:flex;gap:50px;list-style:none}
+.gp-path li{position:relative;flex:1;display:flex}
+.gp-path li:last-child{flex:1.15}
+.gp-path li+li::before{content:"→";position:absolute;left:-50px;top:50%;width:50px;transform:translateY(-50%);text-align:center;color:#6b7686;font-size:19px;line-height:1;font-family:system-ui,-apple-system,sans-serif}
+.gp-path span{flex:1;display:flex;align-items:center;justify-content:center;height:45px;border-radius:9px;background:#f1f4f8;font-size:16px;font-weight:600;letter-spacing:-.02em;color:#1f2a3a;white-space:nowrap}
 
 /* 교육 · 복리후생 */
 .three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
@@ -276,6 +283,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .hero-grid{grid-template-columns:1fr 40%}
   .hero-img{width:100%}
   .ap-grid{grid-template-columns:1fr 1.4fr;gap:32px}
+  .gp h3{flex-basis:110px}
+  .gp-path{gap:36px}
+  .gp-path li+li::before{left:-36px;width:36px}
 }
 @media (max-width:760px){
   html{scroll-padding-top:64px}
@@ -313,12 +323,30 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .tabs-row{flex-direction:column;align-items:flex-start;gap:10px}
   .acc{grid-template-columns:1fr;gap:10px}
   .acc-h{height:58px}
-  .two,.pay,.three{grid-template-columns:1fr}
+  .two,.pay2,.three{grid-template-columns:1fr}
   .two>.card{padding:24px 20px 20px}
   .rows>div{grid-template-columns:84px 1fr}
-  .pay-navy{min-height:0;padding:28px 24px}
-  .pay-navy .v{font-size:40px}
-  .pay-tbl{padding:26px 20px 22px}
+  .pay-eb{font-size:14px}
+  .pay-h2{font-size:30px}
+  .pay-sub{font-size:15.5px}
+  .pay2{gap:12px;margin-top:18px}
+  .pay-avg{padding:26px 22px}
+  .pay-avg .pill{height:30px;padding:0 15px;font-size:15px}
+  .pay-avg .num{font-size:44px}
+  .pay-avg .txt{margin-top:16px;font-size:15.5px;line-height:24px}
+  .pay-rank{padding:14px 12px 10px}
+  .pay-rank h3{font-size:19px}
+  .ranks>div{height:46px}
+  .ranks dt{font-size:15.5px}
+  .ranks dd{font-size:17px}
+  .rank-note{align-items:flex-start;gap:10px;margin:6px -2px 0;padding:10px 12px;font-size:12.5px;line-height:18px}
+  .rank-note .ico{margin-top:1px}
+  .gp{display:block;padding:18px 18px 20px}
+  .gp h3{font-size:17px}
+  .gp-path{flex-wrap:wrap;gap:10px 0;margin-top:12px}
+  .gp-path li,.gp-path li:last-child{flex:none;align-items:center}
+  .gp-path li+li::before{position:static;width:30px;transform:none;font-size:15px}
+  .gp-path span{flex:none;height:38px;padding:0 15px;font-size:14px}
   .three>.card{min-height:0}
   .four{grid-template-columns:1fr 1fr;gap:10px}
   .place{grid-template-columns:1fr}
@@ -451,34 +479,31 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 <section class="sec gray" id="pay">
   <div class="wrap">
-    <p class="lbl">급여 · 성장</p>
-    <h2 class="h2">월 급여, 이렇게 구성됩니다.</h2>
-    <div class="pay">
-      <div class="pay-navy">
-        <p class="hl">전국 유일 직영 체계로 높은 인센티브 가능</p>
-        <p class="k">수습 평균</p>
-        <p class="v">월 350만 원</p>
-        <p class="n">수습 기본급 230만 원 + 개인 성과 인센티브</p>
+    <p class="pay-eb">급여 안내</p>
+    <h2 class="pay-h2">직급별 급여 안내</h2>
+    <p class="pay-sub"><b>전국 유일 직영 체계</b>로 높은 인센티브 가능</p>
+    <div class="pay2">
+      <div class="pay-avg">
+        <p class="pill">수습평균</p>
+        <p class="num">월 350만 원</p>
+        <hr class="bar">
+        <p class="txt">기본급 230만 원 + 인센티브</p>
       </div>
-      <div class="card pay-tbl">
-        <h3 class="ct">직급별 급여 구성</h3>
-        <div class="pr">
-          <div class="r1"><b>수습 기본급</b><strong>230만 원</strong></div>
-          <p class="r2">수습기간 3개월</p>
-        </div>
-        <div class="pr">
-          <div class="r1"><b>플래너 기본급</b><strong>250만 원</strong></div>
-        </div>
-        <div class="pr">
-          <div class="r1"><b>추가 지급</b><strong>개인 성과에 따른 인센티브</strong></div>
-        </div>
+      <div class="card pay-rank">
+        <h3>직급별 급여 구조</h3>
+        <dl class="ranks">
+          <div><dt>수습기간</dt><dd>230만 원 + α</dd></div>
+          <div><dt>플래너</dt><dd>250만 원 + α</dd></div>
+          <div><dt>점장</dt><dd>500만 원 + α</dd></div>
+          <div><dt>팀장</dt><dd>700만 원 + α</dd></div>
+          <div><dt>영업이사</dt><dd>1,000만 원 + α</dd></div>
+        </dl>
+        <p class="rank-note"><span class="ico" aria-hidden="true">!</span><span>근속기간 및 경력과 상관없이, 역량에 따라 관리자 기회를 제공합니다.</span></p>
       </div>
     </div>
-    <div class="card grow">
+    <div class="card gp">
       <h3>성장 경로</h3>
-      <ol class="path">
-        <li><span>수습</span></li><li><span>플래너</span></li><li><span>점장</span></li><li><span>팀장</span></li><li><span>영업이사</span></li>
-      </ol>
+      <ol class="gp-path"><li><span>수습</span></li><li><span>플래너</span></li><li><span>점장</span></li><li><span>팀장</span></li><li><span>영업이사</span></li></ol>
     </div>
   </div>
 </section>
