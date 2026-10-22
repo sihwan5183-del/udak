@@ -16,7 +16,7 @@
 
 var SVG_SEARCH='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
 var SVG_BELL='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>';
-var SVG_PLUS='<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1v8M1 5h8"/></svg>';
+var SVG_PLUS='<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1.25v7.5M1.25 5h7.5"/></svg>';   // 올리브영 + 크기 8.67
 var SVG_CHEV='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
 var SVG_HEART='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg>';
 var SVG_FORM='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12l2 2 4-4"/></svg>';
@@ -25,7 +25,7 @@ var SVG_FORM='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" widt
 var TABBAR=
 '<nav class="tabbar oy-tab" id="tabbar">'+
   '<a href="#/" data-tab="home"><svg class="ico" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></svg>홈</a>'+
-  '<a href="#/cat/all" data-tab="cat"><svg class="ico" viewBox="0 0 24 24"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>카테고리</a>'+
+  '<a href="#/cat/all" data-tab="cat"><svg class="ico" viewBox="0 0 24 24"><path d="M3.5 5.5h17M3.5 12h17M3.5 18.5h17"/></svg>카테고리</a>'+
   '<a href="#/search" data-tab="search"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>검색</a>'+
   '<a href="javascript:void 0" data-open="store" data-tab="store"><svg class="ico" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>매장</a>'+
   '<a href="#/wish" data-tab="wish"><svg class="ico" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg>찜</a>'+
@@ -62,7 +62,7 @@ var HOME=
     '<div class="oy-hl" id="oyDlHl"></div>'+
     '<div class="oy-th"><h2 id="oyDlT"></h2></div>'+
     '<div class="oy-list" id="oyDlList"></div>'+
-    '<section class="oy-sec"><div class="oy-sec-h"><h2 id="oyDlGT"></h2><span class="oy-sort-w" id="oyDlSort"></span></div><div class="oy-chips" id="oyDlChips"></div><div class="oy-g2" id="oyDlGrid"></div></section>'+
+    '<section class="oy-sec"><div class="oy-sec-h oy-dl-h"><h2 id="oyDlGT"></h2><span class="oy-sort-w" id="oyDlSort"></span></div><div class="oy-chips" id="oyDlChips"></div><div class="oy-g2" id="oyDlGrid"></div></section>'+
   '</div>'+
   /* ── 인기 모델 (올리브영 '랭킹') ── */
   '<div class="oy-pane" data-pane="rank" id="oyTabRank" hidden>'+
@@ -89,10 +89,11 @@ var HOME=
 var A=null;   // 스토어 엔진이 넘겨주는 도구 묶음 (store.js SKIN_API) — 가격 계산·모델·문구는 /store 와 같은 함수
 var BD={i:0, n:0, timer:null, t2:null, drag:null, moved:false};                 // 띠배너
 var PANE='home', POPCAT='all', DLCAT='all', RKCAT='all', ZTCAT='all', CD=null, bound=false;
-var BN_BG=['linear-gradient(155deg,#F7F8FF 0%,#E4EAFF 100%)','linear-gradient(155deg,#F6F3FF 0%,#E8E1FF 100%)','linear-gradient(155deg,#F2F8FF 0%,#DFEBFF 100%)','linear-gradient(155deg,#FFF6FA 0%,#FFE3EE 100%)'];
+// 메인 배너 바탕: 올리브영 배너처럼 사진 느낌의 진한 색 + 흰 글자 (아래쪽은 shop.css 에서 어둡게)
+var BN_BG=['linear-gradient(160deg,#BCC9EF 0%,#7E92D4 100%)','linear-gradient(160deg,#EFC8DC 0%,#C48BB4 100%)','linear-gradient(160deg,#CEC6F1 0%,#8E81D2 100%)','linear-gradient(160deg,#F3CCD3 0%,#D68C9E 100%)'];
 var BC_BG=['linear-gradient(165deg,#7B6BDF 0%,#4B3BAE 100%)','linear-gradient(165deg,#4F87EE 0%,#2350C2 100%)','linear-gradient(165deg,#EC6D99 0%,#BF3A6B 100%)'];
-// TV프리 카드는 밝은 바탕 (TV프리5 사진은 바탕이 흰색이라 어두운 카드에선 네모가 보임 → 밝은 바탕 + 사진 바탕 섞기)
-var EV_BG=['linear-gradient(165deg,#F3F5FF 0%,#DCE3FF 100%)','linear-gradient(165deg,#F7F2FF 0%,#E5DBFF 100%)','linear-gradient(165deg,#EFF8FF 0%,#D9ECFF 100%)'];
+// TV프리 카드: 올리브영 이벤트 카드처럼 진한 바탕 + 흰 글자 (사진은 흰 둥근 칸 안 — TV프리5 사진은 바탕이 흰색)
+var EV_BG=['linear-gradient(165deg,#8E9BDD 0%,#5562B3 100%)','linear-gradient(165deg,#B59BDD 0%,#7756B0 100%)','linear-gradient(165deg,#86B4DE 0%,#4B78B3 100%)'];
 var BD_BG={ship:'#FFF0F7', truck:'#FFF0F7', headset:'#F0FBF5', cardx:'#F2F6FF', docx:'#F6F2FF'};
 var BD_C={headset:'#22B573', cardx:'#2563EB', docx:'#7C3AED', truck:'#E6007E'};
 // 퀵메뉴 한 줄 이름 (20261022 사장님이 고른 것): 휴대폰은 '아이폰'·'갤럭시'를 뺀 이름, 바로가기는 이 두 개만 줄임
@@ -175,7 +176,7 @@ function carLayout(c, dir, dx){
     if(!tv){ if(pv && Math.abs(p-dir)>=2) carPut(c,el,g,p-dir,true); else carPut(c,el,g,t,false); return; }   // 화면 밖으로 나감
     carPut(c,el,g,t+dir,false); void el.offsetWidth; carPut(c,el,g,t,true);                                    // 반대쪽에서 들어옴
   });
-  if(c.o.cnt) put($(c.o.cnt), '<b>'+two(c.i+1)+'</b><i></i><span>'+two(n)+'</span>');
+  var rn=c.rn||n; if(c.o.cnt) put($(c.o.cnt), '<b>'+two(c.i%rn+1)+'</b><i></i><span>'+two(rn)+'</span>');   // rn: 진짜 장 수 (2장을 두 번 붙였을 때)
 }
 function carGo(c, dir){
   var n=c.n; if(n<2) return;
@@ -184,7 +185,7 @@ function carGo(c, dir){
   carLayout(c,dir);
 }
 function carAuto(c){ clearInterval(c.timer); if(c.n>1) c.timer=setInterval(function(){ if(!document.hidden && !c.drag && homeOn() && PANE===c.o.pane) carGo(c,1); },4000); }
-function carSet(c, html, n){ if(put($(c.o.track),html)){ c.n=n; if(c.i>=n) c.i=0; c.lo=n>=3?-1:0; carLayout(c,null); } carAuto(c); }
+function carSet(c, html, n, rn){ c.rn=rn||n; if(put($(c.o.track),html)){ c.n=n; if(c.i>=n) c.i=0; c.lo=n>=3?-1:0; carLayout(c,null); } carAuto(c); }
 
 /* ---------- 홈: 메인 배너 (스토어 히어로 슬라이드 + 프로모 배너) ---------- */
 function bannerList(){
@@ -197,14 +198,15 @@ function bannerList(){
 }
 function renderBanner(wait){
   if(wait){ clearInterval(BN.timer); BN.n=0; BN.list=[]; put($('#oyBn'),'<span class="oy-sl oy-sl-sk"></span>'); put($('#oyBnCnt'),''); $('#oyBnAll').hidden=true; return; }
-  var list=bannerList();
+  var list=bannerList(), n=list.length, show=n===2?list.concat(list):list;   // 20261022 사장님: 2장이면 양옆이 다 보이게 한 번 더 붙임 (올리브영처럼 좌우 배너)
   BN.list=list;
-  carSet(BN, list.map(function(b,i){
-    return '<a class="oy-sl" href="'+E(href(b.go))+'" data-i="'+i+'" data-go="'+E(b.go)+'" style="background:'+BN_BG[i%BN_BG.length]+'">'+img(b.img,'oy-sl-im',true)+
+  carSet(BN, show.map(function(b,j){
+    var i=j%n;   // j: 자리 번호 · i: 진짜 배너 번호
+    return '<a class="oy-sl" href="'+E(href(b.go))+'" data-i="'+j+'" data-go="'+E(b.go)+'" style="background:'+BN_BG[i%BN_BG.length]+'">'+img(b.img,'oy-sl-im',true)+
       '<span class="oy-sl-t">'+(b.tag?'<span class="oy-sl-tag">'+E(b.tag)+'</span>':'')+
         '<span class="oy-sl-h">'+(b.l1?'<b>'+E(b.l1)+'</b>':'')+(b.l2?'<b class="pk">'+E(b.l2)+'</b>':'')+'</span>'+
         (b.s?'<span class="oy-sl-s">'+E(b.s)+'</span>':'')+'</span></a>';
-  }).join(''), list.length);
+  }).join(''), show.length, n);
   $('#oyBnAll').hidden=list.length<2;
 }
 function bnAll(){
@@ -224,7 +226,7 @@ function renderQuick(wait){
     return '<a class="oy-qi" href="#/model/'+E(m.id)+'"><span class="oy-qi-ic">'+img(A.mImg(m),'oy-qi-im',i<6)+(so?'<i class="oy-so">품절</i>':'')+'</span><span class="oy-qi-t">'+E(shortNm(m.nm))+'</span></a>';
   }).join(''));
   put($('#quick'), A.vis(A.S.quick||[]).map(function(q){
-    return '<a class="oy-qi" href="'+E(href(q.go))+'" data-go="'+E(q.go||'')+'"><span class="oy-qi-ic" style="background:'+E(q.bg||'#F4F5F7')+'"><svg viewBox="0 0 24 24" aria-hidden="true" style="stroke:'+E(q.c||'#131518')+'">'+(A.QI[q.ic]||A.QI.star)+'</svg></span><span class="oy-qi-t">'+E(QSHORT[q.nm]||q.nm)+'</span></a>';
+    return '<a class="oy-qi" href="'+E(href(q.go))+'" data-go="'+E(q.go||'')+'"><span class="oy-qi-ic"><svg viewBox="0 0 24 24" aria-hidden="true" style="stroke:'+E(q.c||'#131518')+'">'+(A.QI[q.ic]||A.QI.star)+'</svg></span><span class="oy-qi-t">'+E(QSHORT[q.nm]||q.nm)+'</span></a>';
   }).join(''));
 }
 
@@ -439,12 +441,12 @@ function renderTabZero(wait){
 /* ---------- 탭: TV프리 (올리브영 '이벤트': 큰 카드 넘기기 + 바로가기 알약 + 대상 안내) ---------- */
 function renderTabTv(wait){
   if(wait){ clearInterval(EV.timer); EV.n=0; put($('#oyEv'),'<span class="oy-evc oy-evc-sk"></span>'); put($('#oyEvPills'),''); put($('#oyEvMore'),''); return; }
-  var list=tvList(), n=list.length;
-  carSet(EV, list.map(function(m,i){
-    var b=A.badgeOf(m);
-    return '<a class="oy-evc" href="#/model/'+E(m.id)+'" data-i="'+i+'" style="background:'+EV_BG[i%EV_BG.length]+'">'+img(A.mImg(m),'oy-evc-im',true)+(b?'<i class="oy-evc-b">'+E(b)+'</i>':'')+
-      '<span class="oy-evc-t"><b>'+E(m.nm)+'</b><span>'+E(A.stripOf(m))+'</span><small><em>'+two(i+1)+'</em><i></i>'+two(n)+'</small></span></a>';
-  }).join(''), n);
+  var list=tvList(), n=list.length, show=n===2?list.concat(list):list;   // 20261022 사장님: 2장이면 양옆이 다 보이게 한 번 더 붙임 (올리브영처럼 좌우 카드)
+  carSet(EV, show.map(function(m,i){
+    var b=A.badgeOf(m), k=i%n;
+    return '<a class="oy-evc" href="#/model/'+E(m.id)+'" data-i="'+i+'" style="background:'+EV_BG[k%EV_BG.length]+'"><span class="oy-evc-fr">'+img(A.mImg(m),'oy-evc-im',true)+'</span>'+(b?'<i class="oy-evc-b">'+E(b)+'</i>':'')+
+      '<span class="oy-evc-t"><b>'+E(m.nm)+'</b><span>'+E(A.stripOf(m))+'</span><small><em>'+two(k+1)+'</em><i></i>'+two(n)+'</small></span></a>';
+  }).join(''), show.length, n);
   // 알약: 관리자 퀵메뉴의 '다이렉트 특별 혜택 · 구매 가이드 · QNA' (이름·아이콘·색 그대로)
   var q=A.vis(A.S.quick||[]), pills=['special','guide','qna'].map(function(g){ return q.filter(function(x){ return x.go===g; })[0]; }).filter(Boolean);
   put($('#oyEvPills'), pills.map(function(x){
