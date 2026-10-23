@@ -323,3 +323,11 @@
 .oy-all-tx b{font-size:14.5px;line-height:1.35;font-weight:700}
 .oy-all-tx small{font-size:12.5px;line-height:1.4;color:#6B7280}
 .oy-all-tx small.pk{font-weight:700;color:#E6007E}
+/* 20261023 사장님: 메인 배너 통이미지(글씨까지 그림 안에) — 그림만 꽉 차게, 배너 위 글씨·어두운 그라데이션·바탕색 없음 */
+.oy-sl.full{background:#F2F3F6}
+.oy-sl.full::after{display:none}
+.oy-sl-full{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-user-drag:none;pointer-events:none}
+.oy-all-im.full img{max-width:none;max-height:none;width:100%;height:100%;object-fit:cover}
+/* 오른쪽 아래 '01 | 02 +' — 밝은 그림 위에서도 보이게 반투명 검은 알약 (+ 버튼까지 감쌈) */
+.oy-bn-cnt{margin-left:-9px;padding:0 22px 0 9px;height:20px;top:calc(8px + var(--W)*.6462 - 2.5px);border-radius:10px;background:rgba(0,0,0,.3)}
+.oy-bn-cnt:empty{display:none}

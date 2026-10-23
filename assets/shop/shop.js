@@ -244,12 +244,21 @@ function carAuto(c){ clearInterval(c.timer); if(c.n>1) c.timer=setInterval(funct
 function carSet(c, html, n, rn){ c.rn=rn||n; if(put($(c.o.track),html)){ c.n=n; if(c.i>=n) c.i=0; c.lo=n>=3?-1:0; carLayout(c,null); } carAuto(c); }
 
 /* ---------- 홈: 메인 배너 (스토어 히어로 슬라이드 + 프로모 배너) ---------- */
+/* 20261023 사장님: 메인 배너는 사장님이 만든 통이미지(글씨까지 그림 안에 있는 배너)만 — 배너 위 글씨·어두운 그라데이션·바탕색 없이 그림 그대로
+   1번 '유플러스 다이렉트' · 2번 '통신이 쉬우면 안돼?' (사장님 PC 원본 → 1200×974 webp, 1번은 그림 모서리 검은 칸 메움)
+   누르면 가는 곳은 관리자 히어로 순서 그대로(1번 = 히어로 1번 연결, 2번 = 히어로 2번 연결)
+   3·4번(S26·아이폰18 프로)은 글씨를 빼면 제품 사진만 남아서, 같은 톤 통이미지가 나올 때까지 내려 둠 → 그림이 오면 여기에 한 줄씩 추가 */
+var BN_FULL=[
+  {img:'/assets/shop/bn/bn-01.webp?v=20261023', nm:'유플러스 다이렉트 · U+ 최초의 온라인 대리점'},
+  {img:'/assets/shop/bn/bn-02.webp?v=20261023', nm:'통신이 쉬우면 안돼? · 유플러스 다이렉트'}
+];
 function bannerList(){
   var S=A.S, out=A.vis(S.hero||[]).map(function(h){
     var m=modelOf(h.go);   // 설명이 비어 있으면 연결된 모델의 소개 문구 (관리자에 있는 그대로)
     return {tag:'', l1:h.k||'', l2:h.t||'', s:h.s||(m&&m.ds)||'', img:h.img||'', go:h.go||''};
   });
   var p=S.promo; if(p && !p.hidden && (p.t||p.img)) out.push({tag:p.tag||'', l1:p.t||'', l2:'', s:p.s||'', img:p.img||'', go:p.go||''});
+  if(BN_FULL.length) return BN_FULL.map(function(b,i){ return {full:true, img:b.img, nm:b.nm, go:(out[i]&&out[i].go)||''}; });
   return out;
 }
 function renderBanner(wait){
@@ -258,6 +267,7 @@ function renderBanner(wait){
   BN.list=list;
   carSet(BN, show.map(function(b,j){
     var i=j%n;   // j: 자리 번호 · i: 진짜 배너 번호
+    if(b.full) return '<a class="oy-sl full" href="'+E(href(b.go))+'" data-i="'+j+'" data-go="'+E(b.go)+'"><img class="oy-sl-full" src="'+E(b.img)+'" alt="'+E(b.nm)+'" decoding="async" draggable="false"></a>';   // 20261023 통이미지
     return '<a class="oy-sl" href="'+E(href(b.go))+'" data-i="'+j+'" data-go="'+E(b.go)+'" style="background:'+BN_BG[i%BN_BG.length]+'">'+img(b.img,'oy-sl-im',true)+
       '<span class="oy-sl-t">'+(b.tag?'<span class="oy-sl-tag">'+E(b.tag)+'</span>':'')+
         '<span class="oy-sl-h">'+(b.l1?'<b>'+E(b.l1)+'</b>':'')+(b.l2?'<b class="pk">'+E(b.l2)+'</b>':'')+'</span>'+
@@ -268,6 +278,7 @@ function renderBanner(wait){
 function bnAll(){
   if(!BN.list || !BN.list.length) return;
   A.openSheet('<h3>전체보기</h3><div class="oy-all">'+BN.list.map(function(b,i){
+    if(b.full) return '<a class="oy-all-it" href="'+E(href(b.go))+'" data-go="'+E(b.go)+'"><span class="oy-all-im full"><img src="'+E(b.img)+'" alt="" decoding="async"></span><span class="oy-all-tx"><b>'+E(b.nm)+'</b></span></a>';   // 20261023 통이미지
     return '<a class="oy-all-it" href="'+E(href(b.go))+'" data-go="'+E(b.go)+'"><span class="oy-all-im" style="background:'+BN_BG[i%BN_BG.length]+'">'+img(b.img,'',true)+'</span>'+
       '<span class="oy-all-tx">'+(b.tag?'<small class="pk">'+E(b.tag)+'</small>':'')+'<b>'+E([b.l1,b.l2].filter(Boolean).join(' '))+'</b>'+(b.s?'<small>'+E(b.s)+'</small>':'')+'</span></a>';
   }).join('')+'</div>');
