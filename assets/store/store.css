@@ -1745,3 +1745,7 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .md-bar-t[data-md-go]{white-space:normal;word-break:keep-all;line-height:1.35}
 /* 20261022 사장님: 첫 화면 당일 발송 카드(트럭 사진)를 예전 그대로 되돌림 — 한 줄 때 줄였던 위아래 여백도 예전대로 */
 .shipbar{margin:14px 16px 10px}
+/* 20261023 사장님: 매장찾기 목록·상세에 매장 사진 — 상세 큰 사진은 4:3 그대로(위쪽 U+ 간판이 안 잘리게) · 사진 없는 곳(사무실)은 같은 크기 빈 칸에 핀 */
+.st-img.st43{aspect-ratio:4/3}
+.sl-th.none{display:grid;place-items:center;color:#B9BEC9}
+.sl-th.none svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}

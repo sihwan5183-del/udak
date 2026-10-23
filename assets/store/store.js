@@ -1410,10 +1410,23 @@ function findNearQ(){
     storeSheetRedraw();
   });
 }
+// 20261023 사장님: 매장찾기 목록·매장 상세에 매장 사진 — 채용 랜딩과 같은 사장님 PC '이미지 모음/매장사진' 23장
+//  목록 = 작은 정사각 사진(assets/store/stores/이름.webp, 192×192) · 상세 = 큰 사진(assets/recruit/stores/이름.webp, 960×720 그대로)
+//  관리자에서 매장 사진(img)을 넣으면 그 사진이 먼저. 사진을 바꾸면 두 폴더 모두 같은 이름으로 바꿀 것
+var ST_PH={
+  '건대입구역점':'geondae', '군자역점':'gunja', '신군자점':'singunja', '신자양점':'sinjayang', '성수역점':'seongsu', '용답로데오점':'yongdap',
+  '사가정점':'sagajeong', '먹골역점':'meokgol', '장한평역점':'janghanpyeong', '수유시장점':'suyu', '미아역점':'mia', '쌍문세라믹점':'ssangmun-ceramic',
+  '쌍문역점':'ssangmun-station', '암사역점':'amsa', '길동역점':'gildong', '미사역점':'misa', '금광동 E편한세상점':'geumgwang', '리맥스점':'remax',
+  '퇴계원점':'toegyewon', '해밀점':'haemil', '진주아파트점':'jinju', '장현초교점':'janghyeon', '마석점':'maseok'
+};
+function stPh(s){ return (s&&ST_PH[String(s.nm||'').trim()])||''; }
 function storeItem(s, km, top){
   var i=S.stores.indexOf(s);
-  var th=String(s.img||'').split(',')[0].trim();
-  return '<div class="store-li'+(th?' has-th':'')+'" data-store-i="'+i+'" role="button">'+(th?'<div class="sl-th">'+im(th,'','',s.nm)+'</div>':'')+'<div class="sl-r"><b>'+esc(s.nm)+(km!=null?'<em class="sl-km'+(top?' top':'')+'">'+(top?'가장 가까움 · ':'')+distTxt(km)+'</em>':'')+'</b><a class="sl-map" href="https://map.naver.com/p/search/'+encodeURIComponent(s.addr||s.nm)+'" target="_blank" rel="noopener">지도</a></div><div>'+esc(s.addr||'')+'</div>'+
+  var th=String(s.img||'').split(',')[0].trim(), dp=th?'':stPh(s);
+  var thv=th?'<div class="sl-th">'+im(th,'','',s.nm)+'</div>'
+    :dp?'<div class="sl-th"><img src="/assets/store/stores/'+dp+'.webp" alt="'+esc(s.nm)+' 매장 사진" loading="lazy" decoding="async"></div>'
+    :'<div class="sl-th none">'+PIN_I+'</div>';
+  return '<div class="store-li has-th" data-store-i="'+i+'" role="button">'+thv+'<div class="sl-r"><b>'+esc(s.nm)+(km!=null?'<em class="sl-km'+(top?' top':'')+'">'+(top?'가장 가까움 · ':'')+distTxt(km)+'</em>':'')+'</b><a class="sl-map" href="https://map.naver.com/p/search/'+encodeURIComponent(s.addr||s.nm)+'" target="_blank" rel="noopener">지도</a></div><div>'+esc(s.addr||'')+'</div>'+
     (km!=null?'<div class="sl-trip">'+esc(MYPOS_L)+'에서 '+tripTxt(km)+'</div>':'')+
     (s.tel?'<div><a href="tel:'+esc(s.tel)+'" style="color:var(--pink);font-weight:700">'+esc(s.tel)+'</a></div>':'')+'<span class="sl-go">자세히 '+CHEV_I+'</span></div>';
 }
@@ -1423,7 +1436,8 @@ function sheetStoreOne(s){
   var mapv=ll?'<a class="st-mapv" href="https://map.kakao.com/link/map/'+encodeURIComponent(s.nm)+','+ll[0]+','+ll[1]+'" target="_blank" rel="noopener" aria-label="'+esc(s.nm)+' 지도 크게 보기">'+
       '<iframe src="https://www.openstreetmap.org/export/embed.html?bbox='+(ll[1]-0.006).toFixed(6)+'%2C'+(ll[0]-0.0035).toFixed(6)+'%2C'+(ll[1]+0.006).toFixed(6)+'%2C'+(ll[0]+0.0035).toFixed(6)+'&amp;layer=mapnik&amp;marker='+ll[0]+'%2C'+ll[1]+'" loading="lazy" tabindex="-1" title="'+esc(s.nm)+' 위치"></iframe><span>지도 크게 보기</span></a>':'';
   return '<button class="st-back" type="button" data-go="store">‹ 매장 목록</button>'+
-    (function(){ var ims=String(s.img||'').split(',').map(function(x){return x.trim()}).filter(Boolean); if(!ims.length) return '';
+    (function(){ var ims=String(s.img||'').split(',').map(function(x){return x.trim()}).filter(Boolean);
+      if(!ims.length){ var dp=stPh(s); return dp?'<div class="st-gal"><div class="st-img st43"><img src="/assets/recruit/stores/'+dp+'.webp" alt="'+esc(s.nm)+' 매장 사진" decoding="async"></div></div>':''; }   // 20261023 매장 사진
       return '<div class="st-gal'+(ims.length>1?' multi':'')+'">'+ims.map(function(x){ return '<div class="st-img">'+im(x,'',true,s.nm)+'</div>'; }).join('')+'</div>'+(ims.length>1?'<div class="st-gal-n">옆으로 넘겨서 '+ims.length+'장 보기</div>':''); })()+
     '<h3>'+esc(s.nm)+'</h3><div class="st-rows">'+
     '<div><span>주소</span><b>'+esc(s.addr||'-')+'</b></div>'+
