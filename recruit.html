@@ -721,8 +721,15 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   var DIST_SHORT={'전체':'서울 7개 구 · 경기 4개 시','서울':'광진·성동·동대문·중랑·강북·도봉·강동','경기':'구리·남양주·하남·성남','온라인팀':'구리 갈매 사무실'};
   /* 온라인팀 근무지 = 구리 갈매 사무실 (면접 장소와 같은 곳). 가까운 매장 찾기에는 넣지 않음 */
   var OFFICE={r:'온라인팀', d:'구리시', n:'구리 갈매 사무실', a:'구리시 갈매순환로 188', full:'경기 구리시 갈매순환로 188, 힐스테이트 갈매역 스칸센(A그룹) A동 7층 705호'};
-  /* 매장 사진 — 받는 대로 assets/recruit/stores/ 에 올리고 여기에 매장명: 경로 추가 (사진 없는 매장은 지도만 크게) */
-  var PHOTO={};
+  /* 매장 사진 — 사장님 PC '이미지 모음/매장사진' 23장 (20261023, 960×720 webp). 쌍문 두 곳은 사진 속 건물 번호판(도봉로 479 = 쌍문동 88-144 쌍문역점)으로 확인
+     사진을 바꾸거나 추가하면 assets/recruit/stores/<이름>.webp 로 올리고 여기에 매장명: 이름 */
+  var PHOTO_FILE={
+    '건대입구역점':'geondae', '군자역점':'gunja', '신군자점':'singunja', '신자양점':'sinjayang', '성수역점':'seongsu', '용답로데오점':'yongdap',
+    '사가정점':'sagajeong', '먹골역점':'meokgol', '장한평역점':'janghanpyeong', '수유시장점':'suyu', '미아역점':'mia', '쌍문세라믹점':'ssangmun-ceramic',
+    '쌍문역점':'ssangmun-station', '암사역점':'amsa', '길동역점':'gildong', '미사역점':'misa', '금광동 E편한세상점':'geumgwang', '리맥스점':'remax',
+    '퇴계원점':'toegyewon', '해밀점':'haemil', '진주아파트점':'jinju', '장현초교점':'janghyeon', '마석점':'maseok'
+  }, PHOTO={};
+  Object.keys(PHOTO_FILE).forEach(function(n){ PHOTO[n]='/assets/recruit/stores/'+PHOTO_FILE[n]+'.webp'; });
   GEO[OFFICE.a]=[37.636059,127.122177];
   var PIN='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>';
 
