@@ -216,11 +216,21 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .no{font-size:11px;font-weight:800;color:var(--blue)}
 .three h3{margin-top:8px;font-size:16px;font-weight:800;letter-spacing:-.025em}
 .three .t{margin-top:6px;font-size:12.5px;line-height:1.6;color:var(--sub)}
-.bene{margin-top:14px;padding:25px 22px 20px}
-.bene .no{font-size:11px}
-.bene h3{margin-top:10px;font-size:16px;font-weight:800}
-.bchips{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px;list-style:none}
-.bchips li{display:inline-flex;align-items:center;height:32px;padding:0 11px;border-radius:6px;background:var(--pill);font-size:12.5px;font-weight:700;color:var(--chipink)}
+/* 교육·복리후생 — 사장님 시안(입사부터 성장까지) 배치 그대로 */
+.sup-h2{margin-top:10px;font-size:36.5px;line-height:1.16;font-weight:800;letter-spacing:-.035em;color:var(--ink)}
+.edu{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:19px}
+.edu-c{border-radius:12px;padding:13px 18px 16px}
+.edu-c .no{font-size:12.5px;line-height:16px;letter-spacing:.02em}
+.edu-r{display:flex;align-items:center;gap:21px;margin-top:4px;padding-left:6px}
+.edu-ic{flex:none;display:grid;place-items:center;width:61px;height:61px;border-radius:50%;background:#ebf3fb}
+.edu-ic svg{width:26px;height:26px;fill:none;stroke:var(--blue);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.edu-c h3{font-size:21.5px;line-height:1.3;font-weight:800;letter-spacing:-.035em;color:var(--ink)}
+.bene2{margin-top:12px;border-radius:12px;padding:15px 18px 16px}
+.bene2 .no{font-size:12.5px;line-height:16px}
+.bene2 h3{margin-top:6px;font-size:23px;line-height:1.3;font-weight:800;letter-spacing:-.035em;color:var(--ink)}
+.bchips2{display:grid;grid-template-columns:298fr 290fr 337fr 340fr 337fr;gap:13px;margin-top:10px;list-style:none}
+.bchips2 li{display:flex;align-items:center;gap:14px;height:42px;padding:0 12px 0 15px;border-radius:8px;background:#f3f6fa;font-size:15px;font-weight:700;letter-spacing:-.025em;color:var(--ink);white-space:nowrap}
+.bchips2 svg{flex:none;width:22px;height:22px;fill:none;stroke:var(--ink);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 
 /* 채용 절차 */
 .four{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px}
@@ -313,6 +323,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .hero-img{width:100%}
   .ap-grid{grid-template-columns:1fr 1.4fr;gap:32px}
   .gp h3{flex-basis:110px}
+  .edu-r{gap:14px;padding-left:0}
+  .edu-ic{width:52px;height:52px}
+  .edu-c h3{font-size:17px}
+  .bchips2{grid-template-columns:repeat(3,1fr)}
   .gp-path{gap:36px}
   .gp-path li+li::before{left:-36px;width:36px}
 }
@@ -365,7 +379,17 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .sc-photo{aspect-ratio:16/10}
   .sc-map iframe{height:210px;min-height:210px}
   .acc-h{height:58px}
-  .two,.pay2,.three{grid-template-columns:1fr}
+  .two,.pay2,.three,.edu{grid-template-columns:1fr}
+  .sup-h2{font-size:26px}
+  .edu{gap:10px;margin-top:18px}
+  .edu-c{padding:13px 16px 14px}
+  .edu-ic{width:52px;height:52px}
+  .edu-c h3{font-size:17.5px}
+  .bene2{padding:16px 16px 16px}
+  .bene2 h3{font-size:20px}
+  .bchips2{grid-template-columns:1fr 1fr;gap:8px}
+  .bchips2 li:last-child{grid-column:1/-1}
+  .bchips2 li{height:44px;font-size:14.5px}
   .two>.card{padding:24px 20px 20px}
   .rows>div{grid-template-columns:84px 1fr}
   .pay-eb{font-size:14px}
@@ -556,17 +580,22 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <section class="sec" id="support">
   <div class="wrap">
     <p class="lbl">교육 · 복리후생</p>
-    <h2 class="h2">첫 출근부터 필요한 지원</h2>
-    <p class="desc">추상적인 기업문화 설명보다, 지원자가 실제로 받을 수 있는 지원을 안내합니다.</p>
-    <div class="three">
-      <div class="card"><p class="no">01</p><h3>1:1 전담 멘토링</h3><p class="t">신입사원이 고객 상담 업무를 익힐 수 있도록 멘토링을 지원합니다.</p></div>
-      <div class="card"><p class="no">02</p><h3>체계적인 직무 교육</h3><p class="t">상품 이해부터 매장 응대까지 실무 중심으로 교육합니다.</p></div>
-      <div class="card"><p class="no">03</p><h3>수습 적응 지원</h3><p class="t">업무를 익히는 수습기간에 기본급과 교육 체계를 운영합니다.</p></div>
+    <h2 class="sup-h2">입사부터 성장까지,<br>체계적인 교육과 지원</h2>
+    <div class="edu">
+      <div class="card edu-c"><p class="no">01</p><div class="edu-r"><span class="edu-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg></span><h3>1:1 멘토링</h3></div></div>
+      <div class="card edu-c"><p class="no">02</p><div class="edu-r"><span class="edu-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M10 9H8M16 13H8M16 17H8"/></svg></span><h3>체계적인 직무 교육</h3></div></div>
+      <div class="card edu-c"><p class="no">03</p><div class="edu-r"><span class="edu-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.42 10.92a1 1 0 0 0-.02-1.84L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.83l8.57 3.91a2 2 0 0 0 1.66 0z"/><path d="M22 10v6M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span><h3>수습 적응 지원</h3></div></div>
     </div>
-    <div class="card bene">
+    <div class="card bene2">
       <p class="no">복리후생</p>
       <h3>근로조건과 복지제도</h3>
-      <ul class="bchips"><li>4대 보험</li><li>퇴직금</li><li>월차·정기휴가</li><li>장기근속자 포상</li><li>우수사원 포상</li></ul>
+      <ul class="bchips2">
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M9 12h6M12 9v6"/></svg><span>4대 보험</span></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5M3 12a9 3 0 0 0 18 0"/></svg><span>퇴직금</span></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg><span>연차·정기휴가</span></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16v5M16 14v7M20 10v11M4 18v3M8 14v7"/><path d="m22 3-8.65 8.65a.5.5 0 0 1-.7 0L9.35 8.35a.5.5 0 0 0-.7 0L2 15"/></svg><span>장기근속 포상</span></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg><span>우수사원 포상</span></li>
+      </ul>
     </div>
   </div>
 </section>
