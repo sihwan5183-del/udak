@@ -129,6 +129,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .acc-i.open .acc-p{display:block}
 .st{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line2)}
 .st:first-child{border-top:0}
+.acc-i.online{grid-column:1/-1;border-color:#d9e7f2}
+.oi{padding:20px 22px 18px;background:#f3f8fc}
+.oi-k{font-size:12.5px;line-height:18px;font-weight:800;color:var(--pink);letter-spacing:-.01em}
+.oi-t{margin-top:3px;font-size:21px;line-height:1.35;font-weight:800;letter-spacing:-.035em;color:var(--navy)}
+.oi-d{margin-top:6px;font-size:13.5px;line-height:1.7;color:var(--ink2)}
+.acc-i.online .acc-p{padding:0 22px 4px}
 .st b{display:block;font-size:14px;font-weight:700}
 .st span{display:block;font-size:12px;color:var(--sub)}
 .st .km{color:var(--blue);font-weight:600;font-style:normal}
@@ -692,13 +698,21 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   function tripTxt(k){ var r=k*1.3; return k<1.2?'걸어서 약 '+Math.max(1,Math.round(r/4.5*60))+'분':'차로 약 '+Math.round(4+r/24*60)+'분'; }
 
   /* 지역 탭 + 구·시별 매장 (펼치기) */
-  var REGION='서울', OPEN={'온라인팀구리시':true};
+  var REGION='서울', OPEN={};
   function renderAcc(){
     $('tabsDist').textContent=DIST_SHORT[REGION];
     $('acc').setAttribute('aria-labelledby','tab-'+REGION);
+    if(REGION==='온라인팀'){ /* 온라인팀 = 유플러스 다이렉트(유닥), 근무지 구리 갈매 사무실 */
+      var ko=distOf(OFFICE);
+      $('acc').innerHTML='<div class="acc-i open online"><div class="oi"><p class="oi-k">U+ 최초의 온라인 대리점</p><p class="oi-t">유플러스 다이렉트</p>'+
+        '<p class="oi-d">유플러스 다이렉트(유닥)는 (주)신세계정보통신의 온라인 브랜드입니다. 온라인팀은 구리 갈매 사무실에서 유플러스 다이렉트의 온라인 판매를 맡습니다.</p></div>'+
+        '<div class="acc-p"><div class="st"><div><b>'+esc(OFFICE.n)+'</b><span>'+esc(OFFICE.full)+(ko!=null?' · <em class="km">'+esc(MYPOS_L)+'에서 '+distTxt(ko)+'</em>':'')+'</span></div>'+
+        '<a class="mini" href="'+OFFICE.map+'" target="_blank" rel="noopener" aria-label="구리 갈매 사무실 지도 열기">지도</a></div></div></div>';
+      return;
+    }
     $('acc').innerHTML=districts(REGION).map(function(d){
       var list=regionList(REGION).filter(function(s){ return s.d===d; }), id='acc-'+REGION+'-'+d, open=!!OPEN[REGION+d];
-      return '<div class="acc-i'+(open?' open':'')+'"><button type="button" class="acc-h" aria-expanded="'+open+'" aria-controls="'+id+'" data-acc="'+esc(REGION+d)+'"><span><b>'+esc(d)+'</b><small>'+(REGION==='온라인팀'?'사무실':list.length+'개 매장')+'</small></span><span class="pl" aria-hidden="true"></span></button>'+
+      return '<div class="acc-i'+(open?' open':'')+'"><button type="button" class="acc-h" aria-expanded="'+open+'" aria-controls="'+id+'" data-acc="'+esc(REGION+d)+'"><span><b>'+esc(d)+'</b><small>'+list.length+'개 매장</small></span><span class="pl" aria-hidden="true"></span></button>'+
         '<div class="acc-p" id="'+id+'">'+list.map(function(s){ var k=distOf(s);
           return '<div class="st"><div><b>'+esc(s.n)+'</b><span>'+esc(s.full||s.a)+(k!=null?' · <em class="km">'+esc(MYPOS_L)+'에서 '+distTxt(k)+'</em>':'')+'</span></div><a class="mini" href="'+(s.map||mapUrl(s))+'" target="_blank" rel="noopener" aria-label="'+esc(s.n)+' 지도 열기">지도</a></div>';
         }).join('')+'</div></div>';
