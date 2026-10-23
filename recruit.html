@@ -129,12 +129,30 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .acc-i.open .acc-p{display:block}
 .st{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line2)}
 .st:first-child{border-top:0}
-.acc-i.online{grid-column:1/-1;border-color:#d9e7f2}
-.oi{padding:20px 22px 18px;background:#f3f8fc}
-.oi-k{font-size:12.5px;line-height:18px;font-weight:800;color:var(--pink);letter-spacing:-.01em}
-.oi-t{margin-top:3px;font-size:21px;line-height:1.35;font-weight:800;letter-spacing:-.035em;color:var(--navy)}
-.oi-d{margin-top:6px;font-size:13.5px;line-height:1.7;color:var(--ink2)}
-.acc-i.online .acc-p{padding:0 22px 4px}
+/* 매장 카드 — 매장을 고르면 주소·지도 보기·길찾기 + (사진) + 지도. 사진은 PHOTO에 넣은 매장만 */
+.sc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);margin-top:16px;overflow:hidden}
+.sc[hidden]{display:none}
+.sc-info{display:flex;flex-direction:column;padding:26px 28px 24px}
+.sc-brand{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:var(--ink2);letter-spacing:-.01em}
+.sc-brand img{width:22px;height:22px;border-radius:5px}
+.sc-tag{margin-top:14px;font-size:12.5px;font-weight:800;color:var(--pink);letter-spacing:-.01em}
+.sc-name{margin-top:3px;font-size:28px;line-height:1.25;font-weight:800;letter-spacing:-.035em}
+.sc-addr{display:flex;gap:7px;margin-top:12px;font-size:14px;line-height:1.6;color:var(--ink2)}
+.sc-addr svg{flex:none;width:18px;height:18px;margin-top:2px;fill:none;stroke:var(--ink);stroke-width:1.8}
+.sc-km{margin-top:6px;font-size:12.5px;font-weight:700;color:var(--blue)}
+.sc-desc{margin-top:10px;font-size:13px;line-height:1.7;color:var(--sub)}
+.sc-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:18px}
+.scb{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:40px;padding:0 15px;border:1px solid var(--line);border-radius:9px;font-size:13.5px;font-weight:700;color:var(--ink);background:#fff;white-space:nowrap}
+.scb svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round}
+.scb.pk{border-color:transparent;background:#fde6f1;color:var(--pink)}
+.sc-media{display:grid;grid-template-columns:1fr;gap:6px;min-height:250px;margin:14px 14px 14px 0;border-radius:12px;overflow:hidden}
+.sc-media.has-photo{grid-template-columns:1.3fr 1fr}
+.sc-photo{margin:0;background:#eef2f6}
+.sc-photo img{width:100%;height:100%;object-fit:cover}
+.sc-map{background:#eef2f6}
+.sc-map iframe{display:block;width:100%;height:100%;min-height:250px;border:0}
+.st{cursor:pointer}
+.st.on b{color:var(--pink)}
 .st b{display:block;font-size:14px;font-weight:700}
 .st span{display:block;font-size:12px;color:var(--sub)}
 .st .km{color:var(--blue);font-weight:600;font-style:normal}
@@ -334,6 +352,18 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .nr .acts{width:100%;padding-left:36px}
   .tabs-row{flex-direction:column;align-items:flex-start;gap:10px}
   .acc{grid-template-columns:1fr;gap:10px}
+  .tabs{display:flex;width:100%}
+  .tabs button{flex:1;padding:0 6px;font-size:13.5px}
+  .sc{grid-template-columns:1fr}
+  .sc-info{padding:20px 18px 4px}
+  .sc-name{font-size:23px}
+  .sc-btns{padding-top:16px}
+  .scb{flex:1;padding:0 10px}
+  .scb.pk{flex-basis:100%}
+  .sc-media{min-height:0;margin:14px}
+  .sc-media.has-photo{grid-template-columns:1fr}
+  .sc-photo{aspect-ratio:16/10}
+  .sc-map iframe{height:210px;min-height:210px}
   .acc-h{height:58px}
   .two,.pay2,.three{grid-template-columns:1fr}
   .two>.card{padding:24px 20px 20px}
@@ -451,12 +481,14 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
     <div class="tabs-row">
       <div class="tabs" role="tablist" aria-label="지역">
-        <button type="button" role="tab" id="tab-서울" aria-selected="true" data-r="서울">서울 15곳</button>
+        <button type="button" role="tab" id="tab-전체" aria-selected="true" data-r="전체">전체 23곳</button>
+        <button type="button" role="tab" id="tab-서울" aria-selected="false" data-r="서울">서울 15곳</button>
         <button type="button" role="tab" id="tab-경기" aria-selected="false" data-r="경기">경기 8곳</button>
         <button type="button" role="tab" id="tab-온라인팀" aria-selected="false" data-r="온라인팀">온라인팀</button>
       </div>
-      <p class="tabs-dist" id="tabsDist">광진·성동·동대문·중랑·강북·도봉·강동</p>
+      <p class="tabs-dist" id="tabsDist">서울 7개 구 · 경기 4개 시</p>
     </div>
+    <div class="card sc" id="storeCard" hidden></div>
     <div class="acc" id="acc" role="tabpanel"></div>
 
     <p class="place-note"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6v.1"/></svg></span><span><b>희망 근무지역 위주로 근무하지만, 근로 조건상 다른 매장에서 근무할 수도 있습니다. (단, 최대한 배려해 드립니다.)</b> 채용 가능 여부와 배치 매장은 면접 시 안내합니다.</span></p>
@@ -675,27 +707,31 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     ['경기','하남시','미사역점','하남시 미사강변동로 70'],
     ['경기','성남시','금광동 E편한세상점','성남시 중원구 광명로 337']
   ].map(function(a){ return {r:a[0], d:a[1], n:a[2], a:a[3]}; });
-  /* 매장 위치(위도·경도) — 유닥 스토어(assets/store/store.js STORE_GEO) 값 기준, 자양번영로 42·도봉로 187·퇴계원로 64는 카카오맵 주소 검색 값으로 보정(20261022) */
+  /* 매장 위치(위도·경도) — 23곳 모두 카카오맵 주소 검색 값 (20261023 다시 확인: 예전 값은 많게는 600m 넘게 어긋나 있었음) */
   var GEO={
-    '서울시 광진구 능동로 95':[37.533913,127.067926], '서울시 광진구 천호대로 573':[37.556583,127.081845], '서울시 광진구 천호대로 548':[37.556827,127.078992],
-    '서울시 광진구 자양번영로 42':[37.533313,127.075950], '서울시 성동구 아차산로 96':[37.544554,127.054421], '서울시 성동구 용답동 58-1':[37.561333,127.058015],
-    '서울시 중랑구 사가정로52길 5':[37.580390,127.087632], '서울시 중랑구 동일로 917':[37.611436,127.077608], '서울시 동대문구 장한로 3':[37.562410,127.065380],
-    '서울시 강북구 미아동 202-11':[37.631950,127.024080], '서울시 강북구 도봉로 187':[37.625421,127.026185], '서울시 도봉구 도당로 2':[37.658330,127.035268],
-    '서울시 도봉구 쌍문동 88-144':[37.648664,127.034736], '서울시 강동구 올림픽로 769':[37.549967,127.127179], '서울시 강동구 양재대로 1465':[37.536854,127.139488],
-    '하남시 미사강변동로 70':[37.561315,127.194177], '성남시 중원구 광명로 337':[37.446430,127.165925],
-    '구리시 경춘로 239':[37.601591,127.141744], '남양주시 퇴계원읍 퇴계원로 64':[37.652223,127.142724], '남양주시 진접읍 해밀예당3로 57':[37.714891,127.199508],
-    '남양주시 오남읍 진건오남로 639':[37.689304,127.210191], '남양주시 진접읍 장현로 83':[37.717946,127.181589], '남양주시 화도읍 마석중앙로 65':[37.652500,127.306000]
+    '서울시 광진구 능동로 95':[37.539528,127.070147], '서울시 광진구 천호대로 573':[37.556589,127.081842], '서울시 광진구 천호대로 548':[37.556827,127.078992],
+    '서울시 광진구 자양번영로 42':[37.533313,127.075950], '서울시 성동구 아차산로 96':[37.544616,127.054455], '서울시 성동구 용답동 58-1':[37.564618,127.053617],
+    '서울시 동대문구 장한로 3':[37.562136,127.064574], '서울시 중랑구 사가정로52길 5':[37.580399,127.087619], '서울시 중랑구 동일로 917':[37.612211,127.077106],
+    '서울시 강북구 미아동 202-11':[37.630580,127.024122], '서울시 강북구 도봉로 187':[37.625421,127.026185], '서울시 도봉구 도당로 2':[37.658418,127.035290],
+    '서울시 도봉구 쌍문동 88-144':[37.648666,127.034322], '서울시 강동구 올림픽로 769':[37.549967,127.127179], '서울시 강동구 양재대로 1465':[37.536840,127.139314],
+    '구리시 경춘로 239':[37.601629,127.141642], '남양주시 퇴계원읍 퇴계원로 64':[37.652223,127.142724], '남양주시 진접읍 해밀예당3로 57':[37.714795,127.197906],
+    '남양주시 진접읍 장현로 83':[37.717950,127.181583], '남양주시 오남읍 진건오남로 639':[37.690251,127.213080], '남양주시 화도읍 마석중앙로 65':[37.652493,127.307124],
+    '하남시 미사강변동로 70':[37.561351,127.194047], '성남시 중원구 광명로 337':[37.445940,127.163222]
   };
-  var DIST_SHORT={'서울':'광진·성동·동대문·중랑·강북·도봉·강동','경기':'구리·남양주·하남·성남','온라인팀':'구리 갈매 사무실'};
+  var DIST_SHORT={'전체':'서울 7개 구 · 경기 4개 시','서울':'광진·성동·동대문·중랑·강북·도봉·강동','경기':'구리·남양주·하남·성남','온라인팀':'구리 갈매 사무실'};
   /* 온라인팀 근무지 = 구리 갈매 사무실 (면접 장소와 같은 곳). 가까운 매장 찾기에는 넣지 않음 */
-  var OFFICE={r:'온라인팀', d:'구리시', n:'구리 갈매 사무실', a:'구리시 갈매순환로 188', full:'경기 구리시 갈매순환로 188, 힐스테이트 갈매역 스칸센(A그룹) A동 7층 705호',
-    map:'https://map.kakao.com/link/map/'+encodeURIComponent('신세계정보통신 구리 갈매 사무실')+',37.636059,127.122177'};
+  var OFFICE={r:'온라인팀', d:'구리시', n:'구리 갈매 사무실', a:'구리시 갈매순환로 188', full:'경기 구리시 갈매순환로 188, 힐스테이트 갈매역 스칸센(A그룹) A동 7층 705호'};
+  /* 매장 사진 — 받는 대로 assets/recruit/stores/ 에 올리고 여기에 매장명: 경로 추가 (사진 없는 매장은 지도만 크게) */
+  var PHOTO={};
   GEO[OFFICE.a]=[37.636059,127.122177];
   var PIN='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>';
 
-  function regionList(r){ return r==='온라인팀'?[OFFICE]:STORES.filter(function(s){ return s.r===r; }); }
+  function regionList(r){ return r==='온라인팀'?[OFFICE]:(r==='전체'?STORES.slice():STORES.filter(function(s){ return s.r===r; })); }
   function districts(r){ var out=[]; regionList(r).forEach(function(s){ if(out.indexOf(s.d)<0) out.push(s.d); }); return out; }
-  function mapUrl(s){ return 'https://map.naver.com/p/search/'+encodeURIComponent((s.r==='경기'?'경기 ':'')+s.a); }
+  function fullAddr(s){ return s.full||((s.r==='경기'?'경기 ':'')+s.a); }
+  function placeLabel(s){ return s===OFFICE?'신세계정보통신 구리 갈매 사무실':'LG유플러스 '+s.n; }
+  function kakaoLink(kind, s){ var ll=GEO[s.a]; return 'https://map.kakao.com/link/'+kind+'/'+encodeURIComponent(placeLabel(s))+','+ll[0]+','+ll[1]; }
+  function osmEmbed(s){ var ll=GEO[s.a], dy=0.0035, dx=0.0055; return 'https://www.openstreetmap.org/export/embed.html?bbox='+(ll[1]-dx).toFixed(6)+'%2C'+(ll[0]-dy).toFixed(6)+'%2C'+(ll[1]+dx).toFixed(6)+'%2C'+(ll[0]+dy).toFixed(6)+'&layer=mapnik&marker='+ll[0]+'%2C'+ll[1]; }
   function areaVal(s){ return s.r+' '+s.d; }
 
   /* 거리 계산 — 유닥 스토어와 같은 식. 위치는 이 화면에서만 쓰고 어디에도 저장·전송하지 않음 */
@@ -705,26 +741,51 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   function distTxt(k){ return k<1?Math.max(10,Math.round(k*100)*10)+'m':(k<10?k.toFixed(1):String(Math.round(k)))+'km'; }
   function tripTxt(k){ var r=k*1.3; return k<1.2?'걸어서 약 '+Math.max(1,Math.round(r/4.5*60))+'분':'차로 약 '+Math.round(4+r/24*60)+'분'; }
 
-  /* 지역 탭 + 구·시별 매장 (펼치기) */
-  var REGION='서울', OPEN={};
+  /* 지역 탭(전체/서울/경기/온라인팀) + 구·시별 매장(펼치기) + 고른 매장 카드 */
+  var REGION='전체', OPEN={}, SEL=STORES[0];
+  var MAPI='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6.5v13L9 17l6 2.5 6-2.5V4l-6 2.5L9 4zM9 4v13M15 6.5v13"/></svg>';
+  var NAVI='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4 3 11l7 2.5L12.5 21 20 4z"/></svg>';
+  function inRegion(st, r){ return regionList(r).indexOf(st)>=0; }
+  function nearestIn(r){ var list=regionList(r); if(!MYPOS) return list[0]; return list.slice().sort(function(x,y){ return (distOf(x)||1e9)-(distOf(y)||1e9); })[0]; }
+  function renderCard(){
+    var el=$('storeCard'), st=SEL; if(!st){ el.hidden=true; return; }
+    var k=distOf(st), photo=PHOTO[st.n], office=st===OFFICE;
+    el.innerHTML='<div class="sc-info">'+
+      '<p class="sc-brand"><img src="/assets/recruit/uplus-mark.png" alt="" width="22" height="22">신세계정보통신</p>'+
+      '<p class="sc-tag">'+(office?'U+ 최초의 온라인 대리점 · 유플러스 다이렉트':esc(st.r+' '+st.d))+'</p>'+
+      '<h3 class="sc-name">'+esc(st.n)+'</h3>'+
+      '<p class="sc-addr">'+PIN+'<span>'+esc(fullAddr(st))+'</span></p>'+
+      (k!=null?'<p class="sc-km">'+esc(MYPOS_L)+'에서 '+distTxt(k)+' · '+tripTxt(k)+'</p>':'')+
+      (office?'<p class="sc-desc">유플러스 다이렉트(유닥)는 (주)신세계정보통신의 온라인 브랜드입니다. 온라인팀은 구리 갈매 사무실에서 유플러스 다이렉트의 온라인 판매를 맡습니다.</p>':'')+
+      '<div class="sc-btns"><a class="scb" href="'+kakaoLink('map',st)+'" target="_blank" rel="noopener">'+MAPI+'지도 보기</a>'+
+        '<a class="scb" href="'+kakaoLink('to',st)+'" target="_blank" rel="noopener">'+NAVI+'길찾기</a>'+
+        '<button type="button" class="scb pk" data-pick="'+esc(office?'온라인팀':areaVal(st))+'">'+(office?'온라인팀으로 신청':'이 지역으로 신청')+'</button></div>'+
+      '</div>'+
+      '<div class="sc-media'+(photo?' has-photo':'')+'">'+
+        (photo?'<figure class="sc-photo"><img src="'+esc(photo)+'" alt="'+esc(st.n)+' 매장 사진" loading="lazy"></figure>':'')+
+        '<div class="sc-map"><iframe src="'+osmEmbed(st)+'" title="'+esc(st.n)+' 위치 지도" loading="lazy"></iframe></div>'+
+      '</div>';
+    el.hidden=false;
+  }
   function renderAcc(){
     $('tabsDist').textContent=DIST_SHORT[REGION];
     $('acc').setAttribute('aria-labelledby','tab-'+REGION);
-    if(REGION==='온라인팀'){ /* 온라인팀 = 유플러스 다이렉트(유닥), 근무지 구리 갈매 사무실 */
-      var ko=distOf(OFFICE);
-      $('acc').innerHTML='<div class="acc-i open online"><div class="oi"><p class="oi-k">U+ 최초의 온라인 대리점</p><p class="oi-t">유플러스 다이렉트</p>'+
-        '<p class="oi-d">유플러스 다이렉트(유닥)는 (주)신세계정보통신의 온라인 브랜드입니다. 온라인팀은 구리 갈매 사무실에서 유플러스 다이렉트의 온라인 판매를 맡습니다.</p></div>'+
-        '<div class="acc-p"><div class="st"><div><b>'+esc(OFFICE.n)+'</b><span>'+esc(OFFICE.full)+(ko!=null?' · <em class="km">'+esc(MYPOS_L)+'에서 '+distTxt(ko)+'</em>':'')+'</span></div>'+
-        '<a class="mini" href="'+OFFICE.map+'" target="_blank" rel="noopener" aria-label="구리 갈매 사무실 지도 열기">지도</a></div></div></div>';
-      return;
-    }
+    if(!SEL || !inRegion(SEL, REGION)) SEL=nearestIn(REGION);
+    renderCard();
+    if(REGION==='온라인팀'){ $('acc').innerHTML=''; return; } /* 온라인팀 = 유플러스 다이렉트(유닥), 근무지는 구리 갈매 사무실 — 카드 하나로 */
     $('acc').innerHTML=districts(REGION).map(function(d){
-      var list=regionList(REGION).filter(function(s){ return s.d===d; }), id='acc-'+REGION+'-'+d, open=!!OPEN[REGION+d];
+      var list=regionList(REGION).filter(function(x){ return x.d===d; }), id='acc-'+REGION+'-'+d, open=!!OPEN[REGION+d];
       return '<div class="acc-i'+(open?' open':'')+'"><button type="button" class="acc-h" aria-expanded="'+open+'" aria-controls="'+id+'" data-acc="'+esc(REGION+d)+'"><span><b>'+esc(d)+'</b><small>'+list.length+'개 매장</small></span><span class="pl" aria-hidden="true"></span></button>'+
-        '<div class="acc-p" id="'+id+'">'+list.map(function(s){ var k=distOf(s);
-          return '<div class="st"><div><b>'+esc(s.n)+'</b><span>'+esc(s.full||s.a)+(k!=null?' · <em class="km">'+esc(MYPOS_L)+'에서 '+distTxt(k)+'</em>':'')+'</span></div><a class="mini" href="'+(s.map||mapUrl(s))+'" target="_blank" rel="noopener" aria-label="'+esc(s.n)+' 지도 열기">지도</a></div>';
+        '<div class="acc-p" id="'+id+'">'+list.map(function(x){ var k=distOf(x), i=STORES.indexOf(x);
+          return '<div class="st'+(x===SEL?' on':'')+'" data-sel="'+i+'"><div><b>'+esc(x.n)+'</b><span>'+esc(fullAddr(x))+(k!=null?' · <em class="km">'+esc(MYPOS_L)+'에서 '+distTxt(k)+'</em>':'')+'</span></div><button type="button" class="mini" data-sel="'+i+'" aria-label="'+esc(x.n)+' 위치 보기">위치 보기</button></div>';
         }).join('')+'</div></div>';
     }).join('');
+  }
+  function showCard(){ var c=$('storeCard'), r=c.getBoundingClientRect(); if(r.top<80 || r.top>innerHeight*0.55) c.scrollIntoView({behavior:'smooth', block:'start'}); }
+  function selectStore(st){
+    SEL=st;
+    if(!inRegion(st, REGION)){ REGION='전체'; Array.prototype.forEach.call(document.querySelectorAll('.tabs button'), function(x){ x.setAttribute('aria-selected', x.getAttribute('data-r')==='전체'?'true':'false'); }); }
+    renderAcc(); showCard();
   }
   Array.prototype.forEach.call(document.querySelectorAll('.tabs button'), function(b){
     b.addEventListener('click', function(){
@@ -734,10 +795,18 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     });
   });
   $('acc').addEventListener('click', function(e){
+    var sel=e.target.closest('[data-sel]');
+    if(sel){ selectStore(STORES[+sel.getAttribute('data-sel')]); return; }
     var h=e.target.closest('[data-acc]'); if(!h) return;
     var k=h.getAttribute('data-acc'); OPEN[k]=!OPEN[k];
     var item=h.parentNode; item.classList.toggle('open', OPEN[k]); h.setAttribute('aria-expanded', OPEN[k]?'true':'false');
   });
+  $('storeCard').addEventListener('click', function(e){
+    var p=e.target.closest('[data-pick]'); if(!p) return;
+    $('wantArea').value=p.getAttribute('data-pick'); setFieldErr('f-area', false);
+    $('apply').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
 
   /* 내 위치에서 가까운 매장 (유닥 스토어와 같은 흐름: 내 위치 GPS 또는 동네 이름) */
   function setErr(t){ var el=$('nearErr'); el.textContent=t||''; el.hidden=!t; }
@@ -750,11 +819,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
       shown.map(function(x,i){ var top=i===0&&x.k!=null;
         return '<div class="nr'+(top?' top':'')+'"><span class="rk">'+(i+1)+'</span><div class="bd"><b>'+esc(x.s.n)+'</b>'+(top?'<span class="tag">가장 가까움</span>':'')+
           (x.k!=null?'<span class="km">'+distTxt(x.k)+' · '+esc(MYPOS_L)+'에서 '+tripTxt(x.k)+'</span>':'')+'<span class="ad">'+esc(x.s.a)+'</span></div>'+
-          '<div class="acts"><a class="mini" href="'+mapUrl(x.s)+'" target="_blank" rel="noopener" aria-label="'+esc(x.s.n)+' 지도 열기">지도</a><button type="button" class="mini pk" data-pick="'+esc(areaVal(x.s))+'">이 지역으로 신청</button></div></div>';
+          '<div class="acts"><button type="button" class="mini" data-sel="'+STORES.indexOf(x.s)+'" aria-label="'+esc(x.s.n)+' 위치 보기">위치 보기</button><button type="button" class="mini pk" data-pick="'+esc(areaVal(x.s))+'">이 지역으로 신청</button></div></div>';
       }).join('');
     box.hidden=false;
   }
-  function located(pos, label){ MYPOS=pos; MYPOS_L=label; SHOW_ALL=false; setErr(''); renderNear(); renderAcc();
+  function located(pos, label){ MYPOS=pos; MYPOS_L=label; SHOW_ALL=false; setErr(''); renderNear(); if(REGION!=='온라인팀') SEL=nearestIn(REGION); renderAcc();
     var b=$('nearBtn'); b.querySelector('span').textContent=label==='내 위치'?'내 위치 다시 찾기':'내 위치에서 가까운 매장 찾기'; }
   $('nearBtn').addEventListener('click', function(){
     var b=this, sp=b.querySelector('span');
@@ -783,6 +852,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   });
   $('nearRes').addEventListener('click', function(e){
     if(e.target.closest('#nearAll')){ SHOW_ALL=!SHOW_ALL; renderNear(); return; }
+    var sv=e.target.closest('[data-sel]'); if(sv){ selectStore(STORES[+sv.getAttribute('data-sel')]); return; }
     var p=e.target.closest('[data-pick]'); if(!p) return;
     var sel=$('wantArea'); sel.value=p.getAttribute('data-pick'); setFieldErr('f-area', false);
     $('apply').scrollIntoView({behavior:'smooth', block:'start'});
