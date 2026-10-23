@@ -246,11 +246,12 @@ function carSet(c, html, n, rn){ c.rn=rn||n; if(put($(c.o.track),html)){ c.n=n; 
 /* ---------- 홈: 메인 배너 (스토어 히어로 슬라이드 + 프로모 배너) ---------- */
 /* 20261023 사장님: 메인 배너는 사장님이 만든 통이미지(글씨까지 그림 안에 있는 배너)만 — 배너 위 글씨·어두운 그라데이션·바탕색 없이 그림 그대로
    1번 '유플러스 다이렉트' · 2번 '통신이 쉬우면 안돼?' (사장님 PC 원본 → 1200×974 webp, 1번은 그림 모서리 검은 칸 메움)
-   누르면 가는 곳은 관리자 히어로 순서 그대로(1번 = 히어로 1번 연결, 2번 = 히어로 2번 연결)
-   3·4번(S26·아이폰18 프로)은 글씨를 빼면 제품 사진만 남아서, 같은 톤 통이미지가 나올 때까지 내려 둠 → 그림이 오면 여기에 한 줄씩 추가 */
+   누르면 가는 곳은 관리자 히어로 순서 그대로(1번 = 히어로 1번 연결, 2번 = 히어로 2번 연결) — go 를 적은 배너는 그곳으로
+   20261023 3번 '폴드 가격도 반으로 접히다 53%' (폴드 그림 → 폴드8 상세) · 4번은 그림이 오면 여기에 한 줄 추가 */
 var BN_FULL=[
   {img:'/assets/shop/bn/bn-01.webp?v=20261023', nm:'유플러스 다이렉트 · U+ 최초의 온라인 대리점'},
-  {img:'/assets/shop/bn/bn-02.webp?v=20261023', nm:'통신이 쉬우면 안돼? · 유플러스 다이렉트'}
+  {img:'/assets/shop/bn/bn-02.webp?v=20261023', nm:'통신이 쉬우면 안돼? · 유플러스 다이렉트'},
+  {img:'/assets/shop/bn/bn-03.webp?v=20261023', nm:'폴드 가격도 반으로 접히다 53%', go:'#/model/fold8'}
 ];
 function bannerList(){
   var S=A.S, out=A.vis(S.hero||[]).map(function(h){
@@ -258,7 +259,7 @@ function bannerList(){
     return {tag:'', l1:h.k||'', l2:h.t||'', s:h.s||(m&&m.ds)||'', img:h.img||'', go:h.go||''};
   });
   var p=S.promo; if(p && !p.hidden && (p.t||p.img)) out.push({tag:p.tag||'', l1:p.t||'', l2:'', s:p.s||'', img:p.img||'', go:p.go||''});
-  if(BN_FULL.length) return BN_FULL.map(function(b,i){ return {full:true, img:b.img, nm:b.nm, go:(out[i]&&out[i].go)||''}; });
+  if(BN_FULL.length) return BN_FULL.map(function(b,i){ return {full:true, img:b.img, nm:b.nm, go:b.go||(out[i]&&out[i].go)||''}; });
   return out;
 }
 function renderBanner(wait){
