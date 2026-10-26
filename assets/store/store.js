@@ -99,7 +99,7 @@ var DEFAULT = {
   priceNote:'',
   // 20261026 사장님: 모든 휴대폰 상세 '구매혜택' 칸 맨 아래 공통 그림 (유플러스 다이렉트 소개 · 구매부터 개통까지 · 걱정 없는 점 · 포장)
   // 관리자 상세에서 이 그림을 누르면 바꿀 수 있음 · 끝의 #가로x세로 = 그림 크기 (탭을 눌러 내려갈 때 자리를 미리 잡아 화면이 밀리지 않게)
-  dtc:{ben:['detail/common-01.webp#1080x2106','detail/common-02.webp#1080x1504','detail/common-03.webp#1080x1027','detail/common-04.webp#1080x553','detail/common-05.webp#1080x762']},   // 20261026 2차 (사장님 수정 문구 · 인증마크+로고)
+  dtc:{ben:['detail/common-01.webp#1080x2106','detail/common-02.webp#1080x1703','detail/common-03.webp#1080x1028','detail/common-04.webp#1080x553','detail/common-05.webp#1080x761']},   // 20261026 3차 (구매부터 개통까지 아래 '한 번의 판매로 끝내지 않습니다…')
   stores:[
     {nm:'건대입구역점',addr:'서울시 광진구 능동로 95'},{nm:'군자역점',addr:'서울시 광진구 천호대로 573'},{nm:'신군자점',addr:'서울시 광진구 천호대로 548'},
     {nm:'신자양점',addr:'서울시 광진구 자양번영로 42'},{nm:'성수역점',addr:'서울시 성동구 아차산로 96'},{nm:'용답로데오점',addr:'서울시 성동구 용답동 58-1'},
@@ -1262,7 +1262,15 @@ function pdHeadOn(){
 function pdHeadOff(){ var sh=$('#v-model .subhead'); if(!sh || !sh.classList.contains('pd-hd')) return; sh.classList.remove('pd-hd'); if(PD_HD0!=null) sh.innerHTML=PD_HD0; }
 // 관리자에서 넣는 상세 그림 (모델마다 m.dt = {ben:[…], note:[…], rev:[…], info:[…]} · 그림 경로 detail/파일.webp 또는 https 주소)
 function pdDt(m,k){ return arr(m&&m.dt&&m.dt[k]).map(function(x){ return String(x||'').trim(); }).filter(Boolean); }
-function pdImgs(list){ return list.map(function(p){ var d=/#(\d+)x(\d+)$/.exec(p); return '<img class="pd-dimg" src="'+esc(imgSrc(p.replace(/#.*$/,'')))+'"'+(d?' width="'+d[1]+'" height="'+d[2]+'"':'')+' alt="" loading="lazy" decoding="async">'; }).join(''); }
+// 그림 위 누르는 칸 (그림 속 카드 자리 — 그 그림 크기 기준 % : 왼쪽, 위, 너비, 높이)
+// 20261026 사장님: 공통 그림 'U+ 공식 파트너사' 카드 → 인증마크(LG U+ 공식인증대리점) 크게 · '오프라인 매장 운영' 카드 → 우리 매장 목록
+var PD_HOT={'detail/common-01.webp':[
+  [5.185,47.911,43.704,24.217,'data-cert','','LG U+ 공식인증대리점 인증마크 보기'],
+  [51.111,47.911,43.704,24.217,'data-open','store','우리 매장 목록 보기']]};
+function pdImgs(list){ return list.map(function(p){ var d=/#(\d+)x(\d+)$/.exec(p), base=p.replace(/#.*$/,''), hs=PD_HOT[base];
+  var img='<img class="pd-dimg" src="'+esc(imgSrc(base))+'"'+(d?' width="'+d[1]+'" height="'+d[2]+'"':'')+' alt="" loading="lazy" decoding="async">';
+  if(!hs) return img;
+  return '<div class="pd-hs">'+img+hs.map(function(z){ return '<button type="button" class="pd-hot" style="left:'+z[0]+'%;top:'+z[1]+'%;width:'+z[2]+'%;height:'+z[3]+'%" '+z[4]+'="'+z[5]+'" aria-label="'+z[6]+'"></button>'; }).join('')+'</div>'; }).join(''); }
 // 모든 휴대폰 공통 상세 그림 (S.dtc · 관리자에서 다 지우면 {off:true} → 안 나옴)
 function pdCommon(k){ var c=S.dtc||{}; if(c.off) return []; return arr(c[k]).map(function(x){ return String(x||'').trim(); }).filter(Boolean); }
 // 이름 옆 '최대 OO만원 할인' — 가격표에서 번호이동·기기변경 · 요금제 중 출고가 대비 가장 많이 빠지는 금액 (0원까지 되면 '기기값 0원')

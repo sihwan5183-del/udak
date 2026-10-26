@@ -521,6 +521,12 @@ body.edit .pd-tabs{top:calc(104px + env(safe-area-inset-top))}
 #v-model .pd-sec .md-ben{margin:0 0 4px}
 .pd-dimg{display:block;width:calc(100% + 32px);max-width:none;height:auto;margin:14px -16px 0}   /* 화면 가로 끝까지 (공통 img max-width:100% 풀기) */
 .pd-dimg+.pd-dimg{margin-top:0}   /* 긴 상세 그림을 여러 장으로 잘라 넣어도 틈 없이 이어 보이게 */
+/* 20261026 그림 위 누르는 칸 (공통 그림: U+ 공식 파트너사 → 인증마크 · 오프라인 매장 운영 → 매장 목록) */
+.pd-hs{position:relative;margin:14px -16px 0}
+.pd-hs>.pd-dimg{width:100%;margin:0}
+.pd-dimg+.pd-hs,.pd-hs+.pd-hs,.pd-hs+.pd-dimg{margin-top:0}
+.pd-hot{position:absolute;display:block;padding:0;border:0;border-radius:13px;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .15s}
+.pd-hot:active{background:rgba(17,19,24,.06)}
 .pd-empty{padding:16px;border:1.5px dashed #DADDE0;border-radius:10px;font-size:13px;line-height:18px;color:#6B7280;text-align:center}
 .pd-empty.pd-dc{margin-top:14px}   /* 관리자: 모든 휴대폰 공통 그림 빈 칸 */
 .pd-tb{border-top:1.5px solid #131518}

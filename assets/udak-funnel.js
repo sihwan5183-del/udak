@@ -268,6 +268,7 @@
       if((el=t.closest('[data-pd-tab]'))) return '아래칸:'+({ben:'구매혜택',note:'유의사항',rev:'구매후기',info:'모델정보'}[el.getAttribute('data-pd-tab')]||'');   // 20261026 /shop 새 상세
       if((el=t.closest('[data-pd-sum]'))) return '상세보기';
       if((el=t.closest('[data-pd-share]'))) return '공유';
+      if((el=t.closest('[data-cert]'))) return '인증마크';   // 20261026 공통 그림 'U+ 공식 파트너사' 카드
       if((el=t.closest('[data-qk]'))) return el.closest('#mdBar')?'카톡상담(아래)':'카톡상담';
       if((el=t.closest('[data-open]'))) return el.getAttribute('data-open')==='consult'?(el.closest('#mdBar')?'상담신청(아래)':el.closest('.tabbar')?'상담신청(탭)':'전화상담'):'열기:'+el.getAttribute('data-open');
       if((el=t.closest('[data-mg]'))) return '순서:'+el.getAttribute('data-mg');
