@@ -273,7 +273,7 @@ function normalize(d){
   o.models.forEach(function(m){ m.cat=arr(m.cat);
     if((m.id==='tvfree5'||m.id==='ipada16') && m.cat.indexOf('tvfree')<0) m.cat=m.cat.filter(function(c){return c!=='tablet'}).concat(['tvfree']);
     // 20261026 갤럭시 버디 5(a176): 분류가 비어 있으면 '갤럭시 버디' · 대표 사진이 LG U+ 공식몰 주소면 우리 사진(그레이)으로
-    if(m.id==='a176'){ if(!m.cat.length) m.cat=['buddy']; if(/lguplus\.com/.test(m.img||'')) m.img=null; }
+    if(m.id==='a176'){ if(!m.cat.length) m.cat=['buddy']; if(/lguplus\.com/.test(m.img||'')) m.img=null; if(m.pubOnly==null) m.pubOnly=true; }   // 20261026 사장님: 버디 5는 공시지원금만 (선택약정 없음 → 기기값 0원)
     m.tags=arr(m.tags); m.cards=arr(m.cards); m.colors=arr(m.colors); m.opts=arr(m.opts); m.price=m.price||{}; });
   o.sec=o.sec||{}; Object.keys(DEFAULT.sec).forEach(function(k){ o.sec[k]=o.sec[k]||clone(DEFAULT.sec[k]); });
   // 히어로 사진: 예전 저장값(hero-0N.jpg)은 실제 파일(hero-0N.webp)로
@@ -490,13 +490,16 @@ function mnpLead(b){ try{ var c=b&&b.carrier, sn=b&&b.snapshot, mnp=sn?(sn.joint
 function won10(n){ n=Math.round(Number(n)||0); var x=((n%10)+10)%10; return x>=8?n+(10-x):n-x; }
 function noInterest(r){ return r.model==='tvfree5'; }   // TV프리는 이자 없이 그냥 나누기
 // 번호이동/기기변경: 고른 통신사가 있으면 그걸로(U+ = 기기변경) → 20261026 /shop 상세 '가입유형'(jt) → 위 번호이동·기기변경 버튼(MNP)
+// 20261026 사장님: 갤럭시 버디 5처럼 공시지원금으로만 0원이 되는 모델 — 선택약정 자체를 없앰 (관리자 모델 '공시지원금만' · 버디 5는 처음부터 켜짐)
+function pubOnly(m){ return !!(m && m.pubOnly); }
+function methodOf(m, want, c){ return pubOnly(m)?'pub':((want==='sel'||!c||!c.pub)?'sel':'pub'); }
 function jtOf(s){ s=s||{}; return s.carrier?(s.carrier==='LG U+'?'chg':'mnp'):(s.jt==='mnp'||s.jt==='chg')?s.jt:(MNP?'mnp':'chg'); }
 function calcState(m, r){
   var g=r.g, s=SEL[m.id]||(SEL[m.id]={});
   var type=g!=='phone'?'all':jtOf(s);
   var t=curTier(m,g,r), c=rowCalc(r,type,t), st={g:g, s:s, t:t, type:type, c:c, split:(g!=='second')};
   if(!c) return st;
-  st.method=g!=='phone'?'pub':((s.method==='sel'||!c.pub)?'sel':'pub');
+  st.method=g!=='phone'?'pub':methodOf(m, s.method, c);
   st.after=(st.method==='pub'&&c.pb!=null)?c.pb:c.sel;
   st.months=s.months==null?24:s.months; st.mm=st.months;   // 기본 24개월 할부 st.noint=noInterest(r);
   st.monthly=st.mm===0?null:won10(st.noint?st.after/st.mm:st.after*RATE[st.mm]/st.mm);
@@ -563,7 +566,7 @@ function tierNmOf(k){ var t=tiersOf('phone').filter(function(x){return x.k===k})
 function tierTotal(m, r, tk){
   var s=SEL[m.id]||{}, t=rowTiers(r).filter(function(x){return x.k===tk})[0]; if(!t) return null;
   var type=jtOf(s), c=rowCalc(r,type,t); if(!c) return null;
-  var method=(s.method==='sel'||!c.pub)?'sel':'pub', after=(method==='pub'&&c.pb!=null)?c.pb:c.sel, mm=s.months==null?24:s.months;
+  var method=methodOf(m, s.method, c), after=(method==='pub'&&c.pb!=null)?c.pb:c.sel, mm=s.months==null?24:s.months;
   var monthly=mm===0?0:won10(after*RATE[mm]/mm), fee=t.fee?(method==='sel'?Math.round(t.fee*0.75):t.fee):0;
   return {total:monthly+fee, monthly:monthly, fee:fee, after:after, t:t, mm:mm};
 }
@@ -589,7 +592,7 @@ function calcPickers(m, r, st){
   if(wpw) promo=wpPickHtml(m, r, st, wpw);
   else if(ts.length>1) h+='<div class="cpick"><div class="cpick-l">'+(g==='tvfree'?'집 인터넷':'요금제')+'</div><select class="csel" data-calc-sel="tier" data-model="'+esc(m.id)+'">'+ts.map(function(t){
       return '<option value="'+esc(t.k)+'"'+(st.t&&st.t.k===t.k?' selected':'')+'>'+esc(tierTitle(t))+'</option>'; }).join('')+'</select>'+(g==='phone'&&PLAN_NOTE?'<div class="cpick-hint">'+PLAN_NOTE+'</div>':'')+'</div>';
-  if(g==='phone'&&st.c) h+=cgrid('할인 방식','method',[['pub','공시지원금',!st.c.pub],['sel','선택약정 (요금 25%↓)']],st.method,m,2,
+  if(g==='phone'&&st.c&&!pubOnly(m)) h+=cgrid('할인 방식','method',[['pub','공시지원금',!st.c.pub],['sel','선택약정 (요금 25%↓)']],st.method,m,2,
     !st.c.pub?'공시지원금이 없어 선택약정으로 계산돼요':adviceTxt(cmpMethod(st.c,st.fee,st.months),st.method));
   if(g!=='tvfree') h+=cgrid('할부 개월','months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(st.months),m,4,'');
   return {car:car, rest:h, promo:promo};   // 20261019: 통신사 / 나머지 따로 · 20261021 A/B 요금제(워치 혜택)
@@ -1094,7 +1097,7 @@ function renderModel(id, keepRecent){
   if(!V2) pdHeadOff();
   if(PRE){ var m0=byId(id); if(!(m0 && !m0.hidden && kindOf(m0)==='phone')){ $('#mdTitle').textContent=m0?m0.nm:'';
     $('#mdBody').innerHTML='<div class="ucard md-skel"><div class="md-img"></div><div class="md-rest"><h2 class="md-h ucard-name">'+esc(m0?m0.nm:'')+'</h2><div class="sk-l"></div><div class="sk-b"></div><div class="sk-b"></div></div></div>'; return; } }
-  var m=byId(id); if(!m||(m.hidden&&!EDIT)){location.hash='#/';return}
+  var m=byId(id); if(!m||(m.hidden&&!EDIT)){ if(!m && EDIT && !CFG_GOT) return; location.hash='#/';return}   // 20261026 관리자: 기본값에 없는 모델(버디 5) 주소로 바로 들어오면 설정 받을 때까지 기다림 (홈으로 튕기지 않게)
   var srs=sheetRows(m), selRow=null, rows='', pickers='';
   if(srs.length && (OPT[m.id]==null || !srs[OPT[m.id]])) OPT[m.id]=Math.max(0, srs.indexOf(priceOf(m).row));
   if(!EDIT && optSO(m,OPT[m.id])){ var fo=firstOkOpt(m); if(fo>=0) OPT[m.id]=fo; }   // 20261020 품절 용량은 못 고름
@@ -1324,7 +1327,8 @@ function pdRender(m, p, st, PK, o){
     h+=pdO('tier','요금제',pdTierSel(m,r,st,PK&&PK.promo)+'<div class="pd-cond"><b>조건</b><span>'+mu.join(' · ')+'</span></div>');
     if(c.our) h+='<div class="pd-our"><span>유플러스 다이렉트 지원금</span><b>'+won(c.our)+'</b></div>';
     var fee=st.fee||0, selTot=fee?(fee-Math.round(fee*0.75))*24:0;   // 선택약정 2년 동안 덜 내는 요금 (예전 상세 비교와 같은 계산)
-    h+=pdO('method','할인 방식','<div class="pd-ms">'+
+    if(pubOnly(m)) h+=pdO('method','할인 방식','<div class="pd-ms one"><span class="pd-m on"><b>공시지원금</b><span>'+(c.pub?'총 '+won(c.pub):'–')+'</span></span></div>');   // 20261026 버디 5: 선택약정 없음
+    else h+=pdO('method','할인 방식','<div class="pd-ms">'+
       '<button type="button" class="pd-m'+(st.method==='pub'?' on':'')+(c.pub?'':' dis')+'" data-calc="method" data-v="pub" data-model="'+esc(m.id)+'"'+(c.pub?'':' disabled')+'><b>공시지원금</b><span>'+(c.pub?'총 '+won(c.pub):'–')+'</span></button>'+
       '<button type="button" class="pd-m'+(st.method==='sel'?' on':'')+'" data-calc="method" data-v="sel" data-model="'+esc(m.id)+'"><b>선택약정 <small>요금 25%↓</small></b><span>'+(selTot?'총 '+won(selTot)+' <small>2년</small>':'요금 25% 할인')+'</span></button></div>'+
       '<div class="pd-adv">'+(!c.pub?'공시지원금이 없어 선택약정으로 계산돼요':adviceTxt(cmpMethod(c,st.fee,st.months),st.method))+'</div>');
@@ -1845,7 +1849,7 @@ function apValidate(){
 function apPhoneCalc(){
   var m=apPhone(); if(!m) return null; var rs=sheetRows(m); if(!rs.length) return null;
   var r=rs[AP.cap]||rs[0], type=AP.carrier?(AP.carrier==='LG U+'?'chg':'mnp'):'mnp', t=apTier(), c=rowCalc(r,type,t); if(!c) return null;
-  var method=(AP.method==='sel'||!c.pub)?'sel':'pub', after=(method==='pub'&&c.pb!=null)?c.pb:c.sel, mm=AP.months;
+  var method=methodOf(m, AP.method, c), after=(method==='pub'&&c.pb!=null)?c.pb:c.sel, mm=AP.months;
   return {m:m, r:r, c:c, t:t, type:type, method:method, after:after, mm:mm,
     monthly:mm===0?null:won10(after*RATE[mm]/mm), fee:t.fee||0, feeAfter:t.fee?(method==='sel'?Math.round(t.fee*0.75):t.fee):0};
 }
@@ -1963,7 +1967,7 @@ function apPlanHtml(){
   // 20261019: 통신사는 위(컬러·용량 아래)에서 고름 — 이 칸은 워치·태블릿 함께 구매를 켜 둔 때만 나옴
   h+='<div class="ap-f ap-row"><div class="ap-l">요금제</div><div class="ap-r"><select class="csel" id="mPlanSel">'+ts.map(function(x){ return '<option value="'+esc(x.k)+'"'+(t&&x.k===t.k?' selected':'')+'>'+esc(tierTitle(x))+'</option>'; }).join('')+'</select>'+
     (PLAN_NOTE?'<div class="cpick-hint">'+PLAN_NOTE+'</div>':'')+apPerk(t)+'</div></div>';
-  h+='<div class="ap-f ap-row"><div class="ap-l">할인 방식</div><div class="ap-r">'+apChips('method',[['pub','공시지원금',pc&&!pc.c.pub],['sel','선택약정 (요금 25%↓)']],pc?pc.method:(AP.method||'pub'),2)+(pc&&adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)?'<div class="cpick-hint">'+adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)+'</div>':'')+'</div></div>';
+  if(!(pc&&pubOnly(pc.m))) h+='<div class="ap-f ap-row"><div class="ap-l">할인 방식</div><div class="ap-r">'+apChips('method',[['pub','공시지원금',pc&&!pc.c.pub],['sel','선택약정 (요금 25%↓)']],pc?pc.method:(AP.method||'pub'),2)+(pc&&adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)?'<div class="cpick-hint">'+adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)+'</div>':'')+'</div></div>';
   h+='<div class="ap-f ap-row"><div class="ap-l">할부 개월</div><div class="ap-r">'+apChips('months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(AP.months),4)+'</div></div>';
   return h+'</section>';
 }
@@ -2458,7 +2462,9 @@ document.addEventListener('change',function(e){
 });
 
 /* ---------------- 데이터 불러오기 + 실시간 반영 ---------------- */
+var CFG_GOT=false;   // 설정을 한 번이라도 받았는지 (관리자 화면용)
 function apply(d){
+  if(d) CFG_GOT=true;
   if(d && d.updatedAt && d.updatedAt===lastStamp) return;
   lastStamp=(d&&d.updatedAt)||0;
   S=normalize(d);

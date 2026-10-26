@@ -472,6 +472,7 @@ body.edit #v-model .subhead{top:52px}
   background:linear-gradient(90deg,#E6007E 0%,#FF3D8B 100%);color:#fff;font-size:14px;line-height:18px;font-weight:700}
 .pd-our b{font-size:20px;line-height:24px;font-weight:900;letter-spacing:-.02em}
 .pd-ms{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pd-ms.one{grid-template-columns:1fr}   /* 공시지원금만 (갤럭시 버디 5) */
 .pd-m{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0;padding:12px 13px;border-radius:10px;border:1.5px solid #E5E7EB;background:#fff;text-align:left}
 .pd-m b{font-size:15px;line-height:18px;font-weight:800;color:#131518;white-space:nowrap}
 .pd-m b small{font-size:11.5px;font-weight:600;color:#6B7280}
