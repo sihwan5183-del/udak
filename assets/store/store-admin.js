@@ -211,7 +211,7 @@ window.__stEditClick=function(e){
   var t=e.target;
   if(t.closest('.adm-bar')||t.closest('#sheet')||t.closest('#dim')||t.closest('.login')) return false;
   if(t.closest('.tabbar')||t.closest('.topbar')||t.closest('[data-back]')||t.closest('.ctabs')||t.closest('[data-toggle]')||t.closest('.subhead')) return false;
-  if(t.closest('.oy-hd')||t.closest('.oy-gnb')||t.closest('.oy-subhd')||t.closest('.oy-cl')||t.closest('.oy-cm-h')||t.closest('.oy-csl')||t.closest('.oy-chips')||t.closest('.oy-frow')||t.closest('#oyBnAll')) return false;   // 20261026 /shop 화면 이동
+  if(t.closest('.oy-hd')||t.closest('.oy-gnb')||t.closest('.oy-subhd')||t.closest('.oy-cl')||t.closest('.oy-cm-h')||t.closest('.oy-csl')||t.closest('.oy-chips')||t.closest('.oy-frow')||t.closest('#oyBnAll')||t.closest('.oy-more')||t.closest('.oy-pg')) return false;   // 20261026 /shop 화면 이동 (전체보기 · 옆으로 넘겨 더보기 포함)
   if(t.closest('[data-mnp]')||t.closest('[data-opt-pick]')||t.closest('[data-tier-pick]')||t.closest('[data-calc]')||t.closest('[data-color-pick]')||t.closest('[data-sort-open]')||t.closest('[data-maxv]')||t.closest('[data-ms-tip]')||t.closest('[data-sort]')||t.closest('.pz')||t.closest('a[download]')) return false;
   var el=t.closest('[data-edit]');
   if(!el){
@@ -359,7 +359,8 @@ function undo(){
     {box:'.dl-grid', item:'a.dl-c', key:'deal'},
     {box:'#popgrid', item:'a.pc', key:'list:pop'},
     {box:'#zero', item:'a.hc', key:'list:zero'},
-    {box:'#models', item:'a.oy-qi', key:'models'},          // 20261026 /shop 퀵메뉴 휴대폰 줄
+    {box:'#models', item:'a.oy-hp-it', key:'models'},       // 20261026 /shop 지금 많이 보는 휴대폰 (옆으로 넘기는 줄)
+    {box:'#oyDeal', item:'a.oy-dc', key:'deal'},            // /shop 이번주 특가 (두 장 나란히)
     {box:'#oyPop', item:'a.oy-c2-a', key:'list:pop'},       // /shop 많이 찾아요 (2×2)
     {box:'#oyZero', item:'a.oy-card', key:'list:zero'}      // /shop 기기값 0원
   ];

@@ -66,20 +66,8 @@
 .oy-bn-all{position:absolute;left:calc(var(--W)*.8595);top:calc(8px + var(--W)*.6248);z-index:2;width:32px;height:32px;border-radius:4px;display:flex;align-items:center;justify-content:center}
 .oy-bn-all svg{width:10px;height:10px;fill:none;stroke:#fff;stroke-width:1.15;stroke-linecap:round}
 
-/* ---------- 퀵메뉴 2줄: 칸 60 · 아이콘 52 · 이름 11 한 줄 (화면 폭 400 이상 68·60) ---------- */
-.oy-qm{margin-top:8px}
-.oy-qm-sc{display:grid;row-gap:12px;padding:8px 0 28px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.oy-qm-sc::-webkit-scrollbar{display:none}
-.oy-qm-row{display:flex;gap:8px;width:max-content;padding:0 11px}
-.oy-qi{flex:0 0 60px;width:60px;display:flex;flex-direction:column;align-items:center}
-.oy-qi-ic{position:relative;width:52px;height:52px;border-radius:12px;background:#F5F7F9;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.oy-qi-im{width:100%;height:100%;object-fit:contain;padding:4px;mix-blend-mode:multiply}
-.oy-qi-ic .ph-soft{width:100%;height:100%;padding:0;background:none}
-.oy-qi-ic svg{width:26px;height:26px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.oy-qi-t{display:block;margin-top:6px;width:100%;height:13px;font-size:11px;line-height:13px;color:#3A3E45;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.oy-qi-t .oy-sk{display:block;margin:1px auto 0}
+/* 품절 가림 (휴대폰 칸 · 카드 공통) */
 .oy-so{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;background:rgba(17,19,24,.5);color:#fff;font-size:11px;font-weight:900;font-style:normal}
-/* 20261022: 사장님 휴대폰(화면 폭 402) 올리브영도 아이콘 52 · 칸 간격 68 그대로 — 폭 400 이상에서 키우던 것 뺌 */
 
 /* ---------- 띠배너: 92% × 21.33% · 모서리 4 · 아래 점 (켜진 점 16×6) ---------- */
 .oy-band-vp{margin:0 calc(var(--W)*.04);border-radius:4px;overflow:hidden;transform:translateZ(0)}
@@ -137,19 +125,6 @@
 .oy-ask{font-size:13px;font-weight:600;color:#4B5563}
 .oy-card-s{margin-top:1px;font-size:11px;line-height:13px;color:#9299A0}
 .oy-card-c{margin-top:2px;font-size:11px;line-height:13px;color:#4B5563}
-/* 큰 카드 (이번주 특가 · 올리브영 Weekly Special): 360 × 287 · 모서리 8 · 사이 16 · 가운데 흰 글자 */
-.oy-big{display:flex;flex-direction:column;gap:16px;padding:0 15px}
-.oy-bc{position:relative;display:block;width:100%;aspect-ratio:371.67/295.67;border-radius:8px;overflow:hidden;color:#fff}
-.oy-bc::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 52%,rgba(0,0,0,.22) 100%);pointer-events:none}
-.oy-bc-im{position:absolute;left:0;right:0;top:5%;height:62%;display:flex;align-items:center;justify-content:center;pointer-events:none}
-.oy-bc-img{width:auto;max-width:86%;height:100%;object-fit:contain}
-.oy-bc-im .ph-soft{display:none}
-.oy-bc-t{position:absolute;z-index:1;left:15px;right:15px;bottom:18.8%;font-size:20px;line-height:24px;font-weight:700;letter-spacing:0;text-align:center;color:#fff;word-break:keep-all}   /* 올리브영 Weekly Special 카드 글자 자리 (아래 기준 실측) */
-.oy-bc-d{position:absolute;z-index:1;left:15px;right:15px;bottom:10.2%;font-size:14px;line-height:17px;letter-spacing:0;color:rgba(255,255,255,.92);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.oy-bc-d em{font-style:normal;font-weight:800;color:#fff}
-.oy-bc-d em.ask{font-weight:700}
-.oy-so-l{font-size:16px}
-
 /* ---------- 태그 · 찜/신청 아이콘 (올리브영 오늘드림·BEST 자리: 당일발송 · 제휴카드 X · 부가서비스 X) ---------- */
 .oy-tags{display:flex;flex-wrap:wrap;gap:4px}
 .oy-tags i{font-style:normal;height:16px;padding:0 4px;border-radius:3px;background:#F0F1F4;color:#616870;font-size:11px;line-height:16px;letter-spacing:-.02em;white-space:nowrap}
@@ -335,16 +310,9 @@
 body.edit .oy-top{top:52px}
 body.edit .oy-cl-in{top:calc(101px + env(safe-area-inset-top))}
 .oy-sl-none{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#EEF0F3;color:#6B7280;font-size:14px;font-weight:700}
-/* 20261026 사장님: 옆으로 밀어야 보이던 줄을 한눈에 —
-   ① 번호이동|기기변경 + 분류 칩: 한 줄에 안 들어가면 다음 줄로 (오른쪽이 잘리지 않게)
-   ② 바로가기: 휴대폰 두 줄(한 줄 5개) · 혜택 두 줄(한 줄 4개) */
+/* 20261026 사장님: 번호이동|기기변경 + 분류 칩 — 한 줄에 안 들어가면 다음 줄로 (오른쪽이 잘리지 않게) */
 .oy-chips{flex-wrap:wrap;height:auto;row-gap:8px;overflow:visible}
 .oy-chip{padding:0 15px}
-.oy-qm-sc{overflow:visible;padding:8px 0 26px;row-gap:16px}
-.oy-qm-row{display:grid;width:auto;padding:0 12px;column-gap:4px;row-gap:14px}
-#models.oy-qm-row{grid-template-columns:repeat(5,minmax(0,1fr))}
-#quick.oy-qm-row{grid-template-columns:repeat(4,minmax(0,1fr))}
-.oy-qm-row .oy-qi{flex:none;width:auto;min-width:0}
 /* 20261026 사장님: '많이 찾아요' 2×2 고정 · 번호이동|기기변경 + 분류 칩을 두 줄로 반듯하게 (특가 탭·분류 목록도 같은 모양) */
 .oy-ctl{display:flex;flex-direction:column;gap:10px;padding:0 15px}
 .oy-ctl[hidden]{display:none}
@@ -355,3 +323,92 @@ body.edit .oy-cl-in{top:calc(101px + env(safe-area-inset-top))}
 .oy-ctabs{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:6px}
 .oy-ctabs .oy-chip{min-width:0;padding:0 2px;font-size:12.5px;letter-spacing:-.04em;overflow:hidden;text-overflow:ellipsis}
 .oy-ctl+.oy-g2,.oy-ctl+.oy-grid{margin-top:18px}
+/* =========================================================
+   20261026 사장님 그림(홈 위쪽): 배너 → 이번주 특가(칠판 · 종이 카드 두 장) → 지금 많이 보는 휴대폰(옆으로 넘김 · 점) → 자주 찾는 서비스(4칸 × 2줄)
+   · 그림 비율 그대로 줄이면 휴대폰에서 글씨가 9~10px 이 돼서 — 칸 모양 · 배치 · 색은 그림대로, 글씨는 읽히는 크기로
+   ========================================================= */
+.oy-top3{margin-top:24px}
+.oy-top3 .oy-sec-h{align-items:center;padding:0 15px 11px}
+.oy-more{flex:none;display:flex;align-items:center;height:24px;margin-right:-5px;font-size:13px;line-height:16px;color:#4B5563;white-space:nowrap}
+.oy-more svg{width:16px;height:16px;fill:none;stroke:#4B5563;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#trust.oy-band{margin-top:28px}
+
+/* 이번주 특가 칠판: 나무 틀(위·옆 5 · 아래 7) · 진초록 칠판 · 분필 제목 그림 + 날짜 · 압정 꽂은 종이 카드 · 오른쪽 아래 분필 */
+.oy-cb{position:relative;margin:14px calc(var(--W)*.024) 0;padding:5px 5px 7px;border-radius:10px;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 2px,rgba(0,0,0,0) 2px 11px,rgba(90,50,15,.06) 11px 13px,rgba(0,0,0,0) 13px 23px),linear-gradient(180deg,#CFA073 0%,#BB8A5B 40%,#A6774C 100%);
+  box-shadow:0 3px 9px rgba(70,40,12,.30),inset 0 1px 0 rgba(255,255,255,.35),inset 0 -1px 0 rgba(60,30,8,.25)}
+.oy-cb-in{position:relative;border-radius:5px;padding:9px 6px 11px;overflow:hidden;isolation:isolate;
+  background:radial-gradient(130% 95% at 28% 12%,#2D4D42 0%,#23413A 46%,#1A342D 100%);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.4),inset 0 2px 7px rgba(0,0,0,.5)}
+/* 분필 가루 (아주 옅게) */
+.oy-cb-in::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.55;
+  background:radial-gradient(60% 40% at 78% 30%,rgba(255,255,255,.06),rgba(255,255,255,0) 70%),radial-gradient(45% 35% at 18% 85%,rgba(255,255,255,.045),rgba(255,255,255,0) 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E")}
+.oy-cb-h{display:flex;align-items:center;gap:10px;min-height:calc(var(--W)*.074);padding:0 4px 9px 6px}
+.oy-cb-t{flex:none;display:flex;align-items:center;margin:0;line-height:0}
+.oy-cb-t img{display:block;width:auto;height:calc(var(--W)*.074);max-height:34px}
+.oy-cb-t span{font-size:20px;line-height:26px;font-weight:800;color:#fff;letter-spacing:-.02em;text-shadow:0 0 1px rgba(255,255,255,.6)}
+.oy-cb-d{flex:1;min-width:0;padding-top:2px;text-align:right;font-size:min(14px,calc(var(--W)*.0345));line-height:18px;color:rgba(255,255,255,.93);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oy-cb-tk{position:relative;flex:none;width:16px;height:18px;margin-right:2px}
+.oy-cb-tk::before,.oy-cb-tk::after{content:'';position:absolute;height:2px;border-radius:2px;background:rgba(255,255,255,.9);transform:rotate(-62deg)}
+.oy-cb-tk::before{left:0;top:7px;width:13px}
+.oy-cb-tk::after{left:6px;top:9px;width:10px;opacity:.85}
+.oy-cb-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.oy-cb-chalk{position:absolute;right:16px;bottom:1px;display:flex;align-items:flex-end;gap:5px;pointer-events:none}
+.oy-cb-chalk b{display:block;height:5px;border-radius:3px}
+.oy-cb-chalk b:nth-child(1){width:18px;background:linear-gradient(180deg,#FFFFFF,#DADADA);box-shadow:0 1px 1px rgba(0,0,0,.25)}
+.oy-cb-chalk b:nth-child(2){width:19px;background:linear-gradient(180deg,#FFB1CD,#EC6D9C);box-shadow:0 1px 1px rgba(0,0,0,.25)}
+.oy-cb-chalk b:nth-child(3){width:30px;height:7px;border-radius:2px;background:linear-gradient(180deg,#F8A8C8 0 38%,#3A3A40 38% 100%);box-shadow:0 1px 1.5px rgba(0,0,0,.35)}
+/* 종이 카드: 사진 → 이름 → 줄 → 번호이동 | 기기변경 */
+.oy-dc{position:relative;display:flex;flex-direction:column;align-items:center;min-width:0;padding:10px 4px 10px;border-radius:9px;background:#F9F8F6;color:#131518;
+  box-shadow:0 2px 4px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.04)}
+.oy-dc-pin{position:absolute;z-index:2;top:-4px;left:8px;width:13px;height:13px;border-radius:50%;
+  background:radial-gradient(circle at 34% 30%,#FFD1E2 0 14%,#F4519A 42%,#C2125F 100%);box-shadow:1px 2px 2px rgba(0,0,0,.38)}
+.oy-dc-pin.r{left:auto;right:8px;background:radial-gradient(circle at 34% 30%,#D6EBFF 0 14%,#4B97F5 42%,#1656BE 100%)}
+.oy-dc-im{display:flex;align-items:center;justify-content:center;width:100%;height:calc(var(--W)*.19);max-height:90px}
+.oy-dc-img{display:block;max-width:94%;max-height:100%;width:auto;height:auto;object-fit:contain}
+.oy-dc-im .ph-soft{width:100%;height:100%;background:none}
+.oy-dc-nm{display:block;max-width:100%;margin-top:7px;font-size:16px;line-height:20px;font-weight:800;letter-spacing:-.03em;text-align:center;word-break:keep-all}
+.oy-dc-hr{display:block;align-self:stretch;height:1px;margin:8px 3px 0;background:#E4E2DC}
+.oy-dc-pr{display:flex;align-self:stretch;margin-top:7px}
+.oy-dc-c{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px}
+.oy-dc-c>small{font-size:11.5px;line-height:14px;color:#2E3238;letter-spacing:-.02em;white-space:nowrap}
+.oy-dc-c b{position:relative;z-index:0;padding:0 2px;font-size:min(15px,calc(var(--W)*.0358));line-height:19px;font-weight:800;letter-spacing:-.035em;white-space:nowrap;color:#131518}
+.oy-dc-c b::after{content:'';position:absolute;z-index:-1;left:1px;right:1px;bottom:0;height:4px;border-radius:3px;background:rgba(255,143,185,.55)}
+.oy-dc-c b small{font-size:.84em;font-weight:700;margin-left:1px}
+.oy-dc-c b.pk{color:#EE0360}
+.oy-dc-c b.pk::after{background:rgba(255,214,10,.6)}
+.oy-dc-c b.ask{font-size:13px;font-weight:700;color:#4B5563}
+.oy-dc-c b.ask::after{display:none}
+.oy-dc-bar{flex:none;width:1px;margin:1px 0;background:#E2E0DA}
+.oy-dc .oy-so{border-radius:9px;font-size:15px}
+.oy-dc-sk .oy-dc-im{border-radius:8px}
+.oy-dc-sk .oy-dc-c b::after{display:none}
+.oy-dc-sk .oy-sk{display:inline-block}
+/* 한 줄 다 쓰는 카드 (특가가 1개 · 홀수일 때 마지막): 사진 왼쪽 · 글자 오른쪽 */
+.oy-dc.wide{grid-column:1/-1;display:grid;grid-template-columns:42% minmax(0,1fr);grid-template-rows:auto auto auto;align-items:center;column-gap:6px;padding:12px 8px}
+.oy-dc.wide .oy-dc-im{grid-row:1/4;grid-column:1}
+.oy-dc.wide .oy-dc-nm,.oy-dc.wide .oy-dc-hr,.oy-dc.wide .oy-dc-pr{grid-column:2}
+.oy-dc.wide .oy-dc-nm{margin-top:0;justify-self:center}
+
+/* 지금 많이 보는 휴대폰: 회색 둥근 칸(사진) + 아래 이름 · 옆으로 넘김 · 아래 점(지금 위치) + '옆으로 넘겨 더보기' */
+.oy-hp{display:flex;gap:8px;padding:0 15px;overflow-x:auto;scroll-snap-type:x proximity;scroll-padding:0 15px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.oy-hp::-webkit-scrollbar{display:none}
+.oy-hp-it{position:relative;flex:0 0 auto;width:calc(var(--W)*.2);min-width:72px;max-width:92px;display:flex;flex-direction:column;align-items:center;scroll-snap-align:start;color:#131518}
+.oy-hp-im{position:relative;display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:1.12/1;border-radius:14px;background:#F3F4F6;overflow:hidden}
+.oy-hp-img{display:block;max-width:84%;max-height:84%;width:auto;height:auto;object-fit:contain;mix-blend-mode:multiply}
+.oy-hp-im .ph-soft{width:100%;height:100%;background:none}
+.oy-hp-nm{display:flex;align-items:flex-start;justify-content:center;width:100%;min-height:30px;margin-top:6px;font-size:12px;line-height:15px;letter-spacing:-.04em;text-align:center;word-break:keep-all;color:#2B2F35}
+.oy-hp-nm .oy-sk{display:block}
+.oy-pg{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:4px;padding:0 15px}
+.oy-pg-d{display:flex;align-items:center;gap:6px}
+.oy-pg-d i{width:6px;height:6px;border-radius:3px;background:#DEDFE3;transition:width .25s,background-color .25s}
+.oy-pg-d i.on{width:16px;background:#EE0360}
+.oy-pg-t{display:flex;align-items:center;height:24px;font-size:12px;line-height:15px;color:#8A9099;letter-spacing:-.02em}
+.oy-pg-t svg{width:13px;height:13px;fill:none;stroke:#8A9099;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* 자주 찾는 서비스: 4칸 × 2줄 · 연한 회색 둥근 칸 · 아이콘(관리자 색) 위 · 이름 아래 */
+.oy-sv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:0 15px}
+.oy-sv-it{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;height:70px;padding:0 3px;border-radius:14px;background:#F6F7F9;color:#131518}
+.oy-sv-it svg{flex:none;width:25px;height:25px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.oy-sv-it span{display:block;max-width:100%;font-size:min(12.5px,calc(var(--W)*.0322));line-height:15px;font-weight:500;letter-spacing:-.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

@@ -66,10 +66,16 @@ var HOME=
       '<div class="oy-bn-cnt" id="oyBnCnt" aria-hidden="true"></div>'+
       '<button type="button" class="oy-bn-all" id="oyBnAll" aria-label="배너 전체보기" hidden>'+SVG_PLUS+'</button>'+
     '</section>'+
-    '<section class="oy-qm" aria-label="바로가기"><div class="oy-qm-sc"><div class="oy-qm-row" id="models"></div><div class="oy-qm-row" id="quick"></div></div></section>'+
+    /* 20261026 사장님 그림: 배너 → 이번주 특가(칠판 · 종이 카드 두 장) → 지금 많이 보는 휴대폰(옆으로 넘김) → 자주 찾는 서비스(4칸×2줄) → 띠배너 → 많이 찾아요 → 0원 */
+    '<section class="oy-cb" id="oyDealSec" aria-label="이번주 특가"><div class="oy-cb-in">'+
+      '<div class="oy-cb-h"><h2 class="oy-cb-t" id="oyDealT"></h2><span class="oy-cb-d" id="oyDealD"></span><i class="oy-cb-tk" aria-hidden="true"></i></div>'+
+      '<div class="oy-cb-g" id="oyDeal"></div></div>'+
+      '<i class="oy-cb-chalk" aria-hidden="true"><b></b><b></b><b></b></i></section>'+
+    '<section class="oy-sec oy-top3" id="hotSec"><div class="oy-sec-h"><h2 id="oyHotT"></h2><a class="oy-more" id="oyHotMore" href="#/t/rank" hidden>전체보기'+SVG_R+'</a></div><div class="oy-hp" id="models"></div>'+
+      '<div class="oy-pg" id="oyHotPg" hidden><span class="oy-pg-d" id="oyHotDots" aria-hidden="true"></span><button type="button" class="oy-pg-t" id="oyHotNext">옆으로 넘겨 더보기'+SVG_R+'</button></div></section>'+
+    '<section class="oy-sec oy-top3" id="svcSec"><div class="oy-sec-h"><h2 id="oySvcT"></h2></div><div class="oy-sv" id="quick"></div></section>'+
     '<section class="oy-band" id="trust" aria-label="안내 배너"><div class="oy-band-vp"><div class="oy-band-track" id="oyBand"></div></div><div class="oy-dots" id="oyBandDots" aria-hidden="true"></div></section>'+
     '<section class="oy-sec" id="popSec"><div class="oy-sec-h"><h2 id="oyPopT"></h2></div><div class="oy-ctl" id="oyPopChips"></div><div class="oy-g2" id="oyPop"></div></section>'+
-    '<section class="oy-sec" id="oyDealSec"><div class="oy-sec-h"><h2 id="oyDealT"></h2><span class="oy-sec-d" id="oyDealD"></span></div><div class="oy-big" id="oyDeal"></div></section>'+
     '<section class="oy-sec" id="zeroSec"><div class="oy-sec-h"><h2 id="oyZeroT"></h2></div><div class="oy-grid" id="oyZero"></div></section>'+
   '</div>'+
   /* ── 0원 (20261026 사장님: 위 탭 '홈 · 0원 · 특가 · 인기 모델 · 혜택/이벤트 · AI추천' — 특가에서 따로 뺌): 기기값 0원 목록 ── */
@@ -120,7 +126,8 @@ var PANE='home', POPCAT='all', DLCAT='all', RKCAT='all', CD=null, bound=false;
 var PRE={on:false, nm:'사전예약', href:''};
 // 메인 배너 바탕: 올리브영 배너처럼 사진 느낌의 진한 색 + 흰 글자 (아래쪽은 shop.css 에서 어둡게)
 var BN_BG=['linear-gradient(160deg,#BCC9EF 0%,#7E92D4 100%)','linear-gradient(160deg,#EFC8DC 0%,#C48BB4 100%)','linear-gradient(160deg,#CEC6F1 0%,#8E81D2 100%)','linear-gradient(160deg,#F3CCD3 0%,#D68C9E 100%)'];
-var BC_BG=['linear-gradient(165deg,#7B6BDF 0%,#4B3BAE 100%)','linear-gradient(165deg,#4F87EE 0%,#2350C2 100%)','linear-gradient(165deg,#EC6D99 0%,#BF3A6B 100%)'];
+// 이번주 특가 칠판 제목 (20261026 사장님 그림의 분필 글씨 그대로 — 관리자 제목이 '이번주 특가'일 때만 그림, 다르면 글자로)
+var CB_TITLE='/assets/shop/deal-chalk-title.webp';
 // TV프리 카드: 올리브영 이벤트 카드처럼 진한 바탕 + 흰 글자 (사진은 흰 둥근 칸 안 — TV프리5 사진은 바탕이 흰색)
 var EV_BG=['linear-gradient(165deg,#8E9BDD 0%,#5562B3 100%)','linear-gradient(165deg,#B59BDD 0%,#7756B0 100%)','linear-gradient(165deg,#86B4DE 0%,#4B78B3 100%)'];
 // AI추천 카드 바탕 (올리브영 AI픽은 사진 — 우리는 진한 색 + 제품 사진, 흰 글자)
@@ -216,7 +223,7 @@ function showPane(){
   if(p==='cat') put($('#oySubT'),'카테고리'); else if(p==='list') put($('#oySubT'),E(lsTitle(lsOfHash())));
   tabOn(sub?'cat':'home');
   if(p==='rank' && A && A.RANK==null && !A.prWait()) A.loadRank();
-  if(p==='home') carLayout(BN,null);
+  if(p==='home'){ carLayout(BN,null); hotDots(); }
   if(p==='event') carLayout(EV,null);
 }
 
@@ -295,16 +302,52 @@ function bnAll(){
   }).join('')+'</div>');
 }
 
-/* ---------- 홈: 퀵메뉴 2줄 (휴대폰 / 바로가기) — 이름 한 줄 ---------- */
-function renderQuick(wait){
-  if(wait){ var s=''; for(var k=0;k<6;k++) s+='<span class="oy-qi"><span class="oy-qi-ic oy-skb"></span><span class="oy-qi-t">'+sk('36px','11px','4px')+'</span></span>';
-    put($('#models'),s); put($('#quick'),s); return; }
-  put($('#models'), A.phones().map(function(m,i){
+/* ---------- 홈: 지금 많이 보는 휴대폰 (20261026 사장님 그림) — 회색 둥근 칸(사진 + 이름)을 옆으로 넘김 · 아래 점 + '옆으로 넘겨 더보기'
+     휴대폰 순서·숨기기는 관리자 그대로 (예전 퀵메뉴 휴대폰 줄과 같은 목록) · 제목은 관리자 '구역 제목'(sec:hot) ---------- */
+function renderHot(wait){
+  var sec=$('#hotSec'), s='', k;
+  if(wait){ sec.hidden=false; put($('#oyHotT'),sk('170px','18px')); $('#oyHotMore').hidden=true;
+    for(k=0;k<5;k++) s+='<span class="oy-hp-it"><span class="oy-hp-im oy-skb"></span><span class="oy-hp-nm">'+sk('46px','11px','4px')+'</span></span>';
+    put($('#models'),s); hotDots(); return; }
+  var list=A.secOn('hot')?A.phones():[];
+  sec.hidden=!list.length; if(!list.length) return;
+  put($('#oyHotT'), E((A.S.sec.hot||{}).t||'')); edAt('#oyHotT','sec:hot');
+  $('#oyHotMore').hidden=!tabs(false).some(function(t){ return t.k==='rank'; });   // 전체보기 → 위 탭 '인기 모델'
+  put($('#models'), list.map(function(m,i){
     var so=A.SO(m);
-    return '<a class="oy-qi'+hc(m)+'" href="#/model/'+E(m.id)+'"'+ed('model:'+m.id)+'><span class="oy-qi-ic">'+img(A.mImg(m),'oy-qi-im',i<6)+(so?'<i class="oy-so">품절</i>':'')+'</span><span class="oy-qi-t">'+E(shortNm(m.nm))+'</span></a>';
+    return '<a class="oy-hp-it'+hc(m)+'" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"'+ed('model:'+m.id)+'><span class="oy-hp-im">'+img(A.mImg(m),'oy-hp-img',i<5)+(so?'<i class="oy-so">품절</i>':'')+'</span>'+
+      '<span class="oy-hp-nm">'+E(m.nm)+'</span></a>';
   }).join(''));
-  put($('#quick'), A.vis(A.S.quick||[]).map(function(q){
-    return '<a class="oy-qi'+hc(q)+'" href="'+E(href(q.go))+'" data-go="'+E(q.go||'')+'"'+ed('quick:'+A.S.quick.indexOf(q))+'><span class="oy-qi-ic"><svg viewBox="0 0 24 24" aria-hidden="true" style="stroke:'+E(q.c||'#131518')+'">'+(A.QI[q.ic]||A.QI.star)+'</svg></span><span class="oy-qi-t">'+E(QSHORT[q.nm]||q.nm)+'</span></a>';
+  hotDots();
+}
+// 아래 점: 화면 몇 장 분량인지 · 지금 어디쯤인지 (넘칠 때만 보임)
+function hotDots(){
+  var sc=$('#models'), pg=$('#oyHotPg'); if(!sc || !pg) return;
+  var W=sc.clientWidth, SW=sc.scrollWidth, n=W?Math.ceil((SW-8)/W):0, dw=$('#oyHotDots');
+  if(sc.querySelector('.oy-skb')){ pg.hidden=false; if(dw.children.length!==3) dw.innerHTML='<i></i><i></i><i></i>'; return; }   // 받기 전: 자리만 (화면이 밀리지 않게)
+  if(n<2){ pg.hidden=true; return; }
+  pg.hidden=false;
+  if(dw.children.length!==n){ var h=''; for(var j=0;j<n;j++) h+='<i></i>'; dw.innerHTML=h; }
+  var max=SW-W, on=max>0?Math.round(sc.scrollLeft/max*(n-1)):0;
+  Array.prototype.forEach.call(dw.children,function(d,j){ d.classList.toggle('on',j===on); });
+}
+function hotNext(){
+  var sc=$('#models'); if(!sc) return;
+  var max=sc.scrollWidth-sc.clientWidth, to=sc.scrollLeft>=max-4?0:Math.min(max, sc.scrollLeft+sc.clientWidth*.8);   // 끝이면 처음으로
+  if(sc.scrollTo) sc.scrollTo({left:to, behavior:'smooth'}); else sc.scrollLeft=to;
+}
+
+/* ---------- 홈: 자주 찾는 서비스 (20261026 사장님 그림: 4칸 × 2줄) — 항목·아이콘·색·누르면 가는 곳은 관리자 퀵메뉴 그대로
+     (휴대폰 화면 폭에선 그림처럼 아이콘 옆에 이름을 두면 이름이 잘려서 아이콘 아래에 이름) · 제목은 관리자 '구역 제목'(sec:svc) ---------- */
+function renderSvc(wait){
+  var sec=$('#svcSec'), s='', k;
+  if(wait){ sec.hidden=false; put($('#oySvcT'),sk('130px','18px')); for(k=0;k<8;k++) s+='<span class="oy-sv-it oy-skb"></span>'; put($('#quick'),s); return; }
+  var list=A.secOn('svc')?A.vis(A.S.quick||[]):[];
+  sec.hidden=!list.length; if(!list.length) return;
+  put($('#oySvcT'), E((A.S.sec.svc||{}).t||'')); edAt('#oySvcT','sec:svc');
+  put($('#quick'), list.map(function(q){
+    return '<a class="oy-sv-it'+hc(q)+'" href="'+E(href(q.go))+'" data-go="'+E(q.go||'')+'"'+ed('quick:'+A.S.quick.indexOf(q))+'><svg viewBox="0 0 24 24" aria-hidden="true" style="stroke:'+E(q.c||'#131518')+'">'+(A.QI[q.ic]||A.QI.star)+'</svg>'+
+      '<span>'+E(QSHORT[q.nm]||q.nm)+'</span></a>';
   }).join(''));
 }
 
@@ -428,20 +471,33 @@ function renderPop(wait){
   put($('#oyPop'), byCat(list,POPCAT).slice(0,4).map(function(m){ return card2(m,0); }).join(''));
 }
 
-/* ---------- 홈: 이번주 특가 (올리브영 Weekly Special — 큰 카드, 가운데 흰 글자) ---------- */
+/* ---------- 홈: 이번주 특가 (20261026 사장님 그림: 배너 바로 아래 칠판) ----------
+   나무 틀 칠판 · 분필 제목 '이번주 특가' + 이번 주 날짜 · 압정 꽂은 종이 카드 두 장 나란히
+   카드: 사진 → 이름 → 줄 → 번호이동(분홍 · 노란 밑줄) | 기기변경(분홍 밑줄)
+   (가격은 예전과 같은 계산 — 관리자 '이번주 특가' 모델 · 가격표 기준이라 정책이 바뀌면 같이 바뀜) · 홀수면 마지막 카드는 한 줄 다 씀 */
+function wonHtml(v){ return n0(v)+'<small>원</small>'; }
+function cbTitle(){ var t=dealTitle(); return t==='이번주 특가'?'<img src="'+CB_TITLE+'" alt="이번주 특가" width="370" height="74" decoding="async">':'<span>'+E(t)+'</span>'; }
 function renderDeal(wait){
   var sec=$('#oyDealSec'), D=A.S.deal||{};
-  if(wait){ sec.hidden=false; put($('#oyDealT'),sk('96px','18px')); put($('#oyDealD'),''); put($('#oyDeal'),'<span class="oy-bc oy-skb"></span>'); return; }
-  var it=D.on?A.dealItems():[];
-  sec.hidden=!it.length; if(!it.length) return;
-  put($('#oyDealT'), E(dealTitle())); edAt('#oyDealT','deal');
+  if(wait){ sec.hidden=false; put($('#oyDealT'),'<img src="'+CB_TITLE+'" alt="이번주 특가" width="370" height="74" decoding="async">'); put($('#oyDealD'),'');
+    var col='<span class="oy-dc-c"><small>'+sk('40px','11px','3px')+'</small><b>'+sk('60px','15px','4px')+'</b></span>';   // 받은 뒤와 같은 높이 (화면이 밀리지 않게)
+    var skc='<span class="oy-dc oy-dc-sk"><span class="oy-dc-im oy-skb"></span><b class="oy-dc-nm">'+sk('70px','15px','4px')+'</b><i class="oy-dc-hr"></i><span class="oy-dc-pr">'+col+'<i class="oy-dc-bar"></i>'+col+'</span></span>';
+    put($('#oyDeal'), skc+skc); return; }
+  var it=D.on?A.dealItems():[], n=it.length;
+  sec.hidden=!n; if(!n) return;
+  put($('#oyDealT'), cbTitle()); edAt('#oyDealT','deal');
   put($('#oyDealD'), E(A.weekRange()));
   put($('#oyDeal'), it.map(function(x,i){
-    var m=x.m, so=A.SO(m);
-    var pr=x.mnp!=null?'번호이동 <em>'+E(A.wz(x.mnp))+'</em>':'구매가 <em class="ask">상담 시 안내</em>';
-    if(x.chg!=null) pr+=' · 기기변경 '+E(A.wz(x.chg));
-    return '<a class="oy-bc'+(so?' so':'')+'" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"'+ed('deal')+' style="background:'+BC_BG[i%BC_BG.length]+'"><span class="oy-bc-im">'+img(A.mImg(m),'oy-bc-img',false)+'</span>'+
-      '<b class="oy-bc-t">'+E(m.nm)+'</b><span class="oy-bc-d">'+pr+'</span>'+(so?'<i class="oy-so oy-so-l">일시품절</i>':'')+'</a>';
+    var m=x.m, so=A.SO(m), c=[];
+    if(x.mnp!=null) c.push('<span class="oy-dc-c"><small>번호이동</small><b class="pk">'+wonHtml(x.mnp)+'</b></span>');
+    if(x.chg!=null) c.push('<span class="oy-dc-c"><small>기기변경</small><b>'+wonHtml(x.chg)+'</b></span>');
+    if(!c.length) c.push('<span class="oy-dc-c"><small>구매가</small><b class="ask">상담 시 안내</b></span>');
+    return '<a class="oy-dc'+(n%2 && i===n-1 && n>1?' wide':'')+(n===1?' wide one':'')+(so?' so':'')+'" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"'+ed('deal')+'>'+
+      '<i class="oy-dc-pin'+(i%2?' r':'')+'" aria-hidden="true"></i>'+
+      '<span class="oy-dc-im">'+img(A.mImg(m),'oy-dc-img',true)+'</span>'+
+      '<b class="oy-dc-nm">'+E(m.nm)+'</b><i class="oy-dc-hr" aria-hidden="true"></i>'+
+      '<span class="oy-dc-pr">'+c.join('<i class="oy-dc-bar" aria-hidden="true"></i>')+'</span>'+
+      (so?'<i class="oy-so">일시품절</i>':'')+'</a>';
   }).join(''));
 }
 
@@ -667,6 +723,9 @@ function bindOnce(){
   carSwipe(BN); carSwipe(EV);
   swipe($('#oyBand'), BD, function(dx){ bdShow(false,dx); }, function(dx){ if(dx<=-40) bdGo(1); else if(dx>=40) bdGo(-1); else bdShow(true); });
   $('#oyBnAll').addEventListener('click',function(e){ e.preventDefault(); bnAll(); });
+  // 지금 많이 보는 휴대폰: 옆으로 넘기면 아래 점이 따라감 · '옆으로 넘겨 더보기'를 누르면 한 화면만큼 넘김
+  var hr=0; $('#models').addEventListener('scroll',function(){ if(!hr) hr=requestAnimationFrame(function(){ hr=0; hotDots(); }); },{passive:true});
+  $('#oyHotNext').addEventListener('click',function(e){ e.preventDefault(); hotNext(); });
   window.addEventListener('scroll',hdScroll,{passive:true});
   document.addEventListener('click',function(e){
     var t=e.target; if(!t || !t.closest) return;
@@ -696,7 +755,7 @@ function bindOnce(){
     if(PANE!=='home'){ location.hash='#/'; return; }
     window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-$('#oyGnb').offsetHeight-4, behavior:'smooth'});
   },true);
-  var rt=null; window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(function(){ carLayout(BN,null); carLayout(EV,null); },120); });
+  var rt=null; window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(function(){ carLayout(BN,null); carLayout(EV,null); hotDots(); },120); });
   // 화면 바뀔 때: 위 탭 · 카테고리 · 분류 목록 화면 바꾸기 (스토어가 화면을 바꾼 다음에 맞춤)
   window.addEventListener('hashchange',function(){ requestAnimationFrame(function(){
     if(/^#\/cat\//.test(location.hash)){ location.replace(catToList(location.hash)); return; }   // 스토어 카테고리 주소로 바로 들어온 경우
@@ -706,7 +765,7 @@ function bindOnce(){
     if(p==='cat') renderCat(wait);
     if(p!==PANE){ PANE=p; renderGnb(wait); showPane(); $('.oy-top').classList.remove('hide'); window.scrollTo(0,0); }
     else if(p==='list' || p==='cat'){ showPane(); if(p==='cat') window.scrollTo(0,0); }
-    else { carLayout(BN,null); carLayout(EV,null); }
+    else { carLayout(BN,null); carLayout(EV,null); hotDots(); }
   }); });
 }
 
@@ -717,7 +776,7 @@ function render(api){
   if(/^#\/cat\//.test(location.hash)) location.replace(catToList(location.hash));   // 스토어 카테고리 주소로 바로 들어온 경우 → 분류 목록
   PANE=pickPane(wait);
   renderGnb(wait);
-  renderBanner(wait); renderQuick(wait); renderBand(wait); renderPop(wait); renderDeal(wait); renderZero(wait);
+  renderBanner(wait); renderDeal(wait); renderHot(wait); renderSvc(wait); renderBand(wait); renderPop(wait); renderZero(wait);
   renderTabZero(wait); renderTabDeal(wait); renderTabRank(wait); renderTabEvent(wait); renderTabAi(wait); renderList(wait); renderCat(wait);
   showPane();
   api.renderFoot();
