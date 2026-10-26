@@ -267,7 +267,7 @@ function carSet(c, html, n, rn){ c.rn=rn||n; if(put($(c.o.track),html)){ c.n=n; 
 /* ---------- 홈: 메인 배너 (스토어 히어로 슬라이드 + 프로모 배너) ---------- */
 /* 20261023 사장님: 메인 배너는 사장님이 만든 통이미지(글씨까지 그림 안에 있는 배너)만 — 배너 위 글씨·어두운 그라데이션·바탕색 없이 그림 그대로
    20261026: 코드에 박혀 있던 배너를 관리자 설정(스토어 설정 bn)으로 옮김 → 관리자(/apple)에서 그림·순서·누르면 가는 곳·숨기기
-   처음 값(1 유플러스 다이렉트 · 2 통신이 쉬우면 안돼? · 3 폴드 가격도 접히다 47%)은 store.js DEFAULT.bn · 그림은 assets/store/banner/ */
+   처음 값(1 유플러스 다이렉트 · 2 통신이 쉬우면 안돼? · 3 폴드 가격도 접히다 47% · 4 갤럭시 버디5 0원)은 store.js DEFAULT.bn · 그림은 assets/store/banner/ */
 function bannerList(){
   var S=A.S, out=A.vis(S.hero||[]).map(function(h){
     var m=modelOf(h.go);   // 설명이 비어 있으면 연결된 모델의 소개 문구 (관리자에 있는 그대로)

@@ -34,7 +34,8 @@ var DEFAULT = {
   bn:[
     {img:'banner/bn-01.webp', nm:'유플러스 다이렉트 · U+ 최초의 온라인 대리점', go:'#/model/iphone18pro'},
     {img:'banner/bn-02.webp', nm:'통신이 쉬우면 안돼? · 유플러스 다이렉트', go:'#/model/fold8'},
-    {img:'banner/bn-03.webp', nm:'폴드 가격도 접히다 47%', go:'#/model/fold8'}   // 20261026 사장님: 53% → 47% 그림으로 교체 (바뀐 정책 기준)
+    {img:'banner/bn-03.webp', nm:'폴드 가격도 접히다 47%', go:'#/model/fold8'},   // 20261026 사장님: 53% → 47% 그림으로 교체 (바뀐 정책 기준)
+    {img:'banner/bn-04.webp', nm:'기기값 걱정 없이 갤럭시 버디5 0원', go:'#/model/a176'}   // 20261026 사장님: 4번 배너 (사장님 통이미지) → 갤럭시 버디 5 상세
   ],
   deal:{on:true, title:'이번 주 특가', img:'hero/hero-02.webp', items:'fold8|73만원|47만원\nflip8|60만원|34만원\ns26|68만원|50만원\niphone17|50만원|24만원'},
   hero:[
