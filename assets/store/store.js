@@ -98,9 +98,23 @@ var DEFAULT = {
     glance:{t:'한눈에 보기'}   // 20261026 /shop 홈 '한눈에 보기' (예전 자주 찾는 서비스 자리)
   },
   priceNote:'',
-  // 20261026 사장님: 모든 휴대폰 상세 '구매혜택' 칸 맨 아래 공통 그림 (유플러스 다이렉트 소개 · 구매부터 개통까지 · 걱정 없는 점 · 포장)
-  // 관리자 상세에서 이 그림을 누르면 바꿀 수 있음 · 끝의 #가로x세로 = 그림 크기 (탭을 눌러 내려갈 때 자리를 미리 잡아 화면이 밀리지 않게)
-  dtc:{ben:['detail/common-01.webp#1080x2181','detail/common-02.webp#1080x1703','detail/common-03.webp#1080x1028','detail/common-04.webp#1080x677','detail/common-05.webp#1080x761']},   // 20261026 5차 (맨 아래 '한 번의 인연이, 고객님의 일상 속으로.')
+  // 20261026 사장님: 모든 휴대폰 상세 '구매혜택' 칸 맨 아래 공통 내용 — 글씨는 진짜 글자(관리자 상세에서 그 칸을 누르면 고침) · 사진만 그림
+  //   [ ] 안 글자 = 분홍 굵게 · { } 안 글자 = 검정 굵게 · 줄바꿈은 그대로 (예전엔 통이미지 detail/common-01~05.webp)
+  dcom:{
+    hero:{k:'U+ 공식 파트너사가 운영하는', t:'유플러스 [다이렉트]', s:'{All for [U+] Direct}\n고객님을 위한 모든 것,\n당신의 다이렉트 [유닥]', img:'detail/dc-store.webp'},
+    cards:[
+      {t:'[U+] 공식 파트너사', h:'', s:'(주)신세계정보통신이\n운영하는 온라인 채널입니다.'},
+      {t:'오프라인 매장 운영', h:'서울·경기 1위!', s:'매장 방문 후\n상담·수령도 가능합니다!'},
+      {t:'투명한 구매 조건', h:'보이는 혜택·조건 그대로', s:'약속한 기기값·요금제\n조건 그대로'},
+      {t:'빠르고 안전한 배송', h:'당일 택배 발송 약속', s:'오후 3시 이전 구매 확정 시\n당일 발송합니다.'}],
+    steps:{t:'구매부터 [개통까지]', s:'{한 번의 판매로 끝내지 않습니다.}\n개통 이후의 통신 생활까지,\n유플러스 다이렉트가 고객님과 함께합니다.',
+      it:[{t:'온라인 신청', s:'원하시는 조건으로\n상담을 신청해 주세요.'}, {t:'5분 상담', s:'전문 상담원이\n구매 조건을 안내합니다.'},
+          {t:'당일 발송', s:'오후 3시 이전\n구매 확정 시 당일 발송'}, {t:'개통 진행', s:'제품 수령 후\n개통을 진행합니다.'}],
+      note:'상담 신청은 구매 확정이나 결제가 아닙니다.\n언제든 편하게 문의해 주세요.'},
+    promise:{t:'[약속]드립니다!', it:['제휴카드\n의무가입 X', '부가서비스\n의무가입 X', '상담 내용과\n동일 조건 약속!', '원하시는 경우 직영 매장에\n방문 수령·개통 가능!']},
+    close:{k:'All for [U+] Direct', t:'한 번의 인연이,\n[고객님의 일상 속으로.]', s:'{한 번의 판매로 끝내지 않습니다.}\n유플러스 다이렉트는\n고객님의 통신 생활을 함께합니다.', sig:'당신의 다이렉트, [유닥].', img:'detail/dc-pack.webp#1080x720'}
+  },
+  dtc:{ben:[]},   // 공통 내용 아래에 더 넣을 그림 (관리자 '모든 휴대폰 공통 상세 그림')
   stores:[
     {nm:'건대입구역점',addr:'서울시 광진구 능동로 95'},{nm:'군자역점',addr:'서울시 광진구 천호대로 573'},{nm:'신군자점',addr:'서울시 광진구 천호대로 548'},
     {nm:'신자양점',addr:'서울시 광진구 자양번영로 42'},{nm:'성수역점',addr:'서울시 성동구 아차산로 96'},{nm:'용답로데오점',addr:'서울시 성동구 용답동 58-1'},
@@ -283,6 +297,8 @@ function normalize(d){
   // 히어로 사진: 예전 저장값(hero-0N.jpg)은 실제 파일(hero-0N.webp)로
   (o.hero||[]).forEach(function(h){ if(h&&typeof h.img==='string') h.img=h.img.replace(/^hero\/(hero-0[1-3])\.jpg$/,'hero/$1.webp'); });
   o.deal=o.deal||clone(DEFAULT.deal); o.ship=o.ship||clone(DEFAULT.ship); o.lists=o.lists||{};
+  var dc0=clone(DEFAULT.dcom), dc=(d&&d.dcom&&typeof d.dcom==='object')?d.dcom:{};   // 20261026 상세 공통 내용
+  Object.keys(dc).forEach(function(k){ if(dc[k]!=null) dc0[k]=dc[k]; }); dc0.cards=arr(dc0.cards); dc0.steps.it=arr(dc0.steps.it); dc0.promise.it=arr(dc0.promise.it); o.dcom=dc0;
   o.applyAdd=!!o.applyAdd;   // 상담 신청 '요금제별 혜택(워치·태블릿·TV프리)' — 기본 숨김
   o.brand=o.brand||clone(DEFAULT.brand); o.biz=o.biz||clone(DEFAULT.biz); o.promo=o.promo||clone(DEFAULT.promo);
   o.pricing=normPricing(o.pricing);
@@ -1263,17 +1279,55 @@ function pdHeadOn(){
 function pdHeadOff(){ var sh=$('#v-model .subhead'); if(!sh || !sh.classList.contains('pd-hd')) return; sh.classList.remove('pd-hd'); if(PD_HD0!=null) sh.innerHTML=PD_HD0; }
 // 관리자에서 넣는 상세 그림 (모델마다 m.dt = {ben:[…], note:[…], rev:[…], info:[…]} · 그림 경로 detail/파일.webp 또는 https 주소)
 function pdDt(m,k){ return arr(m&&m.dt&&m.dt[k]).map(function(x){ return String(x||'').trim(); }).filter(Boolean); }
-// 그림 위 누르는 칸 (그림 속 카드 자리 — 그 그림 크기 기준 % : 왼쪽, 위, 너비, 높이)
-// 20261026 사장님: 공통 그림 'U+ 공식 파트너사' 카드 → 인증마크(LG U+ 공식인증대리점) 크게 · '오프라인 매장 운영' 카드 → 우리 매장 목록
-var PD_HOT={'detail/common-01.webp':[
-  [5.185,49.702,43.704,23.384,'data-cert','','LG U+ 공식인증대리점 인증마크 보기'],
-  [51.111,49.702,43.704,23.384,'data-open','store','우리 매장 목록 보기']]};
+// 그림 위 누르는 칸 (그림 속 카드 자리 — 그 그림 크기 기준 % : 왼쪽, 위, 너비, 높이) — 20261026 공통 내용이 글씨로 바뀌어 지금은 비어 있음
+var PD_HOT={};
 function pdImgs(list){ return list.map(function(p){ var d=/#(\d+)x(\d+)$/.exec(p), base=p.replace(/#.*$/,''), hs=PD_HOT[base];
   var img='<img class="pd-dimg" src="'+esc(imgSrc(base))+'"'+(d?' width="'+d[1]+'" height="'+d[2]+'"':'')+' alt="" loading="lazy" decoding="async">';
   if(!hs) return img;
   return '<div class="pd-hs">'+img+hs.map(function(z){ return '<button type="button" class="pd-hot" style="left:'+z[0]+'%;top:'+z[1]+'%;width:'+z[2]+'%;height:'+z[3]+'%" '+z[4]+'="'+z[5]+'" aria-label="'+z[6]+'"></button>'; }).join('')+'</div>'; }).join(''); }
 // 모든 휴대폰 공통 상세 그림 (S.dtc · 관리자에서 다 지우면 {off:true} → 안 나옴)
-function pdCommon(k){ var c=S.dtc||{}; if(c.off) return []; return arr(c[k]).map(function(x){ return String(x||'').trim(); }).filter(Boolean); }
+function pdCommon(k){ var c=S.dtc||{}; if(c.off) return []; return arr(c[k]).map(function(x){ return String(x||'').trim(); }).filter(function(x){ return x && !/^detail\/common-0\d\.webp/.test(x); }); }   // 예전 통이미지(글씨까지 그림)는 글씨 칸과 겹쳐서 뺌
+// 20261026 사장님: 상세 공통 내용 (예전 통이미지 → 글씨) — 칸마다 관리자에서 누르면 고침 · [분홍 굵게] {검정 굵게} 줄바꿈 그대로
+var DC_I={
+  store:'<path class="p" d="M8.5 17.5 11 8h26l2.5 9.5"/><path class="p" d="M8.5 17.5c0 2.6 2 4.6 4.4 4.6s4.4-2 4.4-4.6c0 2.6 2 4.6 4.4 4.6s4.3-2 4.3-4.6c0 2.6 2 4.6 4.4 4.6s4.4-2 4.4-4.6c0 2.6 2 4.6 4.4 4.6s4.3-2 4.3-4.6"/><path d="M11.5 23v16.5h25V23"/><path d="M20.5 39.5V31h7v8.5"/><path d="M7.5 40h33"/>',
+  doc:'<path d="M25 41H14a3.5 3.5 0 0 1-3.5-3.5v-27A3.5 3.5 0 0 1 14 7h17a3.5 3.5 0 0 1 3.5 3.5V24"/><path d="M16.5 16h12M16.5 22.5h8"/><circle class="pf" cx="34.5" cy="35" r="9"/><path d="m30.4 35.2 2.9 2.9 5.2-5.6" stroke="#fff" stroke-width="2.8"/>',
+  truck:'<path d="M14.5 33.5h-1a2 2 0 0 1-2-2V14a2 2 0 0 1 2-2H30a2 2 0 0 1 2 2v19.5h-10"/><path d="M32 19h6.2l5.3 6.6v6a2 2 0 0 1-2 2h-1.3"/><circle cx="18.3" cy="34.6" r="3.7"/><circle cx="36.4" cy="34.6" r="3.7"/><path class="p" d="M3.5 18h8.5M5.5 23.5h6.5M7.5 29h4.5"/>',
+  laptop:'<rect x="9.5" y="10" width="29" height="20.5" rx="2.5"/><path d="M4.5 35h39v1.5a2.5 2.5 0 0 1-2.5 2.5H7a2.5 2.5 0 0 1-2.5-2.5z"/><path d="M21 35v1.2h6V35" stroke-width="2"/>',
+  headset:'<path d="M10 27v-3a14 14 0 0 1 28 0v3"/><rect class="df" x="6.5" y="24" width="8" height="13" rx="3.4"/><rect class="df" x="33.5" y="24" width="8" height="13" rx="3.4"/><path d="M37.5 37c0 3.6-3.4 5.6-9.5 5.6h-1.5"/><rect class="df" x="21.5" y="40.6" width="6" height="4" rx="2"/>',
+  box:'<path d="M24 5 41 13.5v21L24 43 7 34.5v-21z"/><path d="M7 13.5 24 22l17-8.5M24 22v21"/><path class="p" d="m15.8 9.4 16.6 8.4v6" stroke-width="3"/>',
+  phone:'<rect x="13" y="5" width="22" height="38" rx="4.5"/><path class="p" d="m18.3 24.8 4.2 4.2 7.4-8" stroke-width="3.1"/>',
+  card:'<path d="M30 33H8.5A3.5 3.5 0 0 1 5 29.5v-15A3.5 3.5 0 0 1 8.5 11h25a3.5 3.5 0 0 1 3.5 3.5V25"/><path d="M5 18.5h32M10.5 26h7"/><path class="p" d="m33.5 31.5 9 9m0-9-9 9" stroke-width="3.3"/>',
+  gear:'<path d="M30.04 18.41 L33.46 19.14 L33.46 22.86 L30.04 23.59 L29.22 25.56 L31.13 28.49 L28.49 31.13 L25.56 29.22 L23.59 30.04 L22.86 33.46 L19.14 33.46 L18.41 30.04 L16.44 29.22 L13.51 31.13 L10.87 28.49 L12.78 25.56 L11.96 23.59 L8.54 22.86 L8.54 19.14 L11.96 18.41 L12.78 16.44 L10.87 13.51 L13.51 10.87 L16.44 12.78 L18.41 11.96 L19.14 8.54 L22.86 8.54 L23.59 11.96 L25.56 12.78 L28.49 10.87 L31.13 13.51 L29.22 16.44Z"/><circle cx="21" cy="21" r="4.3"/><path class="p" d="m33.5 31.5 9 9m0-9-9 9" stroke-width="3.3"/>',
+  chat:'<path d="M24 7.5c10.5 0 19 6.9 19 15.4S34.5 38.3 24 38.3c-2 0-3.9-.2-5.7-.7L10 41.5l1.8-7C7.6 31.7 5 27.5 5 22.9 5 14.4 13.5 7.5 24 7.5z"/><circle class="pf" cx="16.5" cy="22.9" r="2"/><circle class="pf" cx="24" cy="22.9" r="2"/><circle class="pf" cx="31.5" cy="22.9" r="2"/>',
+  pin:'<path class="p" d="M24 43s-13-11.4-13-21.5A13 13 0 0 1 24 8.5"/><path d="M24 43s13-11.4 13-21.5A13 13 0 0 0 24 8.5"/><circle class="pf" cx="24" cy="21.5" r="4.6"/>'
+};
+function dcSvg(k){ return '<svg class="dc-i" viewBox="0 0 48 48" aria-hidden="true">'+(DC_I[k]||'')+'</svg>'; }
+function dcTx(s){ return esc(s==null?'':s).replace(/\{([^{}]*)\}/g,'<b>$1</b>').replace(/\[([^\[\]]*)\]/g,'<em>$1</em>').replace(/\n/g,'<br>'); }
+function pdCommonHtml(){
+  var D=S.dcom||{}; if(D.off && !EDIT) return '';
+  var e=function(k){ return EDIT?' data-edit="dcom:'+k+'"':''; }, H=D.hero||{}, C=arr(D.cards), P=D.steps||{}, R=D.promise||{}, Z=D.close||{};
+  var h='<div class="dcm'+(D.off?' is-hidden':'')+'">';   // (스토어에 이미 .dc 카드가 있어서 dcm)
+  // 맨 위: 유플러스 다이렉트 + 매장 사진
+  h+='<div class="dc-hero"'+e('hero')+'>'+(H.k?'<div class="dc-k">'+dcTx(H.k)+'</div>':'')+'<h2 class="dc-h1">'+dcTx(H.t)+'</h2>'+(H.s?'<p class="dc-sl">'+dcTx(H.s)+'</p>':'')+'</div>';
+  if(H.img) h+='<div class="dc-store"'+e('hero')+'><img src="'+esc(imgSrc(String(H.img).replace(/#.*$/,'')))+'" alt="" loading="lazy" decoding="async"></div>';
+  // 카드 4개 — U+ 공식 파트너사(누르면 인증마크) · 오프라인 매장 운영(누르면 매장 목록) · 투명한 구매 조건 · 빠르고 안전한 배송
+  h+='<div class="dc-cards'+(H.img?'':' np')+'">'+C.slice(0,4).map(function(c,i){
+    var top=i===0?'<div class="dc-logos"><img class="dc-bd" src="'+esc(imgSrc('detail/dc-badge.webp'))+'" alt="LG U+ 공식인증대리점" loading="lazy"><i></i><img class="dc-wm" src="/assets/shop/logo-shop.png" width="476" height="66" alt="유플러스 다이렉트" loading="lazy"></div>'
+      :'<div class="dc-ic">'+dcSvg(['','store','doc','truck'][i])+'</div>';
+    var act=i===0?' data-cert role="button" tabindex="0" aria-label="LG U+ 공식인증대리점 인증마크 보기"':i===1?' data-open="store" role="button" tabindex="0" aria-label="우리 매장 목록 보기"':'';
+    return '<div class="dc-card"'+act+e('card:'+i)+'>'+top+'<h3>'+dcTx(c.t)+'</h3>'+(c.h?'<div class="dc-hl">'+dcTx(c.h)+'</div>':'')+(c.s?'<p>'+dcTx(c.s)+'</p>':'')+'</div>'; }).join('')+'</div>';
+  // 구매부터 개통까지
+  h+='<div class="dc-pn pink"'+e('steps')+'><h2>'+dcTx(P.t)+'</h2>'+(P.s?'<p class="dc-sub">'+dcTx(P.s)+'</p>':'')+'<div class="dc-steps">'+
+    arr(P.it).slice(0,4).map(function(x,i){ return '<div class="dc-st"><div class="dc-ic">'+dcSvg(['laptop','headset','box','phone'][i])+'</div><div class="dc-n">0'+(i+1)+'</div><h4>'+dcTx(x.t)+'</h4>'+(x.s?'<p>'+dcTx(x.s)+'</p>':'')+'</div>'; }).join('')+'</div>'+
+    (P.note?'<div class="dc-note"><i>i</i><span>'+dcTx(P.note)+'</span></div>':'')+'</div>';
+  // 약속드립니다!
+  h+='<div class="dc-pn gray"'+e('promise')+'><h2>'+dcTx(R.t)+'</h2><div class="dc-pr">'+
+    arr(R.it).slice(0,4).map(function(x,i){ return '<div class="dc-pi"><div class="dc-ic">'+dcSvg(['card','gear','chat','pin'][i])+'</div><b>'+dcTx(x)+'</b></div>'; }).join('')+'</div></div>';
+  // 맨 아래: 한 번의 인연이 … + 포장 사진
+  h+='<div class="dc-close"'+e('close')+'><div class="dc-ct">'+(Z.k?'<div class="dc-lb">'+dcTx(Z.k)+'</div>':'')+'<h2>'+dcTx(Z.t)+'</h2>'+(Z.s?'<p>'+dcTx(Z.s)+'</p>':'')+(Z.sig?'<p class="dc-sig">'+dcTx(Z.sig)+'</p>':'')+'</div>'+
+    (Z.img?(function(zi){ var zd=/#(\d+)x(\d+)$/.exec(zi); return '<div class="dc-ph"><img src="'+esc(imgSrc(zi.replace(/#.*$/,'')))+'"'+(zd?' width="'+zd[1]+'" height="'+zd[2]+'"':'')+' alt="" loading="lazy" decoding="async"></div>'; })(String(Z.img)):'')+'</div>';   // 끝의 #가로x세로 = 사진 크기 (자리 미리 잡기)
+  return h+'</div>';
+}
 // 이름 옆 '최대 OO만원 할인' — 가격표에서 번호이동·기기변경 · 요금제 중 출고가 대비 가장 많이 빠지는 금액 (0원까지 되면 '기기값 0원')
 function pdBadge(m){
   var rs=sheetRows(m); if(!rs.length) return '';
@@ -1302,9 +1356,9 @@ function pdMore(m, st){
   var h='<div class="pd-more-w" id="pdMore"><nav class="pd-tabs" id="pdTabs" style="--n:'+tabs.length+'">'+tabs.map(function(x,i){ return '<button type="button" class="'+(i?'':'on')+'" data-pd-tab="'+x[0]+'">'+x[1]+'</button>'; }).join('')+'</nav>';
   // 구매혜택: 혜택 칸(기기값 할인 · 보호필름·케이스 · 고속충전기) + 관리자 '신뢰 문구' + 그림
   var tr=vis(S.trust||[]).filter(function(t){ return t && (t.b||t.s); });
-  var benC=pdCommon('ben');   // 20261026 모든 휴대폰 공통 그림 — 이 모델 그림 다음, 구매혜택 칸 맨 아래
-  h+='<section class="pd-sec" id="pdBen"><h3>구매혜택</h3>'+benTiles(m)+(tr.length?'<ul class="pd-ul">'+tr.map(function(t){ return ck('<b>'+esc(t.b)+'</b>'+(t.s?' <small>'+esc(t.s)+'</small>':'')); }).join('')+'</ul>':'')+pdImgs(ben)+
-    (benC.length?'<div class="pd-dc"'+(EDIT?' data-edit="dtc"':'')+'>'+pdImgs(benC)+'</div>':(EDIT?'<div class="pd-empty pd-dc" data-edit="dtc">모든 휴대폰 공통 그림 (구매혜택 맨 아래) — 눌러서 넣기</div>':''))+'</section>';
+  var benC=pdCommon('ben');   // 20261026 모든 휴대폰 공통 내용(글씨) + 공통 그림 — 이 모델 그림 다음, 구매혜택 칸 맨 아래
+  h+='<section class="pd-sec" id="pdBen"><h3>구매혜택</h3>'+benTiles(m)+(tr.length?'<ul class="pd-ul">'+tr.map(function(t){ return ck('<b>'+esc(t.b)+'</b>'+(t.s?' <small>'+esc(t.s)+'</small>':'')); }).join('')+'</ul>':'')+pdImgs(ben)+pdCommonHtml()+
+    (benC.length?'<div class="pd-dc"'+(EDIT?' data-edit="dtc"':'')+'>'+pdImgs(benC)+'</div>':(EDIT?'<div class="pd-empty pd-dc" data-edit="dtc">모든 휴대폰 공통 그림 더 넣기 (구매혜택 맨 아래) — 눌러서 넣기</div>':''))+'</section>';
   // 유의사항: 혜택 조건(요금제 · 약정) + 할부이자 + 관리자 '상세 화면 가격 안내 문구' + 그림
   var nl=[]; if(st&&st.t&&st.t.fee) nl.push(won(st.t.fee)+' 이상 요금제를 6개월 유지하는 조건이에요.'); nl.push('약정 기간은 2년이에요.');
   nl.push('월 기기값은 할부이자(연 5.9%)가 포함된 금액이에요.');

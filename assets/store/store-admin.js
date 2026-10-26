@@ -110,6 +110,7 @@ function saveModel(m){
   if($('#sheet [name="dt_ben"]')){ var dt={}; ['ben','note','rev','info'].forEach(function(k){ var l=V('dt_'+k).split('\n').map(function(x){ return x.trim(); }).filter(Boolean); if(l.length) dt[k]=l; });
     if(Object.keys(dt).length) m.dt=dt; else delete m.dt; }
 }
+var DC_HINT='<div class="hint">[ ] 안 글자는 <b style="color:#E6007E">분홍 굵게</b>, { } 안 글자는 <b>검정 굵게</b> · 줄을 바꾸면 화면에서도 줄이 바뀌어요 · 모든 휴대폰 상세에 똑같이 나와요</div>';   // 20261026 상세 공통 내용
 var ED = {
   // 20261026 /shop 메인 배너 (통이미지) — 그림 · 이름 · 누르면 가는 곳 · 숨기기 · 순서
   bn:{
@@ -162,12 +163,36 @@ var ED = {
   },
   // 20261026 사장님: 모든 휴대폰 상세 '구매혜택' 칸 맨 아래 공통 그림 (다 지우면 안 나옴)
   dtc:{
-    title:function(){ return '📄 모든 휴대폰 공통 상세 그림'; },
+    title:function(){ return '📄 모든 휴대폰 공통 상세 그림 (더 넣기)'; },
     html:function(){ var c=T.S.dtc||{}, v=c.off?'':(c.ben||[]).join('\n');
-      return area('dtc_ben','구매혜택 칸 맨 아래 — 모든 휴대폰 상세에 똑같이 나와요 (한 줄에 그림 하나 · 위에서부터 차례로)',v,5)+
+      return area('dtc_ben','공통 내용(글씨) 아래에 그림을 더 넣을 때 — 모든 휴대폰 상세에 똑같이 나와요 (한 줄에 그림 하나 · 위에서부터 차례로)',v,4)+
         '<div class="btns" style="margin-top:-4px"><button type="button" class="btn2" data-ed="gal" data-for="dtc_ben" data-folder="detail">사진 고르기 (깃허브 detail 폴더 · 고르면 한 줄 추가)</button></div><div data-galfor="dtc_ben"></div>'+
-        '<div class="hint">다 지우고 적용하면 공통 그림이 안 나와요. 한 모델에만 넣을 그림은 그 모델 편집 → \'상세 내용 그림\'에 넣으세요. 줄 끝의 #1080x1990 같은 글자는 그림 크기예요 (그대로 두세요).</div>'+applyBtn(); },
-    save:function(){ var l=V('dtc_ben').split('\n').map(function(x){ return x.trim(); }).filter(Boolean); T.S.dtc=l.length?{ben:l}:{off:true}; }
+        '<div class="hint">비워 두면 아무것도 안 나와요. 글씨로 된 공통 내용(유플러스 다이렉트 소개 · 카드 · 구매부터 개통까지 · 약속드립니다 · 맨 아래)은 그 칸을 눌러서 고치세요. 줄 끝의 #1080x1990 같은 글자는 그림 크기예요 (그대로 두세요).</div>'+applyBtn(); },
+    save:function(){ var l=V('dtc_ben').split('\n').map(function(x){ return x.trim(); }).filter(Boolean); T.S.dtc={ben:l}; }
+  },
+  // 20261026 사장님: 상세 공통 내용 — 예전 통이미지를 진짜 글씨로 (칸마다 누르면 고침 · 모든 휴대폰 상세에 똑같이)
+  dcom:{
+    title:function(k){ k=String(k||''); return '📄 상세 공통 내용 · '+({hero:'맨 위',steps:'구매부터 개통까지',promise:'약속드립니다',close:'맨 아래'}[k]||('카드 '+(+(k.split(':')[1]||0)+1))); },
+    html:function(k){ var D=T.S.dcom, H=DC_HINT; k=String(k||'');
+      if(k==='hero'){ var x=D.hero||{}; return txt('k','작은 글씨 (맨 위)',x.k)+txt('t','큰 제목',x.t)+area('s','설명 (한 줄씩)',x.s,3)+imgField('img','매장 사진','detail',x.img)+
+        sw('off','공통 내용 통째로 숨기기 (모든 휴대폰)',D.off,true)+H+applyBtn(); }
+      if(k.indexOf('card:')===0){ var i=+k.split(':')[1], c=(D.cards||[])[i]||{};
+        return txt('t','제목',c.t)+txt('h','분홍 한 줄 (비우면 없음)',c.h)+area('s','설명 (한 줄씩)',c.s,2)+
+          (i===0?'<div class="hint">이 카드를 누르면 LG U+ 공식인증대리점 인증마크가 크게 떠요. 인증마크·로고 그림은 그대로예요.</div>':i===1?'<div class="hint">이 카드를 누르면 우리 매장 목록으로 가요.</div>':'')+H+applyBtn(); }
+      if(k==='steps'){ var p=D.steps||{};
+        return txt('t','제목',p.t)+area('s','제목 아래 글 (한 줄씩)',p.s,3)+(p.it||[]).map(function(x,j){ return txt('st'+j,'0'+(j+1)+' 이름',x.t)+area('ss'+j,'0'+(j+1)+' 설명 (한 줄씩)',x.s,2); }).join('')+
+          area('note','맨 아래 안내 (한 줄씩)',p.note,2)+H+applyBtn(); }
+      if(k==='promise'){ var r=D.promise||{};
+        return txt('t','제목',r.t)+(r.it||[]).map(function(x,j){ return area('pi'+j,(j+1)+'번 칸 (한 줄씩)',x,2); }).join('')+H+applyBtn(); }
+      var z=D.close||{};
+      return txt('k','작은 글씨',z.k)+area('t','제목 (한 줄씩)',z.t,2)+area('s','설명 (한 줄씩)',z.s,3)+txt('sig','맺음말',z.sig)+imgField('img','포장 사진','detail',z.img)+H+applyBtn(); },
+    save:function(k){ var D=T.S.dcom; k=String(k||'');
+      if(k==='hero'){ D.hero={k:V('k'), t:V('t'), s:V('s'), img:V('img')||null}; D.off=C('off'); return; }
+      if(k.indexOf('card:')===0){ var i=+k.split(':')[1]; D.cards[i]={t:V('t'), h:V('h'), s:V('s')}; return; }
+      if(k==='steps'){ D.steps={t:V('t'), s:V('s'), it:(D.steps.it||[]).map(function(x,j){ return {t:V('st'+j), s:V('ss'+j)}; }), note:V('note')}; return; }
+      if(k==='promise'){ D.promise={t:V('t'), it:(D.promise.it||[]).map(function(x,j){ return V('pi'+j); })}; return; }
+      D.close={k:V('k'), t:V('t'), s:V('s'), sig:V('sig'), img:V('img')||null};
+    }
   },
   deal:{
     title:function(){ return '🔥 이번 주 특가 (맨 위)'; },
