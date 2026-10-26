@@ -519,6 +519,7 @@ body.edit .pd-tabs{top:calc(104px + env(safe-area-inset-top))}
 .pd-sec h3{margin-bottom:12px;font-size:17px;line-height:22px;font-weight:800}
 #v-model .pd-sec .md-ben{margin:0 0 4px}
 .pd-dimg{display:block;width:calc(100% + 32px);height:auto;margin:14px -16px 0}
+.pd-dimg+.pd-dimg{margin-top:0}   /* 긴 상세 그림을 여러 장으로 잘라 넣어도 틈 없이 이어 보이게 */
 .pd-empty{padding:16px;border:1.5px dashed #DADDE0;border-radius:10px;font-size:13px;line-height:18px;color:#6B7280;text-align:center}
 .pd-tb{border-top:1.5px solid #131518}
 .pd-tbh,.pd-tbr{display:flex;justify-content:space-between;padding:11px 4px;border-bottom:1px solid #EEF0F2;font-size:14px;line-height:18px}
