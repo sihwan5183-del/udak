@@ -331,3 +331,7 @@
 /* 오른쪽 아래 '01 | 02 +' — 밝은 그림 위에서도 보이게 반투명 검은 알약 (+ 버튼까지 감쌈) */
 .oy-bn-cnt{margin-left:-9px;padding:0 22px 0 9px;height:20px;top:calc(8px + var(--W)*.6462 - 2.5px);border-radius:10px;background:rgba(0,0,0,.3)}
 .oy-bn-cnt:empty{display:none}
+/* 20261026 관리자(/apple = /shop 거울): 위 관리자 바(52px) 아래에 붙게 · 그림 없는 배너 자리 */
+body.edit .oy-top{top:52px}
+body.edit .oy-cl-in{top:calc(101px + env(safe-area-inset-top))}
+.oy-sl-none{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#EEF0F3;color:#6B7280;font-size:14px;font-weight:700}

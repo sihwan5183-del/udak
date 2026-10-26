@@ -8,14 +8,19 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="/assets/store/store.css?v=20261023a">
-<script>window.STORE_CFG = {mode:'edit'};</script>
+<script>
+// 20261026 사장님: 관리자 화면 = /shop 거울 (/shop 화면 그대로 띄우고 눌러서 수정) · 예전 스토어(/store) 화면은 /apple?view=store
+window.STORE_VIEW_STORE = /[?&]view=store\b/.test(location.search);
+if(!window.STORE_VIEW_STORE) document.write('<link rel="stylesheet" href="/assets/shop/shop.css?v=20261026a">');
+window.STORE_CFG = {mode:'edit'};
+</script>
 </head>
 <body>
 <!-- 관리자 로그인 (아이디 + 비밀번호) -->
 <div class="login" id="login">
   <form class="bx" id="loginForm">
     <h2>스토어 관리자</h2>
-    <p>갤럭시(고객 화면)와 연동된 편집 화면입니다.</p>
+    <p>고객 화면(/shop)과 똑같이 보이는 편집 화면입니다.</p>
     <input type="email" id="uid" placeholder="아이디 (이메일)" autocomplete="username" autocapitalize="off">
     <input type="password" id="pw" placeholder="비밀번호" autocomplete="current-password">
     <div class="err" id="loginErr"></div>
@@ -28,11 +33,9 @@
   var HASH='33206579bb815cb68efbf1c42cc05c8ad0bbada098ab1e39b5248b0c0a321b59';
   function boot(){
     document.getElementById('login').remove();
-    var a=document.createElement('script'); a.src='/assets/store/store.js?v=20261023a';
-    a.onload=function(){ var b=document.createElement('script'); b.src='/assets/store/store-admin.js?v=20261020c';
-      b.onload=function(){ var c=document.createElement('script'); c.src='/assets/store/store-price.js?v=20261020c'; document.body.appendChild(c); };
-      document.body.appendChild(b); };
-    document.body.appendChild(a);
+    // /shop 화면(shop.js)을 먼저 → 스토어 엔진 → 관리자 기능 → 가격표 순서로
+    var seq=(window.STORE_VIEW_STORE?[]:['/assets/shop/shop.js?v=20261026a']).concat(['/assets/store/store.js?v=20261026a','/assets/store/store-admin.js?v=20261026a','/assets/store/store-price.js?v=20261026a']);
+    (function next(i){ if(i>=seq.length) return; var s=document.createElement('script'); s.src=seq[i]; s.onload=function(){ next(i+1); }; document.body.appendChild(s); })(0);
   }
   function sha(s){ return crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)).then(function(b){ return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join(''); }); }
   try{ if(sessionStorage.getItem('st_admin')===HASH){ boot(); return; } }catch(e){}

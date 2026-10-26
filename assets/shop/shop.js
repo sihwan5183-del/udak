@@ -154,6 +154,11 @@ function img(path, cls, eager){
   return '<img class="'+(cls||'')+'" src="'+E(A.imgSrc(path))+'" alt="" '+(eager?'':'loading="lazy" ')+'decoding="async" data-ph="'+E(path)+'" data-lb="" onerror="__stPh(this)">';
 }
 function href(go){ go=String(go||''); return go.charAt(0)==='#'?go:'javascript:void 0'; }
+// 20261026 관리자(/apple = /shop 거울): 누르면 고치는 칸 표시 — 고객 화면에선 아무것도 안 붙음
+function ed(k){ return (A && A.EDIT) ? ' data-edit="'+E(k)+'"' : ''; }
+function hc(x){ return (A && A.EDIT) ? A.hidCls(x) : ''; }
+function edAt(sel, k){ var el=$(sel); if(el && A && A.EDIT) el.setAttribute('data-edit', k); }
+function editingNow(){ return !!(A && A.EDIT && document.body.classList.contains('editing')); }
 function modelOf(go){ var id=(String(go||'').match(/^#\/model\/([\w-]+)/)||[])[1]; return id?A.byId(id):null; }
 function dealTitle(){ return String((A.S.deal||{}).title||'이번주 특가').replace(/^이번 주 /,'이번주 '); }
 function catNm(k){ var t=A.CAT_TABS.filter(function(x){ return x.k===k; })[0]; return t?t.nm:k; }
@@ -240,26 +245,21 @@ function carGo(c, dir){
   c.lo=n>=3?Math.max(-(n-2),Math.min(-1,c.lo-dir)):Math.max(-1,Math.min(0,c.lo-dir));
   carLayout(c,dir);
 }
-function carAuto(c){ clearInterval(c.timer); if(c.n>1) c.timer=setInterval(function(){ if(!document.hidden && !c.drag && homeOn() && PANE===c.o.pane) carGo(c,1); },4000); }
+function carAuto(c){ clearInterval(c.timer); if(A && A.EDIT) return; if(c.n>1) c.timer=setInterval(function(){ if(!document.hidden && !c.drag && homeOn() && PANE===c.o.pane) carGo(c,1); },4000); }
 function carSet(c, html, n, rn){ c.rn=rn||n; if(put($(c.o.track),html)){ c.n=n; if(c.i>=n) c.i=0; c.lo=n>=3?-1:0; carLayout(c,null); } carAuto(c); }
 
 /* ---------- 홈: 메인 배너 (스토어 히어로 슬라이드 + 프로모 배너) ---------- */
 /* 20261023 사장님: 메인 배너는 사장님이 만든 통이미지(글씨까지 그림 안에 있는 배너)만 — 배너 위 글씨·어두운 그라데이션·바탕색 없이 그림 그대로
-   1번 '유플러스 다이렉트' · 2번 '통신이 쉬우면 안돼?' (사장님 PC 원본 → 1200×974 webp, 1번은 그림 모서리 검은 칸 메움)
-   누르면 가는 곳은 관리자 히어로 순서 그대로(1번 = 히어로 1번 연결, 2번 = 히어로 2번 연결) — go 를 적은 배너는 그곳으로
-   20261023 3번 '폴드 가격도 반으로 접히다 53%' (폴드 그림 → 폴드8 상세) · 4번은 그림이 오면 여기에 한 줄 추가 */
-var BN_FULL=[
-  {img:'/assets/shop/bn/bn-01.webp?v=20261023', nm:'유플러스 다이렉트 · U+ 최초의 온라인 대리점'},
-  {img:'/assets/shop/bn/bn-02.webp?v=20261023', nm:'통신이 쉬우면 안돼? · 유플러스 다이렉트'},
-  {img:'/assets/shop/bn/bn-03.webp?v=20261023', nm:'폴드 가격도 반으로 접히다 53%', go:'#/model/fold8'}
-];
+   20261026: 코드에 박혀 있던 배너를 관리자 설정(스토어 설정 bn)으로 옮김 → 관리자(/apple)에서 그림·순서·누르면 가는 곳·숨기기
+   처음 값(1 유플러스 다이렉트 · 2 통신이 쉬우면 안돼? · 3 폴드 가격도 반으로 접히다)은 store.js DEFAULT.bn · 그림은 assets/store/banner/ */
 function bannerList(){
   var S=A.S, out=A.vis(S.hero||[]).map(function(h){
     var m=modelOf(h.go);   // 설명이 비어 있으면 연결된 모델의 소개 문구 (관리자에 있는 그대로)
     return {tag:'', l1:h.k||'', l2:h.t||'', s:h.s||(m&&m.ds)||'', img:h.img||'', go:h.go||''};
   });
   var p=S.promo; if(p && !p.hidden && (p.t||p.img)) out.push({tag:p.tag||'', l1:p.t||'', l2:'', s:p.s||'', img:p.img||'', go:p.go||''});
-  if(BN_FULL.length) return BN_FULL.map(function(b,i){ return {full:true, img:b.img, nm:b.nm, go:b.go||(out[i]&&out[i].go)||''}; });
+  var bn=A.vis(S.bn||[]).filter(function(b){ return b && (b.img || A.EDIT); });   // 관리자에선 숨긴 배너·그림 없는 배너도 보임 (흐리게)
+  if(bn.length) return bn.map(function(b){ return {full:true, img:b.img||'', nm:b.nm||'', go:b.go||'', ref:S.bn.indexOf(b), hid:!!b.hidden}; });
   return out;
 }
 function renderBanner(wait){
@@ -268,7 +268,8 @@ function renderBanner(wait){
   BN.list=list;
   carSet(BN, show.map(function(b,j){
     var i=j%n;   // j: 자리 번호 · i: 진짜 배너 번호
-    if(b.full) return '<a class="oy-sl full" href="'+E(href(b.go))+'" data-i="'+j+'" data-go="'+E(b.go)+'"><img class="oy-sl-full" src="'+E(b.img)+'" alt="'+E(b.nm)+'" decoding="async" draggable="false"></a>';   // 20261023 통이미지
+    if(b.full) return '<a class="oy-sl full'+(b.hid?' is-hidden':'')+'" href="'+E(href(b.go))+'" data-i="'+j+'" data-go="'+E(b.go)+'"'+ed('bn:'+b.ref)+'>'+
+      (b.img?'<img class="oy-sl-full" src="'+E(A.imgSrc(b.img))+'" alt="'+E(b.nm)+'" decoding="async" draggable="false">':'<span class="oy-sl-none">배너 그림 없음 · 눌러서 넣기</span>')+'</a>';   // 20261023 통이미지
     return '<a class="oy-sl" href="'+E(href(b.go))+'" data-i="'+j+'" data-go="'+E(b.go)+'" style="background:'+BN_BG[i%BN_BG.length]+'">'+img(b.img,'oy-sl-im',true)+
       '<span class="oy-sl-t">'+(b.tag?'<span class="oy-sl-tag">'+E(b.tag)+'</span>':'')+
         '<span class="oy-sl-h">'+(b.l1?'<b>'+E(b.l1)+'</b>':'')+(b.l2?'<b class="pk">'+E(b.l2)+'</b>':'')+'</span>'+
@@ -279,7 +280,7 @@ function renderBanner(wait){
 function bnAll(){
   if(!BN.list || !BN.list.length) return;
   A.openSheet('<h3>전체보기</h3><div class="oy-all">'+BN.list.map(function(b,i){
-    if(b.full) return '<a class="oy-all-it" href="'+E(href(b.go))+'" data-go="'+E(b.go)+'"><span class="oy-all-im full"><img src="'+E(b.img)+'" alt="" decoding="async"></span><span class="oy-all-tx"><b>'+E(b.nm)+'</b></span></a>';   // 20261023 통이미지
+    if(b.full) return '<a class="oy-all-it" href="'+E(href(b.go))+'" data-go="'+E(b.go)+'"'+ed('bn:'+b.ref)+'><span class="oy-all-im full">'+(b.img?'<img src="'+E(A.imgSrc(b.img))+'" alt="" decoding="async">':'')+'</span><span class="oy-all-tx"><b>'+E(b.nm)+'</b></span></a>';   // 20261023 통이미지
     return '<a class="oy-all-it" href="'+E(href(b.go))+'" data-go="'+E(b.go)+'"><span class="oy-all-im" style="background:'+BN_BG[i%BN_BG.length]+'">'+img(b.img,'',true)+'</span>'+
       '<span class="oy-all-tx">'+(b.tag?'<small class="pk">'+E(b.tag)+'</small>':'')+'<b>'+E([b.l1,b.l2].filter(Boolean).join(' '))+'</b>'+(b.s?'<small>'+E(b.s)+'</small>':'')+'</span></a>';
   }).join('')+'</div>');
@@ -291,10 +292,10 @@ function renderQuick(wait){
     put($('#models'),s); put($('#quick'),s); return; }
   put($('#models'), A.phones().map(function(m,i){
     var so=A.SO(m);
-    return '<a class="oy-qi" href="#/model/'+E(m.id)+'"><span class="oy-qi-ic">'+img(A.mImg(m),'oy-qi-im',i<6)+(so?'<i class="oy-so">품절</i>':'')+'</span><span class="oy-qi-t">'+E(shortNm(m.nm))+'</span></a>';
+    return '<a class="oy-qi'+hc(m)+'" href="#/model/'+E(m.id)+'"'+ed('model:'+m.id)+'><span class="oy-qi-ic">'+img(A.mImg(m),'oy-qi-im',i<6)+(so?'<i class="oy-so">품절</i>':'')+'</span><span class="oy-qi-t">'+E(shortNm(m.nm))+'</span></a>';
   }).join(''));
   put($('#quick'), A.vis(A.S.quick||[]).map(function(q){
-    return '<a class="oy-qi" href="'+E(href(q.go))+'" data-go="'+E(q.go||'')+'"><span class="oy-qi-ic"><svg viewBox="0 0 24 24" aria-hidden="true" style="stroke:'+E(q.c||'#131518')+'">'+(A.QI[q.ic]||A.QI.star)+'</svg></span><span class="oy-qi-t">'+E(QSHORT[q.nm]||q.nm)+'</span></a>';
+    return '<a class="oy-qi'+hc(q)+'" href="'+E(href(q.go))+'" data-go="'+E(q.go||'')+'"'+ed('quick:'+A.S.quick.indexOf(q))+'><span class="oy-qi-ic"><svg viewBox="0 0 24 24" aria-hidden="true" style="stroke:'+E(q.c||'#131518')+'">'+(A.QI[q.ic]||A.QI.star)+'</svg></span><span class="oy-qi-t">'+E(QSHORT[q.nm]||q.nm)+'</span></a>';
   }).join(''));
 }
 
@@ -304,18 +305,18 @@ function bandList(){
   if(shipOn){
     var st=A.shipState();   // 스토어 당일 발송 카드와 같은 문구
     out.push(st.today
-      ? {k:'ship', go:'guide', l1:E('오늘 '+A.cutLabel()+'까지 구매확정'), l2:'당일 택배 발송 · 발송 마감까지 <b class="oy-cd"></b>', im:'/assets/store/ship/truck.webp'}
-      : {k:'ship', go:'guide', l1:'지금 구매확정하시면', l2:'<b>'+E(st.when)+'</b> 택배 발송 · 순차 발송', im:'/assets/store/ship/truck.webp'});
+      ? {k:'ship', ek:'ship', go:'guide', l1:E('오늘 '+A.cutLabel()+'까지 구매확정'), l2:'당일 택배 발송 · 발송 마감까지 <b class="oy-cd"></b>', im:'/assets/store/ship/truck.webp'}
+      : {k:'ship', ek:'ship', go:'guide', l1:'지금 구매확정하시면', l2:'<b>'+E(st.when)+'</b> 택배 발송 · 순차 발송', im:'/assets/store/ship/truck.webp'});
   }
   A.vis(S.trust||[]).forEach(function(t){
     if(t.ic==='truck' && shipOn) return;   // 당일 발송은 위 칸(남은 시간)으로 보여 줌
-    out.push({k:t.ic, go:t.ic==='headset'?'contact':'guide', l1:E(t.b), l2:E(t.s),
+    out.push({k:t.ic, ek:'trust:'+S.trust.indexOf(t), hid:!!t.hidden, go:t.ic==='headset'?'contact':'guide', l1:E(t.b), l2:E(t.s),
       im:t.ic==='headset'?'/assets/store/ship/ico-call.webp':t.ic==='truck'?'/assets/store/ship/truck.webp':'', svg:A.TI[t.ic]||A.TI.headset});
   });
   return out;
 }
 function bdOne(b, clone){
-  return '<a class="oy-bd oy-bd-'+E(b.k)+'" href="javascript:void 0" data-go="'+E(b.go)+'" style="background:'+(BD_BG[b.k]||'#F4F5F7')+'"'+(clone?' data-clone aria-hidden="true" tabindex="-1"':'')+'>'+
+  return '<a class="oy-bd oy-bd-'+E(b.k)+(b.hid&&A.EDIT?' is-hidden':'')+'" href="javascript:void 0" data-go="'+E(b.go)+'"'+(b.ek?ed(b.ek):'')+' style="background:'+(BD_BG[b.k]||'#F4F5F7')+'"'+(clone?' data-clone aria-hidden="true" tabindex="-1"':'')+'>'+
     '<span class="oy-bd-tx"><b class="oy-bd-l1">'+b.l1+'</b><span class="oy-bd-l2">'+b.l2+'</span></span>'+
     (b.im?'<img class="oy-bd-im" src="'+b.im+'" alt="" decoding="async">':'<span class="oy-bd-ic" style="color:'+(BD_C[b.k]||'#131518')+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+b.svg+'</svg></span>')+'</a>';
 }
@@ -327,7 +328,7 @@ function renderBand(wait){
   // 끝에 첫 칸을 하나 더 붙여서 마지막 → 처음으로 넘어갈 때도 같은 방향으로 이어지게
   if(put(tr, list.map(function(b){ return bdOne(b,false); }).join('')+(n>1?bdOne(list[0],true):'')) || BD.n!==n){ BD.n=n; if(BD.i>=n) BD.i=0; bdShow(false); }
   if(tr.querySelector('.oy-cd')){ bdTick(); CD=setInterval(bdTick,1000); }
-  if(n>1) BD.timer=setInterval(function(){ if(!document.hidden && !BD.drag && homeOn() && PANE==='home') bdGo(1); },4000);
+  if(n>1 && !A.EDIT) BD.timer=setInterval(function(){ if(!document.hidden && !BD.drag && homeOn() && PANE==='home') bdGo(1); },4000);   // 관리자에선 멈춤
 }
 function bdTick(){
   var els=document.querySelectorAll('#oyBand .oy-cd'); if(!els.length) return;
@@ -379,7 +380,7 @@ function card(m){
   else { pr='<span class="oy-card-pr">'+(p.pct>0?'<em>'+p.pct+'%</em>':'')+vHtml(p.v,p.from)+'</span>';
     if(p.v===0 && p.out) pr+='<s class="oy-card-s">'+E(A.won(p.out))+'</s>';
     if(A.isTv(m)) pr+='<span class="oy-card-c">약정 36개월</span>'; }
-  return '<a class="oy-card'+(so?' so':'')+'" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"><span class="oy-card-im">'+img(A.mImg(m),'oy-card-img',false)+'<i class="oy-dim"></i>'+(so?'<i class="oy-so">일시품절</i>':'')+'</span>'+
+  return '<a class="oy-card'+(so?' so':'')+hc(m)+'" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"'+ed('model:'+m.id)+'><span class="oy-card-im">'+img(A.mImg(m),'oy-card-img',false)+'<i class="oy-dim"></i>'+(so?'<i class="oy-so">일시품절</i>':'')+'</span>'+
     '<span class="oy-card-nm">'+E(m.nm)+'</span>'+pr+'</a>';
 }
 // 2열 카드 — 이번주 특가 · 인기 모델 탭 (올리브영 오특·랭킹: 사진(순위) · 이름 2줄 · 원래 가격(줄) · 할인율 + 가격 · 태그 · 찜/신청)
@@ -387,7 +388,7 @@ function card2(m, rank){
   var so=A.SO(m), p=priceOf(m), h='';
   if(p.ask!=null) h='<span class="oy-card-pr"><span class="oy-ask">'+E(p.ask)+'</span></span>';
   else h=(p.out&&p.out>p.v?'<s class="oy-card-s">'+E(A.won(p.out))+'</s>':'')+'<span class="oy-card-pr">'+(p.pct>0?'<em>'+p.pct+'%</em>':'')+vHtml(p.v,p.from)+'</span>';
-  return '<div class="oy-c2'+(so?' so':'')+'"><a class="oy-c2-a" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"><span class="oy-c2-im">'+img(A.mImg(m),'oy-card-img',false)+'<i class="oy-dim"></i>'+(rank?'<b class="oy-rk">'+rank+'</b>':'')+(so?'<i class="oy-so">일시품절</i>':'')+'</span>'+
+  return '<div class="oy-c2'+(so?' so':'')+hc(m)+'"><a class="oy-c2-a" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"'+ed('model:'+m.id)+'><span class="oy-c2-im">'+img(A.mImg(m),'oy-card-img',false)+'<i class="oy-dim"></i>'+(rank?'<b class="oy-rk">'+rank+'</b>':'')+(so?'<i class="oy-so">일시품절</i>':'')+'</span>'+
     '<span class="oy-card-nm">'+E(m.nm)+'</span>'+h+tagsHtml(m,3)+'</a>'+iconsHtml(m)+'</div>';   // 태그는 한 줄에 들어가게 3개까지
 }
 function skCards(n){ var h=''; for(var i=0;i<n;i++) h+='<span class="oy-card"><span class="oy-card-im oy-skb"></span><span class="oy-card-nm">'+sk('80%','12px','4px')+'</span><span class="oy-card-pr">'+sk('64%','14px','4px')+'</span></span>'; return h; }
@@ -407,7 +408,7 @@ function renderPop(wait){
   if(wait){ sec.hidden=false; put($('#oyPopT'),sk('190px','18px')); put($('#oyPopChips'),sk('150px','32px','16px')+sk('56px','32px','16px')+sk('64px','32px','16px')+sk('72px','32px','16px')); put($('#oyPop'),skCards(6)); return; }
   var list=A.secOn('pop')?A.pickList('pop'):[];
   sec.hidden=!list.length; if(!list.length) return;
-  put($('#oyPopT'), E((A.S.sec.pop||{}).t||''));
+  put($('#oyPopT'), E((A.S.sec.pop||{}).t||'')); edAt('#oyPopT','sec:pop');
   var cats=catsOf(list); if(POPCAT!=='all' && !cats.some(function(t){ return t.k===POPCAT; })) POPCAT='all';
   put($('#oyPopChips'), mnpPill()+(cats.length>1?chipsHtml(cats,POPCAT,'data-shop-cat'):''));
   put($('#oyPop'), byCat(list,POPCAT).map(card).join(''));
@@ -419,13 +420,13 @@ function renderDeal(wait){
   if(wait){ sec.hidden=false; put($('#oyDealT'),sk('96px','18px')); put($('#oyDealD'),''); put($('#oyDeal'),'<span class="oy-bc oy-skb"></span>'); return; }
   var it=D.on?A.dealItems():[];
   sec.hidden=!it.length; if(!it.length) return;
-  put($('#oyDealT'), E(dealTitle()));
+  put($('#oyDealT'), E(dealTitle())); edAt('#oyDealT','deal');
   put($('#oyDealD'), E(A.weekRange()));
   put($('#oyDeal'), it.map(function(x,i){
     var m=x.m, so=A.SO(m);
     var pr=x.mnp!=null?'번호이동 <em>'+E(A.wz(x.mnp))+'</em>':'구매가 <em class="ask">상담 시 안내</em>';
     if(x.chg!=null) pr+=' · 기기변경 '+E(A.wz(x.chg));
-    return '<a class="oy-bc'+(so?' so':'')+'" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'" style="background:'+BC_BG[i%BC_BG.length]+'"><span class="oy-bc-im">'+img(A.mImg(m),'oy-bc-img',false)+'</span>'+
+    return '<a class="oy-bc'+(so?' so':'')+'" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"'+ed('deal')+' style="background:'+BC_BG[i%BC_BG.length]+'"><span class="oy-bc-im">'+img(A.mImg(m),'oy-bc-img',false)+'</span>'+
       '<b class="oy-bc-t">'+E(m.nm)+'</b><span class="oy-bc-d">'+pr+'</span>'+(so?'<i class="oy-so oy-so-l">일시품절</i>':'')+'</a>';
   }).join(''));
 }
@@ -436,16 +437,16 @@ function renderZero(wait){
   if(wait){ sec.hidden=false; put($('#oyZeroT'),sk('150px','18px')); put($('#oyZero'),skCards(3)); return; }
   var list=A.secOn('zero')?A.pickList('zero'):[];
   sec.hidden=!list.length; if(!list.length) return;
-  put($('#oyZeroT'), E((A.S.sec.zero||{}).t||''));
+  put($('#oyZeroT'), E((A.S.sec.zero||{}).t||'')); edAt('#oyZeroT','sec:zero');
   put($('#oyZero'), list.map(card).join(''));
 }
 
 
 /* ---------- 탭: 특가 (올리브영 '오특': 가운데 제목 · 이번주 특가 목록 → 기기값 0원 목록 → 휴대폰 전체 2열 + 정렬) ---------- */
 // 20261022 사장님: '기기값 0원'과 '이번주 특가'를 한 탭으로 합침 (0원 목록은 관리자 '기기값 0원 모아보기' 그대로)
-function liRow(m, prHtml, sub){
+function liRow(m, prHtml, sub, ek){
   var so=A.SO(m);
-  return '<div class="oy-li'+(so?' so':'')+'"><a class="oy-li-a" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"><span class="oy-li-im">'+img(A.mImg(m),'oy-card-img',false)+'<i class="oy-dim"></i>'+(so?'<i class="oy-so">일시품절</i>':'')+'</span>'+
+  return '<div class="oy-li'+(so?' so':'')+hc(m)+'"><a class="oy-li-a" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"'+ed(ek||'model:'+m.id)+'><span class="oy-li-im">'+img(A.mImg(m),'oy-card-img',false)+'<i class="oy-dim"></i>'+(so?'<i class="oy-so">일시품절</i>':'')+'</span>'+
     '<span class="oy-li-tx"><span class="oy-li-nm">'+E(m.nm)+'</span>'+prHtml+tagsHtml(m,0,true)+(sub||'')+'</span></a>'+iconsHtml(m)+'</div>';
 }
 function renderTabDeal(wait){
@@ -454,19 +455,19 @@ function renderTabDeal(wait){
     put($('#oyDlGT'),sk('150px','18px')); put($('#oyDlSort'),''); put($('#oyDlChips'),''); put($('#oyDlGrid'),skCards2(4)); return; }
   var it=(A.S.deal||{}).on?A.dealItems():[];
   $('#oyDlWeek').hidden=!it.length;
-  put($('#oyDlHl'), '<b>'+E(dealTitle())+'</b>');
+  put($('#oyDlHl'), '<b>'+E(dealTitle())+'</b>'); edAt('#oyDlHl','deal');
   put($('#oyDlT'), E(A.weekRange()));
   put($('#oyDlList'), it.map(function(x){
     var m=x.m, out=A.priceOf(m).out, h;
     if(x.mnp!=null){ var pct=(out&&out>x.mnp&&x.mnp>0)?Math.round((out-x.mnp)/out*100):0;   // 스토어 카드와 같은 할인율 계산 (출고가 대비)
       h='<span class="oy-card-pr">'+(pct>0?'<em>'+pct+'%</em>':'')+'<span class="oy-v">'+(x.mnp===0?'0':n0(x.mnp))+'<small>원</small></span>'+(out&&out>x.mnp?'<s>'+E(A.won(out))+'</s>':'')+'</span>'; }
     else h='<span class="oy-card-pr"><span class="oy-ask">상담 시 안내</span></span>';
-    return liRow(m, h, x.mnp!=null?'<span class="oy-li-sub"><span>번호이동 기준</span>'+(x.chg!=null?' · <span>기기변경 '+E(A.wz(x.chg))+'</span>':'')+'</span>':'');
+    return liRow(m, h, x.mnp!=null?'<span class="oy-li-sub"><span>번호이동 기준</span>'+(x.chg!=null?' · <span>기기변경 '+E(A.wz(x.chg))+'</span>':'')+'</span>':'', 'deal');
   }).join(''));
   // 기기값 0원 (관리자 '기기값 0원 모아보기' 목록 · 제목 그대로)
   var zl=zeroOn()?zeroList():[];
   $('#oyDlZero').hidden=!zl.length;
-  put($('#oyDzT'), E((A.S.sec.zero||{}).t||catNm('zero')));
+  put($('#oyDzT'), E((A.S.sec.zero||{}).t||catNm('zero'))); edAt('#oyDzT','sec:zero');
   put($('#oyDzList'), zl.map(function(m){
     var p=priceOf(m), h, st=A.SO(m)?'':A.stripOf(m);
     if(p.ask!=null) h='<span class="oy-card-pr"><span class="oy-ask">'+E(p.ask)+'</span></span>';
@@ -475,7 +476,7 @@ function renderTabDeal(wait){
   }).join(''));
   // 아래 2열: 스토어 '내게 맞는 휴대폰 찾기'(휴대폰 전체) + 스토어 정렬(추천순·낮은가격순·높은가격순·판매량순)
   var ph=A.phones(), cats=catsOf(ph); if(DLCAT!=='all' && !cats.some(function(t){ return t.k===DLCAT; })) DLCAT='all';
-  put($('#oyDlGT'), E((A.S.sec.pick||{}).t||''));
+  put($('#oyDlGT'), E((A.S.sec.pick||{}).t||'')); edAt('#oyDlGT','sec:pick');
   put($('#oyDlSort'), sortBtn());
   put($('#oyDlChips'), mnpPill()+(cats.length>1?chipsHtml(cats,DLCAT,'data-dl-cat'):''));
   put($('#oyDlGrid'), A.sortList(byCat(ph,DLCAT)).map(function(m){ return card2(m,0); }).join(''));
@@ -515,12 +516,12 @@ function renderTabEvent(wait){
   $('#oyEvSec').hidden=!n;
   if(n) carSet(EV, show.map(function(m,i){
     var b=A.badgeOf(m), k=i%n;
-    return '<a class="oy-evc" href="#/model/'+E(m.id)+'" data-i="'+i+'" style="background:'+EV_BG[k%EV_BG.length]+'"><span class="oy-evc-fr">'+img(A.mImg(m),'oy-evc-im',true)+'</span>'+(b?'<i class="oy-evc-b">'+E(b)+'</i>':'')+
+    return '<a class="oy-evc'+hc(m)+'" href="#/model/'+E(m.id)+'" data-i="'+i+'"'+ed('model:'+m.id)+' style="background:'+EV_BG[k%EV_BG.length]+'"><span class="oy-evc-fr">'+img(A.mImg(m),'oy-evc-im',true)+'</span>'+(b?'<i class="oy-evc-b">'+E(b)+'</i>':'')+
       '<span class="oy-evc-t"><b>'+E(m.nm)+'</b><span>'+E(A.stripOf(m))+'</span><small><em>'+two(k+1)+'</em><i></i>'+two(n)+'</small></span></a>';
   }).join(''), show.length, n);
   else { clearInterval(EV.timer); put($('#oyEv'),''); }
   put($('#oyEvPills'), evPills().map(function(x){
-    return '<a class="oy-pill" href="javascript:void 0" data-go="'+E(x.go)+'"><i style="background:'+E(x.bg||'#F4F5F7')+'"><svg viewBox="0 0 24 24" aria-hidden="true" style="stroke:'+E(x.c||'#131518')+'">'+(A.QI[x.ic]||A.QI.star)+'</svg></i>'+E(x.nm)+'</a>';
+    return '<a class="oy-pill'+hc(x)+'" href="javascript:void 0" data-go="'+E(x.go)+'"'+ed('quick:'+A.S.quick.indexOf(x))+'><i style="background:'+E(x.bg||'#F4F5F7')+'"><svg viewBox="0 0 24 24" aria-hidden="true" style="stroke:'+E(x.c||'#131518')+'">'+(A.QI[x.ic]||A.QI.star)+'</svg></i>'+E(x.nm)+'</a>';
   }).join(''));
   put($('#oyEvMore'), n?A.tvCondHtml():'');
 }
@@ -549,9 +550,9 @@ function renderTabAi(wait){
     return '<article class="oy-ai" style="background:'+AI_BG[i%AI_BG.length]+'">'+
       '<span class="oy-ai-tag">'+SVG_SPARK+E(x.t)+'</span>'+
       '<b class="oy-ai-h">'+E(m.ds||m.nm)+'</b>'+(st?'<span class="oy-ai-s">'+E(st)+'</span>':'')+
-      '<a class="oy-ai-im" href="#/model/'+E(m.id)+'" tabindex="-1" aria-hidden="true">'+img(A.mImg(m),'oy-ai-img',i<2)+'</a>'+
+      '<a class="oy-ai-im" href="#/model/'+E(m.id)+'" tabindex="-1" aria-hidden="true"'+ed('model:'+m.id)+'>'+img(A.mImg(m),'oy-ai-img',i<2)+'</a>'+
       '<div class="oy-ai-p"><i class="oy-ai-hd">'+SVG_UP+'</i>'+
-        '<a class="oy-ai-pa" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"><span class="oy-ai-pim">'+img(A.mImg(m),'oy-card-img',false)+'</span>'+
+        '<a class="oy-ai-pa" href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"'+ed('model:'+m.id)+'><span class="oy-ai-pim">'+img(A.mImg(m),'oy-card-img',false)+'</span>'+
         '<span class="oy-ai-pt"><b>'+E(m.nm)+'</b>'+pr+'</span></a>'+iconsHtml(m)+'</div>'+
     '</article>';
   }).join(''));
@@ -607,7 +608,7 @@ function cmHtml(s){
   else h='<a class="oy-cm-h" href="javascript:void 0" data-go="'+E(s.go)+'"><b>'+E(s.nm)+(s.soon?'<i class="oy-soon">준비중</i>':'')+'</b>'+SVG_R+'</a>';
   var b='';
   if(s.ms) b='<div class="oy-ct">'+s.ms.map(function(m){ var so=A.SO(m);
-      return '<a href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"><span class="oy-ct-im">'+img(A.mImg(m),'oy-ct-img',false)+(so?'<i class="oy-so">품절</i>':'')+'</span><span class="oy-ct-t">'+E(shortNm(m.nm))+'</span></a>'; }).join('')+'</div>';
+      return '<a'+(hc(m)?' class="'+hc(m).trim()+'"':'')+' href="#/model/'+E(m.id)+'" data-mid="'+E(m.id)+'"'+ed('model:'+m.id)+'><span class="oy-ct-im">'+img(A.mImg(m),'oy-ct-img',false)+(so?'<i class="oy-so">품절</i>':'')+'</span><span class="oy-ct-t">'+E(shortNm(m.nm))+'</span></a>'; }).join('')+'</div>';
   else if(s.qcats && s.qcats.length) b='<div class="oy-csl">'+s.qcats.map(function(n,i){ return '<a href="javascript:void 0" data-shop-qcat="'+i+'">'+E(n)+'</a>'; }).join('')+'</div>';
   else if(s.items && s.items.length) b='<div class="oy-csl">'+s.items.map(function(x){ return '<a href="javascript:void 0" data-go="'+E(x.go)+'">'+E(x.nm)+'</a>'; }).join('')+'</div>';
   return '<div class="oy-cm">'+h+b+'</div>';
@@ -665,6 +666,7 @@ function bindOnce(){
   });
   document.addEventListener('click',function(e){
     var t=e.target; if(!t || !t.closest) return;
+    if(editingNow() && t.closest('[data-edit]')) return;   // 20261026 관리자 편집 중: 고치는 창이 먼저
     var tr=t.closest('#oyBn,#oyEv,#oyBand'); if(tr && (tr.id==='oyBn'?BN:tr.id==='oyEv'?EV:BD).moved) return;   // 넘기다 손 뗀 건 누른 걸로 안 침
     // 스토어 카테고리 주소(#/cat/…: 관리자 바로가기·배너·팝업 버튼) → /shop 분류 목록
     var g=t.closest('a[href^="#/cat/"],[data-go^="#/cat/"]');

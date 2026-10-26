@@ -9,11 +9,13 @@ var esc=T.esc, DB=T.DB;
 function $(s,el){return (el||document).querySelector(s)}
 function $$(s,el){return Array.prototype.slice.call((el||document).querySelectorAll(s))}
 var LAST=null;      // 마지막으로 저장된 상태 (되돌리기 기록용)
+// 20261026 사장님: 관리자 화면 = /shop 거울 (apple.html 이 shop.js 를 먼저 불러서 /shop 화면 그대로) · /apple?view=store 는 예전 스토어 화면
+var SHOPV=!!(window.STORE_CFG && window.STORE_CFG.skin);
 var CUR=null;       // 지금 열린 편집 대상 키
 
 /* ---------- 상단 관리자 바 ---------- */
 document.body.insertAdjacentHTML('afterbegin',
-  '<div class="adm-bar"><div class="ttl">관리자 · 갤럭시 연동<small id="admSub">누르면 수정 → 적용 시 바로 반영</small></div>'+
+  '<div class="adm-bar"><div class="ttl">관리자 · '+(SHOPV?'/shop 연동':'스토어 연동')+'<small id="admSub">누르면 수정 → 적용 시 바로 반영</small></div>'+
   '<button id="admEdit" class="on">편집 ON</button><button id="admPrice" class="pr">💰 가격표</button><button id="admAdd">＋ 추가</button><button id="admSet">⚙ 설정</button><button id="admUndo">↶</button></div>'+
   '<div class="adm-toast" id="admToast"></div>');
 var toastT;
@@ -33,7 +35,7 @@ function save(msg){
     .then(function(){ return fetch(DB+'/store.json',{method:'PATCH',body:JSON.stringify(patch)}); })
     .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return fetch(DB+'/store.json',{cache:'no-store'}); })
     .then(function(r){ return r.json(); })
-    .then(function(d){ T.setStamp(0); T.apply(d); LAST=T.clone(T.S); T.setStamp(now); $('#admSub').textContent='반영 완료 · '+new Date(now).toLocaleTimeString('ko-KR'); toast(msg||'고객 화면(갤럭시)에 반영됐어요'); })
+    .then(function(d){ T.setStamp(0); T.apply(d); LAST=T.clone(T.S); T.setStamp(now); $('#admSub').textContent='반영 완료 · '+new Date(now).toLocaleTimeString('ko-KR'); toast(msg||'고객 화면에 반영됐어요'); })
     .catch(function(e){ $('#admSub').textContent='저장 실패'; alert('저장에 실패했어요. 인터넷 연결을 확인하고 다시 적용해 주세요.\n('+e.message+')'); });
 }
 function commit(msg){ T.refresh(); return save(msg); }
@@ -58,7 +60,7 @@ function goField(name,val){
     '<input type="text" name="'+name+'" value="'+esc(val||'')+'" placeholder="또는 주소 직접 입력 (https://…)" style="margin-top:6px"></div>';
 }
 function moveBtns(del){ return '<div class="btns"><button type="button" class="btn2" data-ed="left">◀ 앞으로</button><button type="button" class="btn2" data-ed="right">뒤로 ▶</button>'+(del?'<button type="button" class="btn2 del" data-ed="del">삭제</button>':'')+'</div>'; }
-function applyBtn(){ return '<button type="button" class="cta" data-ed="apply">적용 (갤럭시에 바로 반영)</button>'; }
+function applyBtn(){ return '<button type="button" class="cta" data-ed="apply">적용 (고객 화면에 바로 반영)</button>'; }
 function V(n){ var el=$('#sheet [name="'+n+'"]'); return el?el.value.trim():''; }
 function C(n){ var el=$('#sheet [name="'+n+'"]'); return !!(el&&el.checked); }
 function open(title, html){ T.openSheet('<div class="ed"><h3>'+title+'</h3>'+html+'</div>'); }
@@ -101,6 +103,15 @@ function saveModel(m){
   if(!m.cards[0]&&!m.cards[1]&&!m.cards[2]) m.cards=[];
 }
 var ED = {
+  // 20261026 /shop 메인 배너 (통이미지) — 그림 · 이름 · 누르면 가는 곳 · 숨기기 · 순서
+  bn:{
+    title:function(i){ return '🖼 메인 배너 '+(+i+1); }, list:function(){ return T.S.bn; },
+    html:function(i){ var b=T.S.bn[i];
+      return imgField('img','배너 그림 (가로 1392 × 세로 1130 · 글씨까지 그림 안에)','banner',b.img)+
+        '<div class="hint">새 그림은 깃허브 assets/store/banner/ 에 올린 뒤 고르거나 이름을 넣으세요 (예: banner/bn-04.webp).</div>'+
+        txt('nm','배너 이름 (배너 전체보기 목록에 나오는 이름)',b.nm)+goField('go',b.go)+sw('hidden','숨기기',b.hidden)+moveBtns(true)+applyBtn(); },
+    save:function(i){ var b=T.S.bn[i]; b.img=V('img')||null; b.nm=V('nm'); b.go=V('go'); b.hidden=C('hidden'); }
+  },
   model:{
     title:function(id){ var m=T.byId(id); return '📱 '+esc(m?m.nm:''); },
     list:function(){ return T.S.models; }, find:function(id){ return T.byId(id); },
@@ -200,6 +211,7 @@ window.__stEditClick=function(e){
   var t=e.target;
   if(t.closest('.adm-bar')||t.closest('#sheet')||t.closest('#dim')||t.closest('.login')) return false;
   if(t.closest('.tabbar')||t.closest('.topbar')||t.closest('[data-back]')||t.closest('.ctabs')||t.closest('[data-toggle]')||t.closest('.subhead')) return false;
+  if(t.closest('.oy-hd')||t.closest('.oy-gnb')||t.closest('.oy-subhd')||t.closest('.oy-cl')||t.closest('.oy-cm-h')||t.closest('.oy-csl')||t.closest('.oy-chips')||t.closest('.oy-frow')||t.closest('#oyBnAll')) return false;   // 20261026 /shop 화면 이동
   if(t.closest('[data-mnp]')||t.closest('[data-opt-pick]')||t.closest('[data-tier-pick]')||t.closest('[data-calc]')||t.closest('[data-color-pick]')||t.closest('[data-sort-open]')||t.closest('[data-maxv]')||t.closest('[data-ms-tip]')||t.closest('[data-sort]')||t.closest('.pz')||t.closest('a[download]')) return false;
   var el=t.closest('[data-edit]');
   if(!el){
@@ -239,7 +251,7 @@ function openAdd(){
     '<div class="row2c"><input type="text" name="newnm" placeholder="모델 이름 (예: 갤럭시 A57)"><input type="text" name="newid" placeholder="영문 코드 (예: a57)"></div>'+
     '<div class="hint">영문 코드는 사진 파일 이름에 씁니다 (model/a57.jpg). 처음엔 <b>숨김 상태</b>로 만들어지니 사진·가격을 넣고 숨기기를 끄세요.</div>'+
     '<button type="button" class="btn2" style="width:100%;margin-top:8px" data-ed="newmodel">모델 추가</button></div>'+
-    '<div class="btns"><button type="button" class="btn2" data-ed="newhero">히어로 슬라이드 추가</button><button type="button" class="btn2" data-ed="newgift">사은품 추가</button></div>');
+    '<div class="btns">'+(SHOPV?'<button type="button" class="btn2" data-ed="newbn">메인 배너 추가</button>':'<button type="button" class="btn2" data-ed="newhero">히어로 슬라이드 추가</button>')+'<button type="button" class="btn2" data-ed="newgift">사은품 추가</button></div>');
   CUR=null;
 }
 function openSettings(){
@@ -251,7 +263,7 @@ function openSettings(){
     txt('storeNote','매장찾기 안내 문구',T.S.storeNote)+
     '<div class="grp"><div class="lbl">구역 보이기</div>'+Object.keys(secNames).map(function(k){return '<label class="sw" style="margin-top:6px">'+secNames[k]+'<input type="checkbox" name="secon_'+k+'"'+(T.S.sec[k]&&T.S.sec[k].off?'':' checked')+'></label>'}).join('')+'</div>'+
     '<div class="grp"><div class="lbl">온라인 상담 신청</div><label class="sw" style="margin-top:6px">워치 · 태블릿 · TV프리 함께 구매 보이기<input type="checkbox" name="applyAdd"'+(T.S.applyAdd?' checked':'')+'></label><div class="hint">끄면 신청서에서 03 요금제별 혜택(워치·태블릿·TV프리)이 통째로 숨겨져요.</div></div>'+
-    '<button type="button" class="cta" data-ed="saveset">적용 (갤럭시에 바로 반영)</button>');
+    '<button type="button" class="cta" data-ed="saveset">적용 (고객 화면에 바로 반영)</button>');
   CUR={type:'settings'};
 }
 
@@ -301,6 +313,7 @@ document.addEventListener('click',function(e){
     T.S.models.push({id:id, nm:nm, ds:'', cat:[], tags:['기기값 할인','보호필름 · 투명케이스 · 고속충전기 제공'], price:{}, cards:[], hidden:true});
     commit('모델을 추가했어요 (숨김 상태)').then(function(){ openEditor('model:'+id); }); return;
   }
+  if(act==='newbn'){ T.S.bn=T.S.bn||[]; T.S.bn.push({img:null, nm:'새 배너', go:'', hidden:true}); commit('배너를 추가했어요 (숨김 상태)').then(function(){ openEditor('bn:'+(T.S.bn.length-1)); }); return; }
   if(act==='newhero'){ T.S.hero.push({k:'',t:'새 슬라이드',s:'',img:null,go:'',hidden:true}); commit('슬라이드를 추가했어요 (숨김 상태)').then(function(){ openEditor('hero:'+(T.S.hero.length-1)); }); return; }
   if(act==='newgift'){ T.S.gifts.push({nm:'새 사은품',sm:'',pr:'무료 증정',img:null,hidden:true}); commit('사은품을 추가했어요 (숨김 상태)').then(function(){ openEditor('gift:'+(T.S.gifts.length-1)); }); return; }
   if(act==='saveset'){
@@ -328,7 +341,7 @@ function undo(){
   fetch(DB+'/store_history.json?orderBy=%22%24key%22&limitToLast=1').then(function(r){return r.json()}).then(function(o){
     var keys=Object.keys(o||{});
     if(!keys.length){ toast('되돌릴 기록이 없어요'); return; }
-    if(!confirm('마지막으로 적용한 수정을 취소하고 그 전 상태로 되돌릴까요?\n(갤럭시 화면도 같이 되돌아갑니다)')) return;
+    if(!confirm('마지막으로 적용한 수정을 취소하고 그 전 상태로 되돌릴까요?\n(고객 화면도 같이 되돌아갑니다)')) return;
     var k=keys[0], st=o[k], now=Date.now(); st.updatedAt=now;
     return fetch(DB+'/store.json',{method:'PUT',body:JSON.stringify(st)}).then(function(r){
       if(!r.ok) throw new Error('HTTP '+r.status);
@@ -345,7 +358,10 @@ function undo(){
     {box:'#trust', item:'.it', key:'trust'},
     {box:'.dl-grid', item:'a.dl-c', key:'deal'},
     {box:'#popgrid', item:'a.pc', key:'list:pop'},
-    {box:'#zero', item:'a.hc', key:'list:zero'}
+    {box:'#zero', item:'a.hc', key:'list:zero'},
+    {box:'#models', item:'a.oy-qi', key:'models'},          // 20261026 /shop 퀵메뉴 휴대폰 줄
+    {box:'#oyPop', item:'a.oy-card', key:'list:pop'},       // /shop 많이 찾아요
+    {box:'#oyZero', item:'a.oy-card', key:'list:zero'}      // /shop 기기값 0원
   ];
   var D=null, timer=null, justDragged=false;
   function zoneOf(el){ for(var i=0;i<ZONES.length;i++){ var z=ZONES[i], box=el.closest(z.box); if(box){ var it=el.closest(z.item); if(it&&box.contains(it)) return {z:z,box:box,it:it}; } } return null; }

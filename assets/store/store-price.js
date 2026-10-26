@@ -1,7 +1,7 @@
 /* =========================================================
    💰 가격표 — 애플(관리자) 전용
    · 엑셀처럼 기기·용량별 출고가 / 공시지원금 / 유플러스 다이렉트 지원금을 고치면 오른쪽 계산이 바로 바뀜
-   · [저장] → 갤럭시(고객 화면)에 바로 반영
+   · [저장] → 고객 화면(/shop · /store)에 바로 반영
    · 정책은 '적용 시작일'로 관리 — 미리 등록해 두면 그날 0시부터 자동 적용, 지난 정책은 기록으로 남음
    · 엑셀 업로드(영업기획팀 단가표 양식 그대로) → 미리보기 → 새 정책 또는 덮어쓰기
    ========================================================= */
@@ -79,7 +79,7 @@ function render(){
       '<label class="pz-f grow"><span>메모</span><input type="text" data-pzv="memo" value="'+esc(v.memo||'')+'" placeholder="예: 영업기획팀 10/03 단가표"></label>'+
       '<div class="pz-vb"><button type="button" class="pz-b" data-pz="newver">＋ 새 정책</button><button type="button" class="pz-b del" data-pz="delver">정책 삭제</button></div>'+
     '</div>'+
-    '<label class="pz-pub'+(W.show?' on':'')+'"><input type="checkbox" data-pzv="show"'+(W.show?' checked':'')+'> 고객 화면(갤럭시)에 가격 공개 <small>'+(W.show?'켜짐 — 고객에게 가격이 보여요':'꺼짐 — 고객 화면은 "상담 시 안내"로 보이고, 관리자 화면에서만 가격이 보여요')+'</small></label>'+
+    '<label class="pz-pub'+(W.show?' on':'')+'"><input type="checkbox" data-pzv="show"'+(W.show?' checked':'')+'> 고객 화면에 가격 공개 <small>'+(W.show?'켜짐 — 고객에게 가격이 보여요':'꺼짐 — 고객 화면은 "상담 시 안내"로 보이고, 관리자 화면에서만 가격이 보여요')+'</small></label>'+
     '<div class="pz-new" id="pzNew" hidden><span>지금 보고 있는 정책을 그대로 복사해서 새 정책을 만듭니다. 적용 시작일</span>'+
       '<input type="date" id="pzNewDate" value="'+addDays(today,1)+'"><button type="button" class="pz-b pri" data-pz="mkver">만들기</button></div>'+
     '<div class="pz-tabs">'+GROUPS.map(function(g){ return '<button type="button" data-pztab="'+g+'" class="'+(g===TAB?'on':'')+'">'+GNAME[g]+' <i>'+(cnt[g]||0)+'</i></button>'; }).join('')+'</div>'+
