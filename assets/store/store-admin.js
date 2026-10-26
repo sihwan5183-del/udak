@@ -66,7 +66,7 @@ function C(n){ var el=$('#sheet [name="'+n+'"]'); return !!(el&&el.checked); }
 function open(title, html){ T.openSheet('<div class="ed"><h3>'+title+'</h3>'+html+'</div>'); }
 
 /* ---------- 편집 대상별 화면 ---------- */
-var CATS=[['iphone','아이폰'],['galaxy','갤럭시 S'],['fold','폴더블'],['watch','워치'],['tablet','태블릿'],['tvfree','TV프리'],['zero','기기값 0원 모아보기']];
+var CATS=[['iphone','아이폰'],['galaxy','갤럭시 S'],['fold','폴더블'],['buddy','갤럭시 버디'],['watch','워치'],['tablet','태블릿'],['tvfree','TV프리'],['zero','기기값 0원 모아보기']];
 function edModel(m){
   var srs=T.sheetRows(m);
   return txt('nm','모델 이름',m.nm)+txt('ds','한 줄 설명',m.ds)+

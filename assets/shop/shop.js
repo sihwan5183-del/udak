@@ -571,7 +571,7 @@ function lsTitle(L){ return L.k==='all'?'휴대폰':catNm(L.k); }
 function renderList(wait){
   var L=lsOfHash();
   if(wait){ put($('#oyLsChips'),sk('150px','32px','16px')+sk('56px','32px','16px')+sk('64px','32px','16px')); put($('#oyLsCnt'),sk('64px','13px','4px')); put($('#oyLsSort'),''); put($('#oyLsGrid'),skCards2(4)); return; }
-  var list=lsModels(L), ph=['all','iphone','galaxy','fold'].indexOf(L.k)>-1, cats=ph&&!L.ids?catsOf(A.phones()):[];
+  var list=lsModels(L), ph=['all','iphone','galaxy','fold','buddy'].indexOf(L.k)>-1, cats=ph&&!L.ids?catsOf(A.phones()):[];
   var tv=list.length && list.every(function(m){ return A.isTv(m); });   // TV프리는 번호이동/기기변경 구분 없음
   var ch=(tv?'':mnpPill())+(cats.length>1?chipsHtml(cats,L.k,'data-ls-cat'):'');
   $('#oyLsChips').hidden=!ch; put($('#oyLsChips'), ch);

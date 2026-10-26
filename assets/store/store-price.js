@@ -13,7 +13,7 @@ function $(s,el){return (el||document).querySelector(s)}
 function $$(s,el){return Array.prototype.slice.call((el||document).querySelectorAll(s))}
 var XLSX_URL='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
 // 단가표 모델코드 → 홈페이지 상품 (처음 보는 코드가 엑셀로 들어올 때 자동 연결)
-var CODEMAP={'S942N':'s26','S947N':'s26plus','S948N':'s26ultra','F776N':'flip8','F971N':'fold8','F976N':'fold8ultra','UIP18PR':'iphone18pro','UIP18PM':'iphone18promax','UIP17':'iphone17'};
+var CODEMAP={'S942N':'s26','S947N':'s26plus','S948N':'s26ultra','F776N':'flip8','F971N':'fold8','F976N':'fold8ultra','UIP18PR':'iphone18pro','UIP18PM':'iphone18promax','UIP17':'iphone17','A176L':'a176'};   // 20261026 A176L = 갤럭시 버디 5
 var W=null, VI=0, TAB='phone', DIRTY=false, FOCUS=null, PEND=null;
 
 function toast(m){ if(window.__stToast) window.__stToast(m); }
