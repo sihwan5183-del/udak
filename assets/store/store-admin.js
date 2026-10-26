@@ -160,6 +160,15 @@ var ED = {
       '<div class="hint">월~금 마감 전에는 "오늘 출발 + 남은 시간", 마감 후·토·일에는 다음 발송일(내일/월요일)이 자동으로 나와요.</div>'+applyBtn(); },
     save:function(){ var c=(V('cut')||'15:00').replace(/[^0-9:]/g,''); T.S.ship={on:C('on'), cut:/^\d{1,2}(:\d{2})?$/.test(c)?c:'15:00'}; }
   },
+  // 20261026 사장님: 모든 휴대폰 상세 '구매혜택' 칸 맨 아래 공통 그림 (다 지우면 안 나옴)
+  dtc:{
+    title:function(){ return '📄 모든 휴대폰 공통 상세 그림'; },
+    html:function(){ var c=T.S.dtc||{}, v=c.off?'':(c.ben||[]).join('\n');
+      return area('dtc_ben','구매혜택 칸 맨 아래 — 모든 휴대폰 상세에 똑같이 나와요 (한 줄에 그림 하나 · 위에서부터 차례로)',v,5)+
+        '<div class="btns" style="margin-top:-4px"><button type="button" class="btn2" data-ed="gal" data-for="dtc_ben" data-folder="detail">사진 고르기 (깃허브 detail 폴더 · 고르면 한 줄 추가)</button></div><div data-galfor="dtc_ben"></div>'+
+        '<div class="hint">다 지우고 적용하면 공통 그림이 안 나와요. 한 모델에만 넣을 그림은 그 모델 편집 → \'상세 내용 그림\'에 넣으세요. 줄 끝의 #1080x1990 같은 글자는 그림 크기예요 (그대로 두세요).</div>'+applyBtn(); },
+    save:function(){ var l=V('dtc_ben').split('\n').map(function(x){ return x.trim(); }).filter(Boolean); T.S.dtc=l.length?{ben:l}:{off:true}; }
+  },
   deal:{
     title:function(){ return '🔥 이번 주 특가 (맨 위)'; },
     html:function(){ var d=T.S.deal||{}; return sw('on','켜기 (끄면 예전 슬라이드 배너가 보여요)',d.on)+txt('title','제목 (마지막 단어가 분홍색)',d.title||'이번주 특가')+
@@ -247,9 +256,12 @@ function galRender(box, forName, folder){
     g.innerHTML=list.map(function(f){ return '<button type="button" class="'+(f.path===cur?'sel':'')+'" data-pick="'+esc(f.path)+'" data-for="'+forName+'"><img src="'+esc(f.url)+'" loading="lazy" alt=""><span>'+esc(f.name)+'</span></button>'; }).join('');
   }).catch(function(e){ $('[data-galgrid]',box).innerHTML='<div class="hint">목록을 못 불러왔어요 ('+esc(e.message)+'). 파일 이름을 직접 입력해도 됩니다.</div>'; });
 }
-function setImg(forName, path){
+function setImg(forName, path, pic){
   var inp=$('#sheet [name="'+forName+'"]');
-  if(inp && inp.tagName==='TEXTAREA'){ var lines=inp.value.split('\n').map(function(x){ return x.trim(); }).filter(Boolean); if(lines.indexOf(path)<0) lines.push(path); inp.value=lines.join('\n'); return; }   // 20261026 상세 내용 그림: 고르면 한 줄 추가
+  if(inp && inp.tagName==='TEXTAREA'){   // 20261026 상세 내용 그림: 고르면 한 줄 추가 (그림 크기 #가로x세로 를 같이 적어 두면 고객 화면에서 자리를 미리 잡아 밀리지 않음)
+    var lines=inp.value.split('\n').map(function(x){ return x.trim(); }).filter(Boolean);
+    if(!lines.some(function(x){ return x.replace(/#.*$/,'')===path; })) lines.push(path+(pic&&pic.naturalWidth?'#'+pic.naturalWidth+'x'+pic.naturalHeight:''));
+    inp.value=lines.join('\n'); return; }
   if(inp) inp.value=path;
   var th=$('#sheet [data-th="'+forName+'"]'); if(th) th.innerHTML=thumb(path||inp&&inp.placeholder);
 }
@@ -287,7 +299,7 @@ document.addEventListener('click',function(e){
   if(t.closest('#admPrice')){ if(window.__stPriceOpen) window.__stPriceOpen(); return; }
   if(!t.closest('#sheet')) return;
 
-  if((b=t.closest('[data-pick]'))){ setImg(b.getAttribute('data-for'), b.getAttribute('data-pick')); $$('[data-pick]',b.parentNode).forEach(function(x){x.classList.toggle('sel',x===b)}); return; }
+  if((b=t.closest('[data-pick]'))){ setImg(b.getAttribute('data-for'), b.getAttribute('data-pick'), b.querySelector('img'));$$('[data-pick]',b.parentNode).forEach(function(x){x.classList.toggle('sel',x===b)}); return; }
   if((b=t.closest('[data-galtab]'))){ galRender(b.closest('[data-galfor]'), b.getAttribute('data-for'), b.getAttribute('data-galtab')); return; }
   if((b=t.closest('[data-galref]'))){ delete galCache[b.getAttribute('data-galref')]; galRender(b.closest('[data-galfor]'), b.getAttribute('data-for'), b.getAttribute('data-galref')); return; }
   if((b=t.closest('[data-rk]'))){
