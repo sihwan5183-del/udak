@@ -492,6 +492,8 @@ function noInterest(r){ return r.model==='tvfree5'; }   // TV프리는 이자 �
 // 번호이동/기기변경: 고른 통신사가 있으면 그걸로(U+ = 기기변경) → 20261026 /shop 상세 '가입유형'(jt) → 위 번호이동·기기변경 버튼(MNP)
 // 20261026 사장님: 갤럭시 버디 5처럼 공시지원금으로만 0원이 되는 모델 — 선택약정 자체를 없앰 (관리자 모델 '공시지원금만' · 버디 5는 처음부터 켜짐)
 function pubOnly(m){ return !!(m && m.pubOnly); }
+// 할부 개월 칸: 기기값 0원이면 '일시납' 하나만 (20261026 사장님)
+function MONTHS_OF(after){ return after===0?[['0','일시납']]:[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']]; }
 function methodOf(m, want, c){ return pubOnly(m)?'pub':((want==='sel'||!c||!c.pub)?'sel':'pub'); }
 function jtOf(s){ s=s||{}; return s.carrier?(s.carrier==='LG U+'?'chg':'mnp'):(s.jt==='mnp'||s.jt==='chg')?s.jt:(MNP?'mnp':'chg'); }
 function calcState(m, r){
@@ -501,7 +503,7 @@ function calcState(m, r){
   if(!c) return st;
   st.method=g!=='phone'?'pub':methodOf(m, s.method, c);
   st.after=(st.method==='pub'&&c.pb!=null)?c.pb:c.sel;
-  st.months=s.months==null?24:s.months; st.mm=st.months;   // 기본 24개월 할부 st.noint=noInterest(r);
+  st.months=st.after===0?0:(s.months==null?24:s.months); st.mm=st.months;   // 기본 24개월 할부 · 20261026 사장님: 기기값 0원이면 자동 일시납 (낼 기기값이 없는데 24개월 납부 X)
   st.monthly=st.mm===0?null:won10(st.noint?st.after/st.mm:st.after*RATE[st.mm]/st.mm);
   st.fee=g==='phone'?(t.fee||null):null; st.feeAfter=st.fee&&st.method==='sel'?Math.round(st.fee*0.75):st.fee;
   return st;
@@ -566,7 +568,7 @@ function tierNmOf(k){ var t=tiersOf('phone').filter(function(x){return x.k===k})
 function tierTotal(m, r, tk){
   var s=SEL[m.id]||{}, t=rowTiers(r).filter(function(x){return x.k===tk})[0]; if(!t) return null;
   var type=jtOf(s), c=rowCalc(r,type,t); if(!c) return null;
-  var method=methodOf(m, s.method, c), after=(method==='pub'&&c.pb!=null)?c.pb:c.sel, mm=s.months==null?24:s.months;
+  var method=methodOf(m, s.method, c), after=(method==='pub'&&c.pb!=null)?c.pb:c.sel, mm=after===0?0:(s.months==null?24:s.months);
   var monthly=mm===0?0:won10(after*RATE[mm]/mm), fee=t.fee?(method==='sel'?Math.round(t.fee*0.75):t.fee):0;
   return {total:monthly+fee, monthly:monthly, fee:fee, after:after, t:t, mm:mm};
 }
@@ -594,7 +596,7 @@ function calcPickers(m, r, st){
       return '<option value="'+esc(t.k)+'"'+(st.t&&st.t.k===t.k?' selected':'')+'>'+esc(tierTitle(t))+'</option>'; }).join('')+'</select>'+(g==='phone'&&PLAN_NOTE?'<div class="cpick-hint">'+PLAN_NOTE+'</div>':'')+'</div>';
   if(g==='phone'&&st.c&&!pubOnly(m)) h+=cgrid('할인 방식','method',[['pub','공시지원금',!st.c.pub],['sel','선택약정 (요금 25%↓)']],st.method,m,2,
     !st.c.pub?'공시지원금이 없어 선택약정으로 계산돼요':adviceTxt(cmpMethod(st.c,st.fee,st.months),st.method));
-  if(g!=='tvfree') h+=cgrid('할부 개월','months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(st.months),m,4,'');
+  if(g!=='tvfree') h+=cgrid('할부 개월','months',MONTHS_OF(st.after),String(st.months),m,st.after===0?1:4,'');
   return {car:car, rest:h, promo:promo};   // 20261019: 통신사 / 나머지 따로 · 20261021 A/B 요금제(워치 혜택)
 }
 var MSTIP={};   // 상세 계산 박스 ? 설명 열림
@@ -1332,7 +1334,7 @@ function pdRender(m, p, st, PK, o){
       '<button type="button" class="pd-m'+(st.method==='pub'?' on':'')+(c.pub?'':' dis')+'" data-calc="method" data-v="pub" data-model="'+esc(m.id)+'"'+(c.pub?'':' disabled')+'><b>공시지원금</b><span>'+(c.pub?'총 '+won(c.pub):'–')+'</span></button>'+
       '<button type="button" class="pd-m'+(st.method==='sel'?' on':'')+'" data-calc="method" data-v="sel" data-model="'+esc(m.id)+'"><b>선택약정 <small>요금 25%↓</small></b><span>'+(selTot?'총 '+won(selTot)+' <small>2년</small>':'요금 25% 할인')+'</span></button></div>'+
       '<div class="pd-adv">'+(!c.pub?'공시지원금이 없어 선택약정으로 계산돼요':adviceTxt(cmpMethod(c,st.fee,st.months),st.method))+'</div>');
-    h+=pdO('months','할부개월',pdBtns('months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(st.months),m,4));
+    h+=pdO('months','할부개월',pdBtns('months',MONTHS_OF(st.after),String(st.months),m,st.after===0?1:4));
   }
   h+='</div>';
   // ⑤ 계산표: ① 월 기기값(출고가 − 지원금 → 지원 후 기기값 · 할부) ② 월 요금 → 합산
@@ -1363,7 +1365,7 @@ function pdRender(m, p, st, PK, o){
   if(o.soNow) bar='<div class="md-bar-t"><b>일시품절</b> · 지금은 신청할 수 없어요</div>';
   else if(o.PRE) bar='<div class="md-bar-t pd-eq"><span class="pd-eb">'+sk('48px','11px')+sk('64px','17px')+'</span><i class="pd-op">+</i><span class="pd-eb">'+sk('40px','11px')+sk('60px','15px')+'</span><i class="pd-op">=</i><span class="pd-eb r">'+sk('30px','11px')+sk('60px','15px')+'</span></div>';
   else if(!c) bar='<div class="md-bar-t">상담 신청하시면 <b>나에게 맞는 혜택</b>을 안내해 드려요</div>';
-  else if(mm===0) bar='<div class="md-bar-t pd-eq"><span class="pd-eb"><small>기기값 일시납</small><b class="pk">'+wz(st.after)+'</b></span><i class="pd-op">+</i><span class="pd-eb r"><small>월 요금</small><b>'+won(fa+wlf)+'</b></span></div>';
+  else if(mm===0) bar='<div class="md-bar-t pd-eq"><span class="pd-eb"><small>기기값 일시납</small><b class="pk">'+wz(st.after)+'</b></span><i class="pd-op">+</i><span class="pd-eb"><small>월 요금</small><b>'+won(fa+wlf)+'</b></span></div>';
   else bar='<div class="md-bar-t pd-eq"><span class="pd-eb"><small>월 기기값</small><b class="pk">'+wz(monthly)+'</b></span><i class="pd-op">+</i><span class="pd-eb"><small>월 요금</small><b>'+won(fa+wlf)+'</b></span><i class="pd-op">=</i><span class="pd-eb r"><small>합산</small><b>'+won(total)+'</b></span></div>';
   var dis=(o.soNow&&!EDIT)?' disabled':'';
   h+='<div class="md-bar pd-bar" id="mdBar">'+(c&&!o.soNow?'<button type="button" class="pd-more" data-pd-sum>상세보기'+PD_UP+'</button>':'')+bar+'<div class="md-bar-b one">'+
@@ -1849,7 +1851,7 @@ function apValidate(){
 function apPhoneCalc(){
   var m=apPhone(); if(!m) return null; var rs=sheetRows(m); if(!rs.length) return null;
   var r=rs[AP.cap]||rs[0], type=AP.carrier?(AP.carrier==='LG U+'?'chg':'mnp'):'mnp', t=apTier(), c=rowCalc(r,type,t); if(!c) return null;
-  var method=methodOf(m, AP.method, c), after=(method==='pub'&&c.pb!=null)?c.pb:c.sel, mm=AP.months;
+  var method=methodOf(m, AP.method, c), after=(method==='pub'&&c.pb!=null)?c.pb:c.sel, mm=after===0?0:AP.months;
   return {m:m, r:r, c:c, t:t, type:type, method:method, after:after, mm:mm,
     monthly:mm===0?null:won10(after*RATE[mm]/mm), fee:t.fee||0, feeAfter:t.fee?(method==='sel'?Math.round(t.fee*0.75):t.fee):0};
 }
@@ -1968,7 +1970,7 @@ function apPlanHtml(){
   h+='<div class="ap-f ap-row"><div class="ap-l">요금제</div><div class="ap-r"><select class="csel" id="mPlanSel">'+ts.map(function(x){ return '<option value="'+esc(x.k)+'"'+(t&&x.k===t.k?' selected':'')+'>'+esc(tierTitle(x))+'</option>'; }).join('')+'</select>'+
     (PLAN_NOTE?'<div class="cpick-hint">'+PLAN_NOTE+'</div>':'')+apPerk(t)+'</div></div>';
   if(!(pc&&pubOnly(pc.m))) h+='<div class="ap-f ap-row"><div class="ap-l">할인 방식</div><div class="ap-r">'+apChips('method',[['pub','공시지원금',pc&&!pc.c.pub],['sel','선택약정 (요금 25%↓)']],pc?pc.method:(AP.method||'pub'),2)+(pc&&adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)?'<div class="cpick-hint">'+adviceTxt(cmpMethod(pc.c,pc.fee,AP.months),pc.method)+'</div>':'')+'</div></div>';
-  h+='<div class="ap-f ap-row"><div class="ap-l">할부 개월</div><div class="ap-r">'+apChips('months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(AP.months),4)+'</div></div>';
+  h+='<div class="ap-f ap-row"><div class="ap-l">할부 개월</div><div class="ap-r">'+apChips('months',MONTHS_OF(pc?pc.after:null),String(pc?pc.mm:AP.months),pc&&pc.after===0?1:4)+'</div></div>';
   return h+'</section>';
 }
 // 이 요금제로 함께 살 수 있는 것 안내
@@ -2219,14 +2221,15 @@ function apPayload(o){
   var subsidy=A&&A.after!=null?nums(A.dev):[]; if(pc&&pc.mm) subsidy.push({label:'기기값 월 청구 예정액', amount:pc.monthly});
   var tvTypeNm='U+ 기존 고객(인터넷TV 1년 이상~2년 미만 이용)';
   var benefits=addRecs.map(function(r){ return (r.sk==='tablet'?'탭':r.kind)+': '+r.nm+(r.sk==='tv'?(tvTierNm()?' ('+tvTierNm()+')':'')+' · '+tvTypeNm+' · 이용료 첫 9개월 '+won(TV_FEE)+'→10개월 차부터 '+won(TV_FEE2):''); });
-  var cm=pc?cmpMethod(pc.c,pc.fee,AP.months):null;
+  var phM=pc?pc.mm:AP.months;   // 20261026 휴대폰 할부 개월 (기기값 0원이면 일시납) — CRM 에도 '할부 24개월' 대신 '일시납'
+  var cm=pc?cmpMethod(pc.c,pc.fee,phM):null;
   var tvx=AP.tv&&byId(AP.tv), wx=AP.watch&&byId(AP.watch), tbx=AP.tablet&&byId(AP.tablet);
   var noPh=AP.phone==='none';
   var snapshot={v:2, source:(o.source||'온라인 상담 신청')+(CFG.srcTag?' · '+CFG.srcTag:''), jointype:(noPh||!AP.carrier)?null:type, carrier:AP.carrier||null, device:m?m.nm:(AP.phone==='none'?'휴대폰 변경 없음 (TV프리만)':'상담 후 결정'), storage:cap, color:color,
     plan:tt&&!noPh?{name:tt.title||tierTitle(tt), price:tt.fee||null, group:tt.grp||null}:null,
     discount:noPh?null:pc?(pc.method==='sel'?'선택약정':'공시지원금'):(AP.method==='sel'?'선택약정':'공시지원금'),
-    fee:fee, feeNote:null, subsidy:subsidy, subsidyNote:noPh?'TV프리 약정 36개월':AP.months===0?'일시납':'할부 '+AP.months+'개월 · 연 5.9%',
-    benefits:benefits, estimatedMonthly:SM.total||null, installmentMonths:noPh?null:(AP.months||null), upfront:SM.upfront||null,
+    fee:fee, feeNote:null, subsidy:subsidy, subsidyNote:noPh?'TV프리 약정 36개월':phM===0?'일시납':'할부 '+phM+'개월 · 연 5.9%',
+    benefits:benefits, estimatedMonthly:SM.total||null, installmentMonths:noPh?null:(phM||null), upfront:SM.upfront||null,
     items:SM.recs.map(item), supportTotal:SM.sup||null, supportSplit:{carrier:SM.recs.reduce(function(t,r){return t+(r.cs||0)},0), our:SM.recs.reduce(function(t,r){return t+(r.os||0)},0)}, selDiscountTotal:SM.selSave||null,
     flow:SM.flow.map(function(f){ return {label:f.l, amount:f.a, note:f.sub||null}; }),
     advice:cm&&cm.diff>=1000?(cm.best==='pub'?'공시지원금':'선택약정')+' 쪽이 24개월 기준 약 '+won(Math.round(cm.diff/1000)*1000)+' 저렴':null,
@@ -2235,7 +2238,7 @@ function apPayload(o){
   var body={name:name, phone:phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7), carrier:AP.carrier, channel:window.PAGE_CHANNEL||'메타', utm_campaign:window.PAGE_UTM_CAMPAIGN||null,
     device_interest:m?m.nm:(AP.phone==='none'?'휴대폰 변경 없음 (TV프리만)':'상담 후 결정'), capacity:cap, product_color:color, birth_date:birth, memo:memo||null, status:'신규',
     subscription_type:!AP.carrier?null:AP.carrier==='LG U+'?'기기변경':'MNP('+AP.carrier+')', rate_plan:AP.phone==='none'?null:tt?(tt.title||tierTitle(tt)):null,
-    installment_months:AP.phone==='none'?null:AP.months===0?'일시납':AP.months+'개월', bundle_watch:wx?((AP.wpromo&&wx.id===AP.wpromo.watch)?wpName(AP.wpromo):wx.nm):null, bundle_watch_color:wx&&AP.wcolor?AP.wcolor:null, bundle_tablet:tbx?tbx.nm:null, bundle_tablet_type:tbx?'신규':null,
+    installment_months:AP.phone==='none'?null:phM===0?'일시납':phM+'개월', bundle_watch:wx?((AP.wpromo&&wx.id===AP.wpromo.watch)?wpName(AP.wpromo):wx.nm):null, bundle_watch_color:wx&&AP.wcolor?AP.wcolor:null, bundle_tablet:tbx?tbx.nm:null, bundle_tablet_type:tbx?'신규':null,
     home_tv:tvx?(tvx.id==='tvfree5'?'프리5':tvx.id==='ipada16'?'아이패드':tvx.nm):null, snapshot:snapshot};
   // 20261016: 카톡 예약으로 신청 → CRM '카톡 상담 요청' (전화 전에 문자·카톡으로 먼저 케어)
   snapshot.consult=kakao?'카톡':'전화'; if(kakao) body.consult_channel='카톡';
