@@ -170,6 +170,9 @@ function zeroList(){ var L=A.S.lists||{}; return (L.zero&&L.zero.length)?A.pickL
 // 20261026: 0원 목록 = 관리자 '기기값 0원 모아보기' 목록(순서 그대로) + 지금 가격이 0원인 휴대폰 자동 추가 (예: 갤럭시 버디 5 — 정책이 바뀌어도 맞게)
 function zeroAll(){ var out=zeroList().slice(); A.phones().forEach(function(m){ if(out.indexOf(m)<0 && !A.SO(m) && A.priceOf(m).v===0) out.push(m); }); return out; }
 function zeroOn(){ return A.secOn('zero') && zeroAll().length>0; }
+// 20261026 사장님: '0원' 탭은 지금 가격이 0원인 휴대폰만 (지금은 갤럭시 버디 5) — TV프리·아이패드는 혜택/이벤트·홈 '기기값 0원 모아보기'에
+function zeroPhones(){ return A.phones().filter(function(m){ return !A.SO(m) && A.priceOf(m).v===0; }); }
+function zeroTabOn(){ return A.secOn('zero') && zeroPhones().length>0; }
 function tvList(){ return A.models().filter(function(m){ return A.isTv(m); }); }
 function dealIds(){ var D=A.S.deal||{}; return D.on?A.dealItems().map(function(x){ return x.m.id; }):[]; }
 function quickBy(go){ return A.vis(A.S.quick||[]).filter(function(q){ return q.go===go; })[0]||null; }
@@ -184,7 +187,7 @@ function tabs(wait){
   var out=[{k:'home', nm:'홈', href:'#/'}];
   if(wait) return out;
   if(PRE.on && PRE.href) out.push({k:'pre', nm:PRE.nm, href:PRE.href});
-  if(zeroOn()) out.push({k:'zero', nm:'0원', href:'#/t/zero'});   // 20261026 사장님: 0원 탭 따로
+  if(zeroTabOn()) out.push({k:'zero', nm:'0원', href:'#/t/zero'});   // 20261026 사장님: 0원 탭 따로 (0원 휴대폰만)
   if(dealIds().length) out.push({k:'deal', nm:'특가', href:'#/t/deal'});
   if(A.phones().length) out.push({k:'rank', nm:qNm('popular','인기 모델'), href:'#/t/rank'});
   if(tvList().length || evPills().length) out.push({k:'event', nm:'혜택/이벤트', href:'#/t/event'});
@@ -480,7 +483,7 @@ function renderTabDeal(wait){
 /* ---------- 탭: 0원 (기기값 0원 목록 — 관리자 '기기값 0원 모아보기' 제목·작은 글씨 그대로) ---------- */
 function renderTabZero(wait){
   if(wait){ put($('#oyZrHl'),sk('150px','20px')); put($('#oyZrT'),sk('180px','16px')); put($('#oyZrList'),'<div class="oy-li"><span class="oy-li-im oy-skb"></span><span class="oy-li-tx">'+sk('80%','13px','4px')+'</span></div>'); return; }
-  var zs=A.S.sec.zero||{}, zl=zeroOn()?zeroAll():[];
+  var zs=A.S.sec.zero||{}, zl=zeroTabOn()?zeroPhones():[];
   put($('#oyZrHl'), '<b>'+E(zs.t||'기기값 0원')+'</b>'); edAt('#oyZrHl','sec:zero');
   put($('#oyZrT'), E(zs.s||'')); edAt('#oyZrT','sec:zero');
   put($('#oyZrList'), zl.map(function(m){
