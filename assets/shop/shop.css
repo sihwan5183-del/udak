@@ -408,6 +408,17 @@ body.edit .oy-cl-in{top:calc(101px + env(safe-area-inset-top))}
 .oy-pg-t svg{width:13px;height:13px;fill:none;stroke:#8A9099;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
 /* 자주 찾는 서비스: 4칸 × 2줄 · 연한 회색 둥근 칸 · 아이콘(관리자 색) 위 · 이름 아래 */
+/* 20261026 홈 '한눈에 보기' (사장님 그림 — 예전 자주 찾는 서비스 자리): 묶음 4개 = 2줄 × 2칸 · 가운데 세로 구분선 · 줄 사이 가로 구분선 · 묶음마다 회색 둥근 칸 2개 */
+.oy-gl{display:grid;grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr);column-gap:13px;padding:4px 15px 0}
+.oy-gl-g{min-width:0}
+.oy-gl-g h3{margin:0 0 11px;font-size:14px;line-height:18px;font-weight:700;letter-spacing:-.03em;color:#131518;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oy-gl-vd{display:block;width:1px;background:#EDEFF2}
+.oy-gl-hd{grid-column:1/-1;display:block;height:1px;background:#EDEFF2;margin:14px 0 12px}
+.oy-gl-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.oy-gl-it{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-width:0;height:70px;padding:0 2px;border-radius:13px;background:#F5F6F8;color:#131518}
+.oy-gl-it svg{flex:none;width:26px;height:26px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.oy-gl-it span{display:block;max-width:100%;font-size:min(13px,calc(var(--W)*.0335));line-height:15px;font-weight:500;letter-spacing:-.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+span.oy-gl-it.oy-skb{display:block}
 .oy-sv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:0 15px}
 .oy-sv-it{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;height:70px;padding:0 3px;border-radius:14px;background:#F6F7F9;color:#131518}
 .oy-sv-it svg{flex:none;width:25px;height:25px;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}

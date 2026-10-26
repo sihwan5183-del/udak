@@ -66,14 +66,14 @@ var HOME=
       '<div class="oy-bn-cnt" id="oyBnCnt" aria-hidden="true"></div>'+
       '<button type="button" class="oy-bn-all" id="oyBnAll" aria-label="배너 전체보기" hidden>'+SVG_PLUS+'</button>'+
     '</section>'+
-    /* 20261026 사장님 그림: 배너 → 이번주 특가(칠판 · 종이 카드 두 장) → 지금 많이 보는 휴대폰(옆으로 넘김) → 자주 찾는 서비스(4칸×2줄) → 띠배너 → 많이 찾아요 → 0원 */
+    /* 20261026 사장님 그림: 배너 → 이번주 특가(칠판 · 종이 카드 두 장) → 지금 많이 보는 휴대폰(옆으로 넘김) → 한눈에 보기(묶음 4개 × 2칸 · 예전 '자주 찾는 서비스' 자리) → 띠배너 → 많이 찾아요 → 0원 */
     '<section class="oy-cb" id="oyDealSec" aria-label="이번주 특가"><div class="oy-cb-in">'+
       '<div class="oy-cb-h"><h2 class="oy-cb-t" id="oyDealT"></h2><span class="oy-cb-d" id="oyDealD"></span><i class="oy-cb-tk" aria-hidden="true"></i></div>'+
       '<div class="oy-cb-g" id="oyDeal"></div></div>'+
       '<i class="oy-cb-chalk" aria-hidden="true"><b></b><b></b><b></b></i></section>'+
     '<section class="oy-sec oy-top3" id="hotSec"><div class="oy-sec-h"><h2 id="oyHotT"></h2><a class="oy-more" id="oyHotMore" href="#/t/rank" hidden>전체보기'+SVG_R+'</a></div><div class="oy-hp" id="models"></div>'+
       '<div class="oy-pg" id="oyHotPg" hidden><span class="oy-pg-d" id="oyHotDots" aria-hidden="true"></span><button type="button" class="oy-pg-t" id="oyHotNext">옆으로 넘겨 더보기'+SVG_R+'</button></div></section>'+
-    '<section class="oy-sec oy-top3" id="svcSec"><div class="oy-sec-h"><h2 id="oySvcT"></h2></div><div class="oy-sv" id="quick"></div></section>'+
+    '<section class="oy-sec oy-top3" id="glSec"><div class="oy-sec-h"><h2 id="oyGlT"></h2></div><div class="oy-gl" id="oyGl"></div></section>'+
     '<section class="oy-band" id="trust" aria-label="안내 배너"><div class="oy-band-vp"><div class="oy-band-track" id="oyBand"></div></div><div class="oy-dots" id="oyBandDots" aria-hidden="true"></div></section>'+
     '<section class="oy-sec" id="popSec"><div class="oy-sec-h"><h2 id="oyPopT"></h2></div><div class="oy-ctl" id="oyPopChips"></div><div class="oy-g2" id="oyPop"></div></section>'+
     '<section class="oy-sec" id="zeroSec"><div class="oy-sec-h"><h2 id="oyZeroT"></h2></div><div class="oy-grid" id="oyZero"></div></section>'+
@@ -337,18 +337,48 @@ function hotNext(){
   if(sc.scrollTo) sc.scrollTo({left:to, behavior:'smooth'}); else sc.scrollLeft=to;
 }
 
-/* ---------- 홈: 자주 찾는 서비스 (20261026 사장님 그림: 4칸 × 2줄) — 항목·아이콘·색·누르면 가는 곳은 관리자 퀵메뉴 그대로
-     (휴대폰 화면 폭에선 그림처럼 아이콘 옆에 이름을 두면 이름이 잘려서 아이콘 아래에 이름) · 제목은 관리자 '구역 제목'(sec:svc) ---------- */
-function renderSvc(wait){
-  var sec=$('#svcSec'), s='', k;
-  if(wait){ sec.hidden=false; put($('#oySvcT'),sk('130px','18px')); for(k=0;k<8;k++) s+='<span class="oy-sv-it oy-skb"></span>'; put($('#quick'),s); return; }
-  var list=A.secOn('svc')?A.vis(A.S.quick||[]):[];
-  sec.hidden=!list.length; if(!list.length) return;
-  put($('#oySvcT'), E((A.S.sec.svc||{}).t||'')); edAt('#oySvcT','sec:svc');
-  put($('#quick'), list.map(function(q){
-    return '<a class="oy-sv-it'+hc(q)+'" href="'+E(href(q.go))+'" data-go="'+E(q.go||'')+'"'+ed('quick:'+A.S.quick.indexOf(q))+'><svg viewBox="0 0 24 24" aria-hidden="true" style="stroke:'+E(q.c||'#131518')+'">'+(A.QI[q.ic]||A.QI.star)+'</svg>'+
-      '<span>'+E(QSHORT[q.nm]||q.nm)+'</span></a>';
-  }).join(''));
+/* ---------- 홈: 한눈에 보기 (20261026 사장님 그림 — 예전 '자주 찾는 서비스' 자리) — 묶음 4개(2줄 × 2칸) · 묶음마다 2칸 · 가운데·가로 구분선
+     · 사전예약: 사전예약 기간(위 PRE 켜짐 + 주소)이면 그 주소로, 아니면 '현재 사전예약 기간이 아닙니다.'
+     · 진행중 이벤트: '아직 진행 중인 이벤트가 없습니다.' · 요금제 비교 · 휴대폰 비교: 준비 중 (나중에 AI추천 쪽으로 연결)
+     · 구매 가이드 · 상담 신청 · 매장 찾기는 기존 화면 · 택배 발송은 자주 묻는 질문 '배송·수령' · 제목은 관리자 '구역 제목'(sec:glance) ---------- */
+var GL_I={   // 그림 속 아이콘 (24칸 기준 선 아이콘)
+  cal:'<rect x="4" y="5.5" width="16" height="14.5" rx="2.6"/><path d="M4 10.2h16M8.6 3.6v3.8M15.4 3.6v3.8"/>',
+  gift:'<rect x="4" y="9" width="16" height="11" rx="1.6"/><path d="M12 9v11M4 13h16M12 9c-1.4-4-6-4.3-6-1.6C6 8.6 8.2 9 12 9zM12 9c1.4-4 6-4.3 6-1.6C18 8.6 15.8 9 12 9z"/>',
+  bars:'<rect x="4.6" y="12.6" width="3.8" height="7.4" rx="1.3"/><rect x="10.1" y="8.6" width="3.8" height="11.4" rx="1.3"/><rect x="15.6" y="4.6" width="3.8" height="15.4" rx="1.3"/>',
+  phone:'<rect x="6.5" y="3.3" width="11" height="17.4" rx="2.4"/><path d="M10.8 17.4h2.4"/>',
+  book:'<path d="M3.8 5.6c2.6-1.2 5.6-1 8.2.9 2.6-1.9 5.6-2.1 8.2-.9v13.2c-2.6-1.1-5.6-.9-8.2 1-2.6-1.9-5.6-2.1-8.2-1z"/><path d="M12 6.5v13.3"/>',
+  headset:'<path d="M4.8 14.2v-1.7a7.2 7.2 0 0 1 14.4 0v1.7"/><rect x="3.8" y="13.4" width="3.8" height="5.6" rx="1.7"/><rect x="16.4" y="13.4" width="3.8" height="5.6" rx="1.7"/>',
+  truck:'<path d="M3.3 7.2a1.6 1.6 0 0 1 1.6-1.6h8.6a1.6 1.6 0 0 1 1.6 1.6V16.4H3.3z"/><path d="M15.1 9.4h3.1l2.6 3.2v3.8h-5.7"/><circle cx="7.4" cy="17.2" r="1.9"/><circle cx="17.6" cy="17.2" r="1.9"/>',
+  pin:'<path d="M12 20.5s-6.2-5.4-6.2-10.3a6.2 6.2 0 0 1 12.4 0c0 4.9-6.2 10.3-6.2 10.3z"/><circle cx="12" cy="10.2" r="2.3"/>'
+};
+// [묶음 제목, [[이름, 아이콘, 색, 누르면]…]] — 누르면: gl:안내 · go:기존 화면 · qna:자주 묻는 질문 종류 · pre:사전예약
+var GLANCE=[
+  ['신제품·이벤트 소식', [['사전예약','cal','#FC256F','pre'], ['진행중 이벤트','gift','#993FF9','gl:event']]],
+  ['요금제·휴대폰 비교', [['요금제 비교','bars','#2070FD','gl:soon'], ['휴대폰 비교','phone','#04AB71','gl:soon']]],
+  ['구매 안내·상담',     [['구매 가이드','book','#FB760A','go:guide'], ['상담 신청','headset','#FC287B','go:consult']]],
+  ['배송·매장 이용',     [['택배 발송','truck','#206EFC','qna:배송·수령'], ['매장 찾기','pin','#FB3457','go:store']]]
+];
+var GL_MSG={pre:['📅','현재 사전예약 기간이 아닙니다.'], event:['🎁','아직 진행 중인 이벤트가 없습니다.'], soon:['🛠','현재 준비 중입니다.']};
+function glMsg(k){ var m=GL_MSG[k]||GL_MSG.soon; return '<div class="soon-box"><div class="soon-ic">'+m[0]+'</div><b>'+E(m[1])+'</b></div><button class="cta" type="button" data-close-sheet>확인</button>'; }
+function glTile(x){
+  var nm=x[0], act=x[3], at='', hr='javascript:void 0';
+  if(act==='pre') act=(PRE.on&&PRE.href)?'url:'+PRE.href:'gl:pre';
+  var k=act.split(':')[0], v=act.slice(k.length+1);
+  if(k==='url') hr=v;
+  else if(k==='go'){ hr=href(v); at=' data-go="'+E(v)+'"'; }
+  else if(k==='qna'){ var qi=(A.QNA||[]).map(function(c){ return c[0]; }).indexOf(v); at=qi>-1?' data-shop-qcat="'+qi+'"':' data-go="qna"'; }
+  else at=' data-gl-msg="'+E(v)+'"';
+  return '<a class="oy-gl-it" href="'+E(hr)+'"'+at+' data-gl="'+E(nm)+'"><svg viewBox="0 0 24 24" aria-hidden="true" style="stroke:'+x[2]+'">'+GL_I[x[1]]+'</svg><span>'+E(nm)+'</span></a>';
+}
+function renderGlance(wait){
+  var sec=$('#glSec'), grp=function(i,inner){ return '<div class="oy-gl-g">'+inner+'</div>'+(i%2?'':'<i class="oy-gl-vd" aria-hidden="true"></i>'); }, h='', i;
+  if(wait){ sec.hidden=false; put($('#oyGlT'),sk('100px','18px'));
+    for(i=0;i<4;i++){ h+=grp(i,'<h3>'+sk('96px','14px','4px')+'</h3><div class="oy-gl-2"><span class="oy-gl-it oy-skb"></span><span class="oy-gl-it oy-skb"></span></div>'); if(i===1) h+='<i class="oy-gl-hd" aria-hidden="true"></i>'; }
+    put($('#oyGl'),h); return; }
+  var on=A.secOn('glance'); sec.hidden=!on; if(!on) return;
+  put($('#oyGlT'), E((A.S.sec.glance||{}).t||'한눈에 보기')); edAt('#oyGlT','sec:glance');
+  GLANCE.forEach(function(g,i){ h+=grp(i,'<h3>'+E(g[0])+'</h3><div class="oy-gl-2">'+g[1].map(glTile).join('')+'</div>'); if(i===1) h+='<i class="oy-gl-hd" aria-hidden="true"></i>'; });
+  put($('#oyGl'),h);
 }
 
 /* ---------- 홈: 띠배너 (당일 택배 발송 남은 시간 + 관리자 '신뢰' 문구) ---------- */
@@ -734,7 +764,8 @@ function bindOnce(){
     c=t.closest('[data-rk-cat]'); if(c){ e.preventDefault(); RKCAT=c.getAttribute('data-rk-cat'); renderTabRank(false); return; }
     c=t.closest('[data-ls-cat]'); if(c){ e.preventDefault(); location.replace('#/t/list/'+c.getAttribute('data-ls-cat')); return; }   // 분류 목록 칩: 같은 화면에서 종류만 바꿈 (뒤로 가기가 쌓이지 않게)
     c=t.closest('[data-cg]'); if(c){ e.preventDefault(); location.replace('#/c/'+c.getAttribute('data-cg')); return; }             // 카테고리 왼쪽 대분류
-    c=t.closest('[data-shop-qcat]'); if(c){   // 이용안내 > 자주 묻는 질문 > 질문 종류 → 그 종류로 펼친 '자주 묻는 질문'
+    c=t.closest('[data-gl-msg]'); if(c){ e.preventDefault(); A.openSheet(glMsg(c.getAttribute('data-gl-msg'))); return; }   // 20261026 한눈에 보기: 사전예약 기간 아님 · 이벤트 없음 · 준비 중
+    c=t.closest('[data-shop-qcat]'); if(c){   // 이용안내 > 자주 묻는 질문 > 질문 종류 → 그 종류로 펼친 '자주 묻는 질문' (한눈에 보기 '택배 발송' → 배송·수령)
       e.preventDefault(); var qi=c.getAttribute('data-shop-qcat'); A.act('qna');
       setTimeout(function(){ var b=document.querySelector('.qna-cats [data-qcat="'+qi+'"]'); if(b) b.click(); },30); return; }
   });
@@ -776,7 +807,7 @@ function render(api){
   if(/^#\/cat\//.test(location.hash)) location.replace(catToList(location.hash));   // 스토어 카테고리 주소로 바로 들어온 경우 → 분류 목록
   PANE=pickPane(wait);
   renderGnb(wait);
-  renderBanner(wait); renderDeal(wait); renderHot(wait); renderSvc(wait); renderBand(wait); renderPop(wait); renderZero(wait);
+  renderBanner(wait); renderDeal(wait); renderHot(wait); renderGlance(wait); renderBand(wait); renderPop(wait); renderZero(wait);
   renderTabZero(wait); renderTabDeal(wait); renderTabRank(wait); renderTabEvent(wait); renderTabAi(wait); renderList(wait); renderCat(wait);
   showPane();
   api.renderFoot();

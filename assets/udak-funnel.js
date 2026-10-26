@@ -158,7 +158,7 @@
     CFG.store={
       see:[['hero','#hero'],['models','#models'],['quick','#quick'],['trust','#trust'],['popular','#popSec'],['recent','#recentSec'],['zero','#zeroSec'],
            ['wear','#wearSec'],['gift','#giftSec'],['rank','#rankSec'],['pick','#pickHead'],
-           ['deal','#oyDealSec']],   // 20261020 'pick'은 구역이 화면보다 길어 25%가 한 번에 안 보임 → 구역 제목으로 봄 · 20261022 사장님: /shop 홈 '이번주 특가' 구역
+           ['deal','#oyDealSec'],['glance','#oyGl']],   // 20261026 /shop 홈 '한눈에 보기'   // 20261020 'pick'은 구역이 화면보다 길어 25%가 한 번에 안 보임 → 구역 제목으로 봄 · 20261022 사장님: /shop 홈 '이번주 특가' 구역
       click:[['#mSubmitBtn','submit_click',function(){ return '상담 예약'; }],['#mKakaoBtn','submit_click',function(){ return '카톡 예약'; }],
              // v20261019: 상세 하단 [카톡 상담] → 카톡 간편 신청창, 그 안의 '카톡으로 상담 시작하기'
              ['#qkBtn','submit_click',function(){ return '카톡 간편'; }],['[data-qk]','qk_open',attr('data-qk')],['[data-qk-car]','qk_car',attr('data-qk-car')],['[data-qk-col]','qk_col',attr('data-qk-col')],
@@ -299,6 +299,7 @@
       if((el=t.closest('[data-sort-open]'))) return '정렬열기';
       if((el=t.closest('[data-cat]'))) return '분류:'+el.getAttribute('data-cat');
       if((el=t.closest('.dl-c'))) return '특가:'+(el.getAttribute('data-mid')||'');
+      if((el=t.closest('[data-gl]'))) return '한눈에:'+el.getAttribute('data-gl');   // 20261026 /shop 홈 '한눈에 보기' 칸
       if((el=t.closest('a[href^="#/model/"]'))){ s=secOf(el); return (s?s+':':'')+goKey(el.getAttribute('href')); }
       if((el=t.closest('[data-go]'))){ s=secOf(el); return (s||'이동')+':'+goKey(el.getAttribute('data-go')); }
       if((el=t.closest('[data-video]'))) return '영상';
