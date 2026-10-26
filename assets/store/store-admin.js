@@ -89,6 +89,10 @@ function edModel(m){
     imgField('c0','큰 카드 사진 ① 왼쪽 큰 칸','card',m.cards[0],'card/'+m.id+'-1.jpg')+
     imgField('c1','큰 카드 사진 ② 오른쪽 위','card',m.cards[1],'card/'+m.id+'-2.jpg')+
     imgField('c2','큰 카드 사진 ③ 오른쪽 아래','card',m.cards[2],'card/'+m.id+'-3.jpg')+
+    // 20261026 /shop 상세 아래 칸 (구매혜택 · 유의사항 · 구매후기 · 모델정보) — 그림을 한 줄에 하나씩, 위에서부터 차례로 보임
+    '<div class="grp"><div class="lbl">상세 내용 그림 (/shop 상세 아래 칸)</div><div class="hint">한 줄에 그림 하나 — 깃허브 <b>assets/store/detail/</b> 에 올린 파일(예: detail/'+esc(m.id)+'-1.webp) 또는 https 주소. 구매후기는 그림을 넣어야 칸이 생겨요.</div></div>'+
+    [['ben','구매혜택'],['note','유의사항'],['rev','구매후기'],['info','모델정보']].map(function(x){ var v=((m.dt||{})[x[0]]||[]).join('\n');
+      return area('dt_'+x[0],'상세 내용 그림 · '+x[1],v,2)+'<div class="btns" style="margin-top:-4px"><button type="button" class="btn2" data-ed="gal" data-for="dt_'+x[0]+'" data-folder="detail">사진 고르기 (깃허브 detail 폴더 · 고르면 한 줄 추가)</button></div><div data-galfor="dt_'+x[0]+'"></div>'; }).join('')+
     '<div class="hint">모델 코드: <b>'+esc(m.id)+'</b> (사진 파일 이름에 쓰는 이름)</div>'+
     moveBtns(true)+applyBtn();
 }
@@ -101,6 +105,9 @@ function saveModel(m){
   m.colors=V('colors').split('\n').map(function(l){ var p=l.split('|').map(function(x){return x.trim()}); return p[0]?{nm:p[0],hex:p[1]||'',img:p[2]||null}:null; }).filter(Boolean);
   m.img=V('img')||null; m.cards=[V('c0')||null,V('c1')||null,V('c2')||null];
   if(!m.cards[0]&&!m.cards[1]&&!m.cards[2]) m.cards=[];
+  // 20261026 /shop 상세 내용 그림 (칸마다 한 줄에 하나) — 다 비면 지움
+  if($('#sheet [name="dt_ben"]')){ var dt={}; ['ben','note','rev','info'].forEach(function(k){ var l=V('dt_'+k).split('\n').map(function(x){ return x.trim(); }).filter(Boolean); if(l.length) dt[k]=l; });
+    if(Object.keys(dt).length) m.dt=dt; else delete m.dt; }
 }
 var ED = {
   // 20261026 /shop 메인 배너 (통이미지) — 그림 · 이름 · 누르면 가는 곳 · 숨기기 · 순서
@@ -240,7 +247,9 @@ function galRender(box, forName, folder){
   }).catch(function(e){ $('[data-galgrid]',box).innerHTML='<div class="hint">목록을 못 불러왔어요 ('+esc(e.message)+'). 파일 이름을 직접 입력해도 됩니다.</div>'; });
 }
 function setImg(forName, path){
-  var inp=$('#sheet [name="'+forName+'"]'); if(inp) inp.value=path;
+  var inp=$('#sheet [name="'+forName+'"]');
+  if(inp && inp.tagName==='TEXTAREA'){ var lines=inp.value.split('\n').map(function(x){ return x.trim(); }).filter(Boolean); if(lines.indexOf(path)<0) lines.push(path); inp.value=lines.join('\n'); return; }   // 20261026 상세 내용 그림: 고르면 한 줄 추가
+  if(inp) inp.value=path;
   var th=$('#sheet [data-th="'+forName+'"]'); if(th) th.innerHTML=thumb(path||inp&&inp.placeholder);
 }
 

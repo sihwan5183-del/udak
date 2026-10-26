@@ -16,7 +16,7 @@ var SKIN = (CFG.skin && typeof CFG.skin.render==='function') ? CFG.skin : null;
 var DB = 'https://udak-c6832-default-rtdb.firebaseio.com';
 var IMG = '/assets/store/';
 var GH = 'https://api.github.com/repos/sihwan5183-del/udak/contents/assets/store/';
-var FOLDERS = ['banner','hero','model','card','promo','gift'];   // 20261026 banner = /shop 메인 배너 통이미지
+var FOLDERS = ['banner','hero','model','card','promo','gift','detail'];   // 20261026 banner = /shop 메인 배너 통이미지 · detail = /shop 상세 아래 '구매혜택·유의사항·구매후기·모델정보' 그림
 
 var MARKUP = "<!-- 스크롤 시 나타나는 상단바 (쿠팡이츠 방식) -->\n<header class=\"topbar\" id=\"topbar\">\n  <button class=\"lbl\" data-open=\"store\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>매장찾기<svg class=\"ico chev\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n  <button data-go=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button>\n  <button style=\"position:relative;display:flex\" data-open=\"noti\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8\"/><path d=\"M10.3 21a1.9 1.9 0 0 0 3.4 0\"/></svg><i class=\"dot-new\"></i></button>\n</header>\n<div class=\"app\" id=\"app\">\n<!-- ===================== 홈 ===================== -->\n<main class=\"view on\" id=\"v-home\">\n  <!-- 1. 히어로 -->\n  <section class=\"hero\" id=\"hero\">\n    <div class=\"hero-top\">\n      <div class=\"brand\" id=\"brand\" data-edit=\"brand\"></div>\n      <div class=\"hero-r\">\n        <div class=\"uplus-logo\">U<sup>+</sup></div>\n        <div class=\"hero-icons\">\n          <button data-go=\"search\" aria-label=\"검색\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button>\n          <button data-open=\"noti\" aria-label=\"알림\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8\"/><path d=\"M10.3 21a1.9 1.9 0 0 0 3.4 0\"/></svg><i class=\"dot-new\"></i></button>\n        </div>\n      </div>\n    </div>\n    <div class=\"hero-track\" id=\"heroTrack\"></div>\n    <div class=\"dots\" id=\"heroDots\"></div>\n    <div class=\"deal-subs\" id=\"dealSubs\"></div>\n  </section>\n  <!-- 2. 당일 출발 안내 (온라인 구매 과정 + 마감 카운트다운) -->\n  <div class=\"shipbar\" id=\"shipBar\" data-edit=\"ship\"></div>\n  <!-- 3. 검색 -->\n  <label class=\"search\" data-go=\"search\">\n    <svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg>\n    <input type=\"text\" placeholder=\"어떤 휴대폰을 찾고 계세요?\" readonly tabindex=\"-1\">\n  </label>\n  <!-- 4. 모델 원형 아이콘 -->\n  <nav class=\"models\" id=\"models\"></nav>\n  <!-- 5. 퀵메뉴 -->\n  <nav class=\"quick hscroll\" id=\"quick\"></nav>\n  <!-- 6. 신뢰 스트립 -->\n  <div class=\"trust hscroll\" id=\"trust\"></div>\n  <!-- 7. 프로모 배너 -->\n  <a class=\"promo\" id=\"promo\" data-edit=\"promo\"></a>\n  <!-- 8. 많이 찾아요 -->\n  <section class=\"sec\" id=\"popSec\">\n    <div id=\"popHead\"></div>\n    <div class=\"popgrid\" id=\"popgrid\"></div>\n  </section>\n  <div class=\"divider\" style=\"margin-top:16px\"></div>\n  <!-- ===== 여기부터 쿠팡이츠 모티브 섹션 ===== -->\n  <!-- 9-1. 최근 본 모델 (본 게 없으면 숨김) -->\n  <section class=\"sec\" id=\"recentSec\" hidden>\n    <div id=\"recentHead\"></div>\n    <div class=\"hcards hscroll\" id=\"recent\"></div>\n  </section>\n  <!-- 9-2. 기기값 0원 모아보기 -->\n  <section class=\"sec zero-sec\" id=\"zeroSec\">\n    <div id=\"zeroHead\"></div>\n    <div class=\"hcards hscroll\" id=\"zero\"></div>\n  </section>\n  <section class=\"sec\" id=\"wearSec\">\n    <div id=\"wearHead\"></div>\n    <div class=\"hcards hscroll\" id=\"wear\"></div>\n  </section>\n  <div class=\"divider\"></div>\n  <!-- 10-1. 한정 사은품 -->\n  <section class=\"sec\" id=\"giftSec\">\n    <div id=\"giftHead\"></div>\n    <div class=\"dcards hscroll\" id=\"gifts\"></div>\n  </section>\n  <!-- 10-2. 우리 동네 인기 모델 -->\n  <section class=\"sec\" id=\"rankSec\">\n    <div id=\"rankHead\"></div>\n    <div class=\"dcards hscroll\" id=\"rank\"></div>\n  </section>\n  <div class=\"divider\" style=\"margin-top:16px\"></div>\n  <!-- 11. 골라보는 휴대폰 -->\n  <section class=\"sec ucat-wrap\" id=\"pickSec\" style=\"padding-bottom:0\">\n    <div id=\"pickHead\"></div>\n    <nav class=\"models hscroll\" id=\"pickCircles\" style=\"display:flex;gap:4px;padding:0 10px 6px\"></nav>\n    <div class=\"filters\">\n      <div class=\"seg\" data-seg></div><div class=\"maxv-wrap\" data-maxwrap></div>\n      <button class=\"fbtn\" type=\"button\" data-sort-open><span class=\"sort-lbl\">추천순</span> <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n      <button class=\"fbtn\">필터 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"M4 6h16M7 12h10M10 18h4\"/></svg></button>\n    </div>\n    <div class=\"adlabel\">추천 리스트</div>\n    <div id=\"bigList\"></div>\n  </section>\n  <footer class=\"foot\" id=\"foot\" data-edit=\"foot\"></footer>\n</main>\n<!-- ===================== 카테고리 (쿠팡이츠 '한식' 화면) ===================== -->\n<main class=\"view\" id=\"v-cat\">\n  <div class=\"subhead\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button><h1 id=\"catTitle\">전체</h1><span class=\"sh-r\"><button data-home aria-label=\"홈으로\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M3 10.5 12 3l9 7.5\"/><path d=\"M5 9.5V20h5v-6h4v6h5V9.5\"/></svg></button><button data-go=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button></span></div>\n  <div class=\"sticky-tabs\"><nav class=\"ctabs hscroll\" id=\"catTabs\"></nav></div>\n  <nav class=\"hscroll\" id=\"catCircles\" style=\"display:flex;gap:4px;padding:14px 10px 6px\"></nav>\n  <div class=\"filters\">\n    <div class=\"seg\" data-seg></div><div class=\"maxv-wrap\" data-maxwrap></div>\n    <button class=\"fbtn\" type=\"button\" data-sort-open><span class=\"sort-lbl\">추천순</span> <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"m6 9 6 6 6-6\"/></svg></button>\n    <button class=\"fbtn\">필터 <svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:14px;height:14px\"><path d=\"M4 6h16M7 12h10M10 18h4\"/></svg></button>\n  </div>\n  <div class=\"adlabel\">추천 리스트</div>\n  <div id=\"catList\"></div>\n</main>\n<!-- ===================== 검색 ===================== -->\n<main class=\"view\" id=\"v-search\">\n  <div class=\"subhead\" style=\"gap:4px;justify-content:flex-start\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button>\n    <label class=\"search\" style=\"margin:0;flex:1;height:40px\"><svg class=\"ico\" viewBox=\"0 0 24 24\" style=\"width:18px;height:18px\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg><input id=\"q\" type=\"search\" autocomplete=\"off\" placeholder=\"모델명을 입력하세요 (예: 폴드, 아이폰)\"></label></div>\n  <div class=\"s-modes\" id=\"sModes\"><button type=\"button\" data-smode=\"phone\">휴대폰</button><button type=\"button\" data-smode=\"store\">매장</button></div>\n  <div class=\"results\" id=\"results\"></div>\n</main>\n<!-- ===================== 찜한 모델 ===================== -->\n<main class=\"view\" id=\"v-wish\">\n  <div class=\"subhead\"><span style=\"width:40px\"></span><h1>찜한 모델</h1><span style=\"width:40px\"></span></div>\n  <div id=\"wishList\"></div>\n</main>\n<!-- ===================== 모델 상세 (다음 단계) ===================== -->\n<main class=\"view\" id=\"v-model\">\n  <div class=\"subhead\"><button data-back><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M19 12H5M11 18l-6-6 6-6\"/></svg></button><h1 id=\"mdTitle\"></h1><button data-home aria-label=\"홈으로\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M3 10.5 12 3l9 7.5\"/><path d=\"M5 9.5V20h5v-6h4v6h5V9.5\"/></svg></button></div>\n  <div id=\"mdBody\" style=\"padding:0 16px 20px\"></div>\n</main>\n</div><!-- /app -->\n<!-- 하단 탭바 -->\n<nav class=\"tabbar\" id=\"tabbar\">\n  <a href=\"#/\" data-tab=\"home\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z\"/></svg>홈</a>\n  <a href=\"#/search\" data-tab=\"search\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg>검색</a>\n  <a href=\"#/wish\" data-tab=\"wish\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z\"/></svg>찜</a>\n  <a href=\"javascript:void 0\" data-open=\"consult\" data-tab=\"consult\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"4\" width=\"14\" height=\"17\" rx=\"2\"/><path d=\"M9 4h6v3H9zM9 12l2 2 4-4\"/></svg>상담신청</a>\n  <a href=\"javascript:void 0\" data-open=\"store\" data-tab=\"store\"><svg class=\"ico\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>매장</a>\n</nav>\n<div class=\"dim\" id=\"dim\"></div>\n<div class=\"sheet\" id=\"sheet\"><button type=\"button\" class=\"sheet-x\" aria-label=\"닫기\">×</button><div id=\"sheetBody\"></div></div>";
 // 20261022 /shop: 홈 화면(#v-home) 자리만 skin 이 준 화면으로 바꿈 — 나머지 화면(목록·검색·찜·상세·신청서)은 그대로
@@ -488,9 +488,11 @@ function mnpLead(b){ try{ var c=b&&b.carrier, sn=b&&b.snapshot, mnp=sn?(sn.joint
 // 원 단위 정리: 1원 자리가 8·9면 10원 올림, 그 밖엔 버림 (아이폰 듀오 랜딩과 같은 규칙)
 function won10(n){ n=Math.round(Number(n)||0); var x=((n%10)+10)%10; return x>=8?n+(10-x):n-x; }
 function noInterest(r){ return r.model==='tvfree5'; }   // TV프리는 이자 없이 그냥 나누기
+// 번호이동/기기변경: 고른 통신사가 있으면 그걸로(U+ = 기기변경) → 20261026 /shop 상세 '가입유형'(jt) → 위 번호이동·기기변경 버튼(MNP)
+function jtOf(s){ s=s||{}; return s.carrier?(s.carrier==='LG U+'?'chg':'mnp'):(s.jt==='mnp'||s.jt==='chg')?s.jt:(MNP?'mnp':'chg'); }
 function calcState(m, r){
   var g=r.g, s=SEL[m.id]||(SEL[m.id]={});
-  var type=g!=='phone'?'all':(s.carrier?(s.carrier==='LG U+'?'chg':'mnp'):(MNP?'mnp':'chg'));
+  var type=g!=='phone'?'all':jtOf(s);
   var t=curTier(m,g,r), c=rowCalc(r,type,t), st={g:g, s:s, t:t, type:type, c:c, split:(g!=='second')};
   if(!c) return st;
   st.method=g!=='phone'?'pub':((s.method==='sel'||!c.pub)?'sel':'pub');
@@ -559,7 +561,7 @@ function tierNmOf(k){ var t=tiersOf('phone').filter(function(x){return x.k===k})
 // 이 요금제로 했을 때 매달 내는 돈 (휴대폰 할부금 + 요금제) — A/B 칸에 각각 보여 줌
 function tierTotal(m, r, tk){
   var s=SEL[m.id]||{}, t=rowTiers(r).filter(function(x){return x.k===tk})[0]; if(!t) return null;
-  var type=s.carrier?(s.carrier==='LG U+'?'chg':'mnp'):(MNP?'mnp':'chg'), c=rowCalc(r,type,t); if(!c) return null;
+  var type=jtOf(s), c=rowCalc(r,type,t); if(!c) return null;
   var method=(s.method==='sel'||!c.pub)?'sel':'pub', after=(method==='pub'&&c.pb!=null)?c.pb:c.sel, mm=s.months==null?24:s.months;
   var monthly=mm===0?0:won10(after*RATE[mm]/mm), fee=t.fee?(method==='sel'?Math.round(t.fee*0.75):t.fee):0;
   return {total:monthly+fee, monthly:monthly, fee:fee, after:after, t:t, mm:mm};
@@ -1087,6 +1089,8 @@ function renderModel(id, keepRecent){
   //   가격은 통신사를 골라야 보이는 거라 첫 화면은 설정 없이도 똑같음 → 설정이 오면 같은 화면을 다시 그릴 뿐 (중간 화면 없음)
   //   휴대폰이 아닌 상품(워치·태블릿·TV프리)이나 기본값에 없는 모델만 받기 전 잠깐 빈 틀 (사진 자리 · 이름 · 회색 줄)
   var PRE=CFG_WAIT&&!EDIT;   // 20261022 사장님: 단계 이름 '내 가격' → '나에게 맞는 혜택' (안내 문구 속 '내 가격'도 같이)
+  var mV2=byId(id), V2=!!(SKIN && mV2 && kindOf(mV2)==='phone');   // 20261026 /shop 휴대폰 상세 = 새 배치(pdRender) · 그 밖(/store · 워치·태블릿·TV프리)은 예전 그대로
+  if(!V2) pdHeadOff();
   if(PRE){ var m0=byId(id); if(!(m0 && !m0.hidden && kindOf(m0)==='phone')){ $('#mdTitle').textContent=m0?m0.nm:'';
     $('#mdBody').innerHTML='<div class="ucard md-skel"><div class="md-img"></div><div class="md-rest"><h2 class="md-h ucard-name">'+esc(m0?m0.nm:'')+'</h2><div class="sk-l"></div><div class="sk-b"></div><div class="sk-b"></div></div></div>'; return; } }
   var m=byId(id); if(!m||(m.hidden&&!EDIT)){location.hash='#/';return}
@@ -1137,6 +1141,7 @@ function renderModel(id, keepRecent){
   // 20261020 '당일 택배 발송 · 5분 상담' 칩 뺌 (첫 화면·신청서와 같은 말) — TV프리 대상 조건 칩, 워치·태블릿 '의무가입 X' 칩은 그대로
   var mdc=isTv(m)?TV_CHIPS.map(function(t){return '<span class="chip">'+t+'</span>'}).join(''):(gg==='phone'&&cst&&cst.c)?'':'<span class="chip">제휴카드 의무가입 X</span><span class="chip">부가서비스 의무가입 X</span>';
   var soHtml=soNow?'<div class="so-notice">'+(SO(m)?'현재 일시품절이에요. 지금은 신청할 수 없어요.':'선택하신 '+esc(selRow.cap||'옵션')+'은(는) 일시품절이에요.')+'</div>':'';
+  if(V2){ pdRender(m, p, (p.kind==='sheet'&&cst&&cst.c)?cst:null, PK, {PRE:PRE, soNow:soNow, soHtml:soHtml, selRow:selRow}); return; }
   var colorStep=cN?step.bind(null,'color', '컬러', '컬러를 선택해 주세요.', '', colorPicker(m), chipOf('color', colNm, true, false), done.color?'':'dflt'):null;
   var capStep=oN?step.bind(null,'cap', oL, esc(oL)+eul(oL)+' 선택해 주세요.', '', optPicker(m), chipOf('cap', capNm, true, false), done.cap?'':'dflt'):null;
   if(carFirst){
@@ -1218,6 +1223,185 @@ function colorPicker(m){
     return '<button type="button" class="sw'+(c.nm===cur?' on':'')+'" data-color-pick="'+esc(c.nm)+'" data-model="'+esc(m.id)+'" aria-label="'+esc(c.nm)+'" style="--c:'+esc(c.hex||'#ddd')+'"></button>';
   }).join('')+'</div></div>';
 }
+
+/* ---------------- 20261026 /shop 휴대폰 상세 — 사장님: 폰슐랭샵 상세 배치로, 우리 결에 안 맞는 건 빼고 ----------------
+   위에서부터: 이름 + 최대 할인 + 공유 → 큰 사진 → 컬러 사진 → 색상 · 용량 · 가입유형 · 요금제(+조건) · 유플러스 다이렉트 지원금 · 할인 방식 · 할부개월
+              → 계산표(① 월 기기값 ② 월 요금 · 합산) → 구매혜택 · 유의사항 · 구매후기 · 모델정보(앞으로 그림을 넣는 칸)
+              → 아래 고정: 월 기기값 + 월 요금 = 합산 · [제품명 상담 신청하기]
+   뺀 것: 가입할 통신사(우린 U+만) · 인터넷+TV · 카드·결합할인 · 위 카테고리 줄 · 카페 시세 배너
+          · 카톡/1:1 버튼 (20261020 카톡 상담 0건 → 상담 신청 하나만) · 요금제 변경 가능 시점 안내 (20261020 장벽이라 뺀 문구)
+          · 합산을 제일 크게 (20261021 사장님: 월 기기값이 제일 크게)
+   계산은 예전 상세와 같은 함수(calcState · rowCalc · cmpMethod) — /store(광고 랜딩) 상세는 그대로 */
+var PD_HD0=null;   // 예전 상세 윗줄 (/store 화면으로 돌아갈 때)
+var PD_SHARE='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5.5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="18.5" r="2.6"/><path d="m8.3 10.8 7.4-4M8.3 13.2l7.4 4"/></svg>';
+var PD_CK='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6.5 12.5 3.6 3.6 7.4-8"/></svg>';
+var PD_UP='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>';
+var PD_TABS=[['ben','구매혜택'],['note','유의사항'],['rev','구매후기'],['info','모델정보']];
+function pdHeadOn(){
+  var sh=$('#v-model .subhead'); if(!sh || sh.classList.contains('pd-hd')) return;
+  if(PD_HD0==null) PD_HD0=sh.innerHTML;
+  sh.classList.add('pd-hd');
+  sh.innerHTML='<button data-back aria-label="뒤로"><svg class="ico" viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button>'+
+    '<a class="pd-logo" href="#/" data-home aria-label="유플러스 다이렉트 홈"><img src="/assets/shop/logo-shop.png" alt="유플러스 다이렉트" width="159" height="22"></a><h1 id="mdTitle" class="pd-hd-t"></h1>'+
+    '<span class="sh-r"><button data-go="search" aria-label="검색"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>'+
+    '<button data-home aria-label="홈으로"><svg class="ico" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg></button></span>';
+}
+function pdHeadOff(){ var sh=$('#v-model .subhead'); if(!sh || !sh.classList.contains('pd-hd')) return; sh.classList.remove('pd-hd'); if(PD_HD0!=null) sh.innerHTML=PD_HD0; }
+// 관리자에서 넣는 상세 그림 (모델마다 m.dt = {ben:[…], note:[…], rev:[…], info:[…]} · 그림 경로 detail/파일.webp 또는 https 주소)
+function pdDt(m,k){ return arr(m&&m.dt&&m.dt[k]).map(function(x){ return String(x||'').trim(); }).filter(Boolean); }
+function pdImgs(list){ return list.map(function(p){ return '<img class="pd-dimg" src="'+esc(imgSrc(p))+'" alt="" loading="lazy" decoding="async">'; }).join(''); }
+// 이름 옆 '최대 OO만원 할인' — 가격표에서 번호이동·기기변경 · 요금제 중 출고가 대비 가장 많이 빠지는 금액 (0원까지 되면 '기기값 0원')
+function pdBadge(m){
+  var rs=sheetRows(m); if(!rs.length) return '';
+  var on=rs.filter(function(r){ return !r.so; }); if(on.length) rs=on;
+  var g=rs[0].g, best=null, zero=false;
+  rs.forEach(function(r){ ['mnp','chg'].forEach(function(type){ tiersOf(g).forEach(function(t){ var c=rowCalc(r,type,t); if(!c||c.v==null) return; if(c.v===0) zero=true; var d=c.out-c.v; if(best==null||d>best) best=d; }); }); });
+  if(zero) return '기기값 0원';
+  return best>=10000?'최대 '+Math.floor(best/10000).toLocaleString('ko-KR')+'만원 할인':'';
+}
+function pdO(key, label, inner){ return '<div class="pd-o" data-o="'+key+'"><div class="pd-ol">'+label+'</div>'+inner+'</div>'; }
+function pdL(l, v, cls){ return '<div class="pd-sl'+(cls?' pd-'+cls:'')+'"><span>'+l+'</span><span>'+v+'</span></div>'; }
+function pdBtns(key, items, cur, m, n){ return '<div class="pd-bs" style="--n:'+n+'">'+items.map(function(x){ return '<button type="button" class="pd-b'+(String(x[0])===String(cur)?' on':'')+'" data-calc="'+key+'" data-v="'+esc(x[0])+'" data-model="'+esc(m.id)+'">'+esc(x[1])+'</button>'; }).join('')+'</div>'; }
+function pdTierSel(m, r, st, promo){
+  if(promo) return promo;   // 폴드8: A 85 요금제 / B 95 요금제 + 워치9 (예전 상세와 같은 칸)
+  var ts=rowTiers(r), t=st.t||ts[0]; if(!t) return '';
+  var face='<span class="pd-sn">'+esc(t.title||tierLabel(t))+'</span>'+(t.fee?'<span class="pd-sf">월 '+won(t.fee)+'</span>':'');
+  if(ts.length<2) return '<div class="pd-selw one">'+face+'</div>';
+  return '<label class="pd-selw">'+face+'<i class="pd-chev"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></i>'+
+    '<select data-calc-sel="tier" data-model="'+esc(m.id)+'" aria-label="요금제">'+ts.map(function(x){ return '<option value="'+esc(x.k)+'"'+(t.k===x.k?' selected':'')+'>'+esc(tierTitle(x))+'</option>'; }).join('')+'</select></label>';
+}
+// 아래 칸: 구매혜택 · 유의사항 · 구매후기 · 모델정보 (그림은 관리자 → 모델 → '상세 내용 그림')
+function pdMore(m, st){
+  var ben=pdDt(m,'ben'), note=pdDt(m,'note'), rev=pdDt(m,'rev'), info=pdDt(m,'info');
+  var tabs=PD_TABS.filter(function(x){ return x[0]!=='rev' || rev.length || EDIT; });   // 구매후기는 그림을 넣으면 나옴 (지어낸 후기 X)
+  var ck=function(t){ return '<li><i>'+PD_CK+'</i><span>'+t+'</span></li>'; };
+  var h='<div class="pd-more-w" id="pdMore"><nav class="pd-tabs" id="pdTabs" style="--n:'+tabs.length+'">'+tabs.map(function(x,i){ return '<button type="button" class="'+(i?'':'on')+'" data-pd-tab="'+x[0]+'">'+x[1]+'</button>'; }).join('')+'</nav>';
+  // 구매혜택: 혜택 칸(기기값 할인 · 보호필름·케이스 · 고속충전기) + 관리자 '신뢰 문구' + 그림
+  var tr=vis(S.trust||[]).filter(function(t){ return t && (t.b||t.s); });
+  h+='<section class="pd-sec" id="pdBen"><h3>구매혜택</h3>'+benTiles(m)+(tr.length?'<ul class="pd-ul">'+tr.map(function(t){ return ck('<b>'+esc(t.b)+'</b>'+(t.s?' <small>'+esc(t.s)+'</small>':'')); }).join('')+'</ul>':'')+pdImgs(ben)+'</section>';
+  // 유의사항: 혜택 조건(요금제 · 약정) + 할부이자 + 관리자 '상세 화면 가격 안내 문구' + 그림
+  var nl=[]; if(st&&st.t&&st.t.fee) nl.push(won(st.t.fee)+' 이상 요금제를 6개월 유지하는 조건이에요.'); nl.push('약정 기간은 2년이에요.');
+  nl.push('월 기기값은 할부이자(연 5.9%)가 포함된 금액이에요.');
+  if(S.priceNote) nl.push(esc(S.priceNote).replace(/\n/g,'<br>'));
+  h+='<section class="pd-sec" id="pdNote"><h3>유의사항</h3><ul class="pd-ul dot">'+nl.map(function(t){ return '<li><span>'+t+'</span></li>'; }).join('')+'</ul>'+pdImgs(note)+'</section>';
+  if(tabs.some(function(x){ return x[0]==='rev'; })) h+='<section class="pd-sec" id="pdRev"><h3>구매후기</h3>'+(rev.length?pdImgs(rev):'<div class="pd-empty">관리자 → 이 모델 → \'상세 내용 그림 · 구매후기\'에 그림을 넣으면 고객 화면에 이 칸이 생겨요</div>')+'</section>';
+  // 모델정보: 가격표의 용량별 출고가 · 컬러 + 그림
+  var rs=sheetRows(m), cs=colorsOf(m), it='';
+  if(rs.length) it+='<div class="pd-tb"><div class="pd-tbh"><span>'+esc(optLabel(m))+'</span><span>출고가</span></div>'+rs.map(function(r){ return '<div class="pd-tbr"><span>'+esc(r.cap||'기본')+(r.so?' <small>일시품절</small>':'')+'</span><span>'+(num(r.out)!=null?won(num(r.out)):'상담 시 안내')+'</span></div>'; }).join('')+'</div>';
+  if(cs.length) it+='<div class="pd-cols"><span class="pd-tbl">컬러</span><div>'+cs.map(function(c){ return '<span class="pd-col"><i style="--c:'+esc(c.hex||'#ddd')+'"></i>'+esc(c.nm)+'</span>'; }).join('')+'</div></div>';
+  h+='<section class="pd-sec" id="pdInfo"><h3>모델정보</h3>'+it+pdImgs(info)+'</section></div>';
+  return h;
+}
+function pdRender(m, p, st, PK, o){
+  pdHeadOn(); var tt=$('#mdTitle'); if(tt) tt.textContent=m.nm; MD_NOW='';
+  var c=st&&st.c, r=o.selRow, cs=colorsOf(m), os=optsOf(m), pc=cs.filter(function(x){ return x.nm===PICK[m.id]; })[0], cur=pc||cs[0]||null;
+  var shortNm=m.nm.replace(/^갤럭시\s+/,''), ED=EDIT?' data-edit="model:'+esc(m.id)+'"':'', bd=o.PRE?'':pdBadge(m), sk=function(w,h){ return '<i class="pd-skl" style="width:'+w+';height:'+h+'"></i>'; };
+  var h='<div class="pd">';
+  // ① 이름 · 최대 할인 · 공유
+  h+='<div class="pd-tt"'+ED+'><h2 class="md-h">'+esc(m.nm)+'</h2>'+(bd?'<span class="pd-bd">'+esc(bd)+'</span>':'')+'<button type="button" class="pd-share" data-pd-share="'+esc(m.id)+'" aria-label="공유하기">'+PD_SHARE+'</button></div>';
+  // ② 큰 사진 · ③ 컬러 사진 (누르면 그 색으로 — 고른 색은 신청서에도 미리 들어감)
+  h+='<div class="pd-img md-img" id="mdImg"'+ED+'>'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(SO(m)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>';
+  if(cs.length>1 && cs.every(function(x){ return x.img; })) h+='<div class="pd-ths">'+cs.map(function(x){ var on=cur&&x.nm===cur.nm;
+      return '<button type="button" class="pd-th'+(on?' on':'')+'" data-color-pick="'+esc(x.nm)+'" data-model="'+esc(m.id)+'" aria-label="'+esc(x.nm)+'">'+im(x.img,'',false,x.nm)+'</button>'; }).join('')+'</div>';
+  // ④ 고르는 칸
+  h+='<div class="pd-opts">'+(o.soHtml||'');
+  if(cs.length>1){ var picked=!!PICK[m.id];   // 고객이 직접 누르기 전엔 '기본' (신청서에서 다시 고름 — 컬러는 고객이 직접)
+    h+=pdO('color','색상','<div class="pd-ccs">'+cs.map(function(x){ var on=cur&&x.nm===cur.nm;
+      return '<button type="button" class="pd-cc'+(on?' on':'')+(on&&picked?' ok':'')+'" data-color-pick="'+esc(x.nm)+'" data-model="'+esc(m.id)+'" aria-label="'+esc(x.nm)+'" style="--c:'+esc(x.hex||'#ddd')+'"><i>'+PD_CK+'</i></button>'; }).join('')+'</div>'+
+      '<div class="pd-cn">'+esc(cur?cur.nm:'')+(picked?'':' <small>기본</small>')+'</div>'); }
+  if(os.length>1){ var oc=OPT[m.id]||0;
+    h+=pdO('cap',esc(optLabel(m)),'<div class="pd-bs" style="--n:'+Math.min(os.length,3)+'">'+os.map(function(x,i){ var so=x.row&&x.row.so;
+      return '<button type="button" class="pd-b'+(i===oc?' on':'')+(so?' so':'')+'" data-opt-pick="'+i+'" data-model="'+esc(m.id)+'"'+(so&&!EDIT?' disabled':'')+'>'+esc(x.nm)+(so?' <small>품절</small>':'')+'</button>'; }).join('')+'</div>'); }
+  var jt=st?(st.type==='chg'?'chg':'mnp'):jtOf(SEL[m.id]);
+  h+=pdO('jt','가입유형',pdBtns('jt',[['mnp','번호이동'],['chg','기기변경']],jt,m,2)+
+    '<p class="pd-hint">'+(jt==='mnp'?'쓰던 번호 그대로, 통신사만 U+로 바꾸고 싶어요':'지금 쓰는 U+ 그대로, 휴대폰만 바꾸고 싶어요')+'</p>');
+  var total=0, monthly=0, fa=0, wlf=0, wpw=null, wpOn=false, mm=24;
+  if(o.PRE){
+    h+=pdO('tier','요금제','<div class="pd-selw pd-skb"></div>')+pdO('method','할인 방식','<div class="pd-ms"><span class="pd-m pd-skb"></span><span class="pd-m pd-skb"></span></div>')+pdO('months','할부개월','<div class="pd-bs pd-skb" style="--n:1;height:48px;border-radius:10px"></div>');
+  } else if(c){
+    var mu=[]; if(st.t&&st.t.fee) mu.push(won(st.t.fee)+' 이상 요금제 6개월'); mu.push('약정 2년');   // 조건은 남김 (개통할 때 말이 안 나오게 — 20261020)
+    h+=pdO('tier','요금제',pdTierSel(m,r,st,PK&&PK.promo)+'<div class="pd-cond"><b>조건</b><span>'+mu.join(' · ')+'</span></div>');
+    if(c.our) h+='<div class="pd-our"><span>유플러스 다이렉트 지원금</span><b>'+won(c.our)+'</b></div>';
+    var fee=st.fee||0, selTot=fee?(fee-Math.round(fee*0.75))*24:0;   // 선택약정 2년 동안 덜 내는 요금 (예전 상세 비교와 같은 계산)
+    h+=pdO('method','할인 방식','<div class="pd-ms">'+
+      '<button type="button" class="pd-m'+(st.method==='pub'?' on':'')+(c.pub?'':' dis')+'" data-calc="method" data-v="pub" data-model="'+esc(m.id)+'"'+(c.pub?'':' disabled')+'><b>공시지원금</b><span>'+(c.pub?'총 '+won(c.pub):'–')+'</span></button>'+
+      '<button type="button" class="pd-m'+(st.method==='sel'?' on':'')+'" data-calc="method" data-v="sel" data-model="'+esc(m.id)+'"><b>선택약정 <small>요금 25%↓</small></b><span>'+(selTot?'총 '+won(selTot)+' <small>2년</small>':'요금 25% 할인')+'</span></button></div>'+
+      '<div class="pd-adv">'+(!c.pub?'공시지원금이 없어 선택약정으로 계산돼요':adviceTxt(cmpMethod(c,st.fee,st.months),st.method))+'</div>');
+    h+=pdO('months','할부개월',pdBtns('months',[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']],String(st.months),m,4));
+  }
+  h+='</div>';
+  // ⑤ 계산표: ① 월 기기값(출고가 − 지원금 → 지원 후 기기값 · 할부) ② 월 요금 → 합산
+  if(c){
+    var out=num(c.out)||0, sel=st.method==='sel'; mm=st.months; monthly=mm===0?0:(st.monthly||0); fa=st.feeAfter||0;
+    wpw=wpFor(m); wpOn=!!(wpw&&st.t&&st.t.k===wpw.b); var wpc=wpOn?wpCalc(wpw):null; wlf=wpOn?wpLineFee(wpw,st.t.fee):0;
+    total=monthly+fa+wlf;
+    var s='<div class="pd-sum" id="pdSum">';
+    s+='<div class="pd-sh"><i>1</i><b>'+(mm===0?'기기값 <small>일시납</small>':'월 기기값 <small>'+mm+'개월 · '+(st.noint?'이자 없음':'할부이자 포함')+'</small>')+'</b><em class="pk">'+(mm===0?wz(st.after):wz(monthly))+'</em></div>';
+    s+=pdL('출고가',won(out));
+    if(st.method==='pub'&&c.pub) s+=pdL('공시지원금','−'+won(c.pub),'neg');
+    if(c.our) s+=pdL('유플러스 다이렉트 지원금','−'+won(c.our),'neg');
+    s+=pdL('지원 후 기기값',wz(st.after),'strong');
+    if(wpc) s+=pdL(esc(wpName(wpw)),'<s>'+won(wpc.c.out)+'</s> '+wz(wpc.after),'strong');
+    s+='<div class="pd-sh n2"><i>2</i><b>월 요금</b><em>'+won(fa+wlf)+'</em></div>';
+    if(st.fee) s+=pdL(esc(st.t.title||tierLabel(st.t)),won(st.fee));
+    if(sel&&st.fee&&st.fee>fa) s+=pdL('선택약정 할인 (25%)','−'+won(st.fee-fa),'neg');
+    if(wlf) s+=pdL('워치 이용료',won(wlf));
+    if(mm!==0) s+='<div class="pd-tot"><span>합산 <small>월 기기값 + 월 요금</small></span><b>'+won(total)+'</b></div>';
+    s+='<ul class="pd-ul"><li><i>'+PD_CK+'</i><span>제휴카드·부가서비스 의무가입 없음</span></li></ul></div>';
+    h+=s;
+  } else if(!o.PRE){
+    h+='<div class="pd-sum" id="pdSum"><div class="pd-sh"><b>구매가</b><em>상담 시 안내</em></div></div>';
+  }
+  h+=guideHtml(m)+'<div id="pdMoreSlot"></div></div>';
+  // 아래 고정: 월 기기값 + 월 요금 = 합산 (월 기기값이 제일 크게) · [제품명 상담 신청하기] 하나 (20261020)
+  var bar;
+  if(o.soNow) bar='<div class="md-bar-t"><b>일시품절</b> · 지금은 신청할 수 없어요</div>';
+  else if(o.PRE) bar='<div class="md-bar-t pd-eq"><span class="pd-eb">'+sk('48px','11px')+sk('64px','17px')+'</span><i class="pd-op">+</i><span class="pd-eb">'+sk('40px','11px')+sk('60px','15px')+'</span><i class="pd-op">=</i><span class="pd-eb r">'+sk('30px','11px')+sk('60px','15px')+'</span></div>';
+  else if(!c) bar='<div class="md-bar-t">상담 신청하시면 <b>나에게 맞는 혜택</b>을 안내해 드려요</div>';
+  else if(mm===0) bar='<div class="md-bar-t pd-eq"><span class="pd-eb"><small>기기값 일시납</small><b class="pk">'+wz(st.after)+'</b></span><i class="pd-op">+</i><span class="pd-eb r"><small>월 요금</small><b>'+won(fa+wlf)+'</b></span></div>';
+  else bar='<div class="md-bar-t pd-eq"><span class="pd-eb"><small>월 기기값</small><b class="pk">'+wz(monthly)+'</b></span><i class="pd-op">+</i><span class="pd-eb"><small>월 요금</small><b>'+won(fa+wlf)+'</b></span><i class="pd-op">=</i><span class="pd-eb r"><small>합산</small><b>'+won(total)+'</b></span></div>';
+  var dis=(o.soNow&&!EDIT)?' disabled':'';
+  h+='<div class="md-bar pd-bar" id="mdBar">'+(c&&!o.soNow?'<button type="button" class="pd-more" data-pd-sum>상세보기'+PD_UP+'</button>':'')+bar+'<div class="md-bar-b one">'+
+    '<button type="button" class="mb-ap" data-open="consult" data-model="'+esc(m.id)+'"'+dis+'>'+(o.soNow?'일시품절':esc(shortNm)+(wpOn?' + '+esc(wpShort(wpw)):'')+' 상담 신청하기<svg class="cta-ar" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>')+'</button></div></div>';
+  // 아래 칸(그림)은 내용이 같으면 그대로 둠 — 고를 때마다 그림이 다시 그려져 깜빡이지 않게
+  var more=pdMore(m, st), keep=$('#pdMore'); if(keep && (keep.__h!==more || keep.getAttribute('data-m')!==m.id)) keep=null;
+  if(keep) keep.parentNode.removeChild(keep);
+  $('#mdBody').innerHTML=h;
+  var slot=$('#pdMoreSlot');
+  if(slot){ if(keep) slot.parentNode.replaceChild(keep, slot); else { var tmp=document.createElement('div'); tmp.innerHTML=more; var nw=tmp.firstChild; nw.__h=more; nw.setAttribute('data-m',m.id); slot.parentNode.replaceChild(nw, slot); } }
+  pdSpy();
+}
+// 아래 칸 탭: 누르면 그 칸으로 · 내리면 지금 보는 칸에 밑줄
+function pdTop(){ var hd=$('#v-model .subhead'), tb=$('#pdTabs'); return (hd?hd.getBoundingClientRect().bottom:0)+(tb?tb.offsetHeight:0); }
+var PD_LOCK=0, PD_LOCKK='';   // 탭을 누르면 그 칸으로 내려가는 동안은 누른 탭에 밑줄
+function pdSpy(){
+  var tb=$('#pdTabs'); if(!tb || !$('#v-model').classList.contains('on')) return;
+  var on=null, secs=$$('#pdMore .pd-sec');
+  if(Date.now()<PD_LOCK) on=PD_LOCKK;
+  else {
+    var y=pdTop()+12, sH=Math.max(document.documentElement.scrollHeight, document.body?document.body.scrollHeight:0);
+    secs.forEach(function(s){ if(s.getBoundingClientRect().top<=y) on=s.id; });
+    if(window.scrollY+window.innerHeight>=sH-6 && secs.length){ var last=secs[secs.length-1]; if(last.getBoundingClientRect().top<window.innerHeight) on=last.id; }   // 맨 아래까지 내리면 마지막 칸
+    if(!on && secs.length) on=secs[0].id;
+  }
+  $$('#pdTabs button').forEach(function(b){ b.classList.toggle('on', 'pd'+b.getAttribute('data-pd-tab').charAt(0).toUpperCase()+b.getAttribute('data-pd-tab').slice(1)===on); });
+}
+window.addEventListener('scroll',function(){ if(pdSpy._t) return; pdSpy._t=setTimeout(function(){ pdSpy._t=null; pdSpy(); },80); },{passive:true});
+function pdToast(t){ var d=$('#pdToast'); if(!d){ d=document.createElement('div'); d.id='pdToast'; d.className='pd-toast'; document.body.appendChild(d); } d.textContent=t; d.classList.add('on'); clearTimeout(pdToast._t); pdToast._t=setTimeout(function(){ d.classList.remove('on'); },1800); }
+document.addEventListener('click',function(e){
+  var t=e.target; if(!t || !t.closest) return;
+  if(EDIT && document.body.classList.contains('editing') && t.closest('[data-edit]')) return;   // 관리자 편집 중엔 고치는 창이 먼저
+  var a=t.closest('[data-pd-tab]');
+  if(a){ e.preventDefault(); var k=a.getAttribute('data-pd-tab'), sec=$('#pd'+k.charAt(0).toUpperCase()+k.slice(1));
+    if(sec){ PD_LOCK=Date.now()+900; PD_LOCKK=sec.id; pdSpy(); window.scrollTo({top:sec.getBoundingClientRect().top+window.scrollY-pdTop()+1, behavior:'smooth'}); } return; }
+  if(t.closest('[data-pd-sum]')){ e.preventDefault(); var sm=$('#pdSum'), hd=$('#v-model .subhead'); if(sm) window.scrollTo({top:sm.getBoundingClientRect().top+window.scrollY-(hd?hd.offsetHeight:0)-10, behavior:'smooth'}); return; }
+  var sb=t.closest('[data-pd-share]');
+  if(sb){ e.preventDefault(); var m=byId(sb.getAttribute('data-pd-share')), url=location.origin+location.pathname+'#/model/'+sb.getAttribute('data-pd-share'), ttl=(m?m.nm+' · ':'')+'유플러스 다이렉트';
+    if(navigator.share) navigator.share({title:ttl, url:url}).catch(function(){});
+    else if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function(){ pdToast('주소를 복사했어요'); }, function(){ pdToast(url); });
+    else pdToast(url);
+    return; }
+});
 
 /* ---------------- 라우터 ---------------- */
 var homeScroll=0;
@@ -2211,7 +2395,9 @@ document.addEventListener('click',function(e){
   if(mt){ e.preventDefault(); var mk=mt.getAttribute('data-ms-tip'); MSTIP[mk]=!MSTIP[mk]; var hm=location.hash.match(/#\/model\/([^/?]+)/); if(hm){ var y=window.scrollY; renderModel(hm[1],true); window.scrollTo(0,y); } return; }
   var cb=t.closest('[data-calc]');
   if(cb){ e.preventDefault(); e.stopPropagation(); if(cb.disabled) return; var mid=cb.getAttribute('data-model'), k=cb.getAttribute('data-calc'), v=cb.getAttribute('data-v'), sel=SEL[mid]||(SEL[mid]={});
-    if(k==='tier') TIER[mid]=v; else if(k==='months') sel.months=+v; else sel[k]=v;
+    if(k==='tier') TIER[mid]=v; else if(k==='months') sel.months=+v;
+    else if(k==='jt'){ sel.jt=v; if(v==='chg') sel.carrier='LG U+'; else if(sel.carrier==='LG U+') sel.carrier=''; }   // 20261026 /shop 상세 가입유형: 기기변경 = 지금 U+ (신청서 통신사에 미리 들어감) · 번호이동 = 신청서에서 지금 통신사 고름
+    else sel[k]=v;
     var pn=mdNowKey(), y=window.scrollY; renderModel(mid,true); window.scrollTo(0,y); if(k==='carrier') mdFollow(pn); return; }
   var op=t.closest('[data-opt-pick]');
   if(op){ e.preventDefault(); e.stopPropagation(); if(op.disabled) return; var omid=op.getAttribute('data-model'); OPT[omid]=+op.getAttribute('data-opt-pick'); OPTT[omid]=true;

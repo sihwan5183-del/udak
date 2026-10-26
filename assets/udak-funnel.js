@@ -230,7 +230,10 @@
     // 20261021: 휴대폰 상세 순서가 통신사 → 내 가격 → 컬러 → 용량으로 바뀜 — '끝'은 목록 순서가 아니라 화면에서 가장 아래 있는 본 칸으로 셈
     //   '가격대기' = 통신사를 고르기 전 '내 가격' 자리(점선 칸)
     var MD_SECS=[['사진','.md-img'],['이름','.md-h'],['통신사','.mstep[data-step="car"]'],['가격대기','.pv-wait'],['할부금','.pv-hero'],['지원금','.pv-sum'],['꼭확인','.pv-must1'],
-      ['요금제','.mstep-sub'],['월납부','.pv-more'],['가격','.ms-detail:not(.pv)'],['가이드','.guide'],['컬러','.mstep[data-step="color"]'],['용량','.mstep[data-step="cap"]'],['상담선택','.mstep.cs']];
+      ['요금제','.mstep-sub'],['월납부','.pv-more'],['가격','.ms-detail:not(.pv)'],['가이드','.guide'],['컬러','.mstep[data-step="color"]'],['용량','.mstep[data-step="cap"]'],['상담선택','.mstep.cs'],
+      // 20261026 /shop 새 상세(폰슐랭샵 배치): 컬러사진 · 색상 · 용량칸 · 가입유형 · 요금제칸 · 지원금띠 · 할인방식 · 할부칸 · 계산표 · 아래 칸(구매혜택·유의사항·구매후기·모델정보)
+      ['컬러사진','.pd-ths'],['색상','.pd-o[data-o="color"]'],['용량칸','.pd-o[data-o="cap"]'],['가입유형','.pd-o[data-o="jt"]'],['요금제칸','.pd-o[data-o="tier"]'],['지원금띠','.pd-our'],
+      ['할인방식','.pd-o[data-o="method"]'],['할부칸','.pd-o[data-o="months"]'],['계산표','.pd-sum'],['구매혜택','#pdBen'],['유의사항','#pdNote'],['구매후기','#pdRev'],['모델정보','#pdInfo']];
     var MD=null, mdN=0;
     function mdStart(k){ MD=(k.indexOf('model:')===0)?{id:k.slice(6), n:++mdN, t:Date.now(), sec:{}, maxY:-1, maxNm:'', last:'', taps:[]}:null; if(MD) setTimeout(function(){ mdLook(false); }, 600); }
     function mdLook(add){
@@ -261,7 +264,10 @@
       var el;
       if((el=t.closest('[data-color-pick]'))) return '컬러:'+el.getAttribute('data-color-pick');
       if((el=t.closest('[data-opt-pick]'))) return '용량:'+(el.textContent||'').replace(/품절/,'').trim();
-      if((el=t.closest('[data-calc]'))){ var c=el.getAttribute('data-calc'), v=el.getAttribute('data-v')||''; return ({carrier:'통신사',method:'할인',months:'할부'}[c]||c)+':'+({pub:'공시',sel:'선약','0':'일시납'}[v]||v); }
+      if((el=t.closest('[data-calc]'))){ var c=el.getAttribute('data-calc'), v=el.getAttribute('data-v')||''; return ({carrier:'통신사',method:'할인',months:'할부',jt:'가입유형'}[c]||c)+':'+({pub:'공시',sel:'선약','0':'일시납',mnp:'번호이동',chg:'기기변경'}[v]||v); }
+      if((el=t.closest('[data-pd-tab]'))) return '아래칸:'+({ben:'구매혜택',note:'유의사항',rev:'구매후기',info:'모델정보'}[el.getAttribute('data-pd-tab')]||'');   // 20261026 /shop 새 상세
+      if((el=t.closest('[data-pd-sum]'))) return '상세보기';
+      if((el=t.closest('[data-pd-share]'))) return '공유';
       if((el=t.closest('[data-qk]'))) return el.closest('#mdBar')?'카톡상담(아래)':'카톡상담';
       if((el=t.closest('[data-open]'))) return el.getAttribute('data-open')==='consult'?(el.closest('#mdBar')?'상담신청(아래)':el.closest('.tabbar')?'상담신청(탭)':'전화상담'):'열기:'+el.getAttribute('data-open');
       if((el=t.closest('[data-mg]'))) return '순서:'+el.getAttribute('data-mg');
