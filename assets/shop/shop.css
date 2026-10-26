@@ -345,3 +345,13 @@ body.edit .oy-cl-in{top:calc(101px + env(safe-area-inset-top))}
 #models.oy-qm-row{grid-template-columns:repeat(5,minmax(0,1fr))}
 #quick.oy-qm-row{grid-template-columns:repeat(4,minmax(0,1fr))}
 .oy-qm-row .oy-qi{flex:none;width:auto;min-width:0}
+/* 20261026 사장님: '많이 찾아요' 2×2 고정 · 번호이동|기기변경 + 분류 칩을 두 줄로 반듯하게 (특가 탭·분류 목록도 같은 모양) */
+.oy-ctl{display:flex;flex-direction:column;gap:10px;padding:0 15px}
+.oy-ctl[hidden]{display:none}
+.oy-seg{display:grid;grid-template-columns:1fr 1fr;height:40px;padding:4px;border-radius:12px;background:#F2F3F5}
+.oy-seg button{border-radius:9px;font-size:14px;line-height:17px;font-weight:600;color:#7A818A;letter-spacing:-.02em}
+.oy-seg button.on{background:#fff;color:#131518;box-shadow:0 1px 4px rgba(19,21,24,.12)}
+.oy-seg-sk{background:#EEF0F3;animation:mdsk 1.1s ease-in-out infinite}
+.oy-ctabs{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:6px}
+.oy-ctabs .oy-chip{min-width:0;padding:0 2px;font-size:12.5px;letter-spacing:-.04em;overflow:hidden;text-overflow:ellipsis}
+.oy-ctl+.oy-g2,.oy-ctl+.oy-grid{margin-top:18px}

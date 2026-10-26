@@ -360,7 +360,7 @@ function undo(){
     {box:'#popgrid', item:'a.pc', key:'list:pop'},
     {box:'#zero', item:'a.hc', key:'list:zero'},
     {box:'#models', item:'a.oy-qi', key:'models'},          // 20261026 /shop 퀵메뉴 휴대폰 줄
-    {box:'#oyPop', item:'a.oy-card', key:'list:pop'},       // /shop 많이 찾아요
+    {box:'#oyPop', item:'a.oy-c2-a', key:'list:pop'},       // /shop 많이 찾아요 (2×2)
     {box:'#oyZero', item:'a.oy-card', key:'list:zero'}      // /shop 기기값 0원
   ];
   var D=null, timer=null, justDragged=false;

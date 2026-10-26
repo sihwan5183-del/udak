@@ -68,7 +68,7 @@ var HOME=
     '</section>'+
     '<section class="oy-qm" aria-label="바로가기"><div class="oy-qm-sc"><div class="oy-qm-row" id="models"></div><div class="oy-qm-row" id="quick"></div></div></section>'+
     '<section class="oy-band" id="trust" aria-label="안내 배너"><div class="oy-band-vp"><div class="oy-band-track" id="oyBand"></div></div><div class="oy-dots" id="oyBandDots" aria-hidden="true"></div></section>'+
-    '<section class="oy-sec" id="popSec"><div class="oy-sec-h"><h2 id="oyPopT"></h2></div><div class="oy-chips" id="oyPopChips"></div><div class="oy-grid" id="oyPop"></div></section>'+
+    '<section class="oy-sec" id="popSec"><div class="oy-sec-h"><h2 id="oyPopT"></h2></div><div class="oy-ctl" id="oyPopChips"></div><div class="oy-g2" id="oyPop"></div></section>'+
     '<section class="oy-sec" id="oyDealSec"><div class="oy-sec-h"><h2 id="oyDealT"></h2><span class="oy-sec-d" id="oyDealD"></span></div><div class="oy-big" id="oyDeal"></div></section>'+
     '<section class="oy-sec" id="zeroSec"><div class="oy-sec-h"><h2 id="oyZeroT"></h2></div><div class="oy-grid" id="oyZero"></div></section>'+
   '</div>'+
@@ -83,7 +83,7 @@ var HOME=
       '<div class="oy-th"><h2 id="oyDlT"></h2></div>'+
       '<div class="oy-list" id="oyDlList"></div>'+
     '</div>'+
-    '<section class="oy-sec"><div class="oy-sec-h oy-dl-h"><h2 id="oyDlGT"></h2><span class="oy-sort-w" id="oyDlSort"></span></div><div class="oy-chips" id="oyDlChips"></div><div class="oy-g2" id="oyDlGrid"></div></section>'+
+    '<section class="oy-sec"><div class="oy-sec-h oy-dl-h"><h2 id="oyDlGT"></h2><span class="oy-sort-w" id="oyDlSort"></span></div><div class="oy-ctl" id="oyDlChips"></div><div class="oy-g2" id="oyDlGrid"></div></section>'+
   '</div>'+
   /* ── 인기 모델 (올리브영 '랭킹') ── */
   '<div class="oy-pane" data-pane="rank" id="oyTabRank" hidden>'+
@@ -102,7 +102,7 @@ var HOME=
   '<div class="oy-pane" data-pane="ai" id="oyTabAi" hidden><div class="oy-aif" id="oyAi"></div></div>'+
   /* ── 분류 목록 (카테고리 중분류 · 바로가기에서 들어옴) ── */
   '<div class="oy-pane" data-pane="list" id="oyTabList" hidden>'+
-    '<div class="oy-chips oy-ls-chips" id="oyLsChips"></div>'+
+    '<div class="oy-ctl oy-ls-chips" id="oyLsChips"></div>'+
     '<div class="oy-frow oy-ls-row"><span class="oy-frow-l" id="oyLsCnt"></span><span class="oy-sort-w" id="oyLsSort"></span></div>'+
     '<div class="oy-g2" id="oyLsGrid"></div>'+
   '</div>'+
@@ -406,21 +406,26 @@ function mnpPill(){
   var mnp=!!A.MNP;
   return '<span class="oy-flt" role="group" aria-label="가입 유형"><button type="button" data-mnp="1" class="'+(mnp?'on':'')+'" aria-pressed="'+mnp+'">번호이동</button><i aria-hidden="true"></i><button type="button" data-mnp="0" class="'+(mnp?'':'on')+'" aria-pressed="'+(!mnp)+'">기기변경</button>'+SVG_CHEV+'</span>';
 }
+// 20261026 사장님: 번호이동|기기변경 + 분류 칩 — 넘쳐서 잘리거나 칩 하나만 다음 줄로 내려가지 않게 두 줄로 반듯하게
+//   윗줄: 번호이동 | 기기변경 (반반) · 아랫줄: 분류 칩 (같은 폭으로 한 줄)  — 많이 찾아요 · 특가 · 분류 목록 공통
+function segMnp(){ var mnp=!!A.MNP; return '<div class="oy-seg" role="group" aria-label="가입 유형"><button type="button" data-mnp="1" class="'+(mnp?'on':'')+'" aria-pressed="'+mnp+'">번호이동</button><button type="button" data-mnp="0" class="'+(mnp?'':'on')+'" aria-pressed="'+(!mnp)+'">기기변경</button></div>'; }
+function ctlHtml(mnp, cats, cur, attr){ return (mnp?segMnp():'')+(cats.length>1?'<div class="oy-ctabs" style="--n:'+(cats.length+1)+'">'+chipsHtml(cats,cur,attr)+'</div>':''); }
+var CTL_SK='<div class="oy-seg oy-seg-sk"></div>';
 function chipsHtml(cats, cur, attr){
   return [{k:'all',nm:'전체'}].concat(cats).map(function(t){ var on=cur===t.k; return '<button type="button" class="oy-chip'+(on?' on':'')+'" '+attr+'="'+E(t.k)+'" aria-pressed="'+on+'">'+E(t.nm)+'</button>'; }).join('');
 }
 function byCat(list, k){ return k==='all'?list:list.filter(function(m){ return m.cat.indexOf(k)>-1; }); }
 
-/* ---------- 홈: 많이 찾아요 (스토어 '인기' 목록 · 번호이동/기기변경 + 분류 칩 · 3열) ---------- */
+/* ---------- 홈: 많이 찾아요 (스토어 '인기' 목록 · 번호이동/기기변경 + 분류 칩) — 20261026 사장님: 2×2 고정 (2열 카드 4개, 관리자 순서 앞 4개) ---------- */
 function renderPop(wait){
   var sec=$('#popSec');
-  if(wait){ sec.hidden=false; put($('#oyPopT'),sk('190px','18px')); put($('#oyPopChips'),sk('150px','32px','16px')+sk('56px','32px','16px')+sk('64px','32px','16px')+sk('72px','32px','16px')); put($('#oyPop'),skCards(6)); return; }
+  if(wait){ sec.hidden=false; put($('#oyPopT'),sk('190px','18px')); put($('#oyPopChips'),CTL_SK); put($('#oyPop'),skCards2(4)); return; }
   var list=A.secOn('pop')?A.pickList('pop'):[];
   sec.hidden=!list.length; if(!list.length) return;
   put($('#oyPopT'), E((A.S.sec.pop||{}).t||'')); edAt('#oyPopT','sec:pop');
   var cats=catsOf(list); if(POPCAT!=='all' && !cats.some(function(t){ return t.k===POPCAT; })) POPCAT='all';
-  put($('#oyPopChips'), mnpPill()+(cats.length>1?chipsHtml(cats,POPCAT,'data-shop-cat'):''));
-  put($('#oyPop'), byCat(list,POPCAT).map(card).join(''));
+  put($('#oyPopChips'), ctlHtml(true, cats, POPCAT, 'data-shop-cat'));
+  put($('#oyPop'), byCat(list,POPCAT).slice(0,4).map(function(m){ return card2(m,0); }).join(''));
 }
 
 /* ---------- 홈: 이번주 특가 (올리브영 Weekly Special — 큰 카드, 가운데 흰 글자) ---------- */
@@ -477,7 +482,7 @@ function renderTabDeal(wait){
   var ph=A.phones(), cats=catsOf(ph); if(DLCAT!=='all' && !cats.some(function(t){ return t.k===DLCAT; })) DLCAT='all';
   put($('#oyDlGT'), E((A.S.sec.pick||{}).t||'')); edAt('#oyDlGT','sec:pick');
   put($('#oyDlSort'), sortBtn());
-  put($('#oyDlChips'), mnpPill()+(cats.length>1?chipsHtml(cats,DLCAT,'data-dl-cat'):''));
+  put($('#oyDlChips'), ctlHtml(true, cats, DLCAT, 'data-dl-cat'));
   put($('#oyDlGrid'), A.sortList(byCat(ph,DLCAT)).map(function(m){ return card2(m,0); }).join(''));
 }
 /* ---------- 탭: 0원 (기기값 0원 목록 — 관리자 '기기값 0원 모아보기' 제목·작은 글씨 그대로) ---------- */
@@ -582,10 +587,10 @@ function lsModels(L){
 function lsTitle(L){ return L.k==='all'?'휴대폰':catNm(L.k); }
 function renderList(wait){
   var L=lsOfHash();
-  if(wait){ put($('#oyLsChips'),sk('150px','32px','16px')+sk('56px','32px','16px')+sk('64px','32px','16px')); put($('#oyLsCnt'),sk('64px','13px','4px')); put($('#oyLsSort'),''); put($('#oyLsGrid'),skCards2(4)); return; }
+  if(wait){ put($('#oyLsChips'),CTL_SK); put($('#oyLsCnt'),sk('64px','13px','4px')); put($('#oyLsSort'),''); put($('#oyLsGrid'),skCards2(4)); return; }
   var list=lsModels(L), ph=['all','iphone','galaxy','fold','buddy'].indexOf(L.k)>-1, cats=ph&&!L.ids?catsOf(A.phones()):[];
   var tv=list.length && list.every(function(m){ return A.isTv(m); });   // TV프리는 번호이동/기기변경 구분 없음
-  var ch=(tv?'':mnpPill())+(cats.length>1?chipsHtml(cats,L.k,'data-ls-cat'):'');
+  var ch=ctlHtml(!tv, cats, L.k, 'data-ls-cat');
   $('#oyLsChips').hidden=!ch; put($('#oyLsChips'), ch);
   put($('#oyLsCnt'), '전체 <b>'+list.length+'</b>개');
   put($('#oyLsSort'), list.length>1?sortBtn():'');
