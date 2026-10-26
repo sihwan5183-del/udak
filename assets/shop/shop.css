@@ -335,3 +335,13 @@
 body.edit .oy-top{top:52px}
 body.edit .oy-cl-in{top:calc(101px + env(safe-area-inset-top))}
 .oy-sl-none{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#EEF0F3;color:#6B7280;font-size:14px;font-weight:700}
+/* 20261026 사장님: 옆으로 밀어야 보이던 줄을 한눈에 —
+   ① 번호이동|기기변경 + 분류 칩: 한 줄에 안 들어가면 다음 줄로 (오른쪽이 잘리지 않게)
+   ② 바로가기: 휴대폰 두 줄(한 줄 5개) · 혜택 두 줄(한 줄 4개) */
+.oy-chips{flex-wrap:wrap;height:auto;row-gap:8px;overflow:visible}
+.oy-chip{padding:0 15px}
+.oy-qm-sc{overflow:visible;padding:8px 0 26px;row-gap:16px}
+.oy-qm-row{display:grid;width:auto;padding:0 12px;column-gap:4px;row-gap:14px}
+#models.oy-qm-row{grid-template-columns:repeat(5,minmax(0,1fr))}
+#quick.oy-qm-row{grid-template-columns:repeat(4,minmax(0,1fr))}
+.oy-qm-row .oy-qi{flex:none;width:auto;min-width:0}
