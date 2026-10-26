@@ -99,7 +99,7 @@ var DEFAULT = {
   priceNote:'',
   // 20261026 사장님: 모든 휴대폰 상세 '구매혜택' 칸 맨 아래 공통 그림 (유플러스 다이렉트 소개 · 구매부터 개통까지 · 걱정 없는 점 · 포장)
   // 관리자 상세에서 이 그림을 누르면 바꿀 수 있음 · 끝의 #가로x세로 = 그림 크기 (탭을 눌러 내려갈 때 자리를 미리 잡아 화면이 밀리지 않게)
-  dtc:{ben:['detail/common-01.webp#1080x2106','detail/common-02.webp#1080x1703','detail/common-03.webp#1080x1028','detail/common-04.webp#1080x553','detail/common-05.webp#1080x761']},   // 20261026 3차 (구매부터 개통까지 아래 '한 번의 판매로 끝내지 않습니다…')
+  dtc:{ben:['detail/common-01.webp#1080x2181','detail/common-02.webp#1080x1703','detail/common-03.webp#1080x1028','detail/common-04.webp#1080x553','detail/common-05.webp#1080x761']},   // 20261026 4차 (맨 위 'All for U+ Direct / 고객님을 위한 모든 것, / 당신의 다이렉트 유닥')
   stores:[
     {nm:'건대입구역점',addr:'서울시 광진구 능동로 95'},{nm:'군자역점',addr:'서울시 광진구 천호대로 573'},{nm:'신군자점',addr:'서울시 광진구 천호대로 548'},
     {nm:'신자양점',addr:'서울시 광진구 자양번영로 42'},{nm:'성수역점',addr:'서울시 성동구 아차산로 96'},{nm:'용답로데오점',addr:'서울시 성동구 용답동 58-1'},
@@ -1265,8 +1265,8 @@ function pdDt(m,k){ return arr(m&&m.dt&&m.dt[k]).map(function(x){ return String(
 // 그림 위 누르는 칸 (그림 속 카드 자리 — 그 그림 크기 기준 % : 왼쪽, 위, 너비, 높이)
 // 20261026 사장님: 공통 그림 'U+ 공식 파트너사' 카드 → 인증마크(LG U+ 공식인증대리점) 크게 · '오프라인 매장 운영' 카드 → 우리 매장 목록
 var PD_HOT={'detail/common-01.webp':[
-  [5.185,47.911,43.704,24.217,'data-cert','','LG U+ 공식인증대리점 인증마크 보기'],
-  [51.111,47.911,43.704,24.217,'data-open','store','우리 매장 목록 보기']]};
+  [5.185,49.702,43.704,23.384,'data-cert','','LG U+ 공식인증대리점 인증마크 보기'],
+  [51.111,49.702,43.704,23.384,'data-open','store','우리 매장 목록 보기']]};
 function pdImgs(list){ return list.map(function(p){ var d=/#(\d+)x(\d+)$/.exec(p), base=p.replace(/#.*$/,''), hs=PD_HOT[base];
   var img='<img class="pd-dimg" src="'+esc(imgSrc(base))+'"'+(d?' width="'+d[1]+'" height="'+d[2]+'"':'')+' alt="" loading="lazy" decoding="async">';
   if(!hs) return img;
