@@ -1326,6 +1326,10 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .tc{margin:14px 0 6px;padding:18px 14px 14px;border-radius:22px;background:#fff;border:1px solid #F8DCE8;box-shadow:0 6px 22px rgba(232,25,127,.07)}
 .tc-h{position:relative;display:flex;align-items:center;gap:6px;padding-left:22px;margin-bottom:12px;font-size:clamp(18px,5.2vw,21px);font-weight:900;color:var(--ink);letter-spacing:-.04em}
 .tc-h em{font-style:normal;color:#E8197F}
+/* 20261026 'OO 기기값 0원 대상' + 아래 두 가지 모두 해당 안내 */
+.tc-h{flex-wrap:wrap;row-gap:2px}
+.tc-h span,.tc-h em{white-space:nowrap}
+.tc-s{margin:-7px 0 12px 22px;font-size:clamp(13px,3.6vw,14px);line-height:1.4;color:#6B7280;letter-spacing:-.02em;word-break:keep-all}
 .tc-sp{position:absolute;left:-2px;top:-8px;width:22px;height:22px;fill:none;stroke:#E8197F;stroke-width:2.2;stroke-linecap:round}
 .tc-it{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;border:1px solid #F6E3EC;background:#fff}
 .tc-it+.tc-it{margin-top:8px}

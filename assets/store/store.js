@@ -592,7 +592,7 @@ function calcPickers(m, r, st){
   if(g==='phone') car=cgrid('','carrier',CARRIERS.map(function(c){return [c,c]}),st.s.carrier||'',m,4,
     '');   // 20261020 '사용 통신사' 이름표 뺌 — 단계 제목 '현재 이용 중인 통신사'와 같은 말
   var ts=g==='tvfree'?[]:rowTiers(r);
-  if(g==='tvfree') h+=tvCondHtml();
+  if(g==='tvfree') h+=tvCondHtml(m);
   var wpw=g==='phone'?wpFor(m):null;
   if(wpw) promo=wpPickHtml(m, r, st, wpw);
   else if(ts.length>1) h+='<div class="cpick"><div class="cpick-l">'+(g==='tvfree'?'집 인터넷':'요금제')+'</div><select class="csel" data-calc-sel="tier" data-model="'+esc(m.id)+'">'+ts.map(function(t){
@@ -733,12 +733,16 @@ function shipState(){
   return {today:false, when:add===1?'내일':DN[nd]+'요일', cutTxt:ch+'시'};
 }
 function hms(t){ var h=Math.floor(t/3600), m=Math.floor(t%3600/60), x=t%60; return ('0'+h).slice(-2)+':'+('0'+m).slice(-2)+':'+('0'+x).slice(-2); }
-// TV프리 대상 카드 (레퍼런스: '이런 고객님께 추천드려요' + 항목별 둥근 칸)
-function tvCondHtml(){
+// TV프리·아이패드 대상 카드 (항목별 둥근 칸)
+// 20261026 사장님: '이런 고객님께 추천드려요'(추천) → 'OO 기기값 0원 대상'(받을 수 있는 고객) — 두 가지 모두 해당하면 기기값 0원
+var TV_SHORT={tvfree5:'TV프리 5', ipada16:'아이패드 A16'};
+function tvCondHtml(m){
   var ck='<svg viewBox="0 0 24 24"><path d="m5.5 12.5 4.3 4.3L18.5 8"/></svg>', sp='<svg class="tc-sp" viewBox="0 0 24 24"><path d="M3 15.5l4 1.6M7.2 7.5l2.6 3.2M13.4 4v4"/></svg>';
-  return '<div class="tc"><div class="tc-h">'+sp+'이런 고객님께 <em>추천드려요</em></div>'+
-    '<div class="tc-it"><i>'+ck+'</i><span><b>U+ 인터넷TV</b> 1년 이상 ~ 2년 미만 이용 중인 고객님</span></div>'+
-    '<div class="tc-it"><i>'+ck+'</i><span>인터넷 <b>500MB 이상</b> 요금제를 이용 중인 고객님</span></div></div>';
+  var nm=m?(TV_SHORT[m.id]||m.nm):'';
+  return '<div class="tc"><div class="tc-h">'+sp+(nm?'<span>'+esc(nm)+'</span>':'')+'<em>기기값 0원</em><span>대상</span></div>'+
+    '<div class="tc-s">아래 두 가지에 모두 해당하시면 돼요</div>'+
+    '<div class="tc-it"><i>'+ck+'</i><span><b>U+ 인터넷TV</b> 1년 이상 ~ 2년 미만 이용&nbsp;중</span></div>'+
+    '<div class="tc-it"><i>'+ck+'</i><span>인터넷 <b>500MB 이상</b> 요금제 이용&nbsp;중</span></div></div>';
 }
 function cutLabel(){ var c=String((S.ship||{}).cut||'15:00').split(':'), h=+c[0]||15, m=+c[1]||0; return (h<12?'오전 ':'오후 ')+(h%12||12)+'시'+(m?' '+m+'분':''); }
 function cdBoxes(t){ var h=Math.floor(t/3600), m=Math.floor(t%3600/60), x=t%60, p=function(n){return ('0'+n).slice(-2)};
