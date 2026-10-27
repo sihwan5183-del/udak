@@ -115,6 +115,7 @@ var DEFAULT = {
     close:{k:'All for [U+] Direct', t:'한 번의 인연이,\n[고객님의 일상 속으로.]', s:'{한 번의 판매로 끝내지 않습니다.}\n유플러스 다이렉트는\n고객님의 통신 생활을 함께합니다.', sig:'당신의 다이렉트, [유닥].', img:'detail/dc-pack.webp#1080x720'}
   },
   dtc:{ben:[]},   // 공통 내용 아래에 더 넣을 그림 (관리자 '모든 휴대폰 공통 상세 그림')
+  cta:{sub:'5분 간단 상담', on:true},   // 20261027 사장님: 상세 맨 아래 'OO 상담 신청하기' 버튼 안 작은 글씨 (관리자에서 그 글씨를 누르면 고침 · 비우면 안 보임)
   stores:[
     {nm:'건대입구역점',addr:'서울시 광진구 능동로 95'},{nm:'군자역점',addr:'서울시 광진구 천호대로 573'},{nm:'신군자점',addr:'서울시 광진구 천호대로 548'},
     {nm:'신자양점',addr:'서울시 광진구 자양번영로 42'},{nm:'성수역점',addr:'서울시 성동구 아차산로 96'},{nm:'용답로데오점',addr:'서울시 성동구 용답동 58-1'},
@@ -1442,8 +1443,10 @@ function pdRender(m, p, st, PK, o){
   else if(mm===0) bar='<div class="md-bar-t pd-eq"><span class="pd-eb"><small>기기값 일시납</small><b class="pk">'+wz(st.after)+'</b></span><i class="pd-op">+</i><span class="pd-eb"><small>월 요금</small><b>'+won(fa+wlf)+'</b></span></div>';
   else bar='<div class="md-bar-t pd-eq"><span class="pd-eb"><small>월 기기값</small><b class="pk">'+wz(monthly)+'</b></span><i class="pd-op">+</i><span class="pd-eb"><small>월 요금</small><b>'+won(fa+wlf)+'</b></span><i class="pd-op">=</i><span class="pd-eb r"><small>합산</small><b>'+won(total)+'</b></span></div>';
   var dis=(o.soNow&&!EDIT)?' disabled':'';
+  var cta=S.cta||{}, ctaOn=cta.on!==false&&!!cta.sub;   // 20261027 사장님: 버튼 안 아랫줄 작은 글씨 '5분 간단 상담'
+  var apSub=o.soNow?'':ctaOn?'<small class="mb-ap-s"'+(EDIT?' data-edit="cta"':'')+'>'+esc(cta.sub)+'</small>':(EDIT?'<small class="mb-ap-s is-hidden" data-edit="cta">작은 글씨 없음 (눌러서 넣기)</small>':'');
   h+='<div class="md-bar pd-bar" id="mdBar">'+(c&&!o.soNow?'<button type="button" class="pd-more" data-pd-sum>상세보기'+PD_UP+'</button>':'')+bar+'<div class="md-bar-b one">'+
-    '<button type="button" class="mb-ap" data-open="consult" data-model="'+esc(m.id)+'"'+dis+'>'+(o.soNow?'일시품절':esc(shortNm)+(wpOn?' + '+esc(wpShort(wpw)):'')+' 상담 신청하기<svg class="cta-ar" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>')+'</button></div></div>';
+    '<button type="button" class="mb-ap'+(apSub?' sub':'')+'" data-open="consult" data-model="'+esc(m.id)+'"'+dis+'>'+(o.soNow?'일시품절':'<span class="mb-ap-m">'+esc(shortNm)+(wpOn?' + '+esc(wpShort(wpw)):'')+' 상담 신청하기<svg class="cta-ar" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>'+apSub)+'</button></div></div>';
   // 아래 칸(그림)은 내용이 같으면 그대로 둠 — 고를 때마다 그림이 다시 그려져 깜빡이지 않게
   var more=pdMore(m, st), keep=$('#pdMore'); if(keep && (keep.__h!==more || keep.getAttribute('data-m')!==m.id)) keep=null;
   if(keep) keep.parentNode.removeChild(keep);

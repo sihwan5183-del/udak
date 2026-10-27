@@ -170,6 +170,13 @@ var ED = {
         '<div class="hint">비워 두면 아무것도 안 나와요. 글씨로 된 공통 내용(유플러스 다이렉트 소개 · 카드 · 구매부터 개통까지 · 약속드립니다 · 맨 아래)은 그 칸을 눌러서 고치세요. 줄 끝의 #1080x1990 같은 글자는 그림 크기예요 (그대로 두세요).</div>'+applyBtn(); },
     save:function(){ var l=V('dtc_ben').split('\n').map(function(x){ return x.trim(); }).filter(Boolean); T.S.dtc={ben:l}; }
   },
+  // 20261027 사장님: 휴대폰 상세 맨 아래 'OO 상담 신청하기' 버튼 안 작은 글씨
+  cta:{
+    title:function(){ return '🟣 상담 신청 버튼 안 작은 글씨'; },
+    html:function(){ var c=T.S.cta||{}; return txt('sub','작은 글씨 (비우면 안 보여요)',c.on===false?'':c.sub,'예: 5분 간단 상담')+
+      '<div class="hint">모든 휴대폰 상세 맨 아래 \'OO 상담 신청하기\' 버튼 안, 아랫줄에 작게 나와요.</div>'+applyBtn(); },
+    save:function(){ var v=V('sub'); T.S.cta={sub:v, on:!!v}; }
+  },
   // 20261026 사장님: 상세 공통 내용 — 예전 통이미지를 진짜 글씨로 (칸마다 누르면 고침 · 모든 휴대폰 상세에 똑같이)
   dcom:{
     title:function(k){ k=String(k||''); return '📄 상세 공통 내용 · '+({hero:'맨 위',steps:'구매부터 개통까지',promise:'약속드립니다',close:'맨 아래'}[k]||('카드 '+(+(k.split(':')[1]||0)+1))); },
