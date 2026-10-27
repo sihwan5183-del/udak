@@ -3,16 +3,41 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!-- 20261022 사장님: 실험 페이지 /shop — 올리브영 모바일 홈 배치로 바꾼 스토어 홈 (검색 노출 안 됨)
+<!-- 20261022 사장님: /shop — 올리브영 모바일 홈 배치로 바꾼 스토어 홈 · 20261027 사장님: 이제 메인 — 첫 주소(landing.uplusdak.com/)도 이 화면, 검색도 여기로
      홈·위 탭 화면·카테고리만 assets/shop/(shop.js·shop.css)이 그리고, 상세·신청서·검색·찜·가격 계산·신청 저장은 /store 와 같은 store.js
      신청은 /store 와 같은 유닥 시트로 들어가고, 신청 경로에 ' · /shop' 이 붙어 구분됨 · 이탈 기록은 page='shop' -->
-<meta name="robots" content="noindex,nofollow">
 <script>
 // 스토어 설정(가격 공개·가격표)을 페이지 맨 처음부터 받기 시작 (galaxy_z8.html 과 같음)
 try{ window.__stCfg=fetch('https://udak-c6832-default-rtdb.firebaseio.com/store.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).catch(function(){return null}); }catch(e){}
 </script>
 <script src="/assets/udak-block.js?v=20261020b"></script>
-<title>유플러스 다이렉트</title>
+<!-- 20261021 검색 결과에 뜨는 제목·설명: '유닥'(겹치는 이름 없는 우리 이름)·'휴대폰 온라인 대리점'·모델명·번호이동/기기변경을 앞쪽에 -->
+<title>유플러스 다이렉트(유닥) — LG U+ 공식파트너 휴대폰 온라인 대리점</title>
+<meta name="description" content="LG U+ 공식파트너사 유플러스 다이렉트(유닥). 갤럭시 S26·Z 폴드8·Z 플립8·아이폰 18 번호이동·기기변경. 제휴카드·부가서비스 의무가입 없이 보이는 가격 그대로, 당일 택배 발송. 구리·남양주·성수·건대·군자·미사 매장 운영.">
+<meta property="og:site_name" content="유플러스 다이렉트">
+<meta property="og:title" content="유플러스 다이렉트 — LG U+ 공식파트너 휴대폰 온라인 대리점">
+<meta property="og:description" content="제휴카드·부가서비스 의무가입 없이, 보이는 가격 그대로. 당일 택배 발송.">
+<!-- 20261021 링크 공유 사진(카톡·페북·문자 미리보기): 사장님 정사각형 그림을 가로 1200×630 바탕 가운데에 그대로 — 앱이 가로로 잘라도 글씨가 안 잘리게 -->
+<meta property="og:image" content="https://landing.uplusdak.com/assets/og/store-share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="유플러스 다이렉트 — 유플러스 공식파트너사, 최초의 U+ 온라인 대리점">
+<meta property="og:url" content="https://landing.uplusdak.com/">
+<meta name="apple-mobile-web-app-title" content="유플러스 다이렉트">
+<link rel="canonical" href="https://landing.uplusdak.com/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<!-- 20261021 검색엔진 소유 확인 (지우면 확인이 풀림) -->
+<meta name="google-site-verification" content="88o-YgLUt052_QyZBvqFaP90ESrbMGVhHKOuvvqM3Xk">
+<meta name="naver-site-verification" content="dcfbe84d5b3621185b010dbfe8bdadbd10dc4346">
+<!-- 20261021 검색엔진용 '우리 가게 정보표': 사이트 이름(유플러스 다이렉트)·다른 이름(유닥)·로고·공식 채널 -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"WebSite","@id":"https://landing.uplusdak.com/#website","name":"유플러스 다이렉트","alternateName":["유닥","유플러스 다이렉트(유닥)"],"url":"https://landing.uplusdak.com/","inLanguage":"ko-KR","publisher":{"@id":"https://landing.uplusdak.com/#org"}},
+ {"@type":"Organization","@id":"https://landing.uplusdak.com/#org","name":"유플러스 다이렉트","alternateName":"유닥","description":"LG U+ 공식파트너사 휴대폰 온라인 대리점","url":"https://landing.uplusdak.com/","logo":"https://landing.uplusdak.com/assets/icon/icon-192.png","image":"https://landing.uplusdak.com/assets/og/store-share.jpg","sameAs":["https://pf.kakao.com/_HxfVxcn","https://www.facebook.com/288308821031697"]}
+]}
+</script>
+<style>.seo-sum{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}</style>
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" type="image/png" sizes="96x96" href="/assets/icon/icon-96.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon/icon-192.png">
@@ -23,8 +48,8 @@ try{ window.__stCfg=fetch('https://udak-c6832-default-rtdb.firebaseio.com/store.
 <link rel="preconnect" href="https://ebggtghzqtxfylbhqfoh.supabase.co" crossorigin>
 <link rel="preconnect" href="https://pf.kakao.com">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="/assets/store/store.css?v=20261027d">
-<link rel="stylesheet" href="/assets/shop/shop.css?v=20261027d">
+<link rel="stylesheet" href="/assets/store/store.css?v=20261027e">
+<link rel="stylesheet" href="/assets/shop/shop.css?v=20261027e">
 <!-- 20261023 메인 배너 1번 그림을 미리 받아 둠 (첫 화면에 바로 보이게) -->
 <link rel="preload" as="image" href="/assets/store/banner/bn-01.webp">
 <!-- Meta Pixel -->
@@ -72,8 +97,40 @@ window.STORE_CFG = {mode:'view', srcTag:'/shop'};
 </head>
 <body>
 <div id="storeRoot"></div>
+<!-- 20261021 검색엔진용 글 요약: 스토어 화면은 스크립트로 그려져서 원본에 글이 없음 → 검색엔진(특히 네이버)이 읽어 갈 요약.
+     손님 화면엔 안 보이고, 스토어 화면이 뜨면 store.js 가 지움. 판매 모델이 바뀌면 아래 목록도 같이 고칠 것 -->
+<div id="seoSummary" class="seo-sum">
+  <h1>유플러스 다이렉트(유닥) — LG U+ 공식파트너 휴대폰 온라인 대리점</h1>
+  <p>유플러스 공식파트너사 유플러스 다이렉트. LG U+ 최초의 온라인 대리점. 제휴카드·부가서비스 의무가입 없이, 보이는 가격 그대로. 오후 3시까지 구매확정 시 당일 택배 발송.</p>
+  <p>번호이동·기기변경 모두 가능하고, 공시지원금과 선택약정 중 어느 쪽이 더 저렴한지 내 가격으로 바로 비교해 볼 수 있어요.</p>
+  <h2>오프라인 매장 — 구리 · 남양주 · 성수 · 건대 · 군자 · 미사</h2>
+  <p>구리·남양주·성수·건대·군자·미사 등 서울·경기에서 오프라인 매장을 운영해요. 지정 매장 방문 수령 가능 여부는 상담 때 확인해 드려요.</p>
+  <ul>
+    <li>구리 — 리맥스점 (구리시 경춘로 239)</li>
+    <li>남양주 — 퇴계원점 · 해밀점 · 진주아파트점 · 장현초교점 · 마석점</li>
+    <li>성수 — 성수역점 (서울시 성동구 아차산로 96)</li>
+    <li>건대 — 건대입구역점 (서울시 광진구 능동로 95)</li>
+    <li>군자 — 군자역점 · 신군자점 (서울시 광진구 천호대로)</li>
+    <li>미사 — 미사역점 (하남시 미사강변동로 70)</li>
+  </ul>
+  <h2>판매 중인 휴대폰 (번호이동 · 기기변경)</h2>
+  <ul>
+    <li><a href="/?m=s26">갤럭시 S26</a></li>
+    <li><a href="/?m=s26plus">갤럭시 S26+</a></li>
+    <li><a href="/?m=s26ultra">갤럭시 S26 울트라</a></li>
+    <li><a href="/?m=fold8">갤럭시 Z 폴드 8</a></li>
+    <li><a href="/?m=fold8ultra">갤럭시 Z 폴드 8 울트라</a></li>
+    <li><a href="/?m=flip8">갤럭시 Z 플립 8</a></li>
+    <li><a href="/?m=iphone18pro">아이폰 18 프로</a></li>
+    <li><a href="/?m=iphone18promax">아이폰 18 프로맥스</a></li>
+    <li><a href="/?m=iphone17">아이폰 17</a></li>
+    <li><a href="/?m=a176">갤럭시 버디 5</a></li>
+  </ul>
+  <p>워치 · 태블릿 · U+ tv 프리도 함께 구매할 수 있어요. 5분 상담, 서울·경기 매장 방문 수령 가능.</p>
+  <p><a href="/about">왜 유플러스 다이렉트인가요?</a></p>
+</div>
 <script src="/assets/shop/shop.js?v=20261027b"></script>
-<script src="/assets/store/store.js?v=20261027h"></script>
+<script src="/assets/store/store.js?v=20261027i"></script>
 <!-- 이탈 분석(익명, 개인정보 없음) — page='shop' 으로 따로 기록 -->
 <script src="/assets/udak-funnel.js?v=20261027b" data-page="shop" defer></script>
 </body>

@@ -286,7 +286,7 @@
 .oy .sf{background:#F4F5F7;color:#4B5563;padding:20px 15px 24px;font-size:11px;line-height:17px}
 .oy .sf-top{padding-bottom:12px;border-bottom:1px solid #E5E7EB}
 .oy .sf-links{gap:12px;font-size:12px;line-height:16px;font-weight:400;color:#4B5563}
-.oy .sf-links span:nth-child(2){color:#131518;font-weight:700}
+.oy .sf-links>:nth-child(2){color:#131518;font-weight:700}   /* 20261027 이용약관·개인정보처리방침은 누르면 열림 (span → a) */
 .oy .sf-cert,.oy .sf-cert a{color:#131518}
 .oy .sf-cert small{font-size:11px;line-height:13px;color:#4B5563}
 .oy .foot .sf-cert b{font-size:16px;line-height:19px;font-weight:700;color:#131518}

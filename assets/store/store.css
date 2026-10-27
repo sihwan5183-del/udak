@@ -71,7 +71,7 @@ img{display:block;max-width:100%}
 .locbar .lbl .chev{color:#3B82F6}
 .search{margin:10px 16px 0;height:46px;border-radius:23px;border:1.5px solid #E3E5EA;display:flex;align-items:center;
   gap:10px;padding:0 16px;background:#fff;box-shadow:0 2px 8px rgba(20,24,40,.05)}
-.search input{border:0;outline:0;flex:1;font:inherit;font-size:15px;background:transparent;min-width:0}
+.search input{border:0;outline:0;flex:1;font:inherit;font-size:16px;background:transparent;min-width:0}
 .search input::placeholder{color:#A3A8B0}
 
 /* ---------- 4. 모델 원형 아이콘 (5 + 4) ---------- */
@@ -260,10 +260,10 @@ img{display:block;max-width:100%}
 .so-notice{margin-top:12px;background:#F3F4F6;border-radius:12px;padding:12px 14px;font-size:13.5px;font-weight:700;color:#374151}
 
 /* 신청서 */
-.ff{margin-top:12px}
+.ff{margin-top:12px}   /* 20261027 입력 칸 글자 16px — 15px 이하면 아이폰이 누를 때 화면을 확대함 */
 .ff label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
 .ff label .req{color:var(--pink)}
-.ff input,.ff select,.ff textarea{width:100%;height:46px;border:1.5px solid #E3E5EA;border-radius:10px;padding:0 12px;font:inherit;font-size:15px;background:#fff;outline:0;-webkit-appearance:none;appearance:none}
+.ff input,.ff select,.ff textarea{width:100%;height:46px;border:1.5px solid #E3E5EA;border-radius:10px;padding:0 12px;font:inherit;font-size:16px;background:#fff;outline:0;-webkit-appearance:none;appearance:none}
 .ff select{background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239AA0A8' stroke-width='2.4'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center}
 .ff textarea{height:auto;padding:10px 12px;resize:none;line-height:1.5}
 .ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--pink)}
@@ -387,6 +387,8 @@ img.fit{object-fit:contain !important;padding:7%;background:radial-gradient(circ
 .sf{background:#0B0C0F;color:#8C9099;padding:24px 18px 28px;font-size:11.5px;line-height:1.75}
 .sf-top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid #22252B}
 .sf-links{display:flex;gap:10px;flex-wrap:wrap;color:#C9CCD2;font-weight:700}
+.sf-links a{padding:4px 0}   /* 20261027 누르기 쉽게 */
+.privacy-txt .pv-full{display:inline-block;margin-top:8px;font-weight:700;color:var(--ink);text-decoration:underline;text-underline-offset:2px}
 .sf-cert{display:flex;align-items:center;gap:8px;color:#fff;flex:none}
 .sf-cert img{width:40px;height:40px;object-fit:contain;background:#fff;border-radius:50%;padding:7px}
 .sf-cert small{display:block;font-size:10px;color:#8C9099}
@@ -666,7 +668,7 @@ body.pz-open{overflow:hidden}
 .ap-f .sw{width:34px;height:34px;border-radius:50%;background:var(--c);border:1px solid rgba(0,0,0,.12);box-shadow:inset 0 0 0 3px #fff;outline:2px solid transparent;outline-offset:1px}
 .ap-f .sw.on{outline-color:var(--pink)}
 .ap-search{display:flex;align-items:center;gap:8px;height:44px;margin-top:12px;padding:0 12px;border:1.5px solid #E3E5EA;border-radius:12px}
-.ap-search input{flex:1;border:0;outline:0;font:inherit;font-size:14.5px;background:none}
+.ap-search input{flex:1;border:0;outline:0;font:inherit;font-size:16px;background:none}
 .ap-search .ico{width:18px;height:18px;color:var(--mute)}
 .ap-list{margin-top:8px;max-height:360px;overflow:auto;border:1px solid var(--line);border-radius:12px}
 .ap-li{display:flex;align-items:center;gap:10px;padding:8px 10px;border-top:1px solid var(--line)}
@@ -1211,7 +1213,7 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .qna-search{display:flex;align-items:center;gap:8px;height:46px;padding:0 12px 0 14px;margin-bottom:10px;border-radius:14px;border:1.5px solid #ECEDF0;background:#F7F8FA}
 .qna-search:focus-within{border-color:#F3B3DB;background:#fff}
 .qna-search svg{flex:none;width:18px;height:18px;fill:none;stroke:#9AA0A8;stroke-width:2;stroke-linecap:round}
-.qna-search input{flex:1;min-width:0;border:0;background:none;outline:none;font-size:14.5px;color:var(--ink);-webkit-appearance:none}
+.qna-search input{flex:1;min-width:0;border:0;background:none;outline:none;font-size:16px;color:var(--ink);-webkit-appearance:none}
 .qna-search input::-webkit-search-cancel-button{display:none}
 .qna-x{display:none;flex:none;width:22px;height:22px;border-radius:50%;border:0;background:#C9CCD3;color:#fff;font-size:15px;line-height:1;cursor:pointer}
 .qna-search.on .qna-x{display:block}
@@ -1587,7 +1589,7 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .ap-sel:focus,.ap-in:focus{border-color:var(--pink)}
 /* 20261019 매장찾기·신청서 — 동네로 찾기(집 기준 등) · 걸리는 시간 · 매장 지도 · 길찾기 */
 .near-q{display:flex;gap:6px;margin:8px 0 0}
-.near-q input{flex:1;min-width:0;height:42px;border:1.5px solid #E3E5EA;border-radius:10px;padding:0 12px;font:inherit;font-size:14.5px;color:var(--ink);background:#fff;outline:0;-webkit-appearance:none;appearance:none}
+.near-q input{flex:1;min-width:0;height:42px;border:1.5px solid #E3E5EA;border-radius:10px;padding:0 12px;font:inherit;font-size:16px;color:var(--ink);background:#fff;outline:0;-webkit-appearance:none;appearance:none}
 .near-q input:focus{border-color:var(--pink)}
 .near-q button{flex:none;height:42px;padding:0 16px;border-radius:10px;background:var(--ink);color:#fff;font-size:14px;font-weight:800;cursor:pointer}
 .near-q button:disabled{opacity:.7}

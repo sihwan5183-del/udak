@@ -204,7 +204,8 @@ var DEFCOLORS = {
   s26ultra:[{nm:'블랙',hex:'#1A1A1A',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20260714-055230-854-OPWqhUD2.png'},{nm:'스카이블루',hex:'#C8D8E8',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20260714-055159-340-oK8P4qi3.png'},{nm:'바이올렛',hex:'#6B4FA8',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20260714-055133-722-P9m6ErGa.png'},{nm:'화이트',hex:'#F5F5F5',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20260714-055021-729-uk7T5QtE.png'}],
   iphone17:[{nm:'세이지',hex:'#9DB58A',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20250910-074542-146-u4riuhtS.png'},{nm:'라벤더',hex:'#D4C5E8',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20250910-074335-364-N6axlQJi.png'},{nm:'미스트 블루',hex:'#8FA3B8',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20250910-074609-703-udSVN8tU.png'},{nm:'블랙',hex:'#1A1A1A',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20250910-074658-400-339e48Ub.png'},{nm:'화이트',hex:'#F5F5F5',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20250910-074635-624-heCQGueI.png'}],
   watchultra2:[{nm:'티타늄 실버',hex:'#C9C9C7',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20260730-100757-105-s4pfDDQm.png'},{nm:'티타늄 그레이',hex:'#6B6E70',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20260730-100814-359-AI00mavL.png'}],
-  watch9:[{nm:'그라파이트',hex:'#3A3A3C',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20260730-100914-697-6wrbN7a3.png'},{nm:'크림',hex:'#F2EDE3',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20260730-100933-342-dXgligws.png'}],
+  // 20261027 사장님: 워치9 크림 사진이 초록색 워치였음 → 사장님이 보내 준 흰색 워치 사진으로
+  watch9:[{nm:'그라파이트',hex:'#3A3A3C',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20260730-100914-697-6wrbN7a3.png'},{nm:'크림',hex:'#F2EDE3',img:'model/watch9-cream.webp'}],
   watchse3:[{nm:'미드나이트',hex:'#232A35',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20250924-024025-748-JQRwZZ8s.png'},{nm:'스타라이트',hex:'#E9E3D6',img:'https://www.lguplus.com/static/pc-contents/images/prdv/20250924-024253-142-X6foS0eQ.png'}],
   tvfree5:[{nm:'기본',hex:'#3A3A3C',img:'https://i.namu.wiki/i/BeQj_MqtIzsrmIX4_9xVUxo2Ed38qGyNS3jJCKDdMbMmeisoJKoig23xkjR03tMQg2GSXmP6ae0wkKcIA92klzXZsktGeT7YBI_q-v-DoDeCH9qfwD_DnoPD2fAhXnsbUX4LoaEjK2T7gp4MDA7Dgw.webp || model/tvfree5.webp'}],
   ipada16:[{nm:'실버',hex:'#D9DADC',img:'model/ipada16-silver.webp'}],
@@ -771,13 +772,19 @@ function dealItems(){
 /* 당일 출발 띠: 월~금 마감 전이면 '오늘 출발' + 남은 시간, 이후엔 다음 발송일 (토·일 택배 쉼) */
 var shipTimer=null;
 function kstNow(){ var d=new Date(Date.now()+9*3600e3); return {dow:d.getUTCDay(), h:d.getUTCHours(), m:d.getUTCMinutes(), s:d.getUTCSeconds()}; }
+// 20261027 사장님: 공휴일엔 '당일 발송' 빼기 — 공휴일·대체공휴일은 토·일처럼 택배 쉬는 날 (관리자 '택배 쉬는 날'에 더 넣을 수 있음)
+//   평일에 걸린 공휴일만 적음 (주말은 원래 쉼) · 2027년은 인사혁신처 공휴일 기준 (설 2/8·대체 2/9, 노동절 대체 5/3, 제헌절 대체 7/19, 추석 9/14~16 등)
+var HOLI='2026-12-25 2027-01-01 2027-02-08 2027-02-09 2027-03-01 2027-05-03 2027-05-05 2027-05-13 2027-07-19 2027-08-16 2027-09-14 2027-09-15 2027-09-16 2027-10-04 2027-10-11 2027-12-27';
+function kstDay(k){ var d=new Date(Date.now()+9*3600e3+(k||0)*864e5), p=function(x){ return ('0'+x).slice(-2); };
+  return {dow:d.getUTCDay(), mo:d.getUTCMonth()+1, d:d.getUTCDate(), ymd:d.getUTCFullYear()+'-'+p(d.getUTCMonth()+1)+'-'+p(d.getUTCDate())}; }
+function shipOff(x){ return x.dow===0 || x.dow===6 || HOLI.indexOf(x.ymd)>-1 || String((S.ship||{}).off||'').indexOf(x.ymd)>-1; }
 function shipState(){
   var sh=S.ship||{}, c=String(sh.cut||'15:00').split(':'), ch=+c[0]||15, cm=+c[1]||0, n=kstNow();
-  var sec=n.h*3600+n.m*60+n.s, cut=ch*3600+cm*60, wk=n.dow>=1&&n.dow<=5;
+  var sec=n.h*3600+n.m*60+n.s, cut=ch*3600+cm*60, wk=!shipOff(kstDay(0));
   if(wk && sec<cut) return {today:true, left:cut-sec, cutTxt:ch+(cm?':'+('0'+cm).slice(-2):'')+'시'};
-  var nd=(n.dow+1)%7, add=1; while(nd===0||nd===6){ nd=(nd+1)%7; add++; }
+  var add=1, x=kstDay(1); while(add<21 && shipOff(x)){ add++; x=kstDay(add); }
   var DN=['일','월','화','수','목','금','토'];
-  return {today:false, when:add===1?'내일':DN[nd]+'요일', cutTxt:ch+'시'};
+  return {today:false, when:add===1?'내일':add<7?DN[x.dow]+'요일':x.mo+'월 '+x.d+'일', cutTxt:ch+'시'};
 }
 function hms(t){ var h=Math.floor(t/3600), m=Math.floor(t%3600/60), x=t%60; return ('0'+h).slice(-2)+':'+('0'+m).slice(-2)+':'+('0'+x).slice(-2); }
 // TV프리·아이패드 대상 카드 (항목별 둥근 칸)
@@ -1072,10 +1079,10 @@ function renderFoot(){
   $('#foot').innerHTML=
 
     '<div class="sf">'+
-      '<div class="sf-top"><div class="sf-links"><span>이용약관</span><span>개인정보처리방침</span><span>이메일무단수집거부</span></div>'+
+      '<div class="sf-top"><div class="sf-links"><a href="/terms" target="_blank" rel="noopener">이용약관</a><a href="/privacy" target="_blank" rel="noopener">개인정보처리방침</a><a href="/terms#email" target="_blank" rel="noopener">이메일무단수집거부</a></div>'+   // 20261027 사장님: 눌러서 내용이 열리게
         '<div class="sf-cert"><button type="button" class="sf-mark" data-cert aria-label="LG U+ 공식인증대리점 인증마크 보기"><img src="/assets/store/cert-mark-s.webp" alt="LG U+ 공식인증대리점 인증마크" loading="lazy"></button><a href="tel:'+esc(S.tel)+'"><small>대표 전화번호</small><b>'+esc(S.tel)+'</b></a></div></div>'+
       '<div class="sf-info"><p><span>상호명</span> '+esc(/유닥/.test(b.name||'')||!b.name?'유플러스 다이렉트':b.name)+' · <span>대표자</span> '+esc(b.ceo)+'</p><p><span>사업장 주소</span> '+esc(b.addr)+'</p>'+
-        '<p><span>사업자등록번호</span> '+esc(b.no)+' · <span>전화번호</span> '+esc(S.tel)+'</p>'+(b.sale?'<p><span>통신판매업 신고번호</span> '+esc(b.sale)+'</p>':'')+'<p><span>이메일</span> '+esc(b.email)+'</p>'+
+        '<p><span>사업자등록번호</span> '+esc(b.no)+' · <span>전화번호</span> '+esc(S.tel)+'</p>'+(b.sale?'<p><span>통신판매업 신고번호</span> '+esc(b.sale)+'</p>':'')+'<p><span>이메일</span> '+esc(b.email)+' · <span>호스팅 서비스</span> Cloudflare, Inc.</p>'+
         '<p class="sf-h">상담시간 : '+esc(b.hours)+'</p></div>'+
       '<div class="sf-bot"><p>Copyright(C) 2025 U+ 다이렉트. All rights reserved.</p><div class="sf-p">'+
         '<a href="'+esc(S.kakao)+'" target="_blank" rel="noopener">Kakao</a><a href="#" data-video="direct">회사 소개</a></div></div>'+
@@ -1836,7 +1843,7 @@ function sheetConsult(modelId, colorNm, optNm){
     '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히</button></label>'+
     '<div class="privacy-txt" id="privacyTxt">유플러스 다이렉트(이하 "유닥")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
     '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사<br>· 목적: 온라인 상담 신청 접수, 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
-    '동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.</div>'+
+    '동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.<br><a href="/privacy" target="_blank" rel="noopener" class="pv-full">개인정보처리방침 전문 보기 ›</a></div>'+
     '<button type="button" class="cta" id="mSubmitBtn"><span class="rf-submit-label">온라인 상담 신청하기</span></button></section>';
 }
 function birth8(b){ b=String(b||'').replace(/\D/g,''); if(b.length===6){ var yy=+b.slice(0,2), cy=new Date().getFullYear()%100; b=(yy<=cy?'20':'19')+b; } return b; }
@@ -2246,7 +2253,7 @@ function apInfoHtml(){
     '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히 보기 ›</button></label>'+
     '<div class="privacy-txt" id="privacyTxt">유플러스 다이렉트(이하 "유닥")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
     '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사, 받는 방법(매장에서 받는 경우 수령 매장·출발 동네)<br>· 목적: 온라인 상담 신청 접수, 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
-    '동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.</div>'+
+    '동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.<br><a href="/privacy" target="_blank" rel="noopener" class="pv-full">개인정보처리방침 전문 보기 ›</a></div>'+
     // 20261021 사장님(GPT 안에서 가져옴): 신청 버튼 위 안내 — '누르면 바로 결제되나?' 걱정 줄이기 (확인 화면은 따로 안 둠)
     '<div class="ap-guide"><b><i>i</i>상담 신청 안내</b><ul><li>상담 신청은 구매 확정이나 결제가 아닙니다.</li><li>전문 상담사가 고객님께 연락드려 최종 조건을 안내해 드립니다.</li></ul></div></div>';
 }
@@ -2368,7 +2375,7 @@ function apPayload(o){
 var QK={m:'', car:'', col:''};
 var QK_PV='유플러스 다이렉트(이하 "유닥")는 카카오톡 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
   '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사<br>· 목적: 카카오톡·전화 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
-  '동의를 거부할 권리가 있으며, 거부 시 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.';
+  '동의를 거부할 권리가 있으며, 거부 시 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.<br><a href="/privacy" target="_blank" rel="noopener" class="pv-full">개인정보처리방침 전문 보기 ›</a>';
 function sheetQuickKakao(m){
   var p=priceOf(m, optsOf(m).length?(OPT[m.id]||0):null), st=p.kind==='sheet'?calcState(m,p.row):null;
   var cs=colorsOf(m), col=PICK[m.id]||(cs.length===1?cs[0].nm:''), os=optsOf(m), cap=os.length>1?os[OPT[m.id]||0].nm:'';

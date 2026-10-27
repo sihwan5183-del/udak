@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 20261021 사이트 지도: 검색엔진에 알릴 대표 페이지 (스토어 제품 화면은 /store 한 장 안에서 바뀜) -->
+<!-- 20261021 사이트 지도: 검색엔진에 알릴 대표 페이지 · 20261027 메인 스토어 = 첫 주소(/ → shop.html) -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://landing.uplusdak.com/store</loc><lastmod>2026-10-21</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://landing.uplusdak.com/</loc><lastmod>2026-10-27</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
   <url><loc>https://landing.uplusdak.com/about</loc><lastmod>2026-10-21</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://landing.uplusdak.com/benefits</loc><lastmod>2026-10-21</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
 </urlset>
