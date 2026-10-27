@@ -88,6 +88,22 @@
 .oy-dots i{width:6px;height:6px;border-radius:3px;background:#DADDE0;transition:width .3s,background-color .3s}
 .oy-dots i.on{width:16px;background:#21242A}
 #oyBandDots:empty{display:none}   /* 20261027 띠가 한 장이면 점 자리도 없앰 */
+/* 20261027 사장님 그림: 띠배너 '당일 택배 발송 약속' — 왼쪽 글씨 · 오른쪽 트럭 · 아래 줄 설명 + 남은 시간 (화면 폭에 맞춰 같은 비율 · 390 기준 × --u) */
+.oy-band-vp{border-radius:calc(var(--W)*.028);box-shadow:0 3px 12px rgba(17,24,39,.05)}
+.oy-bd.oy-bd-ship2{--u:calc(var(--W)/390);display:block;height:auto;padding:calc(var(--u)*13) calc(var(--u)*12) calc(var(--u)*12) calc(var(--u)*16);background:#F9F6F7;color:#17181B}
+.oy-sh-im{position:absolute;right:calc(var(--u)*5);top:calc(var(--u)*14);width:calc(var(--u)*162);height:auto;max-width:none;pointer-events:none;-webkit-user-drag:none}
+.oy-sh-tx{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start}
+.oy-sh-lb{display:inline-flex;align-items:center;gap:calc(var(--u)*4);height:calc(var(--u)*20);padding:0 calc(var(--u)*8) 0 calc(var(--u)*7);border-radius:calc(var(--u)*10);background:#FBE5F0;color:#E6007E;font-size:calc(var(--u)*10.5);font-weight:700;letter-spacing:-.02em}
+.oy-sh-lb svg{width:calc(var(--u)*12);height:calc(var(--u)*12);fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.oy-sh-t1{margin-top:calc(var(--u)*7);font-size:calc(var(--u)*14.5);line-height:1.2;font-weight:800;letter-spacing:-.04em;white-space:nowrap}
+.oy-sh-t2{font-size:calc(var(--u)*19);line-height:1.22;font-weight:900;color:#E6007E;letter-spacing:-.045em;white-space:nowrap}
+.oy-sh-row{position:relative;z-index:1;display:flex;align-items:center;gap:calc(var(--u)*7);margin-top:calc(var(--u)*7)}
+.oy-sh-s{font-size:calc(var(--u)*11);line-height:1.3;font-weight:500;color:#4B5563;letter-spacing:-.035em;white-space:nowrap}
+.oy-sh-cd{display:inline-flex;align-items:center;gap:calc(var(--u)*5);height:calc(var(--u)*25);padding:0 calc(var(--u)*10) 0 calc(var(--u)*7);border-radius:calc(var(--u)*13);background:#FBEDF4;font-size:calc(var(--u)*11);font-weight:600;color:#374151;letter-spacing:-.03em;white-space:nowrap}
+.oy-sh-cd svg{width:calc(var(--u)*14);height:calc(var(--u)*14);fill:none;stroke:#E6007E;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.oy-sh-cd i{flex:none;width:1px;height:calc(var(--u)*11);background:#E9BCD1}
+.oy-sh-cd b{font-size:calc(var(--u)*13.5);font-weight:800;color:#E6007E;font-variant-numeric:tabular-nums;letter-spacing:0}
+
 
 /* ---------- 섹션: 사이 48 · 제목 18 (위 17 · 옆 15 · 아래 16) ---------- */
 .oy-sec{margin-top:48px}

@@ -156,10 +156,11 @@ var ED = {
     save:function(i){ var g=T.S.gifts[i]; g.nm=V('nm'); g.sm=V('sm'); g.pr=V('pr'); g.img=V('img')||null; g.go=V('go'); g.hidden=C('hidden'); }
   },
   ship:{
-    title:function(){ return '🚚 당일 출발 안내'; },
-    html:function(){ var d=T.S.ship||{}; return sw('on','켜기',d.on)+txt('cut','당일 발송 마감 시각 (24시간, 예: 15:00)',d.cut||'15:00')+
-      '<div class="hint">월~금 마감 전에는 "오늘 출발 + 남은 시간", 마감 후·토·일에는 다음 발송일(내일/월요일)이 자동으로 나와요.</div>'+applyBtn(); },
-    save:function(){ var c=(V('cut')||'15:00').replace(/[^0-9:]/g,''); T.S.ship={on:C('on'), cut:/^\d{1,2}(:\d{2})?$/.test(c)?c:'15:00'}; }
+    title:function(){ return '🚚 당일 발송 안내 (띠배너)'; },
+    html:function(){ var d=T.S.ship||{}, dv=function(v,x){ return v==null?x:v; }; return sw('on','켜기',d.on)+txt('cut','당일 발송 마감 시각 (24시간, 예: 15:00)',d.cut||'15:00')+
+      txt('lb','작은 알약 글씨 (비우면 안 보임)',dv(d.lb,'오늘 발송 안내'))+txt('t2','분홍 큰 글씨',dv(d.t2,'당일 택배 발송 약속'))+txt('s','아래 작은 글씨 (비우면 안 보임)',dv(d.s,'빠르게 준비해 순차 발송해드려요'))+
+      '<div class="hint">첫 줄은 마감 시각으로 자동이에요 (예: 당일 오후 3시까지 구매 확정 시). 월~금 마감 전에는 "발송 마감까지 남은 시간", 마감 후·토·일에는 "다음 발송 내일/월요일"이 자동으로 나와요.</div>'+applyBtn(); },
+    save:function(){ var c=(V('cut')||'15:00').replace(/[^0-9:]/g,''); T.S.ship={on:C('on'), cut:/^\d{1,2}(:\d{2})?$/.test(c)?c:'15:00', lb:V('lb'), t2:V('t2'), s:V('s')}; }   // 20261027 /shop 띠배너 글씨도 여기서
   },
   // 20261026 사장님: 모든 휴대폰 상세 '구매혜택' 칸 맨 아래 공통 그림 (다 지우면 안 나옴)
   dtc:{

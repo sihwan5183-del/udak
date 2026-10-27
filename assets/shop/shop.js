@@ -386,10 +386,11 @@ function renderGlance(wait){
 function bandList(){
   var S=A.S, out=[], shipOn=!!(S.ship && S.ship.on);
   if(shipOn){
-    var st=A.shipState();   // 스토어 당일 발송 카드와 같은 문구
-    out.push(st.today
-      ? {k:'ship', ek:'ship', go:'guide', l1:E('오늘 '+A.cutLabel()+'까지 구매확정'), l2:'당일 택배 발송 · 발송 마감까지 <b class="oy-cd"></b>', im:'/assets/store/ship/truck.webp'}
-      : {k:'ship', ek:'ship', go:'guide', l1:'지금 구매확정하시면', l2:'<b>'+E(st.when)+'</b> 택배 발송 · 순차 발송', im:'/assets/store/ship/truck.webp'});
+    // 20261027 사장님 그림: '오늘 발송 안내' 알약 → '당일 오후 3시까지 구매 확정 시' → 분홍 '당일 택배 발송 약속' → 설명 + 남은 시간 · 오른쪽 트럭(사장님 그림)
+    //   첫 줄은 관리자 마감 시각으로 자동 · 알약·분홍 글씨·설명은 관리자 '당일 발송 띠배너'에서 고침 · 마감 후·토·일은 '다음 발송 내일/월요일'
+    var st=A.shipState(), sh=S.ship||{}, dv=function(v,d){ return v==null?d:String(v); };
+    out.push({k:'ship', ek:'ship', go:'guide', ship2:1, lb:dv(sh.lb,'오늘 발송 안내'), l1:E('당일 '+A.cutLabel()+'까지 구매 확정 시'), t2:dv(sh.t2,'당일 택배 발송 약속'), s:dv(sh.s,'빠르게 준비해 순차 발송해드려요'),
+      cd:st.today?'<span>발송 마감까지</span><i></i><b class="oy-cd"></b>':'<span>다음 발송</span><i></i><b>'+E(st.when)+'</b>'});
   }
   // 20261027 사장님: 띠는 '당일 택배 발송' 한 장만 — 5분 상담 · 제휴카드 · 부가서비스 문구는 띠에서 뺌 (어디에 둘지 고민 중 · 문구는 관리자 '신뢰 문구'에 그대로)
   if(BAND_TRUST) A.vis(S.trust||[]).forEach(function(t){
@@ -399,7 +400,16 @@ function bandList(){
   });
   return out;
 }
+var SH_BOX='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 7.2v9.6L12 21l-8-4.2V7.2z"/><path d="M4 7.2 12 11.4l8-4.2M12 11.4V21"/></svg>';
+var SH_CLOCK='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.4V12l3.2 2"/></svg>';
+function bdShip(b, clone){
+  return '<a class="oy-bd oy-bd-ship2" href="javascript:void 0" data-go="'+E(b.go)+'"'+(b.ek?ed(b.ek):'')+(clone?' data-clone aria-hidden="true" tabindex="-1"':'')+'>'+
+    '<img class="oy-sh-im" src="/assets/store/ship/truck-box.webp" width="600" height="208" alt="" decoding="async">'+
+    '<span class="oy-sh-tx">'+(b.lb?'<span class="oy-sh-lb">'+SH_BOX+E(b.lb)+'</span>':'')+'<b class="oy-sh-t1">'+b.l1+'</b>'+(b.t2?'<b class="oy-sh-t2">'+E(b.t2)+'</b>':'')+'</span>'+
+    '<span class="oy-sh-row">'+(b.s?'<span class="oy-sh-s">'+E(b.s)+'</span>':'')+'<span class="oy-sh-cd">'+SH_CLOCK+b.cd+'</span></span></a>';
+}
 function bdOne(b, clone){
+  if(b.ship2) return bdShip(b, clone);
   return '<a class="oy-bd oy-bd-'+E(b.k)+(b.hid&&A.EDIT?' is-hidden':'')+'" href="javascript:void 0" data-go="'+E(b.go)+'"'+(b.ek?ed(b.ek):'')+' style="background:'+(BD_BG[b.k]||'#F4F5F7')+'"'+(clone?' data-clone aria-hidden="true" tabindex="-1"':'')+'>'+
     '<span class="oy-bd-tx"><b class="oy-bd-l1">'+b.l1+'</b><span class="oy-bd-l2">'+b.l2+'</span></span>'+
     (b.im?'<img class="oy-bd-im" src="'+b.im+'" alt="" decoding="async">':'<span class="oy-bd-ic" style="color:'+(BD_C[b.k]||'#131518')+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+b.svg+'</svg></span>')+'</a>';
