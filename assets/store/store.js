@@ -988,8 +988,26 @@ function renderWear(){
   $('#wearHead').innerHTML=secHead('wear','#/cat/'+(wk[0]||'watch'));
   $('#wear').innerHTML=list.map(function(m){return hcard(m)}).join('');
 }
+// 20261027 사장님: 멤버십 사은품 사진이 하나도 없으면(멤버십 준비 중) 고객 화면에선 칸을 숨김 (빈 네모 3개가 보이던 것)
+//   관리자에서 사진을 고르거나, 처음부터 정해 둔 이름(gift/gift-griptok.jpg 등)으로 사진을 올리면 저절로 다시 보임 · 관리자 화면은 항상 보임
+var GIFT_DEF=/^gift\/gift-(griptok|case|film)\.jpg$/, GIFT_PIC={};   // 정해 둔 이름의 사진이 실제로 있는지: true / false / 'wait'(확인 중)
+function giftPic(path){
+  var p=String(path||'').split('||')[0].trim();
+  if(!p) return false;
+  if(!GIFT_DEF.test(p)) return true;   // 관리자에서 고른 사진(깃허브에 있는 파일)
+  if(GIFT_PIC[p]===undefined){
+    GIFT_PIC[p]='wait';
+    var u=imgSrc(p), c=[u, u.replace(/\.jpg$/i,'.png'), u.replace(/\.jpg$/i,'.webp')];   // 사진 칸과 같은 순서로 찾아봄 (jpg → png → webp)
+    (function next(i){
+      if(i>=c.length){ GIFT_PIC[p]=false; return; }
+      var t=new Image(); t.onload=function(){ GIFT_PIC[p]=true; renderGifts(); }; t.onerror=function(){ next(i+1); }; t.src=c[i];
+    })(0);
+  }
+  return GIFT_PIC[p]===true;
+}
 function renderGifts(){
-  $('#giftSec').hidden=!secOn('gifts');
+  var gReady=EDIT || vis(S.gifts||[]).filter(function(g){ return g && giftPic(g.img); }).length>0;
+  $('#giftSec').hidden=!secOn('gifts') || !gReady;
   $('#giftHead').innerHTML=secHead('gifts');
   $('#gifts').innerHTML=vis(S.gifts).map(function(g){
     var i=S.gifts.indexOf(g);

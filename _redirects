@@ -1,5 +1,4 @@
 /ipad  /threads_ipad.html  200
-/phone  /phone_landing.html  200
 /store  /galaxy_z8.html  200
 /store/  /galaxy_z8.html  200
 /galaxy  /galaxy_z8.html  200
@@ -10,3 +9,11 @@
 /iphone  /iphone18.html  200
 /i18  /iphone18.html?utm_source=x&utm_medium=organic  302
 /i18-onsite  /iphone18.html?onsite=1&utm_source=onsite&utm_medium=field  302
+# 20261027 사장님: 예전 저장소(Firebase)를 쓰던 옛 페이지는 지금 스토어(/shop)로 넘김 — 최근 30일 신청 없음 · 되돌리려면 아래 줄만 지우면 됨
+/device  /shop  302
+/device.html  /shop  302
+/phone  /shop  302
+/phone_landing  /shop  302
+/phone_landing.html  /shop  302
+/allinone  /shop  302
+/allinone.html  /shop  302
