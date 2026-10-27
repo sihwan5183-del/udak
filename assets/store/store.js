@@ -1352,12 +1352,12 @@ function pdTierSel(m, r, st, promo){
 function pdMore(m, st){
   var ben=pdDt(m,'ben'), note=pdDt(m,'note'), rev=pdDt(m,'rev'), info=pdDt(m,'info');
   var tabs=PD_TABS.filter(function(x){ return x[0]!=='rev' || rev.length || EDIT; });   // 구매후기는 그림을 넣으면 나옴 (지어낸 후기 X)
-  var ck=function(t){ return '<li><i>'+PD_CK+'</i><span>'+t+'</span></li>'; };
+  var ck=function(t,x){ return '<li'+(x&&EDIT?' class="'+hidCls(x).trim()+'" data-edit="trust:'+S.trust.indexOf(x)+'"':'')+'><i>'+PD_CK+'</i><span>'+t+'</span></li>'; };   // 20261027 관리자: 신뢰 문구는 여기서 누르면 고침 (/shop 띠에서 빠짐)
   var h='<div class="pd-more-w" id="pdMore"><nav class="pd-tabs" id="pdTabs" style="--n:'+tabs.length+'">'+tabs.map(function(x,i){ return '<button type="button" class="'+(i?'':'on')+'" data-pd-tab="'+x[0]+'">'+x[1]+'</button>'; }).join('')+'</nav>';
   // 구매혜택: 혜택 칸(기기값 할인 · 보호필름·케이스 · 고속충전기) + 관리자 '신뢰 문구' + 그림
   var tr=vis(S.trust||[]).filter(function(t){ return t && (t.b||t.s); });
   var benC=pdCommon('ben');   // 20261026 모든 휴대폰 공통 내용(글씨) + 공통 그림 — 이 모델 그림 다음, 구매혜택 칸 맨 아래
-  h+='<section class="pd-sec" id="pdBen"><h3>구매혜택</h3>'+benTiles(m)+(tr.length?'<ul class="pd-ul">'+tr.map(function(t){ return ck('<b>'+esc(t.b)+'</b>'+(t.s?' <small>'+esc(t.s)+'</small>':'')); }).join('')+'</ul>':'')+pdImgs(ben)+pdCommonHtml()+
+  h+='<section class="pd-sec" id="pdBen"><h3>구매혜택</h3>'+benTiles(m)+(tr.length?'<ul class="pd-ul">'+tr.map(function(t){ return ck('<b>'+esc(t.b)+'</b>'+(t.s?' <small>'+esc(t.s)+'</small>':''), t); }).join('')+'</ul>':'')+pdImgs(ben)+pdCommonHtml()+
     (benC.length?'<div class="pd-dc"'+(EDIT?' data-edit="dtc"':'')+'>'+pdImgs(benC)+'</div>':(EDIT?'<div class="pd-empty pd-dc" data-edit="dtc">모든 휴대폰 공통 그림 더 넣기 (구매혜택 맨 아래) — 눌러서 넣기</div>':''))+'</section>';
   // 유의사항: 혜택 조건(요금제 · 약정) + 할부이자 + 관리자 '상세 화면 가격 안내 문구' + 그림
   var nl=[]; if(st&&st.t&&st.t.fee) nl.push(won(st.t.fee)+' 이상 요금제를 6개월 유지하는 조건이에요.'); nl.push('약정 기간은 2년이에요.');

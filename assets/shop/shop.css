@@ -87,6 +87,7 @@
 .oy-dots{display:flex;justify-content:center;gap:6px;height:6px;margin-top:15px}
 .oy-dots i{width:6px;height:6px;border-radius:3px;background:#DADDE0;transition:width .3s,background-color .3s}
 .oy-dots i.on{width:16px;background:#21242A}
+#oyBandDots:empty{display:none}   /* 20261027 띠가 한 장이면 점 자리도 없앰 */
 
 /* ---------- 섹션: 사이 48 · 제목 18 (위 17 · 옆 15 · 아래 16) ---------- */
 .oy-sec{margin-top:48px}

@@ -132,6 +132,7 @@ var CB_TITLE='/assets/shop/deal-chalk-title.webp';
 var EV_BG=['linear-gradient(165deg,#8E9BDD 0%,#5562B3 100%)','linear-gradient(165deg,#B59BDD 0%,#7756B0 100%)','linear-gradient(165deg,#86B4DE 0%,#4B78B3 100%)'];
 // AI추천 카드 바탕 (올리브영 AI픽은 사진 — 우리는 진한 색 + 제품 사진, 흰 글자)
 var AI_BG=['linear-gradient(172deg,#A9B4E8 0%,#6672C4 100%)','linear-gradient(172deg,#E6B6D0 0%,#B56F9C 100%)','linear-gradient(172deg,#B7AFEA 0%,#7768C4 100%)','linear-gradient(172deg,#A6C6E8 0%,#5B87BE 100%)'];
+var BAND_TRUST=false;   // true 로 바꾸면 띠에 신뢰 문구 칸이 다시 나옴
 var BD_BG={ship:'#FFF0F7', truck:'#FFF0F7', headset:'#F0FBF5', cardx:'#F2F6FF', docx:'#F6F2FF'};
 var BD_C={headset:'#22B573', cardx:'#2563EB', docx:'#7C3AED', truck:'#E6007E'};
 // 퀵메뉴 한 줄 이름 (20261022 사장님이 고른 것): 휴대폰은 '아이폰'·'갤럭시'를 뺀 이름, 바로가기는 이 두 개만 줄임
@@ -390,7 +391,8 @@ function bandList(){
       ? {k:'ship', ek:'ship', go:'guide', l1:E('오늘 '+A.cutLabel()+'까지 구매확정'), l2:'당일 택배 발송 · 발송 마감까지 <b class="oy-cd"></b>', im:'/assets/store/ship/truck.webp'}
       : {k:'ship', ek:'ship', go:'guide', l1:'지금 구매확정하시면', l2:'<b>'+E(st.when)+'</b> 택배 발송 · 순차 발송', im:'/assets/store/ship/truck.webp'});
   }
-  A.vis(S.trust||[]).forEach(function(t){
+  // 20261027 사장님: 띠는 '당일 택배 발송' 한 장만 — 5분 상담 · 제휴카드 · 부가서비스 문구는 띠에서 뺌 (어디에 둘지 고민 중 · 문구는 관리자 '신뢰 문구'에 그대로)
+  if(BAND_TRUST) A.vis(S.trust||[]).forEach(function(t){
     if(t.ic==='truck' && shipOn) return;   // 당일 발송은 위 칸(남은 시간)으로 보여 줌
     out.push({k:t.ic, ek:'trust:'+S.trust.indexOf(t), hid:!!t.hidden, go:t.ic==='headset'?'contact':'guide', l1:E(t.b), l2:E(t.s),
       im:t.ic==='headset'?'/assets/store/ship/ico-call.webp':t.ic==='truck'?'/assets/store/ship/truck.webp':'', svg:A.TI[t.ic]||A.TI.headset});
@@ -751,7 +753,7 @@ function hdScroll(){
 function bindOnce(){
   if(bound) return; bound=true;
   carSwipe(BN); carSwipe(EV);
-  swipe($('#oyBand'), BD, function(dx){ bdShow(false,dx); }, function(dx){ if(dx<=-40) bdGo(1); else if(dx>=40) bdGo(-1); else bdShow(true); });
+  swipe($('#oyBand'), BD, function(dx){ if(BD.n>1) bdShow(false,dx); }, function(dx){ if(BD.n<2) return; if(dx<=-40) bdGo(1); else if(dx>=40) bdGo(-1); else bdShow(true); });   // 한 장이면 끌어도 안 움직임
   $('#oyBnAll').addEventListener('click',function(e){ e.preventDefault(); bnAll(); });
   // 지금 많이 보는 휴대폰: 옆으로 넘기면 아래 점이 따라감 · '옆으로 넘겨 더보기'를 누르면 한 화면만큼 넘김
   var hr=0; $('#models').addEventListener('scroll',function(){ if(!hr) hr=requestAnimationFrame(function(){ hr=0; hotDots(); }); },{passive:true});
