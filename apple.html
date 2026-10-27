@@ -20,8 +20,8 @@ window.STORE_CFG = {mode:'edit'};
 <div class="login" id="login">
   <form class="bx" id="loginForm">
     <h2>스토어 관리자</h2>
-    <p>고객 화면(/shop)과 똑같이 보이는 편집 화면입니다.</p>
-    <input type="email" id="uid" placeholder="아이디 (이메일)" autocomplete="username" autocapitalize="off">
+    <p>고객 화면(/shop)과 똑같이 보이는 편집 화면입니다.<br><b>ssgadmin에 로그인할 때 쓰는 이메일·비밀번호</b>로 들어와요.</p>
+    <input type="email" id="uid" placeholder="ssgadmin 이메일" autocomplete="username" autocapitalize="off">
     <input type="password" id="pw" placeholder="비밀번호" autocomplete="current-password">
     <div class="err" id="loginErr"></div>
     <button class="cta" type="submit">로그인</button>
@@ -30,21 +30,42 @@ window.STORE_CFG = {mode:'edit'};
 <div id="storeRoot"></div>
 <script>
 (function(){
-  var HASH='33206579bb815cb68efbf1c42cc05c8ad0bbada098ab1e39b5248b0c0a321b59';
+  // 20261027 사장님: 관리자 로그인 = ssgadmin 로그인 계정(이메일·비밀번호)
+  //   저장은 회사 데이터베이스가 직접 확인해서 최고관리자 계정일 때만 됨 (화면 비밀번호가 아니라 서버에서 막음)
+  var SB='https://ebggtghzqtxfylbhqfoh.supabase.co', KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q', SK='st_sb_sess';
   function boot(){
-    document.getElementById('login').remove();
+    var lg=document.getElementById('login'); if(lg) lg.remove();
     // /shop 화면(shop.js)을 먼저 → 스토어 엔진 → 관리자 기능 → 가격표 순서로
-    var seq=(window.STORE_VIEW_STORE?[]:['/assets/shop/shop.js?v=20261027b']).concat(['/assets/store/store.js?v=20261027i','/assets/store/store-admin.js?v=20261027e','/assets/store/store-price.js?v=20261026b']);
+    var seq=(window.STORE_VIEW_STORE?[]:['/assets/shop/shop.js?v=20261027b']).concat(['/assets/store/store.js?v=20261027j','/assets/store/store-admin.js?v=20261027f','/assets/store/store-price.js?v=20261026b']);
     (function next(i){ if(i>=seq.length) return; var s=document.createElement('script'); s.src=seq[i]; s.onload=function(){ next(i+1); }; document.body.appendChild(s); })(0);
   }
-  function sha(s){ return crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)).then(function(b){ return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join(''); }); }
-  try{ if(sessionStorage.getItem('st_admin')===HASH){ boot(); return; } }catch(e){}
+  function getS(){ try{ return JSON.parse(sessionStorage.getItem(SK)||'null'); }catch(e){ return null; } }
+  function setS(v){ try{ if(v) sessionStorage.setItem(SK, JSON.stringify(v)); else sessionStorage.removeItem(SK); }catch(e){} }
+  function tok(grant, body){
+    return fetch(SB+'/auth/v1/token?grant_type='+grant,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify(body)})
+      .then(function(r){ return r.json().then(function(j){ if(!r.ok || !j || !j.access_token) throw new Error((j&&(j.error_description||j.msg||j.error))||('HTTP '+r.status)); return j; }); });
+  }
+  function keep(j){ var v={at:j.access_token, rt:j.refresh_token, exp:Date.now()+((j.expires_in||3600)*1000)}; setS(v); return v; }
+  // 관리자 기능(store-admin.js)이 저장할 때 쓰는 열쇠 — 끝나기 1분 전이면 새로 받음
+  window.__stAuth=function(){
+    var v=getS(); if(!v) return Promise.reject(new Error('로그인이 필요해요'));
+    if(Date.now() < v.exp-60000) return Promise.resolve(v.at);
+    return tok('refresh_token',{refresh_token:v.rt}).then(keep).then(function(n){ return n.at; })
+      .catch(function(){ setS(null); throw new Error('로그인이 끊겼어요. 새로고침해서 다시 로그인해 주세요.'); });
+  };
+  function isAdmin(at){
+    return fetch(SB+'/rest/v1/rpc/store_admin_check',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+at,'Content-Type':'application/json'},body:'{}'})
+      .then(function(r){ return r.ok?r.json():false; }).catch(function(){ return false; });
+  }
+  function err(m){ document.getElementById('loginErr').textContent=m; }
+  if(getS()){ window.__stAuth().then(isAdmin).then(function(ok){ if(ok) boot(); else setS(null); }).catch(function(){ setS(null); }); }
   document.getElementById('loginForm').addEventListener('submit',function(e){
-    e.preventDefault();
-    sha('udak-store-admin|'+document.getElementById('uid').value.trim().toLowerCase()+'|'+document.getElementById('pw').value).then(function(h){
-      if(h===HASH){ try{ sessionStorage.setItem('st_admin',HASH); }catch(e){} boot(); }
-      else document.getElementById('loginErr').textContent='아이디 또는 비밀번호가 맞지 않아요.';
-    });
+    e.preventDefault(); err('');
+    var btn=this.querySelector('button[type=submit]'); btn.disabled=true;
+    tok('password',{email:document.getElementById('uid').value.trim(), password:document.getElementById('pw').value})
+      .then(keep).then(function(v){ return isAdmin(v.at); })
+      .then(function(ok){ btn.disabled=false; if(ok) boot(); else { setS(null); err('이 계정은 스토어를 수정할 권한이 없어요.'); } })
+      .catch(function(){ btn.disabled=false; err('이메일 또는 비밀번호가 맞지 않아요. (ssgadmin 로그인과 같은 계정이에요)'); });
   });
 })();
 </script>

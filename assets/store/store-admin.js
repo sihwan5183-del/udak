@@ -30,13 +30,19 @@ function save(msg){
   Object.keys(base).forEach(function(k){ if(k!=='updatedAt' && !(k in cur)) patch[k]=null; });
   patch.updatedAt=now; T.S.updatedAt=now; T.setStamp(now);
   $('#admSub').textContent='저장 중…';
-  return fetch(DB+'/store.json',{cache:'no-store'}).then(function(r){ return r.ok?r.json():null; })
-    .then(function(remote){ return remote ? fetch(DB+'/store_history/'+now+'.json',{method:'PUT',body:JSON.stringify(remote)}) : null; })
-    .then(function(){ return fetch(DB+'/store.json',{method:'PATCH',body:JSON.stringify(patch)}); })
-    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return fetch(DB+'/store.json',{cache:'no-store'}); })
-    .then(function(r){ return r.json(); })
-    .then(function(d){ T.setStamp(0); T.apply(d); LAST=T.clone(T.S); T.setStamp(now); $('#admSub').textContent='반영 완료 · '+new Date(now).toLocaleTimeString('ko-KR'); toast(msg||'고객 화면에 반영됐어요'); })
+  // 20261027: 회사 데이터베이스에 저장 — 로그인한 최고관리자만 (저장 직전 상태는 데이터베이스가 기록에 남김)
+  return rpc('store_config_patch',{patch:patch})
+    .then(function(d){ if(!d||typeof d!=='object') throw new Error('저장 결과를 받지 못했어요'); T.setStamp(0); T.apply(d); LAST=T.clone(T.S); T.setStamp(now); $('#admSub').textContent='반영 완료 · '+new Date(now).toLocaleTimeString('ko-KR'); toast(msg||'고객 화면에 반영됐어요'); })
     .catch(function(e){ $('#admSub').textContent='저장 실패'; alert('저장에 실패했어요. 인터넷 연결을 확인하고 다시 적용해 주세요.\n('+e.message+')'); });
+}
+// 20261027: 데이터베이스 저장 함수 부르기 (apple.html 에서 로그인한 열쇠를 씀 · 1시간마다 자동 갱신)
+function rpc(fn, body){
+  var key=window.__stAuth?window.__stAuth():Promise.reject(new Error('로그인이 필요해요'));
+  return key.then(function(at){
+    return fetch(T.SB_BASE+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:T.SB_KEY,Authorization:'Bearer '+at,'Content-Type':'application/json'},body:JSON.stringify(body||{})});
+  }).then(function(r){ return r.text().then(function(t){ var j=null; try{ j=t?JSON.parse(t):null; }catch(e){}
+    if(!r.ok){ var m=(j&&(j.message||j.msg))||('HTTP '+r.status); if(r.status===401||r.status===403) m='로그인이 끊겼거나 권한이 없어요. 새로고침해서 다시 로그인해 주세요. ('+m+')'; throw new Error(m); }
+    return j; }); });
 }
 function commit(msg){ T.refresh(); return save(msg); }
 window.__stCommit=commit; window.__stToast=toast;
@@ -395,15 +401,11 @@ document.addEventListener('input',function(e){
 
 /* ---------- 되돌리기 (마지막 적용 이전으로) ---------- */
 function undo(){
-  fetch(DB+'/store_history.json?orderBy=%22%24key%22&limitToLast=1').then(function(r){return r.json()}).then(function(o){
-    var keys=Object.keys(o||{});
-    if(!keys.length){ toast('되돌릴 기록이 없어요'); return; }
-    if(!confirm('마지막으로 적용한 수정을 취소하고 그 전 상태로 되돌릴까요?\n(고객 화면도 같이 되돌아갑니다)')) return;
-    var k=keys[0], st=o[k], now=Date.now(); st.updatedAt=now;
-    return fetch(DB+'/store.json',{method:'PUT',body:JSON.stringify(st)}).then(function(r){
-      if(!r.ok) throw new Error('HTTP '+r.status);
-      return fetch(DB+'/store_history/'+k+'.json',{method:'DELETE'});
-    }).then(function(){ LAST=st; T.setStamp(0); T.apply(st); toast('되돌렸어요'); });
+  // 20261027: 회사 데이터베이스의 마지막 기록으로 되돌림 (로그인한 최고관리자만)
+  if(!confirm('마지막으로 적용한 수정을 취소하고 그 전 상태로 되돌릴까요?\n(고객 화면도 같이 되돌아갑니다)')) return;
+  rpc('store_config_undo').then(function(st){
+    if(!st){ toast('되돌릴 기록이 없어요'); return; }
+    T.setStamp(0); T.apply(st); LAST=T.clone(T.S); toast('되돌렸어요');
   }).catch(function(e){ alert('되돌리기에 실패했어요. ('+e.message+')'); });
 }
 

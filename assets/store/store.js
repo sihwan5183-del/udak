@@ -14,6 +14,9 @@ var EDIT = CFG.mode === 'edit';
 // 20261026 사장님: 관리자(/apple)도 /shop 화면 그대로 띄움 — 관리자 화면 = /shop 거울 (apple.html 이 shop.js 를 먼저 불러서 skin 을 넘김 · /apple?view=store 는 예전 스토어 화면)
 var SKIN = (CFG.skin && typeof CFG.skin.render==='function') ? CFG.skin : null;
 var DB = 'https://udak-c6832-default-rtdb.firebaseio.com';
+// 20261027 사장님: 스토어 설정(가격·배너·문구)은 회사 데이터베이스(Supabase)의 store_config — 읽기는 누구나, 저장은 ssgadmin 최고관리자 로그인 때만
+//   (예전 Firebase(DB)는 누구나 바꿀 수 있어서 옮김 · Firebase 는 이제 스토어에서 안 읽음)
+var SB_BASE = 'https://ebggtghzqtxfylbhqfoh.supabase.co';
 var IMG = '/assets/store/';
 var GH = 'https://api.github.com/repos/sihwan5183-del/udak/contents/assets/store/';
 var FOLDERS = ['banner','hero','model','card','promo','gift','detail'];   // 20261026 banner = /shop 메인 배너 통이미지 · detail = /shop 상세 아래 '구매혜택·유의사항·구매후기·모델정보' 그림
@@ -2602,19 +2605,26 @@ function apply(d){
   refresh();
 }
 var CFG_PRE=(!EDIT && window.__stCfg && typeof window.__stCfg.then==='function')?window.__stCfg:null;   // 20261021: galaxy_z8.html 맨 위에서 미리 받기 시작한 설정 (처음 한 번만 씀)
+// 20261027: 설정은 store_config 한 줄({data, updated_at})로 받음 — apikey 를 주소에 붙여 '단순 요청'으로 (미리 묻는 왕복 없이 바로)
+var CFG_TS=null;   // 마지막으로 받은 설정의 저장 시각 — 바뀌었는지 비교용
+function cfgGet(sel){
+  return fetch(SB_BASE+'/rest/v1/store_config?id=eq.1&select='+sel+'&apikey='+SB_KEY,{cache:'no-store',headers:{Accept:'application/vnd.pgrst.object+json'}})
+    .then(function(r){ return r.ok?r.json():null; });
+}
 function load(){
-  var p=CFG_PRE||fetch(DB+'/store.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null}); CFG_PRE=null;
-  return p.then(function(d){ CFG_WAIT=false; apply(d); return d; }).catch(function(){ cfgDone(); return null; });
+  var p=CFG_PRE||cfgGet('data,updated_at'); CFG_PRE=null;
+  return p.then(function(o){ if(o && o.updated_at) CFG_TS=o.updated_at; var d=o?(o.data||null):null; CFG_WAIT=false; apply(d); return d; }).catch(function(){ cfgDone(); return null; });
 }
 function live(){
-  if(!window.EventSource) return;
-  try{
-    var es=new EventSource(DB+'/store.json');
-    // 20261019: 관리자 저장은 바뀐 칸만 보내는 방식(patch)이라 — 통째로 다시 받아서 반영.
-    //   (예전엔 바뀐 칸만으로 화면을 다시 그려서, 손님이 보고 있던 화면의 가격이 '상담 시 안내'로 바뀌던 문제)
-    var on=function(ev){ try{ var x=JSON.parse(ev.data); if(ev.type==='put' && x && x.path==='/'){ apply(x.data); } else { load(); } }catch(e){} };
-    es.addEventListener('put',on); es.addEventListener('patch',on);
-  }catch(e){}
+  // 20261027: 고객 화면 — 1분마다(화면을 보고 있을 때만) 저장 시각만 확인해서, 관리자가 바꿨으면 다시 받아 반영 (품절·가격 등)
+  //   (예전 Firebase 실시간 연결 대신 · 저장 시각 확인은 아주 작은 요청)
+  var busy=false;
+  var tick=function(){
+    if(busy || (document.visibilityState && document.visibilityState!=='visible')) return; busy=true;
+    cfgGet('updated_at').then(function(o){ busy=false; if(o && o.updated_at && o.updated_at!==CFG_TS) load(); }).catch(function(){ busy=false; });
+  };
+  setInterval(tick, 60000);
+  document.addEventListener('visibilitychange', tick);
 }
 
 /* 20261022 /shop 홈(skin)이 쓰는 도구 묶음 — 가격 계산·모델·문구는 /store 와 같은 함수를 그대로 씀 */
@@ -2634,7 +2644,7 @@ var SKIN_API = SKIN ? {
 /* 관리자 화면에서 쓰는 내부 함수 묶음 */
 window.STORE = {
   get S(){ return S; }, set S(v){ S=v; },
-  DB:DB, GH:GH, IMG:IMG, FOLDERS:FOLDERS, DEFAULT:DEFAULT, CAT_TABS:CAT_TABS, GO_OPTIONS:GO_OPTIONS, QI:QI, TI:TI,
+  DB:DB, SB_BASE:SB_BASE, get SB_KEY(){ return SB_KEY; }, GH:GH, IMG:IMG, FOLDERS:FOLDERS, DEFAULT:DEFAULT, CAT_TABS:CAT_TABS, GO_OPTIONS:GO_OPTIONS, QI:QI, TI:TI,
   TYPES:TYPES, todayKST:todayKST, verAt:verAt, PV:PV, plansOf:plansOf, tiersOf:tiersOf, baseTier:baseTier, sheetRows:sheetRows, rowCalc:rowCalc, normPricing:normPricing,
   esc:esc, clone:clone, num:num, won:won, imgSrc:imgSrc, im:im, byId:byId, autoList:autoList, colorsOf:colorsOf, optsOf:optsOf, DEFCOLORS:DEFCOLORS, mImg:mImg, mCard:mCard, normalize:normalize,
   refresh:refresh, openSheet:openSheet, closeSheet:closeSheet, load:load, apply:apply,
