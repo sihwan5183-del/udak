@@ -787,7 +787,7 @@ function shipState(){
   if(wk && sec<cut) return {today:true, left:cut-sec, cutTxt:ch+(cm?':'+('0'+cm).slice(-2):'')+'시'};
   var add=1, x=kstDay(1); while(add<21 && shipOff(x)){ add++; x=kstDay(add); }
   var DN=['일','월','화','수','목','금','토'];
-  return {today:false, when:add===1?'내일':add<7?DN[x.dow]+'요일':x.mo+'월 '+x.d+'일', cutTxt:ch+'시'};
+  return {today:false, off:!wk, when:add===1?'내일':add<7?DN[x.dow]+'요일':x.mo+'월 '+x.d+'일', cutTxt:ch+'시'};   // off: 오늘이 택배 쉬는 날(토·일·공휴일)
 }
 function hms(t){ var h=Math.floor(t/3600), m=Math.floor(t%3600/60), x=t%60; return ('0'+h).slice(-2)+':'+('0'+m).slice(-2)+':'+('0'+x).slice(-2); }
 // TV프리·아이패드 대상 카드 (항목별 둥근 칸)
@@ -2023,7 +2023,8 @@ function apPhoneHtml(){
     if(cs.length>1) h+='<div class="qk-car qk-col'+(AP.color?'':' need')+'" id="apColorRow"><div class="qk-l">컬러 <span class="req">*</span>'+(AP.color?'':'<em class="need-t">컬러를 선택해 주세요.</em>')+'</div><div class="qk-cc">'+cs.map(function(c){
         return '<button type="button" class="'+(AP.color===c.nm?'on':'')+'" data-ap="color" data-v="'+esc(c.nm)+'"><i style="--c:'+esc(c.hex||'#ddd')+'"></i>'+esc(c.nm)+'</button>'; }).join('')+'</div></div>';
     if(os.length>1) h+='<div class="qk-car"><div class="qk-l">'+esc(optLabel(m))+'</div>'+apChips('cap',os.map(function(o,i){ var so=!!(o.row&&o.row.so); return [i,o.nm+(so?' (품절)':''),so&&!EDIT]; }),AP.cap,Math.min(os.length,4))+'</div>';
-    if(AP.wpromo){ var wcs=colorsOf(byId(AP.wpromo.watch)||{id:''}); if(wcs.length>1) h+='<div class="qk-car qk-col"><div class="qk-l">워치 컬러 <small>(선택)</small></div><div class="qk-cc">'+wcs.map(function(c){
+    // 20261027 사장님: 워치 혜택(B) 컬러도 꼭 골라야 신청됨 (휴대폰 컬러처럼) → CRM '워치 컬러'로 들어감
+    if(AP.wpromo){ var wcs=colorsOf(byId(AP.wpromo.watch)||{id:''}); if(wcs.length>1) h+='<div class="qk-car qk-col'+(AP.wcolor?'':' need')+'" id="apWColorRow"><div class="qk-l">워치 컬러 <span class="req">*</span>'+(AP.wcolor?'':'<em class="need-t">워치 컬러를 선택해 주세요.</em>')+'</div><div class="qk-cc">'+wcs.map(function(c){
         return '<button type="button" class="'+(AP.wcolor===c.nm?'on':'')+'" data-ap="wcolor" data-v="'+esc(c.nm)+'"><i style="--c:'+esc(c.hex||'#ddd')+'"></i>'+esc(c.nm)+'</button>'; }).join('')+'</div></div>'; }
     if(!AP.carrier) h+='<div class="qk-car" id="apCarRow"><div class="qk-l">현재 이용 중인 통신사 <span class="req">*</span></div>'+apChips('carrier',CARRIERS.map(function(c){return [c,c]}),AP.carrier,4)+'</div>';
   }
@@ -2460,6 +2461,7 @@ function apSubmit(mode){
   var name=$('#mUserName').value.trim(), phone='010'+$('#mPhone2').value.replace(/\D/g,'')+$('#mPhone3').value.replace(/\D/g,''), birth=birth8($('#mUserBirth').value), memo=$('#mUserNote').value.trim();
   var apm=apPhone(); if(apm && colorsOf(apm).length>1 && !AP.color){ alert('컬러를 선택해 주세요.'); var acr=$('#apColorRow'); if(acr) acr.scrollIntoView({block:'center',behavior:'smooth'}); return; }   // 20261019: 컬러도 필수
   if(!AP.phone){ alert('휴대폰을 선택해 주세요.'); window.scrollTo({top:0,behavior:'smooth'}); return; }
+  if(AP.wpromo){ var awc=colorsOf(byId(AP.wpromo.watch)||{id:''}); if(awc.length>1 && !AP.wcolor){ alert('워치 컬러를 선택해 주세요.'); var awr=$('#apWColorRow'); if(awr) awr.scrollIntoView({block:'center',behavior:'smooth'}); return; } }   // 20261027 워치 혜택 컬러도 필수
   if(apm && (SO(apm) || optSO(apm,AP.cap))){ alert('선택하신 '+apm.nm+(SO(apm)?'':' '+optsOf(apm)[AP.cap].nm)+'은(는) 일시품절이라 신청할 수 없어요.'+(SO(apm)?' 다른 휴대폰을 골라 주세요.':' 다른 '+optLabel(apm)+'을(를) 골라 주세요.')); apValidate(); apRefresh(); return; }   // 20261020 품절은 신청 못 함
   // 20261021: 신청 버튼이 아래 고정 줄로 가서 다 안 채우고 누를 수 있음 → 안내 뒤 빠진 칸으로 데려감
   var go=function(s){ var el=$(s); if(!el) return; try{ el.scrollIntoView({block:'center',behavior:'smooth'}); if(el.focus) el.focus({preventScroll:true}); }catch(x){} };
