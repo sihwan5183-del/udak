@@ -129,7 +129,7 @@ var DEFAULT = {
     {nm:'리맥스점',addr:'구리시 경춘로 239'},{nm:'퇴계원점',addr:'남양주시 퇴계원읍 퇴계원로 64'},{nm:'해밀점',addr:'남양주시 진접읍 해밀예당3로 57'},
     {nm:'진주아파트점',addr:'남양주시 오남읍 진건오남로 639'},{nm:'장현초교점',addr:'남양주시 진접읍 장현로 83'},{nm:'마석점',addr:'남양주시 화도읍 마석중앙로 65'}
   ],
-  biz:{name:'유플러스 다이렉트', ceo:'이승환', addr:'경기도 구리시 갈매동 552-4, 지식산업센터 A동 7층 705호', no:'804-81-00167', email:'udak@daum.net',
+  biz:{name:'㈜신세계정보통신 (유플러스 다이렉트)', ceo:'이승환', addr:'경기도 구리시 갈매동 552-4, 지식산업센터 A동 7층 705호', no:'804-81-00167', email:'udak@daum.net',
        hours:'월~토요일 09:30~20:00'},
   storeNote:'서울·경기 고객님은 예약 후 매장에 방문하시면 당일 개통·수령이 가능합니다.',
   tel:'1660-1412',
@@ -1096,13 +1096,14 @@ function sortPop(b){
   d.style.top=(b.offsetTop+b.offsetHeight+6)+'px'; d.style.left=Math.max(8,Math.min(b.offsetLeft,b.parentNode.clientWidth-d.offsetWidth-12))+'px';
 }
 function renderFoot(){
+  // 20261027 사장님: 하단 상호명은 '㈜신세계정보통신 (유플러스 다이렉트)' (관리자 '회사 소개 · 하단 정보'에서 고침 · 비어 있거나 예전 '유닥' 이름이면 이 기본값)
   var b=S.biz||{}, n=S.stores.filter(function(s){return s&&s.nm}).length;
   $('#foot').innerHTML=
 
     '<div class="sf">'+
       '<div class="sf-top"><div class="sf-links"><a href="/terms" target="_blank" rel="noopener">이용약관</a><a href="/privacy" target="_blank" rel="noopener">개인정보처리방침</a><a href="/terms#email" target="_blank" rel="noopener">이메일무단수집거부</a></div>'+   // 20261027 사장님: 눌러서 내용이 열리게
         '<div class="sf-cert"><button type="button" class="sf-mark" data-cert aria-label="LG U+ 공식인증대리점 인증마크 보기"><img src="/assets/store/cert-mark-s.webp" alt="LG U+ 공식인증대리점 인증마크" loading="lazy"></button><a href="tel:'+esc(S.tel)+'"><small>대표 전화번호</small><b>'+esc(S.tel)+'</b></a></div></div>'+
-      '<div class="sf-info"><p><span>상호명</span> '+esc(/유닥/.test(b.name||'')||!b.name?'유플러스 다이렉트':b.name)+' · <span>대표자</span> '+esc(b.ceo)+'</p><p><span>사업장 주소</span> '+esc(b.addr)+'</p>'+
+      '<div class="sf-info"><p><span>상호명</span> '+esc(/유닥/.test(b.name||'')||!b.name?DEFAULT.biz.name:b.name)+' · <span>대표자</span> '+esc(b.ceo)+'</p><p><span>사업장 주소</span> '+esc(b.addr)+'</p>'+
         '<p><span>사업자등록번호</span> '+esc(b.no)+' · <span>전화번호</span> '+esc(S.tel)+'</p>'+(b.sale?'<p><span>통신판매업 신고번호</span> '+esc(b.sale)+'</p>':'')+'<p><span>이메일</span> '+esc(b.email)+' · <span>호스팅 서비스</span> Cloudflare, Inc.</p>'+
         '<p class="sf-h">상담시간 : '+esc(b.hours)+'</p></div>'+
       '<div class="sf-bot"><p>Copyright(C) 2025 U+ 다이렉트. All rights reserved.</p><div class="sf-p">'+
