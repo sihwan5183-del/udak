@@ -1687,6 +1687,10 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 #v-model .wp-c small s{color:#9AA0AD;font-weight:600}
 #v-model .wp-c small i{font-style:normal;color:var(--pink);font-weight:900}
 #v-model .wp-c small .wp-pr{display:block;white-space:nowrap}   /* 20261027 출고가 → 0원은 한 줄로 */
+/* 20261027 B 칸 오른쪽 위 워치 사진 */
+#v-model .wp-b{position:relative}
+#v-model .wp-im{position:absolute;top:7px;right:7px;width:48px;height:48px;pointer-events:none}
+#v-model .wp-im img{display:block;width:100%;height:100%;object-fit:contain}
 #v-model .wp-c em{margin-top:auto;padding-top:4px;font-style:normal;font-size:15px;font-weight:900;color:var(--ink)}
 #v-model .wp-c.on em{color:var(--pink)}
 /* 20261027 B 혜택 워치 사이즈 (40mm/44mm) */

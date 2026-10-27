@@ -604,12 +604,13 @@ function tierTotal(m, r, tk){
 // 20261027 사장님: B 칸 워치 이름이 길면(애플워치 SE3 44mm) '0원'만 줄이 바뀌어서 → 출고가 → 0원은 늘 다음 줄에 한 덩어리로 (.wp-pr)
 function wpPickHtml(m, r, st, w){
   var on=(st.t&&st.t.k)===w.b, ta=tierTotal(m,r,w.a), tb=tierTotal(m,r,w.b), wr=wpRow(w), wout=wr?num(wr.out):null;
+  var wx=byId(w.watch), wcs=wx?colorsOf(wx):[], wim=wx?(wx.img||(wcs[0]&&wcs[0].img)||''):'';   // 20261027 사장님: B 칸 오른쪽 위에 워치 실물 사진 (애플워치 SE3 · 갤럭시 워치9)
   // 20261021 사장님(3차): A/B 칸도 '월 기기값'을 앞에, 밑에 '+ 월 요금' (요금제까지 합친 14만원대 금액은 크게 안 보여 줌) · 일시납이면 매달은 요금만
   var amt=function(x,lf){ if(!x) return ''; if(x.mm===0) return '월 요금 '+won(x.fee+(lf||0));
     return '월 '+won(x.monthly)+'<small>+ 월 요금 '+won(x.fee)+(lf?' + 워치 이용료 '+won(lf):'')+'</small>'; };
   return '<div class="wp">'+
     '<button type="button" class="wp-c'+(on?'':' on')+'" data-calc="tier" data-v="'+esc(w.a)+'" data-model="'+esc(m.id)+'"><span class="wp-k">A</span><b>'+esc(tierNmOf(w.a))+' 요금제</b><small>'+esc(m.nm)+'</small><em>'+amt(ta)+'</em></button>'+
-    '<button type="button" class="wp-c wp-b'+(on?' on':'')+'" data-calc="tier" data-v="'+esc(w.b)+'" data-model="'+esc(m.id)+'"><span class="wp-k">B</span><b>'+esc(tierNmOf(w.b))+' 요금제</b>'+
+    '<button type="button" class="wp-c wp-b'+(on?' on':'')+'" data-calc="tier" data-v="'+esc(w.b)+'" data-model="'+esc(m.id)+'">'+(wim?'<span class="wp-im" aria-hidden="true"><img src="'+esc(imgSrc(wim))+'" alt="" loading="lazy" decoding="async"></span>':'')+'<span class="wp-k">B</span><b>'+esc(tierNmOf(w.b))+' 요금제</b>'+
       '<small>+ '+esc(wpName(w))+'<span class="wp-pr">'+(wout?'<s>'+won(wout)+'</s> ':'')+'<i>'+wz(w.price||0)+'</i></span></small><em>'+amt(tb, tb?wpLineFee(w,tb.t.fee):0)+'</em>'+
       '<span class="wp-tag">한 단계 높이고 '+esc(wpShort(w)).replace(/ /g,'&nbsp;')+'&nbsp;혜택&nbsp;받기</span></button>'+   // 좁은 화면에선 '한 단계 높이고 / 워치9 혜택 받기'로만 끊김
   '</div>'+
