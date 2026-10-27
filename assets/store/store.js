@@ -109,8 +109,10 @@ var DEFAULT = {
       {t:'[U+] 공식 파트너사', h:'', s:'(주)신세계정보통신이\n운영하는 온라인 채널입니다.'},
       {t:'오프라인 매장 운영', h:'서울·경기 1위!', s:'매장 방문 후\n상담·수령도 가능합니다!'},
       {t:'투명한 구매 조건', h:'보이는 혜택·조건 그대로', s:'약속한 기기값·요금제\n조건 그대로'},
-      {t:'빠르고 안전한 배송', h:'당일 택배 발송 약속', s:'오후 3시 이전 구매 확정 시\n당일 발송합니다.'}],
-    steps:{t:'구매부터 [개통까지]', s:'{한 번의 판매로 끝내지 않습니다.}\n개통 이후의 통신 생활까지,\n유플러스 다이렉트가 고객님과 함께합니다.',
+      {t:'빠르고 안전한 배송', h:'당일 택배 발송 약속', s:''}],   // 20261027 사장님 '같은 말 나오면 밀어야지': '오후 3시 이전 구매 확정 시 당일 발송합니다.'는 아래 '구매부터 개통까지' 03에 있어서 뺌
+    // 20261027 사장님 '같은 말 나오면 밀어야지': 제목 아래 '한 번의 판매로 끝내지 않습니다. / 개통 이후의 통신 생활까지, 유플러스 다이렉트가 고객님과 함께합니다.'는
+    //   맨 아래 칸에 같은 말(한 번의 판매로 끝내지 않습니다. / 고객님의 통신 생활을 함께합니다.)이 있어서 뺌 — 되살리려면 관리자 '구매부터 개통까지' → 제목 아래 글
+    steps:{t:'구매부터 [개통까지]', s:'',
       it:[{t:'온라인 신청', s:'원하시는 조건으로\n상담을 신청해 주세요.'}, {t:'5분 상담', s:'전문 상담원이\n구매 조건을 안내합니다.'},
           {t:'당일 발송', s:'오후 3시 이전\n구매 확정 시 당일 발송'}, {t:'개통 진행', s:'제품 수령 후\n개통을 진행합니다.'}],
       note:'상담 신청은 구매 확정이나 결제가 아닙니다.\n언제든 편하게 문의해 주세요.'},
@@ -1414,7 +1416,9 @@ function pdMore(m, st){
   var ck=function(t,x){ return '<li'+(x&&EDIT?' class="'+hidCls(x).trim()+'" data-edit="trust:'+S.trust.indexOf(x)+'"':'')+'><i>'+PD_CK+'</i><span>'+t+'</span></li>'; };   // 20261027 관리자: 신뢰 문구는 여기서 누르면 고침 (/shop 띠에서 빠짐)
   var h='<div class="pd-more-w" id="pdMore"><nav class="pd-tabs" id="pdTabs" style="--n:'+tabs.length+'">'+tabs.map(function(x,i){ return '<button type="button" class="'+(i?'':'on')+'" data-pd-tab="'+x[0]+'">'+x[1]+'</button>'; }).join('')+'</nav>';
   // 구매혜택: 혜택 칸(기기값 할인 · 보호필름·케이스 · 고속충전기) + 관리자 '신뢰 문구' + 그림
-  var tr=vis(S.trust||[]).filter(function(t){ return t && (t.b||t.s); });
+  // 20261027 사장님 '같은 말 나오면 밀어야지': 체크 4줄(5분 상담 · 당일 택배 발송 · 제휴카드/부가서비스 의무가입 X)은 바로 아래 공통 내용
+  //   (구매부터 개통까지 · 카드 · 약속드립니다)에 다 있어서, 공통 내용을 통째로 숨겼을 때만 보여 줌
+  var tr=!(S.dcom||{}).off?[]:vis(S.trust||[]).filter(function(t){ return t && (t.b||t.s); });
   var benC=pdCommon('ben');   // 20261026 모든 휴대폰 공통 내용(글씨) + 공통 그림 — 이 모델 그림 다음, 구매혜택 칸 맨 아래
   h+='<section class="pd-sec" id="pdBen"><h3>구매혜택</h3>'+benTiles(m)+(tr.length?'<ul class="pd-ul">'+tr.map(function(t){ return ck('<b>'+esc(t.b)+'</b>'+(t.s?' <small>'+esc(t.s)+'</small>':''), t); }).join('')+'</ul>':'')+pdImgs(ben)+pdCommonHtml()+
     (benC.length?'<div class="pd-dc"'+(EDIT?' data-edit="dtc"':'')+'>'+pdImgs(benC)+'</div>':(EDIT?'<div class="pd-empty pd-dc" data-edit="dtc">모든 휴대폰 공통 그림 더 넣기 (구매혜택 맨 아래) — 눌러서 넣기</div>':''))+'</section>';
