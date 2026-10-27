@@ -1408,7 +1408,7 @@ function pdRender(m, p, st, PK, o){
       '<small>공시지원금 '+won(c.pub)+(c.our?' + 유플러스 다이렉트 지원금 '+won(c.our):'')+'</small></div>';
     else if(c.our) h+='<div class="pd-our"><span>유플러스 다이렉트 지원금</span><b>'+won(c.our)+'</b></div>';
     var fee=st.fee||0, selTot=fee?(fee-Math.round(fee*0.75))*24:0;   // 선택약정 2년 동안 덜 내는 요금 (예전 상세 비교와 같은 계산)
-    if(pubOnly(m)) h+=pdO('method','할인 방식','<div class="pd-ms one"><span class="pd-m on"><b>공시지원금</b><span>'+(c.pub?'총 '+won(c.pub):'–')+'</span></span></div>');   // 20261026 버디 5: 선택약정 없음
+    if(pubOnly(m)) h+=pdO('method','할인 방식','<div class="pd-ms one"><span class="pd-m on"><b>공시지원금</b></span></div>');   // 20261026 버디 5: 선택약정 없음 · 20261027 사장님: '총 400,000원'은 뺌 (위 총 지원금 띠에 있음)
     else h+=pdO('method','할인 방식','<div class="pd-ms">'+
       '<button type="button" class="pd-m'+(st.method==='pub'?' on':'')+(c.pub?'':' dis')+'" data-calc="method" data-v="pub" data-model="'+esc(m.id)+'"'+(c.pub?'':' disabled')+'><b>공시지원금</b><span>'+(c.pub?'총 '+won(c.pub):'–')+'</span></button>'+
       '<button type="button" class="pd-m'+(st.method==='sel'?' on':'')+'" data-calc="method" data-v="sel" data-model="'+esc(m.id)+'"><b>선택약정 <small>요금 25%↓</small></b><span>'+(selTot?'총 '+won(selTot)+' <small>2년</small>':'요금 25% 할인')+'</span></button></div>'+
