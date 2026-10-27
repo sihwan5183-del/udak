@@ -2037,10 +2037,26 @@ function apMonthFee(pc){ if(!pc || !pc.fee) return null; return (pc.feeAfter||0)
 //  매장에서 수령하기 → 어디서 오세요(구·동, 고객이 직접 적음 → 그 동네 기준으로 가까운 매장 정렬 + 거리·교통비 분석용) → 수령 매장(현재 위치로도 정렬 가능) → 고른 매장 주소·거리·길찾기
 var TRUCK_I='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 6.5h11v9.5h-11zM13.5 9.5h4l3 3.5v3h-7"/><circle cx="6.5" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/></svg>';
 function apRecvHtml(){
-  // 20261021 사장님(2차): 신청서는 ① 컬러·용량 ② 고객 정보만 — '받는 방법(택배/매장 수령)' 칸은 뺌 (상담 때 정함, 고객이 안 고른 값을 지어서 남기지 않음)
-  //   매장 화면에서 '이 매장 상담'으로 들어온 경우만 어느 매장인지 한 줄 보여 줌 (CRM 에도 그 매장으로 남음)
-  if(!AP.phone || AP.pick || !(AP.recv==='store' && AP.store)) return '';
-  return '<div class="ap-recv-mini">'+PIN_I+'<span><b>'+esc(AP.store)+'</b> 상담으로 접수돼요</span></div>';
+  // 20261027 사장님: 매장 방문 상담 다시 받기 — 고객 정보 밑 '받는 방법(선택)': 택배 / 매장 방문. 매장 방문을 누를 때만 매장 고르는 칸이 펼쳐짐
+  //   아무것도 안 고르면 지금처럼 상담 때 정함 (고객이 안 고른 값은 남기지 않음) · 매장 화면에서 '방문 예약 상담'으로 들어오면 그 매장이 골라져 있음
+  var st=AP.recv==='store';
+  var h='<div class="ff ap-rv"><label>받는 방법<small>선택</small></label><div class="ap-rv-b">'+
+    '<button type="button" class="'+(AP.recv==='courier'?'on':'')+'" data-ap="recv" data-v="courier" aria-pressed="'+(AP.recv==='courier')+'">'+TRUCK_I+'<span><b>택배</b><small>당일 발송</small></span></button>'+
+    '<button type="button" class="'+(st?'on':'')+'" data-ap="recv" data-v="store" aria-pressed="'+st+'">'+PIN_I+'<span><b>매장 방문</b><small>상담·수령</small></span></button></div></div>';
+  if(!st) return h;
+  var list=S.stores.filter(function(x){return x&&x.nm});
+  var opt=function(x){ var d=storeDist(x); return '<option value="'+esc(x.nm)+'"'+(x.nm===AP.store?' selected':'')+'>'+esc(x.nm)+(d!=null?' ('+distTxt(d)+')':'')+'</option>'; };
+  var opts=MYPOS?list.map(function(x){ return {s:x, d:storeDist(x)}; }).sort(function(p,q){ return (p.d==null?1e9:p.d)-(q.d==null?1e9:q.d); }).map(function(o){ return opt(o.s); }).join('')
+    :[['서울',list.filter(function(x){return /^서울/.test(x.addr||'')})],['경기',list.filter(function(x){return !/^서울/.test(x.addr||'')})]].map(function(g){ return g[1].length?'<optgroup label="'+g[0]+'">'+g[1].map(opt).join('')+'</optgroup>':''; }).join('');
+  var sel=AP.store?list.filter(function(x){ return x.nm===AP.store; })[0]:null, sd=sel?storeDist(sel):null, gps=MYPOS&&MYPOS_L==='내 위치';
+  return h+'<div class="ap-rv-box">'+
+    '<div class="ap-rv-l"><span>어디서 오세요? <small>선택</small></span></div>'+
+    '<div class="ap-from"><input type="text" class="ap-in" id="mFromIn" maxlength="40" placeholder="예: 구리 인창동" value="'+esc(AP.from||'')+'" enterkeyhint="search"><button type="button" class="ap-from-b" data-ap-from>가까운 매장 찾기</button></div>'+
+    '<div class="ap-rv-l"><span>방문할 매장 <span class="req">*</span></span><button type="button" class="ap-near'+(gps?' on':'')+'" data-ap-near>'+PIN_I+'<span>현재 위치로 찾기</span></button></div>'+
+    '<select class="ap-sel" id="mStoreSel"><option value="">매장을 골라 주세요</option>'+opts+'</select>'+(NEAR_ERR?'<div class="near-err">'+esc(NEAR_ERR)+'</div>':'')+
+    (sel?'<div class="ap-st-info"><b>'+esc(sel.nm)+'</b> · '+esc(sel.addr||'')+(sd!=null?'<br>'+esc(MYPOS_L)+'에서 약 '+distTxt(sd)+' · '+tripTxt(sd):'')+'<a href="'+kakaoTo(sel)+'" target="_blank" rel="noopener">길찾기</a></div>':'')+
+    (MYPOS&&!gps?'<div class="near-src">주소 검색 © OpenStreetMap</div>':'')+
+  '</div>';
 }
 // 신청서 '어디서 오세요' → 그 동네 기준으로 가까운 매장 (회사에 있어도 집 기준으로 고를 수 있게). 매장을 아직 안 골랐으면 가장 가까운 매장을 골라 둠
 function apFromFind(){
@@ -2252,6 +2268,7 @@ function apInfoHtml(){
     '<div class="ff"><label>이름 <span class="req">*</span></label><input type="text" id="mUserName" placeholder="이름을 입력해 주세요" autocomplete="name"></div>'+
     '<div class="ff"><label>연락처 <span class="req">*</span></label><div class="phone3"><input type="text" id="mPhone1" value="010" readonly tabindex="-1"><span>-</span><input type="tel" id="mPhone2" maxlength="4" inputmode="numeric" placeholder="0000"><span>-</span><input type="tel" id="mPhone3" maxlength="4" inputmode="numeric" placeholder="0000"></div></div>'+
     '<div class="ff"><label>생년월일 <span class="req">*</span></label><input type="text" id="mUserBirth" inputmode="numeric" maxlength="8" placeholder="예: 940101"></div>'+
+    '<div id="apRecv"></div>'+   // 20261027 받는 방법(선택): 택배 / 매장 방문
     '<div class="ff" style="display:none"><label>전달사항</label><textarea id="mUserNote" rows="3" maxlength="500"></textarea></div>'+
     '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히 보기 ›</button></label>'+
     '<div class="privacy-txt" id="privacyTxt">유플러스 다이렉트(이하 "유닥")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
@@ -2286,7 +2303,8 @@ function renderApply(full){
     // 20261019: 카드 하나에 — 고른 휴대폰·금액·컬러·통신사 → 고객 정보 → 버튼 (카톡 간편 신청창처럼)
     $('#apBody').innerHTML='<section class="ap-sec ap-one"><div id="apCond"></div><div id="apSum"></div>'+apInfoHtml()+apBtnsHtml()+'</section>';
   }
-  $('#apCond').innerHTML=apPhoneHtml()+(apAddOn()?apPlanHtml():'')+apAddHtml()+apRecvHtml();   // 20261019: 맨 끝에 '받는 방법'
+  $('#apCond').innerHTML=apPhoneHtml()+(apAddOn()?apPlanHtml():'')+apAddHtml();
+  var rv=$('#apRecv'); if(rv) rv.innerHTML=apRecvHtml();   // 20261027 '받는 방법(선택)'은 고객 정보 밑
   $('#apSum').innerHTML=(!apPhone()&&(AP.tv||AP.watch||AP.tablet))?apSumHtml():'';   // 금액표는 TV프리만 신청할 때만 (휴대폰은 위에 월 기기 할부금·총 기기 지원금)
   $('#apBar').innerHTML=apBarHtml();
   Array.prototype.forEach.call(document.querySelectorAll('#apBody .ap-h > b'),function(b,i){ b.textContent=(i<9?'0':'')+(i+1); });
@@ -2446,7 +2464,8 @@ function apSubmit(mode){
   // 20261021: 신청 버튼이 아래 고정 줄로 가서 다 안 채우고 누를 수 있음 → 안내 뒤 빠진 칸으로 데려감
   var go=function(s){ var el=$(s); if(!el) return; try{ el.scrollIntoView({block:'center',behavior:'smooth'}); if(el.focus) el.focus({preventScroll:true}); }catch(x){} };
   if(!AP.carrier && AP.phone!=='none'){ alert('현재 이용 중인 통신사를 선택해 주세요.'); go('#apCarRow'); return; }
-  // 20261021: '받는 방법' 확인은 뺌 (신청서에 칸이 없음 — 택배·매장 수령은 상담 때 정함)
+  // 20261027: '받는 방법'은 선택 — 다만 '매장 방문'을 골랐으면 방문할 매장은 꼭 고르게
+  if(AP.recv==='store' && !AP.store){ alert('방문할 매장을 골라 주세요.'); go('#mStoreSel'); return; }
   if(!name){ alert('이름을 입력해 주세요.'); go('#mUserName'); return; }
   if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해 주세요.'); go($('#mPhone2').value.replace(/\D/g,'').length<4?'#mPhone2':'#mPhone3'); return; }
   if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해 주세요.'); return; }
@@ -2496,7 +2515,9 @@ document.addEventListener('click',function(e){
   if(!t.closest('.sortpop')){ var sp2=document.querySelector('.sortpop'); if(sp2) sp2.remove(); }
   var apb=t.closest('[data-ap]');
   if(apb){ e.preventDefault(); if(apb.disabled) return; var ak=apb.getAttribute('data-ap'), av=apb.getAttribute('data-v');
-    if(ak==='cap'||ak==='months') AP[ak]=+av; else if(ak==='watch'||ak==='tablet'||ak==='tv') AP[ak]=(AP[ak]===av?'':av); else AP[ak]=av;
+    if(ak==='cap'||ak==='months') AP[ak]=+av; else if(ak==='watch'||ak==='tablet'||ak==='tv') AP[ak]=(AP[ak]===av?'':av);
+    else if(ak==='recv'){ AP.recv=(AP.recv===av?'':av); AP.visit=false; }   // 20261027 받는 방법: 다시 누르면 선택 풀림 (상담 때 정함)
+    else AP[ak]=av;
     if(ak==='tv'&&AP.tv&&!AP.tvTier){ AP.tvTier=(tiersOf('tvfree')[0]||{}).k||''; }
     if(ak==='tvType'){ AP.tvOk=false; if(av==='old'&&!AP.phone) AP.phone='none'; if(av!=='old'&&AP.phone==='none') AP.phone=''; }
     apRefresh(); return; }
