@@ -1688,6 +1688,13 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 #v-model .wp-c small i{font-style:normal;color:var(--pink);font-weight:900}
 #v-model .wp-c em{margin-top:auto;padding-top:4px;font-style:normal;font-size:15px;font-weight:900;color:var(--ink)}
 #v-model .wp-c.on em{color:var(--pink)}
+/* 20261027 B 혜택 워치 사이즈 (40mm/44mm) */
+#v-model .wp-sz{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 2px;padding:9px 10px 9px 12px;border-radius:12px;background:#F7F8FA}
+#v-model .wp-sz-l{font-size:13px;font-weight:800;color:var(--ink);white-space:nowrap}
+#v-model .wp-sz-l small{font-size:11px;font-weight:600;color:var(--sub)}
+#v-model .wp-sz-b{display:flex;gap:6px}
+#v-model .wp-sz-b button{min-width:62px;height:34px;padding:0 10px;border-radius:9px;border:1.5px solid #E3E5EA;background:#fff;font-size:13.5px;font-weight:800;color:var(--ink)}
+#v-model .wp-sz-b button.on{border-color:var(--pink);color:var(--pink);background:#FFF4F9}
 #v-model .wp-tag{margin-top:4px;display:inline-block;padding:3px 8px;border-radius:999px;background:var(--pink);color:#fff;font-size:11px;font-weight:800;line-height:1.35}
 #v-model .pv-wp b{color:var(--pink)}
 #v-model .pv-wp b s{font-size:12px;color:#9AA0AD;font-weight:600;margin-right:4px}

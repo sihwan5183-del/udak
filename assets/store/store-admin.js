@@ -263,7 +263,7 @@ window.__stEditClick=function(e){
   if(t.closest('.adm-bar')||t.closest('#sheet')||t.closest('#dim')||t.closest('.login')) return false;
   if(t.closest('.tabbar')||t.closest('.topbar')||t.closest('[data-back]')||t.closest('.ctabs')||t.closest('[data-toggle]')||t.closest('.subhead')) return false;
   if(t.closest('.oy-hd')||t.closest('.oy-gnb')||t.closest('.oy-subhd')||t.closest('.oy-cl')||t.closest('.oy-cm-h')||t.closest('.oy-csl')||t.closest('.oy-chips')||t.closest('.oy-frow')||t.closest('#oyBnAll')||t.closest('.oy-more')||t.closest('.oy-pg')) return false;   // 20261026 /shop 화면 이동 (전체보기 · 옆으로 넘겨 더보기 포함)
-  if(t.closest('[data-mnp]')||t.closest('[data-opt-pick]')||t.closest('[data-tier-pick]')||t.closest('[data-calc]')||t.closest('[data-color-pick]')||t.closest('[data-sort-open]')||t.closest('[data-maxv]')||t.closest('[data-ms-tip]')||t.closest('[data-sort]')||t.closest('.pz')||t.closest('a[download]')) return false;
+  if(t.closest('[data-mnp]')||t.closest('[data-opt-pick]')||t.closest('[data-tier-pick]')||t.closest('[data-calc]')||t.closest('[data-wp-opt]')||t.closest('[data-color-pick]')||t.closest('[data-sort-open]')||t.closest('[data-maxv]')||t.closest('[data-ms-tip]')||t.closest('[data-sort]')||t.closest('.pz')||t.closest('a[download]')) return false;
   var el=t.closest('[data-edit]');
   if(!el){
     if(t.closest('a,[data-go],[data-open],label.search')){ e.preventDefault(); e.stopPropagation(); toast('편집 중에는 이동하지 않아요 · [편집 ON] 을 끄면 고객처럼 둘러볼 수 있어요'); return true; }

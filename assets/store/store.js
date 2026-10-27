@@ -571,8 +571,16 @@ function cgrid(label, key, items, cur, m, n, hint){
 // 20261021 사장님: 폴드8 광고 'A 85 요금제 / B 95 요금제(한 단계 높이면) + 갤럭시 워치9 40mm 0원'
 //   상세 '내 가격'의 요금제 고르기를 A/B 두 개로 — B를 고르면 신청서·CRM(ssgadmin)에 워치9 40mm가 함께 들어감
 //   워치 0원 = 출고가 − 이통사 지원금(단가표에 등록된 값) − 나머지는 유플러스 다이렉트 지원금 / 워치 이용료는 워치 이용 가이드 기준(95 요금제 이상이면 0원)
-var WPROMO={ fold8:{a:'t85', b:'t95', watch:'watch9', opt:'40mm', price:0} };
-function wpFor(m){ var w=m&&WPROMO[m.id]; if(!w) return null; var x=byId(w.watch); if(!x || (!EDIT && SO(x)) || !wpRow(w)) return null;
+// 20261027 사장님: 아이폰 18 프로·프로맥스도 'A 85 / B 95 요금제(한 단계 높이고) + 애플워치 SE3 0원' — 워치 사이즈 40mm/44mm 고객이 고름 (opts)
+var WPROMO={ fold8:{a:'t85', b:'t95', watch:'watch9', opt:'40mm', price:0},
+  iphone18pro:{a:'t85', b:'t95', watch:'watchse3', opt:'40mm', opts:['40mm','44mm'], price:0},
+  iphone18promax:{a:'t85', b:'t95', watch:'watchse3', opt:'40mm', opts:['40mm','44mm'], price:0} };
+var WPOPT={};   // 모델별로 고객이 고른 워치 사이즈
+function wpFor(m){ var w0=m&&WPROMO[m.id]; if(!w0) return null; var x=byId(w0.watch); if(!x || (!EDIT && SO(x))) return null;
+  var w=w0;
+  if(w0.opts){ var ok=w0.opts.filter(function(o){ var r=wpRow({watch:w0.watch, opt:o}); return r && (EDIT || !r.so); }); if(!ok.length) return null;   // 품절·가격 없는 사이즈는 뺌
+    w={}; for(var k in w0) w[k]=w0[k]; w.opts=ok; w.opt=ok.indexOf(WPOPT[m.id])>-1?WPOPT[m.id]:ok[0]; }
+  if(!wpRow(w)) return null;
   var ts=tiersOf('phone'); if(!ts.some(function(t){return t.k===w.a}) || !ts.some(function(t){return t.k===w.b})) return null; return w; }
 function wpRow(w){ var x=byId(w.watch); return x?sheetRows(x).filter(function(r){ return r.cap===w.opt && num(r.out)!=null; })[0]||null:null; }
 function wpName(w){ var x=byId(w.watch); return ((x&&x.nm)||'워치')+' '+w.opt; }
@@ -603,7 +611,9 @@ function wpPickHtml(m, r, st, w){
     '<button type="button" class="wp-c wp-b'+(on?' on':'')+'" data-calc="tier" data-v="'+esc(w.b)+'" data-model="'+esc(m.id)+'"><span class="wp-k">B</span><b>'+esc(tierNmOf(w.b))+' 요금제</b>'+
       '<small>+ '+esc(wpName(w))+(wout?' <s>'+won(wout)+'</s>':'')+' <i>'+wz(w.price||0)+'</i></small><em>'+amt(tb, tb?wpLineFee(w,tb.t.fee):0)+'</em>'+
       '<span class="wp-tag">한 단계 높이고 '+esc(wpShort(w)).replace(/ /g,'&nbsp;')+'&nbsp;혜택&nbsp;받기</span></button>'+   // 좁은 화면에선 '한 단계 높이고 / 워치9 혜택 받기'로만 끊김
-  '</div>';
+  '</div>'+
+  (w.opts&&w.opts.length>1?'<div class="wp-sz"><span class="wp-sz-l">'+esc(wpShort(w))+' 사이즈 <small>(B 혜택)</small></span><div class="wp-sz-b">'+w.opts.map(function(o){   // 20261027 사이즈를 누르면 B로
+    return '<button type="button" class="'+(o===w.opt?'on':'')+'" data-wp-opt="'+esc(o)+'" data-model="'+esc(m.id)+'">'+esc(o)+'</button>'; }).join('')+'</div></div>':'');
 }
 function calcPickers(m, r, st){
   var g=r.g, h='', car='', promo='';
@@ -2482,6 +2492,9 @@ document.addEventListener('click',function(e){
   if(t.closest('[data-pv-x]')){ e.preventDefault(); PVOFF=!PVOFF; var pvm=t.closest('.pv-more'); if(pvm) pvm.classList.toggle('off', PVOFF); return; }
   var mt=t.closest('[data-ms-tip]');
   if(mt){ e.preventDefault(); var mk=mt.getAttribute('data-ms-tip'); MSTIP[mk]=!MSTIP[mk]; var hm=location.hash.match(/#\/model\/([^/?]+)/); if(hm){ var y=window.scrollY; renderModel(hm[1],true); window.scrollTo(0,y); } return; }
+  var wo=t.closest('[data-wp-opt]');   // 20261027 워치 사이즈(40mm/44mm) — 고르면 B(워치 혜택) 요금제로
+  if(wo){ e.preventDefault(); e.stopPropagation(); var wmid=wo.getAttribute('data-model'), w0=WPROMO[wmid]; WPOPT[wmid]=wo.getAttribute('data-wp-opt'); if(w0) TIER[wmid]=w0.b;
+    var y5=window.scrollY; renderModel(wmid,true); window.scrollTo(0,y5); return; }
   var cb=t.closest('[data-calc]');
   if(cb){ e.preventDefault(); e.stopPropagation(); if(cb.disabled) return; var mid=cb.getAttribute('data-model'), k=cb.getAttribute('data-calc'), v=cb.getAttribute('data-v'), sel=SEL[mid]||(SEL[mid]={});
     if(k==='tier') TIER[mid]=v; else if(k==='months') sel.months=+v;
