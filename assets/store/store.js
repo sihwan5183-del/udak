@@ -292,7 +292,7 @@ function normalize(d){
   o.models.forEach(function(m){ m.cat=arr(m.cat);
     if((m.id==='tvfree5'||m.id==='ipada16') && m.cat.indexOf('tvfree')<0) m.cat=m.cat.filter(function(c){return c!=='tablet'}).concat(['tvfree']);
     // 20261026 갤럭시 버디 5(a176): 분류가 비어 있으면 '갤럭시 버디' · 대표 사진이 LG U+ 공식몰 주소면 우리 사진(그레이)으로
-    if(m.id==='a176'){ if(!m.cat.length) m.cat=['buddy']; if(/lguplus\.com/.test(m.img||'')) m.img=null; if(m.pubOnly==null) m.pubOnly=true; }   // 20261026 사장님: 버디 5는 공시지원금만 (선택약정 없음 → 기기값 0원)
+    if(m.id==='a176'){ if(!m.cat.length) m.cat=['buddy']; if(/lguplus\.com/.test(m.img||'')) m.img=null; if(m.pubOnly==null) m.pubOnly=true; if(m.supAll==null) m.supAll=true; }   // 20261027 사장님: 버디 5 지원금 띠는 '총 지원금'으로   // 20261026 사장님: 버디 5는 공시지원금만 (선택약정 없음 → 기기값 0원)
     m.tags=arr(m.tags); m.cards=arr(m.cards); m.colors=arr(m.colors); m.opts=arr(m.opts); m.price=m.price||{}; });
   o.sec=o.sec||{}; Object.keys(DEFAULT.sec).forEach(function(k){ o.sec[k]=o.sec[k]||clone(DEFAULT.sec[k]); });
   // 히어로 사진: 예전 저장값(hero-0N.jpg)은 실제 파일(hero-0N.webp)로
@@ -1402,7 +1402,11 @@ function pdRender(m, p, st, PK, o){
   } else if(c){
     var mu=[]; if(st.t&&st.t.fee) mu.push(won(st.t.fee)+' 이상 요금제 6개월'); mu.push('약정 2년');   // 조건은 남김 (개통할 때 말이 안 나오게 — 20261020)
     h+=pdO('tier','요금제',pdTierSel(m,r,st,PK&&PK.promo)+'<div class="pd-cond"><b>조건</b><span>'+mu.join(' · ')+'</span></div>');
-    if(c.our) h+='<div class="pd-our"><span>유플러스 다이렉트 지원금</span><b>'+won(c.our)+'</b></div>';
+    // 20261027 사장님(버디 5): 우리 지원금만 보이면 작아 보여서 → '총 지원금 528,000원 (출고가 전액)' + 아래 '공시지원금 + 유플러스 다이렉트 지원금' (관리자 모델 편집 스위치)
+    var supTot=(m.supAll&&st.method==='pub'&&c.pub)?(c.pub||0)+(c.our||0):0, supOut=num(c.out)||0;
+    if(supTot) h+='<div class="pd-our tot"><span class="pd-our-r"><span>총 지원금</span><b>'+won(supTot)+'</b>'+(supOut&&supTot>=supOut?'<em>(출고가 전액)</em>':'')+'</span>'+
+      '<small>공시지원금 '+won(c.pub)+(c.our?' + 유플러스 다이렉트 지원금 '+won(c.our):'')+'</small></div>';
+    else if(c.our) h+='<div class="pd-our"><span>유플러스 다이렉트 지원금</span><b>'+won(c.our)+'</b></div>';
     var fee=st.fee||0, selTot=fee?(fee-Math.round(fee*0.75))*24:0;   // 선택약정 2년 동안 덜 내는 요금 (예전 상세 비교와 같은 계산)
     if(pubOnly(m)) h+=pdO('method','할인 방식','<div class="pd-ms one"><span class="pd-m on"><b>공시지원금</b><span>'+(c.pub?'총 '+won(c.pub):'–')+'</span></span></div>');   // 20261026 버디 5: 선택약정 없음
     else h+=pdO('method','할인 방식','<div class="pd-ms">'+

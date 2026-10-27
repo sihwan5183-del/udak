@@ -81,6 +81,7 @@ function edModel(m){
     area('opts','워치·태블릿처럼 사이즈별 가격일 때 — 한 줄에 하나씩 "사이즈 | 출고가 | 이통사 지원금"',T.optsOf(m).map(function(o){return [o.nm,o.out==null?'':o.out,o.sub==null?'':o.sub].join(' | ')}).join('\n'),3)+
     '<div class="hint">이 칸을 채우면 위 가격(번호이동/기기변경) 대신 "출고가 - 지원금 = 구매가"로 표시됩니다. 휴대폰은 비워두세요. 💰 가격표에서 이 모델을 연결하면 가격표 값이 우선합니다.</div>'))+
     sw('pubOnly','할인 방식은 공시지원금만 (선택약정 안 보이게 — 갤럭시 버디 5처럼 공시지원금으로 0원인 모델)',m.pubOnly)+   // 20261026 사장님
+    sw('supAll','분홍 지원금 띠를 \'총 지원금\'으로 (공시지원금 + 유플러스 다이렉트 지원금 — 갤럭시 버디 5처럼 기기값 0원 모델)',m.supAll)+   // 20261027 사장님
     sw('soldout','일시품절 표시',m.soldout,true)+sw('hidden','고객 화면에서 숨기기',m.hidden)+
     '<div class="grp"><div class="lbl">분류 (탭·모아보기에 나오는 곳)</div><div class="chk-row">'+CATS.map(function(c){return '<label><input type="checkbox" name="cat_'+c[0]+'"'+(m.cat.indexOf(c[0])>-1?' checked':'')+'> '+c[1]+'</label>'}).join('')+'</div></div>'+
     txt('strip','카드 띠 문구 (비우면 자동)',m.strip,'번호이동 시 '+(m.tags[0]||'')+' + '+(m.tags[1]||''))+
@@ -101,7 +102,7 @@ function saveModel(m){
   m.nm=V('nm')||m.nm; m.ds=V('ds'); m.tags=[V('tag0'),V('tag1')].filter(Boolean); m.strip=V('strip')||null;
   if($('#sheet [name="out"]')) m.price={out:T.num(V('out')), mnp:T.num(V('mnp')), chg:T.num(V('chg'))};
   if($('#sheet [name="opts"]')) m.opts=V('opts').split('\n').map(function(l){ var p=l.split('|').map(function(x){return x.trim()}); return p[0]?{nm:p[0],out:T.num(p[1]),sub:T.num(p[2])}:null; }).filter(Boolean);
-  m.soldout=C('soldout'); m.hidden=C('hidden'); m.pubOnly=C('pubOnly');
+  m.soldout=C('soldout'); m.hidden=C('hidden'); m.pubOnly=C('pubOnly'); m.supAll=C('supAll');
   m.cat=CATS.map(function(c){return c[0]}).filter(function(k){return C('cat_'+k)});
   m.colors=V('colors').split('\n').map(function(l){ var p=l.split('|').map(function(x){return x.trim()}); return p[0]?{nm:p[0],hex:p[1]||'',img:p[2]||null}:null; }).filter(Boolean);
   m.img=V('img')||null; m.cards=[V('c0')||null,V('c1')||null,V('c2')||null];

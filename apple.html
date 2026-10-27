@@ -11,7 +11,7 @@
 <script>
 // 20261026 사장님: 관리자 화면 = /shop 거울 (/shop 화면 그대로 띄우고 눌러서 수정) · 예전 스토어(/store) 화면은 /apple?view=store
 window.STORE_VIEW_STORE = /[?&]view=store\b/.test(location.search);
-if(!window.STORE_VIEW_STORE) document.write('<link rel="stylesheet" href="/assets/shop/shop.css?v=20261027c">');
+if(!window.STORE_VIEW_STORE) document.write('<link rel="stylesheet" href="/assets/shop/shop.css?v=20261027d">');
 window.STORE_CFG = {mode:'edit'};
 </script>
 </head>
@@ -34,7 +34,7 @@ window.STORE_CFG = {mode:'edit'};
   function boot(){
     document.getElementById('login').remove();
     // /shop 화면(shop.js)을 먼저 → 스토어 엔진 → 관리자 기능 → 가격표 순서로
-    var seq=(window.STORE_VIEW_STORE?[]:['/assets/shop/shop.js?v=20261027b']).concat(['/assets/store/store.js?v=20261027b','/assets/store/store-admin.js?v=20261027b','/assets/store/store-price.js?v=20261026b']);
+    var seq=(window.STORE_VIEW_STORE?[]:['/assets/shop/shop.js?v=20261027b']).concat(['/assets/store/store.js?v=20261027c','/assets/store/store-admin.js?v=20261027c','/assets/store/store-price.js?v=20261026b']);
     (function next(i){ if(i>=seq.length) return; var s=document.createElement('script'); s.src=seq[i]; s.onload=function(){ next(i+1); }; document.body.appendChild(s); })(0);
   }
   function sha(s){ return crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)).then(function(b){ return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join(''); }); }
