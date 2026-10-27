@@ -1689,7 +1689,9 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 #v-model .wp-c small .wp-pr{display:block;white-space:nowrap}   /* 20261027 출고가 → 0원은 한 줄로 */
 /* 20261027 B 칸 오른쪽 위 워치 사진 */
 #v-model .wp-b{position:relative}
-#v-model .wp-im{position:absolute;top:7px;right:7px;width:48px;height:48px;pointer-events:none}
+#v-model .wp-im{position:absolute;top:7px;right:7px;width:48px;height:48px;cursor:pointer}   /* 누르면 크게 보기 */
+#v-model .wp-im-z{position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center}
+#v-model .wp-im-z svg{width:11px;height:11px;fill:none;stroke:#5B6170;stroke-width:2.6;stroke-linecap:round}
 #v-model .wp-im img{display:block;width:100%;height:100%;object-fit:contain}
 #v-model .wp-c em{margin-top:auto;padding-top:4px;font-style:normal;font-size:15px;font-weight:900;color:var(--ink)}
 #v-model .wp-c.on em{color:var(--pink)}
@@ -1765,3 +1767,26 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .st-img.st43{aspect-ratio:4/3}
 .sl-th.none{display:grid;place-items:center;color:#B9BEC9}
 .sl-th.none svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* 20261027 B 칸 워치 사진 → 크게 보기 창 (다른 팝업과 같은 창) */
+.wv-t{margin-bottom:12px}
+.wv-img{display:flex;align-items:center;justify-content:center;width:clamp(120px,calc(84vh - 380px),280px);max-width:100%;aspect-ratio:1/1;margin:0 auto;border-radius:18px;background:#F7F8FA}   /* 키 작은 폰에선 사진을 줄여 버튼까지 한 화면에 */
+.wv-img img{width:84%;height:84%;object-fit:contain}
+.wv-cs{display:flex;justify-content:center;gap:12px;margin:12px 0 2px}
+.wv-cs button{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;font:inherit;font-size:12px;font-weight:700;color:var(--sub)}
+.wv-cs i{display:flex;align-items:center;justify-content:center;width:54px;height:54px;border-radius:12px;border:1.5px solid #E3E5EA;background:#fff}
+.wv-cs i img{width:84%;height:84%;object-fit:contain}
+.wv-cs button.on{color:var(--ink)}
+.wv-cs button.on i{border-color:var(--pink);box-shadow:inset 0 0 0 1px var(--pink)}
+.wv-cn{margin-top:8px;text-align:center;font-size:13px;font-weight:700;color:var(--sub)}
+.wv-p{display:flex;flex-direction:column;gap:3px;margin-top:12px;padding:12px 14px;border-radius:12px;background:#F7F8FA;word-break:keep-all}
+.wv-p em{font-style:normal;font-size:12.5px;font-weight:800;color:var(--pink)}
+.wv-p b{font-size:15px;font-weight:800;color:var(--ink)}
+.wv-p span{font-size:13px;font-weight:700;color:var(--sub)}
+.wv-p s{color:#9AA0AD;font-weight:600}
+.wv-p i{font-style:normal;font-size:15px;font-weight:900;color:var(--pink)}
+.wv-sz{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:0 2px}
+.wv-sz>span{font-size:13.5px;font-weight:800;color:var(--ink)}
+.wv-sz div{display:flex;gap:6px}
+.wv-sz button{min-width:64px;height:36px;padding:0 10px;border-radius:9px;border:1.5px solid #E3E5EA;background:#fff;font:inherit;font-size:13.5px;font-weight:800;color:var(--ink)}
+.wv-sz button.on{border-color:var(--pink);color:var(--pink);background:#FFF4F9}

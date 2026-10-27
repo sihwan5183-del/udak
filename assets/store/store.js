@@ -610,12 +610,29 @@ function wpPickHtml(m, r, st, w){
     return '월 '+won(x.monthly)+'<small>+ 월 요금 '+won(x.fee)+(lf?' + 워치 이용료 '+won(lf):'')+'</small>'; };
   return '<div class="wp">'+
     '<button type="button" class="wp-c'+(on?'':' on')+'" data-calc="tier" data-v="'+esc(w.a)+'" data-model="'+esc(m.id)+'"><span class="wp-k">A</span><b>'+esc(tierNmOf(w.a))+' 요금제</b><small>'+esc(m.nm)+'</small><em>'+amt(ta)+'</em></button>'+
-    '<button type="button" class="wp-c wp-b'+(on?' on':'')+'" data-calc="tier" data-v="'+esc(w.b)+'" data-model="'+esc(m.id)+'">'+(wim?'<span class="wp-im" aria-hidden="true"><img src="'+esc(imgSrc(wim))+'" alt="" loading="lazy" decoding="async"></span>':'')+'<span class="wp-k">B</span><b>'+esc(tierNmOf(w.b))+' 요금제</b>'+
+    '<button type="button" class="wp-c wp-b'+(on?' on':'')+'" data-calc="tier" data-v="'+esc(w.b)+'" data-model="'+esc(m.id)+'">'+(wim?'<span class="wp-im" data-wp-view data-model="'+esc(m.id)+'" role="button" aria-label="'+esc(wx.nm)+' 사진 크게 보기"><img src="'+esc(imgSrc(wim))+'" alt="" loading="lazy" decoding="async"><i class="wp-im-z" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="m15.2 15.2 4.8 4.8"/></svg></i></span>':'')+'<span class="wp-k">B</span><b>'+esc(tierNmOf(w.b))+' 요금제</b>'+
       '<small>+ '+esc(wpName(w))+'<span class="wp-pr">'+(wout?'<s>'+won(wout)+'</s> ':'')+'<i>'+wz(w.price||0)+'</i></span></small><em>'+amt(tb, tb?wpLineFee(w,tb.t.fee):0)+'</em>'+
       '<span class="wp-tag">한 단계 높이고 '+esc(wpShort(w)).replace(/ /g,'&nbsp;')+'&nbsp;혜택&nbsp;받기</span></button>'+   // 좁은 화면에선 '한 단계 높이고 / 워치9 혜택 받기'로만 끊김
   '</div>'+
   (w.opts&&w.opts.length>1?'<div class="wp-sz"><span class="wp-sz-l">'+esc(wpShort(w))+' 사이즈 <small>(B 혜택)</small></span><div class="wp-sz-b">'+w.opts.map(function(o){   // 20261027 사이즈를 누르면 B로
     return '<button type="button" class="'+(o===w.opt?'on':'')+'" data-wp-opt="'+esc(o)+'" data-model="'+esc(m.id)+'">'+esc(o)+'</button>'; }).join('')+'</div></div>':'');
+}
+// 20261027 사장님: B 칸 워치 사진을 누르면 → 워치를 크게 보는 창 (색상별 사진 · 사이즈 · 출고가 → 0원 · B 요금제로 선택)
+//   다른 팝업과 같은 창(openSheet) — 화면 가운데, 폰 크기에 맞춰 줄어듦
+var WVC={};   // 창에서 보고 있는 색상 (모델별)
+function wvOn(m, w){ var p=priceOf(m, optsOf(m).length?(OPT[m.id]||0):null), st=p.kind==='sheet'?calcState(m,p.row):null; return !!(st&&st.t&&st.t.k===w.b); }
+function wvHtml(mid){
+  var m=byId(mid), w=m&&wpFor(m), x=w&&byId(w.watch); if(!x) return '';
+  var cs=colorsOf(x).filter(function(c){ return c&&c.img; }), ci=Math.min(WVC[mid]||0, Math.max(0,cs.length-1)), c=cs[ci]||null;
+  var img=c?c.img:(x.img||''), wr=wpRow(w), wout=wr?num(wr.out):null, tn=tierNmOf(w.b);
+  var h='<h3 class="wv-t">'+esc(x.nm)+'</h3><div class="wv-img">'+(img?'<img src="'+esc(imgSrc(img))+'" alt="'+esc(x.nm+(c?' '+c.nm:''))+'">':'')+'</div>';
+  if(cs.length>1) h+='<div class="wv-cs">'+cs.map(function(cc,i){ return '<button type="button" class="'+(i===ci?'on':'')+'" data-wv-c="'+i+'" data-model="'+esc(mid)+'"><i><img src="'+esc(imgSrc(cc.img))+'" alt=""></i><span>'+esc(cc.nm)+'</span></button>'; }).join('')+'</div>';
+  else if(c) h+='<div class="wv-cn">'+esc(c.nm)+'</div>';
+  h+='<div class="wv-p"><em>한 단계 높이고 '+esc(wpShort(w))+' 혜택 받기</em><b>'+esc(tn)+' 요금제 + '+esc(wpName(w))+'</b><span>'+(wout?'출고가 <s>'+won(wout)+'</s> ':'')+'<i>'+wz(w.price||0)+'</i></span></div>';
+  if(w.opts&&w.opts.length>1) h+='<div class="wv-sz"><span>사이즈</span><div>'+w.opts.map(function(o){
+    return '<button type="button" class="'+(o===w.opt?'on':'')+'" data-wv-opt="'+esc(o)+'" data-model="'+esc(mid)+'">'+esc(o)+'</button>'; }).join('')+'</div></div>';
+  h+=wvOn(m,w)?'<button type="button" class="cta" data-close-sheet>확인</button>':'<button type="button" class="cta" data-wv-pick data-model="'+esc(mid)+'">'+esc(tn)+' 요금제로 선택하기</button>';
+  return '<div class="wv">'+h+'</div>';
 }
 function calcPickers(m, r, st){
   var g=r.g, h='', car='', promo='';
@@ -2494,6 +2511,14 @@ document.addEventListener('click',function(e){
   if(t.closest('[data-pv-x]')){ e.preventDefault(); PVOFF=!PVOFF; var pvm=t.closest('.pv-more'); if(pvm) pvm.classList.toggle('off', PVOFF); return; }
   var mt=t.closest('[data-ms-tip]');
   if(mt){ e.preventDefault(); var mk=mt.getAttribute('data-ms-tip'); MSTIP[mk]=!MSTIP[mk]; var hm=location.hash.match(/#\/model\/([^/?]+)/); if(hm){ var y=window.scrollY; renderModel(hm[1],true); window.scrollTo(0,y); } return; }
+  var wvb=t.closest('[data-wp-view]');   // 20261027 B 칸 워치 사진 → 크게 보기 창 (B 칸을 누른 걸로 치지 않음)
+  if(wvb){ e.preventDefault(); e.stopPropagation(); var vh=wvHtml(wvb.getAttribute('data-model')); if(vh) openSheet(vh); return; }
+  var wvc=t.closest('[data-wv-c]');     // 창 안: 색상별 사진 보기
+  if(wvc){ e.preventDefault(); var cm=wvc.getAttribute('data-model'); WVC[cm]=+wvc.getAttribute('data-wv-c'); $('#sheetBody').innerHTML=wvHtml(cm); return; }
+  var wvo=t.closest('[data-wv-opt]');   // 창 안: 사이즈 (B 칸 글자도 같이 바뀜)
+  if(wvo){ e.preventDefault(); var om=wvo.getAttribute('data-model'); WPOPT[om]=wvo.getAttribute('data-wv-opt'); var y6=window.scrollY; renderModel(om,true); window.scrollTo(0,y6); $('#sheetBody').innerHTML=wvHtml(om); return; }
+  var wvp=t.closest('[data-wv-pick]');  // 창 안: B 요금제로 선택
+  if(wvp){ e.preventDefault(); var pm=wvp.getAttribute('data-model'), w1=WPROMO[pm]; if(w1) TIER[pm]=w1.b; closeSheet(); var y7=window.scrollY; renderModel(pm,true); window.scrollTo(0,y7); return; }
   var wo=t.closest('[data-wp-opt]');   // 20261027 워치 사이즈(40mm/44mm) — 고르면 B(워치 혜택) 요금제로
   if(wo){ e.preventDefault(); e.stopPropagation(); var wmid=wo.getAttribute('data-model'), w0=WPROMO[wmid]; WPOPT[wmid]=wo.getAttribute('data-wp-opt'); if(w0) TIER[wmid]=w0.b;
     var y5=window.scrollY; renderModel(wmid,true); window.scrollTo(0,y5); return; }

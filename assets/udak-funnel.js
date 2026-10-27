@@ -264,12 +264,16 @@
       var el;
       if((el=t.closest('[data-color-pick]'))) return '컬러:'+el.getAttribute('data-color-pick');
       if((el=t.closest('[data-opt-pick]'))) return '용량:'+(el.textContent||'').replace(/품절/,'').trim();
+      if((el=t.closest('[data-wp-view]'))) return '워치사진';   // 20261027 B 칸 워치 사진 크게 보기 (B 칸 안에 있어서 요금제 누름보다 먼저)
       if((el=t.closest('[data-calc]'))){ var c=el.getAttribute('data-calc'), v=el.getAttribute('data-v')||''; return ({carrier:'통신사',method:'할인',months:'할부',jt:'가입유형'}[c]||c)+':'+({pub:'공시',sel:'선약','0':'일시납',mnp:'번호이동',chg:'기기변경'}[v]||v); }
       if((el=t.closest('[data-pd-tab]'))) return '아래칸:'+({ben:'구매혜택',note:'유의사항',rev:'구매후기',info:'모델정보'}[el.getAttribute('data-pd-tab')]||'');   // 20261026 /shop 새 상세
       if((el=t.closest('[data-pd-sum]'))) return '상세보기';
       if((el=t.closest('[data-pd-share]'))) return '공유';
       if((el=t.closest('[data-cert]'))) return '인증마크';   // 20261026 공통 그림 'U+ 공식 파트너사' 카드
       if((el=t.closest('[data-wp-opt]'))) return '워치사이즈:'+el.getAttribute('data-wp-opt');   // 20261027 아이폰 18 B 혜택 애플워치 SE3 40/44mm
+      if((el=t.closest('[data-wv-c]'))) return '워치색상:'+(el.textContent||'').trim();   // 20261027 워치 크게 보기 창 안
+      if((el=t.closest('[data-wv-opt]'))) return '워치창사이즈:'+el.getAttribute('data-wv-opt');
+      if((el=t.closest('[data-wv-pick]'))) return '워치창선택';
       if((el=t.closest('[data-qk]'))) return el.closest('#mdBar')?'카톡상담(아래)':'카톡상담';
       if((el=t.closest('[data-open]'))) return el.getAttribute('data-open')==='consult'?(el.closest('#mdBar')?'상담신청(아래)':el.closest('.tabbar')?'상담신청(탭)':'전화상담'):'열기:'+el.getAttribute('data-open');
       if((el=t.closest('[data-mg]'))) return '순서:'+el.getAttribute('data-mg');
