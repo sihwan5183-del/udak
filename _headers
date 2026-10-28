@@ -1,3 +1,8 @@
 /*
   Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:
   Access-Control-Allow-Origin: *
+
+# 20261028 다퍼줌: 다퍼줌 전용 도메인으로 옮기기 전까지 이 주소(landing.uplusdak.com/dapeojum)는 검색에 안 뜨게 함
+# (전용 도메인 프로젝트는 dapeojum 폴더를 뿌리로 쓰므로 이 줄의 영향을 받지 않음)
+/dapeojum/*
+  X-Robots-Tag: noindex
