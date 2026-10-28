@@ -1,0 +1,187 @@
+/* 다퍼줌 공통 (index · find): 머리·하단·오른쪽 상담하기 칸·상담 신청 창
+   2026-10-28 사장님: 아정당 인터넷 화면 구성으로 전체 개편 (참고 레퍼런스), PC·모바일 둘 다 맞춤
+   다퍼줌은 별도 사업자 — 특정 통신사 대리점 문구·인증마크·다른 회사 정보 넣지 말 것 / 사은품 금액은 당분간 없이 */
+:root{
+  --yellow:#FFB61C;--yellow2:#F2A20C;--orange:#F98E14;--brown:#A85600;
+  --ink:#1C232B;--ink2:#3A434E;--sub:#5E6773;--mute:#8A9098;
+  --line:#E6E9ED;--line2:#D5D9DE;--gray:#F3F5F8;--gray2:#EAEEF3;--ftbg:#F5F6F8;
+  --butter:#FFF4D2;--cream:#FFF9EA;--pick:#FFF7E3;--error:#D23B3B;
+  --font:"Wanted Sans Variable","Wanted Sans",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --gut:16px;--hd:102px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:calc(var(--hd) + 16px)}
+body{background:#fff;color:var(--ink2);font-family:var(--font);font-size:16px;line-height:1.6;font-weight:450;word-break:keep-all;overflow-wrap:anywhere;-webkit-font-smoothing:antialiased}
+body.lock{overflow:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+.wrap{width:100%;max-width:1072px;margin:0 auto;padding:0 var(--gut)}
+h1,h2,h3{color:var(--ink);letter-spacing:-.03em}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.nw{white-space:nowrap}
+
+/* ---------- 맨 위 띠 ---------- */
+.topbar{position:relative;display:flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:6px 44px;background:var(--yellow);color:var(--ink);font-size:13.5px;font-weight:750;letter-spacing:-.02em;text-align:center;line-height:1.35}
+.topbar img{width:22px;height:auto;flex:none}
+.topbar .tb-more{display:none}
+@media (min-width:600px){.topbar .tb-more{display:inline}}
+.topbar .x{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:grid;place-items:center;border-radius:8px}
+.topbar .x svg{width:16px;height:16px;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round}
+
+/* ---------- 머리 (아정당식 두 줄) ---------- */
+.hd{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid transparent;transition:border-color .2s}
+.hd.scrolled{border-bottom-color:var(--line)}
+.hd-r1{display:flex;align-items:center;gap:24px;height:56px}
+.brand{display:flex;align-items:center;gap:5px;flex:none}
+.brand .bi{width:34px;height:auto}
+.brand .bw{height:23px;width:auto}
+.hd-sub{display:none}
+.hd-cta{margin-left:auto;display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:10px;background:var(--yellow);color:var(--ink);font-size:14px;font-weight:800;letter-spacing:-.02em;white-space:nowrap}
+.hd-r2{display:flex;align-items:center;gap:4px;height:46px;overflow-x:auto;scrollbar-width:none;margin:0 calc(var(--gut) * -1);padding:0 calc(var(--gut) - 10px)}
+.hd-r2::-webkit-scrollbar{display:none}
+.hd-r2 a{flex:none;padding:8px 10px;font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-.03em;white-space:nowrap}
+.hd-r2 a.on{color:var(--brown)}
+.hd-r2 a .dot{display:inline-block;width:5px;height:5px;margin-left:2px;border-radius:50%;background:var(--orange);vertical-align:top}
+
+/* ---------- 공통 버튼 ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 20px;border-radius:12px;font-size:16.5px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;transition:transform .12s,background .15s}
+.btn:active{transform:translateY(1px)}
+.btn-y{background:var(--yellow);color:var(--ink)}
+.btn-k{background:var(--ink);color:#fff}
+.btn-line{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn-g{background:var(--gray);color:var(--ink2)}
+.btn svg{width:20px;height:20px;flex:none}
+
+/* ---------- 섹션 제목 (아정당식: 왼쪽 제목 · 오른쪽 더보기) ---------- */
+.sec-h{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.sec-h h2{font-size:20px;line-height:1.35;font-weight:800}
+.sec-h .more{display:inline-flex;align-items:center;gap:2px;flex:none;font-size:14.5px;color:var(--sub);font-weight:550}
+.sec-h .more svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none}
+
+/* 통신사 이름 (로고 자리 — 로고 파일을 받으면 바꿔 끼울 수 있게 글자로) */
+.cname{font-weight:850;color:var(--ink);letter-spacing:-.03em;line-height:1.15}
+
+/* ---------- 하단 (아정당식) ---------- */
+.ft{background:var(--ftbg);padding:44px 0 calc(48px + var(--sticky-pad,0px));color:var(--sub)}
+.ft .brand .bi{width:30px}.ft .brand .bw{height:20px}
+.ft-links{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:24px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.ft-links a{font-size:15px;font-weight:650;color:var(--ink2)}
+.ft-desc{margin-top:18px;font-size:13.5px;line-height:1.8}
+.ft-copy{margin-top:22px;font-size:13px;color:var(--mute)}
+
+/* ---------- 오른쪽 상담하기 칸 (넓은 PC) ---------- */
+.fpanel{display:none}
+@media (min-width:1500px){
+  .fpanel{display:block;position:fixed;right:16px;top:170px;z-index:45;width:184px;background:#fff;border-radius:14px;padding:18px 14px 14px;box-shadow:0 8px 30px rgba(28,35,43,.1)}
+  .fpanel .t{font-size:15px;font-weight:850;color:var(--ink);margin:0 4px 12px}
+  .fpanel a,.fpanel button{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:42px;border-radius:8px;font-size:14px;font-weight:800;letter-spacing:-.02em}
+  .fpanel a + a,.fpanel button + a,.fpanel a + button{margin-top:8px}
+  .fpanel svg{width:16px;height:16px;flex:none}
+  .fpanel .y{background:var(--yellow);color:var(--ink)}
+  .fpanel .k{background:var(--ink);color:#fff;margin-top:14px!important}
+  .fpanel .g{background:var(--gray);color:var(--ink2)}
+  .fpanel .note{margin-top:12px;padding:16px 10px 14px;border-radius:10px;background:var(--cream);text-align:center}
+  .fpanel .note img{width:60px;height:auto;margin:0 auto 8px}
+  .fpanel .note b{display:block;font-size:13.5px;font-weight:800;color:var(--ink);line-height:1.45}
+  .fpanel .note p{margin-top:4px;font-size:12.5px;color:var(--sub);line-height:1.45}
+}
+
+/* ---------- 폰 하단 고정 버튼 ---------- */
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:10px var(--gut) calc(10px + env(safe-area-inset-bottom));background:linear-gradient(to top,#fff 70%,rgba(255,255,255,0));transform:translateY(110%);transition:transform .25s ease;pointer-events:none}
+.sticky.show{transform:none;pointer-events:auto}
+.sticky .btn{width:100%;height:56px;font-size:17px;box-shadow:0 10px 24px rgba(28,35,43,.2)}
+
+/* ---------- 상담 신청 창 ---------- */
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:flex-end;justify-content:center;background:rgba(18,22,28,.52)}
+.modal.open{display:flex}
+.sheet{position:relative;width:100%;max-height:92vh;max-height:92dvh;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#fff;border-radius:20px 20px 0 0;padding:0 0 calc(20px + env(safe-area-inset-bottom))}
+.sheet-hd{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:12px;padding:16px 16px 14px 20px;background:#fff;border-bottom:1px solid var(--line)}
+.sheet-hd h2{font-size:19px;font-weight:850}
+.sheet-x{margin-left:auto;width:40px;height:40px;display:grid;place-items:center;border-radius:10px}
+.sheet-x svg{width:22px;height:22px;stroke:var(--ink);stroke-width:2;stroke-linecap:round}
+.sheet-bd{padding:18px 20px 4px}
+@media (min-width:768px){
+  .modal{align-items:center;padding:24px}
+  .sheet{width:560px;max-height:calc(100vh - 48px);border-radius:20px;padding-bottom:24px}
+  .sheet-hd{padding:20px 20px 16px 28px}
+  .sheet-bd{padding:22px 28px 4px}
+}
+.fm-lead{font-size:15px;color:var(--sub)}
+.picked{margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 14px;border-radius:12px;background:var(--pick);border:1px solid #F6DFA6;font-size:14.5px;color:var(--ink2)}
+.picked small{font-size:13px;color:var(--brown);font-weight:750}
+.picked b{flex:1 1 auto;min-width:0;color:var(--ink);font-weight:800}
+.picked button{font-size:13px;color:var(--sub);text-decoration:underline}
+form.fm{margin-top:20px;display:grid;gap:20px}
+.f{display:grid;gap:8px;min-width:0}
+.f > label,.f > .lab{font-size:15px;font-weight:750;color:var(--ink);letter-spacing:-.02em}
+.req{color:var(--brown);font-weight:800}
+.opt{font-weight:550;color:var(--sub);font-size:13.5px}
+.in{width:100%;height:52px;padding:0 15px;border:1.5px solid var(--line2);border-radius:12px;background:#fff;font-size:16.5px;font-weight:550;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+textarea.in{height:auto;min-height:88px;padding:13px 15px;line-height:1.55;resize:vertical}
+.in::placeholder{color:#9AA1AA;font-weight:450}
+.in:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 4px var(--butter)}
+.f.bad .in{border-color:var(--error)}
+.err{display:none;font-size:13.5px;color:var(--error);font-weight:650}
+.f.bad .err{display:block}
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.seg.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.seg.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.seg label{position:relative;min-width:0}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:flex;align-items:center;justify-content:center;min-height:46px;padding:6px 6px;border:1.5px solid var(--line2);border-radius:10px;background:#fff;font-size:14.5px;font-weight:700;color:var(--ink2);text-align:center;line-height:1.25;transition:background .12s,border-color .12s,color .12s}
+.seg input:checked + span{background:var(--ink);border-color:var(--ink);color:#fff}
+.seg input:focus-visible + span{outline:3px solid var(--orange);outline-offset:2px}
+.f.bad .seg span{border-color:var(--error)}
+.chk{display:flex;align-items:flex-start;gap:10px;padding:13px 14px;border-radius:12px;background:var(--gray);cursor:pointer}
+.chk input{width:22px;height:22px;margin-top:1px;accent-color:var(--ink);flex:none}
+.chk b{display:block;color:var(--ink);font-weight:750;font-size:15px;letter-spacing:-.02em}
+.chk small{display:block;margin-top:2px;color:var(--sub);font-size:13px;line-height:1.5}
+.agree{border-top:1px solid var(--line);padding-top:16px;display:grid;gap:10px}
+.agree .chk{background:none;padding:0}
+.agree details{font-size:13px;color:var(--sub);line-height:1.65}
+.agree summary{cursor:pointer;color:var(--ink2);font-weight:650;width:max-content}
+.agree details div{margin-top:8px;padding:12px 14px;border-radius:12px;background:var(--gray)}
+.agree details a{color:var(--ink);font-weight:700;text-decoration:underline}
+.submit{height:58px;border-radius:14px;background:var(--ink);color:#fff;font-size:17.5px;font-weight:850;letter-spacing:-.02em;display:flex;align-items:center;justify-content:center;gap:10px}
+.submit:disabled{opacity:.6;cursor:progress}
+.submit svg{width:22px;height:22px;stroke:var(--yellow);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.form-msg{display:none;padding:12px 14px;border-radius:12px;background:#FDECEC;color:var(--error);font-size:14px;font-weight:650}
+.form-msg.show{display:block}
+.done{display:none;text-align:center;padding:12px 0 8px}
+.sheet.is-done .done{display:block}
+.sheet.is-done form.fm,.sheet.is-done .fm-intro{display:none}
+.done .ok{width:64px;height:64px;margin:0 auto;border-radius:50%;background:var(--yellow);display:grid;place-items:center}
+.done .ok svg{width:30px;height:30px;stroke:var(--ink);fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.done h3{margin-top:16px;font-size:23px;font-weight:900}
+.done .num{margin:20px auto 0;max-width:340px;border:2px dashed var(--ink);border-radius:14px;padding:14px 14px 12px}
+.done .num small{display:block;font-size:13.5px;color:var(--sub);font-weight:650}
+.done .num b{display:block;margin-top:2px;font-size:24px;font-weight:900;color:var(--ink);letter-spacing:.02em}
+.done .num button{margin-top:8px;height:36px;padding:0 14px;border-radius:10px;background:var(--gray);font-size:14px;font-weight:750;color:var(--ink)}
+.done p{margin-top:14px;color:var(--ink2);font-size:15.5px}
+.done .nw{color:var(--ink);font-weight:800}
+.done .soft{margin-top:6px;color:var(--sub);font-size:14px}
+.done .close{margin-top:18px;width:100%;height:52px}
+@media (max-width:380px){
+  .seg span{font-size:14px;padding:6px 4px}
+}
+
+/* ---------- PC ---------- */
+@media (min-width:1024px){
+  :root{--gut:24px;--hd:116px}
+  .hd-r1{height:62px;gap:34px}
+  .brand .bi{width:38px}.brand .bw{height:26px}
+  .hd-sub{display:flex;align-items:center;gap:30px}
+  .hd-sub a{font-size:15px;font-weight:550;color:var(--ink2)}
+  .hd-sub a:hover{color:var(--ink)}
+  .hd-cta{height:36px;padding:0 16px;font-size:14px;border-radius:8px}
+  .hd-r2{height:54px;gap:12px;margin:0;padding:0;overflow:visible}
+  .hd-r2 a{padding:8px 6px;font-size:18px}
+  .hd-r2 a:first-child{margin-left:-6px}
+  .sticky{display:none}
+  .sec-h h2{font-size:21px}
+  .ft{padding:52px 0 60px}
+}
