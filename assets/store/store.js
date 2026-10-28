@@ -1455,9 +1455,11 @@ function pdRender(m, p, st, PK, o){
   if(os.length>1){ var oc=OPT[m.id]||0;
     h+=pdO('cap',esc(optLabel(m)),'<div class="pd-bs" style="--n:'+Math.min(os.length,3)+'">'+os.map(function(x,i){ var so=x.row&&x.row.so;
       return '<button type="button" class="pd-b'+(i===oc?' on':'')+(so?' so':'')+'" data-opt-pick="'+i+'" data-model="'+esc(m.id)+'"'+(so&&!EDIT?' disabled':'')+'>'+esc(x.nm)+(so?' <small>품절</small>':'')+'</button>'; }).join('')+'</div>'); }
-  var jt=st?(st.type==='chg'?'chg':'mnp'):jtOf(SEL[m.id]);
-  h+=pdO('jt','가입유형',pdBtns('jt',[['mnp','번호이동'],['chg','기기변경']],jt,m,2)+
-    '<p class="pd-hint">'+(jt==='mnp'?'쓰던 번호 그대로, 통신사만 U+로 바꾸고 싶어요':'지금 쓰는 U+ 그대로, 휴대폰만 바꾸고 싶어요')+'</p>');
+  // 20261028 사장님: 상세도 신청서처럼 '현재 이용 중인 통신사' SKT · KT · 알뜰폰 · LG U+ (번호이동/기기변경 버튼 대신 · 모든 휴대폰 똑같이)
+  //   SKT·KT·알뜰폰 = 번호이동 가격 · LG U+ = 기기변경 가격 · 고른 통신사는 신청서에 그대로 들어감 · 안 고르면 번호이동 가격으로 보여 줌
+  var scar=(SEL[m.id]||{}).carrier||'', jt=st?(st.type==='chg'?'chg':'mnp'):jtOf(SEL[m.id]);
+  h+=pdO('jt','현재 이용 중인 통신사',pdBtns('carrier',CARRIERS.map(function(c){ return [c,c]; }),scar,m,4)+
+    '<p class="pd-hint">'+(!scar?'통신사를 고르면 나에게 맞는 혜택이 바로 나와요':jt==='mnp'?'쓰던 번호 그대로, 통신사만 U+로 바꾸고 싶어요':'지금 쓰는 U+ 그대로, 휴대폰만 바꾸고 싶어요')+'</p>');
   var total=0, monthly=0, fa=0, wlf=0, wpw=null, wpOn=false, mm=24;
   if(o.PRE){
     h+=pdO('tier','요금제','<div class="pd-selw pd-skb"></div>')+pdO('method','할인 방식','<div class="pd-ms"><span class="pd-m pd-skb"></span><span class="pd-m pd-skb"></span></div>')+pdO('months','할부개월','<div class="pd-bs pd-skb" style="--n:1;height:48px;border-radius:10px"></div>');
