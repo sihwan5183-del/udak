@@ -1,4 +1,4 @@
-/* 다퍼줌 공통 동작 (index · find)
+/* 다퍼줌 공통 동작 (index · internet · find · review)
  * - 신청 저장: ssgadmin 영업관리 > 다퍼줌 시트 (reservations_dapeojum), 접수번호 DPZ0001 … (DB가 발급)
  * - 신청서 항목을 바꾸면 privacy.html '수집하는 항목'과 ssgadmin src/lib/dapeojum.ts 도 같이 고칠 것
  * - 상품 찾기에서 고른 상품은 snapshot.pick 으로 같이 저장 → 영업관리 다퍼줌 신청 카드에 표시
@@ -76,7 +76,7 @@
   var TOPBAR = [
     { ic: ['brand_megaphone', 160, 137], t: 'U+·SKT·KT 요금 비교, 다퍼줌에서 한 번에', href: 'find', cls: '' },
     { ic: ['etc_pin', 136, 160], t: '이사 가세요? 인터넷 옮기기도 챙겨드려요', form: '인터넷 옮기기', cls: 'tb-k' },
-    { ic: ['etc_handshake', 160, 127], t: '사장님 가게 인터넷, 소호 상품도 있어요', href: 'find?carrier=soho', cls: 'tb-c' }
+    { ic: ['etc_handshake', 160, 127], t: '사장님 가게 인터넷, 소호 상품도 있어요', href: 'internet?carrier=soho', cls: 'tb-c' }
   ];
   var topbar = $('#topbar');
   if (topbar) {
@@ -120,9 +120,9 @@
     e.preventDefault(); toast(s.getAttribute('data-soon') + ' 준비 중이에요');
   });
 
-  /* ---------- '인터넷' 칸 펼침: 통신사 바로가기 (PC에서 마우스 올리면) ---------- */
+  /* ---------- '인터넷' 칸 펼침: 통신사 바로가기 (PC에서 마우스 올리면) — 누르면 인터넷 화면(internet)에서 그 통신사 ---------- */
   var CARS = (window.DPZ_PLANS && window.DPZ_PLANS.carriers) || [];
-  function carLinks() { return CARS.map(function (c) { return '<a href="find?carrier=' + c.id + '" aria-label="' + esc(c.name) + '">' + carrierMark(c, false, true) + '</a>'; }).join(''); }
+  function carLinks() { return CARS.map(function (c) { return '<a href="internet?carrier=' + c.id + '" aria-label="' + esc(c.name) + '">' + carrierMark(c, false, true) + '</a>'; }).join(''); }
   $$('[data-cat-drop]').forEach(function (d) {
     d.innerHTML = '<div class="cat-in"><p>통신사 바로가기</p><div class="cat-grid">' + carLinks() + '</div><a class="cat-all" href="find#table">통신사별 요금표 전체 보기' + CHEV + '</a></div>';
   });
@@ -130,11 +130,11 @@
   /* ---------- ☰ 전체 메뉴판 (아정당 메뉴판 · 미소 전체 화면 메뉴 참고, 2026-10-29)
      - 위 아이콘 칸: 상품·안내 / 통신사 로고 / 혜택(이벤트·룰렛 — 준비 중) / 고객 지원(후기 — 준비 중)
      - PC는 ☰ 밑으로 펼쳐지는 판, 폰은 화면 전체 ---------- */
-  var MM_GRID = [
-    { t: '인터넷', ic: ['product_wifi', 160, 130], href: './' },
-    { t: '인터넷+TV', ic: ['product_tv', 160, 121], href: 'find?combo=tv' },
+  var MM_GRID = [ // 2026-10-29: 인터넷 · 인터넷+TV · 소호는 인터넷 화면(internet)으로
+    { t: '인터넷', ic: ['product_wifi', 160, 130], href: 'internet' },
+    { t: '인터넷+TV', ic: ['product_tv', 160, 121], href: 'internet?combo=tv' },
     { t: '인터넷 옮기기', ic: ['etc_pin', 136, 160], form: '인터넷 옮기기' },
-    { t: '소호', ic: ['etc_handshake', 160, 127], href: 'find?carrier=soho' },
+    { t: '소호', ic: ['etc_handshake', 160, 127], href: 'internet?carrier=soho' },
     { t: '요금표', ic: ['etc_doc_check', 156, 160], href: 'find#table' },
     { t: '상품 찾기', ic: ['etc_search', 156, 160], href: 'find?mode=recommend' },
     { t: '이용 방법', ic: ['etc_calendar', 160, 140], href: './#how' },

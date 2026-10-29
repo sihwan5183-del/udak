@@ -9,6 +9,7 @@
  *         SKT는 전용 로고를 받기 전까지 SK 로고를 같이 씀 (밑에 이름이 붙어 SK브로드밴드와 구분됨)
  * - label: 통신사 칸·버튼에서 로고 밑에 붙는 짧은 이름 (2026-10-29 사장님: 'U+ SKT KT 이렇게', LG헬로비전처럼 마크 밑에 이름)
  *         <wbr> = 칸이 좁을 때만 거기서 줄바꿈
+ * - mob: 휴대폰 결합 할인을 받는 휴대폰 통신사 (인터넷 화면 '휴대폰 결합 할인' 스위치 설명에 씀 — 결합 요금은 휴대폰 1대 기준)
  * - 2026-10-29 사장님 취급 인터넷: 3사(U+·SKT·KT) + 소호(LG U+ 소호 패키지·SK브로드밴드 소호를 한 칸) + 그외 4개
  *   (SK브로드밴드·SKB+B TV POP 180·LG헬로비전·KT스카이라이프) → 통신사 칸은 4×2: 윗줄 3사+소호, 아랫줄 그외.
  *   이 순서 그대로 화면에 나옴. 딜라이브·HCN은 취급 안 해서 뺌
@@ -22,7 +23,7 @@ window.DPZ_PLANS = {
   carriers: [
     /* ── 3사 (사장님 2026-10-29: U+ / SKT / KT 순서) ── */
     {
-      id: 'lgu', name: 'LG U+', ready: true, label: 'U+', logo: { f: 'carrier_lguplus', w: 160, h: 58 },
+      id: 'lgu', name: 'LG U+', ready: true, label: 'U+', mob: 'LG U+', logo: { f: 'carrier_lguplus', w: 160, h: 58 },
       speeds: ['100M', '500M', '1G'],
       internet: { '100M': [22000, 16500], '500M': [33000, 23100], '1G': [38500, 25300] },
       tv: [
@@ -37,7 +38,7 @@ window.DPZ_PLANS = {
     },
     { id: 'skt', name: 'SKT', label: 'SKT', ready: false, logo: { f: 'carrier_sk', w: 160, h: 138 } },
     {
-      id: 'kt', name: 'KT', label: 'KT', ready: true, logo: { f: 'carrier_kt', w: 160, h: 132, s: 0.92 },
+      id: 'kt', name: 'KT', label: 'KT', ready: true, mob: 'KT', logo: { f: 'carrier_kt', w: 160, h: 132, s: 0.92 },
       speeds: ['100M', '500M', '1G'],
       note: '기가지니3 기준',
       internet: { '100M': [22000, 18700], '500M': [33000, 22000], '1G': [38500, 27500] },
@@ -54,7 +55,7 @@ window.DPZ_PLANS = {
     { id: 'soho', name: '소호', label: '소호', ready: false, pkgs: [{ name: 'LG U+ 소호 패키지', of: 'lgu' }, { name: 'SK브로드밴드 소호', of: 'sk' }] },
     /* ── 그외 (SK브로드밴드 / SKB+B TV POP 180 / LG헬로비전 / KT스카이라이프 순서) ── */
     {
-      id: 'sk', name: 'SK브로드밴드', short: 'SK', tile: 'SK<br>브로드밴드', label: 'SK<wbr>브로드밴드', ready: true, logo: { f: 'carrier_sk', w: 160, h: 138 },
+      id: 'sk', name: 'SK브로드밴드', short: 'SK', tile: 'SK<br>브로드밴드', label: 'SK<wbr>브로드밴드', ready: true, mob: 'SKT', logo: { f: 'carrier_sk', w: 160, h: 138 },
       speeds: ['100M', '500M', '1G'],
       note: '와이파이 공유기 미포함 · 요금제에 따라 무상~2,200원',
       internet: { '100M': [22000, 17600], '500M': [33000, 22000], '1G': [38500, 25300] },

@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- 다퍼줌 인터넷 화면 (2026-10-29 사장님: 다른 업체에서 '인터넷'을 누르면 나오는 화면들 — 가져올 점·더하면 좋을 점 다 합치기)
+     · 머리 '인터넷' 칸 = 이 화면 / 통신사는 ?carrier=lgu|skt|kt|soho|sk|skb|hellovision|skylife, 인터넷+TV는 ?combo=tv
+     · 가져온 것: 미소 — 통신사·상품·속도·휴대폰 결합을 고르면 월 요금이 바로 바뀌고 폰 아래 줄에 계속 보임 / 짙은 바탕 이용 방법 칸
+                 비교원 — 인터넷 · 인터넷+TV 큰 칸, 기본 요금 → 휴대폰 결합 할인 → 월 요금 나눠 보여 주기, 가입 전에 알아둘 것(접는 칸)
+                 백메가 — 속도 칸 · TV 채널 칸, '휴대폰과 같이 쓰면 이만큼 덜 내요' 결합 할인 표
+                 아정당 — 통신사 로고 칸, PC 오른쪽에 따라오는 예상 요금 칸, 고객 후기 칸, 나에게 맞는 상품 찾기
+     · 안 가져온 것: 쿠폰 팝업, '120% 보상'·'조작이면 999만원'·'10명 중 7명' 같은 문구(다퍼줌이 실제로 약속한 것만 넣기), 근거 없는 건수(후기 31,549건 등)
+                    — '인기'·'추천' 표시, 실시간 신청현황, 제휴카드 할인표는 사장님이 정해 주시면 넣기
+     · 요금은 assets/plans.js 그대로 (부가세·셋톱 대여료 포함 / 결합 요금 = 휴대폰 1대 결합) — 사은품은 금액 없이 '상담 시 안내'
+     · '이 조건으로 상담 신청' → 고른 상품이 신청서에 같이 실려 영업관리 다퍼줌 시트로 감 (snapshot.pick, topic '인터넷 화면') -->
+<title>인터넷 요금 | 다퍼줌</title>
+<meta name="description" content="통신사별 인터넷·TV 월 요금을 속도, TV 요금제, 휴대폰 결합 할인까지 골라 바로 확인하세요. 받을 수 있는 사은품은 다퍼줌 상담으로 안내해 드려요.">
+<meta name="theme-color" content="#FFB61C">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="다퍼줌">
+<meta property="og:title" content="인터넷 요금, 고르면 바로 계산 | 다퍼줌">
+<meta property="og:description" content="통신사별 인터넷·TV 월 요금과 휴대폰 결합 할인, 가입 사은품 상담">
+<meta property="og:image" content="https://landing.uplusdak.com/dapeojum/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.png" type="image/png" sizes="64x64">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://ebggtghzqtxfylbhqfoh.supabase.co" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wanted-sans@1.0.3/fonts/webfonts/variable/split/WantedSansVariable.css">
+<link rel="stylesheet" href="assets/site.css?v=20261029i">
+<style>
+/* 제목 (비교원·백메가 통신사 화면 제목 자리) */
+.ihead{display:flex;align-items:center;gap:14px;padding:22px 0 20px}
+.ihead .il{--k:28px;width:58px;height:58px;flex:none;display:grid;place-items:center;padding:4px;border-radius:16px;border:1px solid var(--line);background:#fff}
+.ihead .il .cpair{gap:3px}
+.ihead h1{font-size:23px;line-height:1.3;font-weight:850}
+.ihead p{margin-top:3px;font-size:14px;color:var(--sub);line-height:1.5}
+.ihead .biz{display:inline-block;margin-right:6px;padding:0 6px;border-radius:5px;background:var(--butter);color:var(--brown);font-size:12px;font-weight:800;line-height:20px;letter-spacing:0;vertical-align:4px}
+
+/* 왼쪽 고르기 · 오른쪽 예상 요금 (아정당 오른쪽 따라오는 칸) */
+.igrid{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"sel" "sum" "bun";gap:28px}
+.isel{grid-area:sel;min-width:0}.isum{grid-area:sum;min-width:0}.ibun{grid-area:bun;min-width:0}
+.blk + .blk{margin-top:28px}
+.blk h2{font-size:17px;font-weight:800;margin-bottom:12px}
+.blk-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px}
+.blk-h h2{margin-bottom:0}
+.blk-h small{font-size:13px;font-weight:650;color:var(--sub);text-align:right}
+
+/* 통신사 4×2 (윗줄 3사+소호, 아랫줄 그외 — plans.js 순서) */
+.cgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.cbtn{--k:25px;min-height:62px;display:grid;place-items:center;align-content:center;row-gap:3px;padding:6px 4px;border:1px solid var(--line2);border-radius:10px;background:#fff;text-align:center;transition:border-color .15s}
+.cbtn:hover{border-color:var(--ink2)}
+.cbtn .cname{font-size:14px}
+.cbtn.on{background:var(--pick);border-color:var(--yellow2);box-shadow:inset 0 0 0 1px var(--yellow2)}
+
+/* 인터넷 / 인터넷 + TV (비교원 상품 칸) */
+.ptabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ptab{display:flex;align-items:center;justify-content:space-between;gap:8px;height:62px;padding:0 12px 0 16px;border:1px solid var(--line2);border-radius:12px;background:#fff;font-size:16px;font-weight:700;color:var(--ink2);letter-spacing:-.02em;text-align:left;transition:border-color .15s}
+.ptab:hover{border-color:var(--ink2)}
+.ptab img{width:auto;height:30px;flex:none}
+.ptab.on{background:var(--pick);border-color:var(--yellow2);box-shadow:inset 0 0 0 1px var(--yellow2);color:var(--brown);font-weight:850}
+
+/* 휴대폰 결합 할인 스위치 (미소 '핸드폰 결합 선택' · 비교원 '휴대폰 결합' 체크) */
+.bsw{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;padding:13px 14px;border-radius:12px;background:var(--gray);text-align:left}
+.bsw img{width:36px;height:auto;flex:none}
+.bsw .bt{min-width:0}
+.bsw b{display:block;font-size:15.5px;font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1.35}
+.bsw small{display:block;margin-top:1px;font-size:13px;color:var(--sub);line-height:1.4}
+.sw{position:relative;margin-left:auto;flex:none;width:50px;height:30px;border-radius:15px;background:#C5CBD3;transition:background .2s}
+.sw::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(28,35,43,.25);transition:transform .2s}
+.bsw[aria-checked="true"] .sw{background:var(--yellow2)}
+.bsw[aria-checked="true"] .sw::after{transform:translateX(20px)}
+
+/* 속도 · TV 칸 (백메가 속도·채널 칸 + 비교원 줄 그은 기본 요금) — 폰은 한 줄씩, 넓으면 3칸 */
+.olist{display:grid;gap:8px}
+.opt{display:grid;grid-template-columns:22px minmax(0,1fr) auto;grid-template-areas:"rd nm pr";align-items:center;column-gap:12px;width:100%;padding:14px 16px;border:1px solid var(--line2);border-radius:12px;background:#fff;text-align:left;transition:border-color .15s}
+.opt:hover{border-color:var(--ink2)}
+.opt .rd{grid-area:rd;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;border:2px solid #C5CBD3;background:#fff}
+.opt .nm{grid-area:nm;min-width:0}
+.opt .nm b{display:block;font-size:19px;font-weight:850;color:var(--ink);letter-spacing:-.02em;line-height:1.25}
+.opt .nm b small{margin-left:3px;font-size:13.5px;font-weight:650}
+.opt .nm > span{display:block;margin-top:2px;font-size:13px;color:var(--sub);line-height:1.4}
+.opt .pr{grid-area:pr;text-align:right;white-space:nowrap}
+.opt .pr s{display:block;font-size:12.5px;color:var(--mute);line-height:1.3}
+.opt .pr b{display:block;font-size:16px;font-weight:850;color:var(--ink);line-height:1.35}
+.opt .pr .ask{font-size:14px;font-weight:700;color:var(--sub)}
+.opt.on{background:var(--pick);border-color:var(--yellow2);box-shadow:inset 0 0 0 1px var(--yellow2)}
+.opt.on .rd{border-color:var(--yellow2)}
+.opt.on .rd::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--yellow2)}
+.opt.on .nm b{color:var(--brown)}
+.ott{display:inline-block;margin-left:2px;padding:0 5px;border-radius:4px;background:var(--ink);color:#fff;font-size:11px;font-weight:700;font-style:normal;line-height:1.6;vertical-align:1px}
+.omore{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;height:46px;margin-top:8px;border-radius:12px;background:var(--gray);font-size:14.5px;font-weight:700;color:var(--ink2)}
+.omore svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;fill:none}
+@media (max-width:599px){.tvlist:not(.all) .opt:nth-child(n+5){display:none}}
+.tvnone,.pnone{padding:16px;border-radius:12px;background:var(--gray);font-size:14.5px;color:var(--ink2)}
+/* 소호 상품 두 개 */
+.pkgs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pkg{--k:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:92px;padding:12px 8px;border:1px solid var(--line2);border-radius:12px;background:#fff;text-align:center}
+.pkg .pl{height:30px;display:flex;align-items:center;justify-content:center}
+.pkg b{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1.3}
+.pkg.on{background:var(--pick);border-color:var(--yellow2);box-shadow:inset 0 0 0 1px var(--yellow2)}
+.pkg.on b{color:var(--brown)}
+
+/* 예상 요금 칸 (비교원 기본 요금 → 할인 → 월 요금) */
+.sum{background:var(--ftbg);border-radius:16px;padding:20px 18px}
+.sum-hd{display:flex;align-items:center;gap:12px}
+.sum-hd .sl{--k:24px;width:48px;height:48px;flex:none;display:grid;place-items:center;padding:3px;border-radius:12px;background:#fff}
+.sum-hd .sl .cpair{gap:2px}
+.sum-hd .st{min-width:0}
+.sum-hd b{display:block;font-size:16px;font-weight:850;color:var(--ink);line-height:1.35;letter-spacing:-.02em}
+.sum-hd small{display:block;margin-top:1px;font-size:13px;font-weight:600;color:var(--sub);line-height:1.4}
+.sum-rows{margin-top:16px;display:grid;gap:8px}
+.sum-rows div{display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:14.5px}
+.sum-rows dt{color:var(--sub)}
+.sum-rows dd{color:var(--ink);font-weight:650;white-space:nowrap}
+.sum-rows .dc dd{color:var(--brown);font-weight:750}
+.sum-rows .dc.off dd{color:var(--mute);font-weight:550}
+.sum-tot{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line2)}
+.sum-tot span{font-size:15px;font-weight:800;color:var(--ink)}
+.sum-tot b{font-size:24px;font-weight:900;color:var(--ink);letter-spacing:-.02em;white-space:nowrap}
+.sum-ready{margin-top:14px;font-size:14px;color:var(--sub);line-height:1.6}
+.sum-gift{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding:12px 14px;border-radius:10px;background:#fff;font-size:14.5px;font-weight:800;color:var(--brown)}
+.sum .btn{width:100%;margin-top:14px;height:54px}
+.sum-note{display:flex;align-items:flex-start;gap:5px;margin-top:10px;font-size:12.5px;color:var(--mute);line-height:1.5}
+.sum-note + .sum-note{margin-top:4px}
+.sum-note svg{width:14px;height:14px;flex:none;margin-top:2px;stroke:currentColor;fill:none;stroke-width:1.8}
+
+/* 휴대폰 결합 할인 표 (백메가 '모르면 손해보는 할인') */
+.ibun h2{font-size:20px;line-height:1.35;font-weight:800}
+.isub{margin-top:4px;font-size:14px;color:var(--sub)}
+.btbl{margin-top:14px;border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+.btbl table{width:100%;border-collapse:collapse;font-size:14.5px}
+.btbl th,.btbl td{padding:13px 6px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
+.btbl tbody tr:last-child th,.btbl tbody tr:last-child td{border-bottom:0}
+.btbl thead th{background:#EFF3F9;font-size:13.5px;font-weight:700;color:var(--ink)}
+.btbl tbody th{font-weight:800;color:var(--ink)}
+.btbl td{color:var(--ink2)}
+.btbl .dc{color:var(--brown);font-weight:800}
+.btbl tr.cur th,.btbl tr.cur td{background:var(--pick)}
+.inote{margin-top:10px;font-size:13px;color:var(--sub);line-height:1.6}
+.ilink{display:inline-flex;align-items:center;gap:2px;margin-top:10px;font-size:14.5px;font-weight:700;color:var(--ink2)}
+.ilink svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none}
+
+/* 다퍼줌 이용 방법 — 짙은 바탕 (미소 '정직하게 알려드려요' 칸 모양) */
+.howband{margin-top:56px;padding:40px 0 44px;background:var(--ink);color:#fff}
+.howband h2{color:#fff;font-size:22px;line-height:1.38;font-weight:850}
+.howband .hsub{margin-top:6px;font-size:14.5px;color:rgba(255,255,255,.7)}
+.hsteps{list-style:none;margin-top:22px;display:grid;gap:10px}
+.hstep{display:flex;align-items:center;gap:14px;padding:18px 16px;border-radius:14px;background:rgba(255,255,255,.07)}
+.hstep .no{flex:none;align-self:flex-start;width:28px;height:28px;display:grid;place-items:center;border-radius:8px;background:var(--yellow);color:var(--ink);font-size:15px;font-weight:900}
+.hstep .hx{min-width:0}
+.hstep b{display:block;font-size:16px;font-weight:800;color:#fff;letter-spacing:-.02em;line-height:1.4}
+.hstep p{margin-top:3px;font-size:13.5px;color:rgba(255,255,255,.7);line-height:1.55}
+.hstep img{margin-left:auto;width:50px;height:auto;flex:none}
+
+/* 가입 전에 알아두세요 (비교원 접는 칸) + 이런 것도 도와드려요 */
+.isec{margin-top:44px}
+.igrid2{display:grid;gap:0}
+.qbox{background:#fff;border-radius:10px;border:1px solid var(--line)}
+.qbox details + details{border-top:1px solid var(--line)}
+.qbox summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:17px 16px;font-size:15.5px;color:var(--ink);font-weight:550;letter-spacing:-.02em;line-height:1.45}
+.qbox summary::-webkit-details-marker{display:none}
+.qbox summary .q{flex:none;color:var(--brown);font-weight:800}
+.qbox summary::after{content:"";flex:none;margin-left:auto;width:9px;height:9px;border-right:2px solid #9AA1AA;border-bottom:2px solid #9AA1AA;transform:rotate(45deg) translate(-2px,-2px);transition:transform .2s}
+.qbox details[open] summary::after{transform:rotate(225deg) translate(-2px,-2px)}
+.qbox .a{padding:0 16px 18px 38px;font-size:14.5px;color:var(--ink2);line-height:1.7}
+.banners{display:grid;gap:12px}
+.bnr{position:relative;display:flex;flex-direction:column;justify-content:center;min-height:116px;padding:20px 120px 20px 20px;border-radius:10px;overflow:hidden;text-align:left;width:100%}
+.bnr small{display:block;font-size:13.5px;font-weight:600;opacity:.82;line-height:1.4}
+.bnr b{display:block;margin-top:4px;font-size:19px;font-weight:850;line-height:1.35;letter-spacing:-.03em}
+.bnr .art{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:auto;height:92px;max-width:104px;object-fit:contain}
+.bnr-k{background:var(--ink);color:#fff}
+.bnr-y{background:var(--yellow);color:var(--ink)}
+.ip-end{height:64px}
+
+/* 폰 하단 예상 요금 줄 (미소 아래 고정 줄) */
+.mbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;align-items:center;gap:12px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line);box-shadow:0 -6px 18px rgba(28,35,43,.08);transform:translateY(110%);transition:transform .25s ease}
+.mbar.show{transform:none}
+.mbar .mt{min-width:0;flex:1}
+.mbar small{display:block;font-size:12.5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mbar b{display:block;font-size:17px;font-weight:850;color:var(--ink);white-space:nowrap}
+.mbar .btn{flex:none;height:48px;padding:0 18px;font-size:15.5px}
+body.lock .mbar{display:none}
+.ft{padding-bottom:110px}
+
+/* 좁은 폰 (320~374px): 상품 칸 글자가 두 줄로 꺾이지 않게, 결합 할인 표가 칸 안에 다 들어가게 */
+@media (max-width:374px){
+  .ptab{padding:0 10px 0 14px;font-size:15px}
+  .ptab span{white-space:nowrap}
+  .ptab img{height:24px}
+  .bsw{gap:10px;padding:12px}
+  .btbl table{font-size:13px}
+  .btbl th,.btbl td{padding:12px 2px}
+  .btbl thead th{font-size:12.5px}
+}
+@media (max-width:340px){
+  .ptab{justify-content:center;padding:0 8px}
+  .ptab img,.bsw img{display:none}
+}
+@media (min-width:600px){
+  .olist{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .opt{grid-template-columns:minmax(0,1fr) 22px;grid-template-areas:"nm rd" "pr pr";align-items:start;row-gap:16px;min-height:136px;padding:18px 16px 16px}
+  .opt .pr{align-self:end;text-align:left}
+  .omore{display:none}
+  .banners{grid-template-columns:1fr 1fr}
+}
+@media (min-width:1024px){
+  .ihead{gap:18px;padding:40px 0 30px}
+  .ihead .il{--k:34px;width:72px;height:72px;border-radius:18px}
+  .ihead h1{font-size:28px}
+  .ihead p{margin-top:4px;font-size:15.5px}
+  .igrid{grid-template-columns:minmax(0,1fr) 340px;grid-template-areas:"sel sum" "bun sum";column-gap:28px;row-gap:56px}
+  .isum{position:sticky;top:calc(var(--hd) + 20px);align-self:start}
+  .blk + .blk{margin-top:36px}
+  .cbtn{--k:30px;min-height:70px}
+  .cbtn .cname{font-size:16px}
+  .ptab{height:70px;padding:0 16px 0 22px;font-size:17.5px}
+  .ptab img{height:36px}
+  .bsw{padding:14px 18px}
+  .opt{min-height:150px;padding:20px 18px 18px}
+  .opt .nm b{font-size:24px}
+  .opt .nm > span{font-size:14px}
+  .opt .pr b{font-size:18px}
+  .pkg{--k:36px;min-height:104px}
+  .pkg .pl{height:36px}
+  .pkg b{font-size:16px}
+  .sum{padding:24px 22px}
+  .ibun h2{font-size:22px}
+  .ibun h2 br{display:none}
+  .btbl table{font-size:15px}
+  .howband{margin-top:80px;padding:60px 0 64px}
+  .howband h2{font-size:26px}
+  .howband .hsub{font-size:15.5px}
+  .hsteps{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:30px}
+  .hstep{flex-direction:column;align-items:flex-start;gap:12px;min-height:236px;padding:24px 22px 20px}
+  .hstep img{margin:auto 0 0 auto;width:84px}
+  .isec{margin-top:64px}
+  .igrid2{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:40px}
+  .igrid2 .banners{grid-template-columns:1fr}
+  .bnr{min-height:132px;padding:24px 150px 24px 26px}
+  .bnr b{font-size:21px}
+  .bnr .art{right:28px;height:104px;max-width:120px}
+  .ip-end{height:88px}
+  .mbar{display:none}
+  .ft{padding-bottom:60px}
+}
+</style>
+</head>
+<body>
+<div class="topbar" id="topbar"><a class="tb-in" id="tbIn" href="find"><img src="assets/emoji/s/brand_megaphone.webp?v=20261029" width="160" height="137" alt=""><span class="tb-t">U+·SKT·KT 요금 비교, 다퍼줌에서 한 번에</span></a><button class="x" type="button" aria-label="안내 닫기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+
+<header class="hd">
+  <div class="wrap">
+    <div class="hd-r1">
+      <a class="brand" href="./" aria-label="다퍼줌 처음으로"><img class="bi" src="assets/logo-icon.webp" width="452" height="377" alt=""><img class="bw" src="assets/logo-word.webp" width="585" height="172" alt="다퍼줌"></a>
+      <nav class="hd-sub" aria-label="안내 메뉴"><a href="./#how">이용 방법</a><a href="./#faq">자주 묻는 질문</a><a href="review">후기</a><a href="#" data-soon="이벤트">이벤트</a></nav>
+      <a class="hd-cta" href="#" id="hdCta">1분 상담 신청</a>
+      <button class="hd-menu" type="button" data-menu aria-label="전체 메뉴" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg></button>
+    </div>
+    <nav class="hd-r2" aria-label="상품 메뉴">
+      <div class="cat"><a class="tab on" aria-current="page" href="internet" data-tab="internet">인터넷</a><div class="cat-drop" data-cat-drop></div></div>
+      <a class="tab" href="internet?combo=tv" data-tab="tv">인터넷+TV</a>
+      <a class="tab" href="#" data-open-form data-topic="인터넷 옮기기" data-tab="move">인터넷 옮기기</a>
+      <a class="tab" href="internet?carrier=soho" data-tab="soho"><span class="biz">사업자</span>소호</a>
+      <a class="tab" href="find#table" data-tab="table">통신사별 요금표</a>
+      <a class="tab" href="find?mode=recommend" data-tab="find">나에게 맞는 상품 찾기<span class="dot" aria-hidden="true"></span></a>
+      <button class="hd-menu" type="button" data-menu aria-label="전체 메뉴" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg></button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="ihead">
+      <span class="il" id="iLogo" aria-hidden="true"></span>
+      <div><h1 id="iTitle">인터넷 요금</h1><p id="iSub">속도와 TV를 고르면 매달 내는 요금을 바로 알려드려요</p></div>
+    </div>
+
+    <div class="igrid">
+      <div class="isel">
+        <section class="blk" aria-labelledby="hCar"><h2 id="hCar">통신사</h2><div class="cgrid" id="cgrid"></div></section>
+        <section class="blk" id="sohoBlk" aria-labelledby="hSoho" hidden><h2 id="hSoho">소호 상품</h2><div class="pkgs" id="pkgs"></div></section>
+        <section class="blk" id="prodBlk" aria-labelledby="hProd">
+          <h2 id="hProd">상품</h2>
+          <div class="ptabs" role="group" aria-labelledby="hProd">
+            <button type="button" class="ptab" data-combo="internet" aria-pressed="true"><span>인터넷</span><img src="assets/emoji/s/product_wifi.webp?v=20261029" width="160" height="130" alt=""></button>
+            <button type="button" class="ptab" data-combo="tv" aria-pressed="false"><span>인터넷 + TV</span><img src="assets/emoji/s/product_tv.webp?v=20261029" width="160" height="121" alt=""></button>
+          </div>
+          <button type="button" class="bsw" id="bsw" role="switch" aria-checked="true">
+            <img src="assets/emoji/s/product_phone_wifi.webp?v=20261029" width="160" height="109" alt="">
+            <span class="bt"><b>휴대폰 결합 할인</b><small id="bswSub">휴대폰 1대와 같이 쓸 때</small></span>
+            <span class="sw" aria-hidden="true"></span>
+          </button>
+        </section>
+        <section class="blk" id="speedBlk" aria-labelledby="hSpeed">
+          <div class="blk-h"><h2 id="hSpeed">인터넷 속도</h2><small id="spHint"></small></div>
+          <div class="olist" id="speeds"></div>
+        </section>
+        <section class="blk" id="tvBlk" aria-labelledby="hTv" hidden>
+          <div class="blk-h"><h2 id="hTv">TV 요금제</h2><small id="tvHint"></small></div>
+          <div class="olist tvlist" id="tvs"></div>
+          <button type="button" class="omore" id="tvMore" hidden></button>
+        </section>
+      </div>
+
+      <aside class="isum" aria-label="예상 요금">
+        <div class="sum" id="sum">
+          <div class="sum-hd"><span class="sl" id="sLogo" aria-hidden="true"></span><span class="st"><b id="sTitle"></b><small id="sSub" hidden></small></span></div>
+          <dl class="sum-rows" id="sRows"><div><dt>기본 요금</dt><dd id="sBase"></dd></div><div class="dc" id="sDcRow"><dt>휴대폰 결합 할인</dt><dd id="sDc"></dd></div></dl>
+          <div class="sum-tot" id="sTotRow"><span>월 예상 요금</span><b id="sTot"></b></div>
+          <p class="sum-ready" id="sReady" hidden></p>
+          <div class="sum-gift"><span>사은품</span><span>상담 시 안내</span></div>
+          <button class="btn btn-k" type="button" data-apply>이 조건으로 상담 신청</button>
+        </div>
+        <p class="sum-note" id="sNote"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>부가가치세 및 셋톱 대여료가 포함된 가격이에요</p>
+        <p class="sum-note" id="sNote2" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span></span></p>
+      </aside>
+
+      <section class="ibun" id="bunSec" aria-labelledby="hBun">
+        <h2 id="hBun">휴대폰과 같이 쓰면<br> 매달 이만큼 덜 내요</h2>
+        <p class="isub" id="bunSub"></p>
+        <div class="btbl"><table><thead><tr><th scope="col">속도</th><th scope="col">기본 요금</th><th scope="col">결합 요금</th><th scope="col">매달 할인</th></tr></thead><tbody id="bunRows"></tbody></table></div>
+        <p class="inote">가족 휴대폰 수와 요금제에 따라 할인이 달라질 수 있어요. 상담 때 우리 집에 맞춰 다시 계산해 드려요.</p>
+        <a class="ilink" id="bunLink" href="find#table"><span id="bunLinkTx">요금표 전체 보기</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+      </section>
+    </div>
+  </div>
+
+  <section class="howband" aria-labelledby="hHow">
+    <div class="wrap">
+      <h2 id="hHow">다퍼줌 이용 방법</h2>
+      <p class="hsub">신청부터 설치까지 간편하게, 1분이면 상담 신청 끝</p>
+      <ol class="hsteps">
+        <li class="hstep"><span class="no">1</span><span class="hx"><b>1분이면 상담 신청 끝</b><p>이름과 연락처만 남겨주세요. 담당자가 전화로 자세히 안내해 드려요.</p></span><img src="assets/emoji/s/etc_chat.webp?v=20261029" width="160" height="113" alt="" loading="lazy"></li>
+        <li class="hstep"><span class="no">2</span><span class="hx"><b>받을 수 있는 혜택부터 먼저</b><p>사은품과 결합 할인까지, 우리 집에서 받을 수 있는 혜택을 먼저 알려드려요.</p></span><img src="assets/emoji/s/benefit_gift.webp?v=20261029" width="160" height="146" alt="" loading="lazy"></li>
+        <li class="hstep"><span class="no">3</span><span class="hx"><b>설치 일정까지 챙겨드려요</b><p>가입을 결정하시면 설치 날짜 잡기까지 담당자가 끝까지 도와드려요.</p></span><img src="assets/emoji/s/etc_calendar.webp?v=20261029" width="160" height="140" alt="" loading="lazy"></li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="igrid2">
+      <section class="isec" aria-labelledby="hInfo">
+        <div class="sec-h"><h2 id="hInfo">가입 전에 알아두세요</h2></div>
+        <div class="qbox">
+          <details open><summary><span class="q">Q.</span>요금에 무엇이 포함돼 있나요?</summary><div class="a" id="qInc">부가가치세와 셋톱 대여료가 포함된 월 요금이에요. 휴대폰 결합 요금은 휴대폰 1대와 같이 쓸 때 기준이에요.</div></details>
+          <details><summary><span class="q">Q.</span>휴대폰과 같이 쓰면 할인되나요?</summary><div class="a">통신사에 따라 인터넷과 휴대폰을 묶으면 결합 할인을 받을 수 있어요. 가족 구성과 요금제에 맞춰 받을 수 있는 할인을 계산해 드려요.</div></details>
+          <details><summary><span class="q">Q.</span>설치비가 따로 있나요?</summary><div class="a">처음 설치할 때 설치비가 한 번 청구될 수 있어요. 상품과 설치 날짜·시간대에 따라 금액이 달라서 상담 때 정확히 안내해 드려요.</div></details>
+          <details><summary><span class="q">Q.</span>지금 쓰는 인터넷 약정이 남아 있어요.</summary><div class="a">상담 때 남은 약정과 위약금을 함께 확인해 드려요. 바꾸는 게 나은지 따져보고 결정하셔도 늦지 않아요.</div></details>
+          <details><summary><span class="q">Q.</span>사은품은 언제, 어떻게 받나요?</summary><div class="a">사은품은 가입하는 상품과 조건에 따라 달라요. 상담 때 받을 수 있는 사은품과 받는 시점을 정확히 안내해 드려요.</div></details>
+        </div>
+      </section>
+      <section class="isec" aria-labelledby="hMore">
+        <div class="sec-h"><h2 id="hMore">이런 것도 도와드려요</h2></div>
+        <div class="banners">
+          <button class="bnr bnr-k" type="button" data-open-form data-topic="인터넷 옮기기">
+            <small>이사 날짜에 맞춰 옮길 수 있게 상담해 드려요</small><b>새 집으로 이사할 때,<br>인터넷도 같이 옮겨요</b>
+            <img class="art" src="assets/emoji/product_home.webp?v=20261029" width="432" height="401" alt="" loading="lazy">
+          </button>
+          <a class="bnr bnr-y" href="find?mode=recommend">
+            <small>어떤 인터넷이 맞을지 고민되세요?</small><b>나에게 맞는<br>상품 찾기</b>
+            <img class="art" src="assets/emoji/brand_mascot_basic.webp?v=20261029" width="432" height="321" alt="" loading="lazy">
+          </a>
+        </div>
+      </section>
+    </div>
+
+    <!-- 고객 후기 (assets/reviews.js) — 세팅 중에는 '예시' 견본, 실제 후기를 연결하면 그 후기만 (후기가 0개면 칸 숨김) -->
+    <section class="isec" id="reviews" aria-labelledby="rvTitle" hidden>
+      <div class="sec-h"><h2 id="rvTitle">다퍼줌 고객 후기</h2></div>
+      <p class="rv-prev" data-rv-preview hidden><em class="rv-ex">예시</em>레이아웃 확인용 견본이에요. 실제 후기를 연결하면 사라져요.</p>
+      <div class="rvtabs" id="rvTabs" role="tablist" aria-label="후기 종류"></div>
+      <div class="rvcards" id="rvCards"></div>
+      <a class="rvmore" href="review">후기 더보기</a>
+    </section>
+    <div class="ip-end"></div>
+  </div>
+</main>
+
+<footer class="ft">
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="다퍼줌 처음으로"><img class="bi" src="assets/logo-icon.webp" width="452" height="377" alt="" loading="lazy"><img class="bw" src="assets/logo-word.webp" width="585" height="172" alt="다퍼줌" loading="lazy"></a>
+    <nav class="ft-links" aria-label="하단 메뉴"><a href="./#faq">자주 묻는 질문</a><a href="#" data-apply>상담 신청</a><a href="find">나에게 맞는 상품 찾기</a><a href="privacy">개인정보처리방침</a></nav>
+    <p class="ft-copy">© 2026 다퍼줌</p>
+  </div>
+</footer>
+
+<aside class="fpanel" aria-label="상담하기">
+  <p class="t">상담하기</p>
+  <button class="y" type="button" data-apply><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4.5-1 10-10-3.5-3.5-10 10z"/></svg>1분 상담 신청</button>
+  <a class="g" href="./#faq">자주 묻는 질문</a>
+  <a class="k" href="find?mode=recommend">나에게 맞는 상품 찾기</a>
+  <div class="note"><img src="assets/emoji/brand_mascot_heart.webp?v=20261029" width="399" height="432" alt="" loading="lazy"><b>1분이면<br>상담 신청 끝</b><p>이름과 연락처만 남겨주세요</p></div>
+</aside>
+
+<div class="mbar" id="mbar" aria-hidden="true"><div class="mt"><small id="mbT"></small><b id="mbP"></b></div><button class="btn btn-k" type="button" data-apply>상담 신청</button></div>
+
+<script src="assets/plans.js?v=20261029h"></script>
+<script src="assets/site.js?v=20261029k"></script>
+<script src="assets/reviews.js?v=20261029b"></script>
+<script>
+(function(){
+  'use strict';
+  var D = window.DPZ, $ = D.$, $$ = D.$$, P = window.DPZ_PLANS, C = P.carriers, SI = P.speedInfo;
+  var byId = {}; C.forEach(function(c){ byId[c.id] = c; });
+  var SPEEDS = ['100M', '500M', '1G'];
+  var DOWN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+  var first = C.filter(function(c){ return c.ready; })[0] || C[0];
+  /* bundle: 휴대폰 결합 할인 스위치 (처음엔 켜 둠 — 상품 찾기 맞춤 추천과 같게) / more: 폰에서 TV 요금제 전부 보기 */
+  var st = { carrier: first.id, combo: 'internet', speed: '100M', tv: 0, bundle: true, pkg: -1, more: false };
+  var q = new URLSearchParams(location.search);
+  if (byId[q.get('carrier')]) st.carrier = q.get('carrier');
+  if (q.get('combo') === 'tv' || q.get('combo') === 'internet') st.combo = q.get('combo');
+  if (SI[q.get('speed')]) st.speed = q.get('speed');
+
+  function car(){ return byId[st.carrier]; }
+  function won(n){ return D.won(n); }
+  function spLabel(sp){ var i = SI[sp]; return i ? i.label + i.unit : sp; }
+  function speedsOf(c){ return c.ready ? c.speeds : SPEEDS; }
+  function plan(){ var c = car(); return c.ready && st.combo === 'tv' ? c.tv[Math.min(st.tv, c.tv.length - 1)] : null; }
+  function fee(c, sp, p){ return p ? p.fee[sp] : c.internet[sp]; } // [미결합, 휴대폰 1대 결합]
+  function mark(c){ // 로고만 (소호는 안에 든 두 통신사 로고)
+    if (c.pkgs) return '<span class="cpair">' + c.pkgs.map(function(g){ var o = byId[g.of]; return o ? D.carrierMark(o, false) : ''; }).join('') + '</span>';
+    return D.carrierMark(c, false);
+  }
+  function priceHtml(f){ // 칸 안 가격: 결합 할인을 켜면 기본 요금에 줄을 긋고 결합 요금
+    if (!f) return '<b class="ask">상담 시 안내</b>';
+    return st.bundle ? '<s>' + won(f[0]) + '</s><b>월 ' + won(f[1]) + '</b>' : '<b>월 ' + won(f[0]) + '</b>';
+  }
+
+  /* ---------- 제목 ---------- */
+  function renderHead(){
+    var c = car(), soho = !!c.pkgs;
+    $('#iLogo').innerHTML = mark(c);
+    $('#iTitle').innerHTML = soho ? '<span class="biz">사업자</span>소호 인터넷' : D.esc(c.name) + ' 인터넷';
+    $('#iSub').textContent = soho ? c.pkgs.map(function(g){ return g.name; }).join(' · ') + ' 중에 골라 상담받으세요'
+      : c.ready ? '속도와 TV를 고르면 매달 내는 요금을 바로 알려드려요'
+      : '요금표는 정리 중이에요. 상담 신청하시면 요금과 받을 수 있는 혜택을 안내해 드려요';
+    document.title = (soho ? '소호 인터넷' : c.name + ' 인터넷') + ' 요금 | 다퍼줌';
+  }
+
+  /* ---------- 통신사 · 상품 · 휴대폰 결합 ---------- */
+  function renderPick(){
+    var c = car(), soho = !!c.pkgs;
+    $('#cgrid').innerHTML = C.map(function(x){
+      var on = x.id === c.id;
+      return '<a class="cbtn' + (on ? ' on' : '') + '" href="internet?carrier=' + x.id + '" data-car="' + x.id + '"' + (on ? ' aria-current="true"' : '') + ' aria-label="' + D.esc(x.name) + '">' + D.carrierMark(x, false, true) + '</a>';
+    }).join('');
+    $('#sohoBlk').hidden = !soho; $('#prodBlk').hidden = soho; $('#speedBlk').hidden = soho;
+    if (soho) {
+      $('#pkgs').innerHTML = c.pkgs.map(function(g, k){
+        var on = k === st.pkg, o = byId[g.of];
+        return '<button type="button" class="pkg' + (on ? ' on' : '') + '" data-pkg="' + k + '" aria-pressed="' + on + '"><span class="pl">' + (o ? D.carrierMark(o, false) : '') + '</span><b>' + D.esc(g.name) + '</b></button>';
+      }).join('');
+      return;
+    }
+    $$('.ptab').forEach(function(b){ var on = b.getAttribute('data-combo') === st.combo; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+    $('#bsw').hidden = !c.ready;
+    $('#bsw').setAttribute('aria-checked', st.bundle ? 'true' : 'false');
+    $('#bswSub').textContent = (c.mob ? c.mob + ' ' : '') + '휴대폰 1대와 같이 쓸 때';
+  }
+
+  /* ---------- 속도 · TV 요금제 (칸마다 '그걸 고르면 내는 월 요금') ---------- */
+  function renderOpts(){
+    var c = car();
+    if (c.pkgs) { $('#tvBlk').hidden = true; return; }
+    var sps = speedsOf(c); if (sps.indexOf(st.speed) < 0) st.speed = sps.indexOf('500M') > -1 ? '500M' : sps[0];
+    var p = plan(), tv = st.combo === 'tv';
+    $('#spHint').textContent = tv && c.ready ? '고른 TV 요금제 포함 요금' : '';
+    $('#speeds').innerHTML = sps.map(function(sp){
+      var i = SI[sp], on = sp === st.speed;
+      return '<button type="button" class="opt' + (on ? ' on' : '') + '" data-speed="' + sp + '" aria-pressed="' + on + '">' +
+        '<span class="rd" aria-hidden="true"></span>' +
+        '<span class="nm"><b>' + i.label + '<small>' + i.unit + '</small></b><span>' + i.desc + '</span></span>' +
+        '<span class="pr">' + priceHtml(c.ready ? fee(c, sp, p) : null) + '</span></button>';
+    }).join('');
+    $('#tvBlk').hidden = !tv;
+    if (!tv) return;
+    if (!c.ready) {
+      $('#tvs').innerHTML = '<p class="tvnone">TV 상품과 채널은 상담 때 안내해 드려요.</p>';
+      $('#tvHint').textContent = ''; $('#tvMore').hidden = true; return;
+    }
+    st.tv = Math.min(st.tv, c.tv.length - 1);
+    if (st.tv > 3) st.more = true;
+    $('#tvHint').textContent = spLabel(st.speed) + ' 인터넷 포함 요금';
+    $('#tvs').innerHTML = c.tv.map(function(x, k){
+      var on = k === st.tv;
+      return '<button type="button" class="opt' + (on ? ' on' : '') + '" data-tv="' + k + '" aria-pressed="' + on + '">' +
+        '<span class="rd" aria-hidden="true"></span>' +
+        '<span class="nm"><b>' + x.ch + '<small>채널</small></b><span>' + D.esc(x.name) + (x.ott ? ' <em class="ott">' + x.ott + '</em>' : '') + '</span></span>' +
+        '<span class="pr">' + priceHtml(x.fee[st.speed]) + '</span></button>';
+    }).join('');
+    $('#tvs').classList.toggle('all', st.more);
+    var rest = c.tv.length - 4;
+    $('#tvMore').hidden = st.more || rest < 1;
+    $('#tvMore').innerHTML = 'TV 요금제 ' + rest + '개 더보기' + DOWN;
+  }
+
+  /* ---------- 고른 상품 (신청서에 같이 실림) ---------- */
+  function curPick(){
+    var c = car();
+    if (c.pkgs) { var g = st.pkg > -1 ? c.pkgs[st.pkg] : null; return { carrierId: c.id, carrier: g ? g.name : c.name, combo: null, speed: null, tvName: null, ch: null, base: null, bundle: null, via: 'direct' }; }
+    var p = plan(), f = c.ready ? fee(c, st.speed, p) : null;
+    return { carrierId: c.id, carrier: c.name, combo: st.combo, speed: st.speed, tvName: p ? p.name : null, ch: p ? p.ch : null, base: f ? f[0] : null, bundle: f ? f[1] : null, via: 'direct' };
+  }
+
+  /* ---------- 예상 요금 칸 + 폰 하단 줄 ---------- */
+  function renderSum(){
+    var c = car(), k = curPick(), p = plan(), has = k.base != null;
+    var title, sub = '';
+    if (c.pkgs) title = k.carrier === c.name ? '소호 상품' : k.carrier;
+    else {
+      title = c.name + ' · ' + spLabel(st.speed) + (st.combo === 'tv' ? ' + TV' : ' 인터넷');
+      sub = p ? p.name + ' ' + p.ch + '채널' : (st.combo === 'tv' ? 'TV 상품은 상담 때 안내' : '');
+    }
+    var g = c.pkgs && st.pkg > -1 ? byId[c.pkgs[st.pkg].of] : null; // 소호는 고른 상품의 통신사 로고
+    $('#sLogo').innerHTML = mark(g || c);
+    $('#sTitle').textContent = title;
+    $('#sSub').textContent = sub; $('#sSub').hidden = !sub;
+    $('#sRows').hidden = !has; $('#sTotRow').hidden = !has; $('#sReady').hidden = has;
+    if (has) {
+      $('#sBase').textContent = won(k.base);
+      $('#sDc').textContent = st.bundle ? '-' + won(k.base - k.bundle) : '적용 안 함';
+      $('#sDcRow').classList.toggle('off', !st.bundle);
+      $('#sTot').textContent = won(st.bundle ? k.bundle : k.base);
+    } else {
+      $('#sReady').textContent = c.pkgs ? '소호 상품 요금은 상담 때 안내해 드려요.' : '요금표는 정리 중이에요. 상담 신청하시면 요금과 받을 수 있는 혜택을 안내해 드려요.';
+    }
+    $('#sNote').hidden = !has;
+    $('#sNote2').hidden = !(has && c.note);
+    $('#sNote2 span').textContent = c.note ? c.name + ': ' + c.note : '';
+    $('#mbT').textContent = title + (sub && p ? ' · ' + p.name : '') + (has && st.bundle ? ' · 휴대폰 결합' : '');
+    $('#mbP').textContent = has ? '월 ' + won(st.bundle ? k.bundle : k.base) : '요금 상담 시 안내';
+  }
+
+  /* ---------- 휴대폰 결합 할인 표 (요금표가 있는 통신사만) ---------- */
+  function renderBun(){
+    var c = car();
+    $('#qInc').innerHTML = '부가가치세와 셋톱 대여료가 포함된 월 요금이에요. 휴대폰 결합 요금은 휴대폰 1대와 같이 쓸 때 기준이에요.' + (c.ready && c.note ? '<br>' + D.esc(c.name) + ': ' + D.esc(c.note) : '');
+    $('#bunSec').hidden = !c.ready;
+    if (!c.ready) return;
+    $('#bunSub').textContent = c.name + ' 인터넷 · ' + (c.mob ? c.mob + ' ' : '') + '휴대폰 1대 결합 기준';
+    $('#bunRows').innerHTML = c.speeds.map(function(sp){
+      var f = c.internet[sp], cur = sp === st.speed && st.combo === 'internet';
+      return '<tr' + (cur ? ' class="cur"' : '') + '><th scope="row">' + spLabel(sp) + '</th><td>' + won(f[0]) + '</td><td>' + won(f[1]) + '</td><td class="dc">-' + won(f[0] - f[1]) + '</td></tr>';
+    }).join('');
+    $('#bunLink').setAttribute('href', 'find?carrier=' + c.id + '#table');
+    $('#bunLinkTx').textContent = c.name + ' 인터넷·TV 요금표 전체 보기';
+  }
+
+  /* ---------- 머리 상품 칸 불 · 주소 ---------- */
+  function syncTab(){
+    var t = car().pkgs ? 'soho' : (st.combo === 'tv' ? 'tv' : 'internet');
+    $$('.hd-r2 .tab').forEach(function(a){
+      var on = a.getAttribute('data-tab') === t;
+      a.classList.toggle('on', on);
+      if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+  }
+  function syncUrl(){
+    try {
+      var u = new URL(location.href);
+      u.searchParams.set('carrier', st.carrier);
+      if (st.combo === 'tv' && !car().pkgs) u.searchParams.set('combo', 'tv'); else u.searchParams.delete('combo');
+      u.searchParams.delete('speed');
+      history.replaceState(null, '', u.pathname + u.search + u.hash);
+    } catch (e) {}
+  }
+
+  function render(){ renderHead(); renderPick(); renderOpts(); renderSum(); renderBun(); syncTab(); syncBar(); }
+  // 다시 그린 뒤에도 키보드로 고르던 칸에 그대로 머물게
+  function act(fn, sel){ var had = document.activeElement && document.activeElement.closest('.isel'); fn(); render(); if (had && sel) { var el = $(sel); if (el) el.focus({ preventScroll: true }); } }
+
+  $('#cgrid').addEventListener('click', function(e){
+    var a = e.target.closest('[data-car]'); if (!a) return;
+    e.preventDefault();
+    var id = a.getAttribute('data-car'); if (id === st.carrier) return;
+    act(function(){ st.carrier = id; st.tv = 0; st.pkg = -1; st.more = false; }, '[data-car="' + id + '"]');
+    syncUrl();
+  });
+  $$('.ptab').forEach(function(b){ b.addEventListener('click', function(){ var v = b.getAttribute('data-combo'); act(function(){ st.combo = v; }); syncUrl(); }); });
+  $('#bsw').addEventListener('click', function(){ act(function(){ st.bundle = !st.bundle; }); });
+  $('#speeds').addEventListener('click', function(e){ var b = e.target.closest('[data-speed]'); if (!b) return; var v = b.getAttribute('data-speed'); act(function(){ st.speed = v; }, '[data-speed="' + v + '"]'); });
+  $('#tvs').addEventListener('click', function(e){ var b = e.target.closest('[data-tv]'); if (!b) return; var v = +b.getAttribute('data-tv'); act(function(){ st.tv = v; }, '[data-tv="' + v + '"]'); });
+  $('#tvMore').addEventListener('click', function(){ act(function(){ st.more = true; }, '[data-tv="4"]'); });
+  $('#pkgs').addEventListener('click', function(e){ var b = e.target.closest('[data-pkg]'); if (!b) return; var v = +b.getAttribute('data-pkg'); act(function(){ st.pkg = v; }, '[data-pkg="' + v + '"]'); });
+
+  function apply(){ var c = car(); D.openForm({ pick: curPick(), topic: '인터넷 화면', bundle: c.ready && st.bundle ? true : undefined }); }
+  document.addEventListener('click', function(e){ if (e.target.closest('[data-apply]')) { e.preventDefault(); apply(); } });
+  $('#hdCta').addEventListener('click', function(e){ e.preventDefault(); apply(); });
+
+  /* ---------- 폰 하단 예상 요금 줄: 예상 요금 칸이 화면에 안 보일 때 계속 보임 (미소) ---------- */
+  var sumSeen = false, mbar = $('#mbar');
+  function syncBar(){
+    var show = !sumSeen;
+    mbar.classList.toggle('show', show);
+    mbar.setAttribute('aria-hidden', show ? 'false' : 'true');
+  }
+  if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ es.forEach(function(e){ sumSeen = e.isIntersecting; }); syncBar(); }).observe($('#sum'));
+
+  render();
+})();
+</script>
+</body>
+</html>
