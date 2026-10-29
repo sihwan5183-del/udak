@@ -164,8 +164,10 @@ table.fee{border-collapse:separate;border-spacing:0;width:100%;min-width:560px;f
 .rsheet .sheet-bd{padding-bottom:20px}
 .rq + .rq{margin-top:24px}
 .rq h3{font-size:16px;font-weight:800;margin-bottom:10px}
-.ropts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.ropt{height:50px;border:1px solid var(--line2);border-radius:10px;background:#fff;font-size:15px;font-weight:700;color:var(--ink2)}
+.ropts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ropt{--k:26px;min-height:66px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px 4px;border:1px solid var(--line2);border-radius:10px;background:#fff;font-size:15px;font-weight:700;color:var(--ink2)}
+.ropts2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.ropts2 .ropt{min-height:44px;font-size:14px;font-weight:650;color:var(--sub)}
 .rgoals{display:grid;gap:8px}
 .rgoal{padding:14px 14px;border:1px solid var(--line2);border-radius:10px;background:#fff;text-align:left}
 .rgoal b{display:block;font-size:15px;font-weight:800;color:var(--ink)}
@@ -188,7 +190,6 @@ body.lock .mbar{display:none}
 @media (min-width:600px){
   .tvcard{flex-basis:calc((100% - 16px) / 3.3)}
   .rgoals{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .ropts{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media (min-width:1024px){
   .cnav-in{height:50px;gap:22px}
@@ -284,7 +285,7 @@ body.lock .mbar{display:none}
             <select id="cGoal" aria-label="중요하게 보는 것"><option value="price">월 요금 낮게</option><option value="channels">TV 채널 많이</option><option value="ott">넷플릭스·디즈니+</option></select>
             <select id="cTv" aria-label="TV 포함 여부"><option value="1">TV 포함</option><option value="0">인터넷만</option></select>
             <select id="cSpeed" aria-label="인터넷 속도"><option value="100M">100Mbps</option><option value="500M">500Mbps</option><option value="1G">1Gbps</option></select>
-            <select id="cIsp" aria-label="지금 쓰는 통신사"><option value="KT">KT 이용 중</option><option value="LG U+">LG U+ 이용 중</option><option value="SK브로드밴드">SK브로드밴드 이용 중</option><option value="그 외 통신사">그 외 통신사 이용 중</option><option value="모르겠어요">통신사 모름</option><option value="신규 가입">신규 가입</option></select>
+            <select id="cIsp" aria-label="지금 쓰는 통신사"><option value="KT">KT 이용 중</option><option value="LG U+">LG U+ 이용 중</option><option value="SKT">SKT 이용 중</option><option value="SK브로드밴드">SK브로드밴드 이용 중</option><option value="LG헬로비전">LG헬로비전 이용 중</option><option value="KT스카이라이프">KT스카이라이프 이용 중</option><option value="신규 가입">처음 설치해요</option><option value="그 외 통신사">다른 곳 이용 중</option></select>
             <label class="rchk"><input type="checkbox" id="cBundle" checked>휴대폰 결합 할인</label>
           </div>
           <div class="rlist" id="rlist"></div>
@@ -337,7 +338,7 @@ body.lock .mbar{display:none}
   <div class="sheet rsheet">
     <div class="sheet-hd"><h2 id="recTitle">나에게 맞는 상품 찾기</h2><button class="sheet-x" type="button" data-rclose aria-label="닫기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
     <div class="sheet-bd">
-      <div class="rq"><h3>지금 어떤 통신사 쓰세요?</h3><div class="ropts" id="qIsp"></div></div>
+      <div class="rq"><h3>지금 어떤 통신사 쓰세요?</h3><div id="qIsp"></div></div>
       <div class="rq"><h3>어떤 걸 가장 중요하게 보세요?</h3><div class="rgoals" id="qGoal"></div></div>
       <div class="rbtns"><button class="btn btn-g" type="button" data-rclose>닫기</button><button class="btn btn-k" type="button" id="recGo" disabled>추천 보기</button></div>
     </div>
@@ -345,14 +346,21 @@ body.lock .mbar{display:none}
 </div>
 
 <script src="assets/plans.js?v=20261029g"></script>
-<script src="assets/site.js?v=20261029g"></script>
+<script src="assets/site.js?v=20261029h"></script>
 <script>
 (function(){
   'use strict';
   var D = window.DPZ, $ = D.$, $$ = D.$$, P = window.DPZ_PLANS, C = P.carriers, SI = P.speedInfo;
   var byId = {}; C.forEach(function(c){ byId[c.id] = c; });
   var DEF_SPEEDS = ['100M', '500M', '1G'];
-  var ISPS = ['KT', 'LG U+', 'SK브로드밴드', '그 외 통신사', '모르겠어요', '신규 가입'];
+  /* 지금 쓰는 통신사 (2026-10-29 사장님: 메인은 KT · LG · SKT / '그 외·모르겠어요·신규 가입' 대신 추천해 달라고 함)
+     - 윗줄 메인 3사, 다음 줄 다퍼줌이 다루는 그외 통신사, 맨 아래 작은 단추 2개
+     - v = 신청서·영업관리에 저장되는 값 (처음 설치 = '신규 가입', 다른 곳 = '그 외 통신사' 그대로 저장) */
+  var ISPS = [
+    { v: 'KT', car: 'kt' }, { v: 'LG U+', car: 'lgu' }, { v: 'SKT', car: 'skt' },
+    { v: 'SK브로드밴드', car: 'sk' }, { v: 'LG헬로비전', car: 'hellovision' }, { v: 'KT스카이라이프', car: 'skylife' },
+    { v: '신규 가입', t: '처음 설치해요', sub: true }, { v: '그 외 통신사', t: '다른 곳이에요', sub: true }
+  ];
   var GOALS = [
     { v: 'price', t: '월 요금 낮게', s: '휴대폰 결합 기준 월 요금이 낮은 순' },
     { v: 'channels', t: 'TV 채널 많이', s: '채널 수가 많은 순' },
@@ -519,7 +527,8 @@ body.lock .mbar{display:none}
   /* ---------- 맞춤 추천 ---------- */
   var recModal = $('#recModal'), recTrigger = null;
   function renderQuestions(){
-    $('#qIsp').innerHTML = ISPS.map(function(v){ var on = rec.isp === v; return '<button type="button" class="ropt' + (on ? ' on' : '') + '" data-isp="' + D.esc(v) + '" aria-pressed="' + on + '">' + D.esc(v) + '</button>'; }).join('');
+    var ispBtn = function(o){ var on = rec.isp === o.v; return '<button type="button" class="ropt' + (on ? ' on' : '') + '" data-isp="' + D.esc(o.v) + '" aria-pressed="' + on + '" aria-label="' + D.esc(o.t || o.v) + '">' + (o.car && byId[o.car] ? D.carrierMark(byId[o.car], false, true) : D.esc(o.t || o.v)) + '</button>'; };
+    $('#qIsp').innerHTML = '<div class="ropts">' + ISPS.filter(function(o){ return !o.sub; }).map(ispBtn).join('') + '</div><div class="ropts2">' + ISPS.filter(function(o){ return o.sub; }).map(ispBtn).join('') + '</div>';
     $('#qGoal').innerHTML = GOALS.map(function(g){ var on = rec.goal === g.v; return '<button type="button" class="rgoal' + (on ? ' on' : '') + '" data-goal="' + g.v + '" aria-pressed="' + on + '"><b>' + g.t + '</b><small>' + g.s + '</small></button>'; }).join('');
     $('#recGo').disabled = !(rec.isp && rec.goal);
   }
@@ -569,9 +578,9 @@ body.lock .mbar{display:none}
     if (rec.goal === 'channels' && rec.tv) return a.plan.ch > b.plan.ch;
     return priceOf(a) < priceOf(b);
   }
-  var MINE = { 'KT': 'kt', 'LG U+': 'lgu', 'SK브로드밴드': 'sk' };
+  var MINE = { 'KT': 'kt', 'LG U+': 'lgu', 'SKT': 'skt', 'SK브로드밴드': 'sk', 'LG헬로비전': 'hellovision', 'KT스카이라이프': 'skylife' };
   function renderRec(){
-    $('#cGoal').value = rec.goal || 'price'; $('#cTv').value = rec.tv ? '1' : '0'; $('#cSpeed').value = rec.speed; $('#cIsp').value = rec.isp || '모르겠어요'; $('#cBundle').checked = rec.bundle;
+    $('#cGoal').value = rec.goal || 'price'; $('#cTv').value = rec.tv ? '1' : '0'; $('#cSpeed').value = rec.speed; $('#cIsp').value = rec.isp || '그 외 통신사'; $('#cBundle').checked = rec.bundle;
     if (!rec.list.length) {
       $('#rlist').innerHTML = '<div class="rempty"><p>조건에 맞는 상품이 아직 없어요.<br>조건을 바꾸거나 상담으로 안내받아 보세요.</p><button class="btn btn-k" type="button" data-apply>상담 신청하기</button></div>';
     } else {

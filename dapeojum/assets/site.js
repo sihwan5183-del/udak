@@ -245,9 +245,11 @@
     '<div class="seg"><label><input type="radio" name="product" value="인터넷"><span>인터넷</span></label><label><input type="radio" name="product" value="인터넷+TV"><span>인터넷 + TV</span></label><label><input type="radio" name="product" value="상담 후 결정"><span>상담 후 결정</span></label></div>' +
     '<p class="err" aria-live="polite">관심 상품을 골라 주세요.</p></div>' +
     '<div class="f" data-f="isp" role="radiogroup" aria-labelledby="lIsp"><span class="lab" id="lIsp">지금 쓰는 인터넷 <span class="req" aria-hidden="true">*</span></span>' +
-    '<div class="seg"><label><input type="radio" name="isp" value="KT"><span>KT</span></label><label><input type="radio" name="isp" value="LG U+"><span>LG U+</span></label><label><input type="radio" name="isp" value="SK브로드밴드"><span>SK브로드밴드</span></label>' +
-    '<label><input type="radio" name="isp" value="그 외 통신사"><span>그 외 통신사</span></label><label><input type="radio" name="isp" value="모르겠어요"><span>모르겠어요</span></label><label><input type="radio" name="isp" value="신규 가입"><span>신규 가입</span></label></div>' +
-    '<p class="err" aria-live="polite">지금 쓰는 인터넷을 골라 주세요. 처음 설치하시면 \'신규 가입\'을 눌러 주세요.</p></div>' +
+    // 2026-10-29 사장님: 메인은 KT · LG · SKT, 다음 줄 다퍼줌이 다루는 그외 통신사 — 처음 설치 = 값 '신규 가입', 다른 곳 = 값 '그 외 통신사' (영업관리에 예전 값 그대로 쌓이게)
+    '<div class="seg"><label><input type="radio" name="isp" value="KT"><span>KT</span></label><label><input type="radio" name="isp" value="LG U+"><span>LG U+</span></label><label><input type="radio" name="isp" value="SKT"><span>SKT</span></label>' +
+    '<label><input type="radio" name="isp" value="SK브로드밴드"><span>SK<wbr>브로드밴드</span></label><label><input type="radio" name="isp" value="LG헬로비전"><span>LG<wbr>헬로비전</span></label><label><input type="radio" name="isp" value="KT스카이라이프"><span>KT<wbr>스카이라이프</span></label>' +
+    '<label><input type="radio" name="isp" value="신규 가입"><span>처음 설치해요</span></label><label><input type="radio" name="isp" value="그 외 통신사"><span>다른 곳이에요</span></label></div>' +
+    '<p class="err" aria-live="polite">지금 쓰는 인터넷을 골라 주세요. 처음 설치하시면 \'처음 설치해요\'를 눌러 주세요.</p></div>' +
     '<div class="f" role="radiogroup" aria-labelledby="lSpeed"><span class="lab" id="lSpeed">희망 속도 <span class="opt">(선택)</span></span>' +
     '<div class="seg"><label><input type="radio" name="speed" value="100M"><span>100M</span></label><label><input type="radio" name="speed" value="500M"><span>500M</span></label>' + // 2026-10-29 사장님: 200M은 취급 안 함
     '<label><input type="radio" name="speed" value="1G"><span>1G</span></label><label><input type="radio" name="speed" value="상담 후 결정"><span>잘 모르겠어요</span></label></div></div>' +
