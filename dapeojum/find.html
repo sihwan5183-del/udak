@@ -117,6 +117,7 @@ table.fee{border-collapse:separate;border-spacing:0;width:100%;min-width:560px;f
 .tready{padding:28px 20px;border-radius:12px;background:var(--gray);text-align:center}
 .tready b{display:block;font-size:17px;color:var(--ink)}
 .tready p{margin-top:6px;font-size:14.5px;color:var(--sub)}
+.tready .titems{margin-top:8px;font-size:14.5px;font-weight:700;color:var(--ink2)}
 .tready .btn{margin-top:16px}
 
 /* 맞춤 추천 결과 */
@@ -329,8 +330,8 @@ body.lock .mbar{display:none}
   </div>
 </div>
 
-<script src="assets/plans.js?v=20261029"></script>
-<script src="assets/site.js?v=20261029"></script>
+<script src="assets/plans.js?v=20261029b"></script>
+<script src="assets/site.js?v=20261029b"></script>
 <script>
 (function(){
   'use strict';
@@ -460,7 +461,7 @@ body.lock .mbar{display:none}
     var selSp = r ? r.sp : st.speed;
     $('#tblTitle').textContent = c.name + ' 인터넷·TV 요금표 한눈에 보기';
     if (!c.ready) {
-      $('#tblBody').innerHTML = '<div class="tready" style="margin-top:12px"><b>' + D.esc(c.name) + ' 요금표는 준비 중이에요</b><p>상담 신청하시면 요금과 받을 수 있는 혜택을 안내해 드려요.</p><button class="btn btn-k" type="button" data-apply>상담 신청하기</button></div>';
+      $('#tblBody').innerHTML = '<div class="tready" style="margin-top:12px"><b>' + D.esc(c.name) + ' 요금표는 준비 중이에요</b>' + (c.items ? '<p class="titems">' + c.items.map(D.esc).join(' · ') + '</p>' : '') + '<p>상담 신청하시면 요금과 받을 수 있는 혜택을 안내해 드려요.</p><button class="btn btn-k" type="button" data-apply>상담 신청하기</button></div>';
       return;
     }
     var sps = c.speeds;

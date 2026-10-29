@@ -5,7 +5,10 @@
  * - ready:false 인 통신사는 요금표를 받으면 같은 모양으로 채우면 됨 (사장님이 따로 주기로 함)
  * - tile: 통신사 칸에 쓰는 이름 (좁은 폰 칸에서 단어 중간에 꺾이지 않게 줄바꿈 자리 <br> 지정)
  * - logo: 통신사 로고 그림 (assets/emoji/s/파일.webp, w·h = 그림 크기, s = 눈으로 보기 크기 보정) — 2026-10-29 사장님이 준 로고.
- *         로고가 있으면 통신사 칸·버튼에 이름 글자 없이 마크만 보임 / 로고 없는 곳(딜라이브·HCN)은 이름 글자 그대로
+ *         로고가 있으면 통신사 칸·버튼에 이름 글자 없이 마크만 보임 / 로고 없는 곳(SKT·소호)은 이름 글자 그대로
+ * - 2026-10-29 사장님 취급 인터넷: 3사(U+·SKT·KT) + 소호(LG U+ 소호 패키지·SK브로드밴드 소호를 한 칸) + 그외 4개
+ *   (SK브로드밴드·SKB+B TV POP 180·LG헬로비전·KT스카이라이프) → 통신사 칸은 4×2: 윗줄 3사+소호, 아랫줄 그외.
+ *   이 순서 그대로 화면에 나옴. 딜라이브·HCN은 취급 안 해서 뺌
  */
 window.DPZ_PLANS = {
   speedInfo: {
@@ -15,19 +18,7 @@ window.DPZ_PLANS = {
     '1G': { label: '1', unit: 'Gbps', desc: '인터넷을 많이 쓰는 집' }
   },
   carriers: [
-    {
-      id: 'kt', name: 'KT', ready: true, logo: { f: 'carrier_kt', w: 160, h: 132, s: 0.92 },
-      speeds: ['100M', '500M', '1G'],
-      note: '기가지니3 기준',
-      internet: { '100M': [22000, 18700], '500M': [33000, 22000], '1G': [38500, 27500] },
-      tv: [
-        { name: '지니TV 베이직', ch: 238, fee: { '100M': [38500, 35200], '500M': [44000, 38500], '1G': [49500, 44000] } },
-        { name: '지니TV 라이트', ch: 240, fee: { '100M': [39600, 36300], '500M': [45100, 39600], '1G': [50600, 45100] } },
-        { name: '지니TV 모든G', ch: 250, fee: { '100M': [46200, 42900], '500M': [51700, 46200], '1G': [57200, 51700] } },
-        { name: '지니TV 디즈니+모든G', ch: 250, ott: '디즈니+', fee: { '100M': [47900, 44600], '500M': [54500, 47900], '1G': [58900, 53400] } },
-        { name: '지니TV 넷플릭스 초이스 HD', ch: 266, ott: '넷플릭스', fee: { '100M': [54200, 50900], '500M': [59700, 54200], '1G': [65200, 59700] } }
-      ]
-    },
+    /* ── 3사 (사장님 2026-10-29: U+ / SKT / KT 순서) ── */
     {
       id: 'lgu', name: 'LG U+', ready: true, logo: { f: 'carrier_lguplus', w: 160, h: 58 },
       speeds: ['100M', '200M', '500M', '1G'],
@@ -42,6 +33,23 @@ window.DPZ_PLANS = {
         { name: '프리미엄 넷플릭스 HD', ch: 258, ott: '넷플릭스', fee: { '100M': [54200, 48700], '200M': [57500, 52000], '500M': [59700, 49800], '1G': [65200, 52000] } }
       ]
     },
+    { id: 'skt', name: 'SKT', ready: false },
+    {
+      id: 'kt', name: 'KT', ready: true, logo: { f: 'carrier_kt', w: 160, h: 132, s: 0.92 },
+      speeds: ['100M', '500M', '1G'],
+      note: '기가지니3 기준',
+      internet: { '100M': [22000, 18700], '500M': [33000, 22000], '1G': [38500, 27500] },
+      tv: [
+        { name: '지니TV 베이직', ch: 238, fee: { '100M': [38500, 35200], '500M': [44000, 38500], '1G': [49500, 44000] } },
+        { name: '지니TV 라이트', ch: 240, fee: { '100M': [39600, 36300], '500M': [45100, 39600], '1G': [50600, 45100] } },
+        { name: '지니TV 모든G', ch: 250, fee: { '100M': [46200, 42900], '500M': [51700, 46200], '1G': [57200, 51700] } },
+        { name: '지니TV 디즈니+모든G', ch: 250, ott: '디즈니+', fee: { '100M': [47900, 44600], '500M': [54500, 47900], '1G': [58900, 53400] } },
+        { name: '지니TV 넷플릭스 초이스 HD', ch: 266, ott: '넷플릭스', fee: { '100M': [54200, 50900], '500M': [59700, 54200], '1G': [65200, 59700] } }
+      ]
+    },
+    /* ── 소호 (LG U+ 소호 패키지 · SK브로드밴드 소호 — 두 개를 한 칸으로) ── */
+    { id: 'soho', name: '소호', ready: false, items: ['LG U+ 소호 패키지', 'SK브로드밴드 소호'] },
+    /* ── 그외 (SK브로드밴드 / SKB+B TV POP 180 / LG헬로비전 / KT스카이라이프 순서) ── */
     {
       id: 'sk', name: 'SK브로드밴드', short: 'SK', tile: 'SK<br>브로드밴드', ready: true, logo: { f: 'carrier_sk', w: 160, h: 138 },
       speeds: ['100M', '500M', '1G'],
@@ -54,10 +62,8 @@ window.DPZ_PLANS = {
         { name: 'Btv 올 넷플릭스', ch: 255, ott: '넷플릭스', fee: { '100M': [52200, 48900], '500M': [59900, 53300], '1G': [65400, 56600] } }
       ]
     },
-    { id: 'skylife', name: 'KT스카이라이프', short: '스카이라이프', tile: 'KT<br>skylife', ready: false, logo: { f: 'carrier_skylife', w: 160, h: 53 } },
+    { id: 'skb', name: 'SKB+B TV POP 180', ready: false, logo: { f: 'carrier_skb', w: 130, h: 160, s: 0.88 } },
     { id: 'hellovision', name: 'LG헬로비전', short: '헬로비전', tile: 'LG<br>헬로비전', ready: false, logo: { f: 'carrier_hellovision', w: 160, h: 139, s: 1.25 } },
-    { id: 'skb', name: 'SKB(알뜰)', ready: false, logo: { f: 'carrier_skb', w: 130, h: 160, s: 0.88 } },
-    { id: 'dlive', name: '딜라이브', ready: false },
-    { id: 'hcn', name: 'HCN', ready: false }
+    { id: 'skylife', name: 'KT스카이라이프', short: '스카이라이프', tile: 'KT<br>skylife', ready: false, logo: { f: 'carrier_skylife', w: 160, h: 53 } }
   ]
 };
