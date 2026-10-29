@@ -82,8 +82,8 @@
 
 .sum{background:var(--ftbg);border-radius:16px;padding:22px 20px}
 .sum-t{display:flex;align-items:flex-start;gap:8px;font-size:16px;font-weight:800;color:var(--ink);line-height:1.4}
-.sum-t svg{width:20px;height:20px;flex:none;margin-top:1px}
-.sum-plan{margin:4px 0 0 28px;font-size:13.5px;color:var(--sub);font-weight:600}
+.sum-t img{width:22px;height:auto;flex:none;margin-top:2px}
+.sum-plan{margin:4px 0 0 30px;font-size:13.5px;color:var(--sub);font-weight:600}
 .sum-rows{margin-top:16px;display:grid;gap:9px}
 .sum-rows div{display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:15px}
 .sum-rows dt{color:var(--sub)}
@@ -144,7 +144,7 @@ table.fee{border-collapse:separate;border-spacing:0;width:100%;min-width:560px;f
 .rfoot .ragain{display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:700;color:var(--ink2)}
 .rfoot .ragain svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;fill:none}
 .rload,.rempty{border:1px solid var(--line);border-radius:16px;padding:48px 20px;text-align:center}
-.rload svg{width:64px;height:64px;margin:0 auto}
+.rload img{width:auto;height:64px;margin:0 auto}
 .rload .dots{display:flex;justify-content:center;gap:5px;margin-top:10px}
 .rload .dots i{width:6px;height:6px;border-radius:50%;background:#C5CAD1;animation:dot 1s infinite}
 .rload .dots i:nth-child(2){animation-delay:.15s}.rload .dots i:nth-child(3){animation-delay:.3s}
@@ -263,7 +263,7 @@ body.lock .mbar{display:none}
       <!-- 맞춤 추천 -->
       <div id="recView" hidden>
         <div class="rempty" id="recEmpty"><p>지금 쓰는 통신사와 원하는 조건을 고르면<br>맞는 상품을 찾아드려요.</p><button class="btn btn-k" type="button" id="recStart">조건 고르기</button></div>
-        <div class="rload" id="recLoad" hidden><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="27" cy="27" r="16" fill="#FFF4D2" stroke="#1C232B" stroke-width="5"/><circle cx="22" cy="22" r="4" fill="#FFB61C"/><path d="M39 39l13 13" stroke="#1C232B" stroke-width="6" stroke-linecap="round"/></svg><div class="dots"><i></i><i></i><i></i></div><p id="recLoadTxt"></p></div>
+        <div class="rload" id="recLoad" hidden><img src="assets/emoji/s/etc_search.webp?v=20261029" width="156" height="160" alt=""><div class="dots"><i></i><i></i><i></i></div><p id="recLoadTxt"></p></div>
         <div id="recRes" hidden>
           <div class="rchips">
             <select id="cGoal" aria-label="중요하게 보는 것"><option value="price">월 요금 낮게</option><option value="channels">TV 채널 많이</option><option value="ott">넷플릭스·디즈니+</option></select>
@@ -283,7 +283,7 @@ body.lock .mbar{display:none}
 
     <aside class="fsum" aria-label="예상 요금">
       <div class="sum" id="sum">
-        <p class="sum-t"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" aria-hidden="true"><path d="M3.5 9.5a12 12 0 0 1 17 0" stroke="#FFB61C" stroke-width="2.4"/><path d="M7 13a7 7 0 0 1 10 0" stroke="#F98E14" stroke-width="2.4"/><circle cx="12" cy="17" r="2" fill="#1C232B"/></svg><span id="sumTitle"></span></p>
+        <p class="sum-t"><img src="assets/emoji/s/product_wifi.webp?v=20261029" width="160" height="130" alt=""><span id="sumTitle"></span></p>
         <p class="sum-plan" id="sumPlan" hidden></p>
         <dl class="sum-rows"><div><dt>기본 요금</dt><dd id="sumBase"></dd></div><div class="strong"><dt>휴대폰 결합 요금</dt><dd id="sumBundle"></dd></div></dl>
         <div class="sum-gift"><span>사은품</span><span>상담 시 안내</span></div>

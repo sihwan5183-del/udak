@@ -79,14 +79,14 @@
 .ctile{aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:6px;border:1px solid var(--line2);border-radius:4px;background:#fff;text-align:center;transition:border-color .15s,box-shadow .15s}
 .ctile:hover{border-color:var(--ink2);box-shadow:0 6px 16px rgba(28,35,43,.06)}
 .ctile{--k:34px}
-.ctile svg{width:22px;height:22px}
+.ctile .wf{width:26px;height:auto}
 .ctile .cname{font-size:14.5px}
 
 /* 나에게 맞는 상품 찾기 줄 */
 .findbar{display:flex;align-items:center;gap:14px;padding:18px 18px;border-radius:16px;background:var(--gray);transition:background .15s}
 .findbar:hover{background:#ECEFF4}
 .findbar .ic{width:48px;height:48px;border-radius:12px;background:#fff;display:grid;place-items:center;flex:none}
-.findbar .ic svg{width:28px;height:28px}
+.findbar .ic img{width:auto;height:30px}
 .findbar b{display:block;font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-.03em}
 .findbar small{display:block;margin-top:2px;font-size:14px;color:var(--sub);line-height:1.4}
 .findbar .go{margin-left:auto;width:22px;height:22px;flex:none;stroke:#9AA1AA;stroke-width:2;fill:none}
@@ -251,7 +251,7 @@
     <div class="wrap">
       <div class="sec-h"><h2 id="cmpTitle">내게 맞는 요금제 비교</h2></div>
       <a class="findbar" href="find?mode=recommend">
-        <span class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="14" cy="14" r="8.5" fill="#FFF4D2" stroke="#1C232B" stroke-width="3"/><path d="M20.5 20.5l6 6" stroke="#1C232B" stroke-width="3.4" stroke-linecap="round"/><circle cx="11.5" cy="11.5" r="2.2" fill="#FFB61C"/></svg></span>
+        <span class="ic"><img src="assets/emoji/s/etc_search.webp?v=20261029" width="156" height="160" alt="" loading="lazy"></span>
         <span><b>나에게 맞는 상품 찾기</b><small>지금 쓰는 통신사와 원하는 조건을 고르면 요금을 비교해 드려요</small></span>
         <svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
       </a>
@@ -359,7 +359,7 @@
 
   /* 통신사별 요금제 칸 (상품 찾기로 이동, 그 통신사 선택된 채로)
      2026-10-29 사장님: 로고가 있는 통신사는 이름 글자 없이 마크만 / 로고 없는 곳(딜라이브·HCN)은 와이파이+이름 그대로 */
-  var wifi = '<svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" aria-hidden="true"><path d="M3.5 9.5a12 12 0 0 1 17 0" stroke="#FFB61C" stroke-width="2.4"/><path d="M7 13a7 7 0 0 1 10 0" stroke="#F98E14" stroke-width="2.4"/><circle cx="12" cy="17" r="2" fill="#1C232B"/></svg>';
+  var wifi = '<img class="wf" src="assets/emoji/s/product_wifi.webp?v=20261029" width="160" height="130" alt="">';
   $('#ctiles').innerHTML = window.DPZ_PLANS.carriers.map(function(c){
     return '<a class="ctile" href="find?carrier=' + c.id + '">' + (c.logo ? '' : wifi) + D.carrierMark(c) + '</a>';
   }).join('');
