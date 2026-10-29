@@ -6,7 +6,7 @@
  * - ready:false 인 통신사는 요금표를 받으면 같은 모양으로 채우면 됨 (사장님이 따로 주기로 함)
  * - tile: 통신사 칸에 쓰는 이름 (좁은 폰 칸에서 단어 중간에 꺾이지 않게 줄바꿈 자리 <br> 지정)
  * - logo: 통신사 로고 그림 (assets/emoji/s/파일.webp, w·h = 그림 크기, s = 눈으로 보기 크기 보정) — 2026-10-29 사장님이 준 로고.
- *         로고 없는 곳(SKT)은 이름 글자로 대신
+ *         SKT는 전용 로고를 받기 전까지 SK 로고를 같이 씀 (밑에 이름이 붙어 SK브로드밴드와 구분됨)
  * - label: 통신사 칸·버튼에서 로고 밑에 붙는 짧은 이름 (2026-10-29 사장님: 'U+ SKT KT 이렇게', LG헬로비전처럼 마크 밑에 이름)
  *         <wbr> = 칸이 좁을 때만 거기서 줄바꿈
  * - 2026-10-29 사장님 취급 인터넷: 3사(U+·SKT·KT) + 소호(LG U+ 소호 패키지·SK브로드밴드 소호를 한 칸) + 그외 4개
@@ -35,7 +35,7 @@ window.DPZ_PLANS = {
         { name: '프리미엄 넷플릭스 HD', ch: 258, ott: '넷플릭스', fee: { '100M': [54200, 48700], '500M': [59700, 49800], '1G': [65200, 52000] } }
       ]
     },
-    { id: 'skt', name: 'SKT', label: 'SKT', ready: false },
+    { id: 'skt', name: 'SKT', label: 'SKT', ready: false, logo: { f: 'carrier_sk', w: 160, h: 138 } },
     {
       id: 'kt', name: 'KT', label: 'KT', ready: true, logo: { f: 'carrier_kt', w: 160, h: 132, s: 0.92 },
       speeds: ['100M', '500M', '1G'],
