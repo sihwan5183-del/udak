@@ -24,14 +24,16 @@
   function logoImg(c, alt) {
     return '<img class="clogo" src="assets/emoji/s/' + c.logo.f + '.webp?v=20261029" width="' + c.logo.w + '" height="' + c.logo.h + '" alt="' + (alt === false ? '' : esc(c.name)) + '" style="--sr:' + (Math.sqrt(c.logo.w / c.logo.h) * (c.logo.s || 1)).toFixed(3) + '" decoding="async">';
   }
-  function carrierMark(c, alt) {
-    if (c.pkgs) { // 소호: 안에 든 통신사 로고 두 개를 작게 나란히 + '소호' 글자 (2026-10-29 사장님)
+  // withLabel: 통신사 칸·버튼에서는 로고 밑에 짧은 이름(label)을 붙임 (2026-10-29 사장님: 'U+ SKT KT 이렇게')
+  function carrierMark(c, alt, withLabel) {
+    var lab = withLabel ? '<span class="clab">' + (c.label || esc(c.name)) + '</span>' : '';
+    if (c.pkgs) { // 소호: 안에 든 통신사 로고 두 개를 작게 나란히 + '소호' 글자
       var all = (window.DPZ_PLANS && window.DPZ_PLANS.carriers) || [];
       var marks = c.pkgs.map(function (p) { var o = all.filter(function (x) { return x.id === p.of; })[0]; return o && o.logo ? logoImg(o, false) : ''; }).join('');
-      return '<span class="cpair" aria-hidden="true">' + marks + '</span><span class="cname">' + (c.tile || esc(c.name)) + '</span>';
+      return '<span class="cpair" aria-hidden="true">' + marks + '</span>' + (lab || '<span class="cname">' + (c.tile || esc(c.name)) + '</span>');
     }
-    if (!c.logo) return '<span class="cname">' + (c.tile || esc(c.name)) + '</span>';
-    return logoImg(c, alt);
+    if (!c.logo) return '<span class="cname">' + (c.tile || esc(c.name)) + '</span>'; // 로고 없으면 이름 글자만 (밑에 같은 이름을 또 붙이지 않음)
+    return logoImg(c, withLabel ? false : alt) + lab;
   }
 
   /* ---------- 광고 유입 정보 (이 탭에서 페이지를 옮겨도 유지) ---------- */

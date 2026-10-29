@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://ebggtghzqtxfylbhqfoh.supabase.co" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wanted-sans@1.0.3/fonts/webfonts/variable/split/WantedSansVariable.css">
-<link rel="stylesheet" href="assets/site.css?v=20261029c">
+<link rel="stylesheet" href="assets/site.css?v=20261029d">
 <style>
 /* 통신사 바로가기 줄 (아정당 상품 화면의 통신사 줄) */
 .cnav{position:sticky;top:var(--hd);z-index:40;background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -55,8 +55,8 @@
 .blk-h h2{margin-bottom:0}
 .sel-on{background:var(--pick)!important;border-color:var(--yellow2)!important;box-shadow:inset 0 0 0 1px var(--yellow2)}
 .cgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.cbtn{height:56px;display:grid;place-items:center;padding:0 4px;border:1px solid var(--line2);border-radius:8px;background:#fff;text-align:center}
-.cbtn{--k:28px}
+.cbtn{min-height:56px;display:grid;place-items:center;align-content:center;row-gap:3px;padding:6px 4px;border:1px solid var(--line2);border-radius:8px;background:#fff;text-align:center}
+.cbtn{--k:25px}
 .cbtn .cname{font-size:14px}
 .cbtn.on{background:var(--pick);border-color:var(--yellow2);box-shadow:inset 0 0 0 1px var(--yellow2)}
 .combo{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -199,8 +199,8 @@ body.lock .mbar{display:none}
   .fgrid{grid-template-columns:minmax(0,1fr) 320px;grid-template-areas:"sel sum" "tbl sum";column-gap:24px;row-gap:44px;padding-bottom:80px}
   .fsum{position:sticky;top:calc(var(--hd) + 66px);align-self:start}
   .blk + .blk{margin-top:36px}
-  .cbtn{height:62px}
-  .cbtn{--k:34px}
+  .cbtn{min-height:66px}
+  .cbtn{--k:30px}
   .cbtn .cname{font-size:16px}
   .combo button{height:60px}
   .pkg{--k:36px;min-height:100px}
@@ -341,8 +341,8 @@ body.lock .mbar{display:none}
   </div>
 </div>
 
-<script src="assets/plans.js?v=20261029c"></script>
-<script src="assets/site.js?v=20261029c"></script>
+<script src="assets/plans.js?v=20261029d"></script>
+<script src="assets/site.js?v=20261029d"></script>
 <script>
 (function(){
   'use strict';
@@ -414,7 +414,7 @@ body.lock .mbar{display:none}
     st.speed = fixSpeed(c, st.speed);
     $('#cgrid').innerHTML = C.map(function(x){
       var on = x.id === c.id;
-      return '<button type="button" class="cbtn' + (on ? ' on' : '') + '" data-car="' + x.id + '" aria-pressed="' + on + '" aria-label="' + D.esc(x.name) + '">' + D.carrierMark(x, false) + '</button>';
+      return '<button type="button" class="cbtn' + (on ? ' on' : '') + '" data-car="' + x.id + '" aria-pressed="' + on + '" aria-label="' + D.esc(x.name) + '">' + D.carrierMark(x, false, true) + '</button>';
     }).join('');
     var soho = !!c.pkgs;
     $('#sohoBlk').hidden = !soho; $('#comboBlk').hidden = soho; $('#speedBlk').hidden = soho;

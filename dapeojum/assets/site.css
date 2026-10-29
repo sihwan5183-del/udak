@@ -68,6 +68,9 @@ h1,h2,h3{color:var(--ink);letter-spacing:-.03em}
 .clogo{display:block;flex:none;width:calc(var(--k,34px) * var(--sr,1));max-width:100%;height:auto}
 .cpair{display:flex;align-items:center;justify-content:center;gap:5px;max-width:100%}
 .cpair .clogo{width:calc(var(--k,34px) * var(--sr,1) * .56);min-width:0}
+/* 로고 밑 짧은 이름 — 단어 중간에서 안 꺾이게 (줄바꿈은 <wbr> 자리에서만) */
+.clab{display:block;font-size:clamp(9.5px,2.95vw,11.5px);font-weight:700;color:var(--ink2);letter-spacing:-.03em;line-height:1.2;text-align:center;word-break:keep-all;overflow-wrap:normal}
+@media (min-width:1024px){.clab{font-size:13px}}
 
 /* ---------- 하단 (아정당식) ---------- */
 .ft{background:var(--ftbg);padding:44px 0 calc(48px + var(--sticky-pad,0px));color:var(--sub)}
