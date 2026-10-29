@@ -112,7 +112,7 @@
     '<label><input type="radio" name="isp" value="그 외 통신사"><span>그 외 통신사</span></label><label><input type="radio" name="isp" value="모르겠어요"><span>모르겠어요</span></label><label><input type="radio" name="isp" value="신규 가입"><span>신규 가입</span></label></div>' +
     '<p class="err" aria-live="polite">지금 쓰는 인터넷을 골라 주세요. 처음 설치하시면 \'신규 가입\'을 눌러 주세요.</p></div>' +
     '<div class="f" role="radiogroup" aria-labelledby="lSpeed"><span class="lab" id="lSpeed">희망 속도 <span class="opt">(선택)</span></span>' +
-    '<div class="seg"><label><input type="radio" name="speed" value="100M"><span>100M</span></label><label><input type="radio" name="speed" value="200M"><span>200M</span></label><label><input type="radio" name="speed" value="500M"><span>500M</span></label>' +
+    '<div class="seg"><label><input type="radio" name="speed" value="100M"><span>100M</span></label><label><input type="radio" name="speed" value="500M"><span>500M</span></label>' + // 2026-10-29 사장님: 200M은 취급 안 함
     '<label><input type="radio" name="speed" value="1G"><span>1G</span></label><label><input type="radio" name="speed" value="상담 후 결정"><span>잘 모르겠어요</span></label></div></div>' +
     '<label class="chk"><input type="checkbox" id="fBundle"><span><b>휴대폰 결합 할인도 같이 상담받을게요</b><small>가족 휴대폰과 묶어서 할인받을 수 있는지 같이 알아봐 드려요</small></span></label>' +
     '<div class="f"><label for="fArea">설치 지역 <span class="opt">(선택)</span></label><input class="in" id="fArea" type="text" maxlength="40" placeholder="예: 구리시 인창동"></div>' +

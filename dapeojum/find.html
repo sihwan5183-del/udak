@@ -341,8 +341,8 @@ body.lock .mbar{display:none}
   </div>
 </div>
 
-<script src="assets/plans.js?v=20261029d"></script>
-<script src="assets/site.js?v=20261029d"></script>
+<script src="assets/plans.js?v=20261029e"></script>
+<script src="assets/site.js?v=20261029e"></script>
 <script>
 (function(){
   'use strict';
@@ -368,7 +368,6 @@ body.lock .mbar{display:none}
   function fixSpeed(c, sp){
     var list = speedsOf(c);
     if (list.indexOf(sp) > -1) return sp;
-    if (sp === '200M') return list.indexOf('100M') > -1 ? '100M' : list[0];
     return list.indexOf('500M') > -1 ? '500M' : list[0];
   }
   function spLabel(sp){ var i = SI[sp]; return i ? i.label + i.unit : sp; }
