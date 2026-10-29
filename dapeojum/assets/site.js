@@ -108,7 +108,7 @@
     }
   }
 
-  /* ---------- 짧은 알림 · 준비 중인 메뉴 (후기·이벤트·룰렛 — 2026-10-29 사장님: 곧 할 예정) ---------- */
+  /* ---------- 짧은 알림 · 준비 중인 메뉴 (이벤트·룰렛 — 2026-10-29 사장님: 곧 할 예정 / 후기는 review 화면으로 연결) ---------- */
   var toastEl = null, toastT = null;
   function toast(msg) {
     if (!toastEl) { document.body.insertAdjacentHTML('beforeend', '<div class="toast" id="dpzToast" role="status" aria-live="polite"></div>'); toastEl = $('#dpzToast'); }
@@ -145,7 +145,7 @@
     { t: '룰렛', ic: ['brand_box_open', 160, 135], soon: true }
   ];
   var MM_HELP = [
-    { t: '후기', ic: ['etc_thumbs_stars', 122, 160], soon: true },
+    { t: '후기', ic: ['etc_thumbs_stars', 122, 160], href: 'review' },
     { t: '상담 신청', ic: ['etc_headset', 160, 146], form: '전체 메뉴' },
     { t: '개인정보처리방침', ic: ['etc_shield', 134, 160], href: 'privacy' }
   ];

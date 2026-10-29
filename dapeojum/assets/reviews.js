@@ -4,10 +4,9 @@
  *    (사이트용으로 쓴 글이나 아무 사진을 후기에 붙이는 건 안 함 — 손님이 실제 후기로 믿게 되는 가짜 후기가 됨)
  *  - 사진 없는 글 후기가 기본 → 사진 칸에 다퍼줌 로고 (아정당처럼)
  *  - 사은품을 드리고 받은 후기(incentive)는 본문 첫 부분에 '사은품을 받고 쓴 후기예요' 표시 (공정위 추천·보증 지침)
- * 지금 상태
- *  - 저장소(dapeojum_reviews)·영업관리 등록 화면은 아직 → ON=false: 첫 화면 칸은 숨김, 후기 화면은 '모으는 중' 안내
- *  - 레이아웃 확인: 주소 끝에 ?preview=1 → '예시' 표시가 붙은 견본 카드만 보임 (손님 화면에는 안 나옴)
- *  - 등록 화면을 만들고 ON=true 로 바꾸면 게시된 후기만 불러옴 (+ 머리 '후기' 메뉴를 review 링크로 바꾸기)
+ * 지금 상태 (2026-10-29 사장님: 랜딩 주소를 아직 아무도 모르고 다 세팅한 뒤 열 거라 숨길 필요 없음)
+ *  - 저장소(dapeojum_reviews)·영업관리 등록 화면은 아직 → ON=false 동안은 '예시' 표시가 붙은 견본 카드가 그냥 보임
+ *  - 등록 화면을 만들고 ON=true 로 바꾸면 견본은 사라지고 게시된 후기만 불러옴 (그때는 ?preview=1 일 때만 견본)
  */
 (function () {
   'use strict';
@@ -15,7 +14,8 @@
   if (!D) return;
   var $ = D.$, esc = D.esc;
   var ON = false;
-  var PREVIEW = /[?&]preview=1(&|$)/.test(location.search);
+  var PARAM = /[?&]preview=1(&|$)/.test(location.search);
+  var PREVIEW = !ON || PARAM; // 세팅 중(ON=false)에는 늘 견본
   var TYPES = ['인터넷', '인터넷+TV', '인터넷 옮기기', '소호'];
 
   /* 레이아웃 확인용 견본 (?preview=1 일 때만) — 실제 후기가 아니라는 걸 글 자체에도 적어 둠 */
@@ -63,10 +63,11 @@
   if (sec) load(function (list) {
     if (!list.length) return; // 올라온 후기가 없으면 칸을 숨긴 채로 둠
     sec.hidden = false;
-    if (PREVIEW) { $('[data-rv-preview]', sec).hidden = false; $('.rvmore', sec).setAttribute('href', 'review?preview=1'); }
+    if (PREVIEW) $('[data-rv-preview]', sec).hidden = false;
+    if (PARAM) $('.rvmore', sec).setAttribute('href', 'review?preview=1');
     var cur = '전체', tabsEl = $('#rvTabs', sec), cards = $('#rvCards', sec);
     function card(x) {
-      return '<a class="rvc" href="review' + (PREVIEW ? '?preview=1' : '') + '#rv-' + esc(x.id) + '">' +
+      return '<a class="rvc" href="review' + (PARAM ? '?preview=1' : '') + '#rv-' + esc(x.id) + '">' +
         '<span class="q" aria-hidden="true">“</span>' +
         (x.incentive ? '<span class="rv-inc">사은품을 받고 쓴 후기예요</span>' : '') +
         '<p class="t">' + esc(x.body) + '</p>' +
