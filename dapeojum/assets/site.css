@@ -154,6 +154,37 @@ body.mlock{overflow:hidden}
 .rvempty p{margin-top:6px;font-size:14.5px;color:var(--sub)}
 .rvempty .btn{margin-top:20px}
 
+/* ---------- 고객안내 — 첫 화면 칸(.gcards) · 고객안내 화면(.glist) — guides.js (2026-10-29) ---------- */
+.gc{display:inline-block;padding:2px 8px;border-radius:6px;background:var(--butter);color:var(--brown);font-size:12px;font-weight:800;letter-spacing:-.02em;line-height:1.5}
+.gsearch{display:flex;align-items:center;gap:8px;height:50px;margin-bottom:14px;padding:0 14px;border:1.5px solid var(--line2);border-radius:12px;background:#fff;transition:border-color .15s,box-shadow .15s}
+.gsearch:focus-within{border-color:var(--ink);box-shadow:0 0 0 4px var(--butter)}
+.gsearch svg{width:20px;height:20px;flex:none;fill:none;stroke:var(--mute);stroke-width:2;stroke-linecap:round}
+.gsearch input{flex:1;min-width:0;height:100%;border:0;outline:0;background:none;font-size:16px;font-weight:550;color:var(--ink)}
+.gsearch input::placeholder{color:#9AA1AA;font-weight:450}
+.gtabs .rvtab small{margin-left:2px;font-size:12.5px;font-weight:700;color:var(--mute)}
+.gtabs .rvtab[aria-selected="true"] small{color:var(--brown)}
+.gcnt{margin:0 0 10px;font-size:13.5px;font-weight:650;color:var(--sub)}
+.glist{display:grid;gap:10px}
+.gi{padding:18px 18px 17px;border:1px solid var(--line);border-radius:14px;background:#fff;scroll-margin-top:calc(var(--hd) + 20px)}
+.gi h3{margin-top:8px;font-size:16.5px;font-weight:800;line-height:1.4;letter-spacing:-.03em}
+.gi p{margin-top:6px;font-size:14.5px;line-height:1.65;color:var(--ink2)}
+.gi.hl{border-color:var(--yellow2);box-shadow:inset 0 0 0 1px var(--yellow2);background:var(--cream)}
+.gnone{padding:40px 16px;text-align:center;font-size:14.5px;color:var(--sub)}
+.gcards{display:grid;grid-auto-flow:column;grid-auto-columns:78%;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 calc(var(--gut) * -1);padding:0 var(--gut) 2px;scroll-padding:0 var(--gut)}
+.gcards::-webkit-scrollbar{display:none}
+.gcard{scroll-snap-align:start;display:flex;flex-direction:column;align-items:flex-start;min-width:0;min-height:170px;padding:18px;border:1px solid var(--line);border-radius:14px;background:#fff;transition:border-color .15s}
+.gcard:hover{border-color:var(--ink2)}
+.gcard b{display:block;margin-top:10px;font-size:16px;font-weight:800;color:var(--ink);line-height:1.4;letter-spacing:-.03em}
+.gcard p{margin-top:6px;font-size:14px;line-height:1.6;color:var(--sub);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+@media (min-width:1024px){
+  .glist{grid-template-columns:1fr 1fr;gap:14px}
+  .gi{padding:22px 22px 20px}
+  .gi h3{font-size:17.5px}
+  .gi p{font-size:15px}
+  .gcards{grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-columns:auto;gap:16px;overflow:visible;margin:0;padding:0}
+  .gcard{min-height:196px;padding:20px}
+}
+
 /* ---------- 짧은 알림 (준비 중 안내 등) ---------- */
 .toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));z-index:120;transform:translate(-50%,10px);max-width:calc(100% - 32px);padding:11px 18px;border-radius:999px;background:rgba(28,35,43,.92);color:#fff;font-size:14px;font-weight:700;letter-spacing:-.02em;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
 .toast.show{opacity:1;transform:translate(-50%,0)}

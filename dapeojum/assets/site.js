@@ -144,6 +144,7 @@
     { t: '룰렛', ic: ['brand_box_open', 160, 135], soon: true }
   ];
   var MM_HELP = [
+    { t: '고객안내', ic: ['brand_megaphone', 160, 137], href: 'guide' }, // 2026-10-29 상황별 안내 (guides.js)
     { t: '후기', ic: ['etc_thumbs_stars', 122, 160], href: 'review' },
     { t: '상담 신청', ic: ['etc_headset', 160, 146], form: '전체 메뉴' },
     { t: '개인정보처리방침', ic: ['etc_shield', 134, 160], href: 'privacy' }
