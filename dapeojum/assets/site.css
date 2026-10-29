@@ -24,13 +24,17 @@ h1,h2,h3{color:var(--ink);letter-spacing:-.03em}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .nw{white-space:nowrap}
 
-/* ---------- 맨 위 띠 ---------- */
-.topbar{position:relative;display:flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:6px 44px;background:var(--yellow);color:var(--ink);font-size:13.5px;font-weight:750;letter-spacing:-.02em;text-align:center;line-height:1.35}
-.topbar img{width:24px;height:auto;flex:none}
-.topbar .tb-more{display:none}
-@media (min-width:600px){.topbar .tb-more{display:inline}}
-.topbar .x{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:grid;place-items:center;border-radius:8px}
-.topbar .x svg{width:16px;height:16px;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round}
+/* ---------- 맨 위 띠 — 문구 3개가 바탕색과 함께 돌아감 (문구는 site.js TOPBAR, 2026-10-29) ---------- */
+.topbar{position:relative;display:flex;align-items:center;justify-content:center;height:38px;padding:0 40px;overflow:hidden;background:var(--yellow);color:var(--ink);font-size:13.5px;font-weight:750;letter-spacing:-.02em;line-height:1.3;transition:background-color .4s,color .4s}
+.topbar.tb-k{background:var(--ink);color:#fff}
+.topbar.tb-c{background:#FFE6A6}
+.tb-in{display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;max-width:100%;color:inherit;transition:transform .34s cubic-bezier(.2,.8,.2,1),opacity .34s}
+.tb-in img{width:auto;height:22px;flex:none}
+.tb-t{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-in.out{transition:transform .26s ease-in,opacity .26s;transform:translateY(-120%);opacity:0}
+.tb-in.pre{transition:none;transform:translateY(120%);opacity:0}
+.topbar .x{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:grid;place-items:center;border-radius:8px;color:inherit}
+.topbar .x svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
 
 /* ---------- 머리 (아정당식 두 줄) ---------- */
 .hd{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid transparent;transition:border-color .2s}
@@ -41,11 +45,61 @@ h1,h2,h3{color:var(--ink);letter-spacing:-.03em}
 .brand .bw{height:23px;width:auto}
 .hd-sub{display:none}
 .hd-cta{margin-left:auto;display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:10px;background:var(--yellow);color:var(--ink);font-size:14px;font-weight:800;letter-spacing:-.02em;white-space:nowrap}
+/* ☰ 전체 메뉴 단추 — 폰은 1줄 오른쪽, PC는 2줄 오른쪽 끝 (아정당) */
+.hd-menu{flex:none;width:38px;height:38px;display:grid;place-items:center;border-radius:10px;background:var(--gray);transition:background .15s}
+.hd-menu:hover,.hd-menu[aria-expanded="true"]{background:var(--gray2)}
+.hd-menu svg{width:20px;height:20px;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round}
+.hd-r1 .hd-menu{margin-left:-14px}
+.hd-r2 .hd-menu{display:none}
+/* 2줄: 상품 칸 (2026-10-29: 인터넷 / 인터넷+TV / 인터넷 옮기기 / 소호 / 통신사별 요금표 / 상품 찾기) */
 .hd-r2{display:flex;align-items:center;gap:4px;height:46px;overflow-x:auto;scrollbar-width:none;margin:0 calc(var(--gut) * -1);padding:0 calc(var(--gut) - 10px)}
 .hd-r2::-webkit-scrollbar{display:none}
-.hd-r2 a{flex:none;padding:8px 10px;font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-.03em;white-space:nowrap}
-.hd-r2 a.on{color:var(--brown)}
-.hd-r2 a .dot{display:inline-block;width:5px;height:5px;margin-left:2px;border-radius:50%;background:var(--orange);vertical-align:top}
+.hd-r2 .cat{flex:none;position:relative}
+.hd-r2 .tab{position:relative;display:block;flex:none;padding:8px 10px;font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-.03em;white-space:nowrap}
+.hd-r2 .tab.on{color:var(--brown)}
+.hd-r2 .tab .dot{display:inline-block;width:5px;height:5px;margin-left:2px;border-radius:50%;background:var(--orange);vertical-align:top}
+.hd-r2 .biz{display:inline-block;margin-right:4px;padding:0 5px;border-radius:4px;background:var(--butter);color:var(--brown);font-size:10.5px;font-weight:800;line-height:17px;letter-spacing:0;vertical-align:2px}
+.cat-drop{display:none}
+/* '인터넷' 칸에 마우스 올리면 펼쳐지는 통신사 바로가기 (PC) */
+.cat-in{width:468px;padding:16px;border-radius:16px;background:#fff;border:1px solid var(--line);box-shadow:0 16px 40px rgba(28,35,43,.16)}
+.cat-in > p{margin:0 2px 10px;font-size:13px;font-weight:750;color:var(--sub)}
+.cat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.cat-grid a{--k:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:74px;padding:4px;border:1px solid var(--line);border-radius:10px;background:#fff;transition:border-color .15s}
+.cat-grid a:hover{border-color:var(--ink2)}
+.cat-all{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:12px 4px 0;border-top:1px solid var(--line);font-size:14px;font-weight:700;color:var(--ink2)}
+.cat-all svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none}
+
+/* ---------- ☰ 전체 메뉴판 (아정당 메뉴판 + 미소 전체 화면 메뉴) — 내용은 site.js ---------- */
+.mm{position:fixed;inset:0;z-index:70}
+.mm-panel{position:absolute;inset:0;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:#fff;padding:0 20px calc(28px + env(safe-area-inset-bottom));outline:none}
+.mm-hd{position:sticky;top:0;z-index:2;display:flex;align-items:center;height:56px;margin:0 -20px 4px;padding:0 10px 0 20px;background:#fff;border-bottom:1px solid var(--line)}
+.mm-hd .brand .bi{width:30px}.mm-hd .brand .bw{height:21px}
+.mm-x{margin-left:auto;width:42px;height:42px;display:grid;place-items:center;border-radius:10px}
+.mm-x svg{width:22px;height:22px;stroke:var(--ink);stroke-width:2;stroke-linecap:round}
+.mm-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px 4px;padding:16px 0 4px}
+.mm-grid a{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;text-align:center;font-size:13px;font-weight:700;color:var(--ink);letter-spacing:-.04em;line-height:1.25;word-break:keep-all}
+.mm-grid .ic{width:54px;height:54px;display:grid;place-items:center;border-radius:16px;background:var(--gray);transition:background .15s}
+.mm-grid a:hover .ic{background:var(--gray2)}
+.mm-grid .ic img{width:auto;height:auto;max-width:40px;max-height:40px}
+.mm-h{margin:20px 0 10px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;font-weight:700;color:var(--mute)}
+.mm-car{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.mm-car a{--k:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:62px;padding:3px;border:1px solid var(--line);border-radius:10px;transition:border-color .15s}
+.mm-car a:hover{border-color:var(--ink2)}
+.mm-list{list-style:none}
+.mm-list a,.mm-list button{display:flex;align-items:center;gap:10px;width:100%;padding:10px 2px;font-size:15px;font-weight:700;color:var(--ink);letter-spacing:-.02em;text-align:left}
+.mm-list img{width:28px;height:28px;object-fit:contain;flex:none}
+.mm-list em{padding:1px 6px;border-radius:4px;background:var(--gray2);color:var(--sub);font-size:11px;font-style:normal;font-weight:700;letter-spacing:0}
+.mm-list .go{margin-left:auto;width:16px;height:16px;stroke:#9AA1AA;stroke-width:2;fill:none;flex:none}
+.mm-card{display:flex;align-items:center;gap:12px;margin-top:20px;padding:14px 14px 14px 12px;border-radius:14px;background:var(--cream)}
+.mm-card img{width:50px;height:auto;flex:none}
+.mm-card b{display:block;font-size:15px;font-weight:800;color:var(--ink);line-height:1.35;letter-spacing:-.02em}
+.mm-card small{display:block;margin-top:2px;font-size:12.5px;color:var(--sub)}
+.mm-card .btn{margin-left:auto;height:42px;padding:0 14px;font-size:14px;border-radius:10px}
+body.mlock{overflow:hidden}
+
+/* ---------- 짧은 알림 (준비 중 안내 등) ---------- */
+.toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));z-index:120;transform:translate(-50%,10px);max-width:calc(100% - 32px);padding:11px 18px;border-radius:999px;background:rgba(28,35,43,.92);color:#fff;font-size:14px;font-weight:700;letter-spacing:-.02em;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
 
 /* ---------- 공통 버튼 ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 20px;border-radius:12px;font-size:16.5px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;transition:transform .12s,background .15s}
@@ -185,10 +239,30 @@ textarea.in{height:auto;min-height:88px;padding:13px 15px;line-height:1.55;resiz
   .hd-sub a{font-size:15px;font-weight:550;color:var(--ink2)}
   .hd-sub a:hover{color:var(--ink)}
   .hd-cta{height:36px;padding:0 16px;font-size:14px;border-radius:8px}
+  .hd-r1 .hd-menu{display:none}
   .hd-r2{height:54px;gap:12px;margin:0;padding:0;overflow:visible}
-  .hd-r2 a{padding:8px 6px;font-size:18px}
-  .hd-r2 a:first-child{margin-left:-6px}
+  .hd-r2 .tab{padding:8px 6px;font-size:18px}
+  .hd-r2 .cat:first-child .tab{margin-left:-6px}
+  .hd-r2 .biz{position:absolute;left:50%;top:-10px;transform:translateX(-50%);margin:0;vertical-align:0}
+  .hd-r2 .hd-menu{display:grid;margin-left:auto}
+  .cat-drop{display:block;position:absolute;left:-24px;top:100%;z-index:5;padding-top:8px;opacity:0;visibility:hidden;transform:translateY(4px);transition:opacity .16s,transform .16s,visibility 0s .16s}
+  .cat:hover .cat-drop,.cat:focus-within .cat-drop{opacity:1;visibility:visible;transform:none;transition:opacity .16s,transform .16s}
+  /* 전체 메뉴판: PC는 ☰ 밑으로 펼쳐지는 판 (위치는 site.js가 단추 자리에 맞춤) */
+  .mm-panel{inset:auto;width:372px;max-height:calc(100vh - 150px);padding:4px 20px 20px;border-radius:18px;border:1px solid var(--line);box-shadow:0 20px 48px rgba(28,35,43,.18)}
+  .mm-hd{display:none}
+  .mm-grid .ic{width:52px;height:52px}
+  .toast{bottom:40px}
   .sticky{display:none}
   .sec-h h2{font-size:21px}
   .ft{padding:52px 0 60px}
+}
+
+/* (파일 맨 끝에 둬야 위 규칙을 덮음) 아주 좁은 폰(320px대): 띠 그림을 빼고 글자를 조금 줄여 한 줄에 다 보이게 + 1줄 머리 간격 줄임 */
+@media (max-width:359px){
+  .topbar{padding:0 34px;font-size:12px;letter-spacing:-.04em}
+  .tb-in img{display:none}
+  .hd-r1{gap:12px}
+  .hd-r1 .hd-menu{margin-left:-4px}
+  .brand .bi{width:30px}.brand .bw{height:20px}
+  .hd-cta{padding:0 10px;font-size:13px}
 }

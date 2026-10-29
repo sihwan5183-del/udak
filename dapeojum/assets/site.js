@@ -66,13 +66,150 @@
   }
   function track(ev) { try { if (window.fbq) window.fbq('track', ev); if (window.gtag) window.gtag('event', ev); } catch (e) {} }
 
-  /* ---------- 맨 위 띠 · 머리 ---------- */
+  var V = '20261029'; // 이모지 그림 주소 끝 숫자 (그림을 바꾸면 같이 바꾸기)
+  function emo(f, w, h, lazy) { return '<img src="assets/emoji/s/' + f + '.webp?v=' + V + '" width="' + w + '" height="' + h + '" alt=""' + (lazy ? ' loading="lazy"' : '') + '>'; }
+  var CHEV = '<svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+
+  /* ---------- 맨 위 띠: 문구 3개를 바탕색과 같이 돌림 (2026-10-29 사장님: 문구 3개 추천)
+     - 첫 문구는 index·find HTML에도 똑같이 들어가 있음 (바뀌면 같이 고치기)
+     - form: 누르면 상담 신청 창이 그 주제로 열림 / href: 그 화면으로 이동 ---------- */
+  var TOPBAR = [
+    { ic: ['brand_megaphone', 160, 137], t: 'U+·SKT·KT 요금 비교, 다퍼줌에서 한 번에', href: 'find', cls: '' },
+    { ic: ['etc_pin', 136, 160], t: '이사 가세요? 인터넷 옮기기도 챙겨드려요', form: '인터넷 옮기기', cls: 'tb-k' },
+    { ic: ['etc_handshake', 160, 127], t: '사장님 가게 인터넷, 소호 상품도 있어요', href: 'find?carrier=soho', cls: 'tb-c' }
+  ];
   var topbar = $('#topbar');
   if (topbar) {
     if (store.get('dpz_topbar_off')) topbar.hidden = true;
     var tx = $('.x', topbar);
     if (tx) tx.addEventListener('click', function () { topbar.hidden = true; store.set('dpz_topbar_off', '1'); });
+    var tbIn = $('#tbIn', topbar);
+    if (tbIn && !topbar.hidden) {
+      TOPBAR.forEach(function (m) { var im = new Image(); im.src = 'assets/emoji/s/' + m.ic[0] + '.webp?v=' + V; }); // 바뀔 때 그림이 늦게 뜨지 않게 미리 받기
+      var ti = 0, tbTimer = null;
+      var tbSet = function (i) {
+        var m = TOPBAR[i], img = $('img', tbIn);
+        topbar.classList.remove('tb-k', 'tb-c'); if (m.cls) topbar.classList.add(m.cls);
+        img.src = 'assets/emoji/s/' + m.ic[0] + '.webp?v=' + V; img.width = m.ic[1]; img.height = m.ic[2];
+        $('.tb-t', tbIn).textContent = m.t;
+        if (m.form) { tbIn.setAttribute('href', '#'); tbIn.setAttribute('data-open-form', ''); tbIn.setAttribute('data-topic', m.form); }
+        else { tbIn.setAttribute('href', m.href); tbIn.removeAttribute('data-open-form'); tbIn.removeAttribute('data-topic'); }
+      };
+      var tbNext = function () {
+        ti = (ti + 1) % TOPBAR.length;
+        if (reduce) { tbSet(ti); return; }
+        tbIn.classList.add('out');
+        setTimeout(function () { tbSet(ti); tbIn.classList.remove('out'); tbIn.classList.add('pre'); void tbIn.offsetWidth; tbIn.classList.remove('pre'); }, 260);
+      };
+      var tbStop = function () { if (tbTimer) clearInterval(tbTimer); tbTimer = null; };
+      var tbPlay = function () { tbStop(); tbTimer = setInterval(tbNext, 4500); };
+      topbar.addEventListener('mouseenter', tbStop); topbar.addEventListener('mouseleave', tbPlay);
+      tbPlay();
+    }
   }
+
+  /* ---------- 짧은 알림 · 준비 중인 메뉴 (후기·이벤트·룰렛 — 2026-10-29 사장님: 곧 할 예정) ---------- */
+  var toastEl = null, toastT = null;
+  function toast(msg) {
+    if (!toastEl) { document.body.insertAdjacentHTML('beforeend', '<div class="toast" id="dpzToast" role="status" aria-live="polite"></div>'); toastEl = $('#dpzToast'); }
+    toastEl.textContent = msg; toastEl.classList.add('show');
+    clearTimeout(toastT); toastT = setTimeout(function () { toastEl.classList.remove('show'); }, 1800);
+  }
+  document.addEventListener('click', function (e) {
+    var s = e.target.closest('[data-soon]'); if (!s) return;
+    e.preventDefault(); toast(s.getAttribute('data-soon') + ' 준비 중이에요');
+  });
+
+  /* ---------- '인터넷' 칸 펼침: 통신사 바로가기 (PC에서 마우스 올리면) ---------- */
+  var CARS = (window.DPZ_PLANS && window.DPZ_PLANS.carriers) || [];
+  function carLinks() { return CARS.map(function (c) { return '<a href="find?carrier=' + c.id + '" aria-label="' + esc(c.name) + '">' + carrierMark(c, false, true) + '</a>'; }).join(''); }
+  $$('[data-cat-drop]').forEach(function (d) {
+    d.innerHTML = '<div class="cat-in"><p>통신사 바로가기</p><div class="cat-grid">' + carLinks() + '</div><a class="cat-all" href="find#table">통신사별 요금표 전체 보기' + CHEV + '</a></div>';
+  });
+
+  /* ---------- ☰ 전체 메뉴판 (아정당 메뉴판 · 미소 전체 화면 메뉴 참고, 2026-10-29)
+     - 위 아이콘 칸: 상품·안내 / 통신사 로고 / 혜택(이벤트·룰렛 — 준비 중) / 고객 지원(후기 — 준비 중)
+     - PC는 ☰ 밑으로 펼쳐지는 판, 폰은 화면 전체 ---------- */
+  var MM_GRID = [
+    { t: '인터넷', ic: ['product_wifi', 160, 130], href: './' },
+    { t: '인터넷+TV', ic: ['product_tv', 160, 121], href: 'find?combo=tv' },
+    { t: '인터넷 옮기기', ic: ['etc_pin', 136, 160], form: '인터넷 옮기기' },
+    { t: '소호', ic: ['etc_handshake', 160, 127], href: 'find?carrier=soho' },
+    { t: '요금표', ic: ['etc_doc_check', 156, 160], href: 'find#table' },
+    { t: '상품 찾기', ic: ['etc_search', 156, 160], href: 'find?mode=recommend' },
+    { t: '이용 방법', ic: ['etc_calendar', 160, 140], href: './#how' },
+    { t: '자주 묻는 질문', ic: ['etc_chat', 160, 113], href: './#faq' }
+  ];
+  var MM_BENEFIT = [
+    { t: '이벤트', ic: ['brand_confetti', 160, 124], soon: true },
+    { t: '룰렛', ic: ['brand_box_open', 160, 135], soon: true }
+  ];
+  var MM_HELP = [
+    { t: '후기', ic: ['etc_thumbs_stars', 122, 160], soon: true },
+    { t: '상담 신청', ic: ['etc_headset', 160, 146], form: '전체 메뉴' },
+    { t: '개인정보처리방침', ic: ['etc_shield', 134, 160], href: 'privacy' }
+  ];
+  function mmAttrs(m) {
+    if (m.soon) return 'href="#" data-soon="' + esc(m.t) + '"';
+    if (m.form) return 'href="#" data-open-form data-topic="' + esc(m.form) + '"';
+    return 'href="' + m.href + '"';
+  }
+  function mmList(items) {
+    return '<ul class="mm-list">' + items.map(function (m) {
+      return '<li><a ' + mmAttrs(m) + '>' + emo(m.ic[0], m.ic[1], m.ic[2]) + '<span>' + esc(m.t) + '</span>' + (m.soon ? '<em>오픈 예정</em>' : '') + CHEV + '</a></li>';
+    }).join('') + '</ul>';
+  }
+  var mm = null;
+  function buildMenu() {
+    document.body.insertAdjacentHTML('beforeend',
+      '<div class="mm" id="mm" hidden><nav class="mm-panel" id="mmPanel" tabindex="-1" aria-label="전체 메뉴">' +
+      '<div class="mm-hd"><a class="brand" href="./" aria-label="다퍼줌 처음으로"><img class="bi" src="assets/logo-icon.webp" width="452" height="377" alt=""><img class="bw" src="assets/logo-word.webp" width="585" height="172" alt="다퍼줌"></a>' +
+      '<button class="mm-x" type="button" data-mm-close aria-label="메뉴 닫기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
+      '<div class="mm-grid">' + MM_GRID.map(function (m) { return '<a ' + mmAttrs(m) + '><span class="ic">' + emo(m.ic[0], m.ic[1], m.ic[2]) + '</span>' + esc(m.t) + '</a>'; }).join('') + '</div>' +
+      '<p class="mm-h">통신사</p><div class="mm-car">' + carLinks() + '</div>' +
+      '<p class="mm-h">혜택</p>' + mmList(MM_BENEFIT) +
+      '<p class="mm-h">고객 지원</p>' + mmList(MM_HELP) +
+      '<div class="mm-card">' + '<img src="assets/emoji/brand_mascot_heart.webp?v=' + V + '" width="399" height="432" alt="">' +
+      '<span><b>1분이면 상담 신청 끝</b><small>이름과 연락처만 남겨주세요</small></span>' +
+      '<a class="btn btn-k" href="#" data-open-form data-topic="전체 메뉴">신청하기</a></div>' +
+      '</nav></div>');
+    mm = $('#mm');
+  }
+  var isPC = function () { return window.matchMedia && matchMedia('(min-width:1024px)').matches; };
+  function openMenu(btn) {
+    if (!mm) buildMenu();
+    var panel = $('#mmPanel');
+    if (isPC()) {
+      var r = btn.getBoundingClientRect();
+      var top = Math.round(r.bottom + 10);
+      panel.style.top = top + 'px';
+      panel.style.right = Math.max(12, Math.round(window.innerWidth - r.right)) + 'px';
+      panel.style.maxHeight = Math.max(320, window.innerHeight - top - 16) + 'px'; // 화면 아래로 안 넘치게
+    } else { panel.style.top = ''; panel.style.right = ''; panel.style.maxHeight = ''; document.body.classList.add('mlock'); }
+    mm.hidden = false;
+    $$('[data-menu]').forEach(function (b) { b.setAttribute('aria-expanded', 'true'); });
+    panel.scrollTop = 0;
+    panel.focus({ preventScroll: true });
+  }
+  function closeMenu() {
+    if (!mm || mm.hidden) return;
+    mm.hidden = true;
+    document.body.classList.remove('mlock');
+    $$('[data-menu]').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); });
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-menu]');
+    if (b) { e.preventDefault(); if (mm && !mm.hidden) closeMenu(); else openMenu(b); return; }
+    if (!mm || mm.hidden) return;
+    if (e.target === mm || e.target.closest('[data-mm-close]')) { e.preventDefault(); closeMenu(); return; }
+    if (e.target.closest('#mmPanel a, #mmPanel button')) closeMenu(); // 메뉴를 고르면 닫힘 (상담 신청 창은 따로 열림)
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && mm && !mm.hidden) closeMenu(); });
+  // ☰에 손이 가면 메뉴판을 미리 만들어 둠 → 열 때 그림이 이미 받아져 있게 (페이지 처음 열 때는 안 받음)
+  $$('[data-menu]').forEach(function (b) {
+    ['mouseenter', 'touchstart', 'focus'].forEach(function (ev) { b.addEventListener(ev, function () { if (!mm) buildMenu(); }, { passive: true, once: true }); });
+  });
+  window.addEventListener('resize', function () { if (mm && !mm.hidden && isPC()) closeMenu(); });
   var hd = $('.hd');
   if (hd) window.addEventListener('scroll', function () { hd.classList.toggle('scrolled', window.scrollY > 4); }, { passive: true });
 
@@ -95,7 +232,7 @@
     '<div class="sheet" id="sheet">' +
     '<div class="sheet-hd"><h2 id="fmTitle">1분 상담 신청</h2><button class="sheet-x" type="button" data-close aria-label="닫기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
     '<div class="sheet-bd">' +
-    '<div class="fm-intro"><p class="fm-lead">남겨주신 연락처로 담당자가 연락드려요. 상담 신청은 가입이 아니에요.</p>' +
+    '<div class="fm-intro"><p class="fm-lead">남겨주신 연락처로 담당자가 연락드려요.</p>' +
     '<div class="picked" id="picked" hidden><small>선택한 상품</small><b id="pickedTxt"></b><button type="button" id="pickedClear">지우기</button></div></div>' +
     '<form class="fm" id="form" novalidate>' +
     '<div class="f" data-f="name"><label for="fName">이름 <span class="req" aria-hidden="true">*</span></label>' +
@@ -131,7 +268,7 @@
     '<div class="done" id="done" aria-live="polite"><div class="ok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 12.5l5 5 10-11"/></svg></div>' +
     '<h3 tabindex="-1" id="doneTitle">상담 신청이 접수됐어요</h3>' +
     '<div class="num" id="doneNum" hidden><small>접수번호</small><b id="doneNo"></b><button type="button" id="copyNo">접수번호 복사</button></div>' +
-    '<p id="doneText">담당자가 남겨주신 연락처로 연락드려요.</p><p class="soft">상담 신청은 가입이 아니에요. 편하게 상담받아 보세요.</p>' +
+    '<p id="doneText">담당자가 남겨주신 연락처로 연락드려요.</p>' +
     '<button class="btn btn-k close" type="button" data-close>닫기</button></div>' +
     '</div></div></div>';
 
