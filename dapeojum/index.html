@@ -8,7 +8,9 @@
      · 다퍼줌은 완전히 별도 사업자 → 특정 통신사 대리점 문구·인증마크·다른 회사 정보 넣지 말 것
      · 사은품(지원금)은 당분간 금액 없이 '상담 시 안내' / 사업자 정보는 나중에 받으면 하단에 넣기
      · 전화·카톡 없이 상담 신청서(공통 assets/site.js 창)로만 받음 → ssgadmin 영업관리 '다퍼줌' 시트
-     · 후기·이벤트 영역은 실제 내용이 없어 넣지 않음 (지어내지 말 것) -->
+     · 후기·이벤트 영역은 실제 내용이 없어 넣지 않음 (지어내지 말 것)
+     · 2026-10-29 사장님이 준 이모지·통신사 로고: assets/emoji/ (원본 크기) · assets/emoji/s/ (작은 칸용)
+       통신사 칸은 이름 글자 없이 로고 마크만 (로고 없는 딜라이브·HCN만 이름 글자) -->
 <title>다퍼줌 | 인터넷·TV 가입 혜택 상담</title>
 <meta name="description" content="KT·LG U+·SK브로드밴드 등 통신사별 인터넷·TV 요금을 비교하고, 받을 수 있는 사은품과 결합 할인은 다퍼줌 상담으로 먼저 확인하세요. 상담 신청은 가입이 아니에요.">
 <meta name="theme-color" content="#FFB61C">
@@ -26,7 +28,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://ebggtghzqtxfylbhqfoh.supabase.co" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wanted-sans@1.0.3/fonts/webfonts/variable/split/WantedSansVariable.css">
-<link rel="stylesheet" href="assets/site.css?v=20261028b">
+<link rel="stylesheet" href="assets/site.css?v=20261029">
 <style>
 .sec{margin-top:44px}
 /* 첫 화면 배너 (아정당식 둥근 카드 · 넘기기) */
@@ -50,10 +52,18 @@
 .htag{position:absolute;left:0;bottom:-9px;transform:translateX(-50%) rotate(var(--r,0deg));transform-origin:50% calc(100% - 9px);display:block;padding:8px 13px 19px;background:#fff;color:var(--ink);font-size:13.5px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;line-height:1.2;
   clip-path:polygon(0 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px));border-radius:7px 7px 0 0}
 .htag::after{content:"";position:absolute;left:50%;bottom:5px;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 2.5px var(--yellow)}
+.htag .ti{display:inline-block;width:auto;max-width:none;height:17px;margin:-3px 4px -2px -2px;vertical-align:middle}
 .p1{left:15%;top:38%}.p1 .htag{--r:-7deg}
 .p2{left:37%;top:17%}.p2 .htag{--r:-2deg}
 .p3{left:63%;top:20%}.p3 .htag{--r:4deg}
 .p4{left:86%;top:40%}.p4 .htag{--r:8deg}
+/* 폰: 꼬리표에 이모지가 들어가 조금 작게 + 위 줄 두 개를 양옆으로 벌려 안 겹치게 */
+@media (max-width:599px){
+  .htag{font-size:12.5px;padding:7px 10px 17px}
+  .htag .ti{height:15px;margin:-2px 3px -2px -1px}
+  .p1{left:14%;top:40%}.p2{left:32%;top:16%}.p3{left:68%;top:16%}.p4{left:85%;top:42%}
+}
+@media (max-width:350px){.p2{left:30%}.p3{left:70%}}
 @media (prefers-reduced-motion:no-preference){
   .stage.ready .box{animation:boxPop .5s cubic-bezier(.3,1.6,.5,1) both}
   .stage.ready .pin{animation:tagRise .75s cubic-bezier(.2,.9,.25,1.15) both;animation-delay:calc(.28s + var(--i)*.09s)}
@@ -62,12 +72,13 @@
 @keyframes boxPop{0%{transform:translateY(10px) scale(.94,.9)}55%{transform:translateY(-6px) scale(1.03,1.05)}100%{transform:none}}
 @keyframes tagRise{0%{transform:translate(var(--dx),var(--dy)) scale(.25);opacity:0}20%{opacity:1}100%{transform:none;opacity:1}}
 @keyframes draw{to{stroke-dashoffset:0}}
-.hart svg.ill{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:min(88%,320px);height:auto}
+.hart .ill{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:auto;height:74%;max-width:88%;object-fit:contain;filter:drop-shadow(0 14px 16px rgba(168,86,0,.16))}
 
 /* 통신사별 요금제 칸 */
 .ctiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .ctile{aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:6px;border:1px solid var(--line2);border-radius:4px;background:#fff;text-align:center;transition:border-color .15s,box-shadow .15s}
 .ctile:hover{border-color:var(--ink2);box-shadow:0 6px 16px rgba(28,35,43,.06)}
+.ctile{--k:34px}
 .ctile svg{width:22px;height:22px}
 .ctile .cname{font-size:14.5px}
 
@@ -88,7 +99,7 @@
 .kimg .kgo{position:absolute;z-index:2;left:14px;bottom:14px;width:26px;height:26px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 2px 6px rgba(28,35,43,.08)}
 .kimg .kgo svg{width:14px;height:14px;stroke:var(--ink2);stroke-width:2.2;fill:none}
 .kimg .ktile{position:absolute;right:-6%;bottom:-16%;width:52%;aspect-ratio:1/1;border-radius:24%;background:#fff;transform:rotate(-16deg);display:grid;place-items:center;box-shadow:-6px 10px 24px rgba(28,35,43,.12)}
-.kimg .ktile .cname{font-size:21px;transform:translateY(-10%)}
+.kimg .ktile .clogo{--k:36%;transform:translate(-4%,-14%)}
 .kimg .kbox{position:absolute;right:4%;bottom:-6%;width:50%;height:auto;transform:rotate(-8deg);filter:drop-shadow(0 10px 12px rgba(120,60,0,.25))}
 .kcap{margin-top:10px;font-size:14.5px;font-weight:650;color:var(--ink);line-height:1.45;letter-spacing:-.02em}
 
@@ -110,7 +121,7 @@
 .step + .step{border-top:1px solid var(--line)}
 .step .th{width:84px;height:64px;border-radius:8px;flex:none;display:grid;place-items:center;overflow:hidden}
 .step .th svg{width:100%;height:100%}
-.step .th img{width:46%;height:auto}
+.step .th img{width:auto;height:auto;max-width:60%;max-height:70%}
 .step b{display:block;font-size:15.5px;font-weight:800;color:var(--ink);letter-spacing:-.02em}
 .step p{margin-top:3px;font-size:13.5px;color:var(--sub);line-height:1.5}
 .step .no{color:var(--brown);margin-right:4px}
@@ -120,11 +131,12 @@
 .bnr{position:relative;display:flex;flex-direction:column;justify-content:center;min-height:116px;padding:20px 120px 20px 20px;border-radius:10px;overflow:hidden;text-align:left;width:100%}
 .bnr small{display:block;font-size:13.5px;font-weight:600;opacity:.82;line-height:1.4}
 .bnr b{display:block;margin-top:4px;font-size:19px;font-weight:850;line-height:1.35;letter-spacing:-.03em}
-.bnr .art{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:92px;height:auto}
+.bnr .art{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:auto;height:96px;max-width:104px;object-fit:contain}
 .bnr-k{background:var(--ink);color:#fff}
 .bnr-y{background:var(--yellow);color:var(--ink)}
 
 @media (min-width:600px){
+  .ctile{--k:40px}
   .ctiles{gap:12px}
   .ctile .cname{font-size:16px}
   .kcards{gap:20px 14px}
@@ -139,7 +151,10 @@
   .hslide .notes{margin-top:14px}
   .hart{height:320px;margin-top:0}
   .htag{font-size:15px;padding:9px 14px 20px}
+  .htag .ti{height:20px;margin-right:5px}
+  .p2{left:35%}.p3{left:65%}
   .ctiles{grid-template-columns:repeat(8,minmax(0,1fr));gap:16px}
+  .ctile{--k:44px}
   .ctile .cname{font-size:16.5px}
   .findbar{padding:20px 24px}
   .kcards{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
@@ -152,12 +167,12 @@
   .banners{grid-template-columns:1fr 1fr;gap:16px}
   .bnr{min-height:148px;padding:28px 170px 28px 26px}
   .bnr b{font-size:23px}
-  .bnr .art{right:26px;width:120px}
+  .bnr .art{right:30px;height:124px;max-width:136px}
 }
 </style>
 </head>
 <body>
-<div class="topbar" id="topbar"><img src="assets/logo-icon.webp" width="452" height="377" alt="">상담 신청은 가입이 아니에요.<span class="tb-more">&nbsp;혜택만 들어보셔도 괜찮아요.</span><button class="x" type="button" aria-label="안내 닫기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<div class="topbar" id="topbar"><img src="assets/emoji/s/brand_megaphone.webp?v=20261029" width="160" height="137" alt="">상담 신청은 가입이 아니에요.<span class="tb-more">&nbsp;혜택만 들어보셔도 괜찮아요.</span><button class="x" type="button" aria-label="안내 닫기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
 
 <header class="hd">
   <div class="wrap">
@@ -190,11 +205,11 @@
             <div class="hart">
               <div class="stage" id="stage" aria-hidden="true">
                 <svg class="strings" id="strings"></svg>
-                <img class="box" id="giftBox" src="assets/logo-icon.webp" width="452" height="377" alt="">
-                <span class="pin p1" style="--i:0"><span class="htag">사은품</span></span>
-                <span class="pin p2" style="--i:1"><span class="htag">결합 할인</span></span>
-                <span class="pin p3" style="--i:2"><span class="htag">설치 일정</span></span>
-                <span class="pin p4" style="--i:3"><span class="htag">요금 상담</span></span>
+                <img class="box" id="giftBox" src="assets/emoji/brand_box.webp?v=20261029" width="431" height="370" alt="" data-kx=".423" data-ky=".25">
+                <span class="pin p1" style="--i:0"><span class="htag"><img class="ti" src="assets/emoji/s/benefit_bag.webp?v=20261029" width="136" height="160" alt="">사은품</span></span>
+                <span class="pin p2" style="--i:1"><span class="htag"><img class="ti" src="assets/emoji/s/benefit_coupon.webp?v=20261029" width="160" height="109" alt="">결합 할인</span></span>
+                <span class="pin p3" style="--i:2"><span class="htag"><img class="ti" src="assets/emoji/s/etc_calendar.webp?v=20261029" width="160" height="140" alt="">설치 일정</span></span>
+                <span class="pin p4" style="--i:3"><span class="htag"><img class="ti" src="assets/emoji/s/benefit_money.webp?v=20261029" width="160" height="131" alt="">요금 상담</span></span>
               </div>
             </div>
           </div>
@@ -205,7 +220,7 @@
               <p class="hsub">혜택만 들어보셔도 괜찮아요.<br>결정은 천천히 하셔도 돼요.</p>
             </div>
             <div class="hart" aria-hidden="true">
-              <svg class="ill" viewBox="0 0 420 220"><rect x="40" y="34" width="210" height="112" rx="26" fill="#fff"/><path d="M92 146l-6 34 38-34z" fill="#fff"/><rect x="74" y="66" width="140" height="12" rx="6" fill="#EAEEF3"/><rect x="74" y="92" width="96" height="12" rx="6" fill="#EAEEF3"/><rect x="214" y="86" width="168" height="96" rx="24" fill="#FFB61C"/><path d="M330 182l8 26-34-26z" fill="#FFB61C"/><circle cx="262" cy="134" r="8" fill="#1C232B"/><circle cx="298" cy="134" r="8" fill="#1C232B"/><circle cx="334" cy="134" r="8" fill="#1C232B"/></svg>
+              <img class="ill" src="assets/emoji/etc_chat.webp?v=20261029" width="431" height="305" alt="" loading="lazy">
             </div>
           </div>
           <div class="hslide" role="link" tabindex="-1" data-slide-href="find?mode=recommend">
@@ -216,7 +231,7 @@
               <p class="notes">* 고르기 어려우시면 상담 때 같이 정해도 괜찮아요</p>
             </div>
             <div class="hart" aria-hidden="true">
-              <svg class="ill" viewBox="0 0 420 220"><rect x="62" y="40" width="250" height="150" rx="18" fill="#fff"/><rect x="84" y="62" width="64" height="40" rx="8" fill="#FFF4D2"/><rect x="156" y="62" width="64" height="40" rx="8" fill="#1C232B"/><rect x="228" y="62" width="64" height="40" rx="8" fill="#FFF4D2"/><rect x="84" y="114" width="208" height="12" rx="6" fill="#EAEEF3"/><rect x="84" y="136" width="150" height="12" rx="6" fill="#EAEEF3"/><rect x="84" y="160" width="100" height="16" rx="8" fill="#FFB61C"/><circle cx="318" cy="132" r="42" fill="none" stroke="#1C232B" stroke-width="14"/><circle cx="318" cy="132" r="30" fill="#FFB61C" opacity=".35"/><path d="M348 162l36 36" stroke="#1C232B" stroke-width="16" stroke-linecap="round"/></svg>
+              <img class="ill" src="assets/emoji/brand_mascot_basic.webp?v=20261029" width="432" height="321" alt="" loading="lazy">
             </div>
           </div>
         </div>
@@ -248,19 +263,19 @@
       <div class="sec-h"><h2 id="tblTitle">통신사별 요금표 한눈에 보기</h2><a class="more" href="find#table">더보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a></div>
       <div class="kcards">
         <a class="kcard" href="#how">
-          <div class="kimg" style="background:#FFD66B"><p class="kt">다퍼줌<br>이용 방법</p><span class="kgo"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span><img class="kbox" src="assets/logo-icon.webp" width="452" height="377" alt="" loading="lazy"></div>
+          <div class="kimg" style="background:#FFD66B"><p class="kt">다퍼줌<br>이용 방법</p><span class="kgo"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span><img class="kbox" src="assets/emoji/brand_speech.webp?v=20261029" width="431" height="348" alt="" loading="lazy"></div>
           <p class="kcap">신청부터 설치까지 간편하게, 1분이면 상담 신청 끝</p>
         </a>
         <a class="kcard" href="find?carrier=kt#table">
-          <div class="kimg" style="background:#F1F2F4"><p class="kt">KT<br>요금표</p><span class="kgo"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span><span class="ktile"><span class="cname">KT</span></span></div>
+          <div class="kimg" style="background:#F1F2F4"><p class="kt">KT<br>요금표</p><span class="kgo"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span><span class="ktile"><img class="clogo" src="assets/emoji/s/carrier_kt.webp?v=20261029" width="160" height="132" alt="" style="--sr:1.013" loading="lazy"></span></div>
           <p class="kcap">KT 인터넷·TV 요금표 한눈에 보기</p>
         </a>
         <a class="kcard" href="find?carrier=lgu#table">
-          <div class="kimg" style="background:#FBEFF3"><p class="kt">LG U+<br>요금표</p><span class="kgo"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span><span class="ktile"><span class="cname">LG U+</span></span></div>
+          <div class="kimg" style="background:#FBEFF3"><p class="kt">LG U+<br>요금표</p><span class="kgo"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span><span class="ktile"><img class="clogo" src="assets/emoji/s/carrier_lguplus.webp?v=20261029" width="160" height="58" alt="" style="--sr:1.661" loading="lazy"></span></div>
           <p class="kcap">LG U+ 인터넷·TV 요금표 한눈에 보기</p>
         </a>
         <a class="kcard" href="find?carrier=sk#table">
-          <div class="kimg" style="background:#FDF2E6"><p class="kt">SK브로드밴드<br>요금표</p><span class="kgo"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span><span class="ktile"><span class="cname">SK</span></span></div>
+          <div class="kimg" style="background:#FDF2E6"><p class="kt">SK브로드밴드<br>요금표</p><span class="kgo"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span><span class="ktile"><img class="clogo" src="assets/emoji/s/carrier_sk.webp?v=20261029" width="160" height="138" alt="" style="--sr:1.077" loading="lazy"></span></div>
           <p class="kcap">SK브로드밴드 인터넷·TV 요금표 한눈에 보기</p>
         </a>
       </div>
@@ -284,15 +299,15 @@
         <div class="sec-h"><h2>다퍼줌 이용 방법</h2></div>
         <div class="steps">
           <div class="step">
-            <span class="th" style="background:#EAEEF3"><svg viewBox="0 0 84 64" aria-hidden="true"><rect x="28" y="8" width="28" height="52" rx="6" fill="#1C232B"/><rect x="31" y="12" width="22" height="40" rx="3" fill="#fff"/><rect x="34" y="17" width="16" height="4" rx="2" fill="#EAEEF3"/><rect x="34" y="24" width="16" height="4" rx="2" fill="#EAEEF3"/><rect x="34" y="38" width="16" height="6" rx="3" fill="#FFB61C"/><circle cx="60" cy="16" r="9" fill="#FFB61C"/><path d="M56 16l3 3 5-6" fill="none" stroke="#1C232B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="th" style="background:#EAEEF3"><img src="assets/emoji/s/etc_chat.webp?v=20261029" width="160" height="113" alt="" loading="lazy"></span>
             <span><b><span class="no">1</span>1분이면 상담 신청 끝</b><p>이름과 연락처만 남겨주세요. 담당자가 전화로 자세히 안내해 드려요.</p></span>
           </div>
           <div class="step">
-            <span class="th" style="background:#FFF4D2"><img src="assets/logo-icon.webp" width="452" height="377" alt="" loading="lazy"></span>
+            <span class="th" style="background:#FFF4D2"><img src="assets/emoji/s/benefit_gift.webp?v=20261029" width="160" height="146" alt="" loading="lazy"></span>
             <span><b><span class="no">2</span>받을 수 있는 혜택부터 먼저</b><p>사은품과 결합 할인까지, 우리 집에서 받을 수 있는 혜택을 먼저 알려드려요.</p></span>
           </div>
           <div class="step">
-            <span class="th" style="background:#EAEEF3"><svg viewBox="0 0 84 64" aria-hidden="true"><rect x="20" y="12" width="44" height="42" rx="6" fill="#fff"/><rect x="20" y="12" width="44" height="12" rx="6" fill="#1C232B"/><rect x="20" y="18" width="44" height="6" fill="#1C232B"/><rect x="29" y="8" width="4" height="9" rx="2" fill="#F98E14"/><rect x="51" y="8" width="4" height="9" rx="2" fill="#F98E14"/><g fill="#EAEEF3"><rect x="25" y="29" width="8" height="6" rx="1.5"/><rect x="38" y="29" width="8" height="6" rx="1.5"/><rect x="51" y="29" width="8" height="6" rx="1.5"/><rect x="25" y="40" width="8" height="6" rx="1.5"/><rect x="51" y="40" width="8" height="6" rx="1.5"/></g><rect x="38" y="40" width="8" height="6" rx="1.5" fill="#FFB61C"/></svg></span>
+            <span class="th" style="background:#EAEEF3"><img src="assets/emoji/s/etc_calendar.webp?v=20261029" width="160" height="140" alt="" loading="lazy"></span>
             <span><b><span class="no">3</span>설치 일정까지 챙겨드려요</b><p>가입을 결정하시면 설치 날짜 잡기까지 담당자가 끝까지 도와드려요.</p></span>
           </div>
         </div>
@@ -306,11 +321,11 @@
       <div class="banners">
         <button class="bnr bnr-k" type="button" data-open-form data-topic="상담 안내 배너">
           <small>1분이면 상담 신청 끝</small><b>상담 신청은<br>가입이 아니에요</b>
-          <img class="art" src="assets/logo-icon.webp" width="452" height="377" alt="" loading="lazy">
+          <img class="art" src="assets/emoji/brand_mascot_heart.webp?v=20261029" width="399" height="432" alt="" loading="lazy">
         </button>
         <a class="bnr bnr-y" href="find?mode=recommend">
           <small>고르기 어려우시면 상담 때 같이 정해도 괜찮아요</small><b>나에게 맞는<br>상품 찾기</b>
-          <svg class="art" viewBox="0 0 120 100" aria-hidden="true"><circle cx="50" cy="44" r="30" fill="#fff" stroke="#1C232B" stroke-width="10"/><circle cx="42" cy="36" r="7" fill="#FFB61C"/><path d="M73 67l26 26" stroke="#1C232B" stroke-width="12" stroke-linecap="round"/></svg>
+          <img class="art" src="assets/emoji/brand_mascot_basic.webp?v=20261029" width="432" height="321" alt="" loading="lazy">
         </a>
       </div>
     </div>
@@ -330,22 +345,23 @@
   <button class="y" type="button" data-open-form data-topic="오른쪽 상담하기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4.5-1 10-10-3.5-3.5-10 10z"/></svg>1분 상담 신청</button>
   <a class="g" href="#faq">자주 묻는 질문</a>
   <a class="k" href="find?mode=recommend">나에게 맞는 상품 찾기</a>
-  <div class="note"><img src="assets/logo-icon.webp" width="452" height="377" alt="" loading="lazy"><b>상담 신청은<br>가입이 아니에요</b><p>혜택만 들어보셔도 괜찮아요</p></div>
+  <div class="note"><img src="assets/emoji/brand_mascot_heart.webp?v=20261029" width="399" height="432" alt="" loading="lazy"><b>상담 신청은<br>가입이 아니에요</b><p>혜택만 들어보셔도 괜찮아요</p></div>
 </aside>
 
 <div class="sticky" id="sticky"><button class="btn btn-k" type="button" data-open-form data-topic="하단 고정 버튼"><svg viewBox="0 0 24 24" fill="none" stroke="#FFB61C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12.5l5 5 10-11"/></svg>1분 상담 신청하기</button></div>
 
-<script src="assets/plans.js?v=20261028b"></script>
-<script src="assets/site.js?v=20261028b"></script>
+<script src="assets/plans.js?v=20261029"></script>
+<script src="assets/site.js?v=20261029"></script>
 <script>
 (function(){
   'use strict';
   var D = window.DPZ, $ = D.$, $$ = D.$$;
 
-  /* 통신사별 요금제 칸 (상품 찾기로 이동, 그 통신사 선택된 채로) */
+  /* 통신사별 요금제 칸 (상품 찾기로 이동, 그 통신사 선택된 채로)
+     2026-10-29 사장님: 로고가 있는 통신사는 이름 글자 없이 마크만 / 로고 없는 곳(딜라이브·HCN)은 와이파이+이름 그대로 */
   var wifi = '<svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" aria-hidden="true"><path d="M3.5 9.5a12 12 0 0 1 17 0" stroke="#FFB61C" stroke-width="2.4"/><path d="M7 13a7 7 0 0 1 10 0" stroke="#F98E14" stroke-width="2.4"/><circle cx="12" cy="17" r="2" fill="#1C232B"/></svg>';
   $('#ctiles').innerHTML = window.DPZ_PLANS.carriers.map(function(c){
-    return '<a class="ctile" href="find?carrier=' + c.id + '">' + wifi + '<span class="cname">' + (c.tile || D.esc(c.name)) + '</span></a>';
+    return '<a class="ctile" href="find?carrier=' + c.id + '">' + (c.logo ? '' : wifi) + D.carrierMark(c) + '</a>';
   }).join('');
 
   /* 첫 화면 배너 넘기기 (5초마다, 손으로 넘겨도 됨) */
@@ -387,7 +403,7 @@
   var stage = $('#stage'), svg = $('#strings'), box = $('#giftBox');
   function drawStrings(){
     var W = stage.clientWidth, H = stage.clientHeight; if (!W || !H) return;
-    var kx = box.offsetLeft + box.offsetWidth * 0.435, ky = box.offsetTop + box.offsetHeight * 0.22;
+    var kx = box.offsetLeft + box.offsetWidth * (+box.getAttribute('data-kx') || 0.435), ky = box.offsetTop + box.offsetHeight * (+box.getAttribute('data-ky') || 0.22); // 리본 매듭 위치
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
     var html = '';
     $$('.pin', stage).forEach(function(p, i){

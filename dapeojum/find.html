@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://ebggtghzqtxfylbhqfoh.supabase.co" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wanted-sans@1.0.3/fonts/webfonts/variable/split/WantedSansVariable.css">
-<link rel="stylesheet" href="assets/site.css?v=20261028b">
+<link rel="stylesheet" href="assets/site.css?v=20261029">
 <style>
 /* 통신사 바로가기 줄 (아정당 상품 화면의 통신사 줄) */
 .cnav{position:sticky;top:var(--hd);z-index:40;background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -56,6 +56,7 @@
 .sel-on{background:var(--pick)!important;border-color:var(--yellow2)!important;box-shadow:inset 0 0 0 1px var(--yellow2)}
 .cgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .cbtn{height:56px;display:grid;place-items:center;padding:0 4px;border:1px solid var(--line2);border-radius:8px;background:#fff;text-align:center}
+.cbtn{--k:28px}
 .cbtn .cname{font-size:14px}
 .cbtn.on{background:var(--pick);border-color:var(--yellow2);box-shadow:inset 0 0 0 1px var(--yellow2)}
 .combo{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -128,6 +129,7 @@ table.fee{border-collapse:separate;border-spacing:0;width:100%;min-width:560px;f
 .rcard.on{background:var(--pick);border-color:var(--yellow2);box-shadow:inset 0 0 0 1px var(--yellow2)}
 .rlogo{width:52px;height:52px;border-radius:12px;background:var(--gray);display:grid;place-items:center;padding:2px}
 .rcard.on .rlogo{background:#fff}
+.rlogo{--k:26px}
 .rlogo .cname{font-size:13px;text-align:center}
 .rinfo b{display:block;font-size:15.5px;font-weight:800;color:var(--ink);line-height:1.35}
 .rinfo small{display:block;margin-top:3px;font-size:13px;color:var(--sub);line-height:1.4}
@@ -190,6 +192,7 @@ body.lock .mbar{display:none}
   .fsum{position:sticky;top:calc(var(--hd) + 66px);align-self:start}
   .blk + .blk{margin-top:36px}
   .cbtn{height:62px}
+  .cbtn{--k:34px}
   .cbtn .cname{font-size:16px}
   .combo button{height:60px}
   .scard,.tvcard{min-height:146px;padding:22px 20px 18px}
@@ -203,6 +206,7 @@ body.lock .mbar{display:none}
   .fee th,.fee td{padding:10px 10px}
   .rcard{grid-template-columns:68px minmax(0,1fr) auto;gap:18px;padding:22px 24px}
   .rlogo{width:68px;height:68px}
+  .rlogo{--k:34px}
   .rlogo .cname{font-size:15px}
   .rinfo b{font-size:17px}
   .rprice b{font-size:19px}
@@ -212,7 +216,7 @@ body.lock .mbar{display:none}
 </style>
 </head>
 <body>
-<div class="topbar" id="topbar"><img src="assets/logo-icon.webp" width="452" height="377" alt="">상담 신청은 가입이 아니에요.<span class="tb-more">&nbsp;혜택만 들어보셔도 괜찮아요.</span><button class="x" type="button" aria-label="안내 닫기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<div class="topbar" id="topbar"><img src="assets/emoji/s/brand_megaphone.webp?v=20261029" width="160" height="137" alt="">상담 신청은 가입이 아니에요.<span class="tb-more">&nbsp;혜택만 들어보셔도 괜찮아요.</span><button class="x" type="button" aria-label="안내 닫기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
 
 <header class="hd">
   <div class="wrap">
@@ -309,7 +313,7 @@ body.lock .mbar{display:none}
   <button class="y" type="button" data-apply><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4.5-1 10-10-3.5-3.5-10 10z"/></svg>1분 상담 신청</button>
   <a class="g" href="./#faq">자주 묻는 질문</a>
   <a class="k" href="find?mode=recommend" id="fpRec">나에게 맞는 상품 찾기</a>
-  <div class="note"><img src="assets/logo-icon.webp" width="452" height="377" alt="" loading="lazy"><b>상담 신청은<br>가입이 아니에요</b><p>혜택만 들어보셔도 괜찮아요</p></div>
+  <div class="note"><img src="assets/emoji/brand_mascot_heart.webp?v=20261029" width="399" height="432" alt="" loading="lazy"><b>상담 신청은<br>가입이 아니에요</b><p>혜택만 들어보셔도 괜찮아요</p></div>
 </aside>
 
 <div class="mbar" id="mbar" aria-hidden="true"><div class="mt"><small id="mbT"></small><b id="mbP"></b></div><button class="btn btn-k" type="button" data-apply>상담 신청</button></div>
@@ -325,8 +329,8 @@ body.lock .mbar{display:none}
   </div>
 </div>
 
-<script src="assets/plans.js?v=20261028b"></script>
-<script src="assets/site.js?v=20261028b"></script>
+<script src="assets/plans.js?v=20261029"></script>
+<script src="assets/site.js?v=20261029"></script>
 <script>
 (function(){
   'use strict';
@@ -395,7 +399,7 @@ body.lock .mbar{display:none}
     st.speed = fixSpeed(c, st.speed);
     $('#cgrid').innerHTML = C.map(function(x){
       var on = x.id === c.id;
-      return '<button type="button" class="cbtn' + (on ? ' on' : '') + '" data-car="' + x.id + '" aria-pressed="' + on + '" aria-label="' + D.esc(x.name) + '"><span class="cname">' + (x.tile || D.esc(x.name)) + '</span></button>';
+      return '<button type="button" class="cbtn' + (on ? ' on' : '') + '" data-car="' + x.id + '" aria-pressed="' + on + '" aria-label="' + D.esc(x.name) + '">' + D.carrierMark(x, false) + '</button>';
     }).join('');
     $$('.combo button').forEach(function(b){ var on = b.getAttribute('data-combo') === st.combo; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
     var sps = speedsOf(c);
@@ -541,7 +545,7 @@ body.lock .mbar{display:none}
         var mine = MINE[rec.isp] === x.c.id ? '<span class="mine">지금 쓰는 통신사</span>' : '';
         var old = rec.bundle ? '<s>' + won(x.fee[0]) + '</s>' : '';
         return '<button type="button" class="rcard' + (on ? ' on' : '') + '" data-ri="' + i + '" aria-pressed="' + on + '">' + badge +
-          '<span class="rlogo"><span class="cname">' + D.esc(x.c.short || x.c.name) + '</span></span>' +
+          '<span class="rlogo">' + (x.c.logo ? D.carrierMark(x.c, false) : '<span class="cname">' + D.esc(x.c.short || x.c.name) + '</span>') + '</span>' +
           '<span class="rinfo"><b>' + title + '</b><small>' + D.esc(x.c.name) + (x.plan ? ' · ' + D.esc(x.plan.name) : '') + mine + '</small><small class="gift">사은품 상담 시 안내</small></span>' +
           '<span class="rprice">' + old + '<b>월 ' + won(priceOf(x)) + '</b></span></button>';
       }).join('');

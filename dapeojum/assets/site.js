@@ -18,6 +18,13 @@
   };
   function won(n) { return Number(n).toLocaleString('ko-KR') + '원'; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  /* 통신사 마크 (2026-10-29 사장님: 이름 글자는 빼고 로고 마크만)
+     - 로고 크기는 --k(칸마다 CSS에서 정함) × --sr(가로세로 비율의 제곱근)로 맞춤 → 넓은 로고·네모 로고가 비슷한 크기로 보임
+     - 로고 파일이 없는 통신사(딜라이브·HCN)는 지금처럼 이름 글자 */
+  function carrierMark(c, alt) {
+    if (!c.logo) return '<span class="cname">' + (c.tile || esc(c.name)) + '</span>';
+    return '<img class="clogo" src="assets/emoji/s/' + c.logo.f + '.webp?v=20261029" width="' + c.logo.w + '" height="' + c.logo.h + '" alt="' + (alt === false ? '' : esc(c.name)) + '" style="--sr:' + (Math.sqrt(c.logo.w / c.logo.h) * (c.logo.s || 1)).toFixed(3) + '" decoding="async">';
+  }
 
   /* ---------- 광고 유입 정보 (이 탭에서 페이지를 옮겨도 유지) ---------- */
   var UTM = {};
@@ -263,5 +270,5 @@
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, fallback); else fallback();
   });
 
-  window.DPZ = { openForm: openForm, won: won, esc: esc, store: store, reduce: reduce, $: $, $$: $$ };
+  window.DPZ = { openForm: openForm, won: won, esc: esc, carrierMark: carrierMark, store: store, reduce: reduce, $: $, $$: $$ };
 })();

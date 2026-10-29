@@ -4,6 +4,8 @@
  * - fee: { 속도: [미결합, 휴대폰 1대 결합] } (원, 부가세 포함)
  * - ready:false 인 통신사는 요금표를 받으면 같은 모양으로 채우면 됨 (사장님이 따로 주기로 함)
  * - tile: 통신사 칸에 쓰는 이름 (좁은 폰 칸에서 단어 중간에 꺾이지 않게 줄바꿈 자리 <br> 지정)
+ * - logo: 통신사 로고 그림 (assets/emoji/s/파일.webp, w·h = 그림 크기, s = 눈으로 보기 크기 보정) — 2026-10-29 사장님이 준 로고.
+ *         로고가 있으면 통신사 칸·버튼에 이름 글자 없이 마크만 보임 / 로고 없는 곳(딜라이브·HCN)은 이름 글자 그대로
  */
 window.DPZ_PLANS = {
   speedInfo: {
@@ -14,7 +16,7 @@ window.DPZ_PLANS = {
   },
   carriers: [
     {
-      id: 'kt', name: 'KT', ready: true,
+      id: 'kt', name: 'KT', ready: true, logo: { f: 'carrier_kt', w: 160, h: 132, s: 0.92 },
       speeds: ['100M', '500M', '1G'],
       note: '기가지니3 기준',
       internet: { '100M': [22000, 18700], '500M': [33000, 22000], '1G': [38500, 27500] },
@@ -27,7 +29,7 @@ window.DPZ_PLANS = {
       ]
     },
     {
-      id: 'lgu', name: 'LG U+', ready: true,
+      id: 'lgu', name: 'LG U+', ready: true, logo: { f: 'carrier_lguplus', w: 160, h: 58 },
       speeds: ['100M', '200M', '500M', '1G'],
       internet: { '100M': [22000, 16500], '200M': [25300, 19800], '500M': [33000, 23100], '1G': [38500, 25300] },
       tv: [
@@ -41,7 +43,7 @@ window.DPZ_PLANS = {
       ]
     },
     {
-      id: 'sk', name: 'SK브로드밴드', short: 'SK', tile: 'SK<br>브로드밴드', ready: true,
+      id: 'sk', name: 'SK브로드밴드', short: 'SK', tile: 'SK<br>브로드밴드', ready: true, logo: { f: 'carrier_sk', w: 160, h: 138 },
       speeds: ['100M', '500M', '1G'],
       note: '와이파이 공유기 미포함 · 요금제에 따라 무상~2,200원',
       internet: { '100M': [22000, 17600], '500M': [33000, 22000], '1G': [38500, 25300] },
@@ -52,9 +54,9 @@ window.DPZ_PLANS = {
         { name: 'Btv 올 넷플릭스', ch: 255, ott: '넷플릭스', fee: { '100M': [52200, 48900], '500M': [59900, 53300], '1G': [65400, 56600] } }
       ]
     },
-    { id: 'skylife', name: 'KT스카이라이프', short: '스카이라이프', tile: 'KT<br>skylife', ready: false },
-    { id: 'hellovision', name: 'LG헬로비전', short: '헬로비전', tile: 'LG<br>헬로비전', ready: false },
-    { id: 'skb', name: 'SKB(알뜰)', ready: false },
+    { id: 'skylife', name: 'KT스카이라이프', short: '스카이라이프', tile: 'KT<br>skylife', ready: false, logo: { f: 'carrier_skylife', w: 160, h: 53 } },
+    { id: 'hellovision', name: 'LG헬로비전', short: '헬로비전', tile: 'LG<br>헬로비전', ready: false, logo: { f: 'carrier_hellovision', w: 160, h: 139, s: 1.25 } },
+    { id: 'skb', name: 'SKB(알뜰)', ready: false, logo: { f: 'carrier_skb', w: 130, h: 160, s: 0.88 } },
     { id: 'dlive', name: '딜라이브', ready: false },
     { id: 'hcn', name: 'HCN', ready: false }
   ]

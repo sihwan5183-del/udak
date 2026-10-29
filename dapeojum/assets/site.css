@@ -26,7 +26,7 @@ h1,h2,h3{color:var(--ink);letter-spacing:-.03em}
 
 /* ---------- 맨 위 띠 ---------- */
 .topbar{position:relative;display:flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:6px 44px;background:var(--yellow);color:var(--ink);font-size:13.5px;font-weight:750;letter-spacing:-.02em;text-align:center;line-height:1.35}
-.topbar img{width:22px;height:auto;flex:none}
+.topbar img{width:24px;height:auto;flex:none}
 .topbar .tb-more{display:none}
 @media (min-width:600px){.topbar .tb-more{display:inline}}
 .topbar .x{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:grid;place-items:center;border-radius:8px}
@@ -62,8 +62,10 @@ h1,h2,h3{color:var(--ink);letter-spacing:-.03em}
 .sec-h .more{display:inline-flex;align-items:center;gap:2px;flex:none;font-size:14.5px;color:var(--sub);font-weight:550}
 .sec-h .more svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none}
 
-/* 통신사 이름 (로고 자리 — 로고 파일을 받으면 바꿔 끼울 수 있게 글자로) */
+/* 통신사 마크: 로고 그림(.clogo) — 로고 파일이 없는 통신사만 이름 글자(.cname)
+   크기 = --k(칸마다 정함) × --sr(그림 가로세로 비율의 제곱근, site.js가 넣음) */
 .cname{font-weight:850;color:var(--ink);letter-spacing:-.03em;line-height:1.15}
+.clogo{display:block;flex:none;width:calc(var(--k,34px) * var(--sr,1));max-width:100%;height:auto}
 
 /* ---------- 하단 (아정당식) ---------- */
 .ft{background:var(--ftbg);padding:44px 0 calc(48px + var(--sticky-pad,0px));color:var(--sub)}
