@@ -28,7 +28,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://ebggtghzqtxfylbhqfoh.supabase.co" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wanted-sans@1.0.3/fonts/webfonts/variable/split/WantedSansVariable.css">
-<link rel="stylesheet" href="assets/site.css?v=20261029">
+<link rel="stylesheet" href="assets/site.css?v=20261029c">
 <style>
 .sec{margin-top:44px}
 /* 첫 화면 배너 (아정당식 둥근 카드 · 넘기기) */
@@ -350,8 +350,8 @@
 
 <div class="sticky" id="sticky"><button class="btn btn-k" type="button" data-open-form data-topic="하단 고정 버튼"><svg viewBox="0 0 24 24" fill="none" stroke="#FFB61C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12.5l5 5 10-11"/></svg>1분 상담 신청하기</button></div>
 
-<script src="assets/plans.js?v=20261029b"></script>
-<script src="assets/site.js?v=20261029b"></script>
+<script src="assets/plans.js?v=20261029c"></script>
+<script src="assets/site.js?v=20261029c"></script>
 <script>
 (function(){
   'use strict';
@@ -361,7 +361,7 @@
      2026-10-29 사장님: 로고가 있는 통신사는 이름 글자 없이 마크만 / 로고 없는 곳(SKT·소호)은 와이파이+이름 */
   var wifi = '<img class="wf" src="assets/emoji/s/product_wifi.webp?v=20261029" width="160" height="130" alt="">';
   $('#ctiles').innerHTML = window.DPZ_PLANS.carriers.map(function(c){
-    return '<a class="ctile" href="find?carrier=' + c.id + '">' + (c.logo ? '' : wifi) + D.carrierMark(c) + '</a>';
+    return '<a class="ctile" href="find?carrier=' + c.id + '"' + (c.pkgs ? ' aria-label="' + D.esc(c.name) + '"' : '') + '>' + (c.logo || c.pkgs ? '' : wifi) + D.carrierMark(c) + '</a>';
   }).join('');
 
   /* 첫 화면 배너 넘기기 (5초마다, 손으로 넘겨도 됨) */

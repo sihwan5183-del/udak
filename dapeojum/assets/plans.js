@@ -47,8 +47,9 @@ window.DPZ_PLANS = {
         { name: '지니TV 넷플릭스 초이스 HD', ch: 266, ott: '넷플릭스', fee: { '100M': [54200, 50900], '500M': [59700, 54200], '1G': [65200, 59700] } }
       ]
     },
-    /* ── 소호 (LG U+ 소호 패키지 · SK브로드밴드 소호 — 두 개를 한 칸으로) ── */
-    { id: 'soho', name: '소호', ready: false, items: ['LG U+ 소호 패키지', 'SK브로드밴드 소호'] },
+    /* ── 소호 (LG U+ 소호 패키지 · SK브로드밴드 소호 — 두 개를 한 칸으로, 누르면 안에서 둘 중 고름)
+          pkgs.of = 칸에 작게 보여 줄 로고(그 통신사 로고를 빌려 씀) ── */
+    { id: 'soho', name: '소호', ready: false, pkgs: [{ name: 'LG U+ 소호 패키지', of: 'lgu' }, { name: 'SK브로드밴드 소호', of: 'sk' }] },
     /* ── 그외 (SK브로드밴드 / SKB+B TV POP 180 / LG헬로비전 / KT스카이라이프 순서) ── */
     {
       id: 'sk', name: 'SK브로드밴드', short: 'SK', tile: 'SK<br>브로드밴드', ready: true, logo: { f: 'carrier_sk', w: 160, h: 138 },

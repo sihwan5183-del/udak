@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://ebggtghzqtxfylbhqfoh.supabase.co" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wanted-sans@1.0.3/fonts/webfonts/variable/split/WantedSansVariable.css">
-<link rel="stylesheet" href="assets/site.css?v=20261029">
+<link rel="stylesheet" href="assets/site.css?v=20261029c">
 <style>
 /* 통신사 바로가기 줄 (아정당 상품 화면의 통신사 줄) */
 .cnav{position:sticky;top:var(--hd);z-index:40;background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -60,6 +60,13 @@
 .cbtn .cname{font-size:14px}
 .cbtn.on{background:var(--pick);border-color:var(--yellow2);box-shadow:inset 0 0 0 1px var(--yellow2)}
 .combo{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+/* 소호 상품 두 개 (LG U+ 소호 패키지 / SK브로드밴드 소호) */
+.pkgs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pkg{--k:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:88px;padding:12px 8px;border:1px solid var(--line2);border-radius:10px;background:#fff;text-align:center}
+.pkg .pl{height:30px;display:flex;align-items:center;justify-content:center}
+.pkg b{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1.3}
+.pkg.on{background:var(--pick);border-color:var(--yellow2);box-shadow:inset 0 0 0 1px var(--yellow2)}
+.pkg.on b{color:var(--brown)}
 .combo button{height:56px;border:1px solid var(--line2);border-radius:8px;background:#fff;font-size:16px;font-weight:650;color:var(--ink2)}
 .combo button.on{background:var(--pick);border-color:var(--yellow2);box-shadow:inset 0 0 0 1px var(--yellow2);color:var(--brown);font-weight:800}
 .speeds{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:8px}
@@ -196,6 +203,9 @@ body.lock .mbar{display:none}
   .cbtn{--k:34px}
   .cbtn .cname{font-size:16px}
   .combo button{height:60px}
+  .pkg{--k:36px;min-height:100px}
+  .pkg .pl{height:36px}
+  .pkg b{font-size:16px}
   .scard,.tvcard{min-height:146px;padding:22px 20px 18px}
   .scard .sp,.tvcard .sp{font-size:24px}
   .scard .sd,.tvcard .sd{font-size:14px}
@@ -254,8 +264,9 @@ body.lock .mbar{display:none}
       <!-- 직접 선택하기 -->
       <div id="direct">
         <section class="blk"><h2>통신사</h2><div class="cgrid" id="cgrid"></div></section>
-        <section class="blk"><h2>조합 선택</h2><div class="combo"><button type="button" data-combo="internet">인터넷 단독</button><button type="button" data-combo="tv">인터넷 + TV</button></div></section>
-        <section class="blk"><h2>인터넷 속도</h2><div class="speeds" id="speeds"></div></section>
+        <section class="blk" id="sohoBlk" hidden><h2>소호 상품</h2><div class="pkgs" id="pkgs"></div></section>
+        <section class="blk" id="comboBlk"><h2>조합 선택</h2><div class="combo"><button type="button" data-combo="internet">인터넷 단독</button><button type="button" data-combo="tv">인터넷 + TV</button></div></section>
+        <section class="blk" id="speedBlk"><h2>인터넷 속도</h2><div class="speeds" id="speeds"></div></section>
         <section class="blk" id="tvBlk">
           <div class="blk-h"><h2>TV 채널</h2><div class="arrows" id="tvArrows"><button type="button" id="tvPrev" aria-label="이전 채널"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><button type="button" id="tvNext" aria-label="다음 채널"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button></div></div>
           <div class="tvs" id="tvs"></div>
@@ -330,8 +341,8 @@ body.lock .mbar{display:none}
   </div>
 </div>
 
-<script src="assets/plans.js?v=20261029b"></script>
-<script src="assets/site.js?v=20261029b"></script>
+<script src="assets/plans.js?v=20261029c"></script>
+<script src="assets/site.js?v=20261029c"></script>
 <script>
 (function(){
   'use strict';
@@ -344,7 +355,7 @@ body.lock .mbar{display:none}
     { v: 'channels', t: 'TV 채널 많이', s: '채널 수가 많은 순' },
     { v: 'ott', t: '넷플릭스·디즈니+', s: 'OTT가 들어간 TV 상품' }
   ];
-  var st = { mode: 'direct', carrier: 'kt', combo: 'tv', speed: '100M', tv: 0 };
+  var st = { mode: 'direct', carrier: 'kt', combo: 'tv', speed: '100M', tv: 0, pkg: -1 };
   var rec = { isp: null, goal: null, tv: true, speed: '500M', bundle: true, sel: 0, list: [], ran: false };
   var q = new URLSearchParams(location.search);
   if (byId[q.get('carrier')]) st.carrier = q.get('carrier');
@@ -369,9 +380,12 @@ body.lock .mbar{display:none}
     var f = c.ready ? (p ? p.fee[sp] : c.internet[sp]) : null;
     return { carrierId: c.id, carrier: c.name, combo: combo, speed: sp, tvName: p ? p.name : null, ch: p ? p.ch : null, base: f ? f[0] : null, bundle: f ? f[1] : null, via: via };
   }
+  function curPkg(){ var c = car(); return c.pkgs && st.pkg > -1 ? c.pkgs[st.pkg] : null; }
   function currentPick(){
     if (st.mode === 'recommend') { var r = rec.list[rec.sel]; return r ? pickFrom(r.c, r.plan ? 'tv' : 'internet', r.sp, r.plan, 'recommend') : null; }
-    return pickFrom(car(), st.combo, st.speed, curPlan(), 'direct');
+    var c = car();
+    if (c.pkgs) { var g = curPkg(); return { carrierId: c.id, carrier: g ? g.name : c.name, combo: null, speed: null, tvName: null, ch: null, base: null, bundle: null, via: 'direct' }; }
+    return pickFrom(c, st.combo, st.speed, curPlan(), 'direct');
   }
   function apply(){
     var k = currentPick();
@@ -402,6 +416,17 @@ body.lock .mbar{display:none}
       var on = x.id === c.id;
       return '<button type="button" class="cbtn' + (on ? ' on' : '') + '" data-car="' + x.id + '" aria-pressed="' + on + '" aria-label="' + D.esc(x.name) + '">' + D.carrierMark(x, false) + '</button>';
     }).join('');
+    var soho = !!c.pkgs;
+    $('#sohoBlk').hidden = !soho; $('#comboBlk').hidden = soho; $('#speedBlk').hidden = soho;
+    if (soho) {
+      $('#pkgs').innerHTML = c.pkgs.map(function(g, k){
+        var on = k === st.pkg, o = byId[g.of];
+        return '<button type="button" class="pkg' + (on ? ' on' : '') + '" data-pkg="' + k + '" aria-pressed="' + on + '"><span class="pl">' + (o ? D.carrierMark(o, false) : '') + '</span><b>' + D.esc(g.name) + '</b></button>';
+      }).join('');
+      $('#tvBlk').hidden = true;
+      renderSummary(); renderTable(); syncNav();
+      return;
+    }
     $$('.combo button').forEach(function(b){ var on = b.getAttribute('data-combo') === st.combo; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
     var sps = speedsOf(c);
     $('#speeds').style.setProperty('--n', sps.length);
@@ -430,6 +455,7 @@ body.lock .mbar{display:none}
   }
   $('#cgrid').addEventListener('click', function(e){ var b = e.target.closest('[data-car]'); if (!b) return; st.carrier = b.getAttribute('data-car'); st.tv = 0; renderDirect(); });
   $$('.combo button').forEach(function(b){ b.addEventListener('click', function(){ st.combo = b.getAttribute('data-combo'); renderDirect(); }); });
+  $('#pkgs').addEventListener('click', function(e){ var b = e.target.closest('[data-pkg]'); if (!b) return; st.pkg = +b.getAttribute('data-pkg'); renderDirect(); });
   $('#speeds').addEventListener('click', function(e){ var b = e.target.closest('[data-speed]'); if (!b) return; st.speed = b.getAttribute('data-speed'); renderDirect(); });
   $('#tvs').addEventListener('click', function(e){ var b = e.target.closest('[data-tv]'); if (!b) return; st.tv = +b.getAttribute('data-tv'); var x = $('#tvs').scrollLeft; renderDirect(); $('#tvs').scrollLeft = x; });
   function tvStep(){ var card = $('.tvcard', $('#tvs')); return card ? card.getBoundingClientRect().width + 8 : 200; }
@@ -443,12 +469,13 @@ body.lock .mbar{display:none}
     var k = currentPick();
     $('#sum').hidden = !k; $('#sumNote').hidden = !k || !k.base;
     if (!k) { syncBar(); return; }
-    $('#sumTitle').textContent = k.carrier + ' · ' + spLabel(k.speed) + ' · ' + (k.combo === 'tv' ? (k.ch ? 'TV ' + k.ch + '채널' : 'TV') : '인터넷 단독');
+    var only = !k.speed && !k.combo; // 소호: 패키지 이름만
+    $('#sumTitle').textContent = only ? k.carrier : k.carrier + ' · ' + spLabel(k.speed) + ' · ' + (k.combo === 'tv' ? (k.ch ? 'TV ' + k.ch + '채널' : 'TV') : '인터넷 단독');
     $('#sumPlan').textContent = k.tvName || ''; $('#sumPlan').hidden = !k.tvName;
     $('#sumBase').textContent = k.base ? won(k.base) : '상담 시 안내';
     $('#sumBundle').textContent = k.bundle ? won(k.bundle) : '상담 시 안내';
     $('#sumReady').hidden = !!k.base;
-    $('#mbT').textContent = k.carrier + ' · ' + k.speed + (k.combo === 'tv' ? ' + TV' + (k.ch ? ' ' + k.ch + '채널' : '') : ' 인터넷');
+    $('#mbT').textContent = only ? k.carrier : k.carrier + ' · ' + k.speed + (k.combo === 'tv' ? ' + TV' + (k.ch ? ' ' + k.ch + '채널' : '') : ' 인터넷');
     $('#mbP').textContent = k.bundle ? '결합 시 월 ' + won(k.bundle) : '요금 상담 시 안내';
     syncBar();
   }
@@ -459,9 +486,10 @@ body.lock .mbar{display:none}
     var c = r ? r.c : car();
     var selRow = r ? (r.plan ? c.tv.indexOf(r.plan) : -1) : (st.combo === 'tv' && c.ready ? st.tv : -1);
     var selSp = r ? r.sp : st.speed;
-    $('#tblTitle').textContent = c.name + ' 인터넷·TV 요금표 한눈에 보기';
+    var g = !r && c.pkgs ? curPkg() : null, nm = g ? g.name : c.name;
+    $('#tblTitle').textContent = nm + (c.pkgs ? ' 요금표 한눈에 보기' : ' 인터넷·TV 요금표 한눈에 보기');
     if (!c.ready) {
-      $('#tblBody').innerHTML = '<div class="tready" style="margin-top:12px"><b>' + D.esc(c.name) + ' 요금표는 준비 중이에요</b>' + (c.items ? '<p class="titems">' + c.items.map(D.esc).join(' · ') + '</p>' : '') + '<p>상담 신청하시면 요금과 받을 수 있는 혜택을 안내해 드려요.</p><button class="btn btn-k" type="button" data-apply>상담 신청하기</button></div>';
+      $('#tblBody').innerHTML = '<div class="tready" style="margin-top:12px"><b>' + D.esc(nm) + ' 요금표는 준비 중이에요</b>' + (c.pkgs && !g ? '<p class="titems">' + c.pkgs.map(function(x){ return D.esc(x.name); }).join(' · ') + '</p>' : '') + '<p>상담 신청하시면 요금과 받을 수 있는 혜택을 안내해 드려요.</p><button class="btn btn-k" type="button" data-apply>상담 신청하기</button></div>';
       return;
     }
     var sps = c.speeds;

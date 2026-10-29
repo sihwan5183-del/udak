@@ -21,9 +21,17 @@
   /* 통신사 마크 (2026-10-29 사장님: 이름 글자는 빼고 로고 마크만)
      - 로고 크기는 --k(칸마다 CSS에서 정함) × --sr(가로세로 비율의 제곱근)로 맞춤 → 넓은 로고·네모 로고가 비슷한 크기로 보임
      - 로고 파일이 없는 곳(지금은 SKT·소호)은 이름 글자 */
-  function carrierMark(c, alt) {
-    if (!c.logo) return '<span class="cname">' + (c.tile || esc(c.name)) + '</span>';
+  function logoImg(c, alt) {
     return '<img class="clogo" src="assets/emoji/s/' + c.logo.f + '.webp?v=20261029" width="' + c.logo.w + '" height="' + c.logo.h + '" alt="' + (alt === false ? '' : esc(c.name)) + '" style="--sr:' + (Math.sqrt(c.logo.w / c.logo.h) * (c.logo.s || 1)).toFixed(3) + '" decoding="async">';
+  }
+  function carrierMark(c, alt) {
+    if (c.pkgs) { // 소호: 안에 든 통신사 로고 두 개를 작게 나란히 + '소호' 글자 (2026-10-29 사장님)
+      var all = (window.DPZ_PLANS && window.DPZ_PLANS.carriers) || [];
+      var marks = c.pkgs.map(function (p) { var o = all.filter(function (x) { return x.id === p.of; })[0]; return o && o.logo ? logoImg(o, false) : ''; }).join('');
+      return '<span class="cpair" aria-hidden="true">' + marks + '</span><span class="cname">' + (c.tile || esc(c.name)) + '</span>';
+    }
+    if (!c.logo) return '<span class="cname">' + (c.tile || esc(c.name)) + '</span>';
+    return logoImg(c, alt);
   }
 
   /* ---------- 광고 유입 정보 (이 탭에서 페이지를 옮겨도 유지) ---------- */
@@ -133,6 +141,7 @@
   function radio(n) { var r = $('input[name="' + n + '"]:checked', form); return r ? r.value : null; }
   function pickText(p) {
     if (!p) return '';
+    if (!p.speed && !p.combo) return p.carrier; // 소호처럼 속도·조합 없이 상품만 고른 경우
     var t = p.carrier + ' · 인터넷 ' + (p.speed || '');
     if (p.combo === 'tv') t += ' + TV' + (p.tvName ? ' ' + p.tvName + (p.ch ? '(' + p.ch + '채널)' : '') : '');
     return t;
@@ -150,7 +159,7 @@
     if (opt.pick !== undefined) setPick(opt.pick);
     if (opt.topic !== undefined) topic = opt.topic || '';
     if (opt.pick) {
-      checkRadio('product', opt.pick.combo === 'tv' ? '인터넷+TV' : '인터넷');
+      if (opt.pick.combo) checkRadio('product', opt.pick.combo === 'tv' ? '인터넷+TV' : '인터넷'); // 소호는 손님이 직접 고름
       if (opt.pick.speed) checkRadio('speed', opt.pick.speed);
     }
     if (opt.product) checkRadio('product', opt.product);
