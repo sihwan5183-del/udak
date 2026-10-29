@@ -420,5 +420,5 @@
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, fallback); else fallback();
   });
 
-  window.DPZ = { openForm: openForm, won: won, esc: esc, carrierMark: carrierMark, store: store, reduce: reduce, $: $, $$: $$ };
+  window.DPZ = { openForm: openForm, won: won, esc: esc, carrierMark: carrierMark, store: store, reduce: reduce, $: $, $$: $$, sb: { url: SB_URL, key: SB_KEY } }; // sb: 후기 불러오기(reviews.js)용
 })();
