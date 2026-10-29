@@ -10,7 +10,7 @@
                  백메가 — 속도 칸 · TV 채널 칸, '휴대폰과 같이 쓰면 이만큼 덜 내요' 결합 할인 표
                  아정당 — 통신사 로고 칸, PC 오른쪽에 따라오는 예상 요금 칸, 고객 후기 칸, 나에게 맞는 상품 찾기
      · 안 가져온 것: 쿠폰 팝업, '120% 보상'·'조작이면 999만원'·'10명 중 7명' 같은 문구(다퍼줌이 실제로 약속한 것만 넣기), 근거 없는 건수(후기 31,549건 등)
-                    — '인기'·'추천' 표시, 실시간 신청현황, 제휴카드 할인표는 사장님이 정해 주시면 넣기
+                    — '인기'·'추천' 표시, 실시간 신청현황은 사장님이 정해 주시면 넣기 / 제휴카드 할인은 다퍼줌에 해당 없음(사장님 2026-10-29) → 넣지 않음
      · 요금은 assets/plans.js 그대로 (부가세·셋톱 대여료 포함 / 결합 요금 = 휴대폰 1대 결합) — 사은품은 금액 없이 '상담 시 안내'
      · '이 조건으로 상담 신청' → 고른 상품이 신청서에 같이 실려 영업관리 다퍼줌 시트로 감 (snapshot.pick, topic '인터넷 화면') -->
 <title>인터넷 요금 | 다퍼줌</title>
@@ -263,7 +263,6 @@ body.lock .mbar{display:none}
     <nav class="hd-r2" aria-label="상품 메뉴">
       <div class="cat"><a class="tab on" aria-current="page" href="internet" data-tab="internet">인터넷</a><div class="cat-drop" data-cat-drop></div></div>
       <a class="tab" href="internet?combo=tv" data-tab="tv">인터넷+TV</a>
-      <a class="tab" href="#" data-open-form data-topic="인터넷 옮기기" data-tab="move">인터넷 옮기기</a>
       <a class="tab" href="internet?carrier=soho" data-tab="soho"><span class="biz">사업자</span>소호</a>
       <a class="tab" href="find#table" data-tab="table">통신사별 요금표</a>
       <a class="tab" href="find?mode=recommend" data-tab="find">나에게 맞는 상품 찾기<span class="dot" aria-hidden="true"></span></a>
@@ -399,8 +398,8 @@ body.lock .mbar{display:none}
 <div class="mbar" id="mbar" aria-hidden="true"><div class="mt"><small id="mbT"></small><b id="mbP"></b></div><button class="btn btn-k" type="button" data-apply>상담 신청</button></div>
 
 <script src="assets/plans.js?v=20261029h"></script>
-<script src="assets/site.js?v=20261029k"></script>
-<script src="assets/reviews.js?v=20261029b"></script>
+<script src="assets/site.js?v=20261029l"></script>
+<script src="assets/reviews.js?v=20261029c"></script>
 <script>
 (function(){
   'use strict';

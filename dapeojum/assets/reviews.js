@@ -16,18 +16,18 @@
   var ON = false;
   var PARAM = /[?&]preview=1(&|$)/.test(location.search);
   var PREVIEW = !ON || PARAM; // 세팅 중(ON=false)에는 늘 견본
-  var TYPES = ['인터넷', '인터넷+TV', '인터넷 옮기기', '소호'];
+  var TYPES = ['인터넷', '인터넷+TV', '소호']; // 2026-10-29 사장님: 후기 분류는 상품별, '인터넷 옮기기'는 뺌
 
   /* 레이아웃 확인용 견본 (?preview=1 일 때만) — 실제 후기가 아니라는 걸 글 자체에도 적어 둠 */
   var SAMPLE = [
     { id: 's1', type: '인터넷', title: '후기 제목이 들어가는 자리', body: '고객이 카톡이나 문자로 보내준 후기 글이 이 자리에 그대로 들어가요. 글이 길면 두 줄까지만 보이고, 더보기를 누르면 전체 글이 펼쳐져요. 줄을 바꾼 곳도 고객이 쓴 그대로 보여요.', rating: 5, region: '서울 ○○구', prev: 'KT', product: 'LG U+ 인터넷 500M', photo: true, tags: ['사은품', '설치'], date: '2026-10-28' },
     { id: 's2', type: '인터넷+TV', title: '', body: '사진이 없는 후기는 사진 칸에 다퍼줌 로고가 들어가요. 실제로는 글만 있는 후기가 더 많을 거라 이 모양이 기본이에요.', rating: 5, region: '경기 ○○시', prev: 'LG U+', product: 'SK브로드밴드 인터넷 500M + TV', photo: false, tags: ['요금', '상담'], date: '2026-10-27' },
     { id: 's3', type: '인터넷', incentive: true, title: '사은품을 받고 쓴 후기 예시', body: '사은품을 드리고 받은 후기는 이렇게 본문 첫 부분에 회색 표시가 붙어요.', rating: 5, region: '인천 ○○구', prev: 'SK브로드밴드', product: 'KT 인터넷 1G', photo: false, tags: ['사은품'], date: '2026-10-26' },
-    { id: 's4', type: '인터넷 옮기기', title: '짧은 후기', body: '짧은 후기 예시예요.', rating: 4, region: '경기 ○○시', prev: 'KT', product: 'KT 인터넷 500M (이사 후 옮기기)', photo: true, tags: ['설치'], date: '2026-10-25' },
-    { id: 's5', type: '소호', title: '', body: '가게·사무실 인터넷(소호) 후기는 소호 칸에서 따로 모아 볼 수 있어요. 위의 칸(전체·인터넷·인터넷+TV·인터넷 옮기기·소호)은 실제로 후기가 있는 칸만 보여요.', rating: 5, region: '서울 ○○구', prev: '처음 설치', product: 'LG U+ 소호 패키지', photo: false, tags: ['상담'], date: '2026-10-24' },
+    { id: 's4', type: '인터넷', title: '짧은 후기', body: '짧은 후기 예시예요.', rating: 4, region: '경기 ○○시', prev: 'KT', product: 'KT 인터넷 500M', photo: true, tags: ['설치'], date: '2026-10-25' },
+    { id: 's5', type: '소호', title: '', body: '가게·사무실 인터넷(소호) 후기는 소호 칸에서 따로 모아 볼 수 있어요. 위의 칸(전체·인터넷·인터넷+TV·소호)은 실제로 후기가 있는 칸만 보여요.', rating: 5, region: '서울 ○○구', prev: '처음 설치', product: 'LG U+ 소호 패키지', photo: false, tags: ['상담'], date: '2026-10-24' },
     { id: 's6', type: '인터넷+TV', title: '긴 후기 예시', body: '글이 긴 후기 예시예요. 고객이 보내준 글이 길어도 목록에서는 두 줄까지만 보여서 화면이 길어지지 않아요.\n줄을 바꿔서 보낸 글은 펼쳤을 때 이렇게 줄이 바뀐 채로 보여요.\n후기 아래 회색 줄에는 이전에 쓰던 통신사와 이번에 가입한 상품이 들어가고, 맨 위에는 후기 종류·지역·별점이 들어가요. 이 내용은 직원이 영업관리에서 고르게 할 예정이에요.', rating: 5, region: '서울 ○○구', prev: 'SKT', product: 'LG U+ 인터넷 500M + TV', photo: true, tags: ['요금', '사은품', '설치'], date: '2026-10-23' },
     { id: 's7', type: '인터넷', title: '', body: '별점은 고객이 준 점수 그대로 보여요. 4점, 3점도 그대로 올려요.', rating: 3, region: '경기 ○○시', prev: 'LG U+', product: 'SK브로드밴드 인터넷 100M', photo: false, tags: ['만족도'], date: '2026-10-22' },
-    { id: 's8', type: '인터넷 옮기기', title: '', body: '첫 화면 후기 칸에는 최근 후기 4개가 카드로 보이고, 후기 더보기를 누르면 이 화면으로 와요.', rating: 5, region: '부산 ○○구', prev: 'KT', product: 'KT 인터넷 500M + TV', photo: false, tags: ['상담'], date: '2026-10-21' }
+    { id: 's8', type: '인터넷+TV', title: '', body: '첫 화면 후기 칸에는 최근 후기 4개가 카드로 보이고, 후기 더보기를 누르면 이 화면으로 와요.', rating: 5, region: '부산 ○○구', prev: 'KT', product: 'KT 인터넷 500M + TV', photo: false, tags: ['상담'], date: '2026-10-21' }
   ];
 
   var PERSON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4.2"/><path d="M3.8 21c.4-4.6 4-7.2 8.2-7.2s7.8 2.6 8.2 7.2z"/></svg>';

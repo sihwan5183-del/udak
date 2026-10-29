@@ -51,7 +51,7 @@ h1,h2,h3{color:var(--ink);letter-spacing:-.03em}
 .hd-menu svg{width:20px;height:20px;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round}
 .hd-r1 .hd-menu{margin-left:-14px}
 .hd-r2 .hd-menu{display:none}
-/* 2줄: 상품 칸 (2026-10-29: 인터넷 / 인터넷+TV / 인터넷 옮기기 / 소호 / 통신사별 요금표 / 상품 찾기) */
+/* 2줄: 상품 칸 (2026-10-29: 인터넷 / 인터넷+TV / 소호 / 통신사별 요금표 / 상품 찾기 — '인터넷 옮기기'는 사장님이 빼라고 함) */
 .hd-r2{display:flex;align-items:center;gap:4px;height:46px;overflow-x:auto;scrollbar-width:none;margin:0 calc(var(--gut) * -1);padding:0 calc(var(--gut) - 10px)}
 .hd-r2::-webkit-scrollbar{display:none}
 .hd-r2 .cat{flex:none;position:relative}

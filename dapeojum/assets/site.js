@@ -130,10 +130,9 @@
   /* ---------- ☰ 전체 메뉴판 (아정당 메뉴판 · 미소 전체 화면 메뉴 참고, 2026-10-29)
      - 위 아이콘 칸: 상품·안내 / 통신사 로고 / 혜택(이벤트·룰렛 — 준비 중) / 고객 지원(후기 — 준비 중)
      - PC는 ☰ 밑으로 펼쳐지는 판, 폰은 화면 전체 ---------- */
-  var MM_GRID = [ // 2026-10-29: 인터넷 · 인터넷+TV · 소호는 인터넷 화면(internet)으로
+  var MM_GRID = [ // 2026-10-29: 인터넷 · 인터넷+TV · 소호는 인터넷 화면(internet)으로 / 사장님: '인터넷 옮기기' 칸은 뺌 (머리 메뉴와 같이)
     { t: '인터넷', ic: ['product_wifi', 160, 130], href: 'internet' },
     { t: '인터넷+TV', ic: ['product_tv', 160, 121], href: 'internet?combo=tv' },
-    { t: '인터넷 옮기기', ic: ['etc_pin', 136, 160], form: '인터넷 옮기기' },
     { t: '소호', ic: ['etc_handshake', 160, 127], href: 'internet?carrier=soho' },
     { t: '요금표', ic: ['etc_doc_check', 156, 160], href: 'find#table' },
     { t: '상품 찾기', ic: ['etc_search', 156, 160], href: 'find?mode=recommend' },
