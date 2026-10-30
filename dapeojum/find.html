@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <!-- 다퍼줌 상품 찾기 (아정당 '조건에 맞는 상품을 찾아드려요' 화면 구성 참고, 2026-10-28 사장님)
      · 맞춤 추천 / 직접 선택하기 (통신사 → 인터넷 단독·인터넷+TV → 속도 → TV 요금제 → 오른쪽 예상 요금)
-     · 월 요금은 assets/plans.js (2026-10-30 사장님이 보내준 다퍼줌 요금표) / 사은품은 당분간 금액 없이 '상담 시 안내'
+     · 월 요금은 assets/plans.js (2026-10-30 사장님이 보내준 다퍼줌 요금표) / 사은품은 금액 없이 '내 사은품 확인하기' 단추로 상담 연결 (2026-10-30 사장님: 기준·감사 때문에 금액은 사이트에 안 씀)
      · 통신사마다 속도가 다름(헬로비전 160M · 스카이라이프 200M), TV 요금제가 없는 속도도 있음 → 고를 수 있는 것만 보여 줌
      · '이 조건으로 상담 신청'을 누르면 고른 상품이 신청서에 같이 실려 영업관리 다퍼줌 시트로 감 (snapshot.pick) -->
 <title>나에게 맞는 상품 찾기 | 다퍼줌</title>
@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://ebggtghzqtxfylbhqfoh.supabase.co" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wanted-sans@1.0.3/fonts/webfonts/variable/split/WantedSansVariable.css">
-<link rel="stylesheet" href="assets/site.css?v=20261030a">
+<link rel="stylesheet" href="assets/site.css?v=20261030b">
 <style>
 /* 통신사 바로가기 줄 (아정당 상품 화면의 통신사 줄) */
 .cnav{position:sticky;top:var(--hd);z-index:40;background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -109,7 +109,6 @@
 .sum-rows dt{color:var(--sub)}
 .sum-rows dd{color:var(--ink);font-weight:650;white-space:nowrap}
 .sum-rows .strong dd{font-weight:850}
-.sum-gift{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:15px;font-weight:800;color:var(--brown)}
 .sum-ready{margin-top:12px;font-size:13.5px;color:var(--sub);line-height:1.55}
 .sum .btn{width:100%;margin-top:18px;height:54px}
 .sum-note{display:flex;align-items:flex-start;gap:5px;margin-top:10px;font-size:12.5px;color:var(--mute);line-height:1.5}
@@ -337,7 +336,7 @@ body.lock .mbar{display:none}
         <p class="sum-t"><img src="assets/emoji/s/product_wifi.webp?v=20261029" width="160" height="130" alt=""><span id="sumTitle"></span></p>
         <p class="sum-plan" id="sumPlan" hidden></p>
         <dl class="sum-rows"><div class="strong" id="sumBaseRow"><dt id="sumBaseT">월 요금</dt><dd id="sumBase"></dd></div><div class="strong" id="sumBundleRow"><dt>휴대폰 결합 요금</dt><dd id="sumBundle"></dd></div></dl>
-        <div class="sum-gift"><span>사은품</span><span>상담 시 안내</span></div>
+        <button class="gift-btn" type="button" data-gift><img src="assets/emoji/s/benefit_gift.webp?v=20261029" width="160" height="146" alt=""><span class="gt"><b>내 사은품 확인하기</b><small>금액은 전화 상담 때 알려드려요</small></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
         <p class="sum-ready" id="sumReady" hidden>요금표는 준비 중이에요. 상담 신청하시면 요금과 받을 수 있는 혜택을 안내해 드려요.</p>
         <button class="btn btn-k" type="button" data-apply>이 조건으로 상담 신청</button>
       </div>
@@ -462,11 +461,14 @@ body.lock .mbar{display:none}
     if (c.pkgs) { var g = curPkg(); return { carrierId: c.id, carrier: g ? g.name : c.name, combo: null, speed: null, tvName: null, ch: null, base: null, bundle: null, via: 'direct' }; }
     return pickFrom(c, comboOf(c), st.speed, curPlan(), 'direct');
   }
-  function apply(){
+  function apply(topic){
     var k = currentPick();
-    D.openForm({ pick: k, isp: st.mode === 'recommend' && rec.isp ? rec.isp : undefined, topic: st.mode === 'recommend' ? '맞춤 추천' : '직접 선택' });
+    D.openForm({ pick: k, isp: st.mode === 'recommend' && rec.isp ? rec.isp : undefined, topic: topic || (st.mode === 'recommend' ? '맞춤 추천' : '직접 선택') });
   }
-  document.addEventListener('click', function(e){ if (e.target.closest('[data-apply]')) { e.preventDefault(); apply(); } });
+  document.addEventListener('click', function(e){
+    if (e.target.closest('[data-apply]')) { e.preventDefault(); apply(); }
+    else if (e.target.closest('[data-gift]')) { e.preventDefault(); apply('사은품 확인'); } // 사은품 금액은 상담 때 안내 (사이트엔 금액 안 씀)
+  });
   $('#hdCta').addEventListener('click', function(e){ e.preventDefault(); apply(); });
 
   /* ---------- 통신사 바로가기 줄 ---------- */
