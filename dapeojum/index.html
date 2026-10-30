@@ -35,16 +35,24 @@
 <link rel="stylesheet" href="assets/site.css?v=20261029j">
 <style>
 .sec{margin-top:44px}
-/* 첫 화면 배너 (아정당식 둥근 카드 · 넘기기) */
+/* 첫 화면 배너 (아정당식 둥근 카드 · 넘기기)
+   2026-10-30 사장님: '너무 휑하다' → 배너를 크고 진하게 + 바로 누를 단추 + 밑에 아정당식 바로가기 칸 · 통신사 칸에 시작 요금 · 속도별 가장 낮은 요금 띠 */
 .hero{padding-top:8px}
-.hcard{position:relative;border-radius:16px;overflow:hidden;background:linear-gradient(120deg,#FFF0C9 0%,#FFF7E4 48%,#FFFCF5 100%)}
-.htrack{display:flex;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.hcard{position:relative;border-radius:18px;overflow:hidden;background:radial-gradient(90% 80% at 82% 38%,#FFDA70 0%,rgba(255,218,112,0) 62%),linear-gradient(115deg,#FFE6A3 0%,#FFF0C8 48%,#FFF8E6 100%)}
+.hcard::before{content:"";position:absolute;right:-90px;top:-120px;width:360px;height:360px;border-radius:50%;background:rgba(255,255,255,.32)}
+.hcard::after{content:"";position:absolute;left:-60px;bottom:-140px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.28)}
+.htrack{position:relative;z-index:1;display:flex;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 .hslide{flex:0 0 100%;min-width:0;display:flex;flex-direction:column;padding:24px 20px 0;cursor:pointer;color:inherit;text-align:left}
-.hslide .mark{width:36px;height:auto}
-.hslide h2{margin-top:12px;font-size:24px;line-height:1.38;font-weight:850}
+.heb{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;height:30px;padding:0 12px 0 8px;border-radius:999px;background:rgba(255,255,255,.78);color:var(--brown);font-size:13px;font-weight:800;letter-spacing:-.02em;box-shadow:0 2px 8px rgba(168,86,0,.08)}
+.heb img{width:20px;height:auto}
+.hslide h2{margin-top:12px;font-size:26px;line-height:1.34;font-weight:900;letter-spacing:-.045em}
 .hslide .hsub{margin-top:8px;font-size:15px;color:var(--ink2);line-height:1.55}
+.hbtns{display:flex;gap:8px;margin-top:16px}
+.hbtns .btn{flex:1 1 0;height:48px;padding:0 14px;border-radius:12px;font-size:15.5px}
+.btn-w{background:#fff;color:var(--ink);box-shadow:0 2px 10px rgba(168,86,0,.12)}
+.hbtns svg{width:17px;height:17px;stroke:currentColor;stroke-width:2.2;fill:none}
 .hslide .notes{margin-top:10px;font-size:12px;color:var(--sub);line-height:1.65}
-.hart{position:relative;height:210px;margin-top:6px}
+.hart{position:relative;height:230px;margin-top:4px}
 .hcount{position:absolute;right:14px;bottom:14px;z-index:4;display:inline-flex;align-items:center;gap:1px;height:26px;padding:0 6px 0 10px;border-radius:13px;background:rgba(28,35,43,.3);color:#fff;font-size:12px;font-weight:700;letter-spacing:.02em}
 .hcount svg{width:14px;height:14px;stroke:#fff;stroke-width:2.2;fill:none}
 /* 선물상자 + 혜택 꼬리표 (밝은 바탕용) */
@@ -84,6 +92,37 @@
 .ctile:hover{border-color:var(--ink2);box-shadow:0 6px 16px rgba(28,35,43,.06)}
 .ctile{--k:31px}
 .ctile .cname{font-size:14.5px}
+/* 통신사 칸 시작 요금 (인터넷만 · 휴대폰 1대 결합 시 가장 낮은 월 요금) — 요금표 없는 곳은 '요금 상담' */
+.ctile .cpr{font-size:clamp(10px,2.8vw,12px);font-weight:800;color:var(--brown);letter-spacing:-.03em;line-height:1.2;white-space:nowrap}
+.ctile .cpr.ask{color:var(--mute);font-weight:650}
+.cnote{margin-top:10px;font-size:12.5px;color:var(--mute);line-height:1.5}
+
+/* 바로가기 칸 (아정당 첫 화면 아이콘 줄 — 폰은 4칸 2줄, PC는 묶음 3개) */
+.qm{margin-top:14px}
+.qm-in{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 4px;padding:16px 6px 14px;border-radius:16px;background:#fff;border:1px solid var(--line);box-shadow:0 8px 24px rgba(28,35,43,.05)}
+.qg,.qi{display:contents}
+.qb{display:none}
+.qi a{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;font-size:13px;font-weight:700;color:var(--ink);letter-spacing:-.04em;line-height:1.25;text-align:center;word-break:keep-all}
+.qi .ic{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:var(--gray);transition:transform .15s,background .15s}
+.qi .ic img{width:auto;height:auto;max-width:36px;max-height:36px}
+.qi a:hover .ic{background:var(--gray2);transform:translateY(-2px)}
+
+/* 속도별 가장 낮은 요금 띠 (plans.js에서 계산 — 요금이 바뀌면 같이 바뀜) */
+.pband{margin-top:52px;padding:36px 0 40px;background:var(--ftbg)}
+.pband .sec-h{margin-bottom:6px}
+.pnote{margin-bottom:14px;font-size:13px;color:var(--sub)}
+.pcards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pcard{display:flex;flex-direction:column;min-width:0;padding:16px 15px 14px;border-radius:14px;background:#fff;border:1px solid var(--line);transition:border-color .15s,transform .15s}
+.pcard:hover{border-color:var(--ink2);transform:translateY(-2px)}
+.pk{font-size:22px;font-weight:900;color:var(--ink);letter-spacing:-.03em;line-height:1.2}
+.pk small{margin-left:2px;font-size:13px;font-weight:700}
+.pd{margin-top:3px;font-size:12.5px;color:var(--sub);line-height:1.4}
+.pp{margin-top:14px;font-size:13px;font-weight:700;color:var(--brown);white-space:nowrap}
+.pp b{margin:0 1px;font-size:21px;font-weight:900;letter-spacing:-.02em}
+.pl{--k:20px;display:flex;align-items:center;flex-wrap:wrap;gap:4px 6px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line2);font-size:12.5px;font-weight:700;color:var(--ink2);line-height:1.3}
+.pl .clogo{flex:none}
+.pband .findbar{margin-top:12px;background:#fff;border:1px solid var(--line)}
+.pband .findbar:hover{background:#fff;border-color:var(--ink2)}
 
 /* 나에게 맞는 상품 찾기 줄 */
 .findbar{display:flex;align-items:center;gap:14px;padding:18px 18px;border-radius:16px;background:var(--gray);transition:background .15s}
@@ -143,22 +182,53 @@
   .ctiles{gap:12px}
   .ctile .cname{font-size:16px}
   .kcards{gap:20px 14px}
+  .hbtns .btn{flex:0 0 auto;padding:0 22px}
+  .qm-in{grid-template-columns:repeat(8,minmax(0,1fr))}
+  .pcards{grid-template-columns:repeat(4,minmax(0,1fr))}
 }
 @media (min-width:1024px){
   .sec{margin-top:58px}
-  .hcard{border-radius:24px;height:320px}
-  .hslide{display:grid;grid-template-columns:1fr 440px;align-items:center;column-gap:24px;height:320px;padding:0 40px 0 120px}
-  .hslide .mark{width:40px}
-  .hslide h2{margin-top:14px;font-size:30px;line-height:1.42}
-  .hslide .hsub{font-size:16px}
-  .hslide .notes{margin-top:14px}
-  .hart{height:320px;margin-top:0}
+  .hcard{border-radius:24px;height:420px}
+  .hcard::before{width:520px;height:520px;right:-120px;top:-200px}
+  .hcard::after{width:380px;height:380px;left:-90px;bottom:-220px}
+  .hslide{display:grid;grid-template-columns:1fr 480px;align-items:center;column-gap:20px;height:420px;padding:0 44px 0 76px}
+  .heb{height:32px;font-size:14px}
+  .heb img{width:22px}
+  .hslide h2{margin-top:16px;font-size:40px;line-height:1.3}
+  .hslide .hsub{margin-top:12px;font-size:17.5px}
+  .hbtns{margin-top:26px;gap:10px}
+  .hbtns .btn{height:54px;padding:0 26px;font-size:16.5px}
+  .hslide .notes{margin-top:16px}
+  .hart{height:420px;margin-top:0}
   .htag{font-size:15px;padding:9px 14px 20px}
   .htag .ti{height:20px;margin-right:5px}
   .p2{left:35%}.p3{left:65%}
+  /* 바로가기: 아정당처럼 묶음 3개(묶음 이름표가 위에 걸침) */
+  .qm{margin-top:22px}
+  .qm-in{display:flex;gap:14px;padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+  .qg{display:block;position:relative;flex:var(--n) 1 0;padding:26px 8px 16px;border-radius:16px;background:var(--ftbg)}
+  .qb{display:inline-block;position:absolute;left:14px;top:-11px;padding:3px 10px;border-radius:6px;background:var(--ink);color:#fff;font-size:12.5px;font-weight:800;letter-spacing:-.02em;line-height:1.5}
+  .qb.y{background:var(--yellow);color:var(--ink)}
+  .qb.g{background:#8A9098}
+  .qi{display:flex;justify-content:space-around}
+  .qi a{width:104px;font-size:14.5px}
+  .qi .ic{width:58px;height:58px;background:#fff}
   .ctiles{gap:12px}
-  .ctile{--k:40px;aspect-ratio:auto;height:96px}
+  .ctile{--k:40px;aspect-ratio:auto;height:112px}
   .ctile .cname{font-size:16.5px}
+  .ctile .cpr{font-size:13.5px}
+  .cnote{font-size:13px}
+  .pband{margin-top:72px;padding:52px 0 56px}
+  .pnote{margin-bottom:18px;font-size:14px}
+  .pcards{gap:14px}
+  .pcard{padding:22px 22px 18px}
+  .pk{font-size:28px}
+  .pk small{font-size:15px}
+  .pd{font-size:14px}
+  .pp{margin-top:18px;font-size:14px}
+  .pp b{font-size:27px}
+  .pl{--k:24px;margin-top:14px;padding-top:12px;font-size:13.5px}
+  .pband .findbar{margin-top:16px}
   .findbar{padding:20px 24px}
   .kcards{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
   .kimg{padding:18px 20px}
@@ -203,8 +273,10 @@
         <div class="htrack" id="htrack">
           <div class="hslide" role="link" tabindex="0" data-slide-form="첫 화면 배너">
             <div class="htext">
-              <img class="mark" src="assets/logo-icon.webp" width="452" height="377" alt="">
+              <span class="heb"><img src="assets/logo-icon.webp" width="452" height="377" alt="">인터넷·TV 가입 상담</span>
               <h2>인터넷 가입 혜택,<br>아낌없이 다 퍼드려요</h2>
+              <p class="hsub">통신사별 요금 비교부터<br>사은품·결합 할인 상담까지 한 번에</p>
+              <div class="hbtns"><a class="btn btn-k" href="#" data-open-form data-topic="첫 화면 배너">1분 상담 신청</a><a class="btn btn-w" href="internet">요금 바로 보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a></div>
               <p class="notes">* 사은품은 가입하는 상품과 조건에 따라 달라요</p>
             </div>
             <div class="hart">
@@ -220,9 +292,10 @@
           </div>
           <div class="hslide" role="link" tabindex="-1" data-slide-form="인터넷 옮기기">
             <div class="htext">
-              <img class="mark" src="assets/logo-icon.webp" width="452" height="377" alt="" loading="lazy">
+              <span class="heb"><img src="assets/logo-icon.webp" width="452" height="377" alt="" loading="lazy">이사할 때</span>
               <h2>새 집으로 이사할 때,<br>인터넷도 같이 옮겨요</h2>
               <p class="hsub">이사 날짜에 맞춰 옮길 수 있게 상담해 드려요.</p>
+              <div class="hbtns"><a class="btn btn-k" href="#" data-open-form data-topic="인터넷 옮기기">이사 상담 신청</a><a class="btn btn-w" href="guide">고객안내 보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a></div>
             </div>
             <div class="hart" aria-hidden="true">
               <img class="ill" src="assets/emoji/product_home.webp?v=20261029" width="432" height="401" alt="" loading="lazy">
@@ -230,9 +303,10 @@
           </div>
           <div class="hslide" role="link" tabindex="-1" data-slide-href="find?mode=recommend">
             <div class="htext">
-              <img class="mark" src="assets/logo-icon.webp" width="452" height="377" alt="" loading="lazy">
+              <span class="heb"><img src="assets/logo-icon.webp" width="452" height="377" alt="" loading="lazy">나에게 맞는 상품 찾기</span>
               <h2>어떤 인터넷이 맞을지<br>고민되세요?</h2>
-              <p class="hsub">나에게 맞는 상품 찾기로 통신사별 요금을 비교해 보세요.</p>
+              <p class="hsub">나에게 맞는 상품 찾기로<br>통신사별 요금을 비교해 보세요.</p>
+              <div class="hbtns"><a class="btn btn-k" href="find?mode=recommend">상품 찾기 시작</a><a class="btn btn-w" href="find#table">요금표 보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a></div>
               <p class="notes">* 고르기 어려우시면 상담 때 같이 정해도 괜찮아요</p>
             </div>
             <div class="hart" aria-hidden="true">
@@ -245,16 +319,42 @@
     </div>
   </section>
 
+  <!-- 바로가기 (아정당 첫 화면 아이콘 줄) -->
+  <nav class="qm" aria-label="바로가기">
+    <div class="wrap">
+      <div class="qm-in">
+        <div class="qg" style="--n:3"><span class="qb">가입 상품</span><div class="qi">
+          <a href="internet"><span class="ic"><img src="assets/emoji/s/product_wifi.webp?v=20261029" width="160" height="130" alt=""></span>인터넷</a>
+          <a href="internet?combo=tv"><span class="ic"><img src="assets/emoji/s/product_tv.webp?v=20261029" width="160" height="121" alt=""></span>인터넷+TV</a>
+          <a href="internet?carrier=soho"><span class="ic"><img src="assets/emoji/s/etc_handshake.webp?v=20261029" width="160" height="127" alt=""></span>소호</a>
+        </div></div>
+        <div class="qg" style="--n:2"><span class="qb y">요금 비교</span><div class="qi">
+          <a href="find#table"><span class="ic"><img src="assets/emoji/s/etc_doc_check.webp?v=20261029" width="156" height="160" alt=""></span>요금표</a>
+          <a href="find?mode=recommend"><span class="ic"><img src="assets/emoji/s/etc_search.webp?v=20261029" width="156" height="160" alt=""></span>상품 찾기</a>
+        </div></div>
+        <div class="qg" style="--n:3"><span class="qb g">고객 지원</span><div class="qi">
+          <a href="guide"><span class="ic"><img src="assets/emoji/s/brand_megaphone.webp?v=20261029" width="160" height="137" alt=""></span>고객안내</a>
+          <a href="review"><span class="ic"><img src="assets/emoji/s/etc_thumbs_stars.webp?v=20261029" width="122" height="160" alt=""></span>후기</a>
+          <a href="#faq"><span class="ic"><img src="assets/emoji/s/etc_chat.webp?v=20261029" width="160" height="113" alt=""></span>자주 묻는 질문</a>
+        </div></div>
+      </div>
+    </div>
+  </nav>
+
   <section class="sec" aria-labelledby="carTitle">
     <div class="wrap">
       <div class="sec-h"><h2 id="carTitle">통신사별 요금제</h2><a class="more" href="internet">더보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a></div>
       <div class="ctiles" id="ctiles"></div>
+      <p class="cnote">* 인터넷만, 휴대폰 1대 결합 시 가장 낮은 월 요금이에요 (부가세 포함)</p>
     </div>
   </section>
 
-  <section class="sec" aria-labelledby="cmpTitle">
+  <!-- 속도별 가장 낮은 요금 (plans.js에서 계산) + 나에게 맞는 상품 찾기 -->
+  <section class="pband" aria-labelledby="pTitle">
     <div class="wrap">
-      <div class="sec-h"><h2 id="cmpTitle">내게 맞는 요금제 비교</h2></div>
+      <div class="sec-h"><h2 id="pTitle">속도별 가장 낮은 요금</h2><a class="more" href="internet">요금 자세히 보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a></div>
+      <p class="pnote">다퍼줌 요금표 기준 · 휴대폰 1대 결합 · 부가세 포함</p>
+      <div class="pcards" id="pcards"></div>
       <a class="findbar" href="find?mode=recommend">
         <span class="ic"><img src="assets/emoji/s/etc_search.webp?v=20261029" width="156" height="160" alt="" loading="lazy"></span>
         <span><b>나에게 맞는 상품 찾기</b><small>지금 쓰는 통신사와 원하는 조건을 고르면 요금을 비교해 드려요</small></span>
@@ -384,8 +484,40 @@
 
   /* 통신사별 요금제 칸 (인터넷 화면으로 이동, 그 통신사 선택된 채로 — 2026-10-29 인터넷 화면 생김)
      2026-10-29 사장님: 로고가 있는 통신사는 이름 글자 없이 마크만 / 로고 없는 곳은 이름 글자만 (2026-10-29: SKT에 와이파이 그림이 대신 들어가던 것 뺌) */
-  $('#ctiles').innerHTML = window.DPZ_PLANS.carriers.map(function(c){
-    return '<a class="ctile" href="internet?carrier=' + c.id + '" aria-label="' + D.esc(c.name) + '">' + D.carrierMark(c, false, true) + '</a>';
+  var P = window.DPZ_PLANS, C = P.carriers, SI = P.speedInfo;
+  // 시작 요금 = 인터넷만, 휴대폰 1대 결합 시 가장 낮은 월 요금 (요금표가 없는 곳은 '요금 상담') — 2026-10-30
+  function fromPrice(c){ return c.ready ? Math.min.apply(null, c.speeds.map(function(s){ return c.internet[s][1]; })) : null; }
+  $('#ctiles').innerHTML = C.map(function(c){
+    var p = fromPrice(c);
+    var pr = p ? '<span class="cpr">월 ' + D.won(p) + '~</span>' : '<span class="cpr ask">요금 상담</span>';
+    return '<a class="ctile" href="internet?carrier=' + c.id + '" aria-label="' + D.esc(c.name) + (p ? ' 인터넷 월 ' + D.won(p) + '부터' : ' 요금 상담') + '">' + D.carrierMark(c, false, true) + pr + '</a>';
+  }).join('');
+
+  /* 속도별 가장 낮은 요금 (요금표가 있는 통신사 중, 휴대폰 1대 결합 기준) — 같은 값이면 통신사를 같이 보여 줌 */
+  var ready = C.filter(function(c){ return c.ready; });
+  function lowest(get){
+    var best = null;
+    ready.forEach(function(c){
+      var r = get(c); if (!r) return;
+      if (!best || r.v < best.v) best = { v: r.v, cars: [c], extra: r.extra };
+      else if (r.v === best.v) best.cars.push(c);
+    });
+    return best;
+  }
+  var cardsP = ['100M', '500M', '1G'].map(function(sp){
+    var b = lowest(function(c){ return c.internet[sp] ? { v: c.internet[sp][1] } : null; });
+    return b && { href: 'internet?carrier=' + b.cars[0].id + '&speed=' + sp, k: SI[sp].label + '<small>' + SI[sp].unit + '</small>', d: SI[sp].desc, b: b };
+  });
+  var tvBest = lowest(function(c){
+    var m = null;
+    c.tv.forEach(function(p){ var f = p.fee['100M']; if (f && (!m || f[1] < m.v)) m = { v: f[1], extra: p }; });
+    return m;
+  });
+  if (tvBest) cardsP.push({ href: 'internet?carrier=' + tvBest.cars[0].id + '&combo=tv&speed=100M', k: '인터넷+TV', d: '100Mbps + TV ' + tvBest.extra.ch + '채널', b: tvBest });
+  $('#pcards').innerHTML = cardsP.filter(Boolean).map(function(x){
+    return '<a class="pcard" href="' + x.href + '"><span class="pk">' + x.k + '</span><span class="pd">' + D.esc(x.d) + '</span>' +
+      '<span class="pp">월 <b>' + Number(x.b.v).toLocaleString('ko-KR') + '</b>원~</span>' +
+      '<span class="pl">' + x.b.cars.map(function(c){ return D.carrierMark(c, false); }).join('') + '<span>' + x.b.cars.map(function(c){ return D.esc(c.name); }).join(' · ') + '</span></span></a>';
   }).join('');
 
   /* 첫 화면 배너 넘기기 (5초마다, 손으로 넘겨도 됨) */
@@ -395,7 +527,7 @@
     cur = (i + n) % n;
     track.style.transform = 'translateX(' + (-100 * cur) + '%)';
     $('#hcur').textContent = cur + 1;
-    slides.forEach(function(s, k){ s.tabIndex = k === cur ? 0 : -1; s.setAttribute('aria-hidden', k === cur ? 'false' : 'true'); });
+    slides.forEach(function(s, k){ s.tabIndex = k === cur ? 0 : -1; s.setAttribute('aria-hidden', k === cur ? 'false' : 'true'); s.inert = k !== cur; }); // 안 보이는 배너 안 단추로는 못 가게
   }
   function play(){ if (D.reduce) return; stop(); timer = setInterval(function(){ go(cur + 1); }, 5000); }
   function stop(){ if (timer) clearInterval(timer); timer = null; }
@@ -413,13 +545,14 @@
     sx = null; play();
   });
   slides.forEach(function(s){
-    function act(){
+    function act(e){
+      if (e && e.target && e.target.closest && e.target.closest('a,button')) return; // 배너 안 단추는 단추대로
       if (moved) { moved = false; return; }
       var href = s.getAttribute('data-slide-href');
       if (href) location.href = href; else D.openForm({ topic: s.getAttribute('data-slide-form') || '' });
     }
     s.addEventListener('click', act);
-    s.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); act(); } });
+    s.addEventListener('keydown', function(e){ if (e.target !== s) return; if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); act(); } });
   });
   go(0); play();
 
