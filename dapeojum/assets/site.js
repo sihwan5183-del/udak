@@ -70,12 +70,11 @@
   function emo(f, w, h, lazy) { return '<img src="assets/emoji/s/' + f + '.webp?v=' + V + '" width="' + w + '" height="' + h + '" alt=""' + (lazy ? ' loading="lazy"' : '') + '>'; }
   var CHEV = '<svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
 
-  /* ---------- 맨 위 띠: 문구 3개를 바탕색과 같이 돌림 (2026-10-29 사장님: 문구 3개 추천)
+  /* ---------- 맨 위 띠: 문구를 바탕색과 같이 돌림 (2026-10-29 사장님: 문구 3개 추천 → 2026-10-30 이사 문구는 아직 못 해서 뺌)
      - 첫 문구는 index·find HTML에도 똑같이 들어가 있음 (바뀌면 같이 고치기)
      - form: 누르면 상담 신청 창이 그 주제로 열림 / href: 그 화면으로 이동 ---------- */
   var TOPBAR = [
     { ic: ['brand_megaphone', 160, 137], t: 'U+·SKT·KT 요금 비교, 다퍼줌에서 한 번에', href: 'find', cls: '' },
-    { ic: ['etc_pin', 136, 160], t: '이사 가세요? 인터넷 옮기기도 챙겨드려요', form: '인터넷 옮기기', cls: 'tb-k' },
     { ic: ['etc_handshake', 160, 127], t: '사장님 가게 인터넷, 소호 상품도 있어요', href: 'internet?carrier=soho', cls: 'tb-c' }
   ];
   var topbar = $('#topbar');
