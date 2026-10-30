@@ -120,7 +120,7 @@
     e.preventDefault(); toast(s.getAttribute('data-soon') + ' 준비 중이에요');
   });
 
-  /* ---------- '인터넷' 칸 펼침: 통신사 바로가기 (PC에서 마우스 올리면) — 누르면 인터넷 화면(internet)에서 그 통신사 ---------- */
+  /* ---------- '인터넷·TV' 칸 펼침: 통신사 바로가기 (PC에서 마우스 올리면) — 누르면 인터넷 화면(internet)에서 그 통신사 ---------- */
   var CARS = (window.DPZ_PLANS && window.DPZ_PLANS.carriers) || [];
   function carLinks() { return CARS.map(function (c) { return '<a href="internet?carrier=' + c.id + '" aria-label="' + esc(c.name) + '">' + carrierMark(c, false, true) + '</a>'; }).join(''); }
   $$('[data-cat-drop]').forEach(function (d) {
@@ -130,12 +130,13 @@
   /* ---------- ☰ 전체 메뉴판 (아정당 메뉴판 · 미소 전체 화면 메뉴 참고, 2026-10-29)
      - 위 아이콘 칸: 상품·안내 / 통신사 로고 / 혜택(이벤트·룰렛 — 준비 중) / 고객 지원(후기 — 준비 중)
      - PC는 ☰ 밑으로 펼쳐지는 판, 폰은 화면 전체 ---------- */
-  var MM_GRID = [ // 2026-10-29: 인터넷 · 인터넷+TV · 소호는 인터넷 화면(internet)으로 / 사장님: '인터넷 옮기기' 칸은 뺌 (머리 메뉴와 같이)
-    { t: '인터넷', ic: ['product_wifi', 160, 130], href: 'internet' },
-    { t: '인터넷+TV', ic: ['product_tv', 160, 121], href: 'internet?combo=tv' },
+  var MM_GRID = [ // 2026-10-30 사장님: 인터넷·인터넷+TV는 한 칸('인터넷·TV') / 머리 메뉴 6개 + 이용 방법 · 자주 묻는 질문 (4칸 2줄)
+    { t: '인터넷·TV', ic: ['product_wifi', 160, 130], href: 'internet' },
     { t: '소호', ic: ['etc_handshake', 160, 127], href: 'internet?carrier=soho' },
     { t: '요금표', ic: ['etc_doc_check', 156, 160], href: 'find#table' },
     { t: '상품 찾기', ic: ['etc_search', 156, 160], href: 'find?mode=recommend' },
+    { t: '고객안내', ic: ['brand_megaphone', 160, 137], href: 'guide' }, // 2026-10-29 상황별 안내 (guides.js)
+    { t: '후기', ic: ['etc_thumbs_stars', 122, 160], href: 'review' },
     { t: '이용 방법', ic: ['etc_calendar', 160, 140], href: './#how' },
     { t: '자주 묻는 질문', ic: ['etc_chat', 160, 113], href: './#faq' }
   ];
@@ -144,8 +145,6 @@
     { t: '룰렛', ic: ['brand_box_open', 160, 135], soon: true }
   ];
   var MM_HELP = [
-    { t: '고객안내', ic: ['brand_megaphone', 160, 137], href: 'guide' }, // 2026-10-29 상황별 안내 (guides.js)
-    { t: '후기', ic: ['etc_thumbs_stars', 122, 160], href: 'review' },
     { t: '상담 신청', ic: ['etc_headset', 160, 146], form: '전체 메뉴' },
     { t: '개인정보처리방침', ic: ['etc_shield', 134, 160], href: 'privacy' }
   ];
@@ -212,6 +211,16 @@
   window.addEventListener('resize', function () { if (mm && !mm.hidden && isPC()) closeMenu(); });
   var hd = $('.hd');
   if (hd) window.addEventListener('scroll', function () { hd.classList.toggle('scrolled', window.scrollY > 4); }, { passive: true });
+  /* 폰 메뉴 줄: 지금 화면 칸이 안 보이면 보이게 밀어 두고, 양옆에 메뉴가 더 있으면 그쪽 끝을 흐리게 */
+  var hdNav = $('.hd-nav');
+  if (hdNav) {
+    var navFade = function () { var ov = hdNav.scrollWidth > hdNav.clientWidth + 2; hdNav.classList.toggle('fr', ov && hdNav.scrollLeft + hdNav.clientWidth < hdNav.scrollWidth - 2); hdNav.classList.toggle('fl', ov && hdNav.scrollLeft > 2); };
+    var navOn = $('.tab.on', hdNav);
+    if (navOn && hdNav.scrollWidth > hdNav.clientWidth + 2) { var nr = hdNav.getBoundingClientRect(), tr = navOn.getBoundingClientRect(); if (tr.right > nr.right - 24) hdNav.scrollLeft += tr.left - nr.left - 12; }
+    hdNav.addEventListener('scroll', function () { clearTimeout(navFade._t); navFade._t = setTimeout(navFade, 40); }, { passive: true });
+    window.addEventListener('resize', navFade);
+    navFade();
+  }
 
   /* ---------- 폰 하단 고정 버튼 ---------- */
   var sticky = $('#sticky'), stickyAfter = $('[data-sticky-after]'), pastHero = !stickyAfter;
