@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<!-- 다퍼줌 후기 등록 (관리자 전용 · 사이트 어디에도 링크 없음) — 2026-10-30 사장님: "엑셀 내가 드래그 할 테니 아정당 식으로 입력되게"
+     · 로그인: ssgadmin 아이디(또는 이메일)·비밀번호 / 등록·숨기기·삭제는 ssgadmin 관리자 계정만 (Supabase dapeojum_reviews 권한)
+     · 받는 파일: 엑셀(.xlsx·.xls), CSV·TSV (UTF-8, 한글 엑셀에서 저장한 CSV(EUC-KR) 둘 다)
+     · 첫 줄 칸 이름으로 알아서 맞춤: 고객(이름)·변경 통신사·작성일·후기 / 있으면 제목·별점·지역·이전 통신사·종류·태그·사진·사은품도
+     · 이름은 '김**'처럼 가려서 저장 (이미 가려져 있으면 그대로) / 같은 고객·같은 날짜·같은 글은 두 번 들어가지 않음
+     · 올린 후기는 사이트 '고객 후기' 칸·후기 화면(review)에 아정당 후기 목록 모양으로 바로 보임 (assets/reviews.js) -->
+<title>후기 등록 | 다퍼줌 관리자</title>
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="preconnect" href="https://ebggtghzqtxfylbhqfoh.supabase.co" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wanted-sans@1.0.3/fonts/webfonts/variable/split/WantedSansVariable.css">
+<link rel="stylesheet" href="assets/site.css?v=20261030c">
+<style>
+body.adm{background:#F4F6FA;padding-bottom:64px}
+.ah{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+.ah-in{display:flex;align-items:center;gap:10px;height:58px}
+.ah-in .brand .bi{width:30px}.ah-in .brand .bw{height:20px}
+.ah-in .tt{font-size:15px;font-weight:800;color:var(--ink);padding-left:10px;border-left:1px solid var(--line)}
+.ah-in .who{margin-left:auto;font-size:12.5px;color:var(--sub);max-width:40vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ah-in .out{flex:none;height:34px;padding:0 12px;border-radius:8px;border:1px solid var(--line2);background:#fff;font-size:13px;font-weight:700;color:var(--ink2)}
+.am{padding-top:20px;display:grid;gap:16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 16px}
+.card h1,.card h2{font-size:18px;font-weight:850;color:var(--ink);letter-spacing:-.02em}
+.card .sub{margin-top:4px;font-size:13.5px;color:var(--sub);line-height:1.55}
+/* 로그인 */
+.lg{max-width:420px;margin:24px auto 0;width:100%}
+.lg form{margin-top:16px;display:grid;gap:12px}
+.lg label{display:grid;gap:6px;font-size:13.5px;font-weight:700;color:var(--ink2)}
+.lg input{height:48px;padding:0 14px;border:1px solid var(--line2);border-radius:10px;font:inherit;font-size:16px;color:var(--ink)}
+.lg input:focus{outline:2px solid var(--yellow);outline-offset:-1px;border-color:transparent}
+.lg .btn{width:100%;margin-top:4px}
+.err{font-size:13.5px;color:var(--error);line-height:1.5}
+/* 파일 놓는 곳 */
+.drop{margin-top:14px;display:grid;place-items:center;gap:4px;min-height:150px;padding:20px 14px;border:2px dashed #C9D1DB;border-radius:12px;background:#FAFBFC;text-align:center;cursor:pointer;transition:background .15s,border-color .15s}
+.drop svg{width:34px;height:34px;stroke:#9AA4B1;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.drop b{font-size:15.5px;font-weight:800;color:var(--ink)}
+.drop span{font-size:13px;color:var(--sub)}
+.drop.on{background:var(--cream);border-color:var(--yellow)}
+.hint{margin-top:10px;font-size:12.5px;color:var(--mute);line-height:1.6}
+.hint b{color:var(--ink2);font-weight:700}
+/* 미리보기 */
+.pv{margin-top:18px}
+.pvsum{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13.5px;color:var(--ink2)}
+.pvsum .fn{width:100%;font-weight:800;color:var(--ink);word-break:break-all}
+.chip{display:inline-flex;align-items:center;height:26px;padding:0 9px;border-radius:7px;background:var(--gray2);font-size:12.5px;font-weight:700;color:var(--ink2)}
+.chip.ok{background:#E7F6EC;color:#1E7A3F}.chip.no{background:#FDECEC;color:var(--error)}.chip.dup{background:#FFF1D6;color:var(--brown)}
+.pvtools{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--sub)}
+.pvtools button{height:30px;padding:0 10px;border-radius:7px;border:1px solid var(--line2);background:#fff;font-size:12.5px;font-weight:700;color:var(--ink2)}
+.pvlist{margin-top:10px;max-height:56vh;overflow:auto;border:1px solid var(--line);border-radius:10px}
+.pr{display:grid;grid-template-columns:22px minmax(0,1fr);gap:4px 10px;padding:12px;border-top:1px solid var(--line)}
+.pr:first-child{border-top:0}
+.pr.bad{background:#FFF8F8}.pr.dup{background:#FFFCF4}
+.pr input[type=checkbox]{grid-row:span 2;width:18px;height:18px;margin-top:2px;accent-color:var(--ink)}
+.pr .meta{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font-size:12.5px;color:var(--sub)}
+.pr .meta b{font-size:13.5px;color:var(--ink);font-weight:800}
+.pr select{height:28px;padding:0 6px;border:1px solid var(--line2);border-radius:6px;background:#fff;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink2)}
+.pr .tx{font-size:13.5px;color:var(--ink2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pr .tx .t{font-weight:800;color:var(--ink);margin-right:4px}
+.pr .why{font-size:12px;font-weight:800;color:var(--error)}
+.pr.dup .why{color:var(--brown)}
+.pvact{margin-top:14px;display:grid;gap:12px}
+.ck{display:flex;align-items:flex-start;gap:8px;font-size:14px;font-weight:650;color:var(--ink);line-height:1.45;cursor:pointer}
+.ck input{flex:none;width:19px;height:19px;margin-top:1px;accent-color:var(--ink)}
+.pvact .btn{width:100%}
+.pvact .btn[disabled]{opacity:.45;cursor:not-allowed}
+.msg{margin-top:12px;padding:12px 14px;border-radius:10px;background:#E7F6EC;color:#1E7A3F;font-size:14px;font-weight:700;line-height:1.5}
+.msg.no{background:#FDECEC;color:var(--error)}
+/* 등록된 후기 */
+.lh{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.lh .cnt{font-size:13.5px;color:var(--sub)}
+.lh a{margin-left:auto;font-size:13px;font-weight:700;color:var(--ink2);text-decoration:underline;text-underline-offset:3px}
+.ftabs{margin-top:12px;display:flex;gap:6px;flex-wrap:wrap}
+.ftabs button{height:32px;padding:0 12px;border-radius:16px;border:1px solid var(--line2);background:#fff;font-size:13px;font-weight:700;color:var(--ink2)}
+.ftabs button[aria-selected=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.batches{margin-top:12px;display:grid;gap:6px}
+.bt{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:10px 12px;border-radius:10px;background:var(--gray);font-size:13px;color:var(--ink2)}
+.bt b{font-weight:800;color:var(--ink);word-break:break-all}
+.bt .gx{margin-left:auto}
+.gx{height:30px;padding:0 10px;border-radius:7px;border:1px solid var(--line2);background:#fff;font-size:12.5px;font-weight:700;color:var(--ink2);white-space:nowrap}
+.gx.warn{border-color:var(--error);color:var(--error)}
+.rlist{margin-top:12px;display:grid}
+.rr{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;padding:12px 2px;border-top:1px solid var(--line)}
+.rr .meta{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font-size:12.5px;color:var(--sub)}
+.rr .meta b{font-size:13.5px;color:var(--ink);font-weight:800}
+.rr .off{display:inline-flex;height:22px;align-items:center;padding:0 7px;border-radius:6px;background:var(--gray2);color:var(--sub);font-size:11.5px;font-weight:800}
+.rr .tx{font-size:13.5px;color:var(--ink2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rr.hid .tx{color:var(--mute)}
+.rr .acts{display:flex;gap:6px}
+.empty{padding:28px 0;text-align:center;font-size:14px;color:var(--sub)}
+.more{margin-top:12px;width:100%;height:42px;border-radius:10px;border:1px solid var(--line2);background:#fff;font-size:14px;font-weight:700;color:var(--ink2)}
+@media (min-width:768px){
+  .am{padding-top:28px;gap:20px}
+  .card{padding:24px}
+  .pr{grid-template-columns:22px 118px minmax(0,1fr);align-items:start}
+  .pr input[type=checkbox]{grid-row:auto}
+  .pr .meta{flex-direction:column;align-items:flex-start;gap:3px}
+  .pvact{grid-template-columns:minmax(0,1fr) 220px;align-items:center}
+  .rr{grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:16px}
+  .rr .meta{grid-column:1}
+  .rr .tx{grid-column:1}
+  .rr .acts{grid-column:2;grid-row:1 / span 2}
+}
+</style>
+</head>
+<body class="adm">
+<header class="ah">
+  <div class="wrap ah-in">
+    <a class="brand" href="./" aria-label="다퍼줌 처음으로"><img class="bi" src="assets/logo-icon.webp" width="452" height="377" alt=""><img class="bw" src="assets/logo-word.webp" width="585" height="172" alt="다퍼줌"></a>
+    <span class="tt">후기 등록</span>
+    <span class="who" id="who"></span>
+    <button class="out" type="button" id="logout" hidden>로그아웃</button>
+  </div>
+</header>
+
+<main class="wrap am">
+  <section class="card lg" id="loginCard" hidden>
+    <h1>관리자 로그인</h1>
+    <p class="sub">ssgadmin 아이디(또는 이메일)와 비밀번호로 들어와요. 후기 등록은 관리자 계정만 할 수 있어요.</p>
+    <form id="loginForm" novalidate>
+      <label>아이디 또는 이메일<input id="lid" autocomplete="username" autocapitalize="off" spellcheck="false" required></label>
+      <label>비밀번호<input id="lpw" type="password" autocomplete="current-password" required></label>
+      <button class="btn btn-k" type="submit" id="lbtn">로그인</button>
+      <p class="err" id="lerr" role="alert" hidden></p>
+    </form>
+  </section>
+
+  <div class="am" id="app" hidden style="padding-top:0">
+    <section class="card" aria-labelledby="upT">
+      <h2 id="upT">엑셀로 후기 올리기</h2>
+      <p class="sub">파일을 끌어다 놓으면 아래에 미리 보여 드려요. 확인하고 '등록'을 누르면 사이트 후기 화면에 바로 올라가요.</p>
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept=".xlsx,.xls,.csv,.tsv,.txt" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7.5 8.5L12 4l4.5 4.5"/><path d="M4.5 14.5v3.2c0 1.2 1 2.3 2.3 2.3h10.4c1.2 0 2.3-1 2.3-2.3v-3.2"/></svg>
+        <b>엑셀·CSV 파일을 여기로 끌어다 놓으세요</b>
+        <span>또는 눌러서 파일 고르기 (.xlsx · .xls · .csv)</span>
+      </label>
+      <p class="hint">첫 줄 칸 이름으로 알아서 맞춰요: <b>고객 · 변경 통신사 · 작성일 · 후기</b><br>있으면 같이 들어가요: 제목 · 별점 · 지역 · 이전 통신사 · 종류(인터넷/인터넷+TV/소호) · 태그 · 사진 주소 · 사은품(예/아니오)</p>
+      <div class="pv" id="pv" hidden>
+        <p class="pvsum" id="pvSum"></p>
+        <div class="pvtools" id="pvTools"><button type="button" data-sel="all">전부 고르기</button><button type="button" data-sel="none">전부 빼기</button><span>종류는 글에 TV 얘기가 있으면 '인터넷+TV'로 골라 뒀어요. 칸마다 바꿀 수 있어요.</span></div>
+        <div class="pvlist" id="pvList"></div>
+        <div class="pvact">
+          <label class="ck"><input type="checkbox" id="consent">고객이 보낸 원문이고, 사이트에 올려도 된다는 동의를 받았어요</label>
+          <button class="btn btn-y" type="button" id="save" disabled>등록</button>
+        </div>
+      </div>
+      <p class="msg" id="msg" role="status" hidden></p>
+    </section>
+
+    <section class="card" aria-labelledby="lsT">
+      <div class="lh"><h2 id="lsT">등록된 후기</h2><span class="cnt" id="cnt"></span><a href="review" target="_blank" rel="noopener">사이트 후기 화면 보기</a></div>
+      <div class="ftabs" id="ftabs" role="tablist" aria-label="보기"></div>
+      <div class="batches" id="batches"></div>
+      <div class="rlist" id="rlist"></div>
+      <button class="more" type="button" id="rmore" hidden>더보기</button>
+    </section>
+  </div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var SB = 'https://ebggtghzqtxfylbhqfoh.supabase.co';
+  var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViZ2d0Z2h6cXR4ZnlsYmhxZm9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNDk4MzgsImV4cCI6MjA5NjgyNTgzOH0.bPqIVbrnh2I9pi9rBQzQNOXQcG8v5WbBauZynkED_-Q';
+  var TABLE = 'dapeojum_reviews';
+  var XLSX_SRC = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+  var TYPES = ['인터넷', '인터넷+TV', '소호'];
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  var store = {
+    get: function (k) { try { return JSON.parse(sessionStorage.getItem(k)); } catch (e) { return null; } },
+    set: function (k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+    del: function (k) { try { sessionStorage.removeItem(k); } catch (e) {} }
+  };
+
+  /* ---------- 로그인 (ssgadmin 계정 · Supabase Auth) ---------- */
+  var sess = store.get('dpz_rv_adm');
+  function authPost(path, body) {
+    return fetch(SB + '/auth/v1/' + path, { method: 'POST', headers: { apikey: KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) { var e = new Error(j.error_description || j.msg || j.message || '로그인하지 못했어요'); e.status = r.status; throw e; } return j; }); });
+  }
+  function keep(j) {
+    sess = { at: j.access_token, rt: j.refresh_token, exp: Date.now() + (j.expires_in || 3600) * 1000, email: j.user && j.user.email, uid: j.user && j.user.id };
+    store.set('dpz_rv_adm', sess);
+  }
+  function token() {
+    if (!sess) return Promise.reject(new Error('다시 로그인해 주세요'));
+    if (Date.now() < sess.exp - 60000) return Promise.resolve(sess.at);
+    return authPost('token?grant_type=refresh_token', { refresh_token: sess.rt }).then(function (j) { keep(j); return sess.at; })
+      .catch(function (e) { signOut(); throw new Error('로그인이 풀렸어요. 다시 로그인해 주세요'); });
+  }
+  function api(method, path, body, prefer) {
+    return token().then(function (t) {
+      var h = { apikey: KEY, Authorization: 'Bearer ' + t, 'Content-Type': 'application/json' };
+      if (prefer) h.Prefer = prefer;
+      return fetch(SB + '/rest/v1/' + path, { method: method, headers: h, body: body == null ? undefined : JSON.stringify(body) });
+    }).then(function (r) {
+      return r.text().then(function (tx) {
+        var j = null; try { j = tx ? JSON.parse(tx) : null; } catch (e) {}
+        if (!r.ok) {
+          var m = (j && (j.message || j.hint)) || ('서버 오류 ' + r.status);
+          if (r.status === 401 || r.status === 403 || /row-level security|permission/i.test(m)) m = '이 계정으로는 후기를 바꿀 수 없어요 (ssgadmin 관리자 계정만 돼요)';
+          throw new Error(m);
+        }
+        return j;
+      });
+    });
+  }
+  function signOut() { sess = null; store.del('dpz_rv_adm'); show(); }
+
+  function show() {
+    var on = !!sess;
+    $('#loginCard').hidden = on; $('#app').hidden = !on; $('#logout').hidden = !on;
+    $('#who').textContent = on ? (sess.email || '').replace(/@ssg-erp2\.internal$/, '') : '';
+    if (on) loadList();
+  }
+  $('#loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var id = $('#lid').value.trim(), pw = $('#lpw').value, er = $('#lerr');
+    er.hidden = true;
+    if (!id || !pw) { er.textContent = '아이디와 비밀번호를 넣어 주세요'; er.hidden = false; return; }
+    var email = id.indexOf('@') > -1 ? id : id + '@ssg-erp2.internal';
+    $('#lbtn').disabled = true; $('#lbtn').textContent = '확인하는 중…';
+    authPost('token?grant_type=password', { email: email, password: pw })
+      .then(function (j) {
+        keep(j);
+        // 관리자 계정인지 먼저 확인 (아니면 바로 안내)
+        return api('POST', 'rpc/is_admin', { _user_id: sess.uid }).then(function (ok) {
+          if (ok === false) { signOut(); throw new Error('관리자 계정만 후기를 등록할 수 있어요'); }
+        }, function () { /* 확인 함수를 못 부르면 그냥 진행 — 저장할 때 권한으로 막힘 */ });
+      })
+      .then(function () { $('#lpw').value = ''; show(); })
+      .catch(function (err) { er.textContent = err.status === 400 ? '아이디 또는 비밀번호가 맞지 않아요' : err.message; er.hidden = false; })
+      .then(function () { $('#lbtn').disabled = false; $('#lbtn').textContent = '로그인'; });
+  });
+  $('#logout').addEventListener('click', function () {
+    var t = sess && sess.at;
+    if (t) fetch(SB + '/auth/v1/logout', { method: 'POST', headers: { apikey: KEY, Authorization: 'Bearer ' + t } }).catch(function () {});
+    signOut();
+  });
+
+  /* ---------- 파일 읽기 (엑셀 · CSV · TSV) ---------- */
+  function loadXLSX() {
+    if (window.XLSX) return Promise.resolve(window.XLSX);
+    return new Promise(function (ok, no) {
+      var s = document.createElement('script'); s.src = XLSX_SRC; s.async = true;
+      s.onload = function () { window.XLSX ? ok(window.XLSX) : no(new Error('엑셀을 읽지 못했어요')); };
+      s.onerror = function () { no(new Error('엑셀 읽기 도구를 불러오지 못했어요. CSV로 저장해서 올려 주세요')); };
+      document.head.appendChild(s);
+    });
+  }
+  function decodeText(buf) {
+    var u8 = new Uint8Array(buf), s;
+    try { s = new TextDecoder('utf-8', { fatal: true }).decode(u8); } catch (e) { s = new TextDecoder('euc-kr').decode(u8); } // 한글 엑셀 CSV는 EUC-KR(CP949)
+    return s.replace(/^﻿/, '');
+  }
+  function parseDelimited(s) {
+    var first = s.split(/\r?\n/, 1)[0] || '';
+    var d = first.split('\t').length >= first.split(',').length ? '\t' : ',';
+    var rows = [], row = [], f = '', q = false;
+    for (var i = 0; i < s.length; i++) {
+      var c = s[i];
+      if (q) {
+        if (c === '"') { if (s[i + 1] === '"') { f += '"'; i++; } else q = false; }
+        else f += c;
+      } else if (c === '"' && f === '') q = true;
+      else if (c === d) { row.push(f); f = ''; }
+      else if (c === '\n' || c === '\r') { if (c === '\r' && s[i + 1] === '\n') i++; row.push(f); rows.push(row); row = []; f = ''; }
+      else f += c;
+    }
+    if (f !== '' || row.length) { row.push(f); rows.push(row); }
+    return rows;
+  }
+  function readFile(file) {
+    return file.arrayBuffer().then(function (buf) {
+      var b = new Uint8Array(buf.slice(0, 4));
+      var isZip = b[0] === 0x50 && b[1] === 0x4B, isOle = b[0] === 0xD0 && b[1] === 0xCF && b[2] === 0x11 && b[3] === 0xE0;
+      if (isZip || isOle || /\.xlsx?$/i.test(file.name)) {
+        return loadXLSX().then(function (X) {
+          var wb = X.read(buf, { type: 'array', cellDates: true });
+          var ws = wb.Sheets[wb.SheetNames[0]];
+          return X.utils.sheet_to_json(ws, { header: 1, raw: true, defval: '' });
+        });
+      }
+      return parseDelimited(decodeText(buf));
+    });
+  }
+
+  /* ---------- 칸 맞추기 · 값 정리 ---------- */
+  var COLS = [ // 순서 중요: '이전 통신사'를 '통신사'보다 먼저, '제목'을 '후기'보다 먼저
+    ['name', /고객|이름|작성자|성함|닉네임|아이디/],
+    ['prev', /이전\s*통신사|기존\s*통신사|쓰던\s*통신사/],
+    ['product', /변경\s*통신사|가입\s*통신사|통신사|가입\s*상품|상품명/],
+    ['date', /작성일|날짜|일자|등록일|일시|date/i],
+    ['title', /제목/],
+    ['body', /후기|내용|본문|리뷰|review/i],
+    ['rating', /별점|평점|점수|rating/i],
+    ['region', /지역|주소/],
+    ['type', /종류|구분|분류|유형/],
+    ['tags', /태그|키워드/],
+    ['photo', /사진|이미지|photo|image/i],
+    ['incentive', /사은품/]
+  ];
+  function mapHeader(h) {
+    var map = {};
+    h.forEach(function (cell, i) {
+      var t = String(cell == null ? '' : cell).trim(); if (!t) return;
+      for (var k = 0; k < COLS.length; k++) { if (map[COLS[k][0]] == null && COLS[k][1].test(t)) { map[COLS[k][0]] = i; return; } }
+    });
+    return map;
+  }
+  function ymdLocal(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function normDate(v) {
+    if (v instanceof Date && !isNaN(v)) return ymdLocal(new Date(v.getTime() + 12 * 3600e3)); // 엑셀 날짜 칸 (시간대 밀림 방지)
+    if (typeof v === 'number' && v > 20000 && v < 80000) { var d = new Date(Math.round((v - 25569) * 86400e3)); return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()); }
+    var m = /^\s*(\d{2,4})\s*[.\-\/년]\s*(\d{1,2})\s*[.\-\/월]\s*(\d{1,2})/.exec(String(v == null ? '' : v));
+    if (!m) return '';
+    var y = +m[1], mo = +m[2], da = +m[3]; if (y < 100) y += 2000;
+    var t = new Date(y, mo - 1, da);
+    if (t.getFullYear() !== y || t.getMonth() !== mo - 1 || t.getDate() !== da) return '';
+    return y + '-' + pad(mo) + '-' + pad(da);
+  }
+  function normName(v) {
+    var s = String(v == null ? '' : v).trim().replace(/\s+/g, '');
+    if (!s) return '';
+    if (/[*＊○]/.test(s)) return s.replace(/＊/g, '*');
+    return Array.from(s)[0] + '**'; // 이름은 가려서만 저장
+  }
+  var CAR = [[/sk\s*브로드|skb|^sk$/i, 'SK브로드밴드'], [/^skt$|sk\s*텔레콤|sk\s*telecom/i, 'SKT'], [/헬로/, 'LG헬로비전'], [/스카이|skylife/i, 'KT스카이라이프'], [/lg\s*u\s*\+|lgu|u\+|유플러스|엘지/i, 'LG U+'], [/^kt$|케이티|^kt\s/i, 'KT']];
+  function normCarrier(v) {
+    var s = String(v == null ? '' : v).trim(); if (!s) return '';
+    for (var i = 0; i < CAR.length; i++) if (CAR[i][0].test(s)) return CAR[i][1];
+    return s;
+  }
+  var TV_RE = /\bTV\b|티비|셋톱|셋탑|IPTV|B\s?tv|채널|리모컨|리모콘/i;
+  function normType(v, body) {
+    var s = String(v == null ? '' : v).trim();
+    if (s) { if (/소호|사업/.test(s)) return '소호'; if (/tv|티비|\+/i.test(s)) return '인터넷+TV'; return '인터넷'; }
+    return TV_RE.test(body) ? '인터넷+TV' : '인터넷';
+  }
+  function normRating(v) { var n = parseFloat(String(v == null ? '' : v).replace(/[^\d.]/g, '')); return n >= 1 && n <= 5 ? Math.round(n) : null; }
+  function normTags(v) { return String(v == null ? '' : v).split(/[,/#·|]/).map(function (t) { return t.trim(); }).filter(Boolean).slice(0, 5); }
+  function normBool(v) { return /^(y|yes|o|true|1|예|네|있음|받음|지급)$/i.test(String(v == null ? '' : v).trim()); }
+  function cell(r, i) { return i == null ? '' : r[i]; }
+  function txt(v) { return String(v == null ? '' : v).replace(/\r\n?/g, '\n').trim(); }
+
+  /* ---------- 미리보기 ---------- */
+  var rows = [], fileName = '', existing = [];
+  function keyOf(name, date, body) { return (name || '') + '|' + date + '|' + body; }
+  function build(table) {
+    var data = table.filter(function (r) { return r && r.some(function (x) { return String(x == null ? '' : x).trim(); }); });
+    if (data.length < 2) throw new Error('파일에 후기가 없어요');
+    var map = mapHeader(data[0]);
+    if (map.body == null) throw new Error('첫 줄에 칸 이름이 있어야 해요 — 적어도 \'후기\' 칸이 필요해요 (예: 고객 · 변경 통신사 · 작성일 · 후기)');
+    var have = {}; existing.forEach(function (x) { have[keyOf(x.masked_name, x.written_at, x.body)] = 1; });
+    var seen = {};
+    return data.slice(1).map(function (r, i) {
+      var body = txt(cell(r, map.body)), date = normDate(cell(r, map.date)), name = normName(cell(r, map.name));
+      var o = {
+        line: i + 2, body: body, date: date, name: name, title: txt(cell(r, map.title)),
+        product: normCarrier(cell(r, map.product)), prev: normCarrier(cell(r, map.prev)), region: txt(cell(r, map.region)),
+        rating: normRating(cell(r, map.rating)), tags: normTags(cell(r, map.tags)), photo: txt(cell(r, map.photo)),
+        incentive: normBool(cell(r, map.incentive)), type: normType(cell(r, map.type), body)
+      };
+      if (o.photo && !/^https:\/\//i.test(o.photo)) o.photo = ''; // 사진은 https 주소만
+      var k = keyOf(o.name, o.date, o.body);
+      if (!o.body) o.why = '후기 글이 비어 있어요';
+      else if (!o.date) o.why = '작성일을 못 읽었어요 (예: 2026.04.01)';
+      else if (have[k]) { o.why = '이미 등록된 후기예요'; o.dup = true; }
+      else if (seen[k]) { o.why = '파일 안에서 겹쳐요'; o.dup = true; }
+      seen[k] = 1;
+      o.on = !o.why;
+      return o;
+    }).filter(function (o) { return o.body || o.date || o.name; });
+  }
+  function drawPreview() {
+    var ok = rows.filter(function (o) { return !o.why; }).length, bad = rows.filter(function (o) { return o.why && !o.dup; }).length, dup = rows.filter(function (o) { return o.dup; }).length;
+    var sel = rows.filter(function (o) { return o.on; }).length;
+    $('#pvSum').innerHTML = '<span class="fn">' + esc(fileName) + '</span><span class="chip">전체 ' + rows.length + '개</span><span class="chip ok">등록 가능 ' + ok + '개</span>' +
+      (dup ? '<span class="chip dup">이미 있음 ' + dup + '개</span>' : '') + (bad ? '<span class="chip no">확인 필요 ' + bad + '개</span>' : '');
+    $('#pvList').innerHTML = rows.map(function (o, i) {
+      return '<div class="pr' + (o.dup ? ' dup' : o.why ? ' bad' : '') + '">' +
+        '<input type="checkbox" data-i="' + i + '"' + (o.on ? ' checked' : '') + (o.why ? ' disabled' : '') + ' aria-label="' + o.line + '번째 줄 등록">' +
+        '<div class="meta"><b>' + esc(o.name || '이름 없음') + '</b><span>' + esc([o.prev ? o.prev + ' →' : '', o.product].filter(Boolean).join(' ') || '통신사 없음') + '</span><span>' + esc(o.date ? o.date.replace(/-/g, '.') : '날짜 없음') + '</span>' +
+        '<select data-t="' + i + '" aria-label="종류">' + TYPES.map(function (t) { return '<option' + (t === o.type ? ' selected' : '') + '>' + t + '</option>'; }).join('') + '</select>' +
+        (o.rating ? '<span>★ ' + o.rating + '</span>' : '') + '</div>' +
+        '<div><p class="tx">' + (o.title ? '<span class="t">' + esc(o.title) + '</span>' : '') + esc(o.body) + '</p>' + (o.why ? '<p class="why">' + esc(o.why) + '</p>' : '') + '</div></div>';
+    }).join('');
+    $('#pv').hidden = false;
+    syncSave(sel);
+  }
+  function syncSave(sel) {
+    if (sel == null) sel = rows.filter(function (o) { return o.on; }).length;
+    var b = $('#save');
+    b.textContent = sel ? sel + '개 등록' : '등록';
+    b.disabled = !sel || !$('#consent').checked;
+  }
+  $('#pvList').addEventListener('change', function (e) {
+    var c = e.target.closest('[data-i]'), s = e.target.closest('[data-t]');
+    if (c) { rows[+c.getAttribute('data-i')].on = c.checked; syncSave(); }
+    if (s) rows[+s.getAttribute('data-t')].type = s.value;
+  });
+  $('#pvTools').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-sel]'); if (!b) return;
+    var all = b.getAttribute('data-sel') === 'all';
+    rows.forEach(function (o) { if (!o.why) o.on = all; });
+    drawPreview();
+  });
+  $('#consent').addEventListener('change', function () { syncSave(); });
+
+  function take(file) {
+    if (!file) return;
+    msg('', false, true);
+    fileName = file.name;
+    $('#drop b').textContent = '읽는 중…';
+    readFile(file).then(function (table) { rows = build(table); $('#consent').checked = false; drawPreview(); })
+      .catch(function (err) { $('#pv').hidden = true; msg(err.message || '파일을 읽지 못했어요', true); })
+      .then(function () { $('#drop b').textContent = '엑셀·CSV 파일을 여기로 끌어다 놓으세요'; $('#file').value = ''; });
+  }
+  var drop = $('#drop');
+  ['dragenter', 'dragover'].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.add('on'); }); });
+  ['dragleave', 'drop'].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.remove('on'); }); });
+  drop.addEventListener('drop', function (e) { take(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]); });
+  $('#file').addEventListener('change', function () { take(this.files && this.files[0]); });
+  // 화면 아무 데나 떨어뜨려도 브라우저가 파일을 열지 않게
+  ['dragover', 'drop'].forEach(function (t) { window.addEventListener(t, function (e) { if (!e.target.closest || !e.target.closest('#drop')) e.preventDefault(); }); });
+
+  function msg(t, bad, hide) { var m = $('#msg'); m.hidden = !!hide || !t; m.textContent = t || ''; m.classList.toggle('no', !!bad); }
+  function uuid() { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) { var r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 3 | 8)).toString(16); }); }
+
+  $('#save').addEventListener('click', function () {
+    var pick = rows.filter(function (o) { return o.on && !o.why; });
+    if (!pick.length || !$('#consent').checked) return;
+    var batch = uuid(), b = this;
+    var payload = pick.map(function (o) {
+      return { review_type: o.type, title: o.title || null, body: o.body, rating: o.rating, masked_name: o.name || null, region: o.region || null,
+        prev_isp: o.prev || null, new_product: o.product || null, photo_url: o.photo || null, tags: o.tags, incentive: o.incentive,
+        written_at: o.date, published: true, consent: true, batch_id: batch, source_name: fileName };
+    });
+    b.disabled = true; b.textContent = '올리는 중…';
+    var done = 0, chunks = [];
+    for (var i = 0; i < payload.length; i += 200) chunks.push(payload.slice(i, i + 200));
+    chunks.reduce(function (p, c) {
+      return p.then(function () {
+        return api('POST', TABLE + '?on_conflict=masked_name,written_at,body_md5', c, 'resolution=ignore-duplicates,return=representation')
+          .then(function (res) { done += (res || []).length; });
+      });
+    }, Promise.resolve())
+      .then(function () {
+        var skip = payload.length - done;
+        msg(done + '개 등록했어요' + (skip ? ' (이미 있던 ' + skip + '개는 건너뜀)' : '') + '. 사이트 후기 화면에 바로 보여요.');
+        rows = []; $('#pv').hidden = true; $('#consent').checked = false;
+        loadList();
+      })
+      .catch(function (err) { msg((done ? done + '개까지 등록하고 멈췄어요 — ' : '') + err.message, true); syncSave(); });
+  });
+
+  /* ---------- 등록된 후기 (숨기기 · 보이기 · 삭제 · 묶음 삭제) ---------- */
+  var view = '전체', shown = 50;
+  function loadList() {
+    api('GET', TABLE + '?select=id,review_type,title,body,rating,masked_name,prev_isp,new_product,written_at,published,batch_id,source_name,created_at&order=written_at.desc,created_at.desc&limit=5000')
+      .then(function (list) { existing = list || []; drawList(); })
+      .catch(function (err) { $('#rlist').innerHTML = '<p class="empty">' + esc(err.message) + '</p>'; });
+  }
+  function drawList() {
+    var pub = existing.filter(function (x) { return x.published; }).length, hid = existing.length - pub;
+    $('#cnt').textContent = '게시 중 ' + pub + '개' + (hid ? ' · 숨김 ' + hid + '개' : '');
+    $('#ftabs').innerHTML = ['전체', '게시 중', '숨김'].map(function (t) { return '<button type="button" role="tab" aria-selected="' + (t === view) + '" data-v="' + t + '">' + t + '</button>'; }).join('');
+    // 올린 묶음 (파일 단위로 한꺼번에 지우기)
+    var groups = {}, order = [];
+    existing.forEach(function (x) { if (!x.batch_id) return; if (!groups[x.batch_id]) { groups[x.batch_id] = { name: x.source_name || '파일', n: 0, at: x.created_at }; order.push(x.batch_id); } groups[x.batch_id].n++; });
+    order.sort(function (a, b) { return String(groups[b].at).localeCompare(String(groups[a].at)); });
+    $('#batches').innerHTML = order.slice(0, 5).map(function (id) {
+      var g = groups[id], d = new Date(g.at);
+      return '<div class="bt"><b>' + esc(g.name) + '</b><span>' + g.n + '개 · ' + (isNaN(d) ? '' : (d.getMonth() + 1) + '/' + d.getDate() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ' 등록') + '</span><button type="button" class="gx" data-batch="' + esc(id) + '">이 파일로 올린 후기 모두 삭제</button></div>';
+    }).join('');
+    var list = existing.filter(function (x) { return view === '전체' || (view === '게시 중' ? x.published : !x.published); });
+    $('#rlist').innerHTML = list.length ? list.slice(0, shown).map(function (x) {
+      return '<div class="rr' + (x.published ? '' : ' hid') + '" data-id="' + esc(x.id) + '">' +
+        '<p class="meta"><b>' + esc(x.masked_name || '이름 없음') + '</b><span>' + esc([x.prev_isp ? x.prev_isp + ' →' : '', x.new_product].filter(Boolean).join(' ')) + '</span><span>' + esc(String(x.written_at || '').replace(/-/g, '.')) + '</span><span>' + esc(x.review_type || '') + '</span>' + (x.rating ? '<span>★ ' + x.rating + '</span>' : '') + (x.published ? '' : '<span class="off">숨김</span>') + '</p>' +
+        '<p class="tx">' + (x.title ? '<b>' + esc(x.title) + '</b> ' : '') + esc(x.body) + '</p>' +
+        '<div class="acts"><button type="button" class="gx" data-pub="' + (x.published ? '0' : '1') + '">' + (x.published ? '숨기기' : '다시 보이기') + '</button><button type="button" class="gx" data-del>삭제</button></div></div>';
+    }).join('') : '<p class="empty">' + (existing.length ? '여기에 해당하는 후기가 없어요' : '아직 등록된 후기가 없어요. 위에 엑셀을 끌어다 놓아 주세요.') + '</p>';
+    $('#rmore').hidden = list.length <= shown;
+  }
+  $('#ftabs').addEventListener('click', function (e) { var b = e.target.closest('[data-v]'); if (!b) return; view = b.getAttribute('data-v'); shown = 50; drawList(); });
+  $('#rmore').addEventListener('click', function () { shown += 50; drawList(); });
+  // 지우기는 두 번 눌러야 (한 번 누르면 '정말 삭제'로 바뀜)
+  function twoStep(btn, label) { if (btn.classList.contains('warn')) return true; btn.classList.add('warn'); btn.setAttribute('data-l', btn.textContent); btn.textContent = label; setTimeout(function () { if (btn.isConnected && btn.classList.contains('warn')) { btn.classList.remove('warn'); btn.textContent = btn.getAttribute('data-l'); } }, 4000); return false; }
+  $('#rlist').addEventListener('click', function (e) {
+    var row = e.target.closest('.rr'); if (!row) return;
+    var id = row.getAttribute('data-id'), p = e.target.closest('[data-pub]'), d = e.target.closest('[data-del]');
+    if (p) {
+      p.disabled = true;
+      api('PATCH', TABLE + '?id=eq.' + encodeURIComponent(id), { published: p.getAttribute('data-pub') === '1' }, 'return=minimal')
+        .then(loadList).catch(function (err) { msg(err.message, true); p.disabled = false; });
+    }
+    if (d && twoStep(d, '정말 삭제')) {
+      d.disabled = true;
+      api('DELETE', TABLE + '?id=eq.' + encodeURIComponent(id), null, 'return=minimal').then(loadList).catch(function (err) { msg(err.message, true); d.disabled = false; });
+    }
+  });
+  $('#batches').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-batch]'); if (!b) return;
+    if (!twoStep(b, '정말 모두 삭제')) return;
+    b.disabled = true;
+    api('DELETE', TABLE + '?batch_id=eq.' + encodeURIComponent(b.getAttribute('data-batch')), null, 'return=minimal')
+      .then(function () { msg('그 파일로 올린 후기를 모두 지웠어요.'); loadList(); }).catch(function (err) { msg(err.message, true); b.disabled = false; });
+  });
+
+  show();
+})();
+</script>
+</body>
+</html>

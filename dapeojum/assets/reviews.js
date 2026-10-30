@@ -4,16 +4,16 @@
  *    (사이트용으로 쓴 글이나 아무 사진을 후기에 붙이는 건 안 함 — 손님이 실제 후기로 믿게 되는 가짜 후기가 됨)
  *  - 사진 없는 글 후기가 기본 → 사진 칸에 다퍼줌 로고 (아정당처럼)
  *  - 사은품을 드리고 받은 후기(incentive)는 본문 첫 부분에 '사은품을 받고 쓴 후기예요' 표시 (공정위 추천·보증 지침)
- * 지금 상태 (2026-10-29 사장님: 랜딩 주소를 아직 아무도 모르고 다 세팅한 뒤 열 거라 숨길 필요 없음)
- *  - 저장소(dapeojum_reviews)·영업관리 등록 화면은 아직 → ON=false 동안은 '예시' 표시가 붙은 견본 카드가 그냥 보임
- *  - 등록 화면을 만들고 ON=true 로 바꾸면 견본은 사라지고 게시된 후기만 불러옴 (그때는 ?preview=1 일 때만 견본)
+ * 지금 상태 (2026-10-30 사장님: "엑셀 내가 드래그 할 테니 아정당 식으로 입력되게")
+ *  - 저장소 Supabase dapeojum_reviews + 등록 화면 review-admin (ssgadmin 관리자 로그인 → 엑셀·CSV 끌어다 놓기 → 미리보기 → 등록) → ON=true
+ *  - 게시(published)된 후기만 불러옴 · 견본은 ?preview=1 일 때만 / 작성일은 아정당처럼 'N일 전 · N개월 전' / 별점이 없는 후기는 별 안 보임
  */
 (function () {
   'use strict';
   var D = window.DPZ;
   if (!D) return;
   var $ = D.$, esc = D.esc;
-  var ON = false;
+  var ON = true;
   var PARAM = /[?&]preview=1(&|$)/.test(location.search);
   var PREVIEW = !ON || PARAM; // 세팅 중(ON=false)에는 늘 견본
   var TYPES = ['인터넷', '인터넷+TV', '소호']; // 2026-10-29 사장님: 후기 분류는 상품별, '인터넷 옮기기'는 뺌
@@ -35,7 +35,14 @@
   var EX = PREVIEW ? '<em class="rv-ex">예시</em>' : '';
 
   function fmtDate(s) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s || ''); return m ? m[1].slice(2) + '.' + m[2] + '.' + m[3] : ''; }
-  function stars(n) { n = Math.max(0, Math.min(5, Math.round(+n || 0))); return '<span class="rv-star" aria-label="별점 ' + n + '점">' + '★★★★★'.slice(0, n) + '<span class="off">' + '★★★★★'.slice(n) + '</span></span>'; }
+  // 아정당처럼 '오늘 · 3일 전 · 2개월 전' (마우스를 올리면 날짜)
+  function when(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s || ''); if (!m) return '';
+    var t = new Date(), days = Math.floor((Date.UTC(t.getFullYear(), t.getMonth(), t.getDate()) - Date.UTC(+m[1], +m[2] - 1, +m[3])) / 864e5);
+    var w = days <= 0 ? '오늘' : days < 30 ? days + '일 전' : days < 365 ? Math.floor(days / 30) + '개월 전' : Math.floor(days / 365) + '년 전';
+    return '<time datetime="' + esc(m[0]) + '" title="' + fmtDate(s) + '">' + w + '</time>';
+  }
+  function stars(n) { n = Math.max(0, Math.min(5, Math.round(+n || 0))); if (!n) return ''; return '<span class="rv-star" aria-label="별점 ' + n + '점">' + '★★★★★'.slice(0, n) + '<span class="off">' + '★★★★★'.slice(n) + '</span></span>'; }
   function fromRow(r) {
     return { id: r.id, type: r.review_type, title: r.title, body: r.body, rating: r.rating, name: r.masked_name, region: r.region,
       prev: r.prev_isp, product: r.new_product, photo: r.photo_url, tags: r.tags || [], incentive: !!r.incentive, date: r.written_at };
@@ -71,7 +78,7 @@
         '<span class="q" aria-hidden="true">“</span>' +
         (x.incentive ? '<span class="rv-inc">사은품을 받고 쓴 후기예요</span>' : '') +
         '<p class="t">' + esc(x.body) + '</p>' +
-        '<p class="m">' + PERSON + '<span>' + esc(x.name || '') + ' · ' + fmtDate(x.date) + '</span>' + EX + '</p></a>';
+        '<p class="m">' + PERSON + '<span>' + esc(x.name || '') + ' · ' + when(x.date) + '</span>' + EX + '</p></a>';
     }
     function draw() {
       tabsEl.innerHTML = tabs(list, cur); tabsEl.hidden = !tabsEl.innerHTML;
@@ -108,7 +115,7 @@
         (x.incentive ? '<span class="rv-inc">사은품을 받고 쓴 후기예요</span>' : '') +
         '<p class="rv-tx">' + esc(x.body) + '</p><button type="button" class="rv-more" hidden>더보기</button>' +
         chg +
-        '<p class="rv-meta">' + esc(x.name || '') + ' · ' + fmtDate(x.date) + '</p>' +
+        '<p class="rv-meta">' + esc(x.name || '') + ' · ' + when(x.date) + '</p>' +
         (x.tags && x.tags.length ? '<p class="rv-tags">' + x.tags.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') + '</p>' : '') +
         '</div></article>';
     }
