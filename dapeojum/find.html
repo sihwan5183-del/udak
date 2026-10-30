@@ -209,6 +209,14 @@ table.fee.simple{min-width:calc(108px + var(--n,3) * 70px)}
 body.lock .mbar{display:none}
 .ft{padding-bottom:110px}
 
+/* 폰: 속도 칸은 한 줄에 하나씩 (이름·소개 왼쪽, 요금 오른쪽) — 3칸으로 두면 좁은 폰에서 글자가 깨짐 */
+@media (max-width:599px){
+  .speeds,.speeds.n4{grid-template-columns:minmax(0,1fr)}
+  .scard{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"sp pr" "sd pr";align-items:center;column-gap:12px;padding:14px 16px}
+  .scard .sp{grid-area:sp}
+  .scard .sd{grid-area:sd;margin-top:2px}
+  .scard .spr{grid-area:pr;margin-top:0;padding-top:0;text-align:right;white-space:nowrap}
+}
 @media (min-width:600px){
   .tvcard{flex-basis:calc((100% - 16px) / 3.3)}
   .speeds.n4{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -372,7 +380,7 @@ body.lock .mbar{display:none}
   </div>
 </div>
 
-<script src="assets/plans.js?v=20261030a"></script>
+<script src="assets/plans.js?v=20261030b"></script>
 <script src="assets/site.js?v=20261030b"></script>
 <script>
 (function(){

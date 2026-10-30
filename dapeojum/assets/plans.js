@@ -14,12 +14,12 @@
  * - 통신사 칸 순서(4×2): 윗줄 U+·SKT·KT·소호 / 아랫줄 SK브로드밴드·B tv POP·LG헬로비전·KT스카이라이프
  */
 window.DPZ_PLANS = {
-  speedInfo: {
-    '100M': { label: '100', unit: 'Mbps', desc: '1~2명이 사는 집' },
+  speedInfo: { // 속도 소개: 2026-10-30 사장님이 보낸 화면 문구 그대로 (100M · 500M · 1G)
+    '100M': { label: '100', unit: 'Mbps', desc: '인터넷 검색, 문서 작업을 편리하게' },
     '160M': { label: '160', unit: 'Mbps', desc: '100M보다 1.6배 빠른 속도' },
     '200M': { label: '200', unit: 'Mbps', desc: '100M보다 2배 빠른 속도' },
-    '500M': { label: '500', unit: 'Mbps', desc: '3~4명이 사는 집' },
-    '1G': { label: '1', unit: 'Gbps', desc: '인터넷을 많이 쓰는 집' }
+    '500M': { label: '500', unit: 'Mbps', desc: '고화질 동영상 콘텐츠도 끊김없이' },
+    '1G': { label: '1', unit: 'Gbps', desc: '고사양 게임을 즐길 수 있는' }
   },
   carriers: [
     /* ── 윗줄: 3사 + 소호 ── */
