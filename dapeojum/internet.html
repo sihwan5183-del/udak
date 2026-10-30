@@ -631,7 +631,7 @@ body.lock .mbar{display:none}
     $('#ptHead').innerHTML = '<tr><th scope="col">상품</th>' + c.speeds.map(function(sp){ return '<th scope="col">' + D.esc(sp === '1G' ? '1기가' : sp) + '</th>'; }).join('') + '</tr>';
     var rows = [];
     if (!c.tvOnly && Object.keys(c.internet).length) rows.push({ name: '인터넷만', label: '인터넷만', sub: '', fee: c.internet, k: -1 });
-    (c.tv || []).forEach(function(p, k){ rows.push({ name: (c.tvOnly ? '' : '+ ') + p.name, label: p.name, sub: [p.box ? p.box + ' 셋톱' : '', p.desc || ''].filter(Boolean).join(' · '), fee: p.fee, k: k }); });
+    (c.tv || []).forEach(function(p, k){ rows.push({ name: (c.tvOnly ? '' : '+\u00a0') + p.name, label: p.name, sub: [p.box ? p.box + ' 셋톱' : '', p.desc || ''].filter(Boolean).join(' · '), fee: p.fee, k: k }); });
     var curK = comboOf(c) === 'tv' ? st.tv : -1;
     // 칸마다 단추: 누르면 그 요금제·속도로 위가 바뀜 (상품 이름 칸은 요금제만, 요금 칸은 요금제+속도)
     $('#ptBody').innerHTML = rows.map(function(r){
