@@ -133,7 +133,7 @@
   var CARS = (window.DPZ_PLANS && window.DPZ_PLANS.carriers) || [];
   function carLinks() { return CARS.map(function (c) { return '<a href="internet?carrier=' + c.id + '" aria-label="' + esc(c.name) + '">' + carrierMark(c, false, true) + '</a>'; }).join(''); }
   $$('[data-cat-drop]').forEach(function (d) {
-    d.innerHTML = '<div class="cat-in"><p>통신사 바로가기</p><div class="cat-grid">' + carLinks() + '</div><a class="cat-all" href="find#table">통신사별 요금표 전체 보기' + CHEV + '</a></div>';
+    d.innerHTML = '<div class="cat-in"><p>통신사 바로가기</p><div class="cat-grid">' + carLinks() + '</div><a class="cat-all" href="price">통신사별 요금표 전체 보기' + CHEV + '</a></div>';
   });
 
   /* ---------- ☰ 전체 메뉴판 (아정당 메뉴판 · 미소 전체 화면 메뉴 참고, 2026-10-29)
@@ -142,7 +142,7 @@
   var MM_GRID = [ // 2026-10-30 사장님: 인터넷·인터넷+TV는 한 칸('인터넷·TV') / 머리 메뉴 6개 + 이용 방법 · 자주 묻는 질문 (4칸 2줄)
     { t: '인터넷·TV', ic: ['product_wifi', 160, 130], href: 'internet' },
     { t: '소호', ic: ['etc_handshake', 160, 127], href: 'internet?carrier=soho' },
-    { t: '요금표', ic: ['etc_doc_check', 156, 160], href: 'find#table' },
+    { t: '요금표', ic: ['etc_doc_check', 156, 160], href: 'price' },
     { t: '상품 찾기', ic: ['etc_search', 156, 160], href: 'find?mode=recommend' },
     { t: '고객안내', ic: ['brand_megaphone', 160, 137], href: 'guide' }, // 2026-10-29 상황별 안내 (guides.js)
     { t: '후기', ic: ['etc_thumbs_stars', 122, 160], href: 'review' },

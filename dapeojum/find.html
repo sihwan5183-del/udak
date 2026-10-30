@@ -279,7 +279,7 @@ body.lock .mbar{display:none}
     <nav class="hd-nav" aria-label="메뉴">
       <div class="cat"><a class="tab" href="internet" data-tab="internet">인터넷·TV<svg class="cv" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a><div class="cat-drop" data-cat-drop></div></div>
       <a class="tab" href="internet?carrier=soho" data-tab="soho">소호<span class="biz">사업자</span></a>
-      <a class="tab" href="#table" data-tab="table">요금표</a>
+      <a class="tab" href="price" data-tab="table">요금표</a>
       <a class="tab on" aria-current="page" href="find?mode=recommend" data-tab="find">상품 찾기</a>
       <a class="tab" href="guide" data-tab="guide">고객안내</a>
       <a class="tab" href="review" data-tab="review">후기</a>
@@ -388,7 +388,7 @@ body.lock .mbar{display:none}
 </div>
 
 <script src="assets/plans.js?v=20261030g"></script>
-<script src="assets/site.js?v=20261030c"></script>
+<script src="assets/site.js?v=20261030d"></script>
 <script>
 (function(){
   'use strict';
@@ -414,12 +414,14 @@ body.lock .mbar{display:none}
   var st = { mode: 'direct', carrier: 'kt', combo: 'tv', speed: '100M', tv: 0, pkg: -1 };
   var rec = { isp: null, goal: null, tv: false, speed: '500M', bundle: true, sel: 0, list: [], ran: false };
   var q = new URLSearchParams(location.search);
+  // 2026-10-30 사장님: 요금표는 통신사 요금표만 모은 화면(price)으로 — 예전 주소(find#table)로 오면 그쪽으로 보냄
+  if (location.hash === '#table') { location.replace('price' + (byId[q.get('carrier')] ? '#' + q.get('carrier') : '')); return; }
   if (byId[q.get('carrier')]) st.carrier = q.get('carrier');
   if (q.get('combo') === 'internet' || q.get('combo') === 'tv') st.combo = q.get('combo');
   if (SI[q.get('speed')]) st.speed = q.get('speed');
   if (q.get('mode') === 'recommend') st.mode = 'recommend';
-  (function(){ // 머리 메뉴 불: 소호로 들어오면 '소호', 요금표(#table)로 오면 '요금표', 그 밖엔 '상품 찾기'
-    var t = q.get('carrier') === 'soho' ? 'soho' : (location.hash === '#table' ? 'table' : 'find');
+  (function(){ // 머리 메뉴 불: 소호로 들어오면 '소호', 그 밖엔 '상품 찾기' (요금표는 price 화면)
+    var t = q.get('carrier') === 'soho' ? 'soho' : 'find';
     $$('.hd [data-tab]').forEach(function(a){
       var on = a.getAttribute('data-tab') === t;
       a.classList.toggle('on', on);
@@ -756,7 +758,6 @@ body.lock .mbar{display:none}
 
   setMode(st.mode);
   if (st.mode === 'recommend' && !rec.ran) openRec();
-  if (location.hash === '#table') setTimeout(function(){ $('#table').scrollIntoView({ block: 'start' }); }, 60);
 })();
 </script>
 </body>

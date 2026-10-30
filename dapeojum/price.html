@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- 다퍼줌 요금표 (2026-10-30 사장님: "요금표를 누르면 요금표만 모아져 있는 카테고리로" — 전엔 상품 찾기 안 요금표(find#table)로 가서 한 통신사만 보였음)
+     · 통신사마다 칸 하나씩 (plans.js 순서 그대로): 로고 · 이름 · 한 줄 안내 + 상품 × 속도 요금표 + 설치 가능 지역(지역 한정 상품만)
+     · 위에 통신사 바로가기 줄(화면을 내려도 붙어 다님), price#kt 처럼 주소 끝에 통신사를 붙이면 그 칸으로 바로
+     · 요금 칸을 누르면 인터넷 화면(internet)에서 그 통신사·속도·요금제가 골라진 채로 열림
+     · 사은품 금액은 쓰지 않음 ('내 사은품 확인하기' → 상담 신청) -->
+<title>요금표 | 다퍼줌</title>
+<meta name="description" content="LG U+·SKT·KT·SK브로드밴드·LG헬로비전·KT스카이라이프 인터넷·TV 월 요금을 통신사별로 한곳에 모았어요.">
+<meta name="theme-color" content="#FFB61C">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="다퍼줌">
+<meta property="og:title" content="통신사별 요금표 | 다퍼줌">
+<meta property="og:description" content="인터넷·TV 월 요금을 통신사별로 한곳에">
+<meta property="og:image" content="https://landing.uplusdak.com/dapeojum/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.png" type="image/png" sizes="64x64">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://ebggtghzqtxfylbhqfoh.supabase.co" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wanted-sans@1.0.3/fonts/webfonts/variable/split/WantedSansVariable.css">
+<link rel="stylesheet" href="assets/site.css?v=20261030c">
+<style>
+.ppage{padding-bottom:64px}
+.phead{padding:26px 0 6px}
+.phead h1{font-size:22px;font-weight:850;line-height:1.35}
+.phead p{margin-top:6px;font-size:14.5px;color:var(--sub);line-height:1.55}
+.phead .gift-btn{max-width:440px}
+/* 통신사 바로가기 줄 (내려도 머리 밑에 붙어 다님) */
+.pnav{position:sticky;top:var(--hd);z-index:30;margin:16px calc(var(--gut) * -1) 0;padding:10px var(--gut);background:rgba(255,255,255,.97);border-bottom:1px solid var(--line)}
+.pnav-in{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.pnav-in::-webkit-scrollbar{display:none}
+.pnav a{flex:none;display:inline-flex;align-items:center;height:38px;padding:0 14px;border:1px solid var(--line2);border-radius:19px;background:#fff;font-size:14px;font-weight:750;color:var(--ink2);white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
+.pnav a:hover{border-color:var(--ink2)}
+.pnav a.on{border-color:var(--ink);background:var(--ink);color:#fff}
+/* 통신사 칸 */
+.pc{padding-top:30px;scroll-margin-top:62px}
+.pc + .pc{margin-top:8px;border-top:1px solid var(--line)}
+.pc-hd{display:flex;align-items:center;gap:12px}
+.plogo{flex:none;display:grid;place-items:center;width:52px;height:52px;border-radius:14px;border:1px solid var(--line);background:#fff;overflow:hidden;--k:26px}
+.plogo .cname{font-size:12px;text-align:center}
+.pc-hd .pt{min-width:0}
+.pc-hd h2{font-size:19px;font-weight:850;line-height:1.3;letter-spacing:-.02em}
+.pc-hd small{display:block;margin-top:2px;font-size:13px;color:var(--sub);line-height:1.4}
+.pc-hd .go{flex:none;margin-left:auto;display:inline-flex;align-items:center;gap:2px;font-size:14px;font-weight:650;color:var(--sub)}
+.pc-hd .go svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none}
+/* 요금표 (상품 찾기 요금표와 같은 모양) */
+.twrap{margin-top:14px;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:6px}
+table.fee{border-collapse:separate;border-spacing:0;width:100%;min-width:calc(108px + var(--n,3) * 70px);font-size:13.5px}
+.fee th,.fee td{padding:9px 8px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;white-space:nowrap;font-weight:500}
+.fee tr > :last-child{border-right:0}
+.fee tbody tr:last-child td,.fee tbody tr:last-child th{border-bottom:0}
+.fee thead th{background:#EFF3F9;color:var(--ink);font-weight:700}
+.fee thead th small{font-size:11.5px;font-weight:600;color:var(--sub);margin-left:1px}
+.fee .pname{position:sticky;left:0;z-index:1;min-width:104px;max-width:150px;white-space:normal;background:#fff;color:var(--ink);font-weight:700;line-height:1.35;text-align:left;padding-left:12px;box-shadow:1px 0 0 var(--line)}
+.fee thead .pname{background:#EFF3F9;z-index:2}
+.fee .pname small{display:block;margin-top:2px;font-size:11.5px;font-weight:600;color:var(--sub)}
+.fee td{color:var(--ink);font-weight:650}
+.fee td.na{color:#C5CBD3;font-weight:500}
+.fee .pkc{padding:0}
+.fee .pk{display:block;padding:12px 8px;color:inherit;transition:background .12s}
+.fee .pk:hover{background:var(--pick)}
+.fee .pk:focus-visible{outline-offset:-3px}
+.pc .area{margin-top:12px}
+.tready{margin-top:14px;padding:26px 20px;border-radius:12px;background:var(--gray);text-align:center}
+.tready b{display:block;font-size:17px;color:var(--ink)}
+.tready p{margin-top:6px;font-size:14.5px;color:var(--sub)}
+.tready .titems{margin-top:8px;font-size:14.5px;font-weight:700;color:var(--ink2)}
+.tready .btn{margin-top:16px}
+.pfoot{margin-top:14px;font-size:12.5px;color:var(--mute);line-height:1.6}
+.pcta{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin-top:40px;padding:22px 20px;border-radius:14px;background:var(--cream)}
+.pcta b{display:block;font-size:17px;font-weight:850;color:var(--ink);letter-spacing:-.02em;line-height:1.4}
+.pcta small{display:block;margin-top:2px;font-size:14px;color:var(--sub)}
+.pcta .bts{display:flex;flex-wrap:wrap;gap:8px}
+.btn-w2{background:#fff;color:var(--ink);border:1px solid var(--line2)}
+@media (min-width:1024px){
+  .ppage{padding-bottom:88px}
+  .phead{padding:44px 0 6px}
+  .phead h1{font-size:26px}
+  .pnav{margin-top:22px;padding:12px var(--gut)}
+  .pc{padding-top:40px;scroll-margin-top:66px}
+  .pc-hd h2{font-size:21px}
+  .plogo{width:58px;height:58px;--k:30px}
+  .fee{font-size:14.5px}
+  .fee .pk{padding:14px 10px}
+  .pcta{flex-direction:row;align-items:center;justify-content:space-between;padding:26px 28px}
+  .pcta b{font-size:19px}
+}
+</style>
+</head>
+<body>
+<div class="topbar" id="topbar"><a class="tb-in" id="tbIn" href="find"><img src="assets/emoji/s/brand_megaphone.webp?v=20261029" width="160" height="137" alt=""><span class="tb-t">U+·SKT·KT 요금 비교, 다퍼줌에서 한 번에</span></a><button class="x" type="button" aria-label="안내 닫기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+
+<header class="hd">
+  <div class="wrap hd-in">
+    <a class="brand" href="./" aria-label="다퍼줌 처음으로"><img class="bi" src="assets/logo-icon.webp" width="452" height="377" alt=""><img class="bw" src="assets/logo-word.webp" width="585" height="172" alt="다퍼줌"></a>
+    <nav class="hd-nav" aria-label="메뉴">
+      <div class="cat"><a class="tab" href="internet" data-tab="internet">인터넷·TV<svg class="cv" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a><div class="cat-drop" data-cat-drop></div></div>
+      <a class="tab" href="internet?carrier=soho" data-tab="soho">소호<span class="biz">사업자</span></a>
+      <a class="tab on" aria-current="page" href="price" data-tab="table">요금표</a>
+      <a class="tab" href="find?mode=recommend" data-tab="find">상품 찾기</a>
+      <a class="tab" href="guide" data-tab="guide">고객안내</a>
+      <a class="tab" href="review" data-tab="review">후기</a>
+    </nav>
+    <div class="hd-act">
+      <a class="hd-cta" href="#" data-open-form data-topic="요금표">1분 상담 신청</a>
+      <button class="hd-menu" type="button" data-menu aria-label="전체 메뉴" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap ppage">
+  <div class="phead">
+    <h1>통신사별 요금표</h1>
+    <p>다퍼줌에서 가입할 수 있는 인터넷·TV 월 요금을 통신사별로 모았어요. 부가세 포함 요금이고, 요금을 누르면 그 상품으로 자세히 볼 수 있어요.</p>
+    <button class="gift-btn" type="button" data-open-form data-topic="사은품 확인"><img src="assets/emoji/s/benefit_gift.webp?v=20261029" width="160" height="146" alt=""><span class="gt"><b>내 사은품 확인하기</b><small>금액은 전화 상담 때 알려드려요</small></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+  </div>
+  <nav class="pnav" aria-label="통신사 바로가기"><div class="pnav-in" id="pnav"></div></nav>
+  <div id="plist"></div>
+  <p class="pfoot">* 부가세 포함 월 요금이에요. 사은품과 휴대폰 결합 할인은 상담 때 우리 집 조건에 맞춰 안내해 드려요.</p>
+  <div class="pcta">
+    <span><b>우리 집에 맞는 요금이 궁금하다면</b><small>1분이면 상담 신청 끝 · 이름과 연락처만 남겨주세요</small></span>
+    <span class="bts"><button class="btn btn-k" type="button" data-open-form data-topic="요금표 아래">1분 상담 신청</button><a class="btn btn-w2" href="find?mode=recommend">나에게 맞는 상품 찾기</a></span>
+  </div>
+</main>
+
+<footer class="ft">
+  <div class="wrap">
+    <a class="brand" href="./" aria-label="다퍼줌 처음으로"><img class="bi" src="assets/logo-icon.webp" width="452" height="377" alt="" loading="lazy"><img class="bw" src="assets/logo-word.webp" width="585" height="172" alt="다퍼줌" loading="lazy"></a>
+    <nav class="ft-links" aria-label="하단 메뉴"><a href="./#faq">자주 묻는 질문</a><a href="guide">고객안내</a><a href="#" data-open-form>상담 신청</a><a href="find">나에게 맞는 상품 찾기</a><a href="privacy">개인정보처리방침</a></nav>
+    <p class="ft-copy">© 2026 다퍼줌</p>
+  </div>
+</footer>
+
+<aside class="fpanel" aria-label="상담하기">
+  <p class="t">상담하기</p>
+  <button class="y" type="button" data-open-form data-topic="오른쪽 상담하기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4.5-1 10-10-3.5-3.5-10 10z"/></svg>1분 상담 신청</button>
+  <a class="g" href="./#faq">자주 묻는 질문</a>
+  <a class="k" href="find?mode=recommend">나에게 맞는 상품 찾기</a>
+  <div class="note"><img src="assets/emoji/brand_mascot_heart.webp?v=20261029" width="399" height="432" alt="" loading="lazy"><b>1분이면<br>상담 신청 끝</b><p>이름과 연락처만 남겨주세요</p></div>
+</aside>
+
+<div class="sticky" id="sticky"><button class="btn btn-k" type="button" data-open-form data-topic="하단 고정 버튼"><svg viewBox="0 0 24 24" fill="none" stroke="#FFB61C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12.5l5 5 10-11"/></svg>1분 상담 신청하기</button></div>
+
+<script src="assets/plans.js?v=20261030g"></script>
+<script src="assets/site.js?v=20261030d"></script>
+<script>
+(function(){
+  'use strict';
+  var D = window.DPZ, P = window.DPZ_PLANS;
+  if (!D || !P) return;
+  var $ = D.$, esc = D.esc, won = D.won, SI = P.speedInfo || {}, C = P.carriers || [];
+  var CHEV = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+  var CHIP = { lgu: 'LG U+', skt: 'SKT', kt: 'KT', soho: '소호', sk: 'SK브로드밴드', skb: 'B tv POP', hellovision: 'LG헬로비전', skylife: 'KT스카이라이프' };
+  function colLabel(s){ var i = SI[s]; return i ? i.label + '<small>' + esc(i.unit) + '</small>' : esc(s); }
+  function spText(s){ var i = SI[s]; return i ? i.label + i.unit : s; }
+  function base(f){ return f == null ? null : (Array.isArray(f) ? f[0] : f); }
+
+  /* 통신사 바로가기 줄 */
+  $('#pnav').innerHTML = C.map(function(c){ return '<a href="#' + esc(c.id) + '" data-c="' + esc(c.id) + '">' + esc(CHIP[c.id] || c.name) + '</a>'; }).join('');
+
+  /* 통신사마다 요금표 */
+  function section(c){
+    var h = '<section class="pc" id="' + esc(c.id) + '" aria-labelledby="h-' + esc(c.id) + '">' +
+      '<div class="pc-hd"><span class="plogo">' + D.carrierMark(c, false, false) + '</span><span class="pt"><h2 id="h-' + esc(c.id) + '">' + esc(c.name) + '</h2>' + (c.note ? '<small>' + esc(c.note) + '</small>' : '') + '</span>' +
+      '<a class="go" href="internet?carrier=' + esc(c.id) + '">자세히' + CHEV + '</a></div>';
+    if (!c.ready) {
+      return h + '<div class="tready"><b>' + esc(c.name) + ' 요금은 상담 때 안내해 드려요</b>' + (c.pkgs ? '<p class="titems">' + c.pkgs.map(function(x){ return esc(x.name); }).join(' · ') + '</p>' : '') +
+        '<p>상담 신청하시면 요금과 받을 수 있는 혜택을 안내해 드려요.</p><button class="btn btn-k" type="button" data-open-form data-topic="요금표 ' + esc(c.name) + '">상담 신청하기</button></div></section>';
+    }
+    var sps = c.speeds || [], rows = [];
+    if (!c.tvOnly && c.internet && Object.keys(c.internet).length) rows.push({ name: '인터넷만', sub: '', fee: c.internet, combo: 'internet', k: -1 });
+    (c.tv || []).forEach(function(p, k){ rows.push({ name: (c.tvOnly ? '' : '인터넷 + ') + p.name, sub: [p.box ? p.box + ' 셋톱' : '', p.desc || ''].filter(Boolean).join(' · '), fee: p.fee || {}, combo: 'tv', k: k }); });
+    h += '<div class="twrap"><table class="fee" style="--n:' + sps.length + '"><thead><tr><th class="pname" scope="col">상품</th>' + sps.map(function(s){ return '<th scope="col">' + colLabel(s) + '</th>'; }).join('') + '</tr></thead><tbody>';
+    rows.forEach(function(r){
+      h += '<tr><th class="pname" scope="row">' + esc(r.name) + (r.sub ? '<small>' + esc(r.sub) + '</small>' : '') + '</th>' + sps.map(function(s){
+        var f = base(r.fee[s]);
+        if (f == null) return '<td class="na">—</td>';
+        var url = 'internet?carrier=' + encodeURIComponent(c.id) + '&combo=' + r.combo + '&speed=' + encodeURIComponent(s) + (r.k >= 0 ? '&tv=' + r.k : '');
+        return '<td class="pkc"><a class="pk" href="' + esc(url) + '" aria-label="' + esc(r.name + ' ' + spText(s) + ' 월 ' + won(f)) + '">' + won(f) + '</a></td>';
+      }).join('') + '</tr>';
+    });
+    h += '</tbody></table></div>';
+    if (c.area) h += '<div class="area"><div class="area-hd"><img src="assets/emoji/s/etc_pin.webp?v=20261029" width="136" height="160" alt=""><span><b>설치 가능 지역</b><small>아래 지역에서만 설치할 수 있어요</small></span></div>' + D.areaHtml(c.area) + '</div>';
+    return h + '</section>';
+  }
+  $('#plist').innerHTML = C.map(section).join('');
+
+  /* 내리면서 지금 보고 있는 통신사 표시 */
+  var nav = $('#pnav'), chips = {};
+  Array.prototype.forEach.call(nav.querySelectorAll('[data-c]'), function(a){ chips[a.getAttribute('data-c')] = a; });
+  function mark(id){
+    for (var k in chips) chips[k].classList.toggle('on', k === id);
+    var a = chips[id]; if (!a) return;
+    var l = a.offsetLeft - 16, r = a.offsetLeft + a.offsetWidth + 16;
+    if (l < nav.scrollLeft) nav.scrollLeft = l; else if (r > nav.scrollLeft + nav.clientWidth) nav.scrollLeft = r - nav.clientWidth;
+  }
+  var secs = Array.prototype.slice.call(document.querySelectorAll('.pc'));
+  function spy(){
+    var line = (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--hd'), 10) || 80) + 90, cur = secs[0] && secs[0].id;
+    secs.forEach(function(s){ if (s.getBoundingClientRect().top <= line) cur = s.id; });
+    mark(cur);
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function(){ if (ticking) return; ticking = true; requestAnimationFrame(function(){ ticking = false; spy(); }); }, { passive: true });
+  spy();
+
+  // 예전 주소(?carrier=kt)로 오면 그 칸으로
+  var want = new URLSearchParams(location.search).get('carrier');
+  if (!location.hash && want && document.getElementById(want)) setTimeout(function(){ document.getElementById(want).scrollIntoView(); }, 60);
+})();
+</script>
+</body>
+</html>
