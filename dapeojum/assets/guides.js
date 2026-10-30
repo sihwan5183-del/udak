@@ -167,6 +167,9 @@
   var STEP = 12, cur = '전체', shown = STEP, word = '';
   var p = new URLSearchParams(location.search).get('c');
   if (p && CATS.indexOf(p) > -1) cur = p;
+  // 첫 화면 '다퍼줌이 준비한 가입 정보' 칸에서 눌러 들어오면 그 말로 찾아 둔 채로 보여 줌 (예: guide?q=사은품)
+  var q0 = new URLSearchParams(location.search).get('q');
+  if (q0) { word = q0.trim().slice(0, 30); qEl.value = word; }
   function pool() {
     var w = word.replace(/\s+/g, '');
     return LIST.filter(function (x) {

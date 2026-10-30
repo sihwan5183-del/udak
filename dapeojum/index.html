@@ -146,19 +146,34 @@
 .kimg .kbox{position:absolute;right:4%;bottom:-6%;width:50%;height:auto;transform:rotate(-8deg);filter:drop-shadow(0 10px 12px rgba(120,60,0,.25))}
 .kcap{margin-top:10px;font-size:14.5px;font-weight:650;color:var(--ink);line-height:1.45;letter-spacing:-.02em}
 
-/* 자주 묻는 질문 · 이용 방법 (회색 띠) */
-.band{margin-top:56px;padding:44px 0;background:var(--ftbg)}
+/* 자주 묻는 질문 TOP 5 · 다퍼줌이 준비한 가입 정보 (회색 띠) — 2026-10-30 사장님이 보낸 레이아웃 그림 그대로
+   (흰 칸 · 모서리 각짐 · 테두리 없음 · 줄 사이 선, 파란 Q, 가입 정보는 왼쪽 그림 칸 + 제목·설명·'가입 전 확인하기') */
+.band{margin-top:56px;padding:44px 0;background:#F4F6FA}
 .band-grid{display:grid;gap:36px}
-.qbox{background:#fff;border-radius:10px;border:1px solid var(--line)}
-.qbox details + details{border-top:1px solid var(--line)}
-.qbox summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:17px 16px;font-size:15.5px;color:var(--ink);font-weight:550;letter-spacing:-.02em;line-height:1.45}
+.band .sec-h h2{color:#131D2D}
+.band .sec-h .more{color:#7B8798}
+.qbox{background:#fff}
+.qbox details + details{border-top:1px solid #DDE2EA}
+.qbox summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:19px 18px 19px 16px;font-size:15.5px;color:#131D2D;font-weight:500;letter-spacing:-.02em;line-height:1.45}
 .qbox summary::-webkit-details-marker{display:none}
-.qbox summary .q{flex:none;color:var(--brown);font-weight:800}
-.qbox summary::after{content:"";flex:none;margin-left:auto;width:9px;height:9px;border-right:2px solid #9AA1AA;border-bottom:2px solid #9AA1AA;transform:rotate(45deg) translate(-2px,-2px);transition:transform .2s}
+.qbox summary .q{flex:none;color:#2D67E7;font-weight:800;font-size:16.5px}
+.qbox summary::after{content:"";flex:none;margin-left:auto;width:9px;height:9px;border-right:1.6px solid #9BA9BA;border-bottom:1.6px solid #9BA9BA;transform:rotate(45deg) translate(-2px,-2px);transition:transform .2s}
 .qbox details[open] summary::after{transform:rotate(225deg) translate(-2px,-2px)}
-.qbox .a{padding:0 16px 18px 38px;font-size:14.5px;color:var(--ink2);line-height:1.7}
+.qbox .a{padding:0 18px 18px 44px;font-size:14.5px;color:var(--ink2);line-height:1.7}
 .qmore{display:none}
 .qbox.all .qmore{display:block}
+.ibox{background:#fff}
+.icard{display:flex;align-items:center;gap:13px;padding:14px 16px}
+.icard + .icard{border-top:1px solid #DDE2EA}
+.ith{position:relative;flex:none;width:84px;height:65px;border-radius:6px;overflow:hidden}
+.ith em{position:absolute;z-index:1;left:7px;top:7px;font-style:normal;font-size:10.5px;font-weight:800;color:#131D2D;letter-spacing:-.03em;line-height:1.2}
+.ith svg{position:absolute;inset:0;width:100%;height:100%}
+.itx{min-width:0}
+.itx b{display:block;font-size:15px;font-weight:800;color:#131D2D;letter-spacing:-.03em;line-height:1.35}
+.itx p{margin-top:4px;font-size:13.5px;color:#758396;line-height:1.5}
+.itx small{display:block;margin-top:3px;font-size:12px;color:#939DAC;line-height:1.4}
+.br-pc{display:none}
+/* 다퍼줌 이용 방법 (회색 띠 밑 칸 — 원래 회색 띠 오른쪽에 있던 것) */
 .steps{background:#fff;border-radius:10px;border:1px solid var(--line)}
 .step{display:flex;align-items:center;gap:14px;padding:16px}
 .step + .step{border-top:1px solid var(--line)}
@@ -236,8 +251,22 @@
   .kimg .kt{font-size:22px}
   .kimg .kgo{left:20px;bottom:18px;width:28px;height:28px}
   .kcap{font-size:15.5px}
-  .band{margin-top:80px;padding:64px 0}
-  .band-grid{grid-template-columns:1fr 1fr;gap:40px}
+  .band{margin-top:80px;padding:52px 0 64px}
+  .band-grid{grid-template-columns:minmax(0,701fr) minmax(0,756fr);gap:42px}
+  .band .sec-h{margin-bottom:26px}
+  .band .sec-h .more{font-size:15.5px}
+  .qbox summary{gap:13px;padding:21px 22px 21px 19px}
+  .qbox summary .q{font-size:17px}
+  .qbox .a{padding:0 22px 20px 52px;font-size:15px}
+  .icard{gap:14px;padding:12.5px 17px}
+  .ith{width:106px;height:82px}
+  .ith em{left:10px;top:10px;font-size:12px}
+  .itx b{font-size:17px;line-height:1.3}
+  .itx p{margin-top:4px;font-size:14px;line-height:1.45}
+  .itx small{margin-top:3px;font-size:11.5px}
+  .br-pc{display:inline}
+  .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .step + .step{border-top:0;border-left:1px solid var(--line)}
   .banners{grid-template-columns:1fr 1fr;gap:16px}
   .bnr{min-height:148px;padding:28px 170px 28px 26px}
   .bnr b{font-size:23px}
@@ -395,33 +424,58 @@
     </div>
   </section>
 
-  <section class="band" aria-label="자주 묻는 질문과 이용 방법">
+  <!-- 자주 묻는 질문 TOP 5 · 다퍼줌이 준비한 가입 정보 (2026-10-30 사장님 레이아웃 그림 그대로 — 질문 5개 · 가입 정보 3칸 문구도 그림 그대로) -->
+  <section class="band" aria-label="자주 묻는 질문과 가입 정보">
     <div class="wrap band-grid">
       <div id="faq">
-        <div class="sec-h"><h2>자주 묻는 질문</h2><button class="more" type="button" id="qMoreBtn" aria-expanded="false"><span>더보기</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div>
+        <div class="sec-h"><h2>자주 묻는 질문 TOP 5</h2><button class="more" type="button" id="qMoreBtn" aria-expanded="false"><span>더보기</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div>
         <div class="qbox" id="qbox">
-          <details><summary><span class="q">Q.</span>지금 쓰는 인터넷 약정이 남아 있어요.</summary><div class="a">상담 때 남은 약정과 위약금을 함께 확인해 드려요. 바꾸는 게 나은지 따져보고 결정하셔도 늦지 않아요.</div></details>
-          <details><summary><span class="q">Q.</span>사은품은 언제, 어떻게 받나요?</summary><div class="a">사은품은 가입하는 상품과 조건에 따라 달라요. 상담 때 받을 수 있는 사은품과 받는 시점을 정확히 안내해 드려요.</div></details>
-          <details><summary><span class="q">Q.</span>휴대폰과 같이 쓰면 할인되나요?</summary><div class="a">통신사에 따라 인터넷과 휴대폰을 묶으면 결합 할인을 받을 수 있어요. 가족 구성과 요금제에 맞춰 받을 수 있는 할인을 계산해 드려요.</div></details>
-          <details><summary><span class="q">Q.</span>설치비가 따로 있나요?</summary><div class="a">처음 설치할 때 설치비가 한 번 청구될 수 있어요. 상품과 설치 날짜·시간대에 따라 금액이 달라서 상담 때 정확히 안내해 드려요.</div></details>
+          <details><summary><span class="q">Q.</span>광고에서 본 조건 그대로 진행되나요?</summary><div class="a">광고에 나온 금액은 특정 조건을 기준으로 한 것일 수 있어서 우리 집 상황에 따라 달라질 수 있어요. 상담 때 속도와 결합 조건을 하나씩 맞춰서 실제로 받을 수 있는 혜택을 안내해 드려요.</div></details>
+          <details><summary><span class="q">Q.</span>사은품은 언제, 어떻게 받을 수 있나요?</summary><div class="a">사은품은 가입하는 상품과 조건에 따라 달라요. 상담 때 받을 수 있는 사은품과 받는 시점을 정확히 안내해 드려요.</div></details>
+          <details><summary><span class="q">Q.</span>지금 쓰는 인터넷 약정·위약금도 확인해 주나요?</summary><div class="a">네, 상담 때 남은 약정과 위약금을 함께 확인해 드려요. 바꾸는 게 나은지 따져보고 결정하셔도 늦지 않아요.</div></details>
+          <details><summary><span class="q">Q.</span>신청하면 설치까지 얼마나 걸리나요?</summary><div class="a">설치 날짜는 지역과 통신사 일정에 따라 달라요. 상담 때 설치 가능한 날짜를 확인해서 편하신 날로 잡아 드려요.</div></details>
+          <details><summary><span class="q">Q.</span>상담만 받아보고 결정해도 되나요?</summary><div class="a">네, 괜찮아요. 받을 수 있는 혜택과 월 요금을 먼저 들어보시고 결정하셔도 돼요.</div></details>
+          <details class="qmore"><summary><span class="q">Q.</span>휴대폰과 같이 쓰면 할인되나요?</summary><div class="a">통신사에 따라 인터넷과 휴대폰을 묶으면 결합 할인을 받을 수 있어요. 가족 구성과 요금제에 맞춰 받을 수 있는 할인을 계산해 드려요.</div></details>
+          <details class="qmore"><summary><span class="q">Q.</span>설치비가 따로 있나요?</summary><div class="a">처음 설치할 때 설치비가 한 번 청구될 수 있어요. 상품과 설치 날짜·시간대에 따라 금액이 달라서 상담 때 정확히 안내해 드려요.</div></details>
           <details class="qmore"><summary><span class="q">Q.</span>상담 전화는 언제 오나요?</summary><div class="a">남겨주신 연락처로 담당자가 연락드려요. 통화 편한 시간을 골라 주시면 최대한 맞춰 연락드릴게요.</div></details>
         </div>
       </div>
-      <div id="how">
-        <div class="sec-h"><h2>다퍼줌 이용 방법</h2></div>
-        <div class="steps">
-          <div class="step">
-            <span class="th" style="background:#EAEEF3"><img src="assets/emoji/s/etc_chat.webp?v=20261029" width="160" height="113" alt="" loading="lazy"></span>
-            <span><b><span class="no">1</span>1분이면 상담 신청 끝</b><p>이름과 연락처만 남겨주세요. 담당자가 전화로 자세히 안내해 드려요.</p></span>
-          </div>
-          <div class="step">
-            <span class="th" style="background:#FFF4D2"><img src="assets/emoji/s/benefit_gift.webp?v=20261029" width="160" height="146" alt="" loading="lazy"></span>
-            <span><b><span class="no">2</span>받을 수 있는 혜택부터 먼저</b><p>사은품과 결합 할인까지, 우리 집에서 받을 수 있는 혜택을 먼저 알려드려요.</p></span>
-          </div>
-          <div class="step">
-            <span class="th" style="background:#EAEEF3"><img src="assets/emoji/s/etc_calendar.webp?v=20261029" width="160" height="140" alt="" loading="lazy"></span>
-            <span><b><span class="no">3</span>설치 일정까지 챙겨드려요</b><p>가입을 결정하시면 설치 날짜 잡기까지 담당자가 끝까지 도와드려요.</p></span>
-          </div>
+      <div id="info">
+        <div class="sec-h"><h2>다퍼줌이 준비한 가입 정보</h2><a class="more" href="guide">더보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a></div>
+        <div class="ibox">
+          <a class="icard" href="guide?q=조건">
+            <span class="ith" style="background:#F4F6F9"><em>가입 조건</em><svg viewBox="0 0 150 116" aria-hidden="true"><rect x="50" y="44" width="53" height="56" rx="5" fill="#fff" stroke="#C3CAD4" stroke-width="2"/><rect x="63" y="36.5" width="27" height="13.5" rx="5" fill="#DAE2EC"/><path d="M60 60h34M60 72h34M60 84h25" fill="none" stroke="#A9B7CA" stroke-width="3"/><circle cx="93" cy="85" r="8.5" fill="#ECB030"/></svg></span>
+            <span class="itx"><b>안내받은 조건, 어디까지 확인해야 할까요?</b><p>월 요금·결합 할인·설치비까지 <br class="br-pc">진행 전에 확인할 내용을 정리했어요.</p><small>가입 전 확인하기 ›</small></span>
+          </a>
+          <a class="icard" href="guide?q=사은품">
+            <span class="ith" style="background:#FFF8ED"><em>사은품 안내</em><svg viewBox="0 0 150 116" aria-hidden="true"><path d="M55 47a12 11 0 0 1 24 0M79 47a10 11 0 0 1 20 0" fill="none" stroke="#E49626" stroke-width="4"/><path d="M40 54h33v14H40zM84 54h32v14H84z" fill="#F4AF26"/><path d="M45 68h28v37H48a3 3 0 0 1-3-3zM84 68h27v34a3 3 0 0 1-3 3H84z" fill="#FBCB53"/></svg></span>
+            <span class="itx"><b>사은품은 언제, 어떻게 지급될까요?</b><p>지급 시점과 조건, 확인할 사항을 <br class="br-pc">가입 전에 미리 살펴보세요.</p><small>가입 전 확인하기 ›</small></span>
+          </a>
+          <a class="icard" href="guide?q=해지">
+            <span class="ith" style="background:#F1F7FC"><em>설치·약정</em><svg viewBox="0 0 150 116" aria-hidden="true"><rect x="39" y="47" width="70" height="57" rx="6" fill="#fff" stroke="#BDCEDF" stroke-width="2"/><path d="M38 52a6 6 0 0 1 6-6h60a6 6 0 0 1 6 6v13H38z" fill="#B1CCE5"/><g fill="#A3B6CD"><circle cx="51.5" cy="76" r="3.5"/><circle cx="71" cy="76" r="3.5"/><circle cx="51.5" cy="90" r="3.5"/><circle cx="71" cy="90" r="3.5"/></g><circle cx="97" cy="89" r="13.5" fill="#fff" stroke="#588BB9" stroke-width="3"/><path d="M97 89V78.5M97 89l6.5 5.5" fill="none" stroke="#588BB9" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+            <span class="itx"><b>기존 인터넷 해지와 설치 순서는?</b><p>약정·위약금 확인부터 설치 일정까지 <br class="br-pc">가입 전에 알아두면 좋은 내용이에요.</p><small>가입 전 확인하기 ›</small></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 다퍼줌 이용 방법 (원래 회색 띠 오른쪽 → 2026-10-30 그 자리에 '가입 정보'가 들어가서 바로 밑 칸으로 옮김, 바로가기 '이용 방법'은 그대로 여기로) -->
+  <section class="sec" id="how" aria-labelledby="howTitle">
+    <div class="wrap">
+      <div class="sec-h"><h2 id="howTitle">다퍼줌 이용 방법</h2></div>
+      <div class="steps">
+        <div class="step">
+          <span class="th" style="background:#EAEEF3"><img src="assets/emoji/s/etc_chat.webp?v=20261029" width="160" height="113" alt="" loading="lazy"></span>
+          <span><b><span class="no">1</span>1분이면 상담 신청 끝</b><p>이름과 연락처만 남겨주세요. 담당자가 전화로 자세히 안내해 드려요.</p></span>
+        </div>
+        <div class="step">
+          <span class="th" style="background:#FFF4D2"><img src="assets/emoji/s/benefit_gift.webp?v=20261029" width="160" height="146" alt="" loading="lazy"></span>
+          <span><b><span class="no">2</span>받을 수 있는 혜택부터 먼저</b><p>사은품과 결합 할인까지, 우리 집에서 받을 수 있는 혜택을 먼저 알려드려요.</p></span>
+        </div>
+        <div class="step">
+          <span class="th" style="background:#EAEEF3"><img src="assets/emoji/s/etc_calendar.webp?v=20261029" width="160" height="140" alt="" loading="lazy"></span>
+          <span><b><span class="no">3</span>설치 일정까지 챙겨드려요</b><p>가입을 결정하시면 설치 날짜 잡기까지 담당자가 끝까지 도와드려요.</p></span>
         </div>
       </div>
     </div>
@@ -465,7 +519,7 @@
 <script src="assets/plans.js?v=20261030g"></script>
 <script src="assets/site.js?v=20261030c"></script>
 <script src="assets/reviews.js?v=20261029c"></script>
-<script src="assets/guides.js?v=20261029a"></script>
+<script src="assets/guides.js?v=20261030a"></script>
 <script>
 (function(){
   'use strict';

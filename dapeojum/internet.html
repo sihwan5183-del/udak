@@ -142,24 +142,34 @@
 .inote{margin-top:10px;font-size:13px;color:var(--sub);line-height:1.6}
 /* 고른 통신사 요금표 (상품 × 속도) */
 #bunSec:not([hidden]) + #ptSec{margin-top:40px}
-/* TV 요금제 차이 · 휴대폰 결합 할인 (2026-10-30) */
+/* TV 요금제 차이 · 휴대폰 결합 할인 (2026-10-30) — 레이아웃은 2026-10-30 사장님이 보낸 그림 그대로
+   TV: 요금제마다 칸(이름 · 채널 수 회색 이름표 · 점 목록) / 결합: 한 상자에 줄마다 동그라미 아이콘 · 항목 이름 · 세로 선 · 내용(밑에 작은 글씨),
+   '할인 예시' 줄은 노란 바탕 + 노란 동그라미 / 결합이 여러 개면 결합 이름을 상자 위에 */
 .isec2{margin-top:44px}
-.tvinfo,.mix{margin-top:14px;display:grid;gap:10px}
-.tvi,.mixc{padding:16px 16px 15px;border:1px solid var(--line);border-radius:14px;background:#fff}
-.tvi-hd,.mixc-hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.tvi-hd b,.mixc-hd b{font-size:16.5px;font-weight:850;color:var(--ink);letter-spacing:-.02em}
-.tvi-hd .chip{margin-left:auto;padding:2px 8px;border-radius:6px;background:var(--gray2);font-size:12.5px;font-weight:800;color:var(--ink2);white-space:nowrap}
-.mixc-hd .tag{padding:1px 7px;border-radius:5px;background:var(--butter);color:var(--brown);font-size:11.5px;font-weight:800;white-space:nowrap}
-.tvi ul{margin-top:8px;list-style:none;display:grid;gap:4px}
-.tvi li{position:relative;padding-left:12px;font-size:14px;color:var(--ink2);line-height:1.55}
-.tvi li::before{content:"";position:absolute;left:2px;top:.66em;width:4px;height:4px;border-radius:50%;background:#9AA1AA}
-.mixc dl{margin-top:10px;display:grid;gap:7px}
-.mixc dl > div{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;align-items:baseline}
-.mixc dt{font-size:13px;font-weight:800;color:var(--sub);white-space:nowrap}
-.mixc dd{font-size:14px;color:var(--ink2);line-height:1.55}
-.mixc dd b{color:var(--ink);font-weight:800}
-.mixc .ex dd{padding:8px 10px;border-radius:8px;background:var(--cream);color:var(--ink)}
-.mixnote{margin-top:10px;list-style:none;display:grid;gap:2px}
+.tvinfo{margin-top:16px;display:grid;gap:12px}
+.tvi{padding:18px 18px 19px;border:1px solid #EBEEF0;border-radius:14px;background:#fff}
+.tvi-hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tvi-hd b{font-size:17px;font-weight:850;color:#131D2D;letter-spacing:-.02em}
+.tvi-hd .chip{margin-left:auto;padding:4px 9px;border-radius:7px;background:#E6EAEF;font-size:12.5px;font-weight:800;color:#2B3440;white-space:nowrap}
+.tvi ul{margin-top:13px;list-style:none;display:grid;gap:5px}
+.tvi li{position:relative;padding-left:13px;font-size:14px;color:#4A5361;line-height:1.6}
+.tvi li::before{content:"";position:absolute;left:2px;top:.7em;width:4px;height:4px;border-radius:50%;background:#A9B0BA}
+.mix{margin-top:16px;display:grid;gap:22px}
+.mixname{display:flex;align-items:center;gap:8px;margin-bottom:9px;font-size:16px;font-weight:850;color:#131D2D;letter-spacing:-.02em}
+.mixname .tag{padding:1px 7px;border-radius:5px;background:var(--butter);color:var(--brown);font-size:11.5px;font-weight:800;white-space:nowrap}
+.mixbox{padding:4px 12px;border:1px solid #EBEEF2;border-radius:14px;background:#fff}
+.mrow{display:grid;grid-template-columns:32px minmax(0,1fr);grid-template-areas:"ic lb" ". tx";column-gap:12px;row-gap:2px;align-items:center;padding:13px 2px}
+.mrow + .mrow{border-top:1px solid #EEF1F4}
+.mic{grid-area:ic;width:32px;height:32px;border-radius:50%;background:#E8F0FA;display:grid;place-items:center;color:#18263A}
+.mic svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mlb{grid-area:lb;font-size:14px;font-weight:800;color:#131D2D;letter-spacing:-.02em;white-space:nowrap}
+.mtx{grid-area:tx;font-size:14px;color:#3A434E;line-height:1.55}
+.mtx small{display:block;margin-top:1px;font-size:12.5px;color:#7B8798;line-height:1.5}
+.mrow.ex{margin:6px -6px;padding:13px 8px;border-top:0;border-radius:10px;background:#FEF8EB}
+.mrow.ex + .mrow{border-top:0}
+.mrow.ex .mic{background:#FEE3A6}
+.mrow.ex .mtx{color:#131D2D;font-weight:750}
+.mixnote{margin-top:12px;list-style:none;display:grid;gap:3px}
 .mixnote li{font-size:12.5px;color:var(--mute);line-height:1.6}
 .ptbl th[scope="row"]{padding-left:12px;text-align:left;white-space:normal;line-height:1.35}
 .ptbl th[scope="row"] small{display:block;margin-top:1px;font-size:11.5px;font-weight:600;color:var(--sub)}
@@ -247,7 +257,12 @@ body.lock .mbar{display:none}
   .omore{display:none}
   .banners{grid-template-columns:1fr 1fr}
   .tvinfo{grid-template-columns:repeat(var(--n,2),minmax(0,1fr))}
-  .mix{grid-template-columns:repeat(var(--n,2),minmax(0,1fr))}
+  /* 결합 줄: 아이콘 · 항목 이름 · 세로 선 · 내용 한 줄로 (그림처럼) */
+  .mixbox{padding:4px 14px}
+  .mrow{grid-template-columns:32px 84px minmax(0,1fr);grid-template-areas:"ic lb tx";column-gap:14px;padding:13px 4px}
+  .mtx{position:relative;padding-left:22px}
+  .mtx::before{content:"";position:absolute;left:0;top:50%;width:1px;height:24px;margin-top:-12px;background:#E2E7EC}
+  .mrow.ex{margin:6px -8px;padding:13px 12px}
 }
 @media (min-width:1024px){
   .ihead{gap:18px;padding:40px 0 30px}
@@ -474,7 +489,7 @@ body.lock .mbar{display:none}
 <script src="assets/plans.js?v=20261030g"></script>
 <script src="assets/site.js?v=20261030c"></script>
 <script src="assets/reviews.js?v=20261029c"></script>
-<script src="assets/carrierinfo.js?v=20261030c"></script>
+<script src="assets/carrierinfo.js?v=20261030d"></script>
 <script>
 (function(){
   'use strict';
@@ -699,32 +714,46 @@ body.lock .mbar{display:none}
 
   function syncBanners(){ var soho = !!car().pkgs; $('#bnrSoho').hidden = soho; $('#bnrSoho').parentNode.classList.toggle('one', soho); } // 소호 화면에선 소호 배너를 숨김
   /* ---------- TV 요금제 차이 · 휴대폰 결합 할인 (assets/carrierinfo.js) ---------- */
+  // 결합 줄: carrierinfo.js 항목 → 화면 이름 + 동그라미 안 아이콘 (2026-10-30 사장님 레이아웃 그림: 결합 조건·휴대폰 할인·인터넷 할인·할인 예시)
+  var MROW = {
+    '조건': ['결합 조건', '<circle cx="9" cy="8.4" r="3.3"/><path d="M3.3 19.5c0-3.3 2.5-5.7 5.7-5.7s5.7 2.4 5.7 5.7"/><circle cx="16.8" cy="9.4" r="2.6"/><path d="M16.2 14.1c2.6-.3 4.8 1.7 4.8 4.9"/>'],
+    '휴대폰': ['휴대폰 할인', '<rect x="7" y="2.8" width="10" height="18.4" rx="2.2"/><path d="M11 17.6h2"/>'],
+    '인터넷': ['인터넷 할인', '<path d="M3 9.5a12.7 12.7 0 0 1 18 0"/><path d="M6.2 12.9a8.2 8.2 0 0 1 11.6 0"/><path d="M9.4 16.2a3.7 3.7 0 0 1 5.2 0"/><path d="M12 19.4h.01" stroke-width="2.6"/>'],
+    'TV': ['TV 할인', '<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8.5 20.5h7"/>'],
+    '데이터': ['데이터 혜택', '<path d="M6 19.5v-3M10 19.5v-6M14 19.5v-9M18 19.5v-13"/>'],
+    '혜택': ['할인 혜택', '<circle cx="12" cy="12" r="8.6"/><path d="M9.2 14.8l5.6-5.6"/><path d="M9.6 9.6h.01M14.4 14.4h.01" stroke-width="2.6"/>'],
+    '예시': ['할인 예시', '<rect x="6" y="2.8" width="12" height="18.4" rx="2.2"/><path d="M9 6.4h6v2.8H9z"/><path d="M8.9 12.1h2.2v2.2H8.9zM12.9 12.1h2.2v2.2h-2.2zM8.9 16.1h2.2v2.2H8.9zM12.9 16.1h2.2v2.2h-2.2z" fill="currentColor" stroke="none"/>']
+  };
+  function dot(t){ return /요$/.test(t) ? t + '.' : t; } // 문장(~요)으로 끝나면 마침표 (그림처럼)
   function renderInfo(){
     var I = window.DPZ_INFO || {}, c = car(), tvi = c.ready && I.tv && I.tv[c.id], mx = c.ready && I.mix && I.mix[c.id];
     var showTv = !!(tvi && !tvi.pending && tvi.plans && tvi.plans.length), many = showTv && tvi.plans.length > 1; // pending = 사장님 확인 전
     $('#tvInfoSec').hidden = !showTv;
     if (showTv) {
       $('#hTvInfo').textContent = c.name + (many ? ' TV 요금제 차이' : ' TV 요금제 안내');
-      $('#tvInfoSub').textContent = tvi.sub || (many ? '다퍼줌에서 가입할 수 있는 요금제끼리 비교했어요' : '');
+      $('#tvInfoSub').textContent = dot(tvi.sub || (many ? '다퍼줌에서 가입할 수 있는 요금제끼리 비교했어요' : ''));
       $('#tvInfoSub').hidden = !$('#tvInfoSub').textContent;
       $('#tvInfo').style.setProperty('--n', Math.min(3, tvi.plans.length));
       $('#tvInfo').innerHTML = tvi.plans.map(function(x){
         return '<div class="tvi"><div class="tvi-hd"><b>' + D.esc(x.name) + '</b>' + (x.ch ? '<span class="chip">' + D.esc(x.ch) + '</span>' : '') + '</div>' +
-          '<ul>' + (x.points || []).map(function(t){ return '<li>' + D.esc(t) + '</li>'; }).join('') + '</ul></div>';
+          '<ul>' + (x.points || []).map(function(t){ return '<li>' + D.esc(dot(t)) + '</li>'; }).join('') + '</ul></div>';
       }).join('');
     }
     var showMix = !!(mx && !mx.pending && mx.items && mx.items.length);
     $('#mixSec').hidden = !showMix;
     if (showMix) {
       $('#hMix').textContent = c.name + ' 휴대폰 결합 할인';
-      $('#mixSub').textContent = mx.sub || '';
+      $('#mixSub').textContent = dot(mx.sub || '');
       $('#mixSub').hidden = !mx.sub;
-      $('#mixList').style.setProperty('--n', Math.min(2, mx.items.length)); // 결합이 하나면 한 줄 전체
       $('#mixList').innerHTML = mx.items.map(function(x){
-        return '<div class="mixc"><div class="mixc-hd"><b>' + D.esc(x.name) + '</b>' + (x.tag ? '<span class="tag">' + D.esc(x.tag) + '</span>' : '') + '</div><dl>' +
-          (x.rows || []).map(function(r){ return '<div' + (r[0] === '예시' ? ' class="ex"' : '') + '><dt>' + D.esc(r[0]) + '</dt><dd>' + D.esc(r[1]) + '</dd></div>'; }).join('') + '</dl></div>';
+        return '<div class="mixw"><h3 class="mixname">' + D.esc(x.name) + (x.tag ? '<span class="tag">' + D.esc(x.tag) + '</span>' : '') + '</h3><div class="mixbox">' +
+          (x.rows || []).map(function(r){
+            var m = MROW[r[0]] || [r[0], MROW['혜택'][1]];
+            return '<div class="mrow' + (r[0] === '예시' ? ' ex' : '') + '"><span class="mic"><svg viewBox="0 0 24 24" aria-hidden="true">' + m[1] + '</svg></span>' +
+              '<b class="mlb">' + D.esc(m[0]) + '</b><div class="mtx">' + D.esc(r[1]) + (r[2] ? '<small>' + D.esc(r[2]) + '</small>' : '') + '</div></div>';
+          }).join('') + '</div></div>';
       }).join('');
-      $('#mixNote').innerHTML = ['결합 할인은 가입 조건·요금제에 따라 실제 적용 시 달라질 수 있어요'].concat(mx.notes || []).map(function(t){ return '<li>* ' + D.esc(t) + '</li>'; }).join('');
+      $('#mixNote').innerHTML = ['결합 할인은 가입 조건·요금제에 따라 실제 적용 시 달라질 수 있어요'].concat(mx.notes || []).map(function(t){ return '<li>* ' + D.esc(dot(t)) + '</li>'; }).join('');
     }
   }
   function renderArea(){ // 설치 가능 지역: 통신사 칸 밑 + 예상 요금 칸 안내 한 줄
