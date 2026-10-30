@@ -24,6 +24,16 @@
   function logoImg(c, alt) {
     return '<img class="clogo" src="assets/emoji/s/' + c.logo.f + '.webp?v=20261029" width="' + c.logo.w + '" height="' + c.logo.h + '" alt="' + (alt === false ? '' : esc(c.name)) + '" style="--sr:' + (Math.sqrt(c.logo.w / c.logo.h) * (c.logo.s || 1)).toFixed(3) + '" decoding="async">';
   }
+  /* 설치 가능 지역 (plans.js area: '서울 양천·은평 / 인천 부평·계양 / …') → 지역마다 한 줄 [시·도, 동네]
+     2026-10-30 사장님: 설치 가능 지역은 고객이 잘 보이게 — 인터넷 화면·상품 찾기에서 같은 모양으로 씀
+     '경남·경북 … 일부'처럼 시·도만 있는 줄은 '그 외' 칸에 그대로 */
+  function areaRows(a) {
+    return String(a || '').split(/\s*\/\s*/).filter(Boolean).map(function (seg) {
+      var i = seg.indexOf(' '), r = i > 0 ? seg.slice(0, i) : seg, t = i > 0 ? seg.slice(i + 1) : '';
+      return t === '일부' ? ['그 외', seg] : [r, t];
+    });
+  }
+  function areaHtml(a) { return '<dl class="area-list">' + areaRows(a).map(function (x) { return '<div><dt>' + esc(x[0]) + '</dt><dd>' + esc(x[1]) + '</dd></div>'; }).join('') + '</dl>'; }
   // withLabel: 통신사 칸·버튼에서는 로고 밑에 짧은 이름(label)을 붙임 (2026-10-29 사장님: 'U+ SKT KT 이렇게')
   function carrierMark(c, alt, withLabel) {
     var lab = withLabel ? '<span class="clab">' + (c.label || esc(c.name)) + '</span>' : '';
@@ -428,5 +438,5 @@
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, fallback); else fallback();
   });
 
-  window.DPZ = { openForm: openForm, won: won, esc: esc, carrierMark: carrierMark, store: store, reduce: reduce, $: $, $$: $$, sb: { url: SB_URL, key: SB_KEY } }; // sb: 후기 불러오기(reviews.js)용
+  window.DPZ = { openForm: openForm, won: won, esc: esc, carrierMark: carrierMark, areaHtml: areaHtml, store: store, reduce: reduce, $: $, $$: $$, sb: { url: SB_URL, key: SB_KEY } }; // sb: 후기 불러오기(reviews.js)용
 })();
