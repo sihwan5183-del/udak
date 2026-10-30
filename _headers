@@ -7,6 +7,10 @@
 /dapeojum/*
   X-Robots-Tag: noindex
 
+# 20261030 메타 광고 전용 랜딩(/meta): 광고로 들어온 손님만 받게 검색에는 안 뜨게 함
+/meta
+  X-Robots-Tag: noindex
+
 # 20261029 다퍼줌 이모지·로고 그림: 다시 들어온 손님은 그림을 다시 안 받게 7일 보관
 # (그림을 바꿀 땐 주소 끝 ?v= 숫자를 같이 바꿔서 새 그림이 바로 보이게 함)
 /dapeojum/assets/emoji/*

@@ -6,9 +6,14 @@
 /z8-onsite  /store?onsite=1&utm_source=onsite&utm_medium=field  302
 /smarthome-onsite  /benefits.html?onsite=1&utm_source=onsite&utm_medium=field  302
 /      /shop.html  200
-/iphone  /iphone18.html  200
-/i18  /iphone18.html?utm_source=x&utm_medium=organic  302
-/i18-onsite  /iphone18.html?onsite=1&utm_source=onsite&utm_medium=field  302
+# 20261030 사장님: 아이폰18 랜딩(iphone18.html)을 메타 광고 전용 랜딩 /meta(meta.html)로 바꿈
+#   예전 아이폰 주소로 들어오면 스토어(/shop)로 넘김 · 되돌리려면 meta.html 이름을 iphone18.html로 돌리고 아래 6줄을 지우면 됨
+/iphone18  /shop  302
+/iphone18/  /shop  302
+/iphone18.html  /shop  302
+/iphone  /shop  302
+/i18  /shop?utm_source=x&utm_medium=organic  302
+/i18-onsite  /shop?utm_source=onsite&utm_medium=field  302
 # 20261027 사장님: 예전 저장소(Firebase)를 쓰던 옛 페이지는 지금 스토어(/shop)로 넘김 — 최근 30일 신청 없음 · 되돌리려면 아래 줄만 지우면 됨
 /device  /shop  302
 /device.html  /shop  302
