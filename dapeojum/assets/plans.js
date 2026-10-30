@@ -62,8 +62,26 @@ window.DPZ_PLANS = {
         { name: '모든G TV', box: '지니3', desc: '250여 채널 · VOD 무결제', fee: { '100M': 47300, '500M': 52800, '1G': 57200 } }
       ]
     },
-    /* 소호 (LG U+ 소호 패키지 · SK브로드밴드 소호 — 한 칸, 누르면 둘 중 고름 / 요금은 상담) */
-    { id: 'soho', name: '소호', label: '소호', ready: false, pkgs: [{ name: 'LG U+ 소호 패키지', of: 'lgu' }, { name: 'SK브로드밴드 소호', of: 'sk' }] },
+    /* 소호 (LG U+ 소호 패키지 · SK브로드밴드 소호 — 한 칸, 누르면 둘 중 고름)
+       2026-10-30 사장님 소호 단가표 반영: 패키지마다 속도(100M·500M) × 구성(인터넷 단독 · +전화 · +CCTV · +TV …) 월 요금
+       - 구성 이름·한 줄 안내는 표에 적힌 그대로 / 표의 큰 숫자(23만 등 사은품)는 안 넣음
+       - alone: 인터넷만(단독) 줄 — 첫 화면 '월 ○○원~'에 씀 / tv: TV가 들어간 구성 (신청서 '인터넷+TV'로)
+       - ready: false 그대로 = 일반 통신사(인터넷 + TV 요금제) 모양이 아니라 소호 전용 화면으로 보여 줌 */
+    { id: 'soho', name: '소호', label: '소호', ready: false, pkgs: [
+      { name: 'LG U+ 소호 패키지', of: 'lgu', note: '와이파이 기본 요금제 · 전화는 AI전화 기준', speeds: ['100M', '500M'], items: [
+        { name: 'WIFI기본 인터넷 단독', alone: true, fee: { '100M': 22000, '500M': 33000 } },
+        { name: '+ 전화 (AI전화)', fee: { '100M': 29700, '500M': 37400 } },
+        { name: '+ 에스원 CCTV (1대)', fee: { '100M': 35200, '500M': 40700 } },
+        { name: '+ 프리미엄TV (UHD4)', tv: true, fee: { '100M': 42900, '500M': 48400 } },
+        { name: '+ 프리미엄TV + 전화 (AI전화)', tv: true, fee: { '100M': 50600, '500M': 56100 } }
+      ] },
+      { name: 'SK브로드밴드 소호', of: 'sk', note: '와이파이 포함 · 전화는 기본요금제', speeds: ['100M', '500M'], items: [
+        { name: '인터넷 (WIFI) 단독', alone: true, fee: { '100M': 23100, '500M': 34100 } },
+        { name: '+ 전화 (기업전화 정액7)', fee: { '100M': 30800, '500M': 41800 } },
+        { name: '+ 스탠다드 (스마트3)', tv: true, fee: { '100M': 39600, '500M': 46200 } },
+        { name: '+ 스탠다드 + 전화 (정액7)', tv: true, fee: { '100M': 47300, '500M': 53900 } }
+      ] }
+    ] },
     /* ── 아랫줄 ── */
     {
       id: 'sk', name: 'SK브로드밴드', short: 'SK', tile: 'SK<br>브로드밴드', label: 'SK<wbr>브로드밴드', mob: 'SKT', ready: true, logo: { f: 'carrier_sk', w: 160, h: 138 },
@@ -116,5 +134,6 @@ window.DPZ_PLANS = {
   window.DPZ_PLANS.carriers.forEach(function (c) {
     if (c.internet) c.internet = arr(c.internet);
     if (c.tv) c.tv.forEach(function (p) { p.fee = arr(p.fee); });
+    if (c.pkgs) c.pkgs.forEach(function (g) { (g.items || []).forEach(function (it) { it.fee = arr(it.fee); }); });
   });
 })();

@@ -516,8 +516,8 @@
 
 <div class="sticky" id="sticky"><button class="btn btn-k" type="button" data-open-form data-topic="하단 고정 버튼"><svg viewBox="0 0 24 24" fill="none" stroke="#FFB61C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12.5l5 5 10-11"/></svg>1분 상담 신청하기</button></div>
 
-<script src="assets/plans.js?v=20261030g"></script>
-<script src="assets/site.js?v=20261030d"></script>
+<script src="assets/plans.js?v=20261030h"></script>
+<script src="assets/site.js?v=20261030e"></script>
 <script src="assets/reviews.js?v=20261030a"></script>
 <script src="assets/guides.js?v=20261030a"></script>
 <script>
@@ -529,11 +529,12 @@
      2026-10-29 사장님: 로고가 있는 통신사는 이름 글자 없이 마크만 / 로고 없는 곳은 이름 글자만 (2026-10-29: SKT에 와이파이 그림이 대신 들어가던 것 뺌) */
   var P = window.DPZ_PLANS, C = P.carriers, SI = P.speedInfo;
   /* 시작 요금 = 인터넷만 쓸 때 가장 낮은 월 요금 (2026-10-30 다퍼줌 요금표 · 부가세 포함)
-     - B tv POP처럼 TV와 함께만 가입하는 곳은 TV 포함 요금 / 요금표가 없는 곳(소호)은 '요금 상담'
+     - B tv POP처럼 TV와 함께만 가입하는 곳은 TV 포함 요금 / 소호는 패키지 인터넷 단독 중 가장 낮은 요금 (2026-10-30 소호 단가표) / 요금표가 없는 곳은 '요금 상담'
      - 휴대폰 결합 요금은 지금 요금표에 없어서 기본 월 요금 기준 (plans.js fee[0]) */
   function minOf(a){ a = a.filter(function(v){ return v != null; }); return a.length ? Math.min.apply(null, a) : null; }
   function feeMin(fee){ return minOf(Object.keys(fee || {}).map(function(s){ return fee[s] ? fee[s][0] : null; })); }
   function fromPrice(c){
+    if (c.pkgs) return minOf([].concat.apply([], c.pkgs.map(function(g){ return (g.items || []).filter(function(x){ return x.alone; }).map(function(x){ return feeMin(x.fee); }); })));
     if (!c.ready) return null;
     return c.tvOnly ? minOf((c.tv || []).map(function(p){ return feeMin(p.fee); })) : feeMin(c.internet);
   }

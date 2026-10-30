@@ -82,6 +82,11 @@
 .opt .nm{grid-area:nm;min-width:0}
 .opt .nm b{display:block;font-size:19px;font-weight:850;color:var(--ink);letter-spacing:-.02em;line-height:1.25}
 .opt .nm b small{margin-left:3px;font-size:13.5px;font-weight:650}
+.opt .nm b.onm{font-size:15.5px;line-height:1.35}
+/* 소호 구성: 이름이 길어서 넓은 화면에서도 한 줄씩 (이름 · 요금) */
+.olist.rows{grid-template-columns:minmax(0,1fr)}
+.olist.rows .opt{grid-template-columns:22px minmax(0,1fr) auto;grid-template-areas:"rd nm pr";align-items:center;row-gap:0;min-height:0;padding:14px 16px}
+.olist.rows .opt .pr{align-self:center;text-align:right}
 .opt .nm > span{display:block;margin-top:2px;font-size:13px;color:var(--sub);line-height:1.4}
 .opt .pr{grid-area:pr;text-align:right;white-space:nowrap}
 .opt .pr s{display:block;font-size:12.5px;color:var(--mute);line-height:1.3}
@@ -288,6 +293,8 @@ body.lock .mbar{display:none}
   .olist[data-n="4"] .opt .nm b small{font-size:12.5px}
   .olist[data-n="4"] .opt .nm > span{font-size:13px}
   .olist[data-n="4"] .opt .pr b{font-size:16.5px}
+  .olist.rows .opt{padding:16px 20px}
+  .opt .nm b.onm{font-size:16.5px}
   .pkg{--k:36px;min-height:104px}
   .pkg .pl{height:36px}
   .pkg b{font-size:16px}
@@ -363,6 +370,11 @@ body.lock .mbar{display:none}
         <section class="blk" id="speedBlk" aria-labelledby="hSpeed">
           <div class="blk-h"><h2 id="hSpeed">인터넷 속도</h2><small id="spHint"></small></div>
           <div class="olist" id="speeds"></div>
+        </section>
+        <!-- 소호 구성 (2026-10-30 소호 단가표: 인터넷 단독 · +전화 · +CCTV · +TV …) -->
+        <section class="blk" id="optBlk" aria-labelledby="hOpt" hidden>
+          <div class="blk-h"><h2 id="hOpt">구성</h2><small id="optHint"></small></div>
+          <div class="olist rows" id="opts"></div>
         </section>
         <section class="blk" id="tvBlk" aria-labelledby="hTv" hidden>
           <div class="blk-h"><h2 id="hTv">TV 요금제</h2><small id="tvHint"></small></div>
@@ -486,8 +498,8 @@ body.lock .mbar{display:none}
 
 <div class="mbar" id="mbar" aria-hidden="true"><div class="mt"><small id="mbT"></small><b id="mbP"></b></div><button class="btn btn-k" type="button" data-apply>상담 신청</button></div>
 
-<script src="assets/plans.js?v=20261030g"></script>
-<script src="assets/site.js?v=20261030d"></script>
+<script src="assets/plans.js?v=20261030h"></script>
+<script src="assets/site.js?v=20261030e"></script>
 <script src="assets/reviews.js?v=20261030a"></script>
 <script src="assets/carrierinfo.js?v=20261030d"></script>
 <script>
@@ -500,21 +512,26 @@ body.lock .mbar{display:none}
   var first = C.filter(function(c){ return c.ready; })[0] || C[0];
   /* bundle: 휴대폰 결합 할인 스위치 — 결합 요금이 있는 통신사에서만 보임 (2026-10-30 요금표엔 결합 요금이 없어 지금은 안 보임)
      more: 폰에서 TV 요금제 전부 보기 */
-  var st = { carrier: first.id, combo: 'internet', speed: '100M', tv: 0, bundle: true, pkg: -1, more: false };
+  var st = { carrier: first.id, combo: 'internet', speed: '100M', tv: 0, bundle: true, pkg: -1, opt: 0, more: false };
   var q = new URLSearchParams(location.search);
   if (byId[q.get('carrier')]) st.carrier = q.get('carrier');
   if (q.get('combo') === 'tv' || q.get('combo') === 'internet') st.combo = q.get('combo');
   if (SI[q.get('speed')]) st.speed = q.get('speed');
-  (function(){ // 요금표 화면(price)에서 누른 TV 요금제 (tv=요금제 순서)
+  (function(){ // 요금표 화면(price)에서 누른 TV 요금제 (tv=요금제 순서) · 소호 패키지(pkg)·구성(opt)
     var k = parseInt(q.get('tv'), 10), c = byId[st.carrier];
     if (k >= 0 && c && c.tv && k < c.tv.length) st.tv = k;
+    var g = parseInt(q.get('pkg'), 10), o = parseInt(q.get('opt'), 10);
+    if (c && c.pkgs && g >= 0 && g < c.pkgs.length) { st.pkg = g; if (o >= 0) st.opt = o; }
   })();
 
   function car(){ return byId[st.carrier]; }
   function won(n){ return D.won(n); }
   function num(n){ return Number(n).toLocaleString('ko-KR'); }
   function spLabel(sp){ var i = SI[sp]; return i ? i.label + i.unit : sp; }
-  function speedsOf(c){ return c.ready ? c.speeds : SPEEDS; }
+  function speedsOf(c){ if (c.pkgs) { var g = c.pkgs[st.pkg] || c.pkgs[0]; return (g && g.speeds) || SPEEDS; } return c.ready ? c.speeds : SPEEDS; }
+  function pkgOf(c){ return c.pkgs ? c.pkgs[st.pkg] || null : null; } // 소호: 고른 패키지
+  function optOf(g){ return g && g.items ? g.items[st.opt] || null : null; } // 소호: 고른 구성
+  function kindOf(x){ return x.alone ? 'a' : (x.tv ? 't' : '') + (/전화/.test(x.name) ? 'p' : '') + (/CCTV/i.test(x.name) ? 'c' : ''); } // 패키지를 바꿔도 같은 종류 구성으로
   function comboOf(c){ return c.tvOnly ? 'tv' : st.combo; } // B tv POP180처럼 TV와 함께만 가입하는 상품
   function hasBundle(c){
     if (!c.ready) return false;
@@ -532,6 +549,13 @@ body.lock .mbar{display:none}
   }
   function fix(){ // 통신사·속도·TV를 바꿀 때 없는 조합이 남지 않게
     var c = car();
+    if (c.pkgs) { // 소호: 패키지(처음엔 첫 번째) · 속도 · 구성
+      if (!(st.pkg >= 0 && st.pkg < c.pkgs.length)) st.pkg = 0;
+      var g = c.pkgs[st.pkg];
+      st.speed = nearest(g.speeds || SPEEDS, st.speed);
+      if (!(g.items && st.opt >= 0 && st.opt < g.items.length)) st.opt = 0;
+      return;
+    }
     st.speed = nearest(speedsOf(c), st.speed);
     if (!c.ready || c.pkgs || comboOf(c) !== 'tv') return;
     var cur = c.tv[st.tv];
@@ -555,7 +579,7 @@ body.lock .mbar{display:none}
     var c = car(), soho = !!c.pkgs;
     $('#iLogo').innerHTML = mark(c);
     $('#iTitle').innerHTML = soho ? '<span class="biz">사업자</span>소호 인터넷' : D.esc(c.name) + (c.tvOnly ? '' : ' 인터넷');
-    $('#iSub').textContent = soho ? c.pkgs.map(function(g){ return g.name; }).join(' · ') + ' 중에 골라 상담받으세요'
+    $('#iSub').textContent = soho ? '소호 상품 · 속도 · 구성을 고르면 매달 내는 요금을 바로 알려드려요'
       : c.tvOnly ? '속도를 고르면 인터넷과 TV를 함께 쓰는 월 요금을 바로 알려드려요'
       : c.ready ? '속도와 TV를 고르면 매달 내는 요금을 바로 알려드려요'
       : '요금표는 정리 중이에요. 상담 신청하시면 요금과 받을 수 있는 혜택을 안내해 드려요';
@@ -569,7 +593,7 @@ body.lock .mbar{display:none}
       var on = x.id === c.id;
       return '<a class="cbtn' + (on ? ' on' : '') + '" href="internet?carrier=' + x.id + '" data-car="' + x.id + '"' + (on ? ' aria-current="true"' : '') + ' aria-label="' + D.esc(x.name) + '">' + D.carrierMark(x, false, true) + '</a>';
     }).join('');
-    $('#sohoBlk').hidden = !soho; $('#prodBlk').hidden = soho; $('#speedBlk').hidden = soho;
+    $('#sohoBlk').hidden = !soho; $('#prodBlk').hidden = soho; $('#speedBlk').hidden = false; // 2026-10-30 소호도 요금표가 생겨서 속도 칸 보임
     if (soho) {
       $('#pkgs').innerHTML = c.pkgs.map(function(g, k){
         var on = k === st.pkg, o = byId[g.of];
@@ -587,7 +611,29 @@ body.lock .mbar{display:none}
   /* ---------- 속도 · TV 요금제 (칸마다 '그걸 고르면 내는 월 요금') ---------- */
   function renderOpts(){
     var c = car();
-    if (c.pkgs) { $('#tvBlk').hidden = true; return; }
+    if (c.pkgs) { // 소호: 속도 칸 요금 = 고른 구성으로 그 속도를 쓰면 내는 요금 / 구성 칸 = 고른 속도 기준
+      $('#tvBlk').hidden = true;
+      var g = pkgOf(c), it = optOf(g);
+      $('#spHint').textContent = it ? '고른 구성 포함 요금' : '';
+      $('#speeds').setAttribute('data-n', cols(g.speeds.length));
+      $('#speeds').innerHTML = g.speeds.map(function(sp){
+        var i = SI[sp], on = sp === st.speed, f = it ? it.fee[sp] : null;
+        return '<button type="button" class="opt' + (on ? ' on' : '') + (f ? '' : ' na') + '" data-speed="' + sp + '" aria-pressed="' + on + '">' +
+          '<span class="rd" aria-hidden="true"></span>' +
+          '<span class="nm"><b>' + i.label + '<small>' + i.unit + '</small></b><span>' + i.desc + '</span></span>' +
+          '<span class="pr">' + priceHtml(f, c) + '</span></button>';
+      }).join('');
+      $('#optBlk').hidden = false;
+      $('#optHint').textContent = spLabel(st.speed) + ' 인터넷 포함 요금';
+      $('#opts').innerHTML = g.items.map(function(x, k){
+        var on = k === st.opt, f = x.fee[st.speed];
+        return '<button type="button" class="opt' + (on ? ' on' : '') + (f ? '' : ' na') + '" data-opt="' + k + '" aria-pressed="' + on + '">' +
+          '<span class="rd" aria-hidden="true"></span><span class="nm"><b class="onm">' + D.esc(x.name) + '</b></span>' +
+          '<span class="pr">' + priceHtml(f, c) + '</span></button>';
+      }).join('');
+      return;
+    }
+    $('#optBlk').hidden = true;
     var tv = comboOf(c) === 'tv', cur = tv && c.ready ? c.tv[st.tv] : null;
     $('#spHint').textContent = tv && c.ready ? (c.tvOnly ? 'TV 포함 요금' : '고른 TV 요금제 포함 요금') : '';
     $('#speeds').setAttribute('data-n', cols(speedsOf(c).length));
@@ -629,7 +675,10 @@ body.lock .mbar{display:none}
   /* ---------- 고른 상품 (신청서에 같이 실림) ---------- */
   function curPick(){
     var c = car();
-    if (c.pkgs) { var g = st.pkg > -1 ? c.pkgs[st.pkg] : null; return { carrierId: c.id, carrier: g ? g.name : c.name, combo: null, speed: null, tvName: null, ch: null, base: null, bundle: null, via: 'direct' }; }
+    if (c.pkgs) { // 소호: 패키지 · 속도 · 구성 (신청서엔 'LG U+ 소호 패키지 · 인터넷 100M · + 전화 (AI전화)')
+      var g = pkgOf(c), it = optOf(g), sf = it ? it.fee[st.speed] : null;
+      return { carrierId: c.id, carrier: g ? g.name : c.name, combo: it && it.tv ? 'tv' : 'internet', speed: st.speed, tvName: null, ch: null, base: sf ? sf[0] : null, bundle: null, via: 'direct', opt: it ? it.name : null };
+    }
     var p = plan(), f = c.ready ? fee(c, st.speed, p) : null;
     return { carrierId: c.id, carrier: c.name, combo: comboOf(c), speed: st.speed, tvName: p ? tvLabel(p) : null, ch: p && p.ch ? p.ch : null, base: f ? f[0] : null, bundle: f ? f[1] : null, via: 'direct' };
   }
@@ -638,7 +687,7 @@ body.lock .mbar{display:none}
   function renderSum(){
     var c = car(), k = curPick(), p = plan(), has = k.base != null, bOn = bundleOn(c) && k.bundle != null;
     var title, sub = '';
-    if (c.pkgs) title = k.carrier === c.name ? '소호 상품' : k.carrier;
+    if (c.pkgs) { title = k.carrier + ' · ' + spLabel(st.speed); sub = k.opt || ''; }
     else {
       title = c.name + ' · ' + spLabel(st.speed) + (comboOf(c) === 'tv' ? ' + TV' : ' 인터넷');
       sub = p ? tvLabel(p) : (comboOf(c) === 'tv' ? 'TV 상품은 상담 때 안내' : '');
@@ -657,15 +706,33 @@ body.lock .mbar{display:none}
       $('#sReady').textContent = c.pkgs ? '소호 상품 요금은 상담 때 안내해 드려요.' : '요금표는 정리 중이에요. 상담 신청하시면 요금과 받을 수 있는 혜택을 안내해 드려요.';
     }
     $('#sNote').hidden = !has;
-    $('#sNote2').hidden = !(has && c.note);
-    $('#sNote2 span').textContent = c.note ? c.name + ': ' + c.note : '';
-    $('#mbT').textContent = title + (p ? ' · ' + p.name : '') + (has && bOn ? ' · 휴대폰 결합' : '');
+    var ng = c.pkgs ? pkgOf(c) || {} : c; // 소호는 고른 패키지 안내
+    $('#sNote2').hidden = !(has && ng.note);
+    $('#sNote2 span').textContent = ng.note ? ng.name + ': ' + ng.note : '';
+    $('#mbT').textContent = title + (p ? ' · ' + p.name : '') + (c.pkgs && k.opt ? ' · ' + k.opt : '') + (has && bOn ? ' · 휴대폰 결합' : '');
     $('#mbP').textContent = has ? '월 ' + won(bOn ? k.bundle : k.base) : '요금 상담 시 안내';
   }
 
   /* ---------- 결합 할인 표 (결합 요금이 있을 때) / 요금표 (상품 × 속도) ---------- */
   function renderTables(){
     var c = car();
+    if (c.pkgs) {
+      var g = pkgOf(c);
+      $('#qInc').innerHTML = '부가세 포함 월 요금이에요.' + (g && g.note ? '<br>' + D.esc(g.name) + ': ' + D.esc(g.note) : '');
+      $('#bunSec').hidden = true; $('#ptSec').hidden = !g; $('#bunLink').hidden = false;
+      $('#bunLink').setAttribute('href', 'price#soho'); $('#bunLinkTx').textContent = '통신사별 요금표 전체 보기';
+      if (!g) return;
+      $('#hPt').textContent = g.name + ' 요금표';
+      $('#ptSub').textContent = (g.note ? g.note + ' · ' : '') + '부가세 포함 월 요금(원)';
+      $('#ptHead').innerHTML = '<tr><th scope="col">구성</th>' + g.speeds.map(function(sp){ return '<th scope="col">' + D.esc(sp === '1G' ? '1기가' : sp) + '</th>'; }).join('') + '</tr>';
+      $('#ptBody').innerHTML = g.items.map(function(x, k){
+        return '<tr' + (k === st.opt ? ' class="cur"' : '') + '><th scope="row"><button type="button" class="pk" data-row="' + k + '">' + D.esc(x.name) + '</button></th>' + g.speeds.map(function(sp){
+          var f = x.fee[sp], hit = k === st.opt && sp === st.speed;
+          return f ? '<td' + (hit ? ' class="hit"' : '') + '><button type="button" class="pk" data-row="' + k + '" data-sp="' + sp + '" aria-label="' + D.esc(x.name + ' ' + spLabel(sp) + ' 월 ' + won(f[0])) + '">' + num(f[0]) + '</button></td>' : '<td class="na">—</td>';
+        }).join('') + '</tr>';
+      }).join('');
+      return;
+    }
     $('#qInc').innerHTML = '부가세 포함 월 요금이에요.' + (c.ready && c.note ? '<br>' + D.esc(c.name) + ': ' + D.esc(c.note) : '') + (c.area ? '<br>설치할 수 있는 지역이 정해져 있어요. 위쪽 \'설치 가능 지역\'에서 확인해 주세요.' : '');
     var bun = hasBundle(c) && !c.tvOnly && Object.keys(c.internet).length > 0;
     $('#bunSec').hidden = !bun;
@@ -711,7 +778,8 @@ body.lock .mbar{display:none}
       var u = new URL(location.href), c = car();
       u.searchParams.set('carrier', st.carrier);
       if (comboOf(c) === 'tv' && !c.pkgs && !c.tvOnly) u.searchParams.set('combo', 'tv'); else u.searchParams.delete('combo');
-      u.searchParams.delete('speed');
+      u.searchParams.delete('speed'); u.searchParams.delete('tv'); u.searchParams.delete('opt');
+      if (c.pkgs) u.searchParams.set('pkg', st.pkg); else u.searchParams.delete('pkg');
       history.replaceState(null, '', u.pathname + u.search + u.hash);
     } catch (e) {}
   }
@@ -773,7 +841,7 @@ body.lock .mbar{display:none}
     var a = e.target.closest('[data-car]'); if (!a) return;
     e.preventDefault();
     var id = a.getAttribute('data-car'); if (id === st.carrier) return;
-    act(function(){ st.carrier = id; st.tv = 0; st.pkg = -1; st.more = false; }, '[data-car="' + id + '"]');
+    act(function(){ st.carrier = id; st.tv = 0; st.pkg = -1; st.opt = 0; st.more = false; }, '[data-car="' + id + '"]');
     syncUrl();
   });
   $$('.ptab').forEach(function(b){ b.addEventListener('click', function(){ var v = b.getAttribute('data-combo'); act(function(){ st.combo = v; }); syncUrl(); }); });
@@ -785,14 +853,26 @@ body.lock .mbar{display:none}
   $('#ptBody').addEventListener('click', function(e){
     var b = e.target.closest('[data-row]'); if (!b) return;
     var k = +b.getAttribute('data-row'), sp = b.getAttribute('data-sp'), c = car(), had = document.activeElement === b;
-    if (k < 0) st.combo = 'internet'; else { st.combo = 'tv'; st.tv = k; }
-    if (sp) st.speed = sp;
-    else if (k >= 0 && c.tv[k] && !c.tv[k].fee[st.speed]) st.speed = nearest(Object.keys(c.tv[k].fee), st.speed); // 그 요금제에 없는 속도면 가까운 속도로
+    if (c.pkgs) { st.opt = k; if (sp) st.speed = sp; } // 소호: 그 구성(·속도)
+    else {
+      if (k < 0) st.combo = 'internet'; else { st.combo = 'tv'; st.tv = k; }
+      if (sp) st.speed = sp;
+      else if (k >= 0 && c.tv[k] && !c.tv[k].fee[st.speed]) st.speed = nearest(Object.keys(c.tv[k].fee), st.speed); // 그 요금제에 없는 속도면 가까운 속도로
+    }
     render(); syncUrl();
     if (had) { var nb = $('#ptBody [data-row="' + k + '"]' + (sp ? '[data-sp="' + sp + '"]' : ':not([data-sp])')); if (nb) nb.focus({ preventScroll: true }); }
     if (!sumSeen) { mbar.classList.remove('pulse'); void mbar.offsetWidth; mbar.classList.add('pulse'); }
   });
-  $('#pkgs').addEventListener('click', function(e){ var b = e.target.closest('[data-pkg]'); if (!b) return; var v = +b.getAttribute('data-pkg'); act(function(){ st.pkg = v; }, '[data-pkg="' + v + '"]'); });
+  $('#pkgs').addEventListener('click', function(e){
+    var b = e.target.closest('[data-pkg]'); if (!b) return; var v = +b.getAttribute('data-pkg');
+    act(function(){
+      var c = car(), og = pkgOf(c), it = optOf(og), ng = c.pkgs[v];
+      st.pkg = v;
+      if (it && ng && ng.items) { var kd = kindOf(it), j = ng.items.map(kindOf).indexOf(kd); st.opt = j > -1 ? j : 0; } // 보던 구성(예: +전화)을 다른 패키지에서도
+    }, '[data-pkg="' + v + '"]');
+    syncUrl(); // 주소에 고른 패키지 (pkg=0 LG U+ / 1 SK브로드밴드)
+  });
+  $('#opts').addEventListener('click', function(e){ var b = e.target.closest('[data-opt]'); if (!b) return; var v = +b.getAttribute('data-opt'); act(function(){ st.opt = v; }, '[data-opt="' + v + '"]'); });
 
   function apply(topic){ var c = car(); D.openForm({ pick: curPick(), topic: topic || '인터넷 화면', bundle: bundleOn(c) ? true : undefined }); }
   document.addEventListener('click', function(e){

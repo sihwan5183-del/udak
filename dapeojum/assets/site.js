@@ -300,8 +300,9 @@
   function radio(n) { var r = $('input[name="' + n + '"]:checked', form); return r ? r.value : null; }
   function pickText(p) {
     if (!p) return '';
-    if (!p.speed && !p.combo) return p.carrier; // 소호처럼 속도·조합 없이 상품만 고른 경우
+    if (!p.speed && !p.combo) return p.carrier; // 속도·조합 없이 상품만 고른 경우
     var t = p.carrier + ' · 인터넷 ' + (p.speed || '');
+    if (p.opt) return t + ' · ' + p.opt; // 소호: 구성 이름 그대로 (예: + 전화 (AI전화))
     if (p.combo === 'tv') t += ' + TV' + (p.tvName ? ' ' + p.tvName + (p.ch ? '(' + p.ch + '채널)' : '') : '');
     return t;
   }
@@ -318,7 +319,7 @@
     if (opt.pick !== undefined) setPick(opt.pick);
     if (opt.topic !== undefined) topic = opt.topic || '';
     if (opt.pick) {
-      if (opt.pick.combo) checkRadio('product', opt.pick.combo === 'tv' ? '인터넷+TV' : '인터넷'); // 소호는 손님이 직접 고름
+      if (opt.pick.combo) checkRadio('product', opt.pick.combo === 'tv' ? '인터넷+TV' : '인터넷'); // 소호도 고른 구성에 TV가 있으면 인터넷+TV
       if (opt.pick.speed) checkRadio('speed', opt.pick.speed);
     }
     if (opt.product) checkRadio('product', opt.product);
@@ -390,7 +391,11 @@
     var id = uuid(), mi = metaIds();
     var p = pick; // 상품 찾기에서 고른 상품 (신청서에서 관심 상품을 바꿔도 고른 내용은 그대로 남김 — 직원이 둘 다 봄)
     var homeTv = null;
-    if (product === '인터넷+TV') homeTv = (p && p.combo === 'tv' && p.tvName) ? (p.carrier + ' ' + p.tvName + (p.ch ? ' ' + p.ch + '채널' : '')) : 'TV 함께 상담';
+    if (product === '인터넷+TV') {
+      if (p && p.combo === 'tv' && p.tvName) homeTv = p.carrier + ' ' + p.tvName + (p.ch ? ' ' + p.ch + '채널' : '');
+      else if (p && p.combo === 'tv' && p.opt) homeTv = p.carrier + ' ' + p.opt; // 소호 TV 구성 (예: SK브로드밴드 소호 + 스탠다드 (스마트3))
+      else homeTv = 'TV 함께 상담';
+    }
     var body = {
       id: id, name: name, phone: ph, carrier: isp, channel: pageChannel(), utm_campaign: UTM.utm_campaign || null,
       device_interest: product, home_internet: speed || null, home_tv: homeTv,
@@ -400,7 +405,7 @@
         v: 2, source: 'dapeojum', product: product, speed: speed || null, current_isp: isp,
         mobile_bundle: bundle ? '휴대폰 결합 할인 같이 상담' : null, region: area || null, contact_time: time || null, topic: topic || null, // topic = 신청서를 연 버튼 위치 (첫 화면 배너·직접 선택·맞춤 추천 등)
         pick: p ? { carrier_id: p.carrierId, carrier: p.carrier, combo: p.combo, speed: p.speed || null, tv_name: p.tvName || null, channels: p.ch || null,
-          price_base: p.base || null, price_bundle: p.bundle || null, via: p.via || null } : null,
+          price_base: p.base || null, price_bundle: p.bundle || null, option: p.opt || null, via: p.via || null } : null,
         utm: UTM, landing: store.get('dpz_landing'), page_url: location.href.slice(0, 500), submitted_at: new Date().toISOString()
       }
     };
