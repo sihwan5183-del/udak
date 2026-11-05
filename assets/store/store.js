@@ -1467,11 +1467,13 @@ function pdRender(m, p, st, PK, o){
     var mu=[]; if(st.t&&st.t.fee) mu.push(won(st.t.fee)+' 이상 요금제 6개월'); mu.push('약정 2년');   // 조건은 남김 (개통할 때 말이 안 나오게 — 20261020)
     h+=pdO('tier','요금제',pdTierSel(m,r,st,PK&&PK.promo)+'<div class="pd-cond"><b>조건</b><span>'+mu.join(' · ')+'</span></div>');
     // 20261027 사장님(버디 5): 우리 지원금만 보이면 작아 보여서 → '총 지원금 528,000원 (출고가 전액)' + 아래 '공시지원금 + 유플러스 다이렉트 지원금' (관리자 모델 편집 스위치)
-    var supTot=(m.supAll&&st.method==='pub'&&c.pub)?(c.pub||0)+(c.our||0):0, supOut=num(c.out)||0;
-    if(supTot) h+='<div class="pd-our tot"><span class="pd-our-r"><span>총 지원금</span><b>'+won(supTot)+'</b>'+(supOut&&supTot>=supOut?'<em>(출고가 전액)</em>':'')+'</span>'+
-      '<small>공시지원금 '+won(c.pub)+(c.our?' + 유플러스 다이렉트 지원금 '+won(c.our):'')+'</small></div>';
-    else if(c.our) h+='<div class="pd-our"><span>유플러스 다이렉트 지원금</span><b>'+won(c.our)+'</b></div>';
     var fee=st.fee||0, selTot=fee?(fee-Math.round(fee*0.75))*24:0;   // 선택약정 2년 동안 덜 내는 요금 (예전 상세 비교와 같은 계산)
+    // 20261105 사장님 '싸 보이게': 모든 휴대폰에 '총 혜택' 띠 — 우리 지원금만 보이면 작아 보여서 (예전엔 관리자 스위치 m.supAll 켠 모델만 · 이제 스위치는 안 봄)
+    //   공시지원금이면 공시 + 유플러스 다이렉트 지원금 (출고가의 n% · 전액이면 '출고가 전액') · 선택약정이면 우리 지원금 + 2년 요금 25% 할인액
+    var pubOn=st.method==='pub'&&!!c.pub, supOut=num(c.out)||0, supTot=pubOn?(c.pub||0)+(c.our||0):(c.our||0)+selTot;
+    if(supTot){ var pct=(pubOn&&supOut)?Math.round(supTot/supOut*100):0;
+      h+='<div class="pd-our tot"><span class="pd-our-r"><span>총 혜택</span><b>'+won(supTot)+'</b>'+(pubOn?(supOut&&supTot>=supOut?'<em>(출고가 전액)</em>':pct?'<em>(출고가의 '+pct+'%)</em>':''):'<em>(2년 기준)</em>')+'</span>'+
+        '<small>'+(pubOn?'공시지원금 '+won(c.pub)+(c.our?' + 유플러스 다이렉트 지원금 '+won(c.our):''):(c.our?'유플러스 다이렉트 지원금 '+won(c.our)+(selTot?' + ':''):'')+(selTot?'선택약정 요금 25% 할인 '+won(selTot):''))+'</small></div>'; }
     if(pubOnly(m)) h+=pdO('method','할인 방식','<div class="pd-ms one"><span class="pd-m on"><b>공시지원금</b></span></div>');   // 20261026 버디 5: 선택약정 없음 · 20261027 사장님: '총 400,000원'은 뺌 (위 총 지원금 띠에 있음)
     else h+=pdO('method','할인 방식','<div class="pd-ms">'+
       '<button type="button" class="pd-m'+(st.method==='pub'?' on':'')+(c.pub?'':' dis')+'" data-calc="method" data-v="pub" data-model="'+esc(m.id)+'"'+(c.pub?'':' disabled')+'><b>공시지원금</b><span>'+(c.pub?'총 '+won(c.pub):'–')+'</span></button>'+
@@ -1487,16 +1489,22 @@ function pdRender(m, p, st, PK, o){
     total=monthly+fa+wlf;
     var s='<div class="pd-sum" id="pdSum">';
     // 20261105 사장님: ①②·'합산' 대신 A · B · 'A + B' (폰슐랭식) — 아래 고정 줄도 같이
-    s+='<div class="pd-sh"><i>A</i><b>'+(mm===0?'기기값 <small>일시납</small>':'월 기기값 <small>'+mm+'개월 · '+(st.noint?'이자 없음':'할부이자 포함')+'</small>')+'</b><em class="pk">'+(mm===0?wz(st.after):wz(monthly))+'</em></div>';
+    // 20261105 사장님 '싸 보이게' (계산식으로만 · 지어낸 숫자 없음):
+    //   ⓐ 월 기기값 밑에 '하루 약 n원' (÷30 · 10원 올림)  ⓑ 지원 후 기기값 밑에 '공시지원금(선택약정)만 받을 때 n원 → 우리 지원금만큼 더 저렴'
+    //   ⓒ B 밑에 '월 요금은 어디서 가입해도 같아요 — 달라지는 건 A뿐'  ⓓ 큰 분홍 숫자는 A 하나만 (A + B는 검정)
+    var daily=(mm!==0&&monthly>0)?Math.ceil(monthly/30/10)*10:0;
+    s+='<div class="pd-sh"><i>A</i><b>'+(mm===0?'기기값 <small>일시납</small>':'월 기기값 <small>'+mm+'개월 · '+(st.noint?'이자 없음':'할부이자 포함')+'</small>')+'</b><em class="pk">'+(mm===0?wz(st.after):wz(monthly))+(daily?'<small>하루 약 '+won(daily)+'</small>':'')+'</em></div>';
     s+=pdL('출고가',won(out));
     if(st.method==='pub'&&c.pub) s+=pdL('공시지원금','−'+won(c.pub),'neg');
     if(c.our) s+=pdL('유플러스 다이렉트 지원금','−'+won(c.our),'neg');
     s+=pdL('지원 후 기기값',wz(st.after),'strong');
+    if(c.our) s+='<div class="pd-sl pd-anc"><span>'+(st.method==='pub'&&c.pub?'공시지원금':'선택약정')+'만 받을 때 <s>'+won(st.after+c.our)+'</s></span><span>'+won(c.our)+' 더 저렴</span></div>';
     if(wpc) s+=pdL(esc(wpName(wpw)),'<s>'+won(wpc.c.out)+'</s> '+wz(wpc.after),'strong');
     s+='<div class="pd-sh n2"><i>B</i><b>월 요금</b><em>'+won(fa+wlf)+'</em></div>';
     if(st.fee) s+=pdL(esc(st.t.title||tierLabel(st.t)),won(st.fee));
     if(sel&&st.fee&&st.fee>fa) s+=pdL('선택약정 할인 (25%)','−'+won(st.fee-fa),'neg');
     if(wlf) s+=pdL('워치 이용료',won(wlf));
+    if(st.fee) s+='<div class="pd-sl pd-same"><span>월 요금은 어디서 가입해도 같아요 — 달라지는 건 <b>A</b>뿐</span></div>';
     if(mm!==0) s+='<div class="pd-tot"><span><i>A</i><em>+</em><i>B</i></span><b>'+won(total)+'</b></div>';
     s+='<ul class="pd-ul"><li><i>'+PD_CK+'</i><span>제휴카드·부가서비스 의무가입 없음</span></li></ul></div>';
     h+=s;
