@@ -1297,6 +1297,7 @@ var CPRE={};   // 모델별 컬러 사진 미리 받아 둠 (누르면 바로 �
 function colDots(m){ var cs=colorsOf(m); if(cs.length<2) return ''; var wn=cs.length<=4, cur=PICK[m.id]||cs[0].nm;
   if(!CPRE[m.id] && !EDIT){ CPRE[m.id]=1; cs.forEach(function(c){ if(c.img){ try{ (new Image()).src=imgSrc(c.img); }catch(x){} } }); }
   return '<div class="md-cols'+(wn?'':' nn')+'">'+cs.map(function(c){ return '<button type="button" class="mc'+(c.nm===cur?' on':'')+'" data-color-pick="'+esc(c.nm)+'" data-model="'+esc(m.id)+'" aria-label="'+esc(c.nm)+'"><i style="--c:'+esc(c.hex||'#ddd')+'"></i>'+(wn?'<em>'+esc(c.nm)+'</em>':'')+'</button>'; }).join('')+'</div>'; }
+var NAVN=0; window.addEventListener('hashchange',function(){ NAVN++; });   // 이 사이트 안에서 화면을 옮긴 횟수 (0이면 광고 등에서 바로 들어온 것)
 var PICK={};   // 상세에서 고른 컬러 (모델별)
 var OPTT={};   // 상세에서 고객이 직접 고른 용량 (모델별) — 기본값과 구분
 function optPicker(m){
@@ -1442,6 +1443,10 @@ function pdRender(m, p, st, PK, o){
   var h='<div class="pd">';
   // ① 이름 · 최대 할인 · 공유
   h+='<div class="pd-tt"'+ED+'><h2 class="md-h">'+esc(m.nm)+'</h2>'+(bd?'<span class="pd-bd">'+esc(bd)+'</span>':'')+'<button type="button" class="pd-share" data-pd-share="'+esc(m.id)+'" aria-label="공유하기">'+PD_SHARE+'</button></div>';
+  // 20261105 사장님: 메타 광고에서 상세로 바로 꽂히니 제목 바로 밑에 '누구인지' 한 줄 — 홈 브랜드 칸과 같은 글(관리자 '브랜드'에서 고침) · 누르면 인증마크
+  var bt=S.brand||{}, btr=bt.trust==null?'U+ 최초의 온라인 대리점':bt.trust;
+  if(bt.small||bt.big) h+='<button type="button" class="pd-trust" data-cert aria-label="LG U+ 공식인증대리점 인증마크 보기"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 3 7.7 7 9 4-1.3 7-4.5 7-9V6l-7-3z"/><path d="m9 12 2 2 4-4"/></svg>'+
+    '<span class="pd-trust-t"><b>'+esc(bt.small||'').replace(/ /g,'&nbsp;')+(bt.small&&bt.big?' · ':'')+esc(bt.big||'').replace(/ /g,'&nbsp;')+'</b>'+(btr?'<small>'+esc(btr).replace(/^U\+/,'U<sup>+</sup>')+'</small>':'')+'</span><em aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></em></button>';   // 좁은 화면에선 ' · '에서만 줄이 바뀜
   // ② 큰 사진 · ③ 컬러 사진 (누르면 그 색으로 — 고른 색은 신청서에도 미리 들어감)
   h+='<div class="pd-img md-img" id="mdImg"'+ED+'>'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(SO(m)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>';
   if(cs.length>1 && cs.every(function(x){ return x.img; })) h+='<div class="pd-ths">'+cs.map(function(x){ var on=cur&&x.nm===cur.nm;
@@ -2621,7 +2626,7 @@ document.addEventListener('click',function(e){
   var mp=t.closest('[data-mnp]'); if(mp){ e.preventDefault(); MNP=mp.getAttribute('data-mnp')==='1'; refresh(); return; }
   if(t.closest('[data-cert]')){e.preventDefault();openCert();return}
   if(t.closest('[data-home]')){e.preventDefault();closeSheet();location.hash='#/';window.scrollTo(0,0);return}
-  if(t.closest('[data-back]')){e.preventDefault();history.length>1?history.back():location.hash='#/';return}
+  if(t.closest('[data-back]')){e.preventDefault();NAVN>0?history.back():location.hash='#/';return}   // 20261105 광고에서 상세로 바로 들어온 손님은 '뒤로'가 광고 앱으로 나가지 않고 우리 홈으로
 });
 document.addEventListener('input',function(e){
   var id=e.target.id;
