@@ -1445,8 +1445,9 @@ function pdRender(m, p, st, PK, o){
   h+='<div class="pd-tt"'+ED+'><h2 class="md-h">'+esc(m.nm)+'</h2>'+(bd?'<span class="pd-bd">'+esc(bd)+'</span>':'')+'<button type="button" class="pd-share" data-pd-share="'+esc(m.id)+'" aria-label="공유하기">'+PD_SHARE+'</button></div>';
   // 20261105 사장님: 메타 광고에서 상세로 바로 꽂히니 제목 바로 밑에 '누구인지' 한 줄 — 홈 브랜드 칸과 같은 글(관리자 '브랜드'에서 고침) · 누르면 인증마크
   var bt=S.brand||{}, btr=bt.trust==null?'U+ 최초의 온라인 대리점':bt.trust;
-  if(bt.small||bt.big) h+='<button type="button" class="pd-trust" data-cert aria-label="LG U+ 공식인증대리점 인증마크 보기"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 3 7.7 7 9 4-1.3 7-4.5 7-9V6l-7-3z"/><path d="m9 12 2 2 4-4"/></svg>'+
-    '<span class="pd-trust-t"><b>'+esc(bt.small||'').replace(/ /g,'&nbsp;')+(bt.small&&bt.big?' · ':'')+esc(bt.big||'').replace(/ /g,'&nbsp;')+'</b>'+(btr?'<small>'+esc(btr).replace(/^U\+/,'U<sup>+</sup>')+'</small>':'')+'</span><em aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></em></button>';   // 좁은 화면에선 ' · '에서만 줄이 바뀜
+  if(bt.big) h+='<button type="button" class="pd-trust" data-cert aria-label="LG U+ 공식인증대리점 인증마크 보기"><img src="/assets/store/cert-mark-s.webp" alt="" width="36" height="36" decoding="async">'+
+    '<span class="pd-trust-t"><b>LG U+ 공식인증대리점</b><small>'+(btr?esc(btr).replace(/^U\+/,'U<sup>+</sup>').replace(/ /g,'&nbsp;')+' · ':'')+esc(bt.big).replace(/ /g,'&nbsp;')+'</small></span>'+
+    '<em aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></em></button>';   // 20261105 사장님 '깔끔하게·오피셜하게': 분홍 띠 대신 진짜 인증마크 + 검정 글씨 한 줄
   // ② 큰 사진 · ③ 컬러 사진 (누르면 그 색으로 — 고른 색은 신청서에도 미리 들어감)
   h+='<div class="pd-img md-img" id="mdImg"'+ED+'>'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(SO(m)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>';
   if(cs.length>1 && cs.every(function(x){ return x.img; })) h+='<div class="pd-ths">'+cs.map(function(x){ var on=cur&&x.nm===cur.nm;
