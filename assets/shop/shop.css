@@ -519,7 +519,7 @@ body.edit #v-model .subhead{top:52px}
 .pd-adv b.adv{display:flex;align-items:flex-start;gap:5px;font-weight:700;color:#131518;word-break:keep-all}
 .pd-adv b.adv>i{flex:none;font-style:normal}
 .pd-adv b.adv em{font-style:normal;color:var(--pink);font-weight:900}
-/* 계산표: ① 월 기기값 ② 월 요금 → 합산 */
+/* 계산표: A 월 기기값 B 월 요금 → A + B (20261105 사장님: '합산' 대신 폰슐랭식 A + B) */
 .pd-sum{margin-top:28px;padding:4px 16px 14px;border:2px solid #1F2329;border-radius:14px}
 .pd-sh{display:flex;align-items:center;gap:8px;padding:14px 0 8px}
 .pd-sh.n2{margin-top:8px;border-top:1px solid #E5E7EB}
@@ -532,10 +532,11 @@ body.edit #v-model .subhead{top:52px}
 .pd-sl span:last-child{flex:none;white-space:nowrap}
 .pd-sl.pd-strong{color:#131518;font-weight:700}
 .pd-sl s{color:#9AA0A8;font-weight:400}
-.pd-tot{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid #E5E7EB}
-.pd-tot span{font-size:14px;font-weight:700}
-.pd-tot span small{margin-left:4px;font-size:12px;font-weight:500;color:#6B7280}
-.pd-tot b{font-size:18px;font-weight:800;white-space:nowrap}
+.pd-tot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding:11px 14px;border-radius:10px;background:#F4F5F7}
+.pd-tot span{display:flex;align-items:center;gap:7px}
+.pd-tot span i{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;background:#FCE2EC;color:var(--pink);font-size:13px;font-weight:900;font-style:normal}
+.pd-tot span em{font-style:normal;font-size:15px;line-height:1;font-weight:700;color:#9AA0A8}
+.pd-tot b{font-size:21px;line-height:24px;font-weight:900;color:var(--pink);letter-spacing:-.02em;white-space:nowrap}
 .pd-ul{list-style:none;margin-top:10px;display:flex;flex-direction:column;gap:7px}
 .pd-ul li{display:flex;align-items:flex-start;gap:6px;font-size:13.5px;line-height:19px;color:#374151;word-break:keep-all}
 .pd-ul li i{flex:none;display:flex;margin-top:1px}

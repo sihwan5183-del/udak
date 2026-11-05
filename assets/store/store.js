@@ -1317,8 +1317,8 @@ function colorPicker(m){
 
 /* ---------------- 20261026 /shop 휴대폰 상세 — 사장님: 폰슐랭샵 상세 배치로, 우리 결에 안 맞는 건 빼고 ----------------
    위에서부터: 이름 + 최대 할인 + 공유 → 큰 사진 → 컬러 사진 → 색상 · 용량 · 가입유형 · 요금제(+조건) · 유플러스 다이렉트 지원금 · 할인 방식 · 할부개월
-              → 계산표(① 월 기기값 ② 월 요금 · 합산) → 구매혜택 · 유의사항 · 구매후기 · 모델정보(앞으로 그림을 넣는 칸)
-              → 아래 고정: 월 기기값 + 월 요금 = 합산 · [제품명 상담 신청하기]
+              → 계산표(A 월 기기값 B 월 요금 · A + B — 20261105 사장님: '합산' 대신 폰슐랭식 A + B) → 구매혜택 · 유의사항 · 구매후기 · 모델정보(앞으로 그림을 넣는 칸)
+              → 아래 고정: A 월 기기값 + B 월 요금 = A + B · [제품명 상담 신청하기]
    뺀 것: 가입할 통신사(우린 U+만) · 인터넷+TV · 카드·결합할인 · 위 카테고리 줄 · 카페 시세 배너
           · 카톡/1:1 버튼 (20261020 카톡 상담 0건 → 상담 신청 하나만) · 요금제 변경 가능 시점 안내 (20261020 장벽이라 뺀 문구)
           · 합산을 제일 크게 (20261021 사장님: 월 기기값이 제일 크게)
@@ -1486,17 +1486,18 @@ function pdRender(m, p, st, PK, o){
     wpw=wpFor(m); wpOn=!!(wpw&&st.t&&st.t.k===wpw.b); var wpc=wpOn?wpCalc(wpw):null; wlf=wpOn?wpLineFee(wpw,st.t.fee):0;
     total=monthly+fa+wlf;
     var s='<div class="pd-sum" id="pdSum">';
-    s+='<div class="pd-sh"><i>1</i><b>'+(mm===0?'기기값 <small>일시납</small>':'월 기기값 <small>'+mm+'개월 · '+(st.noint?'이자 없음':'할부이자 포함')+'</small>')+'</b><em class="pk">'+(mm===0?wz(st.after):wz(monthly))+'</em></div>';
+    // 20261105 사장님: ①②·'합산' 대신 A · B · 'A + B' (폰슐랭식) — 아래 고정 줄도 같이
+    s+='<div class="pd-sh"><i>A</i><b>'+(mm===0?'기기값 <small>일시납</small>':'월 기기값 <small>'+mm+'개월 · '+(st.noint?'이자 없음':'할부이자 포함')+'</small>')+'</b><em class="pk">'+(mm===0?wz(st.after):wz(monthly))+'</em></div>';
     s+=pdL('출고가',won(out));
     if(st.method==='pub'&&c.pub) s+=pdL('공시지원금','−'+won(c.pub),'neg');
     if(c.our) s+=pdL('유플러스 다이렉트 지원금','−'+won(c.our),'neg');
     s+=pdL('지원 후 기기값',wz(st.after),'strong');
     if(wpc) s+=pdL(esc(wpName(wpw)),'<s>'+won(wpc.c.out)+'</s> '+wz(wpc.after),'strong');
-    s+='<div class="pd-sh n2"><i>2</i><b>월 요금</b><em>'+won(fa+wlf)+'</em></div>';
+    s+='<div class="pd-sh n2"><i>B</i><b>월 요금</b><em>'+won(fa+wlf)+'</em></div>';
     if(st.fee) s+=pdL(esc(st.t.title||tierLabel(st.t)),won(st.fee));
     if(sel&&st.fee&&st.fee>fa) s+=pdL('선택약정 할인 (25%)','−'+won(st.fee-fa),'neg');
     if(wlf) s+=pdL('워치 이용료',won(wlf));
-    if(mm!==0) s+='<div class="pd-tot"><span>합산 <small>월 기기값 + 월 요금</small></span><b>'+won(total)+'</b></div>';
+    if(mm!==0) s+='<div class="pd-tot"><span><i>A</i><em>+</em><i>B</i></span><b>'+won(total)+'</b></div>';
     s+='<ul class="pd-ul"><li><i>'+PD_CK+'</i><span>제휴카드·부가서비스 의무가입 없음</span></li></ul></div>';
     h+=s;
   } else if(!o.PRE){
@@ -1508,8 +1509,8 @@ function pdRender(m, p, st, PK, o){
   if(o.soNow) bar='<div class="md-bar-t"><b>일시품절</b> · 지금은 신청할 수 없어요</div>';
   else if(o.PRE) bar='<div class="md-bar-t pd-eq"><span class="pd-eb">'+sk('48px','11px')+sk('64px','17px')+'</span><i class="pd-op">+</i><span class="pd-eb">'+sk('40px','11px')+sk('60px','15px')+'</span><i class="pd-op">=</i><span class="pd-eb r">'+sk('30px','11px')+sk('60px','15px')+'</span></div>';
   else if(!c) bar='<div class="md-bar-t">상담 신청하시면 <b>나에게 맞는 혜택</b>을 안내해 드려요</div>';
-  else if(mm===0) bar='<div class="md-bar-t pd-eq"><span class="pd-eb"><small>기기값 일시납</small><b class="pk">'+wz(st.after)+'</b></span><i class="pd-op">+</i><span class="pd-eb"><small>월 요금</small><b>'+won(fa+wlf)+'</b></span></div>';
-  else bar='<div class="md-bar-t pd-eq"><span class="pd-eb"><small>월 기기값</small><b class="pk">'+wz(monthly)+'</b></span><i class="pd-op">+</i><span class="pd-eb"><small>월 요금</small><b>'+won(fa+wlf)+'</b></span><i class="pd-op">=</i><span class="pd-eb r"><small>합산</small><b>'+won(total)+'</b></span></div>';
+  else if(mm===0) bar='<div class="md-bar-t pd-eq"><span class="pd-eb"><small>A 기기값 일시납</small><b class="pk">'+wz(st.after)+'</b></span><i class="pd-op">+</i><span class="pd-eb"><small>B 월 요금</small><b>'+won(fa+wlf)+'</b></span></div>';
+  else bar='<div class="md-bar-t pd-eq"><span class="pd-eb"><small>A 월 기기값</small><b class="pk">'+wz(monthly)+'</b></span><i class="pd-op">+</i><span class="pd-eb"><small>B 월 요금</small><b>'+won(fa+wlf)+'</b></span><i class="pd-op">=</i><span class="pd-eb r"><small>A + B</small><b>'+won(total)+'</b></span></div>';
   var dis=(o.soNow&&!EDIT)?' disabled':'';
   var cta=S.cta||{}, ctaOn=cta.on!==false&&!!cta.sub;   // 20261027 사장님: 버튼 안 아랫줄 작은 글씨 '5분 간단 상담'
   var apSub=o.soNow?'':ctaOn?'<small class="mb-ap-s"'+(EDIT?' data-edit="cta"':'')+'>'+esc(cta.sub)+'</small>':(EDIT?'<small class="mb-ap-s is-hidden" data-edit="cta">작은 글씨 없음 (눌러서 넣기)</small>':'');
