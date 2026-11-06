@@ -498,7 +498,7 @@ img{display:block;max-width:100%;height:auto}
     $('#pastL').textContent=n+'인 가족 기준, 그동안 받지 못하시는 혜택';
     $('#pastV').textContent=won(mon*PASTY)+'원';
     $('#pastD').textContent='매달 '+won(mon)+'원씩이에요';
-    $('#pastN').textContent=n+'인 가족 · 월 '+won(mon)+'원'+(NETON?'(인터넷 포함)':'')+' 기준으로 단순 계산한 금액이에요. 혜택 확인은 5분 상담이면 충분해요.';
+    $('#pastN').textContent=n+'인 가족 · 월 '+won(mon)+'원 기준'+(NETON?', 인터넷 결합 혜택이 포함된 금액이에요.':'으로 단순 계산한 금액이에요.')+' 혜택 확인은 5분 상담이면 충분해요.';
   }
   function setN(n,src){
     N=n; render(true);
