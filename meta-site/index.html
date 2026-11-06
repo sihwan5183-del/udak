@@ -11,7 +11,7 @@
 <meta property="og:image" content="/assets/og.jpg">
 <!-- 20261106 사장님: meta.uplusdak.com — 유심 번호이동(MNP) 메타 광고 전용 랜딩
      배너 1장 + 그 밑 앵커링/손실회피(인원별 U+투게더 결합 혜택) + 상담 신청서
-     신청은 ssgadmin 유닥 시트(reservations_udak)로 — 관심기기 '유심 번호이동', 이동 인원·인터넷 결합은 전달사항 앞에 붙음 -->
+     신청은 ssgadmin 유닥 시트(reservations_udak)로 — 관심기기 '유심 번호이동', 인터넷 상담 O/X는 전달사항 앞에 붙음 (인원은 가족관계증명서로 확인해서 신청서에서 뺌) -->
 <!-- Meta Pixel (landing.uplusdak.com 과 같은 픽셀) -->
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
@@ -203,6 +203,7 @@ img{display:block;max-width:100%;height:auto}
 .form textarea{height:84px;padding:12px 14px;resize:vertical}
 .form input:focus,.form select:focus,.form textarea:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(230,0,126,.12)}
 .chips{display:grid;gap:8px}
+.chips.c2{grid-template-columns:repeat(2,1fr)}
 .chips.c3{grid-template-columns:repeat(3,1fr)}
 .chips.c4{grid-template-columns:repeat(4,1fr)}
 .chips.c5{grid-template-columns:repeat(5,1fr)}
@@ -413,21 +414,10 @@ img{display:block;max-width:100%;height:auto}
           </div>
         </div>
         <div class="ff">
-          <span class="lb">함께 옮길 인원 <span class="req">*</span></span>
-          <div class="chips c5" data-pick="people" role="group" aria-label="함께 옮길 인원">
-            <button type="button" data-v="1명" aria-pressed="false">1명</button>
-            <button type="button" data-v="2명" aria-pressed="false">2명</button>
-            <button type="button" data-v="3명" aria-pressed="false">3명</button>
-            <button type="button" data-v="4명" aria-pressed="true">4명</button>
-            <button type="button" data-v="5명" aria-pressed="false">5명</button>
-          </div>
-        </div>
-        <div class="ff">
-          <span class="lb">집 인터넷 결합</span>
-          <div class="chips c3" data-pick="internet" role="group" aria-label="집 인터넷 결합">
-            <button type="button" data-v="함께 결합 희망" aria-pressed="false">함께 할게요</button>
-            <button type="button" data-v="결합 안 함" aria-pressed="false">안 할게요</button>
-            <button type="button" data-v="상담 후 결정" aria-pressed="false">상담 후 결정</button>
+          <span class="lb">집 인터넷 상담</span>
+          <div class="chips c2" data-pick="internet" role="group" aria-label="집 인터넷 상담">
+            <button type="button" data-v="상담 O" aria-pressed="false">인터넷 상담 O</button>
+            <button type="button" data-v="상담 X" aria-pressed="false">인터넷 상담 X</button>
           </div>
         </div>
         <div class="ff">
@@ -436,7 +426,7 @@ img{display:block;max-width:100%;height:auto}
         </div>
 
         <label class="agree"><input type="checkbox" id="fAgree"> 개인정보 수집 및 이용 동의 (필수)<button type="button" id="pvBtn">자세히 보기 ›</button></label>
-        <div class="pv" id="pvTxt">유플러스 다이렉트(이하 "유닥")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>· 항목: 이름, 전화번호, 생년월일, 현재 통신사, 이동 인원, 인터넷 결합 희망 여부<br>· 목적: 온라인 상담 신청 접수, 상담 연락 및 가입·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.<br><a href="https://landing.uplusdak.com/privacy" target="_blank" rel="noopener">개인정보처리방침 전문 보기 ›</a></div>
+        <div class="pv" id="pvTxt">유플러스 다이렉트(이하 "유닥")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>· 항목: 이름, 전화번호, 생년월일, 현재 통신사, 인터넷 상담 희망 여부<br>· 목적: 온라인 상담 신청 접수, 상담 연락 및 가입·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.<br><a href="https://landing.uplusdak.com/privacy" target="_blank" rel="noopener">개인정보처리방침 전문 보기 ›</a></div>
 
         <p class="err" id="fErr" role="alert"></p>
         <button type="button" class="cta" id="fSubmit" style="margin-top:6px">5분 상담 신청하기</button>
@@ -514,7 +504,6 @@ img{display:block;max-width:100%;height:auto}
   }
   function setN(n,src){
     N=n; render(true);
-    pick('people', n===1?'1명':n+'명');
     try{ window.udakEv && udakEv('people_pick', String(n)+(src?':'+src:'')); }catch(e){}
   }
   $$('.seg button').forEach(function(b){ b.addEventListener('click',function(){ var g=+b.dataset.g; setN(g===4?(N>=4?N:4):g,'seg'); }); });
@@ -522,7 +511,7 @@ img{display:block;max-width:100%;height:auto}
   $$('[data-jump]').forEach(function(b){ b.addEventListener('click',function(){ var j=+b.dataset.jump; setN(j,'solo'); }); });
   $('#netBtn').addEventListener('click',function(){
     NETON=!NETON; this.setAttribute('aria-pressed',String(NETON)); render(true);
-    pick('internet', NETON?'함께 결합 희망':'결합 안 함');
+    pick('internet', NETON?'상담 O':'상담 X');
   });
   $('#pastR').addEventListener('input',function(){ PASTY=+this.value; renderPast(); });
 
@@ -534,13 +523,12 @@ img{display:block;max-width:100%;height:auto}
   }); });
 
   // 칩 선택
-  var PICK={people:'4명'};
+  var PICK={};
   function pick(k,v){ PICK[k]=v; $$('[data-pick="'+k+'"] button').forEach(function(b){ b.setAttribute('aria-pressed',String(b.dataset.v===v)); }); }
   $$('[data-pick]').forEach(function(g){ var k=g.dataset.pick; $$('button',g).forEach(function(b){ b.addEventListener('click',function(){
     pick(k,b.dataset.v);
     if(k==='carrier' && !window.__mnpSel){ window.__mnpSel=1; try{ window.udakMeta && udakMeta('MnpSelect',{carrier:b.dataset.v, model:'유심 번호이동'}); }catch(e){} }
-    if(k==='people'){ N=parseInt(b.dataset.v,10)||1; render(false); }
-    if(k==='internet'){ NETON=(b.dataset.v==='함께 결합 희망'); $('#netBtn').setAttribute('aria-pressed',String(NETON)); render(false); }
+    if(k==='internet'){ NETON=(b.dataset.v==='상담 O'); $('#netBtn').setAttribute('aria-pressed',String(NETON)); render(false); }
   }); }); });
 
   render(false);
@@ -566,12 +554,11 @@ img{display:block;max-width:100%;height:auto}
     var age=t.getFullYear()-bY; if(t.getMonth()+1<bM||(t.getMonth()+1===bM&&t.getDate()<bD)) age--;
     if(age<19){ err('미성년자 고객님은 개통 시 법정대리인 동의가 필요해요. 보호자와 함께 신청해 주세요.'); return; }
     if(!PICK.carrier){ err('현재 이용 중인 통신사를 선택해 주세요.'); return; }
-    if(!PICK.people){ err('함께 옮길 인원을 선택해 주세요.'); return; }
     if(!$('#fAgree').checked){ err('개인정보 수집 및 이용에 동의해 주세요.'); return; }
 
     var btn=$('#fSubmit'); if(btn.disabled) return; btn.disabled=true; btn.textContent='신청 중...';
     var phoneF=phone.slice(0,3)+'-'+phone.slice(3,7)+'-'+phone.slice(7);
-    var tag='[유심 번호이동] 이동 인원: '+PICK.people+' / 인터넷 결합: '+(PICK.internet||'미선택');
+    var tag='[유심 번호이동] 인터넷 상담: '+(PICK.internet||'미선택');
     var body={name:name, phone:phoneF, carrier:PICK.carrier, channel:PAGE_CHANNEL||'메타', utm_campaign:PAGE_UTM_CAMPAIGN||'usim_mnp',
       device_interest:'유심 번호이동', birth_date:birth, memo:tag+(memo?' / '+memo:''), status:'신규'};
     var mi=udakMetaIds(); Object.keys(mi).forEach(function(k){ body[k]=mi[k]; });
@@ -580,7 +567,7 @@ img{display:block;max-width:100%;height:auto}
       if(res.ok){
         try{ fbq('track','Lead'); }catch(e){}
         try{ window.udakMeta && udakMeta('MnpLead',{carrier:PICK.carrier, model:'유심 번호이동'}); }catch(e){}
-        $('#doneSum').innerHTML='현재 통신사 <b>'+PICK.carrier+'</b> · 이동 인원 <b>'+PICK.people+'</b>'+(PICK.internet?' · 인터넷 <b>'+PICK.internet+'</b>':'');
+        $('#doneSum').innerHTML='현재 통신사 <b>'+PICK.carrier+'</b>'+(PICK.internet?' · 인터넷 <b>'+PICK.internet+'</b>':'');
         $('#form').classList.add('is-done'); $('#mbar').classList.add('hide');
         var f=$('#form'); window.scrollTo({top:f.getBoundingClientRect().top+window.pageYOffset-80,behavior:'smooth'});
       } else {
