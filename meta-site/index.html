@@ -41,8 +41,8 @@ function udakMetaIds(){
 <link rel="preload" as="image" href="/assets/usim-mnp-banner.webp" fetchpriority="high">
 <style>
 :root{
-  --pink:#e6007e; --pink-d:#c1006a; --pink-l:#fff0f7; --ink:#14141a; --sub:#5b5d66; --mute:#9a9ca5;
-  --line:#ececf0; --bg:#f5f6f8; --loss:#e5484d; --card:#fff; --r:18px;
+  --pink:#e6007e; --pink-d:#c4006b; --pink-l:#fdf0f6; --ink:#14141a; --sub:#5b5d66; --mute:#9a9ca5;
+  --line:#ececf0; --bg:#f5f6f8; --loss:#e6007e; --card:#fff; --r:18px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -70,7 +70,7 @@ img{display:block;max-width:100%;height:auto}
   .wrap{max-width:1120px;display:grid;grid-template-columns:minmax(0,520px) minmax(0,520px);gap:40px;justify-content:center;padding:32px 24px 0}
   .col-banner{background:none}
   .col-banner .sticky{position:sticky;top:88px}
-  .hero{border-radius:24px;overflow:hidden;box-shadow:0 20px 50px -24px rgba(20,20,26,.35)}
+  .hero{border-radius:24px;overflow:hidden}
   .col-main{padding:0 0 80px}
   .mbar{display:none!important}
 }
@@ -85,47 +85,47 @@ img{display:block;max-width:100%;height:auto}
 
 /* ── 손실회피: 지금 그대로 vs 옮기면 */
 .loss-hd .h2 .red{color:var(--loss)}
-.seg{margin-top:22px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--bg);padding:5px;border-radius:14px}
+.seg{margin-top:22px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:var(--bg);padding:5px;border-radius:14px}
 .seg button{height:46px;border-radius:10px;font-size:15px;font-weight:700;color:var(--sub);transition:background .18s,color .18s,box-shadow .18s}
 .seg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .seg button[aria-pressed="true"] .p{color:var(--pink)}
 
-.vs{margin-top:16px;display:grid;grid-template-columns:1fr 1.35fr;gap:10px;align-items:stretch}
+.vs{margin-top:16px;display:grid;grid-template-columns:1fr 1.6fr;gap:10px;align-items:stretch}
 .vs-box{border-radius:16px;padding:16px 14px;display:flex;flex-direction:column;justify-content:space-between;min-height:132px}
 .vs-now{background:#f1f2f4;color:var(--sub)}
 .vs-now .t{font-size:13px;font-weight:700}
-.vs-now .v{font-size:26px;font-weight:800;color:#9fa1a8;text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--loss)}
-.vs-now .s{font-size:12.5px;color:var(--loss);font-weight:700}
-.vs-go{background:linear-gradient(150deg,#ff2d95 0%,var(--pink) 55%,#b8005f 100%);color:#fff;box-shadow:0 14px 30px -14px rgba(230,0,126,.6)}
+.vs-now .v{font-size:clamp(20px,6vw,24px);font-weight:800;color:#9fa1a8;text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:#9fa1a8}
+.vs-now .s{font-size:12.5px;color:var(--sub);font-weight:700}
+.vs-go{background:var(--pink);color:#fff}
 .vs-go .t{font-size:13px;font-weight:700;opacity:.92}
-.vs-go .v{font-size:34px;font-weight:900;letter-spacing:-.03em;line-height:1.1}
+.vs-go .v{font-size:clamp(28px,8.4vw,34px);font-weight:900;letter-spacing:-.03em;line-height:1.1}
 .vs-go .v small{font-size:16px;font-weight:800;margin-left:2px}
-.vs-go .s{font-size:13px;opacity:.95}
+.vs-go .s{font-size:12.5px;opacity:.95}
 .bump{animation:bump .35s ease}
 @keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.06)}100%{transform:scale(1)}}
 
-.net{margin-top:12px;display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:15px 16px;border:1.5px dashed #f3a6cd;border-radius:14px;background:#fff9fc;transition:border-color .18s,background .18s}
+.net{margin-top:12px;display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:15px 16px;border:1.5px solid #dfe0e5;border-radius:14px;background:#fff;transition:border-color .18s,background .18s}
 .net .ck{flex:0 0 24px;height:24px;border-radius:7px;border:2px solid #d6d7dc;background:#fff;display:grid;place-items:center;transition:all .18s}
 .net .ck svg{opacity:0;transition:opacity .15s}
-.net[aria-pressed="true"]{border-style:solid;border-color:var(--pink);background:var(--pink-l)}
+.net[aria-pressed="true"]{border-color:var(--pink);background:var(--pink-l)}
 .net[aria-pressed="true"] .ck{background:var(--pink);border-color:var(--pink)}
 .net[aria-pressed="true"] .ck svg{opacity:1}
 .net .tx{flex:1;font-size:14.5px;font-weight:600;line-height:1.4}
 .net .tx b{color:var(--pink)}
 .net .badge{font-size:13px;font-weight:800;color:var(--pink);white-space:nowrap}
 
-.year{margin-top:16px;padding:16px;border-radius:14px;background:#1b1b22;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.year .l{font-size:14px;line-height:1.4;color:#d9d9e0}
-.year .l b{color:#fff}
-.year .r{font-size:24px;font-weight:900;color:#ff5aa8;white-space:nowrap}
+.year{margin-top:16px;padding:16px;border-radius:14px;background:var(--bg);color:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.year .l{font-size:14px;line-height:1.4;color:var(--sub)}
+.year .l b{color:var(--ink)}
+.year .r{font-size:24px;font-weight:900;color:var(--pink);white-space:nowrap}
 
 /* ── 앵커링: 인원이 늘수록 1인당 혜택 UP */
 .ladder{margin-top:22px;display:flex;flex-direction:column;gap:12px}
-.rung{display:grid;grid-template-columns:62px 1fr;gap:12px;align-items:center;padding:4px 0;border-radius:12px;transition:opacity .2s}
+.rung{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:center;padding:4px 0;border-radius:12px;transition:opacity .2s}
 .rung .who{font-size:15px;font-weight:800}
 .rung .bar{position:relative;height:50px;border-radius:12px;background:var(--bg);overflow:hidden}
-.rung .fill{position:absolute;inset:0 auto 0 0;border-radius:12px;background:#ffd1e6;transition:width .5s cubic-bezier(.2,.8,.2,1)}
-.rung.on .fill{background:linear-gradient(90deg,#ff4fa3,var(--pink))}
+.rung .fill{position:absolute;inset:0 auto 0 0;border-radius:12px;background:#e4e5ea;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.rung.on .fill{background:var(--pink)}
 .rung .lab{position:relative;height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:13px;font-weight:700;color:var(--ink)}
 .rung .lab .tot{font-size:16px;font-weight:900}
 .rung.on .lab{color:#fff}
@@ -133,7 +133,7 @@ img{display:block;max-width:100%;height:auto}
 .up{margin-top:14px;font-size:13.5px;color:var(--sub)}
 .up b{color:var(--pink)}
 
-.cta{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:58px;margin-top:22px;border-radius:16px;background:var(--pink);color:#fff;font-size:17px;font-weight:800;letter-spacing:-.02em;box-shadow:0 12px 26px -12px rgba(230,0,126,.7);transition:transform .12s,background .15s}
+.cta{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:58px;margin-top:22px;border-radius:16px;background:var(--pink);color:#fff;font-size:17px;font-weight:800;letter-spacing:-.02em;transition:transform .12s,background .15s}
 .cta:active{transform:scale(.98)}
 .cta:hover{background:var(--pink-d)}
 
@@ -159,6 +159,7 @@ img{display:block;max-width:100%;height:auto}
 .chips{display:grid;gap:8px}
 .chips.c3{grid-template-columns:repeat(3,1fr)}
 .chips.c4{grid-template-columns:repeat(4,1fr)}
+.chips.c5{grid-template-columns:repeat(5,1fr)}
 .chips button{height:48px;border-radius:12px;border:1.5px solid #dfe0e5;background:#fff;font-size:14.5px;font-weight:700;color:var(--sub);transition:all .15s}
 .chips button[aria-pressed="true"]{border-color:var(--pink);background:var(--pink-l);color:var(--pink)}
 .agree{display:flex;align-items:center;gap:8px;margin-top:20px;font-size:14px;font-weight:600}
@@ -223,7 +224,8 @@ img{display:block;max-width:100%;height:auto}
       <div class="seg" role="group" aria-label="함께 옮길 인원">
         <button type="button" data-n="2" aria-pressed="false"><span class="p">2인</span></button>
         <button type="button" data-n="3" aria-pressed="false"><span class="p">3인</span></button>
-        <button type="button" data-n="4" aria-pressed="true"><span class="p">4인 이상</span></button>
+        <button type="button" data-n="4" aria-pressed="false"><span class="p">4인</span></button>
+        <button type="button" data-n="5" aria-pressed="true"><span class="p">5인</span></button>
       </div>
 
       <div class="vs">
@@ -234,8 +236,8 @@ img{display:block;max-width:100%;height:auto}
         </div>
         <div class="vs-box vs-go" id="goBox">
           <span class="t">LG U+로 옮기면</span>
-          <span class="v num" id="goTotal">80,000<small>원</small></span>
-          <span class="s num" id="goPer">매달 · 1인당 20,000원 × 4인</span>
+          <span class="v num" id="goTotal">100,000<small>원</small></span>
+          <span class="s num" id="goPer">매달 · 1인당 20,000원 × 5인</span>
         </div>
       </div>
 
@@ -247,7 +249,7 @@ img{display:block;max-width:100%;height:auto}
 
       <div class="year">
         <span class="l">그대로 두면 <b>1년 동안</b><br>놓치는 혜택</span>
-        <span class="r num" id="yearTotal">960,000원</span>
+        <span class="r num" id="yearTotal">1,200,000원</span>
       </div>
     </section>
 
@@ -256,15 +258,16 @@ img{display:block;max-width:100%;height:auto}
       <span class="eyebrow">많이 옮길수록 커져요</span>
       <h2 class="h2">가족이 함께 옮길수록<br><em>1인당 혜택이 커집니다</em></h2>
       <div class="ladder" id="ladder">
-        <div class="rung" data-n="4"><span class="who">4인 이상</span><div class="bar"><span class="fill" style="width:100%"></span><span class="lab"><span class="per num">1인 20,000원</span><span class="tot num">월 80,000원</span></span></div></div>
-        <div class="rung" data-n="3"><span class="who">3인</span><div class="bar"><span class="fill" style="width:52.5%"></span><span class="lab"><span class="per num">1인 14,000원</span><span class="tot num">월 42,000원</span></span></div></div>
-        <div class="rung" data-n="2"><span class="who">2인</span><div class="bar"><span class="fill" style="width:25%"></span><span class="lab"><span class="per num">1인 10,000원</span><span class="tot num">월 20,000원</span></span></div></div>
+        <div class="rung" data-n="5"><span class="who">5인</span><div class="bar"><span class="fill" style="width:100%"></span><span class="lab"><span class="per num">1인 20,000원</span><span class="tot num">월 100,000원</span></span></div></div>
+        <div class="rung" data-n="4"><span class="who">4인</span><div class="bar"><span class="fill" style="width:80%"></span><span class="lab"><span class="per num">1인 20,000원</span><span class="tot num">월 80,000원</span></span></div></div>
+        <div class="rung" data-n="3"><span class="who">3인</span><div class="bar"><span class="fill" style="width:42%"></span><span class="lab"><span class="per num">1인 14,000원</span><span class="tot num">월 42,000원</span></span></div></div>
+        <div class="rung" data-n="2"><span class="who">2인</span><div class="bar"><span class="fill" style="width:20%"></span><span class="lab"><span class="per num">1인 10,000원</span><span class="tot num">월 20,000원</span></span></div></div>
       </div>
       <p class="up">2인 → 4인이면 1인당 혜택이 <b>2배</b>가 됩니다.</p>
 
       <div class="sum">
-        <div><small>4인 가족 현금 지급</small><b class="p num">120만원</b></div>
-        <div><small>4인 가족 통신료 절약</small><b class="num">월 8만원</b></div>
+        <div><small id="sumCashL">5인 가족 현금 지급</small><b class="p num" id="sumCash">150만원</b></div>
+        <div><small id="sumSaveL">5인 가족 통신료 절약</small><b class="num" id="sumSave">월 10만원</b></div>
       </div>
 
       <button type="button" class="cta" data-go="form">우리 가족 혜택 확인하기 ›</button>
@@ -305,11 +308,12 @@ img{display:block;max-width:100%;height:auto}
         </div>
         <div class="ff">
           <span class="lb">함께 옮길 인원 <span class="req">*</span></span>
-          <div class="chips c4" data-pick="people" role="group" aria-label="함께 옮길 인원">
+          <div class="chips c5" data-pick="people" role="group" aria-label="함께 옮길 인원">
             <button type="button" data-v="1명" aria-pressed="false">본인만</button>
             <button type="button" data-v="2명" aria-pressed="false">2명</button>
             <button type="button" data-v="3명" aria-pressed="false">3명</button>
-            <button type="button" data-v="4명 이상" aria-pressed="true">4명 이상</button>
+            <button type="button" data-v="4명" aria-pressed="false">4명</button>
+            <button type="button" data-v="5명" aria-pressed="true">5명</button>
           </div>
         </div>
         <div class="ff">
@@ -353,14 +357,14 @@ img{display:block;max-width:100%;height:auto}
   </main>
 </div>
 
-<div class="mbar" id="mbar"><button type="button" class="cta" data-go="form">5분 상담으로 혜택 확인하기 <small id="mbarAmt">· 월 80,000원</small></button></div>
+<div class="mbar" id="mbar"><button type="button" class="cta" data-go="form">우리 가족 혜택 확인하기 <small id="mbarAmt">· 월 100,000원</small></button></div>
 
 <script>
 (function(){
   var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
   // 인원별 1인당 월 혜택 (U+투게더 결합 기준 · 사장님 제공 값)
-  var PER={2:10000,3:14000,4:20000}, NET=10000;
-  var N=4, NETON=false;
+  var PER={2:10000,3:14000,4:20000,5:20000}, NET=10000, CASH=300000;
+  var N=5, NETON=false;
   var won=function(n){ return n.toLocaleString('ko-KR'); };
 
   function render(bump){
@@ -369,6 +373,8 @@ img{display:block;max-width:100%;height:auto}
     $('#goPer').textContent='매달 · 1인당 '+won(per)+'원 × '+N+'인'+(NETON?' + 인터넷 '+won(NET)+'원':'');
     $('#yearTotal').textContent=won(tot*12)+'원';
     $('#mbarAmt').textContent='· 월 '+won(tot)+'원';
+    $('#sumCashL').textContent=N+'인 가족 현금 지급'; $('#sumCash').textContent=(CASH*N/10000)+'만원';
+    $('#sumSaveL').textContent=N+'인 가족 통신료 절약'; $('#sumSave').textContent='월 '+(per*N/10000)+'만원';
     $$('.seg button').forEach(function(b){ b.setAttribute('aria-pressed', String(+b.dataset.n===N)); });
     $$('#ladder .rung').forEach(function(r){ r.classList.toggle('on', +r.dataset.n===N); });
     if(bump){ var g=$('#goBox'); g.classList.remove('bump'); void g.offsetWidth; g.classList.add('bump'); }
@@ -376,7 +382,7 @@ img{display:block;max-width:100%;height:auto}
   $$('.seg button').forEach(function(b){ b.addEventListener('click',function(){
     N=+b.dataset.n; render(true);
     // 신청서 인원도 같이 맞춤
-    var v=N===4?'4명 이상':N+'명'; pick('people', v);
+    pick('people', N+'명');
     try{ window.udakEv && udakEv('people_pick', String(N)); }catch(e){}
   }); });
   $('#netBtn').addEventListener('click',function(){
@@ -393,12 +399,12 @@ img{display:block;max-width:100%;height:auto}
   }); });
 
   // 칩 선택
-  var PICK={people:'4명 이상'};
+  var PICK={people:'5명'};
   function pick(k,v){ PICK[k]=v; $$('[data-pick="'+k+'"] button').forEach(function(b){ b.setAttribute('aria-pressed',String(b.dataset.v===v)); }); }
   $$('[data-pick]').forEach(function(g){ var k=g.dataset.pick; $$('button',g).forEach(function(b){ b.addEventListener('click',function(){
     pick(k,b.dataset.v);
     if(k==='carrier' && !window.__mnpSel){ window.__mnpSel=1; try{ window.udakMeta && udakMeta('MnpSelect',{carrier:b.dataset.v, model:'유심 번호이동'}); }catch(e){} }
-    if(k==='people'){ var n=parseInt(b.dataset.v,10); if(n>=2){ N=Math.min(n,4); render(false); } }
+    if(k==='people'){ var n=parseInt(b.dataset.v,10); if(n>=2){ N=n; render(false); } }
     if(k==='internet'){ NETON=(b.dataset.v==='함께 결합 희망'); $('#netBtn').setAttribute('aria-pressed',String(NETON)); render(false); }
   }); }); });
 
