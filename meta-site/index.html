@@ -286,8 +286,8 @@ img{display:block;max-width:100%;height:auto}
 
       <button type="button" class="net" id="netBtn" aria-pressed="false">
         <span class="ck"><svg width="14" height="11" viewBox="0 0 14 11" aria-hidden="true"><path d="M1.5 5.5l3.8 3.8L12.5 2" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        <span class="tx">집 인터넷도 함께 결합하면<br><b>인터넷 요금 월 10,000원 추가 할인</b></span>
-        <span class="badge num">+10,000원</span>
+        <span class="tx">집 인터넷도 함께 결합하면<br><b>인터넷 요금 월 11,000원 추가 할인</b></span>
+        <span class="badge num">+11,000원</span>
       </button>
 
       <!-- 그대로 두면 손해 (1인일 땐 '가족과 함께' 안내로 바뀜) -->
@@ -312,7 +312,7 @@ img{display:block;max-width:100%;height:auto}
         <ul class="total-br">
           <li><span>현금 지급 <i id="brCashN">30만원 × 5인</i></span><b class="num" id="brCash">1,500,000원</b></li>
           <li id="brMonRow"><span>매달 결합 할인 × 12개월</span><b class="num" id="brMon">1,200,000원</b></li>
-          <li id="brNetRow" hidden><span>인터넷 추가 할인 × 12개월</span><b class="num">120,000원</b></li>
+          <li id="brNetRow" hidden><span>인터넷 추가 할인 × 12개월</span><b class="num">132,000원</b></li>
         </ul>
       </div>
 
@@ -448,7 +448,7 @@ img{display:block;max-width:100%;height:auto}
 (function(){
   var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
   // 인원별 1인당 월 혜택 (U+투게더 결합 기준 · 사장님 제공 값) · 4인 이상은 최대 5인까지 · 현금 1인당 30만원(배너)
-  var PER={1:0,2:10000,3:14000,4:20000,5:20000}, NET=10000, CASH=300000;
+  var PER={1:0,2:10000,3:14000,4:20000,5:20000}, NET=11000, CASH=300000;
   var N=4, NETON=false, PASTY=6;
   var won=function(n){ return Math.round(n).toLocaleString('ko-KR'); };
   var grp=function(n){ return n>=4?4:n; };
