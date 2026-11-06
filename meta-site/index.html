@@ -122,11 +122,13 @@ img{display:block;max-width:100%;height:auto}
 /* ── 앵커링: 인원이 늘수록 1인당 혜택 UP */
 .ladder{margin-top:22px;display:flex;flex-direction:column;gap:12px}
 .sub{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:13.5px;font-weight:700;color:var(--sub)}
-.key{text-align:center;padding-top:28px;padding-bottom:28px}
-.key-s{display:inline-block;font-size:14px;font-weight:700;color:var(--pink);background:var(--pink-l);padding:5px 12px;border-radius:999px}
-.key-v{margin-top:10px;font-size:22px;font-weight:800;letter-spacing:-.02em}
-.key-v b{font-size:clamp(40px,12vw,52px);font-weight:900;color:var(--pink);letter-spacing:-.03em}
-.key-t{margin-top:2px;font-size:clamp(20px,6vw,24px);font-weight:800;letter-spacing:-.02em}
+.key{padding-top:18px;padding-bottom:18px}
+.key-s{font-size:13px;font-weight:700;color:var(--sub)}
+.key-g{margin-top:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.key-g div{border-radius:12px;background:var(--bg);padding:12px 8px;text-align:center;display:flex;flex-direction:column;gap:3px}
+.key-g small{font-size:12px;font-weight:700;color:var(--sub)}
+.key-g b{font-size:clamp(14px,4vw,16px);font-weight:800;color:var(--pink);line-height:1.3;letter-spacing:-.02em}
+.key-g i{font-style:normal;font-size:12px;font-weight:700;color:var(--ink)}
 .sub[hidden],.net[hidden],.netmore[hidden]{display:none}
 .netmore{margin-top:8px;padding:16px;border-radius:14px;background:var(--pink-l);animation:nmIn .25s ease}
 @keyframes nmIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
@@ -264,9 +266,12 @@ img{display:block;max-width:100%;height:auto}
 
     <!-- 20261106 사장님 핵심 메시지: 4인 가족 기준 월 43,750원에 5G 무제한 -->
     <section class="sec key">
-      <p class="key-s">4인 가족 기준</p>
-      <p class="key-v num">월 <b>43,750원</b>에</p>
-      <p class="key-t">5G 무제한 데이터 이용 가능</p>
+      <p class="key-s">4인 가족 기준 · 번호이동</p>
+      <div class="key-g">
+        <div><small>지원금</small><b class="num">1인당 현금<br>30만원</b></div>
+        <div><small>요금제 할인</small><b class="num">1인당<br>월 20,000원</b></div>
+        <div><small>이용 요금</small><b class="num">월 43,750원</b><i>5G 무제한</i></div>
+      </div>
     </section>
 
     <!-- 손실회피: 지금 그대로면 얼마나 손해인지 -->
