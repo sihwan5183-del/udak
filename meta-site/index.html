@@ -259,7 +259,7 @@ img{display:block;max-width:100%;height:auto}
     <!-- 손실회피: 지금 그대로면 얼마나 손해인지 -->
     <section class="sec loss-hd" id="calc">
       <span class="eyebrow">우리 가족 혜택 계산기</span>
-      <h2 class="h2">지금 통신사 그대로면<br><span class="red">매달 이만큼</span> 손해보고 계세요</h2>
+      <h2 class="h2">지금 통신사를 그대로 이용하시면<br><span class="red">이만큼 혜택</span>을 놓치고 있으신 거예요</h2>
       <p class="lead">함께 옮길 가족 수를 골라 보세요.</p>
 
       <div class="seg" role="group" aria-label="함께 옮길 인원">
@@ -303,7 +303,7 @@ img{display:block;max-width:100%;height:auto}
 
       <!-- 그대로 두면 손해 (1인일 땐 '가족과 함께' 안내로 바뀜) -->
       <div id="lossWrap">
-        <p class="mini">그대로 두면 우리 가족이 놓치는 돈</p>
+        <p class="mini">그대로 이용하시는 동안 놓치시는 혜택이에요</p>
         <div class="lossgrid">
           <div><small>하루</small><b class="num" id="lDay">-3,333원</b></div>
           <div><small>한 달</small><b class="num" id="lMon">-100,000원</b></div>
@@ -332,18 +332,18 @@ img{display:block;max-width:100%;height:auto}
 
     <!-- 손실회피: 미루는 동안 새는 돈 (4인 가족 기준 고정) -->
     <section class="sec">
-      <span class="eyebrow">지금도 새는 돈</span>
-      <h2 class="h2">‘나중에 바꾸지’ 하는 동안<br><em>통신비가 새고 있어요</em></h2>
+      <span class="eyebrow">미루시는 동안</span>
+      <h2 class="h2">‘나중에 바꿔야지’ 하시는 동안에도<br><em>혜택은 지나가고 있어요</em></h2>
       <div class="past">
-        <div class="past-hd"><span>바꾸는 걸 미루면</span><b class="num" id="pastY">6개월</b></div>
+        <div class="past-hd"><span>미루시는 기간</span><b class="num" id="pastY">6개월</b></div>
         <input type="range" id="pastR" min="1" max="12" step="1" value="6" aria-label="미루는 기간(개월)">
         <div class="past-sc"><span>1개월</span><span>12개월</span></div>
         <div class="past-box">
-          <span id="pastL">4인 가족 기준, 미루는 동안 새는 돈</span>
+          <span id="pastL">4인 가족 기준, 그동안 받지 못하시는 혜택</span>
           <b class="num" id="pastV">480,000원</b>
-          <span class="drip num" id="pastD">오늘 하루에도 약 2,667원씩</span>
+          <span class="drip num" id="pastD">하루로 치면 약 2,667원씩이에요</span>
         </div>
-        <p class="past-n" id="pastN">4인 가족 · 월 80,000원 기준으로 단순 계산한 금액이에요. 오늘 상담하시면 지금부터 막을 수 있어요.</p>
+        <p class="past-n" id="pastN">4인 가족 · 월 80,000원 기준으로 단순 계산한 금액이에요. 혜택 확인은 5분 상담이면 충분해요.</p>
       </div>
     </section>
 
@@ -479,9 +479,9 @@ img{display:block;max-width:100%;height:auto}
     $('#netBtn').hidden=solo;
     $('#netMore').hidden=!(NETON&&!solo);
     $('#lossWrap').hidden=solo; $('#soloWrap').hidden=!solo;
-    $('#lDay').textContent='-'+won(mon/30)+'원';
-    $('#lMon').textContent='-'+won(mon)+'원';
-    $('#lYear').textContent='-'+won(mon*12)+'원';
+    $('#lDay').textContent=won(mon/30)+'원';
+    $('#lMon').textContent=won(mon)+'원';
+    $('#lYear').textContent=won(mon*12)+'원';
     var cash=CASH*N, tot=cash+mon*12;
     $('#totL').textContent='LG U+로 옮기면 1년 동안 '+(solo?'받는':'우리 가족이 받는')+' 혜택';
     $('#totV').innerHTML=won(tot)+'<small>원</small>';
@@ -498,10 +498,10 @@ img{display:block;max-width:100%;height:auto}
   function renderPast(){   // 20261106 사장님: 위에서 고른 인원(2~5인)·인터넷 결합에 맞춰 바뀜 · 1인은 매달 할인이 없어 2인 기준으로 보여 줌
     var n=N<2?2:N, mon=PER[n]*n+(NETON?NET:0);
     $('#pastY').textContent=PASTY+'개월';
-    $('#pastL').textContent=n+'인 가족 기준, 미루는 동안 새는 돈';
+    $('#pastL').textContent=n+'인 가족 기준, 그동안 받지 못하시는 혜택';
     $('#pastV').textContent=won(mon*PASTY)+'원';
-    $('#pastD').textContent='오늘 하루에도 약 '+won(mon/30)+'원씩';
-    $('#pastN').textContent=n+'인 가족 · 월 '+won(mon)+'원'+(NETON?'(인터넷 포함)':'')+' 기준으로 단순 계산한 금액이에요. 오늘 상담하시면 지금부터 막을 수 있어요.';
+    $('#pastD').textContent='하루로 치면 약 '+won(mon/30)+'원씩이에요';
+    $('#pastN').textContent=n+'인 가족 · 월 '+won(mon)+'원'+(NETON?'(인터넷 포함)':'')+' 기준으로 단순 계산한 금액이에요. 혜택 확인은 5분 상담이면 충분해요.';
   }
   function setN(n,src){
     N=n; render(true);
