@@ -339,11 +339,11 @@ img{display:block;max-width:100%;height:auto}
         <input type="range" id="pastR" min="1" max="12" step="1" value="6" aria-label="미루는 기간(개월)">
         <div class="past-sc"><span>1개월</span><span>12개월</span></div>
         <div class="past-box">
-          <span>4인 가족 기준, 미루는 동안 새는 돈</span>
+          <span id="pastL">4인 가족 기준, 미루는 동안 새는 돈</span>
           <b class="num" id="pastV">480,000원</b>
           <span class="drip num" id="pastD">오늘 하루에도 약 2,667원씩</span>
         </div>
-        <p class="past-n">4인 가족 · 월 80,000원 기준으로 단순 계산한 금액이에요. 오늘 상담하시면 지금부터 막을 수 있어요.</p>
+        <p class="past-n" id="pastN">4인 가족 · 월 80,000원 기준으로 단순 계산한 금액이에요. 오늘 상담하시면 지금부터 막을 수 있어요.</p>
       </div>
     </section>
 
@@ -495,11 +495,13 @@ img{display:block;max-width:100%;height:auto}
     renderPast();
     if(bump){ var g=$('#goBox'); g.classList.remove('bump'); void g.offsetWidth; g.classList.add('bump'); }
   }
-  function renderPast(){   // 20261106 사장님: 4인 가족 기준 고정 · '이미 놓친 돈' 대신 '미루는 동안 새는 돈'
-    var mon=PER[4]*4;
+  function renderPast(){   // 20261106 사장님: 위에서 고른 인원(2~5인)·인터넷 결합에 맞춰 바뀜 · 1인은 매달 할인이 없어 2인 기준으로 보여 줌
+    var n=N<2?2:N, mon=PER[n]*n+(NETON?NET:0);
     $('#pastY').textContent=PASTY+'개월';
+    $('#pastL').textContent=n+'인 가족 기준, 미루는 동안 새는 돈';
     $('#pastV').textContent=won(mon*PASTY)+'원';
     $('#pastD').textContent='오늘 하루에도 약 '+won(mon/30)+'원씩';
+    $('#pastN').textContent=n+'인 가족 · 월 '+won(mon)+'원'+(NETON?'(인터넷 포함)':'')+' 기준으로 단순 계산한 금액이에요. 오늘 상담하시면 지금부터 막을 수 있어요.';
   }
   function setN(n,src){
     N=n; render(true);
