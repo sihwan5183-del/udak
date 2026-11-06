@@ -121,6 +121,40 @@ img{display:block;max-width:100%;height:auto}
 
 /* ── 앵커링: 인원이 늘수록 1인당 혜택 UP */
 .ladder{margin-top:22px;display:flex;flex-direction:column;gap:12px}
+.sub{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:13.5px;font-weight:700;color:var(--sub)}
+.sub[hidden],.net[hidden]{display:none}
+.sub-ch{display:flex;gap:6px}
+.sub-ch button{height:34px;padding:0 14px;border-radius:999px;border:1.5px solid #dfe0e5;background:#fff;font-size:14px;font-weight:700;color:var(--sub)}
+.sub-ch button[aria-pressed="true"]{border-color:var(--pink);color:var(--pink);background:var(--pink-l)}
+.sub em{font-style:normal;margin-left:auto;font-size:12.5px;color:var(--pink)}
+.mini{margin-top:20px;font-size:14px;font-weight:700;color:var(--ink)}
+.lossgrid{margin-top:8px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lossgrid div{border-radius:12px;background:var(--bg);padding:12px 6px;text-align:center}
+.lossgrid small{display:block;font-size:12.5px;color:var(--sub);font-weight:600}
+.lossgrid b{display:block;margin-top:2px;font-size:clamp(14px,4vw,18px);font-weight:900;color:var(--pink);letter-spacing:-.02em}
+.solo{margin-top:16px;padding:16px;border-radius:14px;background:var(--pink-l);font-size:14.5px;line-height:1.6}
+.solo b{color:var(--pink)}
+.solo-bt{display:flex;gap:8px;margin-top:12px}
+.solo-bt button{flex:1;height:42px;border-radius:10px;background:#fff;border:1.5px solid var(--pink);color:var(--pink);font-size:14px;font-weight:700}
+.total{margin-top:16px;border:2px solid var(--pink);border-radius:16px;padding:18px 16px}
+.total-hd{font-size:14px;font-weight:700;color:var(--sub)}
+.total-v{margin-top:4px;font-size:clamp(32px,10vw,40px);font-weight:900;color:var(--pink);letter-spacing:-.03em;line-height:1.15}
+.total-v small{font-size:18px;margin-left:2px}
+.total-br{list-style:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.total-br li{display:flex;justify-content:space-between;gap:10px;padding:3px 0;font-size:14px;color:var(--sub)}
+.total-br li[hidden]{display:none}
+.total-br i{font-style:normal;color:var(--mute);font-size:12.5px}
+.total-br b{color:var(--ink);font-weight:800}
+.past{margin-top:18px}
+.past-hd{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;font-weight:700;color:var(--sub)}
+.past-hd b{font-size:22px;color:var(--ink)}
+.past input[type=range]{width:100%;margin-top:10px;height:28px;accent-color:var(--pink)}
+.past-sc{display:flex;justify-content:space-between;font-size:12px;color:var(--mute)}
+.past-box{margin-top:14px;padding:16px;border-radius:14px;background:var(--bg);display:flex;flex-direction:column;gap:2px}
+.past-box span{font-size:14px;color:var(--sub);font-weight:600}
+.past-box b{font-size:clamp(28px,8.5vw,34px);font-weight:900;color:var(--pink);letter-spacing:-.03em}
+.past-n{margin-top:10px;font-size:12.5px;color:var(--mute)}
+.rung .who{white-space:nowrap}
 .rung{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:center;padding:4px 0;border-radius:12px;transition:opacity .2s}
 .rung .who{font-size:15px;font-weight:800}
 .rung .bar{position:relative;height:50px;border-radius:12px;background:var(--bg);overflow:hidden}
@@ -215,17 +249,25 @@ img{display:block;max-width:100%;height:auto}
 
   <main class="col-main">
 
-    <!-- 손실회피: 지금 그대로 vs 옮기면 -->
+    <!-- 손실회피: 지금 그대로면 얼마나 손해인지 -->
     <section class="sec loss-hd" id="calc">
-      <span class="eyebrow">U+투게더 결합 기준</span>
-      <h2 class="h2">지금 통신사 그대로면<br><span class="red">매달 이만큼</span> 놓치고 계세요</h2>
+      <span class="eyebrow">우리 가족 혜택 계산기</span>
+      <h2 class="h2">지금 통신사 그대로면<br><span class="red">매달 이만큼</span> 손해보고 계세요</h2>
       <p class="lead">함께 옮길 가족 수를 골라 보세요.</p>
 
       <div class="seg" role="group" aria-label="함께 옮길 인원">
-        <button type="button" data-n="2" aria-pressed="false"><span class="p">2인</span></button>
-        <button type="button" data-n="3" aria-pressed="false"><span class="p">3인</span></button>
-        <button type="button" data-n="4" aria-pressed="false"><span class="p">4인</span></button>
-        <button type="button" data-n="5" aria-pressed="true"><span class="p">5인</span></button>
+        <button type="button" data-g="1" aria-pressed="false"><span class="p">1인</span></button>
+        <button type="button" data-g="2" aria-pressed="false"><span class="p">2인</span></button>
+        <button type="button" data-g="3" aria-pressed="false"><span class="p">3인</span></button>
+        <button type="button" data-g="4" aria-pressed="true"><span class="p">4인 이상</span></button>
+      </div>
+      <div class="sub" id="subRow">
+        <span>가족 수</span>
+        <div class="sub-ch" role="group" aria-label="4인 이상 가족 수">
+          <button type="button" data-n="4" aria-pressed="false">4명</button>
+          <button type="button" data-n="5" aria-pressed="true">5명</button>
+        </div>
+        <em>최대 5인까지 혜택</em>
       </div>
 
       <div class="vs">
@@ -235,7 +277,7 @@ img{display:block;max-width:100%;height:auto}
           <span class="s">결합 혜택 없음</span>
         </div>
         <div class="vs-box vs-go" id="goBox">
-          <span class="t">LG U+로 옮기면</span>
+          <span class="t" id="goT">LG U+로 옮기면</span>
           <span class="v num" id="goTotal">100,000<small>원</small></span>
           <span class="s num" id="goPer">매달 · 1인당 20,000원 × 5인</span>
         </div>
@@ -247,9 +289,48 @@ img{display:block;max-width:100%;height:auto}
         <span class="badge num">+10,000원</span>
       </button>
 
-      <div class="year">
-        <span class="l">그대로 두면 <b>1년 동안</b><br>놓치는 혜택</span>
-        <span class="r num" id="yearTotal">1,200,000원</span>
+      <!-- 그대로 두면 손해 (1인일 땐 '가족과 함께' 안내로 바뀜) -->
+      <div id="lossWrap">
+        <p class="mini">그대로 두면 우리 가족이 놓치는 돈</p>
+        <div class="lossgrid">
+          <div><small>하루</small><b class="num" id="lDay">-3,333원</b></div>
+          <div><small>한 달</small><b class="num" id="lMon">-100,000원</b></div>
+          <div><small>1년</small><b class="num" id="lYear">-1,200,000원</b></div>
+        </div>
+      </div>
+      <div class="solo" id="soloWrap" hidden>
+        혼자 옮기시면 <b>현금 30만원</b>, 매달 결합 할인은 없어요.<br>
+        가족 <b>1명만 함께</b>해도 매달 <b>20,000원</b>, <b>4인 이상</b>이면 매달 <b>최대 100,000원</b>이에요.
+        <div class="solo-bt"><button type="button" data-jump="2">2인으로 보기</button><button type="button" data-jump="4">4인 이상으로 보기</button></div>
+      </div>
+
+      <!-- 앵커: 1년 기준 총 혜택 -->
+      <div class="total">
+        <div class="total-hd"><span id="totL">LG U+로 옮기면 1년 동안 우리 가족이 받는 혜택</span></div>
+        <div class="total-v num" id="totV">2,700,000<small>원</small></div>
+        <ul class="total-br">
+          <li><span>현금 지급 <i id="brCashN">30만원 × 5인</i></span><b class="num" id="brCash">1,500,000원</b></li>
+          <li id="brMonRow"><span>매달 결합 할인 × 12개월</span><b class="num" id="brMon">1,200,000원</b></li>
+          <li id="brNetRow" hidden><span>인터넷 추가 할인 × 12개월</span><b class="num">120,000원</b></li>
+        </ul>
+      </div>
+
+      <button type="button" class="cta" data-go="form">이 혜택 상담으로 확인하기 ›</button>
+    </section>
+
+    <!-- 손실회피: 이미 놓친 금액 -->
+    <section class="sec">
+      <span class="eyebrow">이미 놓친 돈</span>
+      <h2 class="h2">지금 통신사, <em>몇 년째</em> 쓰고 계세요?</h2>
+      <div class="past">
+        <div class="past-hd"><span>이용 기간</span><b class="num" id="pastY">5년</b></div>
+        <input type="range" id="pastR" min="1" max="10" step="1" value="5" aria-label="이용 기간(년)">
+        <div class="past-sc"><span>1년</span><span>10년</span></div>
+        <div class="past-box">
+          <span id="pastL">그동안 5인 가족이 결합했다면 아꼈을 돈</span>
+          <b class="num" id="pastV">6,000,000원</b>
+        </div>
+        <p class="past-n">지금 혜택 기준으로 단순 계산한 금액이에요. 앞으로의 손해는 지금 멈출 수 있어요.</p>
       </div>
     </section>
 
@@ -262,8 +343,9 @@ img{display:block;max-width:100%;height:auto}
         <div class="rung" data-n="4"><span class="who">4인</span><div class="bar"><span class="fill" style="width:80%"></span><span class="lab"><span class="per num">1인 20,000원</span><span class="tot num">월 80,000원</span></span></div></div>
         <div class="rung" data-n="3"><span class="who">3인</span><div class="bar"><span class="fill" style="width:42%"></span><span class="lab"><span class="per num">1인 14,000원</span><span class="tot num">월 42,000원</span></span></div></div>
         <div class="rung" data-n="2"><span class="who">2인</span><div class="bar"><span class="fill" style="width:20%"></span><span class="lab"><span class="per num">1인 10,000원</span><span class="tot num">월 20,000원</span></span></div></div>
+        <div class="rung" data-n="1"><span class="who">1인</span><div class="bar"><span class="fill" style="width:0%"></span><span class="lab"><span class="per">결합 할인 없음</span><span class="tot num">월 0원</span></span></div></div>
       </div>
-      <p class="up">2인 → 4인이면 1인당 혜택이 <b>2배</b>가 됩니다.</p>
+      <p class="up">2인 → 4인 이상이면 1인당 혜택이 <b>2배</b>가 됩니다.</p>
 
       <div class="sum">
         <div><small id="sumCashL">5인 가족 현금 지급</small><b class="p num" id="sumCash">150만원</b></div>
@@ -274,8 +356,9 @@ img{display:block;max-width:100%;height:auto}
 
       <ul class="note">
         <li>매달 혜택은 LG U+ ‘U+투게더 결합’ 기준이며, 85,000원 이상 요금제 이용 시 적용됩니다.</li>
+        <li>4인 이상은 최대 5인까지 혜택이 적용됩니다.</li>
         <li>인터넷 추가 할인은 집 인터넷을 함께 결합하는 경우에 적용됩니다.</li>
-        <li>정확한 혜택 금액은 이동 인원·요금제에 따라 상담 시 안내드립니다.</li>
+        <li>1년 혜택은 현금 지급과 매달 할인 12개월을 더한 금액이며, 정확한 금액은 상담 시 안내드립니다.</li>
       </ul>
     </section>
 
@@ -309,7 +392,7 @@ img{display:block;max-width:100%;height:auto}
         <div class="ff">
           <span class="lb">함께 옮길 인원 <span class="req">*</span></span>
           <div class="chips c5" data-pick="people" role="group" aria-label="함께 옮길 인원">
-            <button type="button" data-v="1명" aria-pressed="false">본인만</button>
+            <button type="button" data-v="1명" aria-pressed="false">1명</button>
             <button type="button" data-v="2명" aria-pressed="false">2명</button>
             <button type="button" data-v="3명" aria-pressed="false">3명</button>
             <button type="button" data-v="4명" aria-pressed="false">4명</button>
@@ -362,34 +445,61 @@ img{display:block;max-width:100%;height:auto}
 <script>
 (function(){
   var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
-  // 인원별 1인당 월 혜택 (U+투게더 결합 기준 · 사장님 제공 값)
-  var PER={2:10000,3:14000,4:20000,5:20000}, NET=10000, CASH=300000;
-  var N=5, NETON=false;
-  var won=function(n){ return n.toLocaleString('ko-KR'); };
+  // 인원별 1인당 월 혜택 (U+투게더 결합 기준 · 사장님 제공 값) · 4인 이상은 최대 5인까지 · 현금 1인당 30만원(배너)
+  var PER={1:0,2:10000,3:14000,4:20000,5:20000}, NET=10000, CASH=300000;
+  var N=5, NETON=false, PASTY=5;
+  var won=function(n){ return Math.round(n).toLocaleString('ko-KR'); };
+  var grp=function(n){ return n>=4?4:n; };
 
   function render(bump){
-    var per=PER[N], tot=per*N+(NETON?NET:0);
-    $('#goTotal').innerHTML=won(tot)+'<small>원</small>';
-    $('#goPer').textContent='매달 · 1인당 '+won(per)+'원 × '+N+'인'+(NETON?' + 인터넷 '+won(NET)+'원':'');
-    $('#yearTotal').textContent=won(tot*12)+'원';
-    $('#mbarAmt').textContent='· 월 '+won(tot)+'원';
-    $('#sumCashL').textContent=N+'인 가족 현금 지급'; $('#sumCash').textContent=(CASH*N/10000)+'만원';
-    $('#sumSaveL').textContent=N+'인 가족 통신료 절약'; $('#sumSave').textContent='월 '+(per*N/10000)+'만원';
-    $$('.seg button').forEach(function(b){ b.setAttribute('aria-pressed', String(+b.dataset.n===N)); });
+    var per=PER[N], mon=per*N+(NETON&&N>1?NET:0), solo=(N===1);
+    $('#subRow').hidden=(N<4);
+    $$('.seg button').forEach(function(b){ b.setAttribute('aria-pressed', String(+b.dataset.g===grp(N))); });
+    $$('.sub-ch button').forEach(function(b){ b.setAttribute('aria-pressed', String(+b.dataset.n===N)); });
+    if(solo){
+      $('#goTotal').innerHTML='30만<small>원</small>';
+      $('#goPer').textContent='현금 지급 · 매달 결합 할인은 2인부터';
+    } else {
+      $('#goTotal').innerHTML=won(mon)+'<small>원</small>';
+      $('#goPer').textContent='매달 · 1인당 '+won(per)+'원 × '+N+'인'+(NETON?' + 인터넷 '+won(NET)+'원':'');
+    }
+    $('#netBtn').hidden=solo;
+    $('#lossWrap').hidden=solo; $('#soloWrap').hidden=!solo;
+    $('#lDay').textContent='-'+won(mon/30)+'원';
+    $('#lMon').textContent='-'+won(mon)+'원';
+    $('#lYear').textContent='-'+won(mon*12)+'원';
+    var cash=CASH*N, tot=cash+mon*12;
+    $('#totL').textContent='LG U+로 옮기면 1년 동안 '+(solo?'받는':'우리 가족이 받는')+' 혜택';
+    $('#totV').innerHTML=won(tot)+'<small>원</small>';
+    $('#brCashN').textContent='30만원 × '+N+'인'; $('#brCash').textContent=won(cash)+'원';
+    $('#brMonRow').hidden=solo; $('#brMon').textContent=won(per*N*12)+'원';
+    $('#brNetRow').hidden=!(NETON&&!solo);
+    $('#mbarAmt').textContent=solo?'· 현금 30만원':'· 월 '+won(mon)+'원';
+    $('#sumCashL').textContent=N+'인 '+(solo?'':'가족 ')+'현금 지급'; $('#sumCash').textContent=(cash/10000)+'만원';
+    $('#sumSaveL').textContent=N+'인 '+(solo?'':'가족 ')+'통신료 절약'; $('#sumSave').textContent='월 '+(per*N/10000)+'만원';
     $$('#ladder .rung').forEach(function(r){ r.classList.toggle('on', +r.dataset.n===N); });
+    renderPast();
     if(bump){ var g=$('#goBox'); g.classList.remove('bump'); void g.offsetWidth; g.classList.add('bump'); }
   }
-  $$('.seg button').forEach(function(b){ b.addEventListener('click',function(){
-    N=+b.dataset.n; render(true);
-    // 신청서 인원도 같이 맞춤
-    pick('people', N+'명');
-    try{ window.udakEv && udakEv('people_pick', String(N)); }catch(e){}
-  }); });
+  function renderPast(){
+    var n=N<2?4:N, mon=PER[n]*n;   // 1인이면 '4인 가족' 기준으로 보여 줌
+    $('#pastY').textContent=PASTY+'년';
+    $('#pastL').textContent='그동안 '+n+'인 가족이 결합했다면 아꼈을 돈';
+    $('#pastV').textContent=won(mon*12*PASTY)+'원';
+  }
+  function setN(n,src){
+    N=n; render(true);
+    pick('people', n===1?'1명':n+'명');
+    try{ window.udakEv && udakEv('people_pick', String(n)+(src?':'+src:'')); }catch(e){}
+  }
+  $$('.seg button').forEach(function(b){ b.addEventListener('click',function(){ var g=+b.dataset.g; setN(g===4?(N>=4?N:5):g,'seg'); }); });
+  $$('.sub-ch button').forEach(function(b){ b.addEventListener('click',function(){ setN(+b.dataset.n,'sub'); }); });
+  $$('[data-jump]').forEach(function(b){ b.addEventListener('click',function(){ var j=+b.dataset.jump; setN(j===4?5:j,'solo'); }); });
   $('#netBtn').addEventListener('click',function(){
     NETON=!NETON; this.setAttribute('aria-pressed',String(NETON)); render(true);
-    if(NETON) pick('internet','함께 결합 희망');
+    pick('internet', NETON?'함께 결합 희망':'결합 안 함');
   });
-  render(false);
+  $('#pastR').addEventListener('input',function(){ PASTY=+this.value; renderPast(); });
 
   // 신청서로 이동
   $$('[data-go="form"]').forEach(function(a){ a.addEventListener('click',function(e){
@@ -404,9 +514,11 @@ img{display:block;max-width:100%;height:auto}
   $$('[data-pick]').forEach(function(g){ var k=g.dataset.pick; $$('button',g).forEach(function(b){ b.addEventListener('click',function(){
     pick(k,b.dataset.v);
     if(k==='carrier' && !window.__mnpSel){ window.__mnpSel=1; try{ window.udakMeta && udakMeta('MnpSelect',{carrier:b.dataset.v, model:'유심 번호이동'}); }catch(e){} }
-    if(k==='people'){ var n=parseInt(b.dataset.v,10); if(n>=2){ N=n; render(false); } }
+    if(k==='people'){ N=parseInt(b.dataset.v,10)||1; render(false); }
     if(k==='internet'){ NETON=(b.dataset.v==='함께 결합 희망'); $('#netBtn').setAttribute('aria-pressed',String(NETON)); render(false); }
   }); }); });
+
+  render(false);
 
   // 입력 정리
   $('#fPhone').addEventListener('input',function(){ var d=this.value.replace(/\D/g,'').slice(0,11); this.value=d.length>7?d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7):d.length>3?d.slice(0,3)+'-'+d.slice(3):d; });
