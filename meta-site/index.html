@@ -11,7 +11,7 @@
 <meta property="og:image" content="/assets/og.jpg">
 <!-- 20261106 사장님: meta.uplusdak.com — 유심 번호이동(MNP) 메타 광고 전용 랜딩
      배너 1장 + 그 밑 앵커링/손실회피(인원별 U+투게더 결합 혜택) + 상담 신청서
-     신청은 ssgadmin 유닥 시트(reservations_udak)로 — 관심기기 '유심 번호이동', 인터넷 상담 O/X는 전달사항 앞에 붙음 (인원은 가족관계증명서로 확인해서 신청서에서 뺌) -->
+     신청은 ssgadmin 유닥 시트(reservations_udak)로 — 관심기기 '유심 번호이동', 인터넷 상담 희망/비희망은 전달사항 앞에 붙음 (인원은 가족관계증명서로 확인해서 신청서에서 뺌) -->
 <!-- Meta Pixel (landing.uplusdak.com 과 같은 픽셀) -->
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
@@ -415,8 +415,8 @@ img{display:block;max-width:100%;height:auto}
         <div class="ff">
           <span class="lb">집 인터넷 상담</span>
           <div class="chips c2" data-pick="internet" role="group" aria-label="집 인터넷 상담">
-            <button type="button" data-v="상담 O" aria-pressed="false">인터넷 상담 O</button>
-            <button type="button" data-v="상담 X" aria-pressed="false">인터넷 상담 X</button>
+            <button type="button" data-v="상담 희망" aria-pressed="false">인터넷 상담 희망</button>
+            <button type="button" data-v="상담 비희망" aria-pressed="false">인터넷 상담 비희망</button>
           </div>
         </div>
         <div class="ff">
@@ -510,7 +510,7 @@ img{display:block;max-width:100%;height:auto}
   $$('[data-jump]').forEach(function(b){ b.addEventListener('click',function(){ var j=+b.dataset.jump; setN(j,'solo'); }); });
   $('#netBtn').addEventListener('click',function(){
     NETON=!NETON; this.setAttribute('aria-pressed',String(NETON)); render(true);
-    pick('internet', NETON?'상담 O':'상담 X');
+    pick('internet', NETON?'상담 희망':'상담 비희망');
   });
   $('#pastR').addEventListener('input',function(){ PASTY=+this.value; renderPast(); });
 
@@ -527,7 +527,7 @@ img{display:block;max-width:100%;height:auto}
   $$('[data-pick]').forEach(function(g){ var k=g.dataset.pick; $$('button',g).forEach(function(b){ b.addEventListener('click',function(){
     pick(k,b.dataset.v);
     if(k==='carrier' && !window.__mnpSel){ window.__mnpSel=1; try{ window.udakMeta && udakMeta('MnpSelect',{carrier:b.dataset.v, model:'유심 번호이동'}); }catch(e){} }
-    if(k==='internet'){ NETON=(b.dataset.v==='상담 O'); $('#netBtn').setAttribute('aria-pressed',String(NETON)); render(false); }
+    if(k==='internet'){ NETON=(b.dataset.v==='상담 희망'); $('#netBtn').setAttribute('aria-pressed',String(NETON)); render(false); }
   }); }); });
 
   render(false);
