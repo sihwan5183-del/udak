@@ -153,6 +153,7 @@ img{display:block;max-width:100%;height:auto}
 .past-box{margin-top:14px;padding:16px;border-radius:14px;background:var(--bg);display:flex;flex-direction:column;gap:2px}
 .past-box span{font-size:14px;color:var(--sub);font-weight:600}
 .past-box b{font-size:clamp(28px,8.5vw,34px);font-weight:900;color:var(--pink);letter-spacing:-.03em}
+.past-box .drip{font-size:13.5px;font-weight:700;color:var(--ink)}
 .past-n{margin-top:10px;font-size:12.5px;color:var(--mute)}
 .rung .who{white-space:nowrap}
 .rung{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:center;padding:4px 0;border-radius:12px;transition:opacity .2s}
@@ -264,8 +265,8 @@ img{display:block;max-width:100%;height:auto}
       <div class="sub" id="subRow">
         <span>가족 수</span>
         <div class="sub-ch" role="group" aria-label="4인 이상 가족 수">
-          <button type="button" data-n="4" aria-pressed="false">4명</button>
-          <button type="button" data-n="5" aria-pressed="true">5명</button>
+          <button type="button" data-n="4" aria-pressed="true">4명</button>
+          <button type="button" data-n="5" aria-pressed="false">5명</button>
         </div>
         <em>최대 5인까지 혜택</em>
       </div>
@@ -318,19 +319,20 @@ img{display:block;max-width:100%;height:auto}
       <button type="button" class="cta" data-go="form">이 혜택 상담으로 확인하기 ›</button>
     </section>
 
-    <!-- 손실회피: 이미 놓친 금액 -->
+    <!-- 손실회피: 미루는 동안 새는 돈 (4인 가족 기준 고정) -->
     <section class="sec">
-      <span class="eyebrow">이미 놓친 돈</span>
-      <h2 class="h2">지금 통신사, <em>몇 년째</em> 쓰고 계세요?</h2>
+      <span class="eyebrow">지금도 새는 돈</span>
+      <h2 class="h2">‘나중에 바꾸지’ 하는 동안<br><em>통신비가 새고 있어요</em></h2>
       <div class="past">
-        <div class="past-hd"><span>이용 기간</span><b class="num" id="pastY">5년</b></div>
-        <input type="range" id="pastR" min="1" max="10" step="1" value="5" aria-label="이용 기간(년)">
-        <div class="past-sc"><span>1년</span><span>10년</span></div>
+        <div class="past-hd"><span>바꾸는 걸 미루면</span><b class="num" id="pastY">6개월</b></div>
+        <input type="range" id="pastR" min="1" max="12" step="1" value="6" aria-label="미루는 기간(개월)">
+        <div class="past-sc"><span>1개월</span><span>12개월</span></div>
         <div class="past-box">
-          <span id="pastL">그동안 5인 가족이 결합했다면 아꼈을 돈</span>
-          <b class="num" id="pastV">6,000,000원</b>
+          <span>4인 가족 기준, 미루는 동안 새는 돈</span>
+          <b class="num" id="pastV">480,000원</b>
+          <span class="drip num" id="pastD">오늘 하루에도 약 2,667원씩</span>
         </div>
-        <p class="past-n">지금 혜택 기준으로 단순 계산한 금액이에요. 앞으로의 손해는 지금 멈출 수 있어요.</p>
+        <p class="past-n">4인 가족 · 월 80,000원 기준으로 단순 계산한 금액이에요. 오늘 상담하시면 지금부터 막을 수 있어요.</p>
       </div>
     </section>
 
@@ -395,8 +397,8 @@ img{display:block;max-width:100%;height:auto}
             <button type="button" data-v="1명" aria-pressed="false">1명</button>
             <button type="button" data-v="2명" aria-pressed="false">2명</button>
             <button type="button" data-v="3명" aria-pressed="false">3명</button>
-            <button type="button" data-v="4명" aria-pressed="false">4명</button>
-            <button type="button" data-v="5명" aria-pressed="true">5명</button>
+            <button type="button" data-v="4명" aria-pressed="true">4명</button>
+            <button type="button" data-v="5명" aria-pressed="false">5명</button>
           </div>
         </div>
         <div class="ff">
@@ -447,7 +449,7 @@ img{display:block;max-width:100%;height:auto}
   var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
   // 인원별 1인당 월 혜택 (U+투게더 결합 기준 · 사장님 제공 값) · 4인 이상은 최대 5인까지 · 현금 1인당 30만원(배너)
   var PER={1:0,2:10000,3:14000,4:20000,5:20000}, NET=10000, CASH=300000;
-  var N=5, NETON=false, PASTY=5;
+  var N=4, NETON=false, PASTY=6;
   var won=function(n){ return Math.round(n).toLocaleString('ko-KR'); };
   var grp=function(n){ return n>=4?4:n; };
 
@@ -481,20 +483,20 @@ img{display:block;max-width:100%;height:auto}
     renderPast();
     if(bump){ var g=$('#goBox'); g.classList.remove('bump'); void g.offsetWidth; g.classList.add('bump'); }
   }
-  function renderPast(){
-    var n=N<2?4:N, mon=PER[n]*n;   // 1인이면 '4인 가족' 기준으로 보여 줌
-    $('#pastY').textContent=PASTY+'년';
-    $('#pastL').textContent='그동안 '+n+'인 가족이 결합했다면 아꼈을 돈';
-    $('#pastV').textContent=won(mon*12*PASTY)+'원';
+  function renderPast(){   // 20261106 사장님: 4인 가족 기준 고정 · '이미 놓친 돈' 대신 '미루는 동안 새는 돈'
+    var mon=PER[4]*4;
+    $('#pastY').textContent=PASTY+'개월';
+    $('#pastV').textContent=won(mon*PASTY)+'원';
+    $('#pastD').textContent='오늘 하루에도 약 '+won(mon/30)+'원씩';
   }
   function setN(n,src){
     N=n; render(true);
     pick('people', n===1?'1명':n+'명');
     try{ window.udakEv && udakEv('people_pick', String(n)+(src?':'+src:'')); }catch(e){}
   }
-  $$('.seg button').forEach(function(b){ b.addEventListener('click',function(){ var g=+b.dataset.g; setN(g===4?(N>=4?N:5):g,'seg'); }); });
+  $$('.seg button').forEach(function(b){ b.addEventListener('click',function(){ var g=+b.dataset.g; setN(g===4?(N>=4?N:4):g,'seg'); }); });
   $$('.sub-ch button').forEach(function(b){ b.addEventListener('click',function(){ setN(+b.dataset.n,'sub'); }); });
-  $$('[data-jump]').forEach(function(b){ b.addEventListener('click',function(){ var j=+b.dataset.jump; setN(j===4?5:j,'solo'); }); });
+  $$('[data-jump]').forEach(function(b){ b.addEventListener('click',function(){ var j=+b.dataset.jump; setN(j,'solo'); }); });
   $('#netBtn').addEventListener('click',function(){
     NETON=!NETON; this.setAttribute('aria-pressed',String(NETON)); render(true);
     pick('internet', NETON?'함께 결합 희망':'결합 안 함');
@@ -509,7 +511,7 @@ img{display:block;max-width:100%;height:auto}
   }); });
 
   // 칩 선택
-  var PICK={people:'5명'};
+  var PICK={people:'4명'};
   function pick(k,v){ PICK[k]=v; $$('[data-pick="'+k+'"] button').forEach(function(b){ b.setAttribute('aria-pressed',String(b.dataset.v===v)); }); }
   $$('[data-pick]').forEach(function(g){ var k=g.dataset.pick; $$('button',g).forEach(function(b){ b.addEventListener('click',function(){
     pick(k,b.dataset.v);
