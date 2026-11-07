@@ -1506,7 +1506,7 @@ function pdRender(m, p, st, PK, o){
     if(st.method==='pub'&&c.pub) s+=pdL('공시지원금','−'+won(c.pub),'neg');
     if(c.our) s+=pdL('유플러스 다이렉트 지원금','−'+won(c.our),'neg');
     s+=pdL('지원 후 기기값',wz(st.after),'strong');
-    if(c.our) s+='<div class="pd-sl pd-anc"><span>'+(st.method==='pub'&&c.pub?'공시지원금':'선택약정')+'만 받을 때 <s>'+won(st.after+c.our)+'</s></span><span>'+won(c.our)+' 더 저렴</span></div>';
+    // 20261107 사장님: ⓑ '공시지원금(선택약정)만 받을 때 n원 → n원 더 저렴' 줄은 빼기로 함
     if(wpc) s+=pdL(esc(wpName(wpw)),'<s>'+won(wpc.c.out)+'</s> '+wz(wpc.after),'strong');
     s+='<div class="pd-sh n2"><i>B</i><b>월 요금</b><em>'+won(fa+wlf)+'</em></div>';
     if(st.fee) s+=pdL(esc(st.t.title||tierLabel(st.t)),won(st.fee));
