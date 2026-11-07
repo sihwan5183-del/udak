@@ -80,6 +80,8 @@ img{display:block;max-width:100%;height:auto}
 @media (min-width:1024px){ .sec{border-radius:24px;margin-top:0;margin-bottom:20px;padding:34px 30px} }
 .eyebrow{display:inline-block;font-size:13px;font-weight:700;color:var(--pink);background:var(--pink-l);padding:5px 11px;border-radius:999px;margin-bottom:12px}
 .h2{font-size:24px;font-weight:800;letter-spacing:-.03em;line-height:1.32}
+.h2.one{white-space:nowrap;font-size:min(24px,calc((100vw - 40px) / 16))}
+@media (min-width:1024px){.h2.one{font-size:24px}}
 .h2 em{font-style:normal;color:var(--pink)}
 .lead{margin-top:8px;font-size:15px;color:var(--sub)}
 
@@ -278,7 +280,7 @@ img{display:block;max-width:100%;height:auto}
     <!-- 손실회피: 지금 그대로면 얼마나 손해인지 -->
     <section class="sec loss-hd" id="calc">
       <span class="eyebrow">우리 가족 혜택 계산기</span>
-      <h2 class="h2">우리 가족, U+로 바꾸면<br><span class="red">얼마나 받을까?</span></h2>
+      <h2 class="h2 one">우리 가족, U+로 바꾸면 <span class="red">얼마나 받을까?</span></h2>
       <p class="lead">가족이 함께 이동했을 때의 혜택을 확인해 보세요.</p>
 
       <div class="seg" role="group" aria-label="함께 옮길 인원">
