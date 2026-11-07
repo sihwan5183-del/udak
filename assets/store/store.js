@@ -17,7 +17,9 @@ var DB = 'https://udak-c6832-default-rtdb.firebaseio.com';
 // 20261027 사장님: 스토어 설정(가격·배너·문구)은 회사 데이터베이스(Supabase)의 store_config — 읽기는 누구나, 저장은 ssgadmin 최고관리자 로그인 때만
 //   (예전 Firebase(DB)는 누구나 바꿀 수 있어서 옮김 · Firebase 는 이제 스토어에서 안 읽음)
 var SB_BASE = 'https://ebggtghzqtxfylbhqfoh.supabase.co';
-var IMG = '/assets/store/';
+// 20261107 사장님: meta.uplusdak.com/s26 처럼 다른 주소에서 이 스토어를 띄울 때 그림·영상·약관 주소 앞에 붙일 원래 주소 (landing 에선 비어 있어 그대로)
+var ORG = String(CFG.origin||'').replace(/\/$/,'');
+var IMG = ORG+'/assets/store/';
 var GH = 'https://api.github.com/repos/sihwan5183-del/udak/contents/assets/store/';
 var FOLDERS = ['banner','hero','model','card','promo','gift','detail'];   // 20261026 banner = /shop 메인 배너 통이미지 · detail = /shop 상세 아래 '구매혜택·유의사항·구매후기·모델정보' 그림
 
@@ -251,7 +253,7 @@ function num(v){ if(v===0) return 0; v=String(v==null?'':v).replace(/[^\d]/g,'')
 function won(n){ return Number(n).toLocaleString('ko-KR')+'원'; }
 var store={get:function(k,d){try{var v=localStorage.getItem('ud_'+k);return v?JSON.parse(v):d}catch(e){return d}},
            set:function(k,v){try{localStorage.setItem('ud_'+k,JSON.stringify(v))}catch(e){}}};
-function imgSrc(p){ if(!p) return ''; p=String(p).split('||')[0].trim(); return /^(https?:)?\//.test(p) ? p : IMG+p; }
+function imgSrc(p){ if(!p) return ''; p=String(p).split('||')[0].trim(); return /^(https?:)?\/\//.test(p) ? p : /^\//.test(p) ? ORG+p : IMG+p; }
 // 이미지 — 파일이 없으면: 관리자 화면은 '들어갈 파일명', 고객 화면은 은은한 빈 칸
 function im(path, cls, eager, label){
   if(!path) return '<div class="'+(EDIT?'ph':'ph-soft')+' '+(cls||'')+'">'+esc(EDIT?'(사진 없음)':(label||''))+'</div>';
@@ -820,8 +822,8 @@ function renderShip(){
       '<div class="shp-cd off"><span class="shp-cl">'+st.when+' '+cutLabel()+' 마감 · 순차 발송</span></div>';
   var steps=[['ico-form','온라인 신청'],['ico-call','5분 상담'],['ico-ship',(st.today?'당일':st.when)+' 발송']];
   el.innerHTML='<div class="shp" data-go="guide"><div class="shp-top"><div class="shp-txt">'+head+'</div>'+
-      '<img class="shp-truck" src="/assets/store/ship/truck.webp" alt="" loading="eager"></div>'+
-    '<div class="shp-steps">'+steps.map(function(x){ return '<div class="shp-st"><span class="shp-ic"><img src="/assets/store/ship/'+x[0]+'.webp" alt=""></span><span>'+x[1]+'</span></div>'; }).join('<i class="shp-ar">'+chev+'</i>')+
+      '<img class="shp-truck" src="'+ORG+'/assets/store/ship/truck.webp" alt="" loading="eager"></div>'+
+    '<div class="shp-steps">'+steps.map(function(x){ return '<div class="shp-st"><span class="shp-ic"><img src="'+ORG+'/assets/store/ship/'+x[0]+'.webp" alt=""></span><span>'+x[1]+'</span></div>'; }).join('<i class="shp-ar">'+chev+'</i>')+
       '<span class="shp-div"></span><span class="shp-guide">구매 가이드'+chev+'</span></div></div>';
   if(st.today) shipTimer=setInterval(function(){ var s2=shipState(), c2=$('#shipCd'); if(!s2.today||!c2){ renderShip(); return; } c2.innerHTML=cdBoxes(s2.left); },1000);
 }
@@ -1103,8 +1105,8 @@ function renderFoot(){
   $('#foot').innerHTML=
 
     '<div class="sf">'+
-      '<div class="sf-top"><div class="sf-links"><a href="/terms" target="_blank" rel="noopener">이용약관</a><a href="/privacy" target="_blank" rel="noopener">개인정보처리방침</a><a href="/terms#email" target="_blank" rel="noopener">이메일무단수집거부</a></div>'+   // 20261027 사장님: 눌러서 내용이 열리게
-        '<div class="sf-cert"><button type="button" class="sf-mark" data-cert aria-label="LG U+ 공식인증대리점 인증마크 보기"><img src="/assets/store/cert-mark-s.webp" alt="LG U+ 공식인증대리점 인증마크" loading="lazy"></button><a href="tel:'+esc(S.tel)+'"><small>대표 전화번호</small><b>'+esc(S.tel)+'</b></a></div></div>'+
+      '<div class="sf-top"><div class="sf-links"><a href="'+ORG+'/terms" target="_blank" rel="noopener">이용약관</a><a href="'+ORG+'/privacy" target="_blank" rel="noopener">개인정보처리방침</a><a href="'+ORG+'/terms#email" target="_blank" rel="noopener">이메일무단수집거부</a></div>'+   // 20261027 사장님: 눌러서 내용이 열리게
+        '<div class="sf-cert"><button type="button" class="sf-mark" data-cert aria-label="LG U+ 공식인증대리점 인증마크 보기"><img src="'+ORG+'/assets/store/cert-mark-s.webp" alt="LG U+ 공식인증대리점 인증마크" loading="lazy"></button><a href="tel:'+esc(S.tel)+'"><small>대표 전화번호</small><b>'+esc(S.tel)+'</b></a></div></div>'+
       '<div class="sf-info"><p><span>상호명</span> '+esc(/유닥/.test(b.name||'')||!b.name?DEFAULT.biz.name:b.name)+' · <span>대표자</span> '+esc(b.ceo)+'</p><p><span>사업장 주소</span> '+esc(b.addr)+'</p>'+
         '<p><span>사업자등록번호</span> '+esc(b.no)+' · <span>전화번호</span> '+esc(S.tel)+'</p>'+(b.sale?'<p><span>통신판매업 신고번호</span> '+esc(b.sale)+'</p>':'')+'<p><span>이메일</span> '+esc(b.email)+' · <span>호스팅 서비스</span> Cloudflare, Inc.</p>'+
         '<p class="sf-h">상담시간 : '+esc(b.hours)+'</p></div>'+
@@ -1115,12 +1117,12 @@ function renderFoot(){
 /* 대리점 인증마크 크게 보기 */
 function openCert(){
   var o=document.createElement('div'); o.className='vpop cpop';
-  o.innerHTML='<div class="cp-in"><button type="button" class="vp-x" aria-label="닫기">×</button><img src="/assets/store/cert-mark.webp" alt="LG U+ 공식인증대리점 인증마크"><p>LG U+ 공식인증대리점</p></div>';
+  o.innerHTML='<div class="cp-in"><button type="button" class="vp-x" aria-label="닫기">×</button><img src="'+ORG+'/assets/store/cert-mark.webp" alt="LG U+ 공식인증대리점 인증마크"><p>LG U+ 공식인증대리점</p></div>';
   o.addEventListener('click',function(e){ if(e.target===o||e.target.closest('.vp-x')){ o.remove(); document.body.style.overflow=''; } });
   document.body.appendChild(o); document.body.style.overflow='hidden';
 }
 /* 소개 영상 팝업 */
-var VIDS={direct:{src:'/assets/udak-direct-intro-v2.mp4',poster:'/assets/udak-direct-intro-v2-poster.webp',title:'유플러스 다이렉트란?'}};
+var VIDS={direct:{src:ORG+'/assets/udak-direct-intro-v2.mp4',poster:ORG+'/assets/udak-direct-intro-v2-poster.webp',title:'유플러스 다이렉트란?'}};
 function openVideo(k){
   var v=VIDS[k]; if(!v) return;
   var o=document.createElement('div'); o.className='vpop'; o.innerHTML='<div class="vp-in"><button type="button" class="vp-x" aria-label="닫기">×</button><video src="'+v.src+'" poster="'+v.poster+'" controls playsinline autoplay></video></div>';
@@ -1334,7 +1336,7 @@ function pdHeadOn(){
   if(PD_HD0==null) PD_HD0=sh.innerHTML;
   sh.classList.add('pd-hd');
   sh.innerHTML='<button data-back aria-label="뒤로"><svg class="ico" viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button>'+
-    '<a class="pd-logo" href="#/" data-home aria-label="유플러스 다이렉트 홈"><img src="/assets/shop/logo-shop.png" alt="유플러스 다이렉트" width="159" height="22"></a><h1 id="mdTitle" class="pd-hd-t"></h1>'+
+    '<a class="pd-logo" href="#/" data-home aria-label="유플러스 다이렉트 홈"><img src="'+ORG+'/assets/shop/logo-shop.png" alt="유플러스 다이렉트" width="159" height="22"></a><h1 id="mdTitle" class="pd-hd-t"></h1>'+
     '<span class="sh-r"><button data-go="search" aria-label="검색"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>'+
     '<button data-home aria-label="홈으로"><svg class="ico" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg></button></span>';
 }
@@ -1374,7 +1376,7 @@ function pdCommonHtml(){
   if(H.img) h+='<div class="dc-store"'+e('hero')+'><img src="'+esc(imgSrc(String(H.img).replace(/#.*$/,'')))+'" alt="" loading="lazy" decoding="async"></div>';
   // 카드 4개 — U+ 공식 파트너사(누르면 인증마크) · 오프라인 매장 운영(누르면 매장 목록) · 투명한 구매 조건 · 빠르고 안전한 배송
   h+='<div class="dc-cards'+(H.img?'':' np')+'">'+C.slice(0,4).map(function(c,i){
-    var top=i===0?'<div class="dc-logos"><img class="dc-bd" src="'+esc(imgSrc('detail/dc-badge.webp'))+'" alt="LG U+ 공식인증대리점" loading="lazy"><i></i><img class="dc-wm" src="/assets/shop/logo-shop.png" width="476" height="66" alt="유플러스 다이렉트" loading="lazy"></div>'
+    var top=i===0?'<div class="dc-logos"><img class="dc-bd" src="'+esc(imgSrc('detail/dc-badge.webp'))+'" alt="LG U+ 공식인증대리점" loading="lazy"><i></i><img class="dc-wm" src="'+ORG+'/assets/shop/logo-shop.png" width="476" height="66" alt="유플러스 다이렉트" loading="lazy"></div>'
       :'<div class="dc-ic">'+dcSvg(['','store','doc','truck'][i])+'</div>';
     var act=i===0?' data-cert role="button" tabindex="0" aria-label="LG U+ 공식인증대리점 인증마크 보기"':i===1?' data-open="store" role="button" tabindex="0" aria-label="우리 매장 목록 보기"':'';
     return '<div class="dc-card"'+act+e('card:'+i)+'>'+top+'<h3>'+dcTx(c.t)+'</h3>'+(c.h?'<div class="dc-hl">'+dcTx(c.h)+'</div>':'')+(c.s?'<p>'+dcTx(c.s)+'</p>':'')+'</div>'; }).join('')+'</div>';
@@ -1445,7 +1447,7 @@ function pdRender(m, p, st, PK, o){
   h+='<div class="pd-tt"'+ED+'><h2 class="md-h">'+esc(m.nm)+'</h2>'+(bd?'<span class="pd-bd">'+esc(bd)+'</span>':'')+'<button type="button" class="pd-share" data-pd-share="'+esc(m.id)+'" aria-label="공유하기">'+PD_SHARE+'</button></div>';
   // 20261105 사장님: 메타 광고에서 상세로 바로 꽂히니 제목 바로 밑에 '누구인지' 한 줄 — 홈 브랜드 칸과 같은 글(관리자 '브랜드'에서 고침) · 누르면 인증마크
   var bt=S.brand||{}, btr=bt.trust==null?'U+ 최초의 온라인 대리점':bt.trust;
-  if(bt.big) h+='<button type="button" class="pd-trust" data-cert aria-label="LG U+ 공식인증대리점 인증마크 보기"><img src="/assets/store/cert-mark-s.webp" alt="" width="36" height="36" decoding="async">'+
+  if(bt.big) h+='<button type="button" class="pd-trust" data-cert aria-label="LG U+ 공식인증대리점 인증마크 보기"><img src="'+ORG+'/assets/store/cert-mark-s.webp" alt="" width="36" height="36" decoding="async">'+
     '<span class="pd-trust-t"><b>LG U+ 공식인증대리점</b><small>'+(btr?esc(btr).replace(/^U\+/,'U<sup>+</sup>').replace(/ /g,'&nbsp;')+' · ':'')+esc(bt.big).replace(/ /g,'&nbsp;')+'</small></span>'+
     '<em aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></em></button>';   // 20261105 사장님 '깔끔하게·오피셜하게': 분홍 띠 대신 진짜 인증마크 + 검정 글씨 한 줄
   // ② 큰 사진 · ③ 컬러 사진 (누르면 그 색으로 — 고른 색은 신청서에도 미리 들어감)
@@ -1570,6 +1572,29 @@ document.addEventListener('click',function(e){
     return; }
 });
 
+/* 20261107 사장님: 광고 전용 랜딩(meta.uplusdak.com/s26 등) — STORE_CFG.lp = {model:'s26', banner:'그림 주소', alt:'그림 설명'}
+   · 처음 들어오면 그 모델 상세로 바로 열림 (?m=s26 과 같음 · 뒤로 가기는 스토어 홈)
+   · 그 모델 상세 맨 위에 광고 배너를 그대로 붙임 — 배너를 누르면 바로 아래(통신사 고르기)로 내려감
+   · 상세 내용·가격·품절은 스토어(관리자 /apple)와 같은 설정이라 함께 바뀜 · CFG.lp 가 없으면(landing) 아무것도 안 함 */
+var LP=(CFG.lp && CFG.lp.model)?CFG.lp:null;
+function lpBan(){
+  if(!LP || !LP.banner) return;
+  var b=$('#mdBody'); if(!b) return;
+  var h=location.hash.replace(/^#\/?/,'').split('/');
+  var on=(h[0]==='model' && decodeURIComponent(h[1]||'')===LP.model), cur=b.querySelector(':scope > .lp-ban');
+  if(!on){ if(cur) cur.parentNode.removeChild(cur); return; }
+  if(cur && cur===b.firstElementChild) return;
+  if(cur) cur.parentNode.removeChild(cur);
+  b.insertAdjacentHTML('afterbegin','<a class="lp-ban" href="#" data-lp-ban aria-label="'+esc(LP.cta||'구매 조건 확인하기')+'"><img src="'+esc(LP.banner)+'" alt="'+esc(LP.alt||'')+'" width="'+(+LP.w||1080)+'" height="'+(+LP.h||1350)+'" decoding="async" fetchpriority="high"></a>');
+}
+if(LP){
+  document.head.insertAdjacentHTML('beforeend','<style>.lp-ban{display:block;margin:0 0 12px}.lp-ban img{display:block;width:100%;height:auto}</style>');
+  document.addEventListener('click',function(e){
+    var t=e.target.closest&&e.target.closest('[data-lp-ban]'); if(!t) return; e.preventDefault();
+    var nx=t.nextElementSibling, hd=$('#v-model .subhead'), off=(hd?hd.offsetHeight:0)+8;
+    if(nx) window.scrollTo({top:nx.getBoundingClientRect().top+window.pageYOffset-off, behavior:'smooth'});
+  });
+}
 /* ---------------- 라우터 ---------------- */
 var homeScroll=0;
 function route(){
@@ -1790,7 +1815,7 @@ function storeItem(s, km, top){
   var i=S.stores.indexOf(s);
   var th=String(s.img||'').split(',')[0].trim(), dp=th?'':stPh(s);
   var thv=th?'<div class="sl-th">'+im(th,'','',s.nm)+'</div>'
-    :dp?'<div class="sl-th"><img src="/assets/store/stores/'+dp+'.webp" alt="'+esc(s.nm)+' 매장 사진" loading="lazy" decoding="async"></div>'
+    :dp?'<div class="sl-th"><img src="'+ORG+'/assets/store/stores/'+dp+'.webp" alt="'+esc(s.nm)+' 매장 사진" loading="lazy" decoding="async"></div>'
     :'<div class="sl-th none">'+PIN_I+'</div>';
   return '<div class="store-li has-th" data-store-i="'+i+'" role="button">'+thv+'<div class="sl-r"><b>'+esc(s.nm)+(km!=null?'<em class="sl-km'+(top?' top':'')+'">'+(top?'가장 가까움 · ':'')+distTxt(km)+'</em>':'')+'</b><a class="sl-map" href="https://map.naver.com/p/search/'+encodeURIComponent(s.addr||s.nm)+'" target="_blank" rel="noopener">지도</a></div><div>'+esc(s.addr||'')+'</div>'+
     (km!=null?'<div class="sl-trip">'+esc(MYPOS_L)+'에서 '+tripTxt(km)+'</div>':'')+
@@ -1803,7 +1828,7 @@ function sheetStoreOne(s){
       '<iframe src="https://www.openstreetmap.org/export/embed.html?bbox='+(ll[1]-0.006).toFixed(6)+'%2C'+(ll[0]-0.0035).toFixed(6)+'%2C'+(ll[1]+0.006).toFixed(6)+'%2C'+(ll[0]+0.0035).toFixed(6)+'&amp;layer=mapnik&amp;marker='+ll[0]+'%2C'+ll[1]+'" loading="lazy" tabindex="-1" title="'+esc(s.nm)+' 위치"></iframe><span>지도 크게 보기</span></a>':'';
   return '<button class="st-back" type="button" data-go="store">‹ 매장 목록</button>'+
     (function(){ var ims=String(s.img||'').split(',').map(function(x){return x.trim()}).filter(Boolean);
-      if(!ims.length){ var dp=stPh(s); return dp?'<div class="st-gal"><div class="st-img st43"><img src="/assets/recruit/stores/'+dp+'.webp" alt="'+esc(s.nm)+' 매장 사진" decoding="async"></div></div>':''; }   // 20261023 매장 사진
+      if(!ims.length){ var dp=stPh(s); return dp?'<div class="st-gal"><div class="st-img st43"><img src="'+ORG+'/assets/recruit/stores/'+dp+'.webp" alt="'+esc(s.nm)+' 매장 사진" decoding="async"></div></div>':''; }   // 20261023 매장 사진
       return '<div class="st-gal'+(ims.length>1?' multi':'')+'">'+ims.map(function(x){ return '<div class="st-img">'+im(x,'',true,s.nm)+'</div>'; }).join('')+'</div>'+(ims.length>1?'<div class="st-gal-n">옆으로 넘겨서 '+ims.length+'장 보기</div>':''); })()+
     '<h3>'+esc(s.nm)+'</h3><div class="st-rows">'+
     '<div><span>주소</span><b>'+esc(s.addr||'-')+'</b></div>'+
@@ -1886,7 +1911,7 @@ function sheetConsult(modelId, colorNm, optNm){
     '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히</button></label>'+
     '<div class="privacy-txt" id="privacyTxt">유플러스 다이렉트(이하 "유닥")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
     '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사<br>· 목적: 온라인 상담 신청 접수, 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
-    '동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.<br><a href="/privacy" target="_blank" rel="noopener" class="pv-full">개인정보처리방침 전문 보기 ›</a></div>'+
+    '동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.<br><a href="'+ORG+'/privacy" target="_blank" rel="noopener" class="pv-full">개인정보처리방침 전문 보기 ›</a></div>'+
     '<button type="button" class="cta" id="mSubmitBtn"><span class="rf-submit-label">온라인 상담 신청하기</span></button></section>';
 }
 function birth8(b){ b=String(b||'').replace(/\D/g,''); if(b.length===6){ var yy=+b.slice(0,2), cy=new Date().getFullYear()%100; b=(yy<=cy?'20':'19')+b; } return b; }
@@ -2314,7 +2339,7 @@ function apInfoHtml(){
     '<label class="agree"><input type="checkbox" id="mPrivacyCheck"> 개인정보 수집 및 이용 동의 (필수)<button type="button" data-privacy>자세히 보기 ›</button></label>'+
     '<div class="privacy-txt" id="privacyTxt">유플러스 다이렉트(이하 "유닥")는 온라인 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
     '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사, 받는 방법(매장에서 받는 경우 수령 매장·출발 동네)<br>· 목적: 온라인 상담 신청 접수, 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
-    '동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.<br><a href="/privacy" target="_blank" rel="noopener" class="pv-full">개인정보처리방침 전문 보기 ›</a></div>'+
+    '동의를 거부할 권리가 있으며, 거부 시 온라인 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.<br><a href="'+ORG+'/privacy" target="_blank" rel="noopener" class="pv-full">개인정보처리방침 전문 보기 ›</a></div>'+
     // 20261021 사장님(GPT 안에서 가져옴): 신청 버튼 위 안내 — '누르면 바로 결제되나?' 걱정 줄이기 (확인 화면은 따로 안 둠)
     '<div class="ap-guide"><b><i>i</i>상담 신청 안내</b><ul><li>상담 신청은 구매 확정이나 결제가 아닙니다.</li><li>전문 상담사가 고객님께 연락드려 최종 조건을 안내해 드립니다.</li></ul></div></div>';
 }
@@ -2437,7 +2462,7 @@ function apPayload(o){
 var QK={m:'', car:'', col:''};
 var QK_PV='유플러스 다이렉트(이하 "유닥")는 카카오톡 상담 신청 접수 및 상담 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.<br><br>'+
   '· 항목: 이름, 전화번호, 생년월일, 희망기종, 현재 통신사<br>· 목적: 카카오톡·전화 상담 연락 및 구매·개통 안내<br>· 보유 기간: 수집일로부터 6개월<br><br>'+
-  '동의를 거부할 권리가 있으며, 거부 시 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.<br><a href="/privacy" target="_blank" rel="noopener" class="pv-full">개인정보처리방침 전문 보기 ›</a>';
+  '동의를 거부할 권리가 있으며, 거부 시 상담 신청이 제한될 수 있습니다. 수집된 개인정보는 제3자에게 제공되지 않으며, 보유 기간 종료 후 즉시 파기됩니다.<br><a href="'+ORG+'/privacy" target="_blank" rel="noopener" class="pv-full">개인정보처리방침 전문 보기 ›</a>';
 function sheetQuickKakao(m){
   var p=priceOf(m, optsOf(m).length?(OPT[m.id]||0):null), st=p.kind==='sheet'?calcState(m,p.row):null;
   var cs=colorsOf(m), col=PICK[m.id]||(cs.length===1?cs[0].nm:''), os=optsOf(m), cap=os.length>1?os[OPT[m.id]||0].nm:'';
@@ -2722,9 +2747,9 @@ try{ var SEOS=document.getElementById('seoSummary'); if(SEOS) SEOS.parentNode.re
 ROOT.insertAdjacentHTML('afterbegin', MARKUP);
 // 온라인 상담 신청 페이지
 $('#app').insertAdjacentHTML('beforeend','<main class="view" id="v-apply"><div class="subhead"><button data-back><svg class="ico" viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></button><h1>온라인 상담 신청서</h1><button data-home aria-label="홈으로"><svg class="ico" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg></button></div><div id="apBody"></div><div class="ap-bar" id="apBar"></div></main>');
-if(!EDIT) document.body.insertAdjacentHTML('beforeend','<div class="side-quick sq-img"><img src="/assets/store/side-quick.webp" alt="" aria-hidden="true">'+
+if(!EDIT) document.body.insertAdjacentHTML('beforeend','<div class="side-quick sq-img"><img src="'+ORG+'/assets/store/side-quick.webp" alt="" aria-hidden="true">'+
   '<a class="sq-hit is-call" href="tel:'+esc(S.tel)+'" aria-label="전화 상담"></a><a class="sq-hit is-kakao" href="'+esc(S.kakao)+'" target="_blank" rel="noopener" aria-label="카톡 문의"></a></div>');
-document.body.insertAdjacentHTML('beforeend','<div class="ticket" id="ticket"><div class="tw"><img src="/assets/store/ticket-consult-pink.webp" width="936" height="1351" alt="상담 신청이 정상적으로 접수되었습니다. 평일 오전 9시 ~ 오후 8시 내에 전문 상담사가 순차적으로 연락드립니다. 연락드릴 예정이니 수신 부탁드립니다. 문의사항은 편하게 말씀해 주세요."><span class="tk-ph" id="tkPh" hidden></span><button class="x" aria-label="닫기"></button><button class="ok" aria-label="확인"></button></div></div>');
+document.body.insertAdjacentHTML('beforeend','<div class="ticket" id="ticket"><div class="tw"><img src="'+ORG+'/assets/store/ticket-consult-pink.webp" width="936" height="1351" alt="상담 신청이 정상적으로 접수되었습니다. 평일 오전 9시 ~ 오후 8시 내에 전문 상담사가 순차적으로 연락드립니다. 연락드릴 예정이니 수신 부탁드립니다. 문의사항은 편하게 말씀해 주세요."><span class="tk-ph" id="tkPh" hidden></span><button class="x" aria-label="닫기"></button><button class="ok" aria-label="확인"></button></div></div>');
 $('#dim').addEventListener('click',closeSheet);
 window.addEventListener('scroll',onScroll,{passive:true});
 window.addEventListener('hashchange',route);
@@ -2734,7 +2759,7 @@ renderHome();
 //   메타가 주소 뒤에 붙이는 광고 정보(utm·fbclid)는 ? 뒤에 그대로 남아서 CRM·기록에 정상으로 잡힘
 //   (#/model/fold8 주소를 광고에 바로 넣으면 메타가 # 뒤에 광고 정보를 붙여 화면·기록이 깨질 수 있어 이 방식으로)
 (function(){ try{
-  var mq=new URLSearchParams(location.search).get('m');
+  var mq=new URLSearchParams(location.search).get('m')||(LP&&LP.model)||null;   // 20261107 광고 전용 랜딩은 ?m 없이도 그 모델로
   if(!EDIT && mq && /^[\w-]{1,40}(,[\w-]{1,40}){0,5}$/.test(mq) && (!location.hash || location.hash==='#')){   // 처음 들어올 때만 (홈에서 새로고침하면 홈 그대로)
     var base=location.pathname+location.search, ids=mq.split(','), to='#/model/'+ids[0];
     if(ids.length>1){   // 20261019: 모델 여러 개 → 그 모델만 모아 보기 (예: ?m=iphone18pro,iphone18promax → 아이폰 18프로·프로맥스, 탭은 '아이폰')
@@ -2746,7 +2771,9 @@ renderHome();
     history.pushState(null,'',base+to);
   }
 }catch(e){} })();
-route();
+if(LP && window.MutationObserver && $('#mdBody')) new MutationObserver(lpBan).observe($('#mdBody'),{childList:true});   // 20261107 광고 전용 랜딩 배너
+window.addEventListener('hashchange',lpBan);
+route(); lpBan();
 if(EDIT) document.body.classList.add('edit','editing');
 if(CFG_WAIT) setTimeout(cfgDone, 5000);   // 20261021: 설정이 5초 넘게 안 오면 기본값으로 그림
 load().then(function(){ if(!EDIT) live(); if(window.__stReady) window.__stReady(); });

@@ -17,6 +17,7 @@
    ========================================================= */
 (function(){
 'use strict';
+var ORG=String((window.STORE_CFG||{}).origin||'').replace(/\/$/,'');   // 20261107 meta.uplusdak.com/s26 등 다른 주소에서 띄울 때 그림 주소 앞에 붙임 (landing 에선 비어 있음)
 
 var SVG_SEARCH='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>';
 var SVG_BELL='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>';
@@ -45,7 +46,7 @@ var HOME=
   '<div class="oy-top">'+
     /* 로고줄 — 20261022 사장님: 우리 로고(유플러스 다이렉트 + U+ 상자, 링크 공유 그림과 같은 것) · 아래로 내리면 숨고 올리면 나옴 (올리브영) */
     '<header class="oy-hd">'+
-      '<a class="oy-logo" href="#/" data-home aria-label="유플러스 다이렉트 홈"><img src="/assets/shop/logo-shop.png" alt="유플러스 다이렉트" width="159" height="22"></a>'+
+      '<a class="oy-logo" href="#/" data-home aria-label="유플러스 다이렉트 홈"><img src="'+ORG+'/assets/shop/logo-shop.png" alt="유플러스 다이렉트" width="159" height="22"></a>'+
       '<div class="oy-hd-r">'+
         '<button type="button" class="oy-ib" data-go="search" aria-label="검색">'+SVG_SEARCH+'</button>'+
         '<button type="button" class="oy-ib" data-open="noti" aria-label="알림">'+SVG_BELL+'<i class="dot-new"></i></button>'+
@@ -127,7 +128,7 @@ var PRE={on:false, nm:'사전예약', href:''};
 // 메인 배너 바탕: 올리브영 배너처럼 사진 느낌의 진한 색 + 흰 글자 (아래쪽은 shop.css 에서 어둡게)
 var BN_BG=['linear-gradient(160deg,#BCC9EF 0%,#7E92D4 100%)','linear-gradient(160deg,#EFC8DC 0%,#C48BB4 100%)','linear-gradient(160deg,#CEC6F1 0%,#8E81D2 100%)','linear-gradient(160deg,#F3CCD3 0%,#D68C9E 100%)'];
 // 이번주 특가 칠판 제목 (20261026 사장님 그림의 분필 글씨 그대로 — 관리자 제목이 '이번주 특가'일 때만 그림, 다르면 글자로)
-var CB_TITLE='/assets/shop/deal-chalk-title.webp';
+var CB_TITLE=ORG+'/assets/shop/deal-chalk-title.webp';
 // TV프리 카드: 올리브영 이벤트 카드처럼 진한 바탕 + 흰 글자 (사진은 흰 둥근 칸 안 — TV프리5 사진은 바탕이 흰색)
 var EV_BG=['linear-gradient(165deg,#8E9BDD 0%,#5562B3 100%)','linear-gradient(165deg,#B59BDD 0%,#7756B0 100%)','linear-gradient(165deg,#86B4DE 0%,#4B78B3 100%)'];
 // AI추천 카드 바탕 (올리브영 AI픽은 사진 — 우리는 진한 색 + 제품 사진, 흰 글자)
@@ -398,7 +399,7 @@ function bandList(){
   if(BAND_TRUST) A.vis(S.trust||[]).forEach(function(t){
     if(t.ic==='truck' && shipOn) return;   // 당일 발송은 위 칸(남은 시간)으로 보여 줌
     out.push({k:t.ic, ek:'trust:'+S.trust.indexOf(t), hid:!!t.hidden, go:t.ic==='headset'?'contact':'guide', l1:E(t.b), l2:E(t.s),
-      im:t.ic==='headset'?'/assets/store/ship/ico-call.webp':t.ic==='truck'?'/assets/store/ship/truck.webp':'', svg:A.TI[t.ic]||A.TI.headset});
+      im:t.ic==='headset'?ORG+'/assets/store/ship/ico-call.webp':t.ic==='truck'?ORG+'/assets/store/ship/truck.webp':'', svg:A.TI[t.ic]||A.TI.headset});
   });
   return out;
 }
@@ -406,7 +407,7 @@ var SH_BOX='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 7.2v9.
 var SH_CLOCK='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.4V12l3.2 2"/></svg>';
 function bdShip(b, clone){
   return '<a class="oy-bd oy-bd-ship2" href="javascript:void 0" data-go="'+E(b.go)+'"'+(b.ek?ed(b.ek):'')+(clone?' data-clone aria-hidden="true" tabindex="-1"':'')+'>'+
-    '<img class="oy-sh-im" src="/assets/store/ship/truck-box.webp" width="600" height="208" alt="" decoding="async">'+
+    '<img class="oy-sh-im" src="'+ORG+'/assets/store/ship/truck-box.webp" width="600" height="208" alt="" decoding="async">'+
     '<span class="oy-sh-tx">'+(b.lb?'<span class="oy-sh-lb">'+SH_BOX+E(b.lb)+'</span>':'')+'<b class="oy-sh-t1">'+b.l1+'</b>'+(b.t2?'<b class="oy-sh-t2">'+E(b.t2)+'</b>':'')+'</span>'+
     '<span class="oy-sh-row">'+(b.s?'<span class="oy-sh-s">'+E(b.s)+'</span>':'')+'<span class="oy-sh-cd">'+SH_CLOCK+b.cd+'</span></span></a>';
 }
