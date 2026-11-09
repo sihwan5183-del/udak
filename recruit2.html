@@ -254,6 +254,12 @@ section{position:relative}
 .done p{font-size:16px;color:var(--g1);margin-top:10px;line-height:1.7}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 
+/* ── 하단 고정 신청하기 (20261109) — 신청서·마지막 버튼이 보일 땐 숨김 ── */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:50;padding:14px 20px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(11,11,14,0),rgba(11,11,14,.92) 45%);transform:translateY(120%);transition:transform .25s ease;pointer-events:none}
+.dock.on{transform:none;pointer-events:auto}
+.dock a{display:flex;align-items:center;justify-content:center;width:100%;max-width:560px;height:60px;margin:0 auto;border-radius:999px;background:var(--pk);color:#fff;font-size:19px;font-weight:900;box-shadow:0 10px 24px -10px rgba(0,0,0,.6);transition:background .15s}
+.dock a:hover{background:var(--pk-d)}
+
 /* ── 모바일 ── */
 @media (max-width:760px){
   .wrap{padding:0 20px}
@@ -377,6 +383,8 @@ section{position:relative}
   .apply{padding:64px 0 72px}
   .form{margin-top:30px;padding:26px 20px 22px}
   .done{padding:36px 20px}
+  .dock{padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+  .dock a{height:56px;font-size:18px}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 </style>
@@ -616,6 +624,8 @@ section{position:relative}
 
 </main>
 
+<div class="dock" id="dock"><a href="#apply">신청하기</a></div>
+
 <script>
 (function(){
   /* 신청 → Supabase recruit_applications (ssgadmin 면접관리) · 지원 구분 '프리랜서' 로 들어가 /recruit 정규직 지원자와 구분 */
@@ -636,7 +646,15 @@ section{position:relative}
     try{ if(document.referrer){ var h=new URL(document.referrer).hostname; if(h && h!==location.hostname) s.push('ref='+h); } }catch(e){}
     return s.join(' · ').slice(0,200);
   }
-  function showDone(){ form.hidden=true; var d=$('done'); d.hidden=false; d.focus({preventScroll:true}); d.scrollIntoView({block:'center'}); }
+  /* 하단 고정 신청하기: 마지막 '간편 지원 신청하기' 버튼이나 신청서가 화면에 보이면 숨기고, 접수 뒤엔 계속 숨김 */
+  var dock=$('dock'), cta=document.querySelector('.final .cta'), apply=$('apply'), seen={}, sent=false;
+  function dockUpd(){ dock.classList.toggle('on', !sent && !seen.cta && !seen.apply); }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ seen[e.target===cta?'cta':'apply']=e.isIntersecting; }); dockUpd(); });
+    io.observe(cta); io.observe(apply);
+  }
+  dockUpd();
+  function showDone(){ sent=true; dockUpd(); form.hidden=true; var d=$('done'); d.hidden=false; d.focus({preventScroll:true}); d.scrollIntoView({block:'center'}); }
   form.addEventListener('submit', function(e){
     e.preventDefault(); errBox.classList.remove('on');
     var name=nameEl.value.trim(), phone=fmtPhone(phoneEl.value), area=areaEl.value.trim(), bad=[];
