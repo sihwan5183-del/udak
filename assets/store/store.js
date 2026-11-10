@@ -503,7 +503,7 @@ function pline(t,sm,v){ return '<div class="r pr2"><span>'+t+(sm?'<small>'+esc(s
 var TIER={};   // 상세에서 고른 요금제 (모델별)
 function tierLabel(t){ return t.fee?Number(t.fee).toLocaleString('ko-KR'):t.nm; }
 function tierTitle(t){ return t.title?t.title+(t.fee?' (월 '+won(t.fee)+')':''):(t.fee?'월 '+won(t.fee)+' 요금제':t.nm); }
-var PLAN_NOTE='';   // 20261020 '요금제는 6개월 후부터 47,000원 …' 안내는 뺌 (고객 입장에선 장벽 — 사장님 지시)
+var PLAN_NOTE='';   // 20261020 '요금제는 6개월 후부터 47,000원 …' 안내는 뺌 (고객 입장에선 장벽 — 사장님 지시) → 20261110 사장님: 조건 줄 아래 '6개월 후 47,000원 이상 요금제로 자유롭게 변경 가능'은 다시 넣음
 // 이 줄에서 쓰는 요금제 — 워치·탭처럼 구분 없는 줄은 첫 요금제 칸 하나만
 function rowTiers(r){ return tiersOf(r.g); }
 // TV프리: 집 인터넷 500MB·1GB 고객 모두 같은 조건(기기값 0원) — 고객이 고르지 않고 가장 좋은 조건으로 계산
@@ -718,7 +718,9 @@ function pvPhone(m, r, st){
   //    ('이후에는 47,000원 …'·'LG U+ 통신사 변경 조건 (번호이동)'은 20261020 사장님 지시로 이미 뺌)
   var mu=[]; if(st.t&&st.t.fee) mu.push(won(st.t.fee)+' 이상 요금제 6개월');
   mu.push('약정 2년');
-  h+='<div class="pv-must1"><b>조건</b><span>'+mu.join(' · ')+'</span></div>';
+  // 20261110 사장님: 모든 랜딩 유의사항에 '6개월 후 47,000원 이상 요금제로 자유롭게 변경 가능' 명시 (휴대폰 요금제 조건이 있을 때)
+  var chg=(st.t&&st.t.fee)?'<br><em class="pv-chg">6개월 후 47,000원 이상 요금제로 자유롭게 변경 가능</em>':'';
+  h+='<div class="pv-must1"><b>조건</b><span>'+mu.join(' · ')+chg+'</span></div>';
   // ⑤ 월 예상 납부금액(통신 요금 포함) 카드는 뺌 — 20261020 사장님 지시 (통신 요금 합친 금액은 고객 입장에선 진입장벽)
   return h+'</div>';
 }

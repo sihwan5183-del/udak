@@ -1649,6 +1649,7 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .pv-sr b.pink{color:var(--pink)}
 .pv-must1{display:flex;align-items:center;gap:8px;padding:2px 2px 0;font-size:13px;font-weight:600;color:var(--ink2);line-height:1.45;word-break:keep-all}
 .pv-must1 b{flex:none;font-size:11px;font-weight:800;color:#4E5968;background:#F2F4F6;border-radius:999px;padding:3px 8px}
+.pv-must1 .pv-chg{font-style:normal;font-weight:700;color:var(--pink,#e6007e)}   /* 20261110 사장님 */
 /* 20261020 상세 하단: 카톡 상담 빼고 '[제품명] 상담 신청하기' 버튼 하나만 (마지막 '상담' 단계 카드도 뺌) */
 .md-bar-b.one{grid-template-columns:1fr}
 /* 20261020 하단 한 줄 '번호이동 공시지원금 104,000원 S26 구매 가능' — 긴 이름(아이폰 18프로맥스 등)도 '구매 가능'이 잘리지 않게 두 줄까지 */
