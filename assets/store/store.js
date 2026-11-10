@@ -719,7 +719,7 @@ function pvPhone(m, r, st){
   var mu=[]; if(st.t&&st.t.fee) mu.push(won(st.t.fee)+' 이상 요금제 6개월');
   mu.push('약정 2년');
   // 20261110 사장님: 모든 랜딩 유의사항에 '6개월 후 47,000원 이상 요금제로 자유롭게 변경 가능' 명시 (휴대폰 요금제 조건이 있을 때)
-  var chg=(st.t&&st.t.fee)?'<br><em class="pv-chg">6개월 후 47,000원 이상 요금제로 자유롭게 변경 가능</em>':'';
+  var chg=(st.t&&st.t.fee)?'<br><em class="pv-chg">6개월 후 47,000원 이상 요금제로 자유롭게 변경 가능합니다.</em>':'';
   h+='<div class="pv-must1"><b>조건</b><span>'+mu.join(' · ')+chg+'</span></div>';
   // ⑤ 월 예상 납부금액(통신 요금 포함) 카드는 뺌 — 20261020 사장님 지시 (통신 요금 합친 금액은 고객 입장에선 진입장벽)
   return h+'</div>';
@@ -1478,7 +1478,7 @@ function pdRender(m, p, st, PK, o){
     h+=pdO('tier','요금제','<div class="pd-selw pd-skb"></div>')+pdO('method','할인 방식','<div class="pd-ms"><span class="pd-m pd-skb"></span><span class="pd-m pd-skb"></span></div>')+pdO('months','할부개월','<div class="pd-bs pd-skb" style="--n:1;height:48px;border-radius:10px"></div>');
   } else if(c){
     var mu=[]; if(st.t&&st.t.fee) mu.push(won(st.t.fee)+' 이상 요금제 6개월'); mu.push('약정 2년');   // 조건은 남김 (개통할 때 말이 안 나오게 — 20261020)
-    var chg2=(st.t&&st.t.fee)?'<br><em class="pv-chg">6개월 후 47,000원 이상 요금제로 자유롭게 변경 가능</em>':'';   // 20261110 사장님: 모든 랜딩 유의사항에 명시
+    var chg2=(st.t&&st.t.fee)?'<br><em class="pv-chg">6개월 후 47,000원 이상 요금제로 자유롭게 변경 가능합니다.</em>':'';   // 20261110 사장님: 모든 랜딩 유의사항에 명시
     h+=pdO('tier','요금제',pdTierSel(m,r,st,PK&&PK.promo)+'<div class="pd-cond"><b>조건</b><span>'+mu.join(' · ')+chg2+'</span></div>');
     // 20261027 사장님(버디 5): 우리 지원금만 보이면 작아 보여서 → '총 지원금 528,000원 (출고가 전액)' + 아래 '공시지원금 + 유플러스 다이렉트 지원금' (관리자 모델 편집 스위치)
     var fee=st.fee||0, selTot=fee?(fee-Math.round(fee*0.75))*24:0;   // 선택약정 2년 동안 덜 내는 요금 (예전 상세 비교와 같은 계산)
