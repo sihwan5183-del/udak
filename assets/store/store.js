@@ -583,6 +583,9 @@ function cgrid(label, key, items, cur, m, n, hint){
 var WPROMO={ fold8:{a:'t85', b:'t95', watch:'watch9', opt:'40mm', price:0},
   iphone18pro:{a:'t85', b:'t95', watch:'watchse3', opt:'40mm', opts:['40mm','44mm'], price:0},
   iphone18promax:{a:'t85', b:'t95', watch:'watchse3', opt:'40mm', opts:['40mm','44mm'], price:0} };
+// 20261110 사장님: 광고 랜딩별로 A/B를 더 켤 수 있게 — STORE_CFG.wpromo = {모델id:{a,b,watch,opt,price}} (예: meta/s26-coffee 의 갤럭시 S26)
+//   그 랜딩에서만 켜지고 스토어(/shop)엔 영향 없음
+(function(){ var xw=(window.STORE_CFG||{}).wpromo; if(xw) for(var k in xw) WPROMO[k]=xw[k]; })();
 var WPOPT={};   // 모델별로 고객이 고른 워치 사이즈
 function wpFor(m){ var w0=m&&WPROMO[m.id]; if(!w0) return null; var x=byId(w0.watch); if(!x || (!EDIT && SO(x))) return null;
   var w=w0;

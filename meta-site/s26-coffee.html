@@ -73,7 +73,9 @@ function udakMetaIds(){
 // 20261107 사장님: meta.uplusdak.com/s26-coffee — 갤럭시 S26 커피 배너(하루 한 잔 값) 광고 전용 랜딩
 //   화면·가격 계산·신청서는 스토어(landing.uplusdak.com/shop) 갤럭시 S26 상세와 똑같은 코드 · 가격·품절·상세 내용은 관리자(/apple)에서 바꾸면 여기도 같이 바뀜
 //   맨 위에 커피 광고 배너 — 20261110 사장님: 배너 그림은 깃허브(udak) assets/store/banner/ 에 올려서 스토어 그림과 같은 곳(landing.uplusdak.com)에서 끌어옴 (meta-s26-coffee-v3.webp)
+//   20261110 사장님: 폴드8처럼 요금제 A/B — A 85 요금제 / B 95 요금제 + 갤럭시 워치9 40mm 0원 (B 고르면 신청서·CRM에 워치9 40mm 같이 들어감)
 window.STORE_CFG = {mode:'view', srcTag:'meta/s26-coffee', origin:'https://landing.uplusdak.com',
+  wpromo:{ s26:{a:'t85', b:'t95', watch:'watch9', opt:'40mm', price:0} },
   lp:{model:'s26', banner:'https://landing.uplusdak.com/assets/store/banner/meta-s26-coffee-v3.webp?v=20261110', w:1055, h:1491, cta:'구매 조건 확인하기',
       alt:'유플러스 공식파트너사 유플러스 다이렉트 · 유플러스 최초의 온라인 대리점 · 번호이동 고객님 갤럭시 S26 기기값 0원 · SKT·KT·알뜰폰 고객님, U+로 번호이동 시 · 커피 한 잔 2,000원, S26은 무료? · 부가서비스·제휴카드 등 복잡한 조건 없이, 심플하게 · 85,000원 요금제 6개월 이상 유지'}};
 </script>
@@ -81,7 +83,7 @@ window.STORE_CFG = {mode:'view', srcTag:'meta/s26-coffee', origin:'https://landi
 <body>
 <div id="storeRoot"></div>
 <script src="https://landing.uplusdak.com/assets/shop/shop.js?v=20261107a"></script>
-<script src="https://landing.uplusdak.com/assets/store/store.js?v=20261107b"></script>
+<script src="https://landing.uplusdak.com/assets/store/store.js?v=20261110a"></script>
 <!-- 이탈 분석(익명, 개인정보 없음) — page='meta_s26_coffee' 으로 따로 기록 -->
 <script src="https://landing.uplusdak.com/assets/udak-funnel.js?v=20261027b" data-page="meta_s26_coffee" defer></script>
 </body>
