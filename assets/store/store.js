@@ -1478,7 +1478,8 @@ function pdRender(m, p, st, PK, o){
     h+=pdO('tier','요금제','<div class="pd-selw pd-skb"></div>')+pdO('method','할인 방식','<div class="pd-ms"><span class="pd-m pd-skb"></span><span class="pd-m pd-skb"></span></div>')+pdO('months','할부개월','<div class="pd-bs pd-skb" style="--n:1;height:48px;border-radius:10px"></div>');
   } else if(c){
     var mu=[]; if(st.t&&st.t.fee) mu.push(won(st.t.fee)+' 이상 요금제 6개월'); mu.push('약정 2년');   // 조건은 남김 (개통할 때 말이 안 나오게 — 20261020)
-    h+=pdO('tier','요금제',pdTierSel(m,r,st,PK&&PK.promo)+'<div class="pd-cond"><b>조건</b><span>'+mu.join(' · ')+'</span></div>');
+    var chg2=(st.t&&st.t.fee)?'<br><em class="pv-chg">6개월 후 47,000원 이상 요금제로 자유롭게 변경 가능</em>':'';   // 20261110 사장님: 모든 랜딩 유의사항에 명시
+    h+=pdO('tier','요금제',pdTierSel(m,r,st,PK&&PK.promo)+'<div class="pd-cond"><b>조건</b><span>'+mu.join(' · ')+chg2+'</span></div>');
     // 20261027 사장님(버디 5): 우리 지원금만 보이면 작아 보여서 → '총 지원금 528,000원 (출고가 전액)' + 아래 '공시지원금 + 유플러스 다이렉트 지원금' (관리자 모델 편집 스위치)
     var fee=st.fee||0, selTot=fee?(fee-Math.round(fee*0.75))*24:0;   // 선택약정 2년 동안 덜 내는 요금 (예전 상세 비교와 같은 계산)
     // 20261105 사장님 '싸 보이게': 모든 휴대폰에 '총 혜택' 띠 — 우리 지원금만 보이면 작아 보여서 (예전엔 관리자 스위치 m.supAll 켠 모델만 · 이제 스위치는 안 봄)
