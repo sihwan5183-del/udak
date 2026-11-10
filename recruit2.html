@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>프리랜서 영업 파트너 모집 | LG U+ 직영 파트너사</title>
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '921171610476690');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=921171610476690&ev=PageView&noscript=1"/></noscript>
+<!-- End Meta Pixel -->
 <meta name="description" content="자본금 0원 · 나이·경력 무관 · 교육 후 출퇴근 자유. 내 시간으로 고수익 만드는 통신 영업 프리랜서를 모집합니다.">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#0e0e11">
@@ -669,7 +677,7 @@ section{position:relative}
       method:'POST',
       headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},
       body:JSON.stringify({name:name, phone:phone, residence:area, apply_type:'프리랜서', privacy_agreed:true, source:source()})
-    }).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); showDone(); })
+    }).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); try{ if(typeof fbq!=='undefined'){ fbq('track','Lead',{content_name:'recruit2',content_category:'recruit'}); fbq('trackCustom','RecruitApply',{page:'recruit2'}); } }catch(e){} showDone(); })
       .catch(function(err){ console.error('지원 신청 저장 실패', err); errBox.classList.add('on'); btn.disabled=false; btn.textContent='신청하기'; });
   });
 })();

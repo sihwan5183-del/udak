@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>2026년 4분기 영업사원 신규채용 | (주)신세계정보통신</title>
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '921171610476690');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=921171610476690&ev=PageView&noscript=1"/></noscript>
+<!-- End Meta Pixel -->
 <meta name="description" content="유플러스의 새로운 기준, 신세계정보통신. 휴대폰·인터넷·TV 상담 및 판매 직무의 신입·경력 직원을 모집합니다.">
 <meta name="theme-color" content="#ffffff">
 <meta property="og:type" content="website">
@@ -969,7 +977,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
       method:'POST',
       headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},
       body:JSON.stringify({name:name, phone:phone, age:age, desired_area:area, apply_type:typeEl.value||null, privacy_agreed:true, source:source()})
-    }).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); showDone(); })
+    }).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); try{ if(typeof fbq!=='undefined'){ fbq('track','Lead',{content_name:'recruit',content_category:'recruit'}); fbq('trackCustom','RecruitApply',{page:'recruit'}); } }catch(e){} showDone(); })
       .catch(function(err){ console.error('면접 신청 저장 실패', err); errBox.classList.add('on'); btn.disabled=false; btn.innerHTML='신청하기 <span class="arr" aria-hidden="true">→</span>'; });
   });
 })();
