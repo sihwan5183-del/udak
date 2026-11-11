@@ -1585,6 +1585,8 @@ document.addEventListener('click',function(e){
    · 그 모델 상세 맨 위에 광고 배너를 그대로 붙임 — 배너를 누르면 바로 아래(통신사 고르기)로 내려감
    · 상세 내용·가격·품절은 스토어(관리자 /apple)와 같은 설정이라 함께 바뀜 · CFG.lp 가 없으면(landing) 아무것도 안 함 */
 var LP=(CFG.lp && CFG.lp.model)?CFG.lp:null;
+// 20261111 사장님: 광고 랜딩에서 컬러를 미리 골라 둠 — STORE_CFG.lp.color (예: 블랙 프라이데이 = '블랙') · 그 컬러가 있고 품절이 아닐 때만
+if(LP && LP.color) PICK[LP.model]=LP.color;
 function lpBan(){
   if(!LP || !LP.banner) return;
   var b=$('#mdBody'); if(!b) return;
