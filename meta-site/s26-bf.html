@@ -73,6 +73,8 @@ function udakMetaIds(){
 //   화면·가격 계산·신청서는 스토어(landing.uplusdak.com/shop) 갤럭시 S26 상세와 똑같은 코드 · 가격·품절·상세 내용은 관리자(/apple)에서 바꾸면 여기도 같이 바뀜
 //   맨 위 배너: 블랙 프라이데이 초대장 배너 (깃허브 assets/store/banner/meta-s26-bf.webp)
 window.STORE_CFG = {mode:'view', srcTag:'meta/s26-bf', origin:'https://landing.uplusdak.com',
+  // 20261111 사장님: 번호이동(MNP) 전용 — 통신사 선택에서 LG U+(기기변경) 뺌
+  mnpOnly:true,
   // 20261110 사장님: /s26 도 요금제 A/B — A 85 / B 95 + 갤럭시 워치9 40mm 0원 (s26-coffee 와 같음 · 이 랜딩에서만)
   wpromo:{ s26:{a:'t85', b:'t95', watch:'watch9', opt:'40mm', price:0} },
   lp:{model:'s26', banner:'https://landing.uplusdak.com/assets/store/banner/meta-s26-bf.webp?v=20261111', w:1392, h:1130, cta:'구매 조건 확인하기',
@@ -82,7 +84,7 @@ window.STORE_CFG = {mode:'view', srcTag:'meta/s26-bf', origin:'https://landing.u
 <body>
 <div id="storeRoot"></div>
 <script src="https://landing.uplusdak.com/assets/shop/shop.js?v=20261107a"></script>
-<script src="https://landing.uplusdak.com/assets/store/store.js?v=20261110d"></script>
+<script src="https://landing.uplusdak.com/assets/store/store.js?v=20261111a"></script>
 <!-- 이탈 분석(익명, 개인정보 없음) — page='meta_s26_bf' 으로 따로 기록 -->
 <script src="https://landing.uplusdak.com/assets/udak-funnel.js?v=20261027b" data-page="meta_s26_bf" defer></script>
 </body>
