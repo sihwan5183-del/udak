@@ -1520,7 +1520,7 @@ function pdRender(m, p, st, PK, o){
     if(st.fee) s+=pdL(esc(st.t.title||tierLabel(st.t)),won(st.fee));
     if(sel&&st.fee&&st.fee>fa) s+=pdL('선택약정 할인 (25%)','−'+won(st.fee-fa),'neg');
     if(wlf) s+=pdL('워치 이용료',won(wlf));
-    if(st.fee) s+='<div class="pd-sl pd-same"><span>월 요금은 어디서 가입해도 같아요 — 달라지는 건 <b>A</b>뿐</span></div>';
+    if(st.fee) s+='<div class="pd-sl pd-same"><span>월 요금은 어디서 가입해도 같아요 — 달라지는 건 <b>혜택</b>뿐</span></div>';   // 20261112 사장님: 'A뿐' → '혜택뿐'
     if(mm!==0) s+='<div class="pd-tot"><span><i>A</i><em>+</em><i>B</i></span><b>'+won(total)+'</b></div>';
     s+='<ul class="pd-ul"><li><i>'+PD_CK+'</i><span>제휴카드·부가서비스 의무가입 없음</span></li></ul></div>';
     h+=s;
