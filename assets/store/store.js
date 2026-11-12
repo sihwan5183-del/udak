@@ -1598,7 +1598,7 @@ function lpBan(){
   b.insertAdjacentHTML('afterbegin','<a class="lp-ban" href="#" data-lp-ban aria-label="'+esc(LP.cta||'구매 조건 확인하기')+'"><img src="'+esc(LP.banner)+'" alt="'+esc(LP.alt||'')+'" width="'+(+LP.w||1080)+'" height="'+(+LP.h||1350)+'" decoding="async" fetchpriority="high"></a>');
 }
 if(LP){
-  document.head.insertAdjacentHTML('beforeend','<style>.lp-ban{display:block;margin:0 0 12px}.lp-ban img{display:block;width:100%;height:auto}</style>');
+  document.head.insertAdjacentHTML('beforeend','<style>.lp-ban{display:block;margin:0 0 12px}.lp-ban img{display:block;width:100%;height:auto}@keyframes lpNeed{0%,100%{box-shadow:0 0 0 0 rgba(230,0,126,0)}30%,70%{box-shadow:0 0 0 3px rgba(230,0,126,.55)}}.pd-o.lp-need{border-radius:14px;animation:lpNeed 1.4s ease 2}.pd-o.lp-need .pd-ol::after{content:" — 먼저 선택해 주세요";color:#e6007e;font-weight:700}</style>');
   document.addEventListener('click',function(e){
     var t=e.target.closest&&e.target.closest('[data-lp-ban]'); if(!t) return; e.preventDefault();
     var nx=t.nextElementSibling, hd=$('#v-model .subhead'), off=(hd?hd.offsetHeight:0)+8;
@@ -2647,7 +2647,11 @@ document.addEventListener('click',function(e){
   if(w){e.preventDefault();e.stopPropagation();var id=w.getAttribute('data-wish'),l=store.get('wish',[]),i=l.indexOf(id);
     if(i>-1)l.splice(i,1);else l.unshift(id);store.set('wish',l);
     $$('[data-wish="'+id+'"]').forEach(function(b){b.classList.toggle('on',i<0)}); if($('#v-wish').classList.contains('on'))renderWish(); return}
-  var o=t.closest('[data-open]'); if(o){e.preventDefault();if(o.disabled)return;act(o.getAttribute('data-open'),o);return}
+  var o=t.closest('[data-open]'); if(o){e.preventDefault();if(o.disabled)return;
+    // 20261112 사장님: 광고 랜딩(STORE_CFG.lp)은 상세 맨 아래 '상담 신청하기' 전에 통신사를 꼭 고르게 — 안 골랐으면 신청서 대신 통신사 칸으로 데려가 깜빡임 (가격·혜택을 보고 신청하도록)
+    var om=o.getAttribute('data-model');
+    if(LP && o.getAttribute('data-open')==='consult' && om && !(SEL[om]||{}).carrier){ var jo=$('#mdBody [data-o="jt"]'); if(jo){ var hd=$('#v-model .subhead'); window.scrollTo({top:jo.getBoundingClientRect().top+window.pageYOffset-(hd?hd.offsetHeight:0)-12, behavior:'smooth'}); jo.classList.remove('lp-need'); void jo.offsetWidth; jo.classList.add('lp-need'); return; } }
+    act(o.getAttribute('data-open'),o);return}
   if(t.closest('[data-qx]')){ e.preventDefault(); var qi=$('#qnaQ'); if(qi){ qi.value=''; QQ=''; qi.parentNode.classList.remove('on'); $('.qna-cats').classList.remove('qdim'); $('#qnaList').innerHTML=qnaList(); qi.focus(); } return; }
   var qc=t.closest('[data-qcat]'); if(qc){ e.preventDefault(); QCAT=+qc.getAttribute('data-qcat'); var qi2=$('#qnaQ'); if(qi2){ qi2.value=''; QQ=''; qi2.parentNode.classList.remove('on'); $('.qna-cats').classList.remove('qdim'); } $$('.qna-cats button').forEach(function(x){ x.classList.toggle('on',x===qc); }); $('#qnaList').innerHTML=qnaList(); qc.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'}); return; }
   if(t.closest('[data-near]')){ e.preventDefault(); findNear(); return; }
