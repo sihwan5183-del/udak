@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<title>재고 사이트용 제품 정보</title>
+</head>
+<body>
+<!--
+  20261115 사장님: 재고 사이트(ssg-stock.pages.dev)에서 모델을 누르면 /shop 처럼 색상별 기기 사진 · 출고가가 보이게.
+  재고 사이트가 이 페이지를 보이지 않는 창(iframe)으로 띄우면, 스토어 엔진(store.js)이 /apple 관리자 설정을 받은 뒤
+  "제품 · 색상(이름 · 색 코드 · 사진 주소) · 오늘 적용되는 단가표의 출고가"를 재고 사이트로 보내 줍니다.
+  → /apple 에서 사진 · 출고가를 바꾸면 재고 사이트도 같이 바뀜(재고 사이트에 따로 넣지 않음). 화면에는 아무것도 안 보임.
+-->
+<div id="storeRoot" style="display:none" aria-hidden="true"></div>
+<script>
+window.STORE_CFG = { mode: 'view' };
+window.__stReady = function () {
+  try {
+    var X = window.STORE, S = X.S;
+    var abs = function (p) { var u = X.imgSrc(p); return /^(https?:)?\/\//.test(u) ? u : location.origin + (u.charAt(0) === '/' ? '' : '/') + u; };
+    var models = (S.models || []).filter(function (m) { return m && m.id; }).map(function (m) {
+      return {
+        id: m.id, nm: m.nm || m.id, hidden: !!m.hidden,
+        img: abs(X.mImg(m)),
+        colors: X.colorsOf(m).map(function (c) { return { nm: c.nm, hex: c.hex || '', img: c.img ? abs(c.img) : '' }; })
+      };
+    });
+    var ver = X.verAt(X.todayKST());
+    var rows = ((ver && ver.rows) || []).map(function (r) { return { code: r.code || '', cap: r.cap || '', model: r.model || '', out: X.num(r.out) }; });
+    parent.postMessage({ type: 'udak-catalog', at: S.updatedAt || null, ver: ver ? (ver.from || '') : '', models: models, rows: rows }, '*');
+  } catch (e) {
+    parent.postMessage({ type: 'udak-catalog', error: String(e && e.message || e) }, '*');
+  }
+};
+</script>
+<script src="/assets/store/store.js?v=20261113a"></script>
+</body>
+</html>
