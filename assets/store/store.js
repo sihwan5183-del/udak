@@ -388,6 +388,9 @@ function plansOf(g){ return (S.pricing.plans[g])||[]; }
 // 20261021 사장님: 휴대폰 요금제에서 105·115·130은 뺌 (85·95만) — 상세 요금제 고르기·가격 계산·신청서 모두 (관리자 가격표 편집(store-price.js)엔 그대로 남음)
 var TIER_OFF={t105:1, t115:1, t130:1};
 function tiersOf(g){ var ts=(S.pricing.tiers[g])||[]; return g==='phone'?ts.filter(function(t){ return !TIER_OFF[t.k]; }):ts; }
+// 20261116 사장님: 애플워치 A/B는 'A 85 / B 115' — 115는 평소 요금제 목록에선 꺼져 있어도(TIER_OFF) 그 모델의 A/B에서는 씀
+function tiersFor(m, g){ var ts=tiersOf(g), w=g==='phone'&&m&&WPROMO[m.id]; if(!w) return ts; var all=(S.pricing.tiers[g])||[], add=all.filter(function(t){ return (t.k===w.a||t.k===w.b) && ts.indexOf(t)<0; }); return add.length?ts.concat(add):ts; }
+function tierAny(k){ return ((S.pricing.tiers.phone)||[]).filter(function(x){ return x.k===k; })[0]||null; }
 function baseTier(g, P){ P=P||S.pricing; var ts=P.tiers[g]||[]; return ts.filter(function(t){return t.k===P.base[g]})[0]||ts[0]||null; }
 // 가격표에 이 모델 줄이 있는지 (공개 여부와 상관없이)
 function inSheet(m){ var v=PV(); return !!(v&&m&&v.rows.some(function(r){return r.model===m.id})); }
@@ -508,7 +511,7 @@ var PLAN_NOTE='';   // 20261020 '요금제는 6개월 후부터 47,000원 …' �
 function rowTiers(r){ return tiersOf(r.g); }
 // TV프리: 집 인터넷 500MB·1GB 고객 모두 같은 조건(기기값 0원) — 고객이 고르지 않고 가장 좋은 조건으로 계산
 function tvTier(r){ var ts=tiersOf('tvfree'), b=null; ts.forEach(function(t){ var c=r&&rowCalc(r,'all',t); var a=c?(c.pb!=null?c.pb:c.sel):null; if(a!=null&&(!b||a<b.a)) b={t:t,a:a}; }); return b?b.t:ts[0]; }
-function curTier(m, g, r){ if(g==='tvfree'&&r) return tvTier(r); var ts=r?rowTiers(r):tiersOf(g); return ts.filter(function(t){return t.k===TIER[m.id]})[0]||(ts.indexOf(baseTier(g))>-1?baseTier(g):ts[0]); }
+function curTier(m, g, r){ if(g==='tvfree'&&r) return tvTier(r); var ts=r?(r.g==='phone'?tiersFor(m,'phone'):rowTiers(r)):tiersFor(m,g); return ts.filter(function(t){return t.k===TIER[m.id]})[0]||(ts.indexOf(baseTier(g))>-1?baseTier(g):ts[0]); }
 /* ---------- 상세 계산기: 컬러·용량 → 통신사 → 요금제 → 할인 방식 → 할부 → 예상 월 납부금액 ---------- */
 var RATE={24:1.0626,30:1.0781,36:1.0935};   // 할부이자 포함 계수 (휴대폰·워치·태블릿 동일)
 var SEL={};                                  // 모델별 고른 조건 {carrier, method, months}
@@ -582,9 +585,10 @@ function cgrid(label, key, items, cur, m, n, hint){
 //   상세 '내 가격'의 요금제 고르기를 A/B 두 개로 — B를 고르면 신청서·CRM(ssgadmin)에 워치9 40mm가 함께 들어감
 //   워치 0원 = 출고가 − 이통사 지원금(단가표에 등록된 값) − 나머지는 유플러스 다이렉트 지원금 / 워치 이용료는 워치 이용 가이드 기준(95 요금제 이상이면 0원)
 // 20261027 사장님: 아이폰 18 프로·프로맥스도 'A 85 / B 95 요금제(한 단계 높이고) + 애플워치 SE3 0원' — 워치 사이즈 40mm/44mm 고객이 고름 (opts)
+// 20261116 사장님: 애플워치(아이폰 18 프로·프로맥스)는 이제 'A 85 / B 115 요금제 + 애플워치 SE3' — 95로는 안 된다고 함
 var WPROMO={ fold8:{a:'t85', b:'t95', watch:'watch9', opt:'40mm', price:0},
-  iphone18pro:{a:'t85', b:'t95', watch:'watchse3', opt:'40mm', opts:['40mm','44mm'], price:0},
-  iphone18promax:{a:'t85', b:'t95', watch:'watchse3', opt:'40mm', opts:['40mm','44mm'], price:0} };
+  iphone18pro:{a:'t85', b:'t115', watch:'watchse3', opt:'40mm', opts:['40mm','44mm'], price:0},
+  iphone18promax:{a:'t85', b:'t115', watch:'watchse3', opt:'40mm', opts:['40mm','44mm'], price:0} };
 // 20261110 사장님: 광고 랜딩별로 A/B를 더 켤 수 있게 — STORE_CFG.wpromo = {모델id:{a,b,watch,opt,price}} (예: meta/s26-coffee 의 갤럭시 S26)
 //   그 랜딩에서만 켜지고 스토어(/shop)엔 영향 없음
 (function(){ var xw=(window.STORE_CFG||{}).wpromo; if(xw) for(var k in xw) WPROMO[k]=xw[k]; })();
@@ -594,7 +598,7 @@ function wpFor(m){ var w0=m&&WPROMO[m.id]; if(!w0) return null; var x=byId(w0.wa
   if(w0.opts){ var ok=w0.opts.filter(function(o){ var r=wpRow({watch:w0.watch, opt:o}); return r && (EDIT || !r.so); }); if(!ok.length) return null;   // 품절·가격 없는 사이즈는 뺌
     w={}; for(var k in w0) w[k]=w0[k]; w.opts=ok; w.opt=ok.indexOf(WPOPT[m.id])>-1?WPOPT[m.id]:ok[0]; }
   if(!wpRow(w)) return null;
-  var ts=tiersOf('phone'); if(!ts.some(function(t){return t.k===w.a}) || !ts.some(function(t){return t.k===w.b})) return null; return w; }
+  var ts=tiersFor(m,'phone'); if(!ts.some(function(t){return t.k===w.a}) || !ts.some(function(t){return t.k===w.b})) return null; return w; }
 function wpRow(w){ var x=byId(w.watch); return x?sheetRows(x).filter(function(r){ return r.cap===w.opt && num(r.out)!=null; })[0]||null:null; }
 function wpName(w){ var x=byId(w.watch); return ((x&&x.nm)||'워치')+' '+w.opt; }
 function wpShort(w){ var x=byId(w.watch); return ((x&&x.nm)||'워치').replace(/^갤럭시\s*/,''); }
@@ -605,10 +609,10 @@ function wpCalc(w){
 }
 // 워치 이용료: 이용 가이드(셀룰러) 기준 — 요금제가 기준 이상이면 0원, 아니면 월 이용료
 function wpLineFee(w, fee){ var g=GUIDE[w.watch]; return g&&g.fee&&(fee||0)<g.plan?g.fee:0; }
-function tierNmOf(k){ var t=tiersOf('phone').filter(function(x){return x.k===k})[0]; return t?(t.nm||tierLabel(t)):k; }
+function tierNmOf(k){ var t=tierAny(k); return t?(t.nm||tierLabel(t)):k; }
 // 이 요금제로 했을 때 매달 내는 돈 (휴대폰 할부금 + 요금제) — A/B 칸에 각각 보여 줌
 function tierTotal(m, r, tk){
-  var s=SEL[m.id]||{}, t=rowTiers(r).filter(function(x){return x.k===tk})[0]; if(!t) return null;
+  var s=SEL[m.id]||{}, t=(r.g==='phone'?tiersFor(m,'phone'):rowTiers(r)).filter(function(x){return x.k===tk})[0]; if(!t) return null;
   var type=jtOf(s), c=rowCalc(r,type,t); if(!c) return null;
   var method=methodOf(m, s.method, c), after=(method==='pub'&&c.pb!=null)?c.pb:c.sel, mm=after===0?0:(s.months==null?24:s.months);
   var monthly=mm===0?0:won10(after*RATE[mm]/mm), fee=t.fee?(method==='sel'?Math.round(t.fee*0.75):t.fee):0;
@@ -2021,7 +2025,7 @@ function apInit(){ return {recv:'',store:'',from:'',phone:'',cap:0,color:'',carr
 function brandOf(m){ return (m && (/iphone|ipad|watchse|apple/i.test(m.id) || m.cat.indexOf('iphone')>-1)) ? 'apple' : 'samsung'; }
 var AP_SLOTS=[['watch','워치','watch'],['tablet','태블릿','tablet'],['tv','TV프리','tvfree']];
 function apPhone(){ return AP.phone && AP.phone!=='later' ? byId(AP.phone) : null; }
-function apTier(){ var ts=tiersOf('phone'); return ts.filter(function(t){return t.k===AP.tier})[0] || baseTier('phone'); }
+function apTier(){ var ts=tiersOf('phone'); return ts.filter(function(t){return t.k===AP.tier})[0] || (AP.wpromo&&AP.tier===AP.wpromo.b?tierAny(AP.tier):null) || baseTier('phone'); }
 function apNeed(m){ var g=GUIDE[m.id]; return g&&g.fee ? g.plan : (kindOf(m)==='tablet'?105000:95000); }
 // 함께 구매할 수 없는 이유 (없으면 '')
 function apReason(m){
