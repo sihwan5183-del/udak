@@ -522,7 +522,7 @@ function won10(n){ n=Math.round(Number(n)||0); var x=((n%10)+10)%10; return x>=8
 function noInterest(r){ return r.model==='tvfree5'; }   // TV프리는 이자 없이 그냥 나누기
 // 번호이동/기기변경: 고른 통신사가 있으면 그걸로(U+ = 기기변경) → 20261026 /shop 상세 '가입유형'(jt) → 위 번호이동·기기변경 버튼(MNP)
 // 20261026 사장님: 갤럭시 버디 5처럼 공시지원금으로만 0원이 되는 모델 — 선택약정 자체를 없앰 (관리자 모델 '공시지원금만' · 버디 5는 처음부터 켜짐)
-function pubOnly(m){ return !!(m && m.pubOnly); }
+function pubOnly(m){ return !!(m && (m.pubOnly || (CFG.pubOnly && kindOf(m)==='phone'))); }   // 20261116 사장님: 광고 랜딩(/s26·/fold8)은 STORE_CFG.pubOnly=true → 휴대폰 할인 방식을 공시지원금만 (선택약정 숨김)
 // 할부 개월 칸: 기기값 0원이면 '일시납' 하나만 (20261026 사장님)
 function MONTHS_OF(after){ return after===0?[['0','일시납']]:[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']]; }
 function methodOf(m, want, c){ return pubOnly(m)?'pub':((want==='sel'||!c||!c.pub)?'sel':'pub'); }
