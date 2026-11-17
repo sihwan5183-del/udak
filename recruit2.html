@@ -644,14 +644,14 @@ section{position:relative}
   var form=$('form'), nameEl=$('name'), birthEl=$('birth'), phoneEl=$('phone'), areaEl=$('area'), agreeEl=$('agree'), btn=$('submitBtn'), errBox=$('formErr');
   function fmtPhone(v){ var d=String(v).replace(/\D/g,'').slice(0,11); if(d.length<4) return d; if(d.length<8) return d.slice(0,3)+'-'+d.slice(3); return d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7); }
   function setBad(id,on){ var el=$(id); if(el) el.classList.toggle('bad',!!on); }
-  /* 생년월일 — 숫자 8자리(19700315)를 1970.03.15 로 보여 주고, 저장은 1970-03-15. 성인(만 19세 이상)만 (20261117 사장님: 신청서에 생년월일) */
+  /* 생년월일 — 숫자 8자리(19700315)를 1970.03.15 로 보여 주고, 저장은 1970-03-15. 20세 이상만 — 정규직 /recruit 와 같은 기준 (20261117 사장님: 신청서에 생년월일, 20세로) */
   function fmtBirth(v){ var d=String(v).replace(/\D/g,'').slice(0,8); if(d.length<5) return d; if(d.length<7) return d.slice(0,4)+'.'+d.slice(4); return d.slice(0,4)+'.'+d.slice(4,6)+'.'+d.slice(6); }
   function birthCheck(v){
     var d=String(v).replace(/\D/g,''); if(d.length!==8) return {err:'생년월일 8자리를 입력해 주세요. (예: 19700315)'};
     var y=+d.slice(0,4), m=+d.slice(4,6), dd=+d.slice(6,8), t=new Date(y,m-1,dd), now=new Date();
     if(y<1900 || t.getFullYear()!==y || t.getMonth()!==m-1 || t.getDate()!==dd || t>now) return {err:'생년월일을 다시 확인해 주세요. (예: 19700315)'};
     var age=now.getFullYear()-y-((now.getMonth()<m-1 || (now.getMonth()===m-1 && now.getDate()<dd))?1:0);
-    if(age<19) return {err:'성인만 지원할 수 있어요.'};
+    if(age<20) return {err:'20세 이상부터 지원할 수 있어요. (미성년자 지원 불가)'};
     return {iso:d.slice(0,4)+'-'+d.slice(4,6)+'-'+d.slice(6,8)};
   }
   birthEl.addEventListener('input', function(){ var p=this.selectionStart===this.value.length; this.value=fmtBirth(this.value); if(p) this.selectionStart=this.selectionEnd=this.value.length; setBad('f-birth',false); });
