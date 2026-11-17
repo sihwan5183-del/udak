@@ -18,7 +18,7 @@ fbq('track', 'PageView');
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="(주)신세계정보통신">
 <meta property="og:title" content="2026년 4분기 영업사원 신규채용 | (주)신세계정보통신">
-<meta property="og:description" content="LG유플러스 파트너사 · 휴대폰·인터넷·TV 상담 및 판매 직무 신입·경력 모집 · 정규직 · 서울·경기 23개 매장">
+<meta property="og:description" content="LG유플러스 파트너사 · 휴대폰·인터넷·TV 상담 및 판매 직무 신입·경력 모집 · 정규직 · 서울·경기 24개 매장">
 <meta property="og:image" content="https://landing.uplusdak.com/assets/recruit/og-recruit.jpg?v=20261022b">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -140,6 +140,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* 매장 카드 — 매장을 고르면 주소·지도 보기·길찾기 + (사진) + 지도. 사진은 PHOTO에 넣은 매장만 */
 .sc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);margin-top:16px;overflow:hidden}
 .sc[hidden]{display:none}
+.sc.no-media{grid-template-columns:1fr}
 .sc-info{display:flex;flex-direction:column;padding:26px 28px 24px}
 .sc-brand{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:var(--ink2);letter-spacing:-.01em}
 .sc-brand img{width:22px;height:22px;border-radius:5px}
@@ -443,6 +444,216 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .dock.on{transform:none;pointer-events:auto}
   .dock .btn{display:flex;width:100%;box-shadow:0 12px 24px -12px rgba(226,0,112,.65)}
 }
+/* ===== 20261117 사장님 PDF(매장 플래너 채용 시안) 내용 합침 — 디자인은 지금 페이지(핑크) 그대로 ===== */
+em.hl{font-style:normal;color:var(--pink)}
+.sub-h{margin-top:44px;font-size:22px;line-height:1.38;font-weight:800;letter-spacing:-.03em;color:var(--ink)}
+.sub-h.sm{margin-top:34px;font-size:19px}
+/* 면접 장소 안내 (첫 화면 바로 아래) */
+.ntc-sec{padding:4px 0 60px}
+.ntc{overflow:hidden;border-color:#f3b9d4;box-shadow:0 18px 40px -30px rgba(226,0,112,.55)}
+.ntc-hd{display:flex;align-items:center;gap:18px;padding:24px 26px;background:linear-gradient(135deg,#e20070,#c40062);color:#fff}
+.ntc-ic{flex:none;width:58px;height:58px;border-radius:14px;background:#fff;display:grid;place-items:center}
+.ntc-ic svg{width:28px;height:28px;fill:none;stroke:var(--pink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ntc-eb{font-size:13.5px;font-weight:700;color:#ffe3f0}
+.ntc-h{margin-top:3px;font-size:26px;line-height:1.42;font-weight:800;letter-spacing:-.03em}
+.ntc-h mark,.mtr-h mark{background:#fff;color:var(--pink);padding:0 6px;border-radius:5px}
+.ntc-bd{padding:20px 26px 22px}
+.ntc-addr{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;padding:14px 16px;border:1px solid var(--line);border-radius:12px}
+.tg{flex:none;display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:6px;background:var(--navy);color:#fff;font-size:12.5px;font-weight:700}
+.ntc-addr p{flex:1;min-width:230px;font-size:15px;line-height:1.5;font-weight:700}
+.ntc-addr .lnk,.lnk2{color:var(--blue);font-size:13.5px;font-weight:700;text-decoration:underline;text-underline-offset:2px;white-space:nowrap}
+.ntc-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px;list-style:none}
+.ntc-3 li{padding:15px 16px;border:1px solid var(--line);border-radius:12px}
+.ntc-3 b{display:block;font-size:15px;font-weight:800;letter-spacing:-.02em;color:var(--pink)}
+.ntc-3 span{display:block;margin-top:4px;font-size:13px;line-height:1.6;color:var(--sub)}
+.ntc-ft{margin-top:14px;padding-top:14px;border-top:1px solid var(--line2);text-align:center;font-size:13px;color:var(--sub)}
+.ntc-ft b{font-weight:800;color:var(--ink)}
+/* 숫자로 보는 신세계정보통신 */
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
+.num-c{padding:22px 22px 20px}
+.num-c.wide{grid-column:1/-1;padding:26px 26px 24px}
+.num-c .k{font-size:13.5px;font-weight:700;color:var(--sub2)}
+.num-c .v{margin-top:8px;font-size:38px;line-height:1.1;font-weight:800;letter-spacing:-.04em;color:var(--ink)}
+.num-c.wide .v{font-size:60px;color:var(--pink)}
+.num-c .v small{margin-left:3px;font-size:.45em;letter-spacing:-.02em}
+.num-c .s{margin-top:10px;font-size:12.5px;line-height:1.55;color:var(--sub)}
+/* 비전 · 연혁 · 일하는 방식 */
+.vis-d{margin-top:14px;font-size:14.5px;line-height:1.85;color:var(--ink2)}
+.vis-d b{font-weight:800;color:var(--ink)}
+.tl{position:relative;list-style:none;margin-top:28px;padding-left:30px}
+.tl::before{content:"";position:absolute;left:8px;top:24px;bottom:24px;width:2px;background:linear-gradient(#f5bcd7,var(--pink))}
+.tl li{position:relative;display:flex;align-items:center;gap:22px;padding:18px 22px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.tl li+li{margin-top:10px}
+.tl li::before{content:"";position:absolute;left:-28px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:#fff;border:3px solid var(--pink);box-sizing:border-box}
+.tl .y{flex:0 0 92px;font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--pink)}
+.tl b{display:block;font-size:16px;font-weight:800;letter-spacing:-.02em}
+.tl div span{display:block;margin-top:2px;font-size:13px;color:var(--sub)}
+.tl li.nx{background:linear-gradient(135deg,#e20070,#c40062);border-color:var(--pink);color:#fff;box-shadow:0 14px 30px -20px rgba(226,0,112,.8)}
+.tl li.nx .y{color:#fff}
+.tl li.nx div span{color:#ffe3f0}
+.tl li.nx::before{background:var(--pink);border-color:#fff;box-shadow:0 0 0 2px var(--pink)}
+.vals{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.vals li{display:flex;align-items:center;gap:14px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.vals .n{flex:none;font-size:20px;font-weight:800;color:var(--pink)}
+.vals b{font-size:14.5px;line-height:1.5;font-weight:700;letter-spacing:-.02em}
+/* 이런 분이면 딱 맞는 인재 */
+.fit{display:grid;grid-template-columns:290px 1fr;gap:12px 30px;margin-top:19px;padding:26px 28px}
+.fit-h{font-size:24px;line-height:1.4;font-weight:800;letter-spacing:-.03em}
+.fit-l{list-style:none}
+.fit-l li{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line2);font-size:15px;font-weight:700;letter-spacing:-.02em}
+.fit-l li:first-child{border-top:0;padding-top:2px}
+.fchk{flex:none;width:24px;height:24px;border-radius:6px;background:var(--pink);display:grid;place-items:center}
+.fchk svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.fit-n{grid-column:1/-1;margin-top:6px;padding:14px 16px;border-radius:10px;background:#fdf1f6;border:1px solid #f6cfe1;font-size:13.5px;line-height:1.7;color:var(--ink2)}
+.fit-n b{font-weight:800;color:var(--pink)}
+/* 성장 경로(커리어 단계) — 급여 카드 옆 */
+.cr-sub{margin-top:4px;padding:0 8px;font-size:13px;line-height:1.55;color:var(--sub)}
+.crs{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:7px;align-items:end;margin:16px 4px 0;border-bottom:3px solid var(--ink)}
+.crs li{display:flex;flex-direction:column;align-items:center;padding:14px 6px 12px;border-radius:10px 10px 0 0;text-align:center}
+.crs li:nth-child(1){min-height:122px;background:#eef1f5;color:var(--ink)}
+.crs li:nth-child(2){min-height:146px;background:#fbd3e6;color:#9c0050}
+.crs li:nth-child(3){min-height:170px;background:#ef5fa1;color:#fff}
+.crs li:nth-child(4){min-height:194px;background:var(--pink);color:#fff}
+.crs .lv{font-size:11px;font-weight:800;letter-spacing:.06em;opacity:.85}
+.crs b{margin-top:5px;font-size:16px;line-height:1.3;font-weight:800;letter-spacing:-.03em}
+.crs .t{margin-top:6px;font-size:12px;line-height:1.45}
+.rank-note b{font-weight:800;color:var(--pink)}
+.pay-rank .rank-note{margin-top:12px}
+/* 일반 알바와 비교 */
+.cmp-d{margin-top:6px;font-size:14px;color:var(--sub)}
+.cmp-g{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;margin-top:18px}
+.cmp-a,.cmp-b{padding:20px 22px;border-radius:14px}
+.cmp-b{background:linear-gradient(135deg,#e20070,#c40062);border:1px solid var(--pink);color:#fff;box-shadow:0 18px 36px -24px rgba(226,0,112,.75)}
+.cmp-t{text-align:center;font-size:17px;font-weight:800;letter-spacing:-.02em}
+.cmp-a .cmp-t{color:var(--sub2)}
+.cmp-g ul{list-style:none;margin-top:10px}
+.cmp-g li{display:flex;gap:9px;padding:11px 2px;border-top:1px dashed var(--line);font-size:14.5px;line-height:1.5}
+.cmp-g li:first-child{border-top:0}
+.cmp-a li{color:var(--sub2)}
+.cmp-b li{border-top-color:rgba(255,255,255,.4);font-weight:700}
+.cmp-g li i{flex:none;width:16px;font-style:normal;font-weight:800}
+.vs{font-size:28px;font-weight:900;letter-spacing:-.02em;color:var(--pink)}
+/* 1:1 멘토 배치 방식 */
+.mtr{margin-top:16px;padding:22px 24px;border-radius:14px;background:linear-gradient(135deg,#e20070,#c40062);color:#fff}
+.mtr-eb{font-size:13px;font-weight:700;color:#ffe3f0}
+.mtr-h{margin-top:6px;font-size:22px;line-height:1.5;font-weight:800;letter-spacing:-.03em}
+.mtr-d{margin-top:8px;font-size:13.5px;line-height:1.7;color:#ffe3f0}
+.mtr-s{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.mtr-s li{padding:16px 18px;border-radius:12px}
+.stp{flex:none;display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;border:1.5px solid var(--pink);color:var(--pink);font-size:12px;font-weight:800;letter-spacing:.02em;white-space:nowrap}
+.mtr-s b{display:block;margin-top:10px;font-size:16px;font-weight:800;letter-spacing:-.02em}
+.mtr-s div span{display:block;margin-top:3px;font-size:13px;line-height:1.6;color:var(--sub)}
+/* 혜택 · 휴가 · 함께하는 행사 */
+.bn{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.bn li{display:flex;align-items:flex-start;gap:14px;padding:18px}
+.bn-ic{flex:none;width:44px;height:44px;border-radius:12px;background:#fdf1f6;display:grid;place-items:center}
+.bn-ic svg{width:22px;height:22px;fill:none;stroke:var(--pink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bn b{display:block;font-size:15.5px;font-weight:800;letter-spacing:-.02em}
+.bn div span{display:block;margin-top:3px;font-size:12.5px;line-height:1.55;color:var(--sub)}
+.rest{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.rs{padding:16px;text-align:center}
+.rs .k{font-size:13px;font-weight:600;color:var(--sub2)}
+.rs .v{margin-top:4px;font-size:28px;line-height:1.2;font-weight:800;letter-spacing:-.03em;color:var(--pink)}
+.hrs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.hrc{padding:18px 22px;border-radius:16px}
+.hrc.on{background:var(--pink);border:1px solid var(--pink);color:#fff}
+.hrc .k{font-size:13.5px;font-weight:800}
+.hrc .v{margin-top:4px;font-size:28px;line-height:1.2;font-weight:800;letter-spacing:-.02em}
+.hrs-n{margin-top:8px;text-align:center;font-size:12.5px;color:var(--sub)}
+.tgt{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.tgt li{display:flex;flex-direction:column;align-items:center;gap:9px;padding:18px 10px;text-align:center;font-size:14px;font-weight:800;letter-spacing:-.02em}
+/* 채용 절차 강조 · 지원 전 확인 */
+.four>.card.hl{border-color:var(--pink);box-shadow:inset 0 0 0 1px var(--pink)}
+.four>.card.end{background:linear-gradient(135deg,#e20070,#c40062);border-color:var(--pink);color:#fff}
+.four>.card.end .no,.four>.card.end .t{color:#ffe3f0}
+.chkb{margin-top:12px;padding:18px 22px;border-radius:14px}
+.chkb h3{font-size:15px;font-weight:800}
+.chkb ul{list-style:none;margin-top:8px}
+.chkb li{position:relative;padding-left:16px;font-size:13px;line-height:1.75;color:var(--ink2)}
+.chkb li::before{content:"+";position:absolute;left:0;font-weight:800;color:var(--pink)}
+/* 채용 담당자 */
+.mgr{margin-top:8px;padding:14px 16px;border:1px solid var(--line);border-radius:12px}
+.mgr p{display:flex;align-items:center;gap:12px;font-size:14px}
+.mgr p+p{margin-top:6px;padding-top:6px;border-top:1px solid var(--line2)}
+.mgr span{flex:0 0 46px;font-size:12.5px;color:var(--sub)}
+.mgr b{font-weight:800}
+.mgr a{font-size:20px;font-weight:800;letter-spacing:-.01em;color:var(--pink)}
+.ap-note{margin-top:14px;font-size:12px;line-height:1.75;color:var(--sub)}
+@media (max-width:1023px){
+  .fit{grid-template-columns:230px 1fr}
+  .vals,.bn{grid-template-columns:1fr 1fr}
+}
+@media (max-width:760px){
+  .sub-h{margin-top:36px;font-size:20px}
+  .sub-h.sm{margin-top:28px;font-size:18px}
+  .ntc-sec{padding:0 0 44px}
+  .ntc-hd{gap:14px;padding:20px 18px}
+  .ntc-ic{width:48px;height:48px;border-radius:12px}
+  .ntc-ic svg{width:24px;height:24px}
+  .ntc-h{font-size:20px}
+  .ntc-bd{padding:16px}
+  .ntc-addr{padding:13px 14px}
+  .ntc-addr p{min-width:0;flex-basis:100%;font-size:14.5px}
+  .ntc-3{grid-template-columns:1fr;gap:8px}
+  .ntc-3 li{padding:13px 14px}
+  .ntc-ft{font-size:12.5px;text-align:left}
+  .nums{grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+  .num-c{padding:16px 16px 15px}
+  .num-c.wide{padding:20px 18px 18px}
+  .num-c .v{font-size:28px}
+  .num-c.wide .v{font-size:46px}
+  .num-c .s{font-size:12px}
+  .vis-d{font-size:14px;line-height:1.75}
+  .vis-d br{display:none}
+  .tl{margin-top:22px;padding-left:24px}
+  .tl::before{left:5px}
+  .tl li{gap:12px;padding:14px 14px}
+  .tl li::before{left:-23px}
+  .tl .y{flex-basis:62px;font-size:18px}
+  .tl b{font-size:14.5px}
+  .tl div span{font-size:12.5px}
+  .vals{grid-template-columns:1fr;gap:8px}
+  .vals li{padding:14px 16px}
+  .vals b br{display:none}
+  .fit{grid-template-columns:1fr;gap:14px;padding:22px 18px 20px}
+  .fit-h{font-size:21px}
+  .fit-l li{font-size:14.5px}
+  .fit-n{margin-top:0;font-size:13px}
+  .fit-n br{display:none}
+  .crs{gap:5px;margin:14px 0 0}
+  .crs li{padding:12px 3px 10px}
+  .crs li:nth-child(1){min-height:112px}
+  .crs li:nth-child(2){min-height:132px}
+  .crs li:nth-child(3){min-height:152px}
+  .crs li:nth-child(4){min-height:172px}
+  .crs .lv{font-size:10px;letter-spacing:.02em}
+  .crs b{font-size:14px}
+  .crs .t{font-size:11px}
+  .cmp-g{grid-template-columns:1fr;gap:8px}
+  .cmp-a,.cmp-b{padding:16px 18px}
+  .vs{text-align:center;font-size:22px}
+  .cmp-g li{font-size:14px;padding:10px 2px}
+  .mtr{padding:20px 18px}
+  .mtr-h{font-size:18.5px}
+  .mtr-s{grid-template-columns:1fr;gap:8px}
+  .mtr-s li{display:flex;align-items:flex-start;gap:14px;padding:14px 16px}
+  .mtr-s b{margin-top:2px;font-size:15px}
+  .bn{grid-template-columns:1fr;gap:8px}
+  .bn li{padding:14px 16px;align-items:center}
+  .bn-ic{width:40px;height:40px}
+  .rest{gap:8px}
+  .rs{padding:13px 8px}
+  .rs .v{font-size:22px}
+  .hrs{gap:8px}
+  .hrc{padding:14px 14px}
+  .hrc .v{font-size:19px;white-space:nowrap}
+  .tgt{grid-template-columns:1fr 1fr;gap:8px}
+  .tgt li{padding:15px 8px;font-size:13.5px}
+  .four>.card.end,.four>.card.hl{min-height:0}
+  .chkb{padding:16px 16px}
+  .mgr a{font-size:19px}
+  .sc.no-media .sc-info{padding-bottom:18px}
+}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 </style>
 </head>
@@ -482,15 +693,15 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     </div>
     <div class="card stats">
       <div>
-        <p class="st-k">급여 안내 · <b>수습 평균</b></p>
+        <p class="st-k">급여 안내 · <b>신입 평균</b></p>
         <p class="st-v">월 <span class="pk">350만 원</span></p>
         <p class="st-hl">전국 유일 직영 체계로 높은 인센티브 가능</p>
-        <p class="st-s">수습 기본급 230만 원 + 개인 성과 인센티브</p>
+        <p class="st-s">신입 기본급 250만 원 + 인센티브</p>
       </div>
       <div>
         <p class="st-k">근무 가능 지역</p>
-        <p class="st-v sm">서울 15곳 · 경기 8곳</p>
-        <p class="st-s">해당 23개 매장의 위치 안내</p>
+        <p class="st-v sm">서울 15곳 · 경기 9곳</p>
+        <p class="st-s">해당 24개 매장의 위치 안내</p>
       </div>
       <div>
         <p class="st-k">채용 형태</p>
@@ -501,11 +712,72 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   </div>
 </section>
 
+<section class="ntc-sec" id="notice">
+  <div class="wrap">
+    <div class="card ntc">
+      <div class="ntc-hd">
+        <span class="ntc-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/></svg></span>
+        <div>
+          <p class="ntc-eb">지원 전 꼭 확인해 주세요!</p>
+          <h2 class="ntc-h">면접은 매장이 아닌<br><mark>구리 본사 사무실</mark>에서 진행합니다</h2>
+        </div>
+      </div>
+      <div class="ntc-bd">
+        <div class="ntc-addr"><span class="tg">면접 장소</span><p>경기도 구리시 갈매순환로 188<br>지식산업센터(스칸센) A동 7층 705호</p><a class="lnk" href="#place">위치 및 길찾기 <span class="arr" aria-hidden="true">→</span></a></div>
+        <ul class="ntc-3">
+          <li><b>인사채용팀 직접 면접</b><span>본사 인사채용팀이 직접 만나 상담하고 채용을 결정합니다</span></li>
+          <li><b>회사를 눈으로 확인</b><span>본사 사무실에 와서 직접 보고 판단하세요</span></li>
+          <li><b>1:1 멘토 매칭 배치</b><span>면접에서 성향을 파악해 나와 맞는 멘토가 있는 매장으로 배치합니다</span></li>
+        </ul>
+        <p class="ntc-ft">근무는 각 매장에서, <b>면접은 본사 사무실에서</b> · 지원 후 면접 일정을 연락드립니다</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec gray" id="numbers">
+  <div class="wrap">
+    <p class="lbl">회사 소개</p>
+    <h2 class="h2">숫자로 보는 <em class="hl">신세계정보통신</em></h2>
+    <div class="nums">
+      <div class="card num-c wide"><p class="k">누적 가입자</p><p class="v">70,000<small>명+</small></p><p class="s">2024년 상반기 7만 명 돌파 · 매년 1만 명 이상 증가</p></div>
+      <div class="card num-c"><p class="k">월평균 개통 실적</p><p class="v">2,500<small>건+</small></p><p class="s">열정만 있다면 영업 걱정 NO</p></div>
+      <div class="card num-c"><p class="k">운영 매장</p><p class="v">24<small>개</small></p><p class="s">서울 · 남양주 · 구리 · 하남 · 성남</p></div>
+      <div class="card num-c"><p class="k">임직원</p><p class="v">100<small>명</small></p><p class="s">성장에 맞춰 365일 채용 중</p></div>
+      <div class="card num-c"><p class="k">설립</p><p class="v">2015<small>년</small></p><p class="s">10년 넘게 성장해 온 안정적인 기업</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="vision">
+  <div class="wrap">
+    <p class="lbl">비전</p>
+    <h2 class="h2">작은 매장에서 전국 TOP 5까지,<br><em class="hl">다음 성장의 주인공</em>은 바로 당신입니다</h2>
+    <p class="vis-d">(주)신세계정보통신은 2015년 창립 이후 LG U+ 직영 파트너사로 한 길을 걸어왔습니다. <br>지금도 매장을 늘리며 영업 권역을 넓혀가고 있습니다. <br><b>회사가 커지는 만큼, 함께한 사람의 자리도 커집니다.</b></p>
+    <ol class="tl">
+      <li><span class="y">2015</span><div><b>작은 회사로 출발</b><span>LG U+ 직영 파트너사로 첫발</span></div></li>
+      <li><span class="y">GROW</span><div><b>서울 → 경기로 매장 확장</b><span>광진·성동·중랑·강북 → 남양주·구리·하남·성남</span></div></li>
+      <li><span class="y">2024</span><div><b>누적 가입자 7만 명 돌파</b><span>매년 1만 명 이상 꾸준히 증가</span></div></li>
+      <li><span class="y">NOW</span><div><b>전국 TOP 5 기업형 대리점</b><span>직영 매장 24개 · 월평균 개통 2,500건+</span></div></li>
+      <li class="nx"><span class="y">NEXT</span><div><b>더 많은 매장, 더 큰 무대</b><span>계속되는 확장 — 새 매장을 이끌 사람이 필요합니다</span></div></li>
+    </ol>
+    <h3 class="sub-h">우리는 이렇게 일해요</h3>
+    <ol class="vals">
+      <li><span class="n">01</span><b>고객의, 고객에 의한, <br>고객을 위한 생각과 행동</b></li>
+      <li><span class="n">02</span><b>더 높은 기준을 향해 <br>최선을 다한다</b></li>
+      <li><span class="n">03</span><b>강점과 빠른 실행으로 <br>일이 되게 한다</b></li>
+      <li><span class="n">04</span><b>변화와 도전, <br>성장을 추구한다</b></li>
+      <li><span class="n">05</span><b>자율과 책임의 <br>문화를 실천한다</b></li>
+      <li><span class="n">06</span><b>인테그리티(Integrity)한 <br>우리가 된다</b></li>
+    </ol>
+  </div>
+</section>
+
 <section class="sec gray" id="area">
   <div class="wrap">
     <p class="lbl">근무지역</p>
     <h2 class="h2">내 생활권에서 근무할 수 있을까요?</h2>
-    <p class="desc">서울 7개 구, 경기 4개 시의 총 23개 매장을 확인해 보세요. 실제 배치는 거주지와 매장 상황을 고려해 협의합니다.</p>
+    <p class="desc">서울 7개 구, 경기 4개 시의 총 24개 매장을 확인해 보세요. 실제 배치는 거주지와 매장 상황을 고려해 협의합니다.</p>
 
     <div class="card find" id="find">
       <button type="button" class="near-btn" id="nearBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg><span>내 위치에서 가까운 매장 찾기</span></button>
@@ -520,9 +792,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
     <div class="tabs-row">
       <div class="tabs" role="tablist" aria-label="지역">
-        <button type="button" role="tab" id="tab-전체" aria-selected="true" data-r="전체">전체 23곳</button>
+        <button type="button" role="tab" id="tab-전체" aria-selected="true" data-r="전체">전체 24곳</button>
         <button type="button" role="tab" id="tab-서울" aria-selected="false" data-r="서울">서울 15곳</button>
-        <button type="button" role="tab" id="tab-경기" aria-selected="false" data-r="경기">경기 8곳</button>
+        <button type="button" role="tab" id="tab-경기" aria-selected="false" data-r="경기">경기 9곳</button>
         <button type="button" role="tab" id="tab-온라인팀" aria-selected="false" data-r="온라인팀">온라인팀</button>
       </div>
       <p class="tabs-dist" id="tabsDist">서울 7개 구 · 경기 4개 시</p>
@@ -550,13 +822,25 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
       <div class="card">
         <h3 class="ct">근무 조건은 어떻게 되나요?</h3>
         <dl class="rows">
-          <div><dt>고용 형태</dt><dd><b>정규직</b><span>수습기간 3개월</span></dd></div>
+          <div><dt>고용 형태</dt><dd><b>정규직</b><span>수습기간 신입 3개월, 경력자 1~3개월 (수습 기간은 계약직 근무)</span></dd></div>
           <div><dt>근무 요일</dt><dd><b>주 5일</b><span>스케줄 근무제</span></dd></div>
-          <div><dt>근무 시간</dt><dd><b>09:30 ~ 20:00</b><span>휴게시간 90분 · 매장 운영시간 기준</span></dd></div>
-          <div><dt>지원 자격</dt><dd><b>20세 이상 · 학력 무관 · 신입 지원 가능</b><span>미성년자 지원 불가 · 유사 직무 경험 및 인근 거주자 우대</span></dd></div>
+          <div><dt>근무 시간</dt><dd><b>평일 09:30 ~ 20:00</b><span>법정 공휴일 10:00 ~ 20:00 · 휴게시간 90분</span></dd></div>
+          <div><dt>지원 자격</dt><dd><b>20세 이상 · 학력·경력 무관</b><span>미성년자 지원 불가 · 통신업이 처음인 분도 환영</span></dd></div>
+          <div><dt>우대 사항</dt><dd><b>LG U+ 직영점 근무 경력 · 유사업무 경험 · 인근 거주</b><span>경력 인정: 통신사 1년 이상 근무 + 최근 6개월 이내 근무 이력</span></dd></div>
           <div><dt>근무 기간</dt><dd><b>1년 이상</b><span>협의 가능</span></dd></div>
         </dl>
       </div>
+    </div>
+    <div class="card fit">
+      <h3 class="fit-h">2개 이상 해당된다면,<br>당신은 <em class="hl">딱 맞는 인재</em></h3>
+      <ul class="fit-l">
+        <li><span class="fchk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>항상 더 높은 기준을 원하고, 성장에 목마르다</li>
+        <li><span class="fchk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>도전하는 것을 좋아한다</li>
+        <li><span class="fchk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>사람과 대화하는 것이 즐겁다</li>
+        <li><span class="fchk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>어떤 일이든 긍정적으로 받아들인다</li>
+        <li><span class="fchk"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>열정만큼은 누구에게도 뒤처지지 않는다</li>
+      </ul>
+      <p class="fit-n">경력자뿐 아니라 <b>통신업이 처음인 분</b>도 누구나 쉽게 시작할 수 있습니다. <br>입사 후 체계적인 교육으로 함께 출발해요.</p>
     </div>
   </div>
 </section>
@@ -564,30 +848,39 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <section class="sec gray" id="pay">
   <div class="wrap">
     <p class="pay-eb">급여 안내</p>
-    <h2 class="pay-h2">직급별 급여 안내</h2>
+    <h2 class="pay-h2">승진할수록 커지는 급여</h2>
     <p class="pay-sub"><b>전국 유일 직영 체계</b>로 높은 인센티브 가능</p>
     <div class="pay2">
       <div class="pay-avg">
-        <p class="pill">수습평균</p>
+        <p class="pill">신입 평균</p>
         <p class="num">월 350만 원</p>
         <hr class="bar">
-        <p class="txt">기본급 230만 원 + 인센티브</p>
+        <p class="txt">신입 기본급 250만 원 + 인센티브</p>
       </div>
       <div class="card pay-rank">
-        <h3>직급별 급여 구조</h3>
-        <dl class="ranks">
-          <div><dt>수습기간</dt><dd>230만 원 + α</dd></div>
-          <div><dt>플래너</dt><dd>250만 원 + α</dd></div>
-          <div><dt>점장</dt><dd>500만 원 + α</dd></div>
-          <div><dt>팀장</dt><dd>700만 원 + α</dd></div>
-          <div><dt>영업이사</dt><dd>1,000만 원 + α</dd></div>
-        </dl>
-        <p class="rank-note"><span class="ico" aria-hidden="true">!</span><span>근속기간 및 경력과 상관없이, 역량에 따라 관리자 기회를 제공합니다.</span></p>
+        <h3>아르바이트가 아닌 커리어를 시작하세요</h3>
+        <p class="cr-sub">실력과 성과로 올라가는 성장 경로 · 승진할수록 급여도 커집니다</p>
+        <ol class="crs">
+          <li><span class="lv">STEP 1</span><b>신입<br>플래너</b><span class="t">1:1 멘토와 함께 시작</span></li>
+          <li><span class="lv">STEP 2</span><b>우수<br>플래너</b><span class="t">실적만큼 커지는 인센티브</span></li>
+          <li><span class="lv">STEP 3</span><b>매장<br>책임자</b><span class="t">매장 운영과 팀원 관리</span></li>
+          <li><span class="lv">STEP 4</span><b>확장의<br>주역</b><span class="t">새 매장을 이끄는 핵심 인재</span></li>
+        </ol>
+        <p class="rank-note"><span class="ico" aria-hidden="true">!</span><span>매장이 늘어날수록 <b>매장을 맡을 자리도 새로 생깁니다.</b> 직급보다 실력으로 이야기하는 회사에서, 성과가 곧 승진입니다.</span></p>
       </div>
     </div>
-    <div class="card gp">
-      <h3>성장 경로</h3>
-      <ol class="gp-path"><li><span>수습</span></li><li><span>플래너</span></li><li><span>점장</span></li><li><span>팀장</span></li><li><span>영업이사</span></li></ol>
+    <h3 class="sub-h">일반 매장 알바와는 <em class="hl">비교불가</em></h3>
+    <p class="cmp-d">같은 시간을 일해도, 쌓이는 것이 다릅니다.</p>
+    <div class="cmp-g">
+      <div class="card cmp-a">
+        <p class="cmp-t">일반 아르바이트</p>
+        <ul><li><i>✕</i>시급에 묶인 고정 수입</li><li><i>✕</i>4대보험·퇴직금 불확실</li><li><i>✕</i>경력으로 남지 않는 업무</li><li><i>✕</i>승진·성장 경로 없음</li></ul>
+      </div>
+      <span class="vs" aria-hidden="true">VS</span>
+      <div class="cmp-b">
+        <p class="cmp-t">매장 플래너</p>
+        <ul><li><i>✓</i>기본급 + 실적 인센티브</li><li><i>✓</i>정규직 4대보험·퇴직금</li><li><i>✓</i>통신 상담 전문가로 성장</li><li><i>✓</i>매장 책임자로 성장</li></ul>
+      </div>
     </div>
   </div>
 </section>
@@ -601,29 +894,67 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
       <div class="card edu-c"><p class="no">02</p><div class="edu-r"><span class="edu-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M10 9H8M16 13H8M16 17H8"/></svg></span><h3>체계적인 직무 교육</h3></div></div>
       <div class="card edu-c"><p class="no">03</p><div class="edu-r"><span class="edu-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.42 10.92a1 1 0 0 0-.02-1.84L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.83l8.57 3.91a2 2 0 0 0 1.66 0z"/><path d="M22 10v6M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span><h3>수습 적응 지원</h3></div></div>
     </div>
-    <div class="card bene2">
-      <p class="no">복리후생</p>
-      <h3>근로조건과 복지제도</h3>
-      <ul class="bchips2">
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M9 12h6M12 9v6"/></svg><span>4대 보험</span></li>
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5M3 12a9 3 0 0 0 18 0"/></svg><span>퇴직금</span></li>
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg><span>연차·정기휴가</span></li>
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16v5M16 14v7M20 10v11M4 18v3M8 14v7"/><path d="m22 3-8.65 8.65a.5.5 0 0 1-.7 0L9.35 8.35a.5.5 0 0 0-.7 0L2 15"/></svg><span>장기근속 포상</span></li>
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg><span>우수사원 포상</span></li>
-      </ul>
+    <h3 class="sub-h">통신이 처음이어도<br><em class="hl">1:1 멘토</em>와 함께 시작합니다</h3>
+    <div class="mtr">
+      <p class="mtr-eb">신입 매장 배치 방식</p>
+      <p class="mtr-h">면접자 성향에 맞춰 <mark>1:1 멘토 매칭</mark>을 고려해 매장 배치</p>
+      <p class="mtr-d">무작정 매장에 보내지 않습니다. 면접에서 성향을 파악하고, 잘 맞는 멘토가 있는 매장에서 시작합니다.</p>
     </div>
+    <ol class="mtr-s">
+      <li class="card"><span class="stp">STEP 1</span><div><b>성향 파악</b><span>본사 면접에서 성향·강점·거주지를 꼼꼼히 확인</span></div></li>
+      <li class="card"><span class="stp">STEP 2</span><div><b>1:1 멘토 매칭 · 매장 배치</b><span>나와 잘 맞는 멘토가 있는 매장으로 배치, 옆에서 하나하나 배우며 시작</span></div></li>
+      <li class="card"><span class="stp">STEP 3</span><div><b>현장에서 성장</b><span>우수 사례 공유, 신입 워크숍으로 꾸준히 실력 향상</span></div></li>
+    </ol>
+
+    <h3 class="sub-h">일한 만큼,<br><em class="hl">그 이상을 돌려드립니다</em></h3>
+    <ul class="bn">
+      <li class="card"><span class="bn-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></span><div><b>우수·장기 근속자 포상</b><span>우수사원 표창, 우수 인원 해외여행</span></div></li>
+      <li class="card"><span class="bn-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg></span><div><b>업무 비용 100% 지원</b><span>일하는 데 드는 비용은 회사가 책임집니다</span></div></li>
+      <li class="card"><span class="bn-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.42 10.92a1 1 0 0 0-.02-1.84L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.83l8.57 3.91a2 2 0 0 0 1.66 0z"/><path d="M22 10v6M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg></span><div><b>교육 지원</b><span>신입 입사 교육부터 우수 사례 공유까지</span></div></li>
+      <li class="card"><span class="bn-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg></span><div><b>휴대폰 구매 지원</b><span>임직원 휴대폰 구매 혜택</span></div></li>
+      <li class="card"><span class="bn-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span><div><b>경조사 지원</b><span>기쁜 일도 슬픈 일도 함께합니다</span></div></li>
+      <li class="card"><span class="bn-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span><div><b>4대보험 · 퇴직금</b><span>법정 복리후생 철저히 준수</span></div></li>
+    </ul>
+
+    <h3 class="sub-h sm">잘 쉬어야 잘 팝니다</h3>
+    <div class="rest">
+      <div class="card rs"><p class="k">여름휴가</p><p class="v">5일</p></div>
+      <div class="card rs"><p class="k">명절휴무</p><p class="v">4일</p></div>
+      <div class="card rs"><p class="k">근무</p><p class="v">주 5일</p></div>
+    </div>
+    <div class="hrs">
+      <div class="hrc on"><p class="k">평일</p><p class="v">09:30 – 20:00</p></div>
+      <div class="card hrc"><p class="k">법정 공휴일</p><p class="v">10:00 – 20:00</p></div>
+    </div>
+    <p class="hrs-n">스케줄 근무 · 휴게시간 90분</p>
+
+    <h3 class="sub-h sm">함께 일하고, <em class="hl">함께 떠납니다</em></h3>
+    <ul class="tgt">
+      <li class="card"><span class="bn-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.8 11.3 2 22l10.7-3.79M4 3h.01M22 8h.01M15 2h.01M22 20h.01"/><path d="M22 2l-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z"/></svg></span>연말 컨벤션</li>
+      <li class="card"><span class="bn-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>상반기 신입 워크숍</li>
+      <li class="card"><span class="bn-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg></span>우수 인원 해외여행</li>
+      <li class="card"><span class="bn-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>우수 사례 공유</li>
+    </ul>
   </div>
 </section>
 
 <section class="sec gray" id="process">
   <div class="wrap">
     <p class="lbl">채용 절차</p>
-    <h2 class="h2">지원 신청부터 합격까지</h2>
+    <h2 class="h2">지원부터 <em class="hl">입사까지</em></h2>
     <div class="four">
-      <div class="card"><p class="no">01</p><h3>면접 신청</h3><p class="t">아래 간단한 정보를 제출</p></div>
-      <div class="card"><p class="no">02</p><h3>일정 조율</h3><p class="t">담당자가 개별 연락</p></div>
-      <div class="card"><p class="no">03</p><h3>면접 진행</h3><p class="t">구리 갈매 사무실에서 진행</p></div>
-      <div class="card"><p class="no">04</p><h3>최종 결과 안내</h3><p class="t">합격 여부 개별 안내</p></div>
+      <div class="card"><p class="no">01</p><h3>지원</h3><p class="t">온라인 · 문자 · 전화 모두 가능</p></div>
+      <div class="card hl"><p class="no">02</p><h3>면접</h3><p class="t">구리 본사 사무실 방문 · 인사채용팀 대면 면접</p></div>
+      <div class="card"><p class="no">03</p><h3>처우 협의</h3><p class="t">근무 매장 · 급여 조건 협의</p></div>
+      <div class="card end"><p class="no">04</p><h3>입사</h3><p class="t">성향 맞춤 1:1 멘토 매칭 · 매장 배치 후 첫 출근</p></div>
+    </div>
+    <div class="card chkb">
+      <h3>지원 전 꼭 확인해 주세요</h3>
+      <ul>
+        <li>지원서 및 면접 내용이 사실과 다를 경우 합격이 취소될 수 있습니다.</li>
+        <li>업무 특성상 신용상 결격 사유가 있는 경우 근무가 어렵습니다.</li>
+        <li>수습 기간(신입 3개월, 경력자 1~3개월)은 계약직으로 근무합니다.</li>
+      </ul>
     </div>
     <div class="card place" id="place">
       <div class="place-info">
@@ -666,6 +997,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
         <li>면접 신청 후 이력서를 요청드려요. 면접 전까지 이력서를 준비해 주세요.</li>
         <li>면접 당일 신분증으로 본인 확인을 진행해요. 신분증을 꼭 지참해 주세요.</li>
       </ol>
+      <h3 class="mt">채용 담당자</h3>
+      <div class="mgr">
+        <p><span>담당자</span><b>인사팀장 박태진</b></p>
+        <p><span>연락처</span><a href="tel:010-2227-4777">010-2227-4777</a></p>
+      </div>
+      <p class="ap-note">※ 가입비·교육비·물품 구매 등 어떠한 명목으로도 비용을 요구하지 않습니다.<br>※ 급여는 신입 기준이며 개인 실적에 따라 달라질 수 있습니다.</p>
     </div>
 
     <div>
@@ -731,7 +1068,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   var $=function(id){ return document.getElementById(id); };
   var esc=function(s){ return String(s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
 
-  /* 근무 매장 — 사장님이 준 채용 근무지 목록(서울 15곳·경기 8곳) */
+  /* 근무 매장 — 사장님이 준 채용 근무지 목록(서울 15곳·경기 9곳). 20261117 사장님 PDF 기준: 퇴계원점 빼고 등기소점·덕소점 추가 */
   var STORES=[
     ['서울','광진구','건대입구역점','서울시 광진구 능동로 95'],
     ['서울','광진구','군자역점','서울시 광진구 천호대로 573'],
@@ -749,15 +1086,16 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     ['서울','강동구','암사역점','서울시 강동구 올림픽로 769'],
     ['서울','강동구','길동역점','서울시 강동구 양재대로 1465'],
     ['경기','구리시','리맥스점','구리시 경춘로 239'],
-    ['경기','남양주시','퇴계원점','남양주시 퇴계원읍 퇴계원로 64'],
+    ['경기','구리시','등기소점','구리시 건원대로34번길 9'],
     ['경기','남양주시','해밀점','남양주시 진접읍 해밀예당3로 57'],
     ['경기','남양주시','장현초교점','남양주시 진접읍 장현로 83'],
     ['경기','남양주시','진주아파트점','남양주시 오남읍 진건오남로 639'],
     ['경기','남양주시','마석점','남양주시 화도읍 마석중앙로 65'],
+    ['경기','남양주시','덕소점','남양주시 와부읍 덕소로 91'],
     ['경기','하남시','미사역점','하남시 미사강변동로 70'],
     ['경기','성남시','금광동 E편한세상점','성남시 중원구 광명로 337']
   ].map(function(a){ return {r:a[0], d:a[1], n:a[2], a:a[3]}; });
-  /* 매장 위치(위도·경도) — 23곳 모두 카카오맵 주소 검색 값 (20261023 다시 확인: 예전 값은 많게는 600m 넘게 어긋나 있었음) */
+  /* 매장 위치(위도·경도) — 카카오맵 주소 검색 값. 등기소점·덕소점(20261117 추가)은 아직 좌표 없음 → 지도는 주소 검색으로 열고 거리 계산에서는 빠짐 (20261023 다시 확인: 예전 값은 많게는 600m 넘게 어긋나 있었음) */
   var GEO={
     '서울시 광진구 능동로 95':[37.539528,127.070147], '서울시 광진구 천호대로 573':[37.556589,127.081842], '서울시 광진구 천호대로 548':[37.556827,127.078992],
     '서울시 광진구 자양번영로 42':[37.533313,127.075950], '서울시 성동구 아차산로 96':[37.544616,127.054455], '서울시 성동구 용답동 58-1':[37.564618,127.053617],
@@ -777,7 +1115,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     '건대입구역점':'geondae', '군자역점':'gunja', '신군자점':'singunja', '신자양점':'sinjayang', '성수역점':'seongsu', '용답로데오점':'yongdap',
     '사가정점':'sagajeong', '먹골역점':'meokgol', '장한평역점':'janghanpyeong', '수유시장점':'suyu', '미아역점':'mia', '쌍문세라믹점':'ssangmun-ceramic',
     '쌍문역점':'ssangmun-station', '암사역점':'amsa', '길동역점':'gildong', '미사역점':'misa', '금광동 E편한세상점':'geumgwang', '리맥스점':'remax',
-    '퇴계원점':'toegyewon', '해밀점':'haemil', '진주아파트점':'jinju', '장현초교점':'janghyeon', '마석점':'maseok'
+    '해밀점':'haemil', '진주아파트점':'jinju', '장현초교점':'janghyeon', '마석점':'maseok'
   }, PHOTO={};
   Object.keys(PHOTO_FILE).forEach(function(n){ PHOTO[n]='/assets/recruit/stores/'+PHOTO_FILE[n]+'.webp'; });
   GEO[OFFICE.a]=[37.636059,127.122177];
@@ -787,7 +1125,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   function districts(r){ var out=[]; regionList(r).forEach(function(s){ if(out.indexOf(s.d)<0) out.push(s.d); }); return out; }
   function fullAddr(s){ return s.full||((s.r==='경기'?'경기 ':'')+s.a); }
   function placeLabel(s){ return s===OFFICE?'신세계정보통신 구리 갈매 사무실':'LG유플러스 '+s.n; }
-  function kakaoLink(kind, s){ var ll=GEO[s.a]; return 'https://map.kakao.com/link/'+kind+'/'+encodeURIComponent(placeLabel(s))+','+ll[0]+','+ll[1]; }
+  function kakaoLink(kind, s){ var ll=GEO[s.a]; if(!ll) return 'https://map.kakao.com/link/search/'+encodeURIComponent(fullAddr(s)); return 'https://map.kakao.com/link/'+kind+'/'+encodeURIComponent(placeLabel(s))+','+ll[0]+','+ll[1]; }
   function osmEmbed(s){ var ll=GEO[s.a], dy=0.0035, dx=0.0055; return 'https://www.openstreetmap.org/export/embed.html?bbox='+(ll[1]-dx).toFixed(6)+'%2C'+(ll[0]-dy).toFixed(6)+'%2C'+(ll[1]+dx).toFixed(6)+'%2C'+(ll[0]+dy).toFixed(6)+'&layer=mapnik&marker='+ll[0]+'%2C'+ll[1]; }
   function areaVal(s){ return s.r+' '+s.d; }
 
@@ -807,6 +1145,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   function renderCard(){
     var el=$('storeCard'), st=SEL; if(!st){ el.hidden=true; return; }
     var k=distOf(st), photo=PHOTO[st.n], office=st===OFFICE;
+    el.classList.toggle('no-media', !(photo||GEO[st.a]));
     el.innerHTML='<div class="sc-info">'+
       '<p class="sc-brand"><img src="/assets/recruit/uplus-mark.png" alt="" width="22" height="22">신세계정보통신</p>'+
       '<p class="sc-tag">'+(office?'U+ 최초의 온라인 대리점 · 유플러스 다이렉트':esc(st.r+' '+st.d))+'</p>'+
@@ -818,10 +1157,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
         '<a class="scb" href="'+kakaoLink('to',st)+'" target="_blank" rel="noopener">'+NAVI+'길찾기</a>'+
         '<button type="button" class="scb pk" data-pick="'+esc(office?'온라인팀':areaVal(st))+'">'+(office?'온라인팀으로 신청':'이 지역으로 신청')+'</button></div>'+
       '</div>'+
-      '<div class="sc-media'+(photo?' has-photo':'')+'">'+
+      ((photo||GEO[st.a])?'<div class="sc-media'+((photo&&GEO[st.a])?' has-photo':'')+'">'+
         (photo?'<figure class="sc-photo"><img src="'+esc(photo)+'" alt="'+esc(st.n)+' 매장 사진" loading="lazy"></figure>':'')+
-        '<div class="sc-map"><iframe src="'+osmEmbed(st)+'" title="'+esc(st.n)+' 위치 지도" loading="lazy"></iframe></div>'+
-      '</div>';
+        (GEO[st.a]?'<div class="sc-map"><iframe src="'+osmEmbed(st)+'" title="'+esc(st.n)+' 위치 지도" loading="lazy"></iframe></div>':'')+
+      '</div>':'');
     el.hidden=false;
   }
   function renderAcc(){
