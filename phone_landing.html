@@ -915,7 +915,8 @@ window.submitForm=async function(){
       })
     });
     if(!res.ok) throw new Error(await res.text());
-    if(typeof fbq==='function'){
+    /* 20261118 사장님: 이름에 한글이 없는 신청은 접수만 받고 메타에는 신청 신호 안 보냄 */
+    if(typeof fbq==='function' && /[가-힣]/.test(String(name||''))){
       fbq('track','Lead',{
         content_name: sel.device?.name||'',
         content_category: sel.plan?.name||'',

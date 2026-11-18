@@ -2731,7 +2731,7 @@ document.getElementById('reservationForm').addEventListener('submit', function(e
   }).then(function(res){
     if(res.ok){
       rfDoneSet(phoneF);   // v20261007: 완료 기록(같은 번호 30분 중복 방지) — 아래 어느 줄에서 오류가 나도 '네트워크 오류'로 다시 누르게 하지 않도록 맨 먼저
-      try{ if(typeof fbq!=='undefined') fbq('track','Lead'); }catch(e){}
+      /* 20261118 사장님: 이름에 한글이 없는 신청은 접수만 받고 메타에는 신청 신호 안 보냄 */ try{ if(typeof fbq!=='undefined' && /[가-힣]/.test(String(name||''))) fbq('track','Lead'); }catch(e){}
       // v20261007: 방금 발급된 예약번호를 받아 온 뒤 완료 안내를 띄움 (번호를 못 받아도 4초 안에 반드시 완료 안내로 넘어감)
       var rfFinish=function(no){
         try{ rfDoneSetNo(no); }catch(e){}

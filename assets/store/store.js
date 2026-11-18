@@ -519,6 +519,13 @@ var CARRIERS=['SKT','KT','알뜰폰','LG U+'];   // 20261021 사장님 순서: S
 // 20261111 사장님: 번호이동(MNP) 전용 광고 랜딩(예: meta/s26-bf)은 STORE_CFG.mnpOnly=true — 통신사에서 LG U+(기기변경)를 아예 뺌 · 스토어(/shop)는 그대로
 var MNP_ONLY=!!CFG.mnpOnly; if(MNP_ONLY) CARRIERS=CARRIERS.filter(function(c){ return c!=='LG U+'; });
 // 20261019 메타 '번호이동 접수' 신호(MnpLead): 지금 통신사가 SKT·KT·알뜰폰(=번호이동)인 접수만 — 기기변경(LG U+)·TV프리만은 안 보냄. 기존 Lead 는 그대로
+// 20261118 사장님: 이름에 한글이 없는 신청은 접수(CRM)는 그대로 받고, 메타에는 '신청(Lead)'·'번호이동 신청(MnpLead)'으로 알리지 않음
+//   — 메타가 "이런 사람이 신청한다"고 배워서 외국인 쪽으로 광고가 쏠리던 고리를 끊으려고
+function hasHangul(s){ return /[가-힣]/.test(String(s||'')); }
+function metaLead(body, params){
+  if(!hasHangul(body&&body.name)){ try{ window.udakEv && window.udakEv('meta_lead_skip',{why:'no_hangul'}); }catch(e){} return; }
+  if(typeof window.fbq!=='undefined') window.fbq('track','Lead',params); mnpLead(body);
+}
 function mnpLead(b){ try{ var c=b&&b.carrier, sn=b&&b.snapshot, mnp=sn?(sn.jointype==='번호이동'):(!!c && c!=='LG U+'); if(mnp && window.udakMeta) window.udakMeta('MnpLead', {carrier:c, model:(b.device_interest||'')}); }catch(e){} }
 // 원 단위 정리: 1원 자리가 8·9면 10원 올림, 그 밖엔 버림 (아이폰 듀오 랜딩과 같은 규칙)
 function won10(n){ n=Math.round(Number(n)||0); var x=((n%10)+10)%10; return x>=8?n+(10-x):n-x; }
@@ -2065,7 +2072,7 @@ function submitConsult(){
   if(typeof window.udakMetaIds==='function'){ var mi=window.udakMetaIds(); Object.keys(mi).forEach(function(k){ body[k]=mi[k]; }); }
   fetch(SB_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
   .then(function(res){
-    if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead'); mnpLead(body); reset(); closeSheet(); showTicket(); }
+    if(res.ok){ metaLead(body); reset(); closeSheet(); showTicket(); }
     else { reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해 주세요.'); }); }
   }).catch(function(e){ console.error(e); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해 주세요.'); });
 }
@@ -2624,7 +2631,7 @@ function qkSubmit(){
   var reset=function(){ btn.disabled=false; if(lb) lb.textContent=lb0; };
   fetch(SB_URL,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
   .then(function(res){
-    if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead',{content_name:'카톡 상담 (상세)'}); mnpLead(body); reset(); closeSheet(); kakaoDone(body.phone); }
+    if(res.ok){ metaLead(body,{content_name:'카톡 상담 (상세)'}); reset(); closeSheet(); kakaoDone(body.phone); }
     else { reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해 주세요.'); }); }
   }).catch(function(e){ console.error(e); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해 주세요.'); });
 }
@@ -2666,7 +2673,7 @@ function apSubmit(mode){
   var kwX=function(){ try{ if(kw) kw.close(); }catch(x){} };
   fetch(SB_URL,{method:'POST',keepalive:kakao,headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
   .then(function(res){
-    if(res.ok){ if(typeof window.fbq!=='undefined') window.fbq('track','Lead',{content_name:kakao?'카톡 예약 신청':'상담 예약 신청'}); mnpLead(body); reset();
+    if(res.ok){ metaLead(body,{content_name:kakao?'카톡 예약 신청':'상담 예약 신청'}); reset();
       if(kakao) kakaoDone(body.phone, kw); else showTicket(); }   // 카톡 예약은 카카오톡 채팅방으로
     else { kwX(); reset(); res.text().then(function(x){ console.error('Supabase:',x); alert('신청 오류가 발생했습니다. 다시 시도해 주세요.'); }); }
   }).catch(function(e){ console.error(e); kwX(); reset(); alert('네트워크 오류가 발생했습니다. 다시 시도해 주세요.'); });

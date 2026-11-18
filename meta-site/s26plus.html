@@ -270,8 +270,10 @@ input:focus,textarea:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(23
     fetch(URL_,{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
     .then(function(res){
       if(res.ok){
+        /* 20261118 사장님: 이름에 한글이 없는 신청은 접수만 받고 메타에는 신청 신호 안 보냄 */ if(/[가-힣]/.test(String(name||''))){
         try{ fbq('track','Lead'); }catch(e){}
         if(mnp){ try{ window.udakMeta && udakMeta('MnpLead',{carrier:carrier, model:DEVICE}); }catch(e){} }
+        }
         $('#doneSum').innerHTML='<b>'+DEVICE+'</b> · 번호이동 ('+carrier+')<br>'+(B?'B · 95 요금제 + 갤럭시 워치9 40mm 0원':'A · 85 요금제');
         $('#form').classList.add('is-done'); $('#mbar').classList.add('hide');
         var f=$('#form'); window.scrollTo({top:f.getBoundingClientRect().top+window.pageYOffset-20,behavior:'smooth'});

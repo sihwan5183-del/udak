@@ -568,8 +568,10 @@ img{display:block;max-width:100%;height:auto}
     fetch(URL_,{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY,'Prefer':'return=minimal'},body:JSON.stringify(body)})
     .then(function(res){
       if(res.ok){
+        /* 20261118 사장님: 이름에 한글이 없는 신청은 접수만 받고 메타에는 신청 신호 안 보냄 */ if(/[가-힣]/.test(String(name||''))){
         try{ fbq('track','Lead'); }catch(e){}
         try{ window.udakMeta && udakMeta('MnpLead',{carrier:PICK.carrier, model:'유심 번호이동'}); }catch(e){}
+        }
         $('#doneSum').innerHTML='현재 통신사 <b>'+PICK.carrier+'</b>'+(PICK.internet?' · 인터넷 <b>'+PICK.internet+'</b>':'');
         $('#form').classList.add('is-done'); $('#mbar').classList.add('hide');
         var f=$('#form'); window.scrollTo({top:f.getBoundingClientRect().top+window.pageYOffset-80,behavior:'smooth'});
