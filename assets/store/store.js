@@ -1188,6 +1188,7 @@ function renderWish(){
 }
 /* 모델 상세 */
 function renderModel(id, keepRecent){
+  if(LPK && LPK.indexOf(id)>-1) id=lpkCur();   // 20261118 광고 랜딩 카드 2개(아이폰 18 프로 / 프로맥스): 주소는 하나, 그리는 모델은 지금 열린 카드
   if(!keepRecent){ var r=store.get('recent',[]).filter(function(x){return x!==id}); r.unshift(id); store.set('recent',r.slice(0,10)); }
   // 20261021(2차) 사장님: '컬러부터 나오는 게 애초에 안 보였으면' — 설정(가격표)을 받기 전이라도 휴대폰은 처음부터 '통신사 → 내 가격' 화면을 그대로 그림
   //   가격은 통신사를 골라야 보이는 거라 첫 화면은 설정 없이도 똑같음 → 설정이 오면 같은 화면을 다시 그릴 뿐 (중간 화면 없음)
@@ -1453,18 +1454,28 @@ function pdRender(m, p, st, PK, o){
   pdHeadOn(); var tt=$('#mdTitle'); if(tt) tt.textContent=m.nm; MD_NOW='';
   var c=st&&st.c, r=o.selRow, cs=colorsOf(m), os=optsOf(m), pc=cs.filter(function(x){ return x.nm===PICK[m.id]; })[0], cur=pc||cs[0]||null;
   var shortNm=m.nm.replace(/^갤럭시\s+/,''), ED=EDIT?' data-edit="model:'+esc(m.id)+'"':'', bd=o.PRE?'':pdBadge(m), sk=function(w,h){ return '<i class="pd-skl" style="width:'+w+';height:'+h+'"></i>'; };
-  var h='<div class="pd">';
-  // ① 이름 · 최대 할인 · 공유
-  h+='<div class="pd-tt"'+ED+'><h2 class="md-h">'+esc(m.nm)+'</h2>'+(bd?'<span class="pd-bd">'+esc(bd)+'</span>':'')+'<button type="button" class="pd-share" data-pd-share="'+esc(m.id)+'" aria-label="공유하기">'+PD_SHARE+'</button></div>';
+  var LK=lpkOn(m);   // 20261118 광고 랜딩 카드 2개 모드 (STORE_CFG.lp.pick)
+  if(LK && LPSEL) lpkShare(m.id);   // 고른 조건을 다른 카드 모델에도 똑같이 → 카드 두 장 가격을 같은 조건으로
+  var h=(LK?lpkBanHtml():'')+'<div class="pd'+(LK?' lpk-pd':'')+'">';
+  // ① 이름 · 최대 할인 · 공유 (카드 모드는 이름이 카드에 있어서 뺌)
+  if(!LK) h+='<div class="pd-tt"'+ED+'><h2 class="md-h">'+esc(m.nm)+'</h2>'+(bd?'<span class="pd-bd">'+esc(bd)+'</span>':'')+'<button type="button" class="pd-share" data-pd-share="'+esc(m.id)+'" aria-label="공유하기">'+PD_SHARE+'</button></div>';
   // 20261105 사장님: 메타 광고에서 상세로 바로 꽂히니 제목 바로 밑에 '누구인지' 한 줄 — 홈 브랜드 칸과 같은 글(관리자 '브랜드'에서 고침) · 누르면 인증마크
   var bt=S.brand||{}, btr=bt.trust==null?'U+ 최초의 온라인 대리점':bt.trust;
   if(bt.big) h+='<button type="button" class="pd-trust" data-cert aria-label="LG U+ 공식인증대리점 인증마크 보기"><img src="'+ORG+'/assets/store/cert-mark-s.webp" alt="" width="36" height="36" decoding="async">'+
     '<span class="pd-trust-t"><b>LG U+ 공식인증대리점</b><small>'+(btr?esc(btr).replace(/^U\+/,'U<sup>+</sup>').replace(/ /g,'&nbsp;')+' · ':'')+esc(bt.big).replace(/ /g,'&nbsp;')+'</small></span>'+
     '<em aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></em></button>';   // 20261105 사장님 '깔끔하게·오피셜하게': 분홍 띠 대신 진짜 인증마크 + 검정 글씨 한 줄
+  if(LK){
+    // 카드 모드: ② 사진 대신 모델 카드 2장 → 누른 카드 밑으로 고르는 칸·계산표가 열림 (안 눌렀으면 카드까지만)
+    h+=lpkCards(o.PRE);
+    var pcls='lpk-panel'+(LPANIM===2?'':' open')+(LPANIM?' anim'+LPANIM:'');
+    h+='<div class="'+pcls+'" id="lpkPanel"><div class="lpk-in">'+lpkRail();
+    if(!LPSEL){ h+='</div></div></div>'; $('#mdBody').innerHTML=h; LPANIM=0; return; }
+  } else {
   // ② 큰 사진 · ③ 컬러 사진 (누르면 그 색으로 — 고른 색은 신청서에도 미리 들어감)
   h+='<div class="pd-img md-img" id="mdImg"'+ED+'>'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(SO(m)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>';
   if(cs.length>1 && cs.every(function(x){ return x.img; })) h+='<div class="pd-ths">'+cs.map(function(x){ var on=cur&&x.nm===cur.nm;
       return '<button type="button" class="pd-th'+(on?' on':'')+'" data-color-pick="'+esc(x.nm)+'" data-model="'+esc(m.id)+'" aria-label="'+esc(x.nm)+'">'+im(x.img,'',false,x.nm)+'</button>'; }).join('')+'</div>';
+  }
   // ④ 고르는 칸
   h+='<div class="pd-opts">'+(o.soHtml||'');
   if(cs.length>1){ var picked=!!PICK[m.id];   // 고객이 직접 누르기 전엔 '기본' (신청서에서 다시 고름 — 컬러는 고객이 직접)
@@ -1531,7 +1542,7 @@ function pdRender(m, p, st, PK, o){
   } else if(!o.PRE){
     h+='<div class="pd-sum" id="pdSum"><div class="pd-sh"><b>구매가</b><em>상담 시 안내</em></div></div>';
   }
-  h+=guideHtml(m)+'<div id="pdMoreSlot"></div></div>';
+  h+=guideHtml(m)+(LK?'</div></div>':'')+'<div id="pdMoreSlot"></div></div>';   // 카드 모드: 열린 칸(lpkPanel) 닫기
   // 아래 고정: 월 기기값 + 월 요금 = 합산 (월 기기값이 제일 크게) · [제품명 상담 신청하기] 하나 (20261020)
   var bar;
   if(o.soNow) bar='<div class="md-bar-t"><b>일시품절</b> · 지금은 신청할 수 없어요</div>';
@@ -1542,7 +1553,7 @@ function pdRender(m, p, st, PK, o){
   var dis=(o.soNow&&!EDIT)?' disabled':'';
   var cta=S.cta||{}, ctaOn=cta.on!==false&&!!cta.sub;   // 20261027 사장님: 버튼 안 아랫줄 작은 글씨 '5분 간단 상담'
   var apSub=o.soNow?'':ctaOn?'<small class="mb-ap-s"'+(EDIT?' data-edit="cta"':'')+'>'+esc(cta.sub)+'</small>':(EDIT?'<small class="mb-ap-s is-hidden" data-edit="cta">작은 글씨 없음 (눌러서 넣기)</small>':'');
-  h+='<div class="md-bar pd-bar" id="mdBar">'+(c&&!o.soNow?'<button type="button" class="pd-more" data-pd-sum>상세보기'+PD_UP+'</button>':'')+bar+'<div class="md-bar-b one">'+
+  h+='<div class="md-bar pd-bar'+(LK&&LPANIM===2?' lpk-barin':'')+'" id="mdBar">'+(c&&!o.soNow?'<button type="button" class="pd-more" data-pd-sum>상세보기'+PD_UP+'</button>':'')+bar+'<div class="md-bar-b one">'+
     '<button type="button" class="mb-ap'+(apSub?' sub':'')+'" data-open="consult" data-model="'+esc(m.id)+'"'+dis+'>'+(o.soNow?'일시품절':'<span class="mb-ap-m">'+esc(shortNm)+(wpOn?' + '+esc(wpShort(wpw)):'')+' 상담 신청하기<svg class="cta-ar" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></span>'+apSub)+'</button></div></div>';
   // 아래 칸(그림)은 내용이 같으면 그대로 둠 — 고를 때마다 그림이 다시 그려져 깜빡이지 않게
   var more=pdMore(m, st), keep=$('#pdMore'); if(keep && (keep.__h!==more || keep.getAttribute('data-m')!==m.id)) keep=null;
@@ -1550,6 +1561,7 @@ function pdRender(m, p, st, PK, o){
   $('#mdBody').innerHTML=h;
   var slot=$('#pdMoreSlot');
   if(slot){ if(keep) slot.parentNode.replaceChild(keep, slot); else { var tmp=document.createElement('div'); tmp.innerHTML=more; var nw=tmp.firstChild; nw.__h=more; nw.setAttribute('data-m',m.id); slot.parentNode.replaceChild(nw, slot); } }
+  if(LK) lpkAnim();
   pdSpy();
 }
 // 아래 칸 탭: 누르면 그 칸으로 · 내리면 지금 보는 칸에 밑줄
@@ -1591,11 +1603,79 @@ document.addEventListener('click',function(e){
 var LP=(CFG.lp && CFG.lp.model)?CFG.lp:null;
 // 20261111 사장님: 광고 랜딩에서 컬러를 미리 골라 둠 — STORE_CFG.lp.color (예: 블랙 프라이데이 = '블랙') · 그 컬러가 있고 품절이 아닐 때만
 if(LP && LP.color) PICK[LP.model]=LP.color;
+/* 20261118 사장님: meta.uplusdak.com/iphone18 — '아이폰 18 프로 / 아이폰 18 프로맥스' 카드 2개, 카드를 누르면 그 밑으로
+   평소 상세의 고르는 칸들(색상·용량·통신사·요금제·할인 방식·할부개월 + 계산표)이 열리면서 한 칸씩 올라옴
+   · STORE_CFG.lp.pick = ['iphone18pro','iphone18promax'] 일 때만 (스토어·다른 광고 랜딩은 그대로)
+   · 처음엔 카드까지만 (카드에 월 기기값) — 아래 고정 버튼도 카드를 고른 뒤에 올라옴
+   · 다른 카드를 누르면 열린 칸이 그 모델로 바뀜 · 고른 조건(통신사·요금제·할인 방식·할부·용량)은 두 모델이 같이 씀 → 카드 두 장 가격을 같은 조건으로 비교
+   · 가격·품절·상세 내용은 스토어(관리자 /apple)와 같은 설정 · 신청은 지금처럼 고른 모델로 */
+var LPK=(LP && !EDIT && arr(LP.pick).length>1)?arr(LP.pick):null, LPSEL=null, LPANIM=0, LPPREV=null;   // LPANIM: 2 = 처음 열 때, 1 = 다른 카드로 바꿀 때
+var LPK_CHEV='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+function lpkOn(m){ return !!(LPK && m && LPK.indexOf(m.id)>-1); }
+function lpkList(){ return LPK?LPK.map(byId).filter(function(x){ return x && !x.hidden; }):[]; }
+function lpkIdx(id){ var l=lpkList(); for(var i=0;i<l.length;i++) if(l[i].id===id) return i; return -1; }
+function lpkCur(){ var m=LPSEL&&byId(LPSEL); return (m&&!m.hidden)?LPSEL:(LP.model||LPK[0]); }
+function lpkShare(src){
+  var sm=byId(src); if(!sm) return; var sc=((optsOf(sm)[OPT[src]||0])||{}).nm;
+  LPK.forEach(function(k){ var km=byId(k); if(k===src || !km) return;
+    SEL[k]=clone(SEL[src]||{});
+    if(TIER[src]!=null) TIER[k]=TIER[src]; else delete TIER[k];
+    if(WPOPT[src]!=null) WPOPT[k]=WPOPT[src];
+    var ko=optsOf(km), ix=-1; ko.forEach(function(x,i){ if(ix<0 && x.nm===sc && !(x.row&&x.row.so)) ix=i; });
+    if(ix<0) ix=firstOkOpt(km); if(ix>=0) OPT[k]=ix; if(OPTT[src]) OPTT[k]=true; });
+}
+function lpkBanHtml(){ return LP.banner?'<a class="lp-ban" href="#" data-lp-ban aria-label="'+esc(LP.cta||'구매 조건 확인하기')+'"><img src="'+esc(LP.banner)+'" alt="'+esc(LP.alt||'')+'" width="'+(+LP.w||1080)+'" height="'+(+LP.h||1350)+'" decoding="async" fetchpriority="high"></a>':''; }
+function lpkCards(PRE){
+  var list=lpkList(), si=lpkIdx(LPSEL);
+  var h='<div class="lpk'+(si>-1?' has-on':'')+(LPANIM?' anim'+LPANIM:'')+'" id="lpkCards"><h3 class="lpk-h">원하시는 모델을 선택하세요</h3><div class="lpk-cs" style="--n:'+list.length+'">';
+  list.forEach(function(m){
+    var on=m.id===LPSEL, cs=colorsOf(m), pc=cs.filter(function(x){ return x.nm===PICK[m.id]; })[0], bd=PRE?'':pdBadge(m), pr='';
+    if(PRE) pr='<span class="lpk-pr"><i class="pd-skl" style="width:52px;height:12px"></i><i class="pd-skl" style="width:96px;height:22px;margin-top:6px"></i></span>';
+    else {
+      var rs=sheetRows(m), oi=null;
+      if(rs.length){ oi=OPT[m.id]!=null?OPT[m.id]:Math.max(0, rs.indexOf(priceOf(m).row)); if(optSO(m,oi)){ var fo=firstOkOpt(m); if(fo>=0) oi=fo; } }
+      var p=priceOf(m, oi);
+      if(p.kind==='sheet'){ var st=calcState(m,p.row); if(st.c){ var mm=st.months;
+        pr='<span class="lpk-pr"><small>'+(mm===0?'기기값':'월 기기값')+'</small><em>'+(mm===0?wz(st.after):wz(st.monthly))+'</em><i>'+esc(typeNm(st))+(mm===0?' · 일시납':' · '+mm+'개월')+'</i></span>'; } }
+      if(!pr) pr='<span class="lpk-pr"><small>구매가</small><em class="ask">상담 시 안내</em></span>';
+    }
+    h+='<button type="button" class="lpk-c'+(on?' on':'')+'" data-lpk="'+esc(m.id)+'" aria-pressed="'+(on?'true':'false')+'" aria-controls="lpkPanel">'+
+      (bd?'<span class="lpk-bd">'+esc(bd)+'</span>':'')+'<span class="lpk-ck" aria-hidden="true">'+PD_CK+'</span>'+
+      '<span class="lpk-im">'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(SO(m)?'<span class="so-tag">일시품절</span>':'')+'</span>'+
+      '<b class="lpk-nm">'+esc(m.nm)+'</b>'+pr+
+      '<span class="lpk-go">'+(on?'선택한 모델':'혜택 확인하기')+LPK_CHEV+'</span></button>';
+  });
+  return h+'</div></div>';
+}
+// 열린 칸 위 분홍 줄 + 고른 카드를 가리키는 꼭지
+function lpkRail(){ var si=lpkIdx(LPSEL); return '<div class="lpk-rail'+(si<0?' off':'')+'" aria-hidden="true" style="--n:'+lpkList().length+';--si:'+Math.max(si,0)+'"></div>'; }
+// 열린 칸 움직임: 처음 열 때 = 칸이 펼쳐지며 고르는 칸이 위에서부터 하나씩 올라옴 · 다른 카드로 바꿀 때 = 꼭지가 옆 카드로 미끄러지고 칸들이 살짝 다시 올라옴
+function lpkAnim(){
+  var p=$('#lpkPanel'), a=LPANIM; LPANIM=0; if(!p || !a) return;
+  var items=[], inn=p.querySelector('.lpk-in');
+  if(inn) Array.prototype.forEach.call(inn.children, function(el){ if(el.classList.contains('lpk-rail')) return; if(el.classList.contains('pd-opts')) Array.prototype.forEach.call(el.children, function(x){ items.push(x); }); else items.push(el); });
+  items.forEach(function(el,i){ el.classList.add('lpk-st'); el.style.setProperty('--i', Math.min(i,8)); });
+  if(a===2){ void p.offsetHeight; requestAnimationFrame(function(){ requestAnimationFrame(function(){ p.classList.add('open'); }); }); }
+  if(a===1 && LPPREV!=null){ var r=p.querySelector('.lpk-rail'); if(r){ var to=r.style.getPropertyValue('--si'); r.style.setProperty('--si', LPPREV); getComputedStyle(r,'::before').left; r.classList.add('mv'); r.style.setProperty('--si', to); } }
+  clearTimeout(lpkAnim._t); lpkAnim._t=setTimeout(function(){ ['#lpkPanel','#lpkCards'].forEach(function(k){ var q=$(k); if(q) q.classList.remove('anim1','anim2'); }); },1500);
+}
+function lpkScrollTo(el){ if(!el) return; var hd=$('#v-model .subhead'), top=el.getBoundingClientRect().top+window.pageYOffset-(hd?hd.offsetHeight:0)-8; if(Math.abs(top-window.pageYOffset)>24) window.scrollTo({top:top, behavior:'smooth'}); }
+if(LPK) document.addEventListener('click',function(e){
+  var c=e.target.closest&&e.target.closest('[data-lpk]'); if(!c) return; e.preventDefault();
+  var id=c.getAttribute('data-lpk'), m=byId(id); if(!m) return;
+  if(id===LPSEL){ lpkScrollTo($('#lpkPanel')); return; }   // 이미 열린 카드 = 열린 칸으로
+  var first=!LPSEL;
+  if(first) LPANIM=2; else { lpkShare(LPSEL); LPPREV=lpkIdx(LPSEL); LPANIM=1; }
+  LPSEL=id;
+  var y=window.pageYOffset; renderModel(id,true); window.scrollTo(0,y);
+  if(first) lpkScrollTo($('#lpkCards'));   // 처음 열 때: 카드를 화면 위로 올려서 아래로 열리는 칸이 보이게
+  else { var cd=$('#lpkCards'); if(cd && cd.getBoundingClientRect().bottom<0) lpkScrollTo(cd); }
+});
 function lpBan(){
   if(!LP || !LP.banner) return;
   var b=$('#mdBody'); if(!b) return;
-  var h=location.hash.replace(/^#\/?/,'').split('/');
-  var on=(h[0]==='model' && decodeURIComponent(h[1]||'')===LP.model), cur=b.querySelector(':scope > .lp-ban');
+  var h=location.hash.replace(/^#\/?/,'').split('/'), hm=decodeURIComponent(h[1]||'');
+  var on=(h[0]==='model' && (hm===LP.model || (LPK && LPK.indexOf(hm)>-1))), cur=b.querySelector(':scope > .lp-ban');
   if(!on){ if(cur) cur.parentNode.removeChild(cur); return; }
   if(cur && cur===b.firstElementChild) return;
   if(cur) cur.parentNode.removeChild(cur);

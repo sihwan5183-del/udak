@@ -163,6 +163,7 @@
              // v20261019: 상세 하단 [카톡 상담] → 카톡 간편 신청창, 그 안의 '카톡으로 상담 시작하기'
              ['#qkBtn','submit_click',function(){ return '카톡 간편'; }],['[data-qk]','qk_open',attr('data-qk')],['[data-qk-car]','qk_car',attr('data-qk-car')],['[data-qk-col]','qk_col',attr('data-qk-col')],
              ['[data-ap-pick]','ap_pick',attr('data-ap-pick')],
+             ['[data-lpk]','lpk_pick',attr('data-lpk')],   // 20261118 광고 랜딩(meta/iphone18) 모델 카드 — 누른 모델
              ['[data-ap]','ap',function(el){ return el.getAttribute('data-ap')+'='+(el.getAttribute('data-v')||''); }],
              ['[data-ap-act]','ap_act',attr('data-ap-act')],
              ['[data-calc]','calc',function(el){ return (el.getAttribute('data-model')||'')+' '+el.getAttribute('data-calc')+'='+(el.getAttribute('data-v')||''); }],
@@ -229,7 +230,7 @@
     // 20261020: 상세 정리 — '순서'(이 순서대로 하시면 돼요) 줄 없앰 · 지원금/꼭확인은 새로 바뀐 칸(.pv-sum/.pv-must1)
     // 20261021: 휴대폰 상세 순서가 통신사 → 내 가격 → 컬러 → 용량으로 바뀜 — '끝'은 목록 순서가 아니라 화면에서 가장 아래 있는 본 칸으로 셈
     //   '가격대기' = 통신사를 고르기 전 '내 가격' 자리(점선 칸)
-    var MD_SECS=[['사진','.md-img'],['이름','.md-h'],['통신사','.mstep[data-step="car"]'],['가격대기','.pv-wait'],['할부금','.pv-hero'],['지원금','.pv-sum'],['꼭확인','.pv-must1'],
+    var MD_SECS=[['모델카드','#lpkCards'],['사진','.md-img'],['이름','.md-h'],   // 20261118 광고 랜딩(meta/iphone18) 카드 2개 칸['통신사','.mstep[data-step="car"]'],['가격대기','.pv-wait'],['할부금','.pv-hero'],['지원금','.pv-sum'],['꼭확인','.pv-must1'],
       ['요금제','.mstep-sub'],['월납부','.pv-more'],['가격','.ms-detail:not(.pv)'],['가이드','.guide'],['컬러','.mstep[data-step="color"]'],['용량','.mstep[data-step="cap"]'],['상담선택','.mstep.cs'],
       // 20261026 /shop 새 상세(폰슐랭샵 배치): 컬러사진 · 색상 · 용량칸 · 가입유형 · 요금제칸 · 지원금띠 · 할인방식 · 할부칸 · 계산표 · 아래 칸(구매혜택·유의사항·구매후기·모델정보)
       ['컬러사진','.pd-ths'],['색상','.pd-o[data-o="color"]'],['용량칸','.pd-o[data-o="cap"]'],['가입유형','.pd-o[data-o="jt"]'],['요금제칸','.pd-o[data-o="tier"]'],['지원금띠','.pd-our'],
@@ -262,6 +263,7 @@
     function mdTap(s){ if(!MD||!s) return; MD.taps.push(String(s).slice(0,24)); if(MD.taps.length>14) MD.taps.shift(); }
     function mdTapOf(t){
       var el;
+      if((el=t.closest('[data-lpk]'))) return '카드:'+el.getAttribute('data-lpk');   // 20261118 광고 랜딩 모델 카드
       if((el=t.closest('[data-color-pick]'))) return '컬러:'+el.getAttribute('data-color-pick');
       if((el=t.closest('[data-opt-pick]'))) return '용량:'+(el.textContent||'').replace(/품절/,'').trim();
       if((el=t.closest('[data-wp-view]'))) return '워치사진';   // 20261027 B 칸 워치 사진 크게 보기 (B 칸 안에 있어서 요금제 누름보다 먼저)
