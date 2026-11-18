@@ -163,7 +163,7 @@
              // v20261019: 상세 하단 [카톡 상담] → 카톡 간편 신청창, 그 안의 '카톡으로 상담 시작하기'
              ['#qkBtn','submit_click',function(){ return '카톡 간편'; }],['[data-qk]','qk_open',attr('data-qk')],['[data-qk-car]','qk_car',attr('data-qk-car')],['[data-qk-col]','qk_col',attr('data-qk-col')],
              ['[data-ap-pick]','ap_pick',attr('data-ap-pick')],
-             ['[data-lpk]','lpk_pick',attr('data-lpk')],   // 20261118 광고 랜딩(meta/iphone18) 모델 카드 — 누른 모델
+             ['[data-lpk]','lpk_pick',function(el){ return (el.closest('.lp-ban')?'배너 ':'')+el.getAttribute('data-lpk'); }],   // 20261118 광고 랜딩(meta/iphone18) 모델 카드 — 누른 모델
              ['[data-ap]','ap',function(el){ return el.getAttribute('data-ap')+'='+(el.getAttribute('data-v')||''); }],
              ['[data-ap-act]','ap_act',attr('data-ap-act')],
              ['[data-calc]','calc',function(el){ return (el.getAttribute('data-model')||'')+' '+el.getAttribute('data-calc')+'='+(el.getAttribute('data-v')||''); }],
@@ -263,7 +263,7 @@
     function mdTap(s){ if(!MD||!s) return; MD.taps.push(String(s).slice(0,24)); if(MD.taps.length>14) MD.taps.shift(); }
     function mdTapOf(t){
       var el;
-      if((el=t.closest('[data-lpk]'))) return '카드:'+el.getAttribute('data-lpk');   // 20261118 광고 랜딩 모델 카드
+      if((el=t.closest('[data-lpk]'))) return (el.closest('.lp-ban')?'배너카드:':'카드:')+el.getAttribute('data-lpk');   // 20261118 광고 랜딩 모델 카드
       if((el=t.closest('[data-color-pick]'))) return '컬러:'+el.getAttribute('data-color-pick');
       if((el=t.closest('[data-opt-pick]'))) return '용량:'+(el.textContent||'').replace(/품절/,'').trim();
       if((el=t.closest('[data-wp-view]'))) return '워치사진';   // 20261027 B 칸 워치 사진 크게 보기 (B 칸 안에 있어서 요금제 누름보다 먼저)

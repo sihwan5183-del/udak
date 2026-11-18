@@ -1626,7 +1626,15 @@ function lpkShare(src){
     var ko=optsOf(km), ix=-1; ko.forEach(function(x,i){ if(ix<0 && x.nm===sc && !(x.row&&x.row.so)) ix=i; });
     if(ix<0) ix=firstOkOpt(km); if(ix>=0) OPT[k]=ix; if(OPTT[src]) OPTT[k]=true; });
 }
-function lpkBanHtml(){ return LP.banner?'<a class="lp-ban" href="#" data-lp-ban aria-label="'+esc(LP.cta||'구매 조건 확인하기')+'"><img src="'+esc(LP.banner)+'" alt="'+esc(LP.alt||'')+'" width="'+(+LP.w||1080)+'" height="'+(+LP.h||1350)+'" decoding="async" fetchpriority="high"></a>':''; }
+function lpkBanHtml(){
+  if(!LP.banner) return '';
+  var img='<img src="'+esc(LP.banner)+'" alt="'+esc(LP.alt||'')+'" width="'+(+LP.w||1080)+'" height="'+(+LP.h||1350)+'" decoding="async" fetchpriority="high">';
+  if(!arr(LP.hot).length) return '<a class="lp-ban" href="#" data-lp-ban aria-label="'+esc(LP.cta||'구매 조건 확인하기')+'">'+img+'</a>';
+  // 20261118 사장님: 배너 속 모델 칸을 눌러도 바로 그 모델이 열리게 — lp.hot = [{id, x, y, w, h}] (배너 그림 기준 %, 화면 크기에 따라 같이 줄고 늘어남)
+  var ok={}; lpkList().forEach(function(m){ ok[m.id]=m; });
+  return '<div class="lp-ban lp-ban-hot" data-lp-ban>'+img+arr(LP.hot).map(function(t){ var m=ok[t.id]; if(!m) return '';
+    return '<button type="button" class="lp-hot'+(t.id===LPSEL?' on':'')+'" data-lpk="'+esc(t.id)+'" aria-label="'+esc(m.nm)+' 혜택 확인하기" style="left:'+(+t.x)+'%;top:'+(+t.y)+'%;width:'+(+t.w)+'%;height:'+(+t.h)+'%"></button>'; }).join('')+'</div>';
+}
 function lpkCards(PRE){
   var list=lpkList(), si=lpkIdx(LPSEL);
   var h='<div class="lpk'+(si>-1?' has-on':'')+(LPANIM?' anim'+LPANIM:'')+(list.length>3?' lpk4':'')+'" id="lpkCards"><h3 class="lpk-h">원하시는 모델을 선택하세요</h3><div class="lpk-cs" style="--n:'+lpkCols()+'">';
@@ -1672,7 +1680,8 @@ function lpkScrollTo(el){ if(!el) return; var hd=$('#v-model .subhead'), top=el.
 if(LPK) document.addEventListener('click',function(e){
   var c=e.target.closest&&e.target.closest('[data-lpk]'); if(!c) return; e.preventDefault();
   var id=c.getAttribute('data-lpk'), m=byId(id); if(!m) return;
-  if(id===LPSEL){ lpkScrollTo($('#lpkPanel')); return; }   // 이미 열린 카드 = 열린 칸으로
+  var fromBan=!!(c.closest&&c.closest('.lp-ban'));   // 배너 속 모델 칸을 눌렀는지
+  if(id===LPSEL){ if(fromBan){ var oc=$('#lpkCards [data-lpk="'+id+'"]'), oi=lpkIdx(id); lpkScrollTo(oi<lpkCols()?$('#lpkCards'):oc); } else lpkScrollTo($('#lpkPanel')); return; }   // 이미 열린 카드 = 열린 칸으로
   var first=!LPSEL;
   var cols=lpkCols(), ni=lpkIdx(id), pi=lpkIdx(LPSEL), row=Math.floor(ni/cols), same=!first && pi>-1 && Math.floor(pi/cols)===row;
   if(first) LPANIM=2;
@@ -1680,8 +1689,8 @@ if(LPK) document.addEventListener('click',function(e){
   LPSEL=id;
   var t0=c.getBoundingClientRect().top, y=window.pageYOffset; renderModel(id,true); window.scrollTo(0,y);
   var nc=$('#lpkCards [data-lpk="'+id+'"]');
-  if(nc){ var d=nc.getBoundingClientRect().top-t0; if(Math.abs(d)>1) window.scrollTo(0, window.pageYOffset+d); }   // 열린 칸 자리가 바뀌어도 누른 카드는 손가락 밑 그대로
-  if(same){ var cd=$('#lpkCards'); if(cd && cd.getBoundingClientRect().bottom<0) lpkScrollTo(cd); }
+  if(nc && !fromBan){ var d=nc.getBoundingClientRect().top-t0; if(Math.abs(d)>1) window.scrollTo(0, window.pageYOffset+d); }   // 열린 칸 자리가 바뀌어도 누른 카드는 손가락 밑 그대로
+  if(same && !fromBan){ var cd=$('#lpkCards'); if(cd && cd.getBoundingClientRect().bottom<0) lpkScrollTo(cd); }
   else lpkScrollTo(row===0?$('#lpkCards'):nc);   // 열릴 때: 누른 카드 줄을 화면 위로 올려서 밑으로 열리는 칸이 보이게
 });
 function lpBan(){
@@ -1697,7 +1706,7 @@ function lpBan(){
 if(LP){
   document.head.insertAdjacentHTML('beforeend','<style>.lp-ban{display:block;margin:0 0 12px}.lp-ban img{display:block;width:100%;height:auto}@keyframes lpNeed{0%,100%{box-shadow:0 0 0 0 rgba(230,0,126,0)}30%,70%{box-shadow:0 0 0 3px rgba(230,0,126,.55)}}.pd-o.lp-need{border-radius:14px;animation:lpNeed 1.4s ease 2}.pd-o.lp-need .pd-ol::after{content:" — 먼저 선택해 주세요";color:#e6007e;font-weight:700}</style>');
   document.addEventListener('click',function(e){
-    var t=e.target.closest&&e.target.closest('[data-lp-ban]'); if(!t) return; e.preventDefault();
+    var t=e.target.closest&&e.target.closest('[data-lp-ban]'); if(!t || e.target.closest('[data-lpk]')) return; e.preventDefault();
     var nx=t.nextElementSibling, hd=$('#v-model .subhead'), off=(hd?hd.offsetHeight:0)+8;
     if(nx) window.scrollTo({top:nx.getBoundingClientRect().top+window.pageYOffset-off, behavior:'smooth'});
   });

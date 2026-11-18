@@ -1877,3 +1877,12 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
   .lpk-panel .lpk-st,.lpk-rail::after,.lpk-rail::before,.lpk-ck,.md-bar.lpk-barin{animation:none!important}
   .lpk-rail.mv::before{transition:none}
 }
+
+/* 20261118 사장님: 광고 배너 속 모델 칸 누르기 (lp.hot) — 배너 그림 위에 투명한 버튼, 누르면 그 모델 카드가 열림 */
+.lp-ban-hot{position:relative;cursor:pointer}
+.lp-hot{position:absolute;z-index:1;margin:0;padding:0;border:0;background:transparent;border-radius:clamp(6px,2.2vw,11px);cursor:pointer;
+  -webkit-tap-highlight-color:transparent;transition:background .15s,box-shadow .25s}
+.lp-hot:active{background:rgba(17,19,24,.08)}
+.lp-hot.on{box-shadow:0 0 0 2px var(--pink)}
+.lp-hot:focus-visible{outline:2px solid #131518;outline-offset:2px}
+@media (hover:hover){.lp-hot:hover{background:rgba(17,19,24,.04)}}
