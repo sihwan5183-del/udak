@@ -1561,7 +1561,7 @@ function pdRender(m, p, st, PK, o){
   $('#mdBody').innerHTML=h;
   var slot=$('#pdMoreSlot');
   if(slot){ if(keep) slot.parentNode.replaceChild(keep, slot); else { var tmp=document.createElement('div'); tmp.innerHTML=more; var nw=tmp.firstChild; nw.__h=more; nw.setAttribute('data-m',m.id); slot.parentNode.replaceChild(nw, slot); } }
-  if(LK) lpkAnim();
+  if(LK){ lpkPlace(); lpkAnim(); }
   pdSpy();
 }
 // 아래 칸 탭: 누르면 그 칸으로 · 내리면 지금 보는 칸에 밑줄
@@ -1603,6 +1603,7 @@ document.addEventListener('click',function(e){
 var LP=(CFG.lp && CFG.lp.model)?CFG.lp:null;
 // 20261111 사장님: 광고 랜딩에서 컬러를 미리 골라 둠 — STORE_CFG.lp.color (예: 블랙 프라이데이 = '블랙') · 그 컬러가 있고 품절이 아닐 때만
 if(LP && LP.color) PICK[LP.model]=LP.color;
+if(LP && LP.colors) Object.keys(LP.colors).forEach(function(k){ PICK[k]=LP.colors[k]; });   // 20261118 카드 랜딩: 모델별 컬러 (광고 배너 색 그대로)
 /* 20261118 사장님: meta.uplusdak.com/iphone18 — '아이폰 18 프로 / 아이폰 18 프로맥스' 카드 2개, 카드를 누르면 그 밑으로
    평소 상세의 고르는 칸들(색상·용량·통신사·요금제·할인 방식·할부개월 + 계산표)이 열리면서 한 칸씩 올라옴
    · STORE_CFG.lp.pick = ['iphone18pro','iphone18promax'] 일 때만 (스토어·다른 광고 랜딩은 그대로)
@@ -1614,6 +1615,7 @@ var LPK_CHEV='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"
 function lpkOn(m){ return !!(LPK && m && LPK.indexOf(m.id)>-1); }
 function lpkList(){ return LPK?LPK.map(byId).filter(function(x){ return x && !x.hidden; }):[]; }
 function lpkIdx(id){ var l=lpkList(); for(var i=0;i<l.length;i++) if(l[i].id===id) return i; return -1; }
+function lpkCols(){ var n=lpkList().length; return (n<=3 && LPK.length<=3)?Math.max(n,1):2; }   // 20261118 카드 4장(아이폰 17 / 18프로 / 18프로맥스 / 듀오) = 2×2
 function lpkCur(){ var m=LPSEL&&byId(LPSEL); return (m&&!m.hidden)?LPSEL:(LP.model||LPK[0]); }
 function lpkShare(src){
   var sm=byId(src); if(!sm) return; var sc=((optsOf(sm)[OPT[src]||0])||{}).nm;
@@ -1627,7 +1629,7 @@ function lpkShare(src){
 function lpkBanHtml(){ return LP.banner?'<a class="lp-ban" href="#" data-lp-ban aria-label="'+esc(LP.cta||'구매 조건 확인하기')+'"><img src="'+esc(LP.banner)+'" alt="'+esc(LP.alt||'')+'" width="'+(+LP.w||1080)+'" height="'+(+LP.h||1350)+'" decoding="async" fetchpriority="high"></a>':''; }
 function lpkCards(PRE){
   var list=lpkList(), si=lpkIdx(LPSEL);
-  var h='<div class="lpk'+(si>-1?' has-on':'')+(LPANIM?' anim'+LPANIM:'')+'" id="lpkCards"><h3 class="lpk-h">원하시는 모델을 선택하세요</h3><div class="lpk-cs" style="--n:'+list.length+'">';
+  var h='<div class="lpk'+(si>-1?' has-on':'')+(LPANIM?' anim'+LPANIM:'')+(list.length>3?' lpk4':'')+'" id="lpkCards"><h3 class="lpk-h">원하시는 모델을 선택하세요</h3><div class="lpk-cs" style="--n:'+lpkCols()+'">';
   list.forEach(function(m){
     var on=m.id===LPSEL, cs=colorsOf(m), pc=cs.filter(function(x){ return x.nm===PICK[m.id]; })[0], bd=PRE?'':pdBadge(m), pr='';
     if(PRE) pr='<span class="lpk-pr"><i class="pd-skl" style="width:52px;height:12px"></i><i class="pd-skl" style="width:96px;height:22px;margin-top:6px"></i></span>';
@@ -1648,7 +1650,14 @@ function lpkCards(PRE){
   return h+'</div></div>';
 }
 // 열린 칸 위 분홍 줄 + 고른 카드를 가리키는 꼭지
-function lpkRail(){ var si=lpkIdx(LPSEL); return '<div class="lpk-rail'+(si<0?' off':'')+'" aria-hidden="true" style="--n:'+lpkList().length+';--si:'+Math.max(si,0)+'"></div>'; }
+function lpkRail(){ var si=lpkIdx(LPSEL), c=lpkCols(); return '<div class="lpk-rail'+(si<0?' off':'')+'" aria-hidden="true" style="--n:'+c+';--si:'+(Math.max(si,0)%c)+'"></div>'; }
+// 열린 칸 자리: 누른 카드가 있는 줄 바로 밑 (2×2면 윗줄 카드를 누르면 아랫줄 카드가 밑으로 밀려남)
+function lpkPlace(){
+  var p=$('#lpkPanel'), g=$('#lpkCards .lpk-cs'); if(!p || !g) return;
+  var si=lpkIdx(LPSEL); if(si<0) return;
+  var c=lpkCols(), cards=g.querySelectorAll('.lpk-c'), nx=cards[(Math.floor(si/c)+1)*c];
+  if(nx) g.insertBefore(p, nx); else g.appendChild(p);
+}
 // 열린 칸 움직임: 처음 열 때 = 칸이 펼쳐지며 고르는 칸이 위에서부터 하나씩 올라옴 · 다른 카드로 바꿀 때 = 꼭지가 옆 카드로 미끄러지고 칸들이 살짝 다시 올라옴
 function lpkAnim(){
   var p=$('#lpkPanel'), a=LPANIM; LPANIM=0; if(!p || !a) return;
@@ -1665,11 +1674,15 @@ if(LPK) document.addEventListener('click',function(e){
   var id=c.getAttribute('data-lpk'), m=byId(id); if(!m) return;
   if(id===LPSEL){ lpkScrollTo($('#lpkPanel')); return; }   // 이미 열린 카드 = 열린 칸으로
   var first=!LPSEL;
-  if(first) LPANIM=2; else { lpkShare(LPSEL); LPPREV=lpkIdx(LPSEL); LPANIM=1; }
+  var cols=lpkCols(), ni=lpkIdx(id), pi=lpkIdx(LPSEL), row=Math.floor(ni/cols), same=!first && pi>-1 && Math.floor(pi/cols)===row;
+  if(first) LPANIM=2;
+  else { lpkShare(LPSEL); if(same){ LPPREV=pi%cols; LPANIM=1; } else LPANIM=2; }
   LPSEL=id;
-  var y=window.pageYOffset; renderModel(id,true); window.scrollTo(0,y);
-  if(first) lpkScrollTo($('#lpkCards'));   // 처음 열 때: 카드를 화면 위로 올려서 아래로 열리는 칸이 보이게
-  else { var cd=$('#lpkCards'); if(cd && cd.getBoundingClientRect().bottom<0) lpkScrollTo(cd); }
+  var t0=c.getBoundingClientRect().top, y=window.pageYOffset; renderModel(id,true); window.scrollTo(0,y);
+  var nc=$('#lpkCards [data-lpk="'+id+'"]');
+  if(nc){ var d=nc.getBoundingClientRect().top-t0; if(Math.abs(d)>1) window.scrollTo(0, window.pageYOffset+d); }   // 열린 칸 자리가 바뀌어도 누른 카드는 손가락 밑 그대로
+  if(same){ var cd=$('#lpkCards'); if(cd && cd.getBoundingClientRect().bottom<0) lpkScrollTo(cd); }
+  else lpkScrollTo(row===0?$('#lpkCards'):nc);   // 열릴 때: 누른 카드 줄을 화면 위로 올려서 밑으로 열리는 칸이 보이게
 });
 function lpBan(){
   if(!LP || !LP.banner) return;

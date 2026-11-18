@@ -1844,6 +1844,9 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 /* 열리는 칸: 높이 0 → 내용만큼 (grid 0fr → 1fr) */
 .lpk-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s cubic-bezier(.22,1,.36,1)}
 .lpk-panel.open{grid-template-rows:1fr}
+.lpk-cs>.lpk-panel{grid-column:1/-1;margin-bottom:6px}   /* 열린 칸은 누른 카드 줄 바로 밑, 한 줄 전체 너비 */
+.lpk-cs>.lpk-panel.open .lpk-in{border-bottom:2px solid #1F2329;padding-bottom:18px}   /* 위 꼭지 줄 ~ 아래 줄 사이가 그 카드의 칸 */
+.lpk4 .lpk-im{height:clamp(112px,31vw,156px)}
 .lpk-in{min-height:0;overflow:hidden}
 .lpk-panel.open:not(.anim2) .lpk-in{overflow:visible}
 .lpk-pd .pd-opts{margin-top:0;border-top:0}
