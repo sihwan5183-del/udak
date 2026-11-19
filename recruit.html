@@ -1317,7 +1317,7 @@ em.hl{font-style:normal;color:var(--pink)}
       method:'POST',
       headers:{'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=minimal'},
       body:JSON.stringify({name:name, phone:phone, age:age, desired_area:area, apply_type:typeEl.value||null, privacy_agreed:true, source:source()})
-    }).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); try{ if(typeof fbq!=='undefined'){ /* 20261118 사장님: 신호 분리 — 채용 신청은 휴대폰 '신청(Lead)'으로 알리지 않고 '채용 신청(RecruitApply)'으로만 (휴대폰 광고가 구직자를 보고 배우던 문제) */ fbq('track','SubmitApplication',{content_name:'recruit',content_category:'정규직 채용'}); fbq('trackCustom','RecruitApply',{page:'recruit'});   /* 20261119 사장님: 채용 광고는 메타 표준 신호 '지원서 제출(SubmitApplication)'로 학습 — 휴대폰 '신청(Lead)'과 분리 */ } }catch(e){} showDone(); })
+    }).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); try{ if(typeof fbq!=='undefined'){ /* 20261118 사장님: 신호 분리 — 채용 신청은 휴대폰 '신청(Lead)'으로 알리지 않고 '채용 신청(RecruitApply)'으로만 (휴대폰 광고가 구직자를 보고 배우던 문제) */ if(/[가-힣]/.test(name)) fbq('track','SubmitApplication',{content_name:'recruit',content_category:'정규직 채용'}); fbq('trackCustom','RecruitApply',{page:'recruit'});   /* 20261119 사장님: 채용 광고는 메타 표준 신호 '지원서 제출(SubmitApplication)'로 학습 — 휴대폰 '신청(Lead)'과 분리. 이름에 한글이 없으면 접수만 받고 메타엔 안 알림(외국인 구직자 재학습 방지) */ } }catch(e){} showDone(); })
       .catch(function(err){ console.error('면접 신청 저장 실패', err); errBox.classList.add('on'); btn.disabled=false; btn.innerHTML='신청하기 <span class="arr" aria-hidden="true">→</span>'; });
   });
 })();
