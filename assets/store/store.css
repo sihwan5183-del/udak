@@ -1815,6 +1815,14 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 /* 20261118 사장님: 광고 랜딩(meta.uplusdak.com/iphone18) 카드 2개 — '아이폰 18 프로 / 프로맥스' 카드를 누르면 그 밑으로 평소 상세 칸들이 열림
    (STORE_CFG.lp.pick 일 때만 생기는 칸 — 스토어·다른 랜딩엔 없음) */
 .lpk{margin-top:18px}
+/* 20261119 배너 없는 카드 랜딩(meta/iphone15): 제목 + 공통 적용 조건 (STORE_CFG.lp.title / lp.note) */
+.lp-tt{margin:4px 0 0;padding:18px 16px 16px;border:1.5px solid #DADDE2;border-radius:16px;background:#fff}
+.lp-tt h2{margin:0;font-size:23px;line-height:30px;font-weight:800;letter-spacing:-.04em;color:#131518;word-break:keep-all}
+.lp-tt-n{margin-top:12px;padding-top:12px;border-top:1px solid #E6E8EB}
+.lp-tt-n b{display:block;margin:0 0 6px;font-size:13px;line-height:18px;font-weight:800;color:var(--pink)}
+.lp-tt-n ul{margin:0;padding:0;list-style:none}
+.lp-tt-n li{position:relative;padding-left:11px;font-size:14px;line-height:22px;font-weight:600;color:#3A3F46;word-break:keep-all}
+.lp-tt-n li::before{content:"";position:absolute;left:0;top:10px;width:4px;height:4px;border-radius:50%;background:#8B9099}
 .lpk-h{margin:0 0 12px;font-size:19px;line-height:24px;font-weight:800;letter-spacing:-.03em;color:#131518}
 .lpk-cs{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:10px}
 .lpk-c{position:relative;display:flex;flex-direction:column;align-items:center;min-width:0;padding:0;border:1.5px solid #DADDE2;border-radius:14px;background:#fff;color:#131518;text-align:center;overflow:hidden;cursor:pointer;

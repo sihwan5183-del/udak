@@ -301,7 +301,9 @@ function normalize(d){
     if((m.id==='tvfree5'||m.id==='ipada16') && m.cat.indexOf('tvfree')<0) m.cat=m.cat.filter(function(c){return c!=='tablet'}).concat(['tvfree']);
     // 20261026 갤럭시 버디 5(a176): 분류가 비어 있으면 '갤럭시 버디' · 대표 사진이 LG U+ 공식몰 주소면 우리 사진(그레이)으로
     if(m.id==='a176'){ if(!m.cat.length) m.cat=['buddy']; if(/lguplus\.com/.test(m.img||'')) m.img=null; if(m.pubOnly==null) m.pubOnly=true; if(m.supAll==null) m.supAll=true; }   // 20261027 사장님: 버디 5 지원금 띠는 '총 지원금'으로   // 20261026 사장님: 버디 5는 공시지원금만 (선택약정 없음 → 기기값 0원)
-    m.tags=arr(m.tags); m.cards=arr(m.cards); m.colors=arr(m.colors); m.opts=arr(m.opts); m.price=m.price||{}; });
+    m.tags=arr(m.tags); m.cards=arr(m.cards); m.colors=arr(m.colors); m.opts=arr(m.opts); m.price=m.price||{};
+    // 20261119 사장님: 광고 랜딩 전용 모델(예: 아이폰 15 시리즈 창고 대방출) — m.lpOnly=true 면 그 모델을 고른 광고 랜딩(STORE_CFG.lp.model/pick)에서만 보이고 스토어(/shop)·다른 랜딩엔 안 보임 (관리자엔 그대로)
+    if(m.lpOnly && !EDIT){ var L0=CFG.lp||{}; if(!(L0.model===m.id || arr(L0.pick).indexOf(m.id)>-1)) m.hidden=true; } });
   o.sec=o.sec||{}; Object.keys(DEFAULT.sec).forEach(function(k){ o.sec[k]=o.sec[k]||clone(DEFAULT.sec[k]); });
   // 히어로 사진: 예전 저장값(hero-0N.jpg)은 실제 파일(hero-0N.webp)로
   (o.hero||[]).forEach(function(h){ if(h&&typeof h.img==='string') h.img=h.img.replace(/^hero\/(hero-0[1-3])\.jpg$/,'hero/$1.webp'); });
@@ -387,11 +389,14 @@ function PV(){ return verAt(todayKST()); }
 function plansOf(g){ return (S.pricing.plans[g])||[]; }
 // 20261021 사장님: 휴대폰 요금제에서 105·115·130은 뺌 (85·95만) — 상세 요금제 고르기·가격 계산·신청서 모두 (관리자 가격표 편집(store-price.js)엔 그대로 남음)
 var TIER_OFF={t105:1, t115:1, t130:1};
-function tiersOf(g){ var ts=(S.pricing.tiers[g])||[]; return g==='phone'?ts.filter(function(t){ return !TIER_OFF[t.k]; }):ts; }
+// 20261119 사장님: 광고 랜딩별로 요금제 하나만 — STORE_CFG.tierOnly='t115' (예: meta/iphone15 = 115 요금제 대상) · 그 랜딩에선 요금제 목록·기준 요금제·신청서 모두 그 하나
+var TIER_ONLY=CFG.tierOnly?String(CFG.tierOnly):'';
+function tierOnly(ts){ if(!TIER_ONLY) return null; var o=(ts||[]).filter(function(t){ return t.k===TIER_ONLY; }); return o.length?o:null; }
+function tiersOf(g){ var ts=(S.pricing.tiers[g])||[]; if(g==='phone'){ var o=tierOnly(ts); if(o) return o; } return g==='phone'?ts.filter(function(t){ return !TIER_OFF[t.k]; }):ts; }
 // 20261116 사장님: 애플워치 A/B는 'A 85 / B 115' — 115는 평소 요금제 목록에선 꺼져 있어도(TIER_OFF) 그 모델의 A/B에서는 씀
 function tiersFor(m, g){ var ts=tiersOf(g), w=g==='phone'&&m&&WPROMO[m.id]; if(!w) return ts; var all=(S.pricing.tiers[g])||[], add=all.filter(function(t){ return (t.k===w.a||t.k===w.b) && ts.indexOf(t)<0; }); return add.length?ts.concat(add):ts; }
 function tierAny(k){ return ((S.pricing.tiers.phone)||[]).filter(function(x){ return x.k===k; })[0]||null; }
-function baseTier(g, P){ P=P||S.pricing; var ts=P.tiers[g]||[]; return ts.filter(function(t){return t.k===P.base[g]})[0]||ts[0]||null; }
+function baseTier(g, P){ P=P||S.pricing; var ts=P.tiers[g]||[]; if(g==='phone'){ var o=tierOnly(ts); if(o) return o[0]; } return ts.filter(function(t){return t.k===P.base[g]})[0]||ts[0]||null; }
 // 가격표에 이 모델 줄이 있는지 (공개 여부와 상관없이)
 function inSheet(m){ var v=PV(); return !!(v&&m&&v.rows.some(function(r){return r.model===m.id})); }
 function priceHidden(m){ return !EDIT && !S.pricing.show && inSheet(m); }
@@ -426,7 +431,7 @@ function optLabel(m){
 // 카드 가격 기준: 기본은 기준 요금제(85), '최대 혜택 기준으로 보기'를 켜면 115,000원 이상 요금제 중 가장 싼 조건
 var MAXV=false; try{ MAXV=sessionStorage.getItem('st_maxv')==='1'; }catch(e){}
 // 20261021: 요금제가 85·95만 남아 '최대 혜택(월 115,000원 이상 요금제)' 기준이 없어짐 → 그런 요금제가 다시 생길 때만 버튼을 보여 주고 계산에도 씀
-function maxOk(){ return tiersOf('phone').some(function(t){ return (t.fee||0)>=115000; }); }
+function maxOk(){ if(TIER_ONLY) return false; return tiersOf('phone').some(function(t){ return (t.fee||0)>=115000; }); }
 function maxOn(){ return MAXV && maxOk(); }
 function maxBar(){ if(!maxOk()) return ''; return '<button type="button" class="maxv'+(MAXV?' on':'')+'" data-maxv><span class="mv-sw"><i></i></span>최대 혜택 기준으로 보기</button>'+
   (MAXV?'<div class="maxv-note">최대 혜택 기준인 <b>월 115,000원 이상 요금제를 6개월 이상 유지</b>하는 조건일 때의 혜택이에요.</div>':''); }
@@ -1635,7 +1640,8 @@ function lpkShare(src){
     if(ix<0) ix=firstOkOpt(km); if(ix>=0) OPT[k]=ix; if(OPTT[src]) OPTT[k]=true; });
 }
 function lpkBanHtml(){
-  if(!LP.banner) return '';
+  // 20261119 배너 없는 카드 랜딩(아이폰 15 시리즈): 제목 + 공통 적용 조건 글자 (STORE_CFG.lp.title / lp.note) — 그림이 아니라 진짜 글자
+  if(!LP.banner) return LP.title?'<div class="lp-tt"><h2>'+esc(LP.title)+'</h2>'+(arr(LP.note).length?'<div class="lp-tt-n"><b>공통 적용 조건</b><ul>'+arr(LP.note).map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul></div>':'')+'</div>':'';
   var img='<img src="'+esc(LP.banner)+'" alt="'+esc(LP.alt||'')+'" width="'+(+LP.w||1080)+'" height="'+(+LP.h||1350)+'" decoding="async" fetchpriority="high">';
   if(!arr(LP.hot).length) return '<a class="lp-ban" href="#" data-lp-ban aria-label="'+esc(LP.cta||'구매 조건 확인하기')+'">'+img+'</a>';
   // 20261118 사장님: 배너 속 모델 칸을 눌러도 바로 그 모델이 열리게 — lp.hot = [{id, x, y, w, h}] (배너 그림 기준 %, 화면 크기에 따라 같이 줄고 늘어남)
