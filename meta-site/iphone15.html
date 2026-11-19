@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <!-- 20261119 사장님: meta.uplusdak.com/iphone15 — '아이폰 15 시리즈 창고 대방출' 메타 광고 전용 랜딩 (아이폰 15 / 15 플러스 / 15 프로 / 15 프로맥스 카드 4장, 2×2)
-     배너 없이 제목·공통 적용 조건(글자)부터 카드 · 번호이동(SKT/KT/알뜰폰) 전용 · 플러스플랜 115 요금제만 · 공시지원금만 · 애플워치 혜택 없음
+     맨 위 배너(assets/store/banner/meta-iphone15-v1.webp, 20261119 사장님 제공) 다음 카드 · 번호이동(SKT/KT/알뜰폰) 전용 · 플러스플랜 115 요금제만 · 공시지원금만 · 애플워치 혜택 없음
      아이폰 15 시리즈 4개 모델은 스토어 설정에 '광고 랜딩 전용(lpOnly)'으로 들어가 있어 스토어(/shop)·다른 랜딩엔 안 보임
      가격·품절은 스토어 관리자(/apple)와 같은 설정 (원본: meta-site/iphone.html) -->
 <script>
@@ -25,6 +25,7 @@ try{ window.__stCfg=fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/stor
 <link rel="icon" type="image/png" sizes="192x192" href="https://landing.uplusdak.com/assets/icon/icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="https://landing.uplusdak.com/apple-touch-icon.png">
 <meta name="theme-color" content="#ffffff">
+<link rel="preload" as="image" href="https://landing.uplusdak.com/assets/store/banner/meta-iphone15-v1.webp?v=20261119" fetchpriority="high">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="preconnect" href="https://ebggtghzqtxfylbhqfoh.supabase.co" crossorigin>
 <link rel="preconnect" href="https://landing.uplusdak.com">
@@ -79,6 +80,9 @@ window.STORE_CFG = {mode:'view', srcTag:'meta/iphone15', origin:'https://landing
   mnpOnly:true, pubOnly:true, tierOnly:'t115',
   lp:{model:'iphone15', pick:['iphone15','iphone15plus','iphone15pro','iphone15promax'],
       keep:true,   // 카드를 눌러도 카드 4장은 위에 그대로, 열린 칸은 카드 전부 밑으로
+      // 20261119 사장님: 맨 위(히어로) 배너 — 배너가 있으면 제목·공통 적용 조건 글자 칸(title/note)은 안 나옴 (배너를 빼면 다시 나옴)
+      banner:'https://landing.uplusdak.com/assets/store/banner/meta-iphone15-v1.webp?v=20261119', w:1086, h:1448, cta:'아이폰 15 시리즈 혜택 확인하기',
+      alt:'유플러스 다이렉트 · 창고에서 찾았습니다. 아이폰 15 시리즈 창고 대방출 · 번호이동 특별가 · 115,000원 요금제 6개월 유지 시 · LG U+ 통신사 제품입니다 · 통신 이용료는 별도로 발생합니다',
       title:'아이폰 15 시리즈 창고 대방출',
       note:['LG U+ 번호이동 고객님 기준','통신 이용료 별도','재고 소진 시까지 진행']}};
 </script>
