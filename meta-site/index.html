@@ -569,7 +569,7 @@ img{display:block;max-width:100%;height:auto}
     .then(function(res){
       if(res.ok){
         /* 20261118 사장님: 이름에 한글이 없는 신청은 접수만 받고 메타에는 신청 신호 안 보냄 */ if(/[가-힣]/.test(String(name||''))){
-        try{ fbq('track','Lead'); }catch(e){}
+        try{ fbq('track','Lead'); }catch(e){} try{ fbq('track','Schedule'); }catch(e){} /* 20261119 사장님: 휴대폰 신청 새 장부 '일정 예약(Schedule)' — 한글 이름 신청만, 외국인 기록 없는 깨끗한 학습용 */
         try{ window.udakMeta && udakMeta('MnpLead',{carrier:PICK.carrier, model:'유심 번호이동'}); }catch(e){}
         }
         $('#doneSum').innerHTML='현재 통신사 <b>'+PICK.carrier+'</b>'+(PICK.internet?' · 인터넷 <b>'+PICK.internet+'</b>':'');

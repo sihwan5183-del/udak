@@ -524,7 +524,8 @@ var MNP_ONLY=!!CFG.mnpOnly; if(MNP_ONLY) CARRIERS=CARRIERS.filter(function(c){ r
 function hasHangul(s){ return /[가-힣]/.test(String(s||'')); }
 function metaLead(body, params){
   if(!hasHangul(body&&body.name)){ try{ window.udakEv && window.udakEv('meta_lead_skip',{why:'no_hangul'}); }catch(e){} return; }
-  if(typeof window.fbq!=='undefined') window.fbq('track','Lead',params); mnpLead(body);
+  if(typeof window.fbq!=='undefined'){ window.fbq('track','Lead',params); window.fbq('track','Schedule',params); }  /* 20261119 사장님: 휴대폰 신청 새 장부 '일정 예약(Schedule)' — 한글 이름 신청만, 외국인 기록 없는 깨끗한 학습용 */
+  mnpLead(body);
 }
 function mnpLead(b){ try{ var c=b&&b.carrier, sn=b&&b.snapshot, mnp=sn?(sn.jointype==='번호이동'):(!!c && c!=='LG U+'); if(mnp && window.udakMeta) window.udakMeta('MnpLead', {carrier:c, model:(b.device_interest||'')}); }catch(e){} }
 // 원 단위 정리: 1원 자리가 8·9면 10원 올림, 그 밖엔 버림 (아이폰 듀오 랜딩과 같은 규칙)

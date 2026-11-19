@@ -923,6 +923,7 @@ window.submitForm=async function(){
         value: window._estimatedFee||0,
         currency: 'KRW'
       });
+      fbq('track','Schedule');   /* 20261119 사장님: 휴대폰 신청 새 장부 '일정 예약(Schedule)' — 한글 이름 신청만 */
     }
     if(typeof gtag==='function'){
       gtag('event','generate_lead',{

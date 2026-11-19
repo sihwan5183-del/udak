@@ -1456,7 +1456,7 @@ window.submitDeviceReserve=function(){
     }, udakMetaIds()))
   }).then(function(res){
     if(res.ok){
-      /* 20261118 사장님: 이름에 한글이 없는 신청은 접수만 받고 메타에는 신청 신호 안 보냄 */ if(typeof fbq!=='undefined' && /[가-힣]/.test(String(name||'')))fbq('track','Lead');
+      /* 20261118 사장님: 이름에 한글이 없는 신청은 접수만 받고 메타에는 신청 신호 안 보냄 */ if(typeof fbq!=='undefined' && /[가-힣]/.test(String(name||''))){ fbq('track','Lead'); fbq('track','Schedule'); } /* 20261119 사장님: 휴대폰 신청 새 장부 '일정 예약(Schedule)' — 한글 이름 신청만, 외국인 기록 없는 깨끗한 학습용 */
       closeDeviceReserve();
       showTicket(name,phoneF,d.name);
     } else {
