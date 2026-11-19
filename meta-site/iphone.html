@@ -79,6 +79,7 @@ function udakMetaIds(){
 //   듀오(iphoneduo)는 스토어 설정에 모델·가격이 들어가야 카드가 나옴 — 없으면 그 칸만 빠짐
 window.STORE_CFG = {mode:'view', srcTag:'meta/iphone', origin:'https://landing.uplusdak.com',
   lp:{model:'iphone17', pick:['iphone17','iphone18pro','iphone18promax','iphoneduo'],
+      keep:true,   // 20261119 사장님: 카드를 눌러도 카드 4장은 위에 그대로, 열린 칸은 카드 전부 밑으로 (아랫줄이 밀려 내려가지 않게)
       colors:{iphone17:'화이트', iphone18pro:'버건디', iphone18promax:'블랙', iphoneduo:'스타 화이트'},
       banner:'https://landing.uplusdak.com/assets/store/banner/meta-iphone-quote-v1.webp?v=20261118', w:1122, h:1402, cta:'아이폰 견적 확인하기',
       // 배너 속 모델 칸 4개 (배너 그림 1122×1402 기준 %) — 누르면 아래 그 모델 카드가 열림 · 배너를 바꾸면 칸 위치도 다시 재야 함
