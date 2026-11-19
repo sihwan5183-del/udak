@@ -40,7 +40,7 @@
     if(sampled!=='1' && sampled!=='0'){ sampled=(Math.random()<SAMPLE_RATE)?'1':'0'; sset('udak_sampled',sampled); }
     sampled=(sampled==='1');
     // 표본과 상관없이 항상 기록하는 것 — 신청 흐름·막힘
-    var ALWAYS={ submit_send:1, lead:1, submit_fail:1, alert:1 };
+    var ALWAYS={ submit_send:1, lead:1, submit_fail:1, alert:1, meta_lead_skip:1 };   // 20261119: 한글 이름 없는 신청(메타에 안 알린 건)은 표본과 관계없이 전부 기록
     // 스토어는 방문자 전원의 들어옴·나감 요약·신청서 단계·신청 버튼·전화/카톡 문의를 남김 (자세한 누름·구간은 표본만)
     if(STORE){ ALWAYS.view=1; ALWAYS.exit=1; ALWAYS.form_step=1; ALWAYS.submit_click=1; ALWAYS.call=1; ALWAYS.kakao=1; ALWAYS.qk_open=1; ALWAYS.store_near=1; ALWAYS.store_near_fail=1;   // 20261019: 매장찾기 '가까운 매장' — 가장 가까운 매장 + 거리대만 (좌표·개인정보 없음)
       ALWAYS.detail_exit=1; ALWAYS.ap=1; ALWAYS.ap_pick=1; ALWAYS.ap_act=1; }   // 20261019: 상세 위치별 요약(아래 10번) · 신청서에서 고른 것(받는 방법 등)은 전원
@@ -99,7 +99,7 @@
       }catch(e){}
     }
     setInterval(function(){ flush(false); }, 20000);
-    window.udakEv=function(n,d){ ev(n,d); };   // 20261019: 스토어 화면에서 직접 남기는 기록 (매장찾기 가까운 매장 등)
+    window.udakEv=function(n,d){ ev(n,d); if(n==='meta_lead_skip') flush(false); };   // 20261019: 스토어 화면에서 직접 남기는 기록 (매장찾기 가까운 매장 등)
 
     // 11) v20261019 메타 '번호이동' 신호 — 메타가 번호이동 손님 위주로 찾게 하려고 (LG U+ 기기변경·내부 방문은 안 보냄)
     //   MnpSelect: 이 방문에서 처음 고른 통신사가 SKT·KT·알뜰폰일 때 한 번 (처음에 LG U+ 를 고른 방문은 안 보냄 — 기존 고객이 둘러보는 경우)
