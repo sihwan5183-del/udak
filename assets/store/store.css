@@ -1797,6 +1797,7 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 /* 20261027 신청서 '받는 방법(선택)': 택배 / 매장 방문 — 매장 방문을 누르면 매장 고르는 칸이 펼쳐짐 */
 #v-apply .ap-rv label small{display:block;margin-top:1px;font-size:11px;font-weight:600;color:var(--mute)}
 #v-apply .ap-rv-b{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#v-apply .ap-rv-b button:only-child{grid-column:1/-1}   /* 20261119 랜딩은 택배 하나만 — 한 줄 꽉 차게 */
 #v-apply .ap-rv-b button{display:flex;align-items:center;gap:8px;min-height:52px;padding:8px 10px;border:1.5px solid #E3E5EA;border-radius:10px;background:#fff;text-align:left;font:inherit;color:var(--ink);cursor:pointer}
 #v-apply .ap-rv-b button svg{flex:none;width:22px;height:22px;fill:none;stroke:#5B6170;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 #v-apply .ap-rv-b button span{display:flex;flex-direction:column;line-height:1.25;min-width:0}

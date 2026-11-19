@@ -2131,7 +2131,7 @@ function act(go, el){
    · 상품 상세에서 '이 조건으로' 누르면 고른 휴대폰·용량·컬러·통신사·요금제·할부가 그대로 들어옴
    ========================================================= */
 var AP=null;
-function apInit(){ return {recv:'',store:'',from:'',phone:'',cap:0,color:'',carrier:'',tier:'',method:'',months:24,watch:'',tablet:'',tv:'',tvTier:'',tvType:'old',tvFix:false,tvOk:false,pick:false,note:'',open:{}}; }
+function apInit(){ return {recv:(LP?'courier':''),store:'',from:'',phone:'',cap:0,color:'',carrier:'',tier:'',method:'',months:24,watch:'',tablet:'',tv:'',tvTier:'',tvType:'old',tvFix:false,tvOk:false,pick:false,note:'',open:{}}; }
 function brandOf(m){ return (m && (/iphone|ipad|watchse|apple/i.test(m.id) || m.cat.indexOf('iphone')>-1)) ? 'apple' : 'samsung'; }
 var AP_SLOTS=[['watch','워치','watch'],['tablet','태블릿','tablet'],['tv','TV프리','tvfree']];
 function apPhone(){ return AP.phone && AP.phone!=='later' ? byId(AP.phone) : null; }
@@ -2229,6 +2229,9 @@ var TRUCK_I='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 6.5h11v9.
 function apRecvHtml(){
   // 20261027 사장님: 매장 방문 상담 다시 받기 — 고객 정보 밑 '받는 방법(선택)': 택배 / 매장 방문. 매장 방문을 누를 때만 매장 고르는 칸이 펼쳐짐
   //   아무것도 안 고르면 지금처럼 상담 때 정함 (고객이 안 고른 값은 남기지 않음) · 매장 화면에서 '방문 예약 상담'으로 들어오면 그 매장이 골라져 있음
+  // 20261119 사장님: 광고 랜딩(meta.uplusdak.com)은 매장 방문 빼고 택배만 — 택배가 골라진 채로 고정 (스토어 /shop 은 그대로 택배·매장 방문)
+  if(LP){ AP.recv='courier'; return '<div class="ff ap-rv"><label>받는 방법</label><div class="ap-rv-b">'+
+    '<button type="button" class="on" data-ap="recv" data-v="courier" aria-pressed="true">'+TRUCK_I+'<span><b>택배</b><small>당일 발송</small></span></button></div></div>'; }
   var st=AP.recv==='store';
   var h='<div class="ff ap-rv"><label>받는 방법<small>선택</small></label><div class="ap-rv-b">'+
     '<button type="button" class="'+(AP.recv==='courier'?'on':'')+'" data-ap="recv" data-v="courier" aria-pressed="'+(AP.recv==='courier')+'">'+TRUCK_I+'<span><b>택배</b><small>당일 발송</small></span></button>'+
@@ -2707,7 +2710,7 @@ document.addEventListener('click',function(e){
   var apb=t.closest('[data-ap]');
   if(apb){ e.preventDefault(); if(apb.disabled) return; var ak=apb.getAttribute('data-ap'), av=apb.getAttribute('data-v');
     if(ak==='cap'||ak==='months') AP[ak]=+av; else if(ak==='watch'||ak==='tablet'||ak==='tv') AP[ak]=(AP[ak]===av?'':av);
-    else if(ak==='recv'){ AP.recv=(AP.recv===av?'':av); AP.visit=false; }   // 20261027 받는 방법: 다시 누르면 선택 풀림 (상담 때 정함)
+    else if(ak==='recv'){ AP.recv=LP?'courier':(AP.recv===av?'':av); AP.visit=false; }   // 20261027 받는 방법: 다시 누르면 선택 풀림 (상담 때 정함)
     else AP[ak]=av;
     if(ak==='tv'&&AP.tv&&!AP.tvTier){ AP.tvTier=(tiersOf('tvfree')[0]||{}).k||''; }
     if(ak==='tvType'){ AP.tvOk=false; if(av==='old'&&!AP.phone) AP.phone='none'; if(av!=='old'&&AP.phone==='none') AP.phone=''; }
