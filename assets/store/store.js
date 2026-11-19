@@ -1677,6 +1677,7 @@ function lpkRail(){ var si=lpkIdx(LPSEL), c=lpkCols(); return '<div class="lpk-r
 function lpkPlace(){
   var p=$('#lpkPanel'), g=$('#lpkCards .lpk-cs'); if(!p || !g) return;
   var si=lpkIdx(LPSEL); if(si<0) return;
+  if(LP.keep){ if(p!==g.lastElementChild) g.appendChild(p); return; }   // 20261119 사장님(/iphone15): 카드 4장은 위에 그대로 두고 열린 칸은 카드 전부 밑으로 (아랫줄 카드가 밀려 내려가지 않게) — STORE_CFG.lp.keep
   var c=lpkCols(), cards=g.querySelectorAll('.lpk-c'), nx=cards[(Math.floor(si/c)+1)*c];
   if(nx) g.insertBefore(p, nx); else g.appendChild(p);
 }
@@ -1697,7 +1698,7 @@ if(LPK) document.addEventListener('click',function(e){
   var fromBan=!!(c.closest&&c.closest('.lp-ban'));   // 배너 속 모델 칸을 눌렀는지
   if(id===LPSEL){ if(fromBan){ var oc=$('#lpkCards [data-lpk="'+id+'"]'), oi=lpkIdx(id); lpkScrollTo(oi<lpkCols()?$('#lpkCards'):oc); } else lpkScrollTo($('#lpkPanel')); return; }   // 이미 열린 카드 = 열린 칸으로
   var first=!LPSEL;
-  var cols=lpkCols(), ni=lpkIdx(id), pi=lpkIdx(LPSEL), row=Math.floor(ni/cols), same=!first && pi>-1 && Math.floor(pi/cols)===row;
+  var cols=lpkCols(), ni=lpkIdx(id), pi=lpkIdx(LPSEL), row=Math.floor(ni/cols), same=!first && pi>-1 && (!!LP.keep || Math.floor(pi/cols)===row);
   if(first) LPANIM=2;
   else { lpkShare(LPSEL); if(same){ LPPREV=pi%cols; LPANIM=1; } else LPANIM=2; }
   LPSEL=id;
@@ -1705,7 +1706,7 @@ if(LPK) document.addEventListener('click',function(e){
   var nc=$('#lpkCards [data-lpk="'+id+'"]');
   if(nc && !fromBan){ var d=nc.getBoundingClientRect().top-t0; if(Math.abs(d)>1) window.scrollTo(0, window.pageYOffset+d); }   // 열린 칸 자리가 바뀌어도 누른 카드는 손가락 밑 그대로
   if(same && !fromBan){ var cd=$('#lpkCards'); if(cd && cd.getBoundingClientRect().bottom<0) lpkScrollTo(cd); }
-  else lpkScrollTo(row===0?$('#lpkCards'):nc);   // 열릴 때: 누른 카드 줄을 화면 위로 올려서 밑으로 열리는 칸이 보이게
+  else lpkScrollTo((row===0||LP.keep)?$('#lpkCards'):nc);   // 열릴 때: 누른 카드 줄을 화면 위로 올려서 밑으로 열리는 칸이 보이게
 });
 function lpBan(){
   if(!LP || !LP.banner) return;
