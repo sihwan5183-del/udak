@@ -668,6 +668,7 @@ body.md-on .app{padding-bottom:calc(136px + env(safe-area-inset-bottom))}   /* 2
 .pd-eb small{font-size:11.5px;line-height:14px;color:#6B7280}
 .pd-eb b{font-size:15.5px;line-height:20px;font-weight:800;color:#131518;white-space:nowrap}
 .pd-eb b.pk{font-size:19px;line-height:22px;color:var(--pink)}
+.pd-eb small.pd-ew{font-size:11px;line-height:13px;font-weight:700;color:#6B7280;white-space:nowrap}   /* 20261123 B 월 요금 밑 '+ 워치 11,000원' / '워치 이용료 포함' */
 .pd-eb.r{margin-left:auto;align-items:flex-end}
 .pd-op{flex:none;width:18px;height:18px;border-radius:50%;background:#131518;color:#fff;font-size:13px;line-height:18px;font-weight:800;font-style:normal;text-align:center}
 .pd-eq .pd-skl{display:block;border-radius:4px;background:#EEF0F3;animation:mdsk 1.1s ease-in-out infinite}

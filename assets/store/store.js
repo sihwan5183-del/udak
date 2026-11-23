@@ -1564,11 +1564,14 @@ function pdRender(m, p, st, PK, o){
   h+=guideHtml(m)+(LK?'</div></div>':'')+'<div id="pdMoreSlot"></div></div>';   // 카드 모드: 열린 칸(lpkPanel) 닫기
   // 아래 고정: 월 기기값 + 월 요금 = 합산 (월 기기값이 제일 크게) · [제품명 상담 신청하기] 하나 (20261020)
   var bar;
+  // 20261123 사장님: 85 요금제 + 워치면 B를 96,000원 한 덩어리 대신 '85,000원' + 밑에 '+ 워치 11,000원'으로 나눠 보여 줌 (합산 A + B는 그대로)
+  //   95 요금제처럼 워치 이용료가 요금에 포함되면 밑에 '워치 이용료 포함' — 요금제를 바꿔도 아래 줄 높이가 같게
+  var bW=wpOn?'<small class="pd-ew">'+(wlf?'+ 워치 '+won(wlf):'워치 이용료 포함')+'</small>':'';
   if(o.soNow) bar='<div class="md-bar-t"><b>일시품절</b> · 지금은 신청할 수 없어요</div>';
   else if(o.PRE) bar='<div class="md-bar-t pd-eq"><span class="pd-eb">'+sk('48px','11px')+sk('64px','17px')+'</span><i class="pd-op">+</i><span class="pd-eb">'+sk('40px','11px')+sk('60px','15px')+'</span><i class="pd-op">=</i><span class="pd-eb r">'+sk('30px','11px')+sk('60px','15px')+'</span></div>';
   else if(!c) bar='<div class="md-bar-t">상담 신청하시면 <b>나에게 맞는 혜택</b>을 안내해 드려요</div>';
-  else if(mm===0) bar='<div class="md-bar-t pd-eq"><span class="pd-eb"><small>A 기기값 일시납</small><b class="pk">'+wz(st.after)+'</b></span><i class="pd-op">+</i><span class="pd-eb"><small>B 월 요금</small><b>'+won(fa+wlf)+'</b></span></div>';
-  else bar='<div class="md-bar-t pd-eq"><span class="pd-eb"><small>A 월 기기값</small><b class="pk">'+wz(monthly)+'</b></span><i class="pd-op">+</i><span class="pd-eb"><small>B 월 요금</small><b>'+won(fa+wlf)+'</b></span><i class="pd-op">=</i><span class="pd-eb r"><small>A + B</small><b>'+won(total)+'</b></span></div>';
+  else if(mm===0) bar='<div class="md-bar-t pd-eq"><span class="pd-eb"><small>A 기기값 일시납</small><b class="pk">'+wz(st.after)+'</b></span><i class="pd-op">+</i><span class="pd-eb"><small>B 월 요금</small><b>'+won(fa)+'</b>'+bW+'</span></div>';
+  else bar='<div class="md-bar-t pd-eq"><span class="pd-eb"><small>A 월 기기값</small><b class="pk">'+wz(monthly)+'</b></span><i class="pd-op">+</i><span class="pd-eb"><small>B 월 요금</small><b>'+won(fa)+'</b>'+bW+'</span><i class="pd-op">=</i><span class="pd-eb r"><small>A + B</small><b>'+won(total)+'</b></span></div>';
   var dis=(o.soNow&&!EDIT)?' disabled':'';
   var cta=S.cta||{}, ctaOn=cta.on!==false&&!!cta.sub;   // 20261027 사장님: 버튼 안 아랫줄 작은 글씨 '5분 간단 상담'
   var apSub=o.soNow?'':ctaOn?'<small class="mb-ap-s"'+(EDIT?' data-edit="cta"':'')+'>'+esc(cta.sub)+'</small>':(EDIT?'<small class="mb-ap-s is-hidden" data-edit="cta">작은 글씨 없음 (눌러서 넣기)</small>':'');
