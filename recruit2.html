@@ -2,6 +2,8 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<!-- 20261123 사장님: 신청 차단 번호 (스토어·광고 랜딩과 같은 목록) -->
+<script src="https://landing.uplusdak.com/assets/udak-block.js?v=20261123a"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>프리랜서 영업 파트너 모집 | LG U+ 직영 파트너사</title>
 <!-- Meta Pixel -->
@@ -685,6 +687,7 @@ section{position:relative}
     if(!agreeEl.checked){ setBad('f-agree',true); bad.push(agreeEl); }
     if(bad.length){ bad[0].focus(); return; }
     if(form.company.value){ showDone(); return; }
+    if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해 주세요.'); return; }   // 20261123 신청 차단 번호
     btn.disabled=true; btn.textContent='접수하는 중…';
     fetch(SB_URL, {
       method:'POST',

@@ -387,6 +387,7 @@
       var inp = first.querySelector('input'); if (inp) setTimeout(function () { inp.focus({ preventScroll: true }); }, 300);
       return;
     }
+    if (window.udakBlocked && window.udakBlocked(ph)) { alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해 주세요.'); return; } // 20261123 신청 차단 번호 (유닥 랜딩과 같은 목록)
     sending = true; btn.disabled = true; btn.querySelector('span').textContent = '신청하는 중…';
     var id = uuid(), mi = metaIds();
     var p = pick; // 상품 찾기에서 고른 상품 (신청서에서 관심 상품을 바꿔도 고른 내용은 그대로 남김 — 직원이 둘 다 봄)
