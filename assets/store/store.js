@@ -530,6 +530,9 @@ function mnpOnlyFor(m){ return MNP_ONLY || (IS_AD && !!m && !!MNP_MODELS[m.id]);
 var KO_NAME=IS_AD;
 function koOnly(v){ return String(v||'').replace(/[^가-힣ㄱ-ㅎㅏ-ㅣ]/g,''); }
 function koNameBad(n){ return KO_NAME && !/^[가-힣]{2,}$/.test(String(n||'').replace(/\s/g,'')); }
+// 20261123 사장님: 자음만·모음만(ㅁㄴㅇㅁㄴㅇ · ㅁㄴㅇㅁㅐㅣ)도 막음 — 칸을 벗어나면 완성 안 된 글자(ㄱ~ㅎ·ㅏ~ㅣ)는 지우고, 신청 때 완성된 한글 2글자 이상만 통과
+function koFinal(v){ return String(v||'').replace(/[^가-힣]/g,''); }
+function koNameMsg(n){ var s=String(n||'').replace(/\s/g,''); return /[^가-힣ㄱ-ㅎㅏ-ㅣ]/.test(s)?'이름은 한글로 입력해 주세요.':'이름을 정확히 입력해 주세요.'; }
 function carsFor(m){ return mnpOnlyFor(m) ? CARRIERS.filter(function(c){ return c!=='LG U+'; }) : CARRIERS; }
 // 20261019 메타 '번호이동 접수' 신호(MnpLead): 지금 통신사가 SKT·KT·알뜰폰(=번호이동)인 접수만 — 기기변경(LG U+)·TV프리만은 안 보냄. 기존 Lead 는 그대로
 // 20261118 사장님: 이름에 한글이 없는 신청은 접수(CRM)는 그대로 받고, 메타에는 '신청(Lead)'·'번호이동 신청(MnpLead)'으로 알리지 않음
@@ -2072,7 +2075,7 @@ function submitConsult(){
   var birth=birth8($('#mUserBirth').value);
   var carrier=$('#mCarrierSel').value, device=$('#mDeviceSelect').value, memo=$('#mUserNote').value.trim();
   if(!name){ alert('이름을 입력해 주세요.'); return; }
-  if(koNameBad(name)){ alert('이름은 한글로 입력해 주세요.'); return; }
+  if(koNameBad(name)){ alert(koNameMsg(name)); return; }
   if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해 주세요.'); return; }
   if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해 주세요.'); return; }
   var t=new Date(), bY=+birth.slice(0,4), bM=+birth.slice(4,6), bD=+birth.slice(6,8);
@@ -2646,7 +2649,7 @@ function qkSubmit(){
   if(qkNeedCol(m) && !QK.col){ alert('컬러를 선택해 주세요.'); return; }
   if(qk!=='tvfree' && !car){ alert('현재 이용 중인 통신사를 선택해 주세요.'); return; }
   if(!name){ alert('이름을 입력해 주세요.'); return; }
-  if(koNameBad(name)){ alert('이름은 한글로 입력해 주세요.'); return; }
+  if(koNameBad(name)){ alert(koNameMsg(name)); return; }
   if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해 주세요.'); return; }
   if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해 주세요.'); return; }
   var be=birthErr(birth); if(be){ alert(be); return; }
@@ -2689,7 +2692,7 @@ function apSubmit(mode){
   // 20261027: '받는 방법'은 선택 — 다만 '매장 방문'을 골랐으면 방문할 매장은 꼭 고르게
   if(AP.recv==='store' && !AP.store){ alert('방문할 매장을 골라 주세요.'); go('#mStoreSel'); return; }
   if(!name){ alert('이름을 입력해 주세요.'); go('#mUserName'); return; }
-  if(koNameBad(name)){ alert('이름은 한글로 입력해 주세요.'); go('#mUserName'); return; }
+  if(koNameBad(name)){ alert(koNameMsg(name)); go('#mUserName'); return; }
   if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해 주세요.'); go($('#mPhone2').value.replace(/\D/g,'').length<4?'#mPhone2':'#mPhone3'); return; }
   if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해 주세요.'); return; }
   var be=birthErr(birth); if(be){ alert(be); go('#mUserBirth'); return; }
@@ -2824,7 +2827,7 @@ document.addEventListener('input',function(e){
   else if(id==='mDeviceSearch'){ var qv=e.target.value.toLowerCase().replace(/\s/g,''), al={'아이폰':'iphone','갤럭시':'','플립':'flip','폴드':'fold','울트라':'ultra'};
     $$('#apList .ap-li').forEach(function(li){ var nm=li.getAttribute('data-nm')||'', q2=qv; Object.keys(al).forEach(function(a){ if(al[a]) q2=q2.split(a).join(al[a]); }); li.hidden=!!qv && nm.indexOf(qv)<0 && (!q2||nm.indexOf(q2)<0); }); }
 });
-function koClean(e){ var t=e.target; if(!KO_NAME||!t||(t.id!=='mUserName'&&t.id!=='qkName')) return; var nv=koOnly(t.value); if(nv!==t.value) t.value=nv; }
+function koClean(e){ var t=e.target; if(!KO_NAME||!t||(t.id!=='mUserName'&&t.id!=='qkName')) return; var nv=e.type==='focusout'?koFinal(t.value):koOnly(t.value); if(nv!==t.value) t.value=nv; }   // 입력 중엔 자음·모음 그대로(조합 중) · 칸 벗어나면 완성 글자만
 document.addEventListener('compositionend',koClean); document.addEventListener('focusout',koClean);
 document.addEventListener('keydown',function(e){   // 20261019: 동네 칸에서 엔터 = 찾기
   if(e.key!=='Enter' || !e.target) return;
