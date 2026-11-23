@@ -526,6 +526,10 @@ var MNP_ONLY=!!CFG.mnpOnly; if(MNP_ONLY) CARRIERS=CARRIERS.filter(function(c){ r
 // 20261123 사장님: 광고 랜딩(meta.uplusdak.com · srcTag 'meta/…')에서는 아이폰 17 · 18프로 · 18프로맥스를 어느 랜딩에서 보든 통신사에서 LG U+(기기변경) 뺌 — 번호이동만 · 스토어(/shop)는 그대로
 var MNP_MODELS={iphone17:1, iphone18pro:1, iphone18promax:1}, IS_AD=/^meta\//.test(String(CFG.srcTag||''));
 function mnpOnlyFor(m){ return MNP_ONLY || (IS_AD && !!m && !!MNP_MODELS[m.id]); }
+// 20261123 사장님: 광고 랜딩(meta/*)은 이름에 영어 입력 자체를 막음 — 한글만 남기고 지움 (외국인 신청 막기) · 스토어 /shop 은 그대로
+var KO_NAME=IS_AD;
+function koOnly(v){ return String(v||'').replace(/[^가-힣ㄱ-ㅎㅏ-ㅣ]/g,''); }
+function koNameBad(n){ return KO_NAME && !/^[가-힣]{2,}$/.test(String(n||'').replace(/\s/g,'')); }
 function carsFor(m){ return mnpOnlyFor(m) ? CARRIERS.filter(function(c){ return c!=='LG U+'; }) : CARRIERS; }
 // 20261019 메타 '번호이동 접수' 신호(MnpLead): 지금 통신사가 SKT·KT·알뜰폰(=번호이동)인 접수만 — 기기변경(LG U+)·TV프리만은 안 보냄. 기존 Lead 는 그대로
 // 20261118 사장님: 이름에 한글이 없는 신청은 접수(CRM)는 그대로 받고, 메타에는 '신청(Lead)'·'번호이동 신청(MnpLead)'으로 알리지 않음
@@ -2068,6 +2072,7 @@ function submitConsult(){
   var birth=birth8($('#mUserBirth').value);
   var carrier=$('#mCarrierSel').value, device=$('#mDeviceSelect').value, memo=$('#mUserNote').value.trim();
   if(!name){ alert('이름을 입력해 주세요.'); return; }
+  if(koNameBad(name)){ alert('이름은 한글로 입력해 주세요.'); return; }
   if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해 주세요.'); return; }
   if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해 주세요.'); return; }
   var t=new Date(), bY=+birth.slice(0,4), bM=+birth.slice(4,6), bD=+birth.slice(6,8);
@@ -2641,6 +2646,7 @@ function qkSubmit(){
   if(qkNeedCol(m) && !QK.col){ alert('컬러를 선택해 주세요.'); return; }
   if(qk!=='tvfree' && !car){ alert('현재 이용 중인 통신사를 선택해 주세요.'); return; }
   if(!name){ alert('이름을 입력해 주세요.'); return; }
+  if(koNameBad(name)){ alert('이름은 한글로 입력해 주세요.'); return; }
   if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해 주세요.'); return; }
   if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해 주세요.'); return; }
   var be=birthErr(birth); if(be){ alert(be); return; }
@@ -2683,6 +2689,7 @@ function apSubmit(mode){
   // 20261027: '받는 방법'은 선택 — 다만 '매장 방문'을 골랐으면 방문할 매장은 꼭 고르게
   if(AP.recv==='store' && !AP.store){ alert('방문할 매장을 골라 주세요.'); go('#mStoreSel'); return; }
   if(!name){ alert('이름을 입력해 주세요.'); go('#mUserName'); return; }
+  if(koNameBad(name)){ alert('이름은 한글로 입력해 주세요.'); go('#mUserName'); return; }
   if(phone.length!==11){ alert('010으로 시작하는 11자리 전화번호를 입력해 주세요.'); go($('#mPhone2').value.replace(/\D/g,'').length<4?'#mPhone2':'#mPhone3'); return; }
   if(window.udakBlocked && window.udakBlocked(phone)){ alert('현재 해당 번호로는 신청이 제한되어 있습니다.\n문의사항은 고객센터로 연락해 주세요.'); return; }
   var be=birthErr(birth); if(be){ alert(be); go('#mUserBirth'); return; }
@@ -2811,12 +2818,14 @@ document.addEventListener('input',function(e){
   var id=e.target.id;
   if(id==='mPhone2'||id==='mPhone3'||id==='qkP2'||id==='qkP3'){ e.target.value=e.target.value.replace(/\D/g,'').slice(0,4); if((id==='mPhone2'||id==='qkP2')&&e.target.value.length===4){ var n=$(id==='qkP2'?'#qkP3':'#mPhone3'); if(n) n.focus(); } }
   else if(id==='mUserBirth'||id==='qkBirth'){ e.target.value=e.target.value.replace(/\D/g,'').slice(0,8); }
-  else if(id==='mUserName'||id==='qkName'){ e.target.value=e.target.value.replace(/[0-9]/g,''); }
+  else if(id==='mUserName'||id==='qkName'){ var nv=KO_NAME?(e.isComposing?e.target.value:koOnly(e.target.value)):e.target.value.replace(/[0-9]/g,''); if(nv!==e.target.value) e.target.value=nv; }
   else if(id==='mFromIn'){ if(AP) AP.from=e.target.value; }   // 20261019 매장 수령 '어디서 오세요' (다시 그려도 안 지워지게)
   else if(id==='q'){ renderSearch(e.target.value); }
   else if(id==='mDeviceSearch'){ var qv=e.target.value.toLowerCase().replace(/\s/g,''), al={'아이폰':'iphone','갤럭시':'','플립':'flip','폴드':'fold','울트라':'ultra'};
     $$('#apList .ap-li').forEach(function(li){ var nm=li.getAttribute('data-nm')||'', q2=qv; Object.keys(al).forEach(function(a){ if(al[a]) q2=q2.split(a).join(al[a]); }); li.hidden=!!qv && nm.indexOf(qv)<0 && (!q2||nm.indexOf(q2)<0); }); }
 });
+function koClean(e){ var t=e.target; if(!KO_NAME||!t||(t.id!=='mUserName'&&t.id!=='qkName')) return; var nv=koOnly(t.value); if(nv!==t.value) t.value=nv; }
+document.addEventListener('compositionend',koClean); document.addEventListener('focusout',koClean);
 document.addEventListener('keydown',function(e){   // 20261019: 동네 칸에서 엔터 = 찾기
   if(e.key!=='Enter' || !e.target) return;
   if(e.target.id==='nearQ'){ e.preventDefault(); findNearQ(); }
