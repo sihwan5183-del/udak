@@ -640,14 +640,15 @@ function wpPickHtml(m, r, st, w){
   var wx=byId(w.watch), wcs=wx?colorsOf(wx):[], wim=wx?(wx.img||(wcs[0]&&wcs[0].img)||''):'';   // 20261027 사장님: B 칸 오른쪽 위에 워치 실물 사진 (애플워치 SE3 · 갤럭시 워치9)
   var wimH=wim?'<span class="wp-im" data-wp-view data-model="'+esc(m.id)+'" role="button" aria-label="'+esc(wx.nm)+' 사진 크게 보기"><img src="'+esc(imgSrc(wim))+'" alt="" loading="lazy" decoding="async"><i class="wp-im-z" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="m15.2 15.2 4.8 4.8"/></svg></i></span>':'', wprH='<span class="wp-pr">'+(wout?'<s>'+won(wout)+'</s> ':'')+'<i>'+wz(w.price||0)+'</i></span>';   // 20261123 both면 A 칸에도 같은 사진·'출고가 → 0원'
   // 20261021 사장님(3차): A/B 칸도 '월 기기값'을 앞에, 밑에 '+ 월 요금' (요금제까지 합친 14만원대 금액은 크게 안 보여 줌) · 일시납이면 매달은 요금만
-  var amt=function(x,lf){ if(!x) return ''; if(x.mm===0) return '월 요금 '+won(x.fee+(lf||0));
-    return '월 '+won(x.monthly)+'<small>+ 월 요금 '+won(x.fee)+(lf?' + 워치 이용료 '+won(lf):'')+'</small>'; };
+  // 20261123 사장님: 월 요금은 가로(+ 월 요금 … + 워치 이용료 …) 대신 세로로 — '월 요금' 밑에 통신료 / 워치(이용료 또는 '이용료 포함')
+  var amt=function(x,lf,wIn){ if(!x) return ''; if(x.mm===0) return '월 요금 '+won(x.fee+(lf||0));
+    return '월 '+won(x.monthly)+'<small class="wp-fee"><span class="wp-fl">월 요금</span><span>통신료 '+won(x.fee)+'</span>'+(wIn?'<span>'+(lf?'워치 '+won(lf):'워치 이용료 포함')+'</span>':'')+'</small>'; };
   return '<div class="wp'+(w.both?' both':'')+'">'+
     '<button type="button" class="wp-c'+(on?'':' on')+'" data-calc="tier" data-v="'+esc(w.a)+'" data-model="'+esc(m.id)+'">'+(w.both?wimH:'')+'<span class="wp-k">A</span><b>'+esc(tierNmOf(w.a))+' 요금제</b>'+
-      (w.both?'<small>+ '+esc(wpName(w))+wprH+'</small><em>'+amt(ta, ta?wpLineFee(w,ta.t.fee):0)+'</em>':'<small>'+esc(m.nm)+'</small><em>'+amt(ta)+'</em>')+'</button>'+   // 20261123 both: A도 워치 0원 + 워치 이용료
+      (w.both?'<small>+ '+esc(wpName(w))+wprH+'</small><em>'+amt(ta, ta?wpLineFee(w,ta.t.fee):0, true)+'</em>':'<small>'+esc(m.nm)+'</small><em>'+amt(ta, 0, false)+'</em>')+'</button>'+   // 20261123 both: A도 워치 0원 + 워치 이용료
     '<button type="button" class="wp-c wp-b'+(on?' on':'')+'" data-calc="tier" data-v="'+esc(w.b)+'" data-model="'+esc(m.id)+'">'+wimH+'<span class="wp-k">B</span><b>'+esc(tierNmOf(w.b))+' 요금제</b>'+
-      '<small>+ '+esc(wpName(w))+wprH+'</small><em>'+amt(tb, tb?wpLineFee(w,tb.t.fee):0)+'</em>'+
-      '<span class="wp-tag">'+(w.both?'워치&nbsp;이용료&nbsp;포함':'한 단계 높이고 '+esc(wpShort(w)).replace(/ /g,'&nbsp;')+'&nbsp;혜택&nbsp;받기')+'</span></button>'+   // 20261123 both: 95 요금제는 워치 이용료가 요금에 포함   // 좁은 화면에선 '한 단계 높이고 / 워치9 혜택 받기'로만 끊김
+      '<small>+ '+esc(wpName(w))+wprH+'</small><em>'+amt(tb, tb?wpLineFee(w,tb.t.fee):0, true)+'</em>'+
+      (w.both?'':'<span class="wp-tag">한 단계 높이고 '+esc(wpShort(w)).replace(/ /g,'&nbsp;')+'&nbsp;혜택&nbsp;받기</span>')+'</button>'+   // 20261123 both: 꼬리표 없음 — '워치 이용료 포함'은 월 요금 밑 줄에 적힘   // 좁은 화면에선 '한 단계 높이고 / 워치9 혜택 받기'로만 끊김
   '</div>'+
   (w.opts&&w.opts.length>1?'<div class="wp-sz"><span class="wp-sz-l">'+esc(wpShort(w))+' 사이즈'+(w.both?'':' <small>(B 혜택)</small>')+'</span><div class="wp-sz-b">'+w.opts.map(function(o){   // 20261027 사이즈를 누르면 B로
     return '<button type="button" class="'+(o===w.opt?'on':'')+'" data-wp-opt="'+esc(o)+'" data-model="'+esc(m.id)+'">'+esc(o)+'</button>'; }).join('')+'</div></div>':'');
