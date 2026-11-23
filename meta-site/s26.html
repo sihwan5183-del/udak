@@ -28,7 +28,7 @@ try{ window.__stCfg=fetch('https://ebggtghzqtxfylbhqfoh.supabase.co/rest/v1/stor
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="https://landing.uplusdak.com/assets/store/store.css?v=20261123b">
 <link rel="stylesheet" href="https://landing.uplusdak.com/assets/shop/shop.css?v=20261123a">
-<link rel="preload" as="image" href="https://landing.uplusdak.com/assets/store/banner/meta-s26-v6.webp?v=20261116" fetchpriority="high">
+<link rel="preload" as="image" href="https://landing.uplusdak.com/assets/store/banner/meta-s26-v7.webp?v=20261123" fetchpriority="high">
 <!-- Meta Pixel -->
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
@@ -71,13 +71,16 @@ function udakMetaIds(){
 // srcTag: 이 페이지에서 들어온 신청은 유닥 시트 '신청 경로'에 ' · /shop' 이 붙음 (예: 온라인 상담 신청 · /shop)
 // 20261107 사장님: meta.uplusdak.com/s26 — 갤럭시 S26 배너 광고 전용 랜딩
 //   화면·가격 계산·신청서는 스토어(landing.uplusdak.com/shop) 갤럭시 S26 상세와 똑같은 코드 · 가격·품절·상세 내용은 관리자(/apple)에서 바꾸면 여기도 같이 바뀜
-//   맨 위에 광고 배너 — 20261116 사장님: 'S26 + 가족 버디5 0원' 배너(깃허브 assets/store/banner/meta-s26-v6.webp) · 컬러 바이올렛 미리 선택 · 할인 방식 공시지원금만
+//   맨 위에 광고 배너 — 20261123 사장님: '유플러스로 통신사 이동시 워치9 기기값 무료 혜택 · 기기값 0+0' 배너 그대로(깃허브 assets/store/banner/meta-s26-v7.webp)
+//     (이전: 20261116 'S26 + 가족 버디5 0원' meta-s26-v6.webp)
+//   · 컬러 바이올렛 미리 선택 · 할인 방식 공시지원금만
 window.STORE_CFG = {mode:'view', srcTag:'meta/s26', origin:'https://landing.uplusdak.com',
   pubOnly:true,   // 20261116 사장님: 할인 방식 공시지원금만 (선택약정 숨김)
   // 20261110 사장님: /s26 도 요금제 A/B — A 85 / B 95 + 갤럭시 워치9 40mm 0원 (s26-coffee 와 같음 · 이 랜딩에서만)
-  wpromo:{ s26:{a:'t85', b:'t95', watch:'watch9', opt:'40mm', price:0} },
-  lp:{model:'s26', color:'바이올렛', banner:'https://landing.uplusdak.com/assets/store/banner/meta-s26-v6.webp?v=20261116', w:1122, h:1402, cta:'구매 조건 확인하기',
-      alt:'유플러스 공식파트너사 유플러스 다이렉트 · SKT/KT/알뜰폰 → U+ 번호이동시 · 갤럭시 S26 구매하면 우리 가족 핸드폰이 공짜? · 갤럭시 S26 번호이동 특별가 0원 + 갤럭시 버디5 기기값 0원 · 어머니도 아버지도 온 가족 함께 · 갤럭시 S26 조건: 85,000원 이상 요금제 6개월 유지, 6개월 후 47,000원 이상 요금제로 자유롭게 변경 가능 · 갤럭시 버디5 조건: 61,000원 이상 요금제 6개월 유지, 시니어 고객님은 6개월 후 시니어 요금제로 변경 가능, 비시니어 고객님은 6개월 후 47,000원 이상 요금제로 변경 가능 · 지금 바로 가족 혜택 확인하기'}};
+  // 20261123 사장님 배너 '워치9 기기값 무료 · 기기값 0+0' — 폴드8처럼 85 / 95 둘 다 워치9 0원 (85는 워치 이용료 월 11,000원, 95는 요금에 포함)
+  wpromo:{ s26:{a:'t85', b:'t95', watch:'watch9', opt:'40mm', price:0, both:true} },
+  lp:{model:'s26', color:'바이올렛', banner:'https://landing.uplusdak.com/assets/store/banner/meta-s26-v7.webp?v=20261123', w:1122, h:1402, cta:'구매 조건 확인하기',
+      alt:'유플러스 공식파트너사 유플러스 다이렉트 · 유플러스로 통신사 이동시 워치9 기기값 무료 혜택 · 갤럭시 S26 출고가격 1,254,000원 · 갤럭시 워치9 출고가격 529,100원 (40mm 기준) · 기기값 0+0 · SKT/KT/알뜰폰 → U+로 통신사 이동시 워치9 기기값 무료 혜택을 제공합니다.'}};
 </script>
 </head>
 <body>
