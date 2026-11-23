@@ -523,6 +523,10 @@ var SEL={};                                  // 모델별 고른 조건 {carrier
 var CARRIERS=['SKT','KT','알뜰폰','LG U+'];   // 20261021 사장님 순서: SKT / KT / 알뜰 / U+ (상세·신청서 모두 같은 순서)
 // 20261111 사장님: 번호이동(MNP) 전용 광고 랜딩(예: meta/s26-bf)은 STORE_CFG.mnpOnly=true — 통신사에서 LG U+(기기변경)를 아예 뺌 · 스토어(/shop)는 그대로
 var MNP_ONLY=!!CFG.mnpOnly; if(MNP_ONLY) CARRIERS=CARRIERS.filter(function(c){ return c!=='LG U+'; });
+// 20261123 사장님: 광고 랜딩(meta.uplusdak.com · srcTag 'meta/…')에서는 아이폰 17 · 18프로 · 18프로맥스를 어느 랜딩에서 보든 통신사에서 LG U+(기기변경) 뺌 — 번호이동만 · 스토어(/shop)는 그대로
+var MNP_MODELS={iphone17:1, iphone18pro:1, iphone18promax:1}, IS_AD=/^meta\//.test(String(CFG.srcTag||''));
+function mnpOnlyFor(m){ return MNP_ONLY || (IS_AD && !!m && !!MNP_MODELS[m.id]); }
+function carsFor(m){ return mnpOnlyFor(m) ? CARRIERS.filter(function(c){ return c!=='LG U+'; }) : CARRIERS; }
 // 20261019 메타 '번호이동 접수' 신호(MnpLead): 지금 통신사가 SKT·KT·알뜰폰(=번호이동)인 접수만 — 기기변경(LG U+)·TV프리만은 안 보냄. 기존 Lead 는 그대로
 // 20261118 사장님: 이름에 한글이 없는 신청은 접수(CRM)는 그대로 받고, 메타에는 '신청(Lead)'·'번호이동 신청(MnpLead)'으로 알리지 않음
 //   — 메타가 "이런 사람이 신청한다"고 배워서 외국인 쪽으로 광고가 쏠리던 고리를 끊으려고
@@ -542,10 +546,11 @@ function pubOnly(m){ return !!(m && (m.pubOnly || (CFG.pubOnly && kindOf(m)==='p
 // 할부 개월 칸: 기기값 0원이면 '일시납' 하나만 (20261026 사장님)
 function MONTHS_OF(after){ return after===0?[['0','일시납']]:[['0','일시납'],['24','24개월'],['30','30개월'],['36','36개월']]; }
 function methodOf(m, want, c){ return pubOnly(m)?'pub':((want==='sel'||!c||!c.pub)?'sel':'pub'); }
-function jtOf(s){ s=s||{}; if(MNP_ONLY) return 'mnp'; return s.carrier?(s.carrier==='LG U+'?'chg':'mnp'):(s.jt==='mnp'||s.jt==='chg')?s.jt:(MNP?'mnp':'chg'); }
+function jtOf(s, m){ s=s||{}; if(MNP_ONLY || mnpOnlyFor(m)) return 'mnp'; return s.carrier?(s.carrier==='LG U+'?'chg':'mnp'):(s.jt==='mnp'||s.jt==='chg')?s.jt:(MNP?'mnp':'chg'); }
 function calcState(m, r){
   var g=r.g, s=SEL[m.id]||(SEL[m.id]={});
-  var type=g!=='phone'?'all':jtOf(s);
+  if(s.carrier==='LG U+' && mnpOnlyFor(m)) s.carrier='';   // 20261123 번호이동만인 모델: 다른 데서 골라 둔 LG U+ 는 비움
+  var type=g!=='phone'?'all':jtOf(s, m);
   var t=curTier(m,g,r), c=rowCalc(r,type,t), st={g:g, s:s, t:t, type:type, c:c, split:(g!=='second')};
   if(!c) return st;
   st.method=g!=='phone'?'pub':methodOf(m, s.method, c);
@@ -629,7 +634,7 @@ function tierNmOf(k){ var t=tierAny(k); return t?(t.nm||tierLabel(t)):k; }
 // 이 요금제로 했을 때 매달 내는 돈 (휴대폰 할부금 + 요금제) — A/B 칸에 각각 보여 줌
 function tierTotal(m, r, tk){
   var s=SEL[m.id]||{}, t=(r.g==='phone'?tiersFor(m,'phone'):rowTiers(r)).filter(function(x){return x.k===tk})[0]; if(!t) return null;
-  var type=jtOf(s), c=rowCalc(r,type,t); if(!c) return null;
+  var type=jtOf(s, m), c=rowCalc(r,type,t); if(!c) return null;
   var method=methodOf(m, s.method, c), after=(method==='pub'&&c.pb!=null)?c.pb:c.sel, mm=after===0?0:(s.months==null?24:s.months);
   var monthly=mm===0?0:won10(after*RATE[mm]/mm), fee=t.fee?(method==='sel'?Math.round(t.fee*0.75):t.fee):0;
   return {total:monthly+fee, monthly:monthly, fee:fee, after:after, t:t, mm:mm};
@@ -672,7 +677,7 @@ function wvHtml(mid){
 }
 function calcPickers(m, r, st){
   var g=r.g, h='', car='', promo='';
-  if(g==='phone') car=cgrid('','carrier',CARRIERS.map(function(c){return [c,c]}),st.s.carrier||'',m,CARRIERS.length,
+  if(g==='phone') car=cgrid('','carrier',carsFor(m).map(function(c){return [c,c]}),st.s.carrier||'',m,carsFor(m).length,
     '');   // 20261020 '사용 통신사' 이름표 뺌 — 단계 제목 '현재 이용 중인 통신사'와 같은 말
   var ts=g==='tvfree'?[]:rowTiers(r);
   if(g==='tvfree') h+=tvCondHtml(m);
@@ -1236,7 +1241,7 @@ function renderModel(id, keepRecent){
   $('#mdTitle').textContent=m.nm;
   var pc=colorsOf(m).filter(function(c){return c.nm===PICK[m.id]})[0];
   var PK=(pickers&&typeof pickers==='object')?pickers:{car:'',rest:pickers||''}, gg=selRow?selRow.g:'';
-  if(PRE) PK={car:cgrid('','carrier',CARRIERS.map(function(c){return [c,c]}),(SEL[m.id]||{}).carrier||'',m,CARRIERS.length,''), rest:'', promo:''};   // 설정 받기 전: 통신사 칸은 그대로, 가격은 받으면
+  if(PRE) PK={car:cgrid('','carrier',carsFor(m).map(function(c){return [c,c]}),(SEL[m.id]||{}).carrier||'',m,carsFor(m).length,''), rest:'', promo:''};   // 설정 받기 전: 통신사 칸은 그대로, 가격은 받으면
   var soNow=SO(m)||(selRow&&selRow.so), needCar=!!PK.car && !((SEL[m.id]||{}).carrier);
   var soDis=(soNow&&!EDIT)?' disabled':'';   // 20261020 품절이면 카톡·전화 상담 버튼 막음
   // 20261019 행동 유도: '이 순서대로 하시면 돼요' + 컬러 → 용량 → 통신사를 한 단계씩
@@ -1506,8 +1511,8 @@ function pdRender(m, p, st, PK, o){
       return '<button type="button" class="pd-b'+(i===oc?' on':'')+(so?' so':'')+'" data-opt-pick="'+i+'" data-model="'+esc(m.id)+'"'+(so&&!EDIT?' disabled':'')+'>'+esc(x.nm)+(so?' <small>품절</small>':'')+'</button>'; }).join('')+'</div>'); }
   // 20261028 사장님: 상세도 신청서처럼 '현재 이용 중인 통신사' SKT · KT · 알뜰폰 · LG U+ (번호이동/기기변경 버튼 대신 · 모든 휴대폰 똑같이)
   //   SKT·KT·알뜰폰 = 번호이동 가격 · LG U+ = 기기변경 가격 · 고른 통신사는 신청서에 그대로 들어감 · 안 고르면 번호이동 가격으로 보여 줌
-  var scar=(SEL[m.id]||{}).carrier||'', jt=st?(st.type==='chg'?'chg':'mnp'):jtOf(SEL[m.id]);
-  h+=pdO('jt','현재 이용 중인 통신사',pdBtns('carrier',CARRIERS.map(function(c){ return [c,c]; }),scar,m,CARRIERS.length)+
+  var scar=(SEL[m.id]||{}).carrier||'', jt=st?(st.type==='chg'?'chg':'mnp'):jtOf(SEL[m.id], m);
+  h+=pdO('jt','현재 이용 중인 통신사',pdBtns('carrier',carsFor(m).map(function(c){ return [c,c]; }),scar,m,carsFor(m).length)+
     '<p class="pd-hint">'+(!scar?'통신사를 고르면 나에게 맞는 혜택이 바로 나와요':jt==='mnp'?'쓰던 번호 그대로, 통신사만 U+로 바꾸고 싶어요':'지금 쓰는 U+ 그대로, 휴대폰만 바꾸고 싶어요')+'</p>');
   var total=0, monthly=0, fa=0, wlf=0, wpw=null, wpOn=false, mm=24;
   if(o.PRE){
@@ -2042,7 +2047,7 @@ function sheetConsult(modelId, colorNm, optNm){
     '<div class="ff"><label>이름 <span class="req">*</span></label><input type="text" id="mUserName" placeholder="이름을 입력해 주세요" autocomplete="name"></div>'+
     '<div class="ff"><label>연락처 <span class="req">*</span></label><div class="phone3"><input type="text" id="mPhone1" value="010" readonly tabindex="-1"><span>-</span><input type="tel" id="mPhone2" maxlength="4" inputmode="numeric" placeholder="0000"><span>-</span><input type="tel" id="mPhone3" maxlength="4" inputmode="numeric" placeholder="0000"></div></div>'+
     '<div class="ff"><label>생년월일 <span class="req">*</span></label><input type="text" id="mUserBirth" inputmode="numeric" maxlength="8" placeholder="예: 940101"></div>'+
-    '<div class="ff"><label>현재 통신사 <span class="req">*</span></label><select id="mCarrierSel"><option value=""'+(car?'':' selected')+' disabled>통신사를 선택해 주세요</option>'+CARRIERS.map(function(c){return '<option'+(c===car?' selected':'')+'>'+c+'</option>'}).join('')+'</select></div>'+
+    '<div class="ff"><label>현재 통신사 <span class="req">*</span></label><select id="mCarrierSel"><option value=""'+(car?'':' selected')+' disabled>통신사를 선택해 주세요</option>'+carsFor(byId(modelId)).map(function(c){return '<option'+(c===car?' selected':'')+'>'+c+'</option>'}).join('')+'</select></div>'+
     '<div class="ff"><label>관심 기기 <span class="req">*</span></label><select id="mDeviceSelect"><option value=""'+(modelId?'':' selected')+' disabled>기기를 선택해 주세요</option>'+opts+'<option value="상담 후 결정">상담 후 결정할게요</option></select></div>'+
     '<div class="ff" id="mBundleWrap">'+bundleHtml(byId(modelId))+'</div>'+
     '<div class="ff" id="mOptWrap"'+(optOpts(byId(modelId))?'':' hidden')+'><label id="mOptLbl">'+esc(byId(modelId)?optLabel(byId(modelId)):'사이즈')+'</label><select id="mOptSel">'+optOpts(byId(modelId),optNm)+'</select></div>'+
@@ -2220,6 +2225,7 @@ function apPhoneHtml(){
       (AP.tv&&AP.tvType==='old'?'<div class="ap-li later" data-nm="휴대폰변경없음tv프리만"><b>휴대폰은 바꾸지 않아요 (TV프리만)</b><button type="button" class="ap-pick" data-ap-pick="none">선택하기</button></div>':'')+'</div>';
   }
   if(m && !AP.pick){
+    if(AP.carrier==='LG U+' && mnpOnlyFor(m)) AP.carrier='';   // 20261123 번호이동만인 모델로 바꿔 고르면 LG U+ 는 비움
     var os=optsOf(m), cs=colorsOf(m);
     // ① 컬러·용량 (통신사는 상세에서 이미 골랐으면 안 물음 — 안 골랐을 때만 여기서)
     var t1=cs.length>1&&os.length>1?'컬러 · '+optLabel(m)+eul(optLabel(m))+' 선택해 주세요.':cs.length>1?'컬러를 선택해 주세요.':os.length>1?optLabel(m)+eul(optLabel(m))+' 선택해 주세요.':'현재 이용 중인 통신사를 선택해 주세요.';
@@ -2231,7 +2237,7 @@ function apPhoneHtml(){
     // 20261027 사장님: 워치 혜택(B) 컬러도 꼭 골라야 신청됨 (휴대폰 컬러처럼) → CRM '워치 컬러'로 들어감
     if(AP.wpromo){ var wcs=colorsOf(byId(AP.wpromo.watch)||{id:''}); if(wcs.length>1) h+='<div class="qk-car qk-col'+(AP.wcolor?'':' need')+'" id="apWColorRow"><div class="qk-l">워치 컬러 <span class="req">*</span>'+(AP.wcolor?'':'<em class="need-t">워치 컬러를 선택해 주세요.</em>')+'</div><div class="qk-cc">'+wcs.map(function(c){
         return '<button type="button" class="'+(AP.wcolor===c.nm?'on':'')+'" data-ap="wcolor" data-v="'+esc(c.nm)+'"><i style="--c:'+esc(c.hex||'#ddd')+'"></i>'+esc(c.nm)+'</button>'; }).join('')+'</div></div>'; }
-    if(!AP.carrier) h+='<div class="qk-car" id="apCarRow"><div class="qk-l">현재 이용 중인 통신사 <span class="req">*</span></div>'+apChips('carrier',CARRIERS.map(function(c){return [c,c]}),AP.carrier,CARRIERS.length)+'</div>';
+    if(!AP.carrier) h+='<div class="qk-car" id="apCarRow"><div class="qk-l">현재 이용 중인 통신사 <span class="req">*</span></div>'+apChips('carrier',carsFor(m).map(function(c){return [c,c]}),AP.carrier,carsFor(m).length)+'</div>';
   }
   return h;
 }
@@ -2533,7 +2539,7 @@ window.udakFormState=function(){
 function apSetFrom(m){
   AP=apInit();
   if(m){ var k=kindOf(m);
-    if(k==='phone'){ AP.phone=m.id; AP.cap=OPT[m.id]||0; AP.color=PICK[m.id]||''; var s=SEL[m.id]||{}; AP.carrier=s.carrier||''; AP.method=s.method||''; if(s.months!=null) AP.months=s.months; AP.tier=TIER[m.id]||'';
+    if(k==='phone'){ AP.phone=m.id; AP.cap=OPT[m.id]||0; AP.color=PICK[m.id]||''; var s=SEL[m.id]||{}; AP.carrier=s.carrier||''; if(AP.carrier==='LG U+' && mnpOnlyFor(m)) AP.carrier=''; AP.method=s.method||''; if(s.months!=null) AP.months=s.months; AP.tier=TIER[m.id]||'';
       var wp=wpFor(m); if(wp && wpHas(wp,AP.tier)){ AP.watch=wp.watch; AP.wpromo=wp; AP.wpm=m.id; } }   // 20261021 B(95 요금제 + 워치9 40mm)
     else if(k==='tvfree'){ AP.tv=m.id; AP.tvTier=TIER[m.id]||''; AP.tvType=tvTypeOf((SEL[m.id]||{}).tvtype); AP.tvFix=true; var ts0=SEL[m.id]||{}; if(ts0.months!=null) AP.months=ts0.months; if(AP.tvType==='old') AP.phone='none'; }
     else AP[k]=m.id;
@@ -2615,7 +2621,7 @@ function sheetQuickKakao(m){
     '<div class="qk-sub">고객 정보를 남겨 주시면 <b>유플러스 다이렉트 카카오톡 상담 채널</b>로 바로 연결돼요. 고르신 조건은 상담사에게 같이 전달돼요.</div>'+
     '<div class="qk-pick"><b>'+esc([m.nm, col, cap].filter(Boolean).join(' · '))+'</b>'+(st&&st.c?'<span>'+esc(st.g==='tvfree'?'TV프리 약정 36개월':calcSummary(st))+'</span>':'')+'</div>'+
     (needCol?'<div class="qk-car qk-col"><div class="qk-l">컬러 <span class="req">*</span></div><div class="qk-cc">'+cs.map(function(c){ return '<button type="button" class="'+(QK.col===c.nm?'on':'')+'" data-qk-col="'+esc(c.nm)+'"><i style="--c:'+esc(c.hex||'#ddd')+'"></i>'+esc(c.nm)+'</button>'; }).join('')+'</div></div>':'')+
-    (needCar&&!hasCar?'<div class="qk-car"><div class="qk-l">현재 이용 중인 통신사 <span class="req">*</span></div><div class="cgrid" style="--n:'+CARRIERS.length+'">'+CARRIERS.map(function(cn){ return '<button type="button" class="cg'+(QK.car===cn?' on':'')+'" data-qk-car="'+esc(cn)+'">'+esc(cn)+'</button>'; }).join('')+'</div></div>':'')+
+    (needCar&&!hasCar?'<div class="qk-car"><div class="qk-l">현재 이용 중인 통신사 <span class="req">*</span></div><div class="cgrid" style="--n:'+carsFor(m).length+'">'+carsFor(m).map(function(cn){ return '<button type="button" class="cg'+(QK.car===cn?' on':'')+'" data-qk-car="'+esc(cn)+'">'+esc(cn)+'</button>'; }).join('')+'</div></div>':'')+
     '<div class="ff"><label>이름 <span class="req">*</span></label><input type="text" id="qkName" placeholder="이름을 입력해 주세요" autocomplete="name"></div>'+
     '<div class="ff"><label>연락처 <span class="req">*</span></label><div class="phone3"><input type="text" value="010" readonly tabindex="-1"><span>-</span><input type="tel" id="qkP2" maxlength="4" inputmode="numeric" placeholder="0000"><span>-</span><input type="tel" id="qkP3" maxlength="4" inputmode="numeric" placeholder="0000"></div></div>'+
     '<div class="ff"><label>생년월일 <span class="req">*</span></label><input type="text" id="qkBirth" inputmode="numeric" maxlength="8" placeholder="예: 940101"></div>'+
