@@ -613,9 +613,11 @@ function cgrid(label, key, items, cur, m, n, hint){
 // 20261116 사장님: 애플워치(아이폰 18 프로·프로맥스)는 이제 'A 85 / B 115 요금제 + 애플워치 SE3' — 95로는 안 된다고 함
 // 20261123 사장님: 폴드8 워치9는 85 / 95 둘 다 기기값 0원 — 셀룰러라 워치 이용료 월 11,000원이 붙는데 95 요금제면 요금에 포함 (85면 85,000 + 11,000 = 96,000 / 95면 95,000)
 //   both:true = A(85)에도 워치 포함 · 워치 이용료는 이용 가이드 기준(wpLineFee — 95 요금제 미만이면 11,000원)이라 A에만 붙음
-var WPROMO={ fold8:{a:'t85', b:'t95', watch:'watch9', opt:'40mm', price:0, both:true},
-  iphone18pro:{a:'t85', b:'t115', watch:'watchse3', opt:'40mm', opts:['40mm','44mm'], price:0},
-  iphone18promax:{a:'t85', b:'t115', watch:'watchse3', opt:'40mm', opts:['40mm','44mm'], price:0} };
+// 20261124 사장님: 애플워치 수급이 안 돼서 아이폰 18프로·프로맥스 '115 요금제 + 애플워치 SE3' 혜택을 전부 뺌 (스토어·광고 랜딩 모두)
+//   다시 켜려면 아래 두 줄 앞의 // 를 지우면 됨
+var WPROMO={ fold8:{a:'t85', b:'t95', watch:'watch9', opt:'40mm', price:0, both:true} };
+//WPROMO.iphone18pro={a:'t85', b:'t115', watch:'watchse3', opt:'40mm', opts:['40mm','44mm'], price:0};
+//WPROMO.iphone18promax={a:'t85', b:'t115', watch:'watchse3', opt:'40mm', opts:['40mm','44mm'], price:0};
 // 20261110 사장님: 광고 랜딩별로 A/B를 더 켤 수 있게 — STORE_CFG.wpromo = {모델id:{a,b,watch,opt,price}} (예: meta/s26-coffee 의 갤럭시 S26)
 //   그 랜딩에서만 켜지고 스토어(/shop)엔 영향 없음
 (function(){ var xw=(window.STORE_CFG||{}).wpromo; if(xw) for(var k in xw) WPROMO[k]=xw[k]; })();
