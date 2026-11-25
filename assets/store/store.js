@@ -397,7 +397,7 @@ function tiersOf(g){ var ts=(S.pricing.tiers[g])||[]; if(g==='phone'){ var o=tie
 // 20261125 사장님: 광고 랜딩별로 모델에 요금제를 더 열 수 있게 — STORE_CFG.tierPlus = {모델id:['t115']} (예: meta/flip8 = 85·95·115) · 그 랜딩에서만, 스토어(/shop) 영향 없음
 var TIER_PLUS=(CFG.tierPlus&&typeof CFG.tierPlus==='object')?CFG.tierPlus:{};
 function tiersFor(m, g){ var ts=tiersOf(g), w=g==='phone'&&m&&WPROMO[m.id], plus=(g==='phone'&&m&&TIER_PLUS[m.id])||[]; if(!w && !plus.length) return ts;
-  var all=(S.pricing.tiers[g])||[], add=all.filter(function(t){ return ts.indexOf(t)<0 && (plus.indexOf(t.k)>-1 || (!!w && (t.k===w.a||t.k===w.b))); }); return add.length?ts.concat(add):ts; }
+  var all=(S.pricing.tiers[g])||[], add=all.filter(function(t){ return ts.indexOf(t)<0 && (plus.indexOf(t.k)>-1 || (!!w && (t.k===w.a||t.k===w.b||(!!w.c&&t.k===w.c)))); }); return add.length?ts.concat(add):ts; }
 function tierAny(k){ return ((S.pricing.tiers.phone)||[]).filter(function(x){ return x.k===k; })[0]||null; }
 function baseTier(g, P){ P=P||S.pricing; var ts=P.tiers[g]||[]; if(g==='phone'){ var o=tierOnly(ts); if(o) return o[0]; } return ts.filter(function(t){return t.k===P.base[g]})[0]||ts[0]||null; }
 // 가격표에 이 모델 줄이 있는지 (공개 여부와 상관없이)
@@ -631,8 +631,16 @@ function wpFor(m){ var w0=m&&WPROMO[m.id]; if(!w0) return null; var x=byId(w0.wa
     w={}; for(var k in w0) w[k]=w0[k]; w.opts=ok; w.opt=ok.indexOf(WPOPT[m.id])>-1?WPOPT[m.id]:ok[0]; }
   if(!wpRow(w)) return null;
   var ts=tiersFor(m,'phone'); if(!ts.some(function(t){return t.k===w.a}) || !ts.some(function(t){return t.k===w.b})) return null; return w; }
-function wpHas(w, k){ return !!w && !!k && (k===w.b || (!!w.both && k===w.a)); }   // 20261123 이 요금제에 워치 혜택이 들어가는지 (both면 A·B 둘 다)
+function wpHas(w, k){ return !!w && !!k && (k===w.b || (!!w.both && k===w.a) || (!!w.c && k===w.c)); }   // 20261125 C(세 번째 요금제)에도 워치 들어감   // 20261123 이 요금제에 워치 혜택이 들어가는지 (both면 A·B 둘 다)
 function wpRow(w){ var x=byId(w.watch); return x?sheetRows(x).filter(function(r){ return r.cap===w.opt && num(r.out)!=null; })[0]||null:null; }
+// 20261125 사장님: 플립8 'A 85 휴대폰만 / B 95 + 워치9 / C 115 + 워치9 + 탭 A11+' — WPROMO 항목에 c(세 번째 요금제)·tab(태블릿 모델id)·tabPrice(태블릿 기기값)를 주면 C 칸이 생김
+//   C에는 워치(B와 같은 워치)와 태블릿이 함께 들어감 · 기기값은 price / tabPrice (사장님: 둘 다 0원) · 회선 이용료는 이용 가이드 기준(115 요금제면 워치·탭 둘 다 0원)
+function wpTabHas(w, k){ return !!w && !!w.c && !!w.tab && k===w.c; }
+function wpTabRow(w){ var x=w&&w.tab&&byId(w.tab); return x?sheetRows(x).filter(function(r){ return num(r.out)!=null; })[0]||null:null; }
+function wpTabName(w){ var x=w&&w.tab&&byId(w.tab); return (x&&x.nm)||'태블릿'; }
+function wpTabShort(w){ return wpTabName(w).replace(/^갤럭시\s*/,''); }
+function wpTabCalc(w){ var r=wpTabRow(w); if(!r) return null; var out=num(r.out), after=w.tabPrice||0; return {r:r, c:{out:out, pub:0, our:Math.max(0,out-after), pb:after, sel:after, v:after}, after:after, monthly:0, noint:false}; }
+function wpTabFee(w, fee){ var g=w&&w.tab&&GUIDE[w.tab]; return g&&g.fee&&(fee||0)<g.plan?g.fee:0; }
 function wpName(w){ var x=byId(w.watch); return ((x&&x.nm)||'워치')+' '+w.opt; }
 function wpShort(w){ var x=byId(w.watch); return ((x&&x.nm)||'워치').replace(/^갤럭시\s*/,''); }
 function wpCalc(w){
@@ -653,19 +661,20 @@ function tierTotal(m, r, tk){
 }
 // 20261027 사장님: B 칸 워치 이름이 길면(애플워치 SE3 44mm) '0원'만 줄이 바뀌어서 → 출고가 → 0원은 늘 다음 줄에 한 덩어리로 (.wp-pr)
 function wpPickHtml(m, r, st, w){
-  var on=(st.t&&st.t.k)===w.b, ta=tierTotal(m,r,w.a), tb=tierTotal(m,r,w.b), wr=wpRow(w), wout=wr?num(wr.out):null;
+  var ks=st.t&&st.t.k, on=ks===w.b, onC=!!w.c&&ks===w.c, ta=tierTotal(m,r,w.a), tb=tierTotal(m,r,w.b), wr=wpRow(w), wout=wr?num(wr.out):null;
   var wx=byId(w.watch), wcs=wx?colorsOf(wx):[], wim=wx?(wx.img||(wcs[0]&&wcs[0].img)||''):'';   // 20261027 사장님: B 칸 오른쪽 위에 워치 실물 사진 (애플워치 SE3 · 갤럭시 워치9)
   var wimH=wim?'<span class="wp-im" data-wp-view data-model="'+esc(m.id)+'" role="button" aria-label="'+esc(wx.nm)+' 사진 크게 보기"><img src="'+esc(imgSrc(wim))+'" alt="" loading="lazy" decoding="async"><i class="wp-im-z" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6"/><path d="m15.2 15.2 4.8 4.8"/></svg></i></span>':'', wprH='<span class="wp-pr">'+(wout?'<s>'+won(wout)+'</s> ':'')+'<i>'+wz(w.price||0)+'</i></span>';   // 20261123 both면 A 칸에도 같은 사진·'출고가 → 0원'
   // 20261021 사장님(3차): A/B 칸도 '월 기기값'을 앞에, 밑에 '+ 월 요금' (요금제까지 합친 14만원대 금액은 크게 안 보여 줌) · 일시납이면 매달은 요금만
   // 20261123 사장님: 월 요금은 가로(+ 월 요금 … + 워치 이용료 …) 대신 세로로 — '월 요금' 밑에 통신료 / 워치(이용료 또는 '이용료 포함')
   var amt=function(x,lf,wIn){ if(!x) return ''; if(x.mm===0) return '월 요금 '+won(x.fee+(lf||0));
     return '월 '+won(x.monthly)+'<small class="wp-fee"><span class="wp-fl">월 요금</span><span>통신료 '+won(x.fee)+'</span>'+(wIn?'<span>'+(lf?'워치 '+won(lf):'워치 이용료 포함')+'</span>':'')+'</small>'; };
-  return '<div class="wp'+(w.both?' both':'')+'">'+
-    '<button type="button" class="wp-c'+(on?'':' on')+'" data-calc="tier" data-v="'+esc(w.a)+'" data-model="'+esc(m.id)+'">'+(w.both?wimH:'')+'<span class="wp-k">A</span><b>'+esc(tierNmOf(w.a))+' 요금제</b>'+
+  return '<div class="wp'+(w.both?' both':'')+(w.c?' abc':'')+'">'+
+    '<button type="button" class="wp-c'+((on||onC)?'':' on')+'" data-calc="tier" data-v="'+esc(w.a)+'" data-model="'+esc(m.id)+'">'+(w.both?wimH:'')+'<span class="wp-k">A</span><b>'+esc(tierNmOf(w.a))+' 요금제</b>'+
       (w.both?'<small>+ '+esc(wpName(w))+wprH+'</small><em>'+amt(ta, ta?wpLineFee(w,ta.t.fee):0, true)+'</em>':'<small>'+esc(m.nm)+'</small><em>'+amt(ta, 0, false)+'</em>')+'</button>'+   // 20261123 both: A도 워치 0원 + 워치 이용료
     '<button type="button" class="wp-c wp-b'+(on?' on':'')+'" data-calc="tier" data-v="'+esc(w.b)+'" data-model="'+esc(m.id)+'">'+wimH+'<span class="wp-k">B</span><b>'+esc(tierNmOf(w.b))+' 요금제</b>'+
       '<small>+ '+esc(wpName(w))+wprH+'</small><em>'+amt(tb, tb?wpLineFee(w,tb.t.fee):0, true)+'</em>'+
       (w.both?'':'<span class="wp-tag">한 단계 높이고 '+esc(wpShort(w)).replace(/ /g,'&nbsp;')+'&nbsp;혜택&nbsp;받기</span>')+'</button>'+   // 20261123 both: 꼬리표 없음 — '워치 이용료 포함'은 월 요금 밑 줄에 적힘   // 좁은 화면에선 '한 단계 높이고 / 워치9 혜택 받기'로만 끊김
+    (w.c?wpCHtml(m,r,w,onC,wimH,wprH):'')+   // 20261125 C 칸 (플립8)
   '</div>'+
   (w.opts&&w.opts.length>1?'<div class="wp-sz"><span class="wp-sz-l">'+esc(wpShort(w))+' 사이즈'+(w.both?'':' <small>(B 혜택)</small>')+'</span><div class="wp-sz-b">'+w.opts.map(function(o){   // 20261027 사이즈를 누르면 B로
     return '<button type="button" class="'+(o===w.opt?'on':'')+'" data-wp-opt="'+esc(o)+'" data-model="'+esc(m.id)+'">'+esc(o)+'</button>'; }).join('')+'</div></div>':'');
@@ -686,6 +695,16 @@ function wvHtml(mid){
     return '<button type="button" class="'+(o===w.opt?'on':'')+'" data-wv-opt="'+esc(o)+'" data-model="'+esc(mid)+'">'+esc(o)+'</button>'; }).join('')+'</div></div>';
   h+=wvOn(m,w)?'<button type="button" class="cta" data-close-sheet>확인</button>':'<button type="button" class="cta" data-wv-pick data-model="'+esc(mid)+'">'+esc(tn)+' 요금제로 선택하기</button>';
   return '<div class="wv">'+h+'</div>';
+}
+// 20261125 사장님: 플립8 C 칸 — 'C 115 요금제 + 워치9 + 탭 A11+' (워치·탭 둘 다 출고가 → 0원, 115면 회선 이용료 둘 다 요금에 포함)
+function wpCHtml(m, r, w, on, wimH, wprH){
+  var tc=tierTotal(m,r,w.c), tr=wpTabRow(w), tout=tr?num(tr.out):null, lf=tc?wpLineFee(w,tc.t.fee)+wpTabFee(w,tc.t.fee):0;
+  var tx=byId(w.tab), tcs=tx?colorsOf(tx):[], tim=tx?(tx.img||(tcs[0]&&tcs[0].img)||''):'';
+  var timH=tim?'<span class="wp-im wp-im2"><img src="'+esc(imgSrc(tim))+'" alt="" loading="lazy" decoding="async"></span>':'';
+  var tprH='<span class="wp-pr">'+(tout?'<s>'+won(tout)+'</s> ':'')+'<i>'+wz(w.tabPrice||0)+'</i></span>';
+  var amt=!tc?'':tc.mm===0?'월 요금 '+won(tc.fee+lf):'월 '+won(tc.monthly)+'<small class="wp-fee"><span class="wp-fl">월 요금</span><span>통신료 '+won(tc.fee)+'</span><span>'+(lf?'워치·탭 '+won(lf):'워치·탭 이용료 포함')+'</span></small>';
+  return '<button type="button" class="wp-c wp-cc'+(on?' on':'')+'" data-calc="tier" data-v="'+esc(w.c)+'" data-model="'+esc(m.id)+'">'+wimH+timH+'<span class="wp-k">C</span><b>'+esc(tierNmOf(w.c))+' 요금제</b>'+
+    '<small>+ '+esc(wpName(w))+wprH+'</small><small>+ '+esc(wpTabName(w))+tprH+'</small><em>'+amt+'</em></button>';
 }
 function calcPickers(m, r, st){
   var g=r.g, h='', car='', promo='';
@@ -725,6 +744,7 @@ function pvPhone(m, r, st){
   var monthly=mm===0?0:(st.monthly||0), fee=st.feeAfter||0, total=monthly+fee;
   var wpw=wpFor(m), wpOn=!!(wpw&&st.t&&wpHas(wpw,st.t.k)), wpc=wpOn?wpCalc(wpw):null, wlf=wpOn?wpLineFee(wpw,st.t.fee):0;   // 20261021 B(95 요금제 + 워치)
   if(wlf) total+=wlf;   // 워치 이용료는 요금제와 따로 더함 (95 요금제 이상이면 0원이라 보통 안 더해짐)
+  var tbOn=!!(wpw&&st.t&&wpTabHas(wpw,st.t.k)), tbc=tbOn?wpTabCalc(wpw):null, tlf=tbOn?wpTabFee(wpw,st.t.fee):0; if(tlf) total+=tlf;   // 20261125 C(탭 A11+)
   var sup=Math.max(0,out-st.after), pct=out?Math.floor(sup/out*100):0, selCut=(sel&&st.fee)?st.fee-st.feeAfter:0;
   // ① 월 기기 할부금 — 기기값만 (할부이자 포함)
   var lab, big, sub, sub2='';
@@ -733,7 +753,7 @@ function pvPhone(m, r, st){
   var capTxt=(optsOf(m).length>1&&r.cap)?r.cap+' 기준':'';
   // 20261021 사장님(3차): 큰 숫자는 다시 '월 기기값'(할부금) — 요금제까지 합친 14만원대 금액이 크게 나오면 진입장벽
   //   바로 밑에 '+ 월 요금 85,000원 = 합산 132,730원' 한 줄 · 그 밑에 용량 기준·할부 개월 / 일시납이면 기기값 + 월 요금
-  var feeTxt='<span class="nw">+ 월 요금 '+won(fee)+(sel?' (25% 할인)':'')+'</span>'+(wlf?' <span class="nw">+ 워치 이용료 '+won(wlf)+'</span>':'');
+  var feeTxt='<span class="nw">+ 월 요금 '+won(fee)+(sel?' (25% 할인)':'')+'</span>'+(wlf?' <span class="nw">+ 워치 이용료 '+won(wlf)+'</span>':'')+(tlf?' <span class="nw">+ 탭 이용료 '+won(tlf)+'</span>':'');
   if(mm===0){ lab='기기값 (일시납)'; big=wz(st.after); sub=fee?feeTxt:''; sub2=capTxt; }
   else { lab='월 기기값 (할부이자 포함)'; big=wz(monthly)+'<small> / 월</small>'; sub=fee?feeTxt+' <span class="nw">= 합산 <b>'+won(total)+'</b></span>':'';
     sub2=[capTxt, mm+'개월 할부'].filter(Boolean).join(' · '); }
@@ -755,7 +775,8 @@ function pvPhone(m, r, st){
     (sup>0?'<div class="pv-sr"><span>총 기기 지원금'+(how?'<small>'+how+'</small>':'')+'</span><b class="pink">'+manwon(sup)+'</b></div>':'')+
     '<div class="pv-sr"><span>지원 후 기기값<small>출고가 '+won(out)+'</small></span><b>'+wz(st.after)+'</b></div>'+
     // 20261021 사장님: 워치는 계산식 없이 '529,100원 → 0원'만 + 안내는 '*셀룰러 제품입니다. 24개월 약정 제품입니다.' 두 마디만 (줄이 넘치면 문장 사이에서만 끊김)
-    (wpc?'<div class="pv-sr pv-wp"><span>'+esc(wpName(wpw))+'<small>*셀룰러&nbsp;제품입니다. 24개월&nbsp;약정&nbsp;제품입니다.</small></span><b><s>'+won(wpc.c.out)+'</s> '+wz(wpc.after)+'</b></div>':'')+'</div>';
+    (wpc?'<div class="pv-sr pv-wp"><span>'+esc(wpName(wpw))+'<small>*셀룰러&nbsp;제품입니다. 24개월&nbsp;약정&nbsp;제품입니다.</small></span><b><s>'+won(wpc.c.out)+'</s> '+wz(wpc.after)+'</b></div>':'')+
+    (tbc?'<div class="pv-sr pv-wp"><span>'+esc(wpTabName(wpw))+'<small>*24개월&nbsp;약정&nbsp;제품입니다.</small></span><b><s>'+won(tbc.c.out)+'</s> '+wz(tbc.after)+'</b></div>':'')+'</div>';
   // ④ 혜택 조건 — 20261020 깔끔하게: 제목·번호 목록 → 한 줄 '조건 85,000원 이상 요금제 6개월 · 약정 2년' (조건은 남겨야 개통할 때 말이 안 나옴)
   //    ('이후에는 47,000원 …'·'LG U+ 통신사 변경 조건 (번호이동)'은 20261020 사장님 지시로 이미 뺌)
   var mu=[]; if(st.t&&st.t.fee) mu.push(won(st.t.fee)+' 이상 요금제 6개월');
@@ -1316,7 +1337,7 @@ function renderModel(id, keepRecent){
     //   예) 번호이동 공시지원금 104,000원 S26 구매 가능 — 금액은 지원 후 기기값, 제품명은 '갤럭시' 뺀 짧은 이름
     if(gg==='phone' && typeNm(cst)){ btBuy=true;
       var wpb=wpFor(m), wpbOn=!!(wpb&&cst.t&&wpHas(wpb,cst.t.k));   // 20261021 B면 '폴드 8 + 워치9'
-      bt=esc(typeNm(cst))+' '+(cst.method==='sel'?'선택약정':'공시지원금')+' <em>'+(cst.after===0?'0원':won(cst.after))+'</em> <b>'+esc(shortNm)+(wpbOn?' + '+esc(wpShort(wpb)):'')+'</b> 구매 가능'; }
+      bt=esc(typeNm(cst))+' '+(cst.method==='sel'?'선택약정':'공시지원금')+' <em>'+(cst.after===0?'0원':won(cst.after))+'</em> <b>'+esc(shortNm)+(wpbOn?' + '+esc(wpShort(wpb)):'')+(wpb&&cst.t&&wpTabHas(wpb,cst.t.k)?' + '+esc(wpTabShort(wpb)):'')+'</b> 구매 가능'; }
     else bt=(typeNm(cst)?esc(typeNm(cst))+' · ':'')+'기기값 <b>'+(cst.after===0?'0원':won(cst.after))+'</b>'+(sup>0?' · 지원 <em>'+manwon(sup)+'</em>':''); }
   else bt='상담 신청하시면 <b>나에게 맞는 혜택</b>을 안내해 드려요';
   $('#mdBody').innerHTML='<div class="ucard" data-edit="model:'+esc(m.id)+'"><div class="md-img" id="mdImg">'+im((pc&&pc.img)||mImg(m),'',true,m.nm)+(SO(m)?'<span class="so-tag" style="font-size:22px">일시품절</span>':'')+'</div>'+
@@ -1553,7 +1574,8 @@ function pdRender(m, p, st, PK, o){
   if(c){
     var out=num(c.out)||0, sel=st.method==='sel'; mm=st.months; monthly=mm===0?0:(st.monthly||0); fa=st.feeAfter||0;
     wpw=wpFor(m); wpOn=!!(wpw&&st.t&&wpHas(wpw,st.t.k)); var wpc=wpOn?wpCalc(wpw):null; wlf=wpOn?wpLineFee(wpw,st.t.fee):0;
-    total=monthly+fa+wlf;
+    var tbOn=!!(wpw&&st.t&&wpTabHas(wpw,st.t.k)), tbc=tbOn?wpTabCalc(wpw):null, tlf=tbOn?wpTabFee(wpw,st.t.fee):0;   // 20261125 C(탭 A11+)
+    total=monthly+fa+wlf+tlf;
     var s='<div class="pd-sum" id="pdSum">';
     // 20261105 사장님: ①②·'합산' 대신 A · B · 'A + B' (폰슐랭식) — 아래 고정 줄도 같이
     // 20261105 사장님 '싸 보이게' (계산식으로만 · 지어낸 숫자 없음):
@@ -1567,10 +1589,12 @@ function pdRender(m, p, st, PK, o){
     s+=pdL('지원 후 기기값',wz(st.after),'strong');
     // 20261107 사장님: ⓑ '공시지원금(선택약정)만 받을 때 n원 → n원 더 저렴' 줄은 빼기로 함
     if(wpc) s+=pdL(esc(wpName(wpw)),'<s>'+won(wpc.c.out)+'</s> '+wz(wpc.after),'strong');
-    s+='<div class="pd-sh n2"><i>B</i><b>월 요금</b><em>'+won(fa+wlf)+'</em></div>';
+    if(tbc) s+=pdL(esc(wpTabName(wpw)),'<s>'+won(tbc.c.out)+'</s> '+wz(tbc.after),'strong');
+    s+='<div class="pd-sh n2"><i>B</i><b>월 요금</b><em>'+won(fa+wlf+tlf)+'</em></div>';
     if(st.fee) s+=pdL(esc(st.t.title||tierLabel(st.t)),won(st.fee));
     if(sel&&st.fee&&st.fee>fa) s+=pdL('선택약정 할인 (25%)','−'+won(st.fee-fa),'neg');
     if(wlf) s+=pdL('워치 이용료',won(wlf));
+    if(tlf) s+=pdL('탭 이용료',won(tlf));
     // 20261113 사장님: '월 요금은 어디서 가입해도 같아요 — 달라지는 건 혜택뿐' 멘트 삭제
     if(mm!==0) s+='<div class="pd-tot"><span><i>A</i><em>+</em><i>B</i></span><b>'+won(total)+'</b></div>';
     s+='<ul class="pd-ul"><li><i>'+PD_CK+'</i><span>제휴카드·부가서비스 의무가입 없음</span></li></ul></div>';
@@ -1583,7 +1607,7 @@ function pdRender(m, p, st, PK, o){
   var bar;
   // 20261123 사장님: 85 요금제 + 워치면 B를 96,000원 한 덩어리 대신 '85,000원' + 밑에 '+ 워치 11,000원'으로 나눠 보여 줌 (합산 A + B는 그대로)
   //   95 요금제처럼 워치 이용료가 요금에 포함되면 밑에 '워치 이용료 포함' — 요금제를 바꿔도 아래 줄 높이가 같게
-  var bW=wpOn?'<small class="pd-ew">'+(wlf?'+ 워치 '+won(wlf):'워치 이용료 포함')+'</small>':'';
+  var bW=wpOn?'<small class="pd-ew">'+(tbOn?((wlf+(tlf||0))?'+ 워치·탭 '+won(wlf+(tlf||0)):'워치·탭 이용료 포함'):(wlf?'+ 워치 '+won(wlf):'워치 이용료 포함'))+'</small>':'';
   if(o.soNow) bar='<div class="md-bar-t"><b>일시품절</b> · 지금은 신청할 수 없어요</div>';
   else if(o.PRE) bar='<div class="md-bar-t pd-eq"><span class="pd-eb">'+sk('48px','11px')+sk('64px','17px')+'</span><i class="pd-op">+</i><span class="pd-eb">'+sk('40px','11px')+sk('60px','15px')+'</span><i class="pd-op">=</i><span class="pd-eb r">'+sk('30px','11px')+sk('60px','15px')+'</span></div>';
   else if(!c) bar='<div class="md-bar-t">상담 신청하시면 <b>나에게 맞는 혜택</b>을 안내해 드려요</div>';
@@ -2183,8 +2207,9 @@ function apReason(m){
 }
 function apValidate(){
   var pm0=apPhone(); if(pm0 && !EDIT){ if(SO(pm0)){ AP.phone=''; AP.cap=0; AP.color=''; } else if(optSO(pm0,AP.cap)){ var fo=firstOkOpt(pm0); if(fo>=0) AP.cap=fo; } }   // 20261020 품절은 신청 못 함
-  if(AP.wpromo && (AP.phone!==AP.wpm || !wpHas(AP.wpromo,AP.tier))){ AP.wpromo=null; AP.wpm=''; AP.watch=''; AP.wcolor=''; }   // 20261021 휴대폰·요금제를 바꾸면 워치 혜택도 빠짐
-  if(!apAddOn()){ if(!AP.wpromo) AP.watch=''; AP.tablet=''; if(!AP.tvFix){ AP.tv=''; AP.tvOk=false; } }
+  if(AP.wpromo && (AP.phone!==AP.wpm || !wpHas(AP.wpromo,AP.tier))){ if(AP.wpromo.tab && AP.tablet===AP.wpromo.tab) AP.tablet=''; AP.wpromo=null; AP.wpm=''; AP.watch=''; AP.wcolor=''; }
+  if(AP.wpromo && AP.wpromo.tab){ if(wpTabHas(AP.wpromo,AP.tier)) AP.tablet=AP.wpromo.tab; else if(AP.tablet===AP.wpromo.tab) AP.tablet=''; }   // 20261125 C(115)면 탭 A11+도 함께   // 20261021 휴대폰·요금제를 바꾸면 워치 혜택도 빠짐
+  if(!apAddOn()){ if(!AP.wpromo) AP.watch=''; if(!(AP.wpromo&&wpTabHas(AP.wpromo,AP.tier))) AP.tablet=''; if(!AP.tvFix){ AP.tv=''; AP.tvOk=false; } }
   if(AP.phone==='none' && !(AP.tv && AP.tvType==='old')) AP.phone='';
   var notes=[];
   AP_SLOTS.forEach(function(s){ var m=AP[s[0]]&&byId(AP[s[0]]); if(m && apReason(m)){ notes.push(m.nm+' 선택이 해제됐어요 — '+apReason(m)); AP[s[0]]=''; } });
@@ -2201,6 +2226,7 @@ function apPhoneCalc(){
 // 함께 구매 금액 (워치·태블릿·TV프리)
 function apAddCalc(m){
   if(AP && AP.wpromo && m && m.id===AP.wpromo.watch) return wpCalc(AP.wpromo);   // 20261021 워치 혜택(0원)
+  if(AP && AP.wpromo && m && AP.wpromo.tab && m.id===AP.wpromo.tab) return wpTabCalc(AP.wpromo);   // 20261125 탭 혜택(0원)
   var rs=sheetRows(m); if(!rs.length) return null;
   var r=rs.filter(function(x){return !x.so})[0]||rs[0], g=r.g, ts=tiersOf(g), t=g==='tvfree'?tvTier(r):ts[0];
   var c=rowCalc(r,'all',t); if(!c) return null;
@@ -2225,7 +2251,7 @@ function apPhoneHtml(){
     var pr=pc0?'<div class="ap1-mp"><b>'+(pc0.mm===0?'기기값 '+wz(pc0.after):'월 '+wz(pc0.monthly||0))+'</b>'+(fee0!=null?'<small>+ 월 요금 '+won(fee0)+'</small>':'')+'</div>'
       :m?'<div class="ap1-mp"><small>가격은 상담 때 안내</small></div>':'';
     h+='<div class="ap1-pick ap1-mini"><div class="ap1-dev"><div class="ap1-img">'+(m?im(apColorImg(m),'',true,m.nm):'')+'</div>'+
-      '<div class="ap1-t"><b>'+esc(m?m.nm:(AP.phone==='none'?'휴대폰은 바꾸지 않아요':'상담 후 결정할게요'))+(AP.wpromo?'<em class="ap1-wp">+ '+esc(wpName(AP.wpromo))+' '+wz(AP.wpromo.price||0)+'</em>':'')+'</b>'+(sub?'<span>'+esc(sub)+'</span>':'')+'</div>'+pr+
+      '<div class="ap1-t"><b>'+esc(m?m.nm:(AP.phone==='none'?'휴대폰은 바꾸지 않아요':'상담 후 결정할게요'))+(AP.wpromo?'<em class="ap1-wp">+ '+esc(wpName(AP.wpromo))+' '+wz(AP.wpromo.price||0)+'</em>':'')+(AP.wpromo&&wpTabHas(AP.wpromo,AP.tier)?'<em class="ap1-wp">+ '+esc(wpTabName(AP.wpromo))+' '+wz(AP.wpromo.tabPrice||0)+'</em>':'')+'</b>'+(sub?'<span>'+esc(sub)+'</span>':'')+'</div>'+pr+
       '<button type="button" class="ap1-chg" data-ap-act="change">변경</button></div></div>';
   } else {
     var list=models().filter(function(x){return !x.hidden&&kindOf(x)==='phone'});
@@ -2255,9 +2281,9 @@ function apPhoneHtml(){
   return h;
 }
 // 신청서 위 한 줄·아래 고정 줄: 요금제까지 합친 월 금액 (할부금 + 요금제, 일시납이면 요금제만) — 요금제 금액이 없으면 null
-function apMonthTotal(pc){ if(!pc || !pc.fee) return null; return (pc.mm===0?0:(pc.monthly||0))+(pc.feeAfter||0)+(AP&&AP.wpromo?wpLineFee(AP.wpromo,pc.fee):0); }
+function apMonthTotal(pc){ if(!pc || !pc.fee) return null; return (pc.mm===0?0:(pc.monthly||0))+(pc.feeAfter||0)+(AP&&AP.wpromo?wpLineFee(AP.wpromo,pc.fee)+(wpTabHas(AP.wpromo,AP.tier)?wpTabFee(AP.wpromo,pc.fee):0):0); }
 // 20261021(3차): 매달 내는 요금만 (요금제 — 선택약정이면 할인된 금액 + 워치 이용료가 있으면 더함) — 요금제 금액이 없으면 null
-function apMonthFee(pc){ if(!pc || !pc.fee) return null; return (pc.feeAfter||0)+(AP&&AP.wpromo?wpLineFee(AP.wpromo,pc.fee):0); }
+function apMonthFee(pc){ if(!pc || !pc.fee) return null; return (pc.feeAfter||0)+(AP&&AP.wpromo?wpLineFee(AP.wpromo,pc.fee)+(wpTabHas(AP.wpromo,AP.tier)?wpTabFee(AP.wpromo,pc.fee):0):0); }
 // 20261019 받는 방법: 택배(당일 발송) / 매장에서 수령하기 — 상담 방법(전화·카톡)과는 따로 고르는 칸.
 //  매장에서 수령하기 → 어디서 오세요(구·동, 고객이 직접 적음 → 그 동네 기준으로 가까운 매장 정렬 + 거리·교통비 분석용) → 수령 매장(현재 위치로도 정렬 가능) → 고른 매장 주소·거리·길찾기
 var TRUCK_I='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 6.5h11v9.5h-11zM13.5 9.5h4l3 3.5v3h-7"/><circle cx="6.5" cy="17.5" r="1.7"/><circle cx="17" cy="17.5" r="1.7"/></svg>';
@@ -2411,8 +2437,8 @@ function apSummary(){
     }
   } else if(m){ var r0=rec('휴대폰',m.nm,'phone',m); r0.ask=true; row(r0.mon,'예상 금액',null,'',null,'','상담 시 안내'); }
   if(apTvOn() || AP.wpromo) AP_SLOTS.forEach(function(s){
-    if(!apAddOn() && s[0]!=='tv' && !(s[0]==='watch' && AP.wpromo)) return;
-    var x=AP[s[0]]&&byId(AP[s[0]]); if(!x) return; var isWp=!!(AP.wpromo&&x.id===AP.wpromo.watch), r=rec(s[1],isWp?wpName(AP.wpromo):x.nm,s[0],x), ac=apAddCalc(x);
+    if(!apAddOn() && s[0]!=='tv' && !((s[0]==='watch'||s[0]==='tablet') && AP.wpromo)) return;
+    var x=AP[s[0]]&&byId(AP[s[0]]); if(!x) return; var isTb=!!(AP.wpromo&&AP.wpromo.tab&&x.id===AP.wpromo.tab), isWp=!!(AP.wpromo&&(x.id===AP.wpromo.watch||isTb)), r=rec(s[1],isTb?wpTabName(AP.wpromo):isWp?wpName(AP.wpromo):x.nm,s[0],x), ac=apAddCalc(x);
     if(!ac){ r.ask=true; row(r.dev,'기기값',null,'',null,'','상담 시 안내'); }
     else {
       // 20261021 사장님: 워치 혜택은 계산식 없이 '출고가 529,100 → 0원'만 — 이통사·우리 지원금으로 나누지 않고 지원금 합계에도 안 넣음 (CRM 카드도 이 한 줄)
@@ -2519,7 +2545,7 @@ function apBarHtml(){
   var pc=apPhoneCalc(), m=apPhone(), t, kk=!!(AP&&AP.mode==='kakao');
   if(pc && m){ var sn=m.nm.replace(/^갤럭시\s+/,'');
     t=!AP.carrier?'현재 이용 중인 <b>통신사</b>를 고르면 나에게 맞는 혜택이 바로 나와요':
-      '<span class="nw">'+(pc.type==='chg'?'기기변경':'번호이동')+' '+(pc.method==='sel'?'선택약정':'공시지원금')+'</span> <b class="nw">'+wz(pc.after)+'</b><br><span class="nw"><i>'+esc(sn)+(AP.wpromo?' + '+esc(wpShort(AP.wpromo)):'')+'</i> 구매 가능</span>'; }
+      '<span class="nw">'+(pc.type==='chg'?'기기변경':'번호이동')+' '+(pc.method==='sel'?'선택약정':'공시지원금')+'</span> <b class="nw">'+wz(pc.after)+'</b><br><span class="nw"><i>'+esc(sn)+(AP.wpromo?' + '+esc(wpShort(AP.wpromo)):'')+(AP.wpromo&&wpTabHas(AP.wpromo,AP.tier)?' + '+esc(wpTabShort(AP.wpromo)):'')+'</i> 구매 가능</span>'; }
   else if(m) t='상담 신청하시면 <b>나에게 맞는 혜택</b>을 안내해 드려요';
   else { var tot=apSummary().total; t=tot?'예상 월 <b>'+won(tot)+'</b>':'조건을 골라 주세요'; }
   return '<div class="ap-bar-t">'+t+'</div>'+(kk?'<button type="button" class="ap-bar-b" data-ap-act="go">신청서 작성</button>':
@@ -2553,7 +2579,7 @@ function apSetFrom(m){
   AP=apInit();
   if(m){ var k=kindOf(m);
     if(k==='phone'){ AP.phone=m.id; AP.cap=OPT[m.id]||0; AP.color=PICK[m.id]||''; var s=SEL[m.id]||{}; AP.carrier=s.carrier||''; if(AP.carrier==='LG U+' && mnpOnlyFor(m)) AP.carrier=''; AP.method=s.method||''; if(s.months!=null) AP.months=s.months; AP.tier=TIER[m.id]||'';
-      var wp=wpFor(m); if(wp && wpHas(wp,AP.tier)){ AP.watch=wp.watch; AP.wpromo=wp; AP.wpm=m.id; } }   // 20261021 B(95 요금제 + 워치9 40mm)
+      var wp=wpFor(m); if(wp && wpHas(wp,AP.tier)){ AP.watch=wp.watch; AP.wpromo=wp; AP.wpm=m.id; if(wpTabHas(wp,AP.tier)) AP.tablet=wp.tab; } }   // 20261021 B(95 요금제 + 워치9 40mm)
     else if(k==='tvfree'){ AP.tv=m.id; AP.tvTier=TIER[m.id]||''; AP.tvType=tvTypeOf((SEL[m.id]||{}).tvtype); AP.tvFix=true; var ts0=SEL[m.id]||{}; if(ts0.months!=null) AP.months=ts0.months; if(AP.tvType==='old') AP.phone='none'; }
     else AP[k]=m.id;
   }
@@ -2608,7 +2634,7 @@ function apPayload(o){
     home_tv:tvx?(tvx.id==='tvfree5'?'프리5':tvx.id==='ipada16'?'아이패드':tvx.nm):null, snapshot:snapshot};
   // 20261016: 카톡 예약으로 신청 → CRM '카톡 상담 요청' (전화 전에 문자·카톡으로 먼저 케어)
   snapshot.consult=kakao?'카톡':'전화'; if(kakao) body.consult_channel='카톡';
-  if(AP.wpromo) snapshot.promo=tierNmOf(AP.tier)+' 요금제 + '+wpName(AP.wpromo)+' '+wz(AP.wpromo.price||0);   // 20261021 A/B 중 B(워치 혜택)로 신청
+  if(AP.wpromo) snapshot.promo=tierNmOf(AP.tier)+' 요금제 + '+wpName(AP.wpromo)+' '+wz(AP.wpromo.price||0)+(wpTabHas(AP.wpromo,AP.tier)?' + '+wpTabName(AP.wpromo)+' '+wz(AP.wpromo.tabPrice||0):'');   // 20261021 A/B 중 B(워치 혜택)로 신청
   if(AP.recv==='store' || (AP.visit && AP.recv!=='courier')){ body.visit_store=AP.store||'미정'; snapshot.visitStore=AP.store||'미정'; }   // 20261017: CRM에 '📍OO점 방문'으로 표시
   // 20261019 받는 방법: 택배 / 매장 수령 (+ 매장 수령이면 고객이 적은 출발 동네 — CRM 메모 맨 앞에도 붙임)
   snapshot.recv=AP.recv==='store'?'매장 수령':AP.recv==='courier'?'택배':null;

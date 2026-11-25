@@ -1697,6 +1697,10 @@ body.md-on .app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 #v-model .wp-im-z{position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center}
 #v-model .wp-im-z svg{width:11px;height:11px;fill:none;stroke:#5B6170;stroke-width:2.6;stroke-linecap:round}
 #v-model .wp-im img{display:block;width:100%;height:100%;object-fit:contain}
+/* 20261125 사장님: 플립8 A/B/C — C 칸(115 요금제 + 워치9 + 탭 A11+)은 한 줄 전체 · 오른쪽 위에 워치·탭 사진 */
+#v-model .wp.abc .wp-cc{grid-column:1/-1;position:relative}
+#v-model .wp-cc .wp-k{background:#7A3FE0}
+#v-model .wp-cc .wp-im2{right:62px;cursor:default}
 #v-model .wp-c em{margin-top:auto;padding-top:4px;font-style:normal;font-size:15px;font-weight:900;color:var(--ink)}
 #v-model .wp-c.on em{color:var(--pink)}
 /* 20261027 B 혜택 워치 사이즈 (40mm/44mm) */
