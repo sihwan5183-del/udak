@@ -394,7 +394,10 @@ var TIER_ONLY=CFG.tierOnly?String(CFG.tierOnly):'';
 function tierOnly(ts){ if(!TIER_ONLY) return null; var o=(ts||[]).filter(function(t){ return t.k===TIER_ONLY; }); return o.length?o:null; }
 function tiersOf(g){ var ts=(S.pricing.tiers[g])||[]; if(g==='phone'){ var o=tierOnly(ts); if(o) return o; } return g==='phone'?ts.filter(function(t){ return !TIER_OFF[t.k]; }):ts; }
 // 20261116 사장님: 애플워치 A/B는 'A 85 / B 115' — 115는 평소 요금제 목록에선 꺼져 있어도(TIER_OFF) 그 모델의 A/B에서는 씀
-function tiersFor(m, g){ var ts=tiersOf(g), w=g==='phone'&&m&&WPROMO[m.id]; if(!w) return ts; var all=(S.pricing.tiers[g])||[], add=all.filter(function(t){ return (t.k===w.a||t.k===w.b) && ts.indexOf(t)<0; }); return add.length?ts.concat(add):ts; }
+// 20261125 사장님: 광고 랜딩별로 모델에 요금제를 더 열 수 있게 — STORE_CFG.tierPlus = {모델id:['t115']} (예: meta/flip8 = 85·95·115) · 그 랜딩에서만, 스토어(/shop) 영향 없음
+var TIER_PLUS=(CFG.tierPlus&&typeof CFG.tierPlus==='object')?CFG.tierPlus:{};
+function tiersFor(m, g){ var ts=tiersOf(g), w=g==='phone'&&m&&WPROMO[m.id], plus=(g==='phone'&&m&&TIER_PLUS[m.id])||[]; if(!w && !plus.length) return ts;
+  var all=(S.pricing.tiers[g])||[], add=all.filter(function(t){ return ts.indexOf(t)<0 && (plus.indexOf(t.k)>-1 || (!!w && (t.k===w.a||t.k===w.b))); }); return add.length?ts.concat(add):ts; }
 function tierAny(k){ return ((S.pricing.tiers.phone)||[]).filter(function(x){ return x.k===k; })[0]||null; }
 function baseTier(g, P){ P=P||S.pricing; var ts=P.tiers[g]||[]; if(g==='phone'){ var o=tierOnly(ts); if(o) return o[0]; } return ts.filter(function(t){return t.k===P.base[g]})[0]||ts[0]||null; }
 // 가격표에 이 모델 줄이 있는지 (공개 여부와 상관없이)
