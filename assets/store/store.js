@@ -1255,7 +1255,7 @@ function renderModel(id, keepRecent){
   if(!V2) pdHeadOff();
   if(PRE){ var m0=byId(id); if(!(m0 && !m0.hidden && kindOf(m0)==='phone')){ $('#mdTitle').textContent=m0?m0.nm:'';
     $('#mdBody').innerHTML='<div class="ucard md-skel"><div class="md-img"></div><div class="md-rest"><h2 class="md-h ucard-name">'+esc(m0?m0.nm:'')+'</h2><div class="sk-l"></div><div class="sk-b"></div><div class="sk-b"></div></div></div>'; return; } }
-  var m=byId(id); if(!m||(m.hidden&&!EDIT)){ if(!m && EDIT && !CFG_GOT) return; location.hash='#/';return}   // 20261026 관리자: 기본값에 없는 모델(버디 5) 주소로 바로 들어오면 설정 받을 때까지 기다림 (홈으로 튕기지 않게)
+  var m=byId(id); if(!m||(m.hidden&&!EDIT)){ if(!m && EDIT && !CFG_GOT) return; if(LPLOCK) return; location.hash='#/';return}   // 20261026 관리자: 기본값에 없는 모델(버디 5) 주소로 바로 들어오면 설정 받을 때까지 기다림 (홈으로 튕기지 않게)
   var srs=sheetRows(m), selRow=null, rows='', pickers='';
   if(srs.length && (OPT[m.id]==null || !srs[OPT[m.id]])) OPT[m.id]=Math.max(0, srs.indexOf(priceOf(m).row));
   if(!EDIT && optSO(m,OPT[m.id])){ var fo=firstOkOpt(m); if(fo>=0) OPT[m.id]=fo; }   // 20261020 품절 용량은 못 고름
@@ -1674,6 +1674,25 @@ if(LP && LP.colors) Object.keys(LP.colors).forEach(function(k){ PICK[k]=LP.color
    · 다른 카드를 누르면 열린 칸이 그 모델로 바뀜 · 고른 조건(통신사·요금제·할인 방식·할부·용량)은 두 모델이 같이 씀 → 카드 두 장 가격을 같은 조건으로 비교
    · 가격·품절·상세 내용은 스토어(관리자 /apple)와 같은 설정 · 신청은 지금처럼 고른 모델로 */
 var LPK=(LP && !EDIT && arr(LP.pick).length>1)?arr(LP.pick):null, LPSEL=null, LPANIM=0, LPPREV=null;   // LPANIM: 2 = 처음 열 때, 1 = 다른 카드로 바꿀 때
+/* 20261126 사장님: 광고 랜딩은 그 랜딩 모델 밖으로 못 나가게 — 다른 화면으로 가서 엉뚱한 걸 신청하는 걸 막음
+   · 열리는 화면 = 랜딩 모델 상세(카드 랜딩은 카드 모델들) + 신청서뿐. 홈·검색·카테고리·찜·다른 모델 주소로 가면 랜딩 모델로 되돌림
+   · 홈·뒤로(상세)·아래 탭·다른 상품 보러가기 버튼은 숨김
+   · 신청서 휴대폰 = 랜딩 모델만 ('휴대폰은 바꾸지 않아요(TV프리만)'·TV프리·함께 구매 칸 없음) · 관리자(EDIT)·스토어는 그대로 */
+var LPLOCK=!!(LP && !EDIT);
+function lpIds(){ return LPK?LPK.slice():[LP.model]; }
+function lpOk(id){ return !LPLOCK || lpIds().indexOf(id)>-1; }
+function lpHome(){ return '#/model/'+((LPK&&LPSEL&&lpOk(LPSEL))?LPSEL:LP.model); }
+function lpGoBad(go){ go=String(go||''); if(!LPLOCK) return false;
+  if(go==='popular'||go==='search'||go==='store'||go.indexOf('sec:')===0) return true;
+  if(go.charAt(0)==='#'){ var g=go.replace(/^#\/?/,'').split('/'); return !(g[0]==='apply' || (g[0]==='model' && lpOk(decodeURIComponent(g[1]||'')))); }
+  return false; }
+// 신청서: 휴대폰은 랜딩 모델로 (비었거나 다른 모델·TV프리만이면 상세에서 고른 조건 그대로 다시 채움)
+function lpFixAP(){
+  if(!LPLOCK || !AP) return;
+  AP.tv=''; AP.tvFix=false; AP.tvOk=false; AP.tvType='old';
+  if(AP.phone && !lpOk(AP.phone)) AP.phone='';
+  if(!AP.phone && !AP.pick){ var lm=byId((LPK&&LPSEL&&lpOk(LPSEL))?LPSEL:LP.model); if(lm && !lm.hidden && !SO(lm)){ var md=AP.mode, vs=AP.visit, st=AP.store; apSetFrom(lm); AP.mode=md; if(vs){ AP.visit=vs; AP.store=st; } apValidate(); } }
+}
 var LPK_CHEV='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
 function lpkOn(m){ return !!(LPK && m && LPK.indexOf(m.id)>-1); }
 function lpkList(){ return LPK?LPK.map(byId).filter(function(x){ return x && !x.hidden; }):[]; }
@@ -1770,6 +1789,9 @@ function lpBan(){
 }
 if(LP){
   document.head.insertAdjacentHTML('beforeend','<style>.lp-ban{display:block;margin:0 0 12px}.lp-ban img{display:block;width:100%;height:auto}@keyframes lpNeed{0%,100%{box-shadow:0 0 0 0 rgba(230,0,126,0)}30%,70%{box-shadow:0 0 0 3px rgba(230,0,126,.55)}}.pd-o.lp-need{border-radius:14px;animation:lpNeed 1.4s ease 2}.pd-o.lp-need .pd-ol::after{content:" — 먼저 선택해 주세요";color:#e6007e;font-weight:700}</style>');
+  // 20261126 광고 랜딩 잠금: 아래 탭·위 고정바·홈/뒤로(상세) 버튼·다른 상품 보러가기 버튼 숨김
+  if(LPLOCK){ document.body.classList.add('lp-lock');
+    document.head.insertAdjacentHTML('beforeend','<style>body.lp-lock{--tabh:0px}body.lp-lock .tabbar,body.lp-lock #topbar{display:none!important}body.lp-lock button[data-home],body.lp-lock #v-model [data-back]{visibility:hidden;pointer-events:none}body.lp-lock .pd-logo{pointer-events:none}body.lp-lock [data-go^="#/cat"],body.lp-lock [data-go^="#/search"],body.lp-lock [data-go="popular"],body.lp-lock [data-go="search"],body.lp-lock [data-go="store"],body.lp-lock [data-go^="sec:"]{display:none!important}body.lp-lock .dc-card[data-open="store"]{cursor:default}</style>'); }
   document.addEventListener('click',function(e){
     var t=e.target.closest&&e.target.closest('[data-lp-ban]'); if(!t || e.target.closest('[data-lpk]')) return; e.preventDefault();
     var nx=t.nextElementSibling, hd=$('#v-model .subhead'), off=(hd?hd.offsetHeight:0)+8;
@@ -1780,6 +1802,7 @@ if(LP){
 var homeScroll=0;
 function route(){
   var h=location.hash.replace(/^#\/?/,'').split('/'), v=h[0]||'home';
+  if(LPLOCK && !(v==='apply' || (v==='model' && lpOk(decodeURIComponent(h[1]||''))))){ location.replace(location.pathname+location.search+lpHome()); return; }   // 20261126 광고 랜딩 잠금
   var prev=$('.view.on'); if(prev&&prev.id==='v-home') homeScroll=window.scrollY;
   $$('.view').forEach(function(x){x.classList.remove('on')});
   var tab='home';
@@ -2163,6 +2186,7 @@ function closeTicket(){ $('#ticket').classList.remove('on'); document.body.style
 
 function act(go, el){
   if(!go) return;
+  if(lpGoBad(go)){ closeSheet(); return; }   // 20261126 광고 랜딩: 다른 화면으로 가는 버튼은 안 움직임
   if(go.charAt(0)==='#'){ closeSheet(); location.hash=go; return; }
   if(go==='popular'){ closeSheet(); SORT='sales'; loadRank(); if(location.hash==='#/cat/all') refresh(); else location.hash='#/cat/all'; return; }
   if(go==='soon'){ openSheet(sheetSoon()); return; }
@@ -2252,16 +2276,16 @@ function apPhoneHtml(){
       :m?'<div class="ap1-mp"><small>가격은 상담 때 안내</small></div>':'';
     h+='<div class="ap1-pick ap1-mini"><div class="ap1-dev"><div class="ap1-img">'+(m?im(apColorImg(m),'',true,m.nm):'')+'</div>'+
       '<div class="ap1-t"><b>'+esc(m?m.nm:(AP.phone==='none'?'휴대폰은 바꾸지 않아요':'상담 후 결정할게요'))+(AP.wpromo?'<em class="ap1-wp">+ '+esc(wpName(AP.wpromo))+' '+wz(AP.wpromo.price||0)+'</em>':'')+(AP.wpromo&&wpTabHas(AP.wpromo,AP.tier)?'<em class="ap1-wp">+ '+esc(wpTabName(AP.wpromo))+' '+wz(AP.wpromo.tabPrice||0)+'</em>':'')+'</b>'+(sub?'<span>'+esc(sub)+'</span>':'')+'</div>'+pr+
-      '<button type="button" class="ap1-chg" data-ap-act="change">변경</button></div></div>';
+      (LPLOCK&&lpIds().length<2?'':'<button type="button" class="ap1-chg" data-ap-act="change">변경</button>')+'</div></div>';
   } else {
-    var list=models().filter(function(x){return !x.hidden&&kindOf(x)==='phone'});
-    h+='<div class="qk-l">휴대폰 <span class="req">*</span></div>'+
-      '<label class="ap-search"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="mDeviceSearch" placeholder="모델명을 검색하세요 (예: S26, 아이폰)" autocomplete="off"></label>'+
+    var list=models().filter(function(x){return !x.hidden&&kindOf(x)==='phone'&&lpOk(x.id)});   // 20261126 광고 랜딩은 랜딩 모델만
+    h+='<div class="qk-l">휴대폰 <span class="req">*</span></div>'+(LPLOCK?'':
+      '<label class="ap-search"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="mDeviceSearch" placeholder="모델명을 검색하세요 (예: S26, 아이폰)" autocomplete="off"></label>')+
       '<div class="ap-list" id="apList">'+list.map(function(x){
         return '<div class="ap-li" data-nm="'+esc((x.nm+' '+x.id).toLowerCase().replace(/\s/g,''))+'"><div class="ap-li-img">'+im(mImg(x),'','',x.nm)+'</div><b>'+esc(x.nm)+(SO(x)?' <small>일시품절</small>':'')+'</b>'+
           '<button type="button" class="ap-pick'+(x.id===AP.phone?' on':'')+'" data-ap-pick="'+esc(x.id)+'"'+(SO(x)&&!EDIT?' disabled':'')+'>'+(SO(x)&&!EDIT?'일시품절':(x.id===AP.phone?'선택됨':'선택하기'))+'</button></div>'; }).join('')+
       // 20261016: '상담 후 결정할게요' 줄 삭제 (휴대폰은 꼭 골라서 신청)
-      (AP.tv&&AP.tvType==='old'?'<div class="ap-li later" data-nm="휴대폰변경없음tv프리만"><b>휴대폰은 바꾸지 않아요 (TV프리만)</b><button type="button" class="ap-pick" data-ap-pick="none">선택하기</button></div>':'')+'</div>';
+      (!LPLOCK&&AP.tv&&AP.tvType==='old'?'<div class="ap-li later" data-nm="휴대폰변경없음tv프리만"><b>휴대폰은 바꾸지 않아요 (TV프리만)</b><button type="button" class="ap-pick" data-ap-pick="none">선택하기</button></div>':'')+'</div>';
   }
   if(m && !AP.pick){
     if(AP.carrier==='LG U+' && mnpOnlyFor(m)) AP.carrier='';   // 20261123 번호이동만인 모델로 바꿔 고르면 LG U+ 는 비움
@@ -2369,8 +2393,8 @@ function apPerk(t){
   var f=(t&&t.fee)||0, w=f>=95000, tb=f>=105000;
   return '<div class="ap-perk"><span class="'+(w?'ok':'')+'">'+(w?'✓':'–')+' 워치 함께 구매</span><span class="'+(tb?'ok':'')+'">'+(tb?'✓':'–')+' 태블릿 함께 구매</span><span class="ok">✓ TV프리</span></div>';
 }
-function apAddOn(){ return !!S.applyAdd; }
-function apTvOn(){ return apAddOn() || !!(AP&&AP.tvFix); }   // TV프리 상세에서 신청하면 설정과 상관없이 TV프리 칸을 보여줌
+function apAddOn(){ return !LPLOCK && !!S.applyAdd; }
+function apTvOn(){ return apAddOn() || !!(AP&&AP.tvFix&&!LPLOCK); }   // TV프리 상세에서 신청하면 설정과 상관없이 TV프리 칸을 보여줌
 function apAddHtml(){
   if(!apTvOn()) return '';
   var all=models().filter(function(x){return !x.hidden}), h='<section class="ap-sec"><div class="ap-h"><b>03</b>'+(apAddOn()?'요금제별 혜택 <small>(선택사항)</small>':'TV프리')+'</div>'+
@@ -2553,6 +2577,7 @@ function apBarHtml(){
 }
 function renderApply(full){
   if(!AP) AP=apInit();
+  lpFixAP();   // 20261126 광고 랜딩: 휴대폰은 랜딩 모델만
   if(full || !$('#apCond')){
     // 20261019: 카드 하나에 — 고른 휴대폰·금액·컬러·통신사 → 고객 정보 → 버튼 (카톡 간편 신청창처럼)
     $('#apBody').innerHTML='<section class="ap-sec ap-one"><div id="apCond"></div><div id="apSum"></div>'+apInfoHtml()+apBtnsHtml()+'</section>';
@@ -2673,7 +2698,7 @@ function qkNeedCol(m){ return kindOf(m)==='phone' && colorsOf(m).length>1 && !PI
 function openQuickKakao(mid){ var m=byId(mid); if(!m) return; QK={m:mid, car:'', col:''}; openSheet(sheetQuickKakao(m)); }
 function qkSubmit(){
   if(EDIT){ alert('관리자 화면에서는 신청이 저장되지 않습니다.'); return; }
-  var m=byId(QK.m); if(!m) return;
+  var m=byId(QK.m); if(!m || !lpOk(m.id)) return;
   var name=$('#qkName').value.trim(), phone='010'+$('#qkP2').value.replace(/\D/g,'')+$('#qkP3').value.replace(/\D/g,''), birth=birth8($('#qkBirth').value);
   var qk=kindOf(m), car=QK.car||(SEL[m.id]||{}).carrier||'';
   // 고객 정보는 신청서와 똑같이 전부 필수 — 하나라도 없으면 접수 안 됨 (컬러 → 통신사 → 이름 → 연락처 → 생년월일 → 동의)
@@ -2714,7 +2739,7 @@ function apSubmit(mode){
   if(EDIT){ alert('관리자 화면에서는 신청이 저장되지 않습니다.'); return; }
   var name=$('#mUserName').value.trim(), phone='010'+$('#mPhone2').value.replace(/\D/g,'')+$('#mPhone3').value.replace(/\D/g,''), birth=birth8($('#mUserBirth').value), memo=$('#mUserNote').value.trim();
   var apm=apPhone(); if(apm && colorsOf(apm).length>1 && !AP.color){ alert('컬러를 선택해 주세요.'); var acr=$('#apColorRow'); if(acr) acr.scrollIntoView({block:'center',behavior:'smooth'}); return; }   // 20261019: 컬러도 필수
-  if(!AP.phone){ alert('휴대폰을 선택해 주세요.'); window.scrollTo({top:0,behavior:'smooth'}); return; }
+  if(!AP.phone || (LPLOCK && !lpOk(AP.phone))){ alert('휴대폰을 선택해 주세요.'); window.scrollTo({top:0,behavior:'smooth'}); return; }
   if(AP.wpromo){ var awc=colorsOf(byId(AP.wpromo.watch)||{id:''}); if(awc.length>1 && !AP.wcolor){ alert('워치 컬러를 선택해 주세요.'); var awr=$('#apWColorRow'); if(awr) awr.scrollIntoView({block:'center',behavior:'smooth'}); return; } }   // 20261027 워치 혜택 컬러도 필수
   if(apm && (SO(apm) || optSO(apm,AP.cap))){ alert('선택하신 '+apm.nm+(SO(apm)?'':' '+optsOf(apm)[AP.cap].nm)+'은(는) 일시품절이라 신청할 수 없어요.'+(SO(apm)?' 다른 휴대폰을 골라 주세요.':' 다른 '+optLabel(apm)+'을(를) 골라 주세요.')); apValidate(); apRefresh(); return; }   // 20261020 품절은 신청 못 함
   // 20261021: 신청 버튼이 아래 고정 줄로 가서 다 안 채우고 누를 수 있음 → 안내 뒤 빠진 칸으로 데려감
@@ -2779,7 +2804,7 @@ document.addEventListener('click',function(e){
     if(ak==='tvType'){ AP.tvOk=false; if(av==='old'&&!AP.phone) AP.phone='none'; if(av!=='old'&&AP.phone==='none') AP.phone=''; }
     apRefresh(); return; }
   var app=t.closest('[data-ap-pick]');
-  if(app){ e.preventDefault(); if(app.disabled) return; var pv=app.getAttribute('data-ap-pick'); if(pv!==AP.phone){ AP.cap=0; AP.color=''; if(pv!=='later'){ var pm=byId(pv), prs=sheetRows(pm); if(prs.length){ var pp=priceOf(pm); AP.cap=Math.max(0,prs.indexOf(pp.row)); if(optSO(pm,AP.cap)){ var fo2=firstOkOpt(pm); if(fo2>=0) AP.cap=fo2; } } } }
+  if(app){ e.preventDefault(); if(app.disabled) return; var pv=app.getAttribute('data-ap-pick'); if(LPLOCK && !lpOk(pv)) return; if(pv!==AP.phone){ AP.cap=0; AP.color=''; if(pv!=='later'){ var pm=byId(pv), prs=sheetRows(pm); if(prs.length){ var pp=priceOf(pm); AP.cap=Math.max(0,prs.indexOf(pp.row)); if(optSO(pm,AP.cap)){ var fo2=firstOkOpt(pm); if(fo2>=0) AP.cap=fo2; } } } }
     AP.phone=pv; AP.pick=false; apRefresh(); return; }
   var apt=t.closest('[data-ap-tip]');
   if(apt){ e.preventDefault(); AP.tip=AP.tip||{}; var tk=apt.getAttribute('data-ap-tip'); AP.tip[tk]=!AP.tip[tk]; apRefresh(); return; }
@@ -2845,8 +2870,8 @@ document.addEventListener('click',function(e){
   var c=t.closest('[data-cat]'); if(c){location.hash='#/cat/'+c.getAttribute('data-cat');return}
   var mp=t.closest('[data-mnp]'); if(mp){ e.preventDefault(); MNP=mp.getAttribute('data-mnp')==='1'; refresh(); return; }
   if(t.closest('[data-cert]')){e.preventDefault();openCert();return}
-  if(t.closest('[data-home]')){e.preventDefault();closeSheet();location.hash='#/';window.scrollTo(0,0);return}
-  if(t.closest('[data-back]')){e.preventDefault();NAVN>0?history.back():location.hash='#/';return}   // 20261105 광고에서 상세로 바로 들어온 손님은 '뒤로'가 광고 앱으로 나가지 않고 우리 홈으로
+  if(t.closest('[data-home]')){e.preventDefault();closeSheet();if(LPLOCK){ window.scrollTo({top:0,behavior:'smooth'}); return; }location.hash='#/';window.scrollTo(0,0);return}
+  if(t.closest('[data-back]')){e.preventDefault();if(LPLOCK){ if($('#v-apply').classList.contains('on')){ NAVN>0?history.back():location.hash=lpHome(); } return; }NAVN>0?history.back():location.hash='#/';return}   // 20261105 광고에서 상세로 바로 들어온 손님은 '뒤로'가 광고 앱으로 나가지 않고 우리 홈으로
 });
 document.addEventListener('input',function(e){
   var id=e.target.id;
@@ -2963,8 +2988,8 @@ renderHome();
       CAT_TABS.forEach(function(t){ if(ck==='all' && t.k!=='all' && t.k!=='zero' && ms.every(function(m){ return m && m.cat && m.cat.indexOf(t.k)>-1; })) ck=t.k; });
       to='#/cat/'+ck+'/'+ids.join(',');
     }
-    history.replaceState(null,'',base+'#/');
-    history.pushState(null,'',base+to);
+    if(LPLOCK) history.replaceState(null,'',base+to);   // 20261126 광고 랜딩: 뒤에 스토어 홈을 깔지 않음
+    else { history.replaceState(null,'',base+'#/'); history.pushState(null,'',base+to); }
   }
 }catch(e){} })();
 if(LP && window.MutationObserver && $('#mdBody')) new MutationObserver(lpBan).observe($('#mdBody'),{childList:true});   // 20261107 광고 전용 랜딩 배너
